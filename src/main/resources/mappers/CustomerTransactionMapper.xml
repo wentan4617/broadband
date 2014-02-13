@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.CustomerTransactionMapper">
+	
+	<!-- 
+		 
+	-->
+	<insert id="insertCustomerTransaction" parameterType="CustomerTransaction">
+		INSERT INTO `tm_customer_transaction`(
+			`customer_id`, `order_id`, `transaction_date`, `amount`, 
+			`auth_code`, `cardholder_name`, `card_name`, `card_number`, 
+			`client_info`, `currency_input`, `amount_settlement`, `expiry_date`, 
+			`dps_txn_ref`, `merchant_reference`, `response_text`, `success`, 
+			`txnMac`, `transaction_type`) 
+		VALUES (
+			#{customer.id},#{order.id},now(),#{amount},
+			#{auth_code},#{cardholder_name},#{card_name},#{card_number},
+			#{client_info},#{currency_input},#{amount_settlement},#{expiry_date},
+			#{dps_txn_ref},#{merchant_reference},#{response_text},#{success},
+			#{txnMac},#{transaction_type})
+	</insert>
+	
+</mapper>

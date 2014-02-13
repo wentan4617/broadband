@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" 
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc
+        http://www.springframework.org/schema/jdbc/spring-jdbc.xsd">
+
+	<context:property-placeholder location="classpath:spring/data-access.properties" system-properties-mode="OVERRIDE" />
+
+	<!-- broadband data source ========================================================================== -->
+	
+	<bean id="broadbandDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${broadband.driverClassName}" />
+		<property name="url" value="${broadband.url}" />
+		<property name="username" value="${broadband.username}" />
+		<property name="password" value="${broadband.password}" />
+		
+		<property name="maxActive" value="${broadband.maxActive}" />
+		<property name="initialSize" value="${broadband.initialSize}" />
+		<property name="maxWait" value="${broadband.maxWait}" />
+		<property name="maxIdle" value="${broadband.maxIdle}" />
+		<property name="minIdle" value="${broadband.minIdle}" />
+		<property name="removeAbandoned" value="${broadband.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${broadband.removeAbandonedTimeout}" />
+		<property name="connectionProperties" value="${broadband.connectionProperties}" />
+
+		<property name="validationQuery" value="${broadband.validationQuery}"/>
+		<property name="testWhileIdle" value="${broadband.testWhileIdle}" /><!-- 打开检查,用异步线程evict进行检查 -->
+		<property name="testOnBorrow" value="${broadband.testOnBorrow}" />
+		<property name="testOnReturn" value="${broadband.testOnReturn}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${broadband.timeBetweenEvictionRunsMillis}" />
+		<property name="numTestsPerEvictionRun" value="${broadband.numTestsPerEvictionRun}" />
+	</bean>
+	
+</beans>

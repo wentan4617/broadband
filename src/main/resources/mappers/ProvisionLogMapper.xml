@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.ProvisionLogMapper">
+	
+	<!-- 
+		when every update customer order status, insert log 
+		`order_id_chorus`, 
+	-->
+	<insert id="insertProvisionLog" parameterType="ProvisionLog">
+		INSERT INTO `tm_provision_log`(
+			`user_id`, `process_datetime`, `order_sort`, 
+			`order_id_customer`, 
+			`process_way`, `process_memo`) 
+		VALUES (
+			#{user.id}, now(), #{order_sort},
+			#{order_id_customer.id}, 
+			#{process_way}, #{process_memo})
+	</insert>
+	
+</mapper>

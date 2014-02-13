@@ -1,0 +1,108 @@
+package com.tm.broadband.model;
+
+import java.io.Serializable;
+
+public class CustomerOrderDetail implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	
+	private int id;
+	private CustomerOrder customerOrder;
+	private String detail_plan_name;
+	private String detail_plan_desc;
+	private Double detail_plan_price;
+	private Long detail_data_flow;
+	private String detail_plan_status;
+	private String detail_plan_type;
+	private String detail_plan_sort;
+	private String detail_plan_memo;
+
+	public CustomerOrderDetail() {
+		// TODO Auto-generated constructor stub
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
+	}
+
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
+	}
+
+	public String getDetail_plan_name() {
+		return detail_plan_name;
+	}
+
+	public void setDetail_plan_name(String detail_plan_name) {
+		this.detail_plan_name = detail_plan_name;
+	}
+
+	public String getDetail_plan_desc() {
+		return detail_plan_desc;
+	}
+
+	public void setDetail_plan_desc(String detail_plan_desc) {
+		this.detail_plan_desc = detail_plan_desc;
+	}
+
+	public Double getDetail_plan_price() {
+		return detail_plan_price;
+	}
+
+	public void setDetail_plan_price(Double detail_plan_price) {
+		this.detail_plan_price = detail_plan_price;
+	}
+
+	public Long getDetail_data_flow() {
+		return detail_data_flow;
+	}
+
+	public void setDetail_data_flow(Long detail_data_flow) {
+		this.detail_data_flow = detail_data_flow;
+	}
+
+	public String getDetail_plan_status() {
+		return detail_plan_status;
+	}
+
+	public void setDetail_plan_status(String detail_plan_status) {
+		this.detail_plan_status = detail_plan_status;
+	}
+
+	public String getDetail_plan_type() {
+		return detail_plan_type;
+	}
+
+	public void setDetail_plan_type(String detail_plan_type) {
+		this.detail_plan_type = detail_plan_type;
+	}
+
+	public String getDetail_plan_sort() {
+		return detail_plan_sort;
+	}
+
+	public void setDetail_plan_sort(String detail_plan_sort) {
+		this.detail_plan_sort = detail_plan_sort;
+	}
+
+	public String getDetail_plan_memo() {
+		return detail_plan_memo;
+	}
+
+	public void setDetail_plan_memo(String detail_plan_memo) {
+		this.detail_plan_memo = detail_plan_memo;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+}

@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+body { padding-top: 70px; }
+
+#scrollUp {
+	bottom: 20px;
+	right: 20px;
+	height: 38px;
+	/* Height of image */
+	width: 38px;
+	/* Width of image */
+	background: url("../images/top.png") no-repeat;
+}
+

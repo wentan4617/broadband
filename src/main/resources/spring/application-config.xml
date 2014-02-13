@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+	<!-- import the dataSource definition -->
+	<import resource="datasource-config.xml" />
+
+	<!-- scanning package -->
+	<context:component-scan base-package="com.tm.broadband.service" />
+
+	<!-- enable autowire -->
+	<!-- <context:annotation-config /> -->
+
+	<!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="broadbandDataSource" />
+	</bean>
+
+	<!-- enable transaction demarcation with annotations -->
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<!-- define the SqlSessionFactory -->
+	<bean id="broadbandSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="broadbandDataSource" />
+		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
+		<property name="typeAliasesPackage" value="com.tm.broadband.model" />
+	</bean>
+
+	<!-- scanning mapper xml -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="broadbandSqlSessionFactory" />
+		<property name="basePackage" value="com.tm.broadband.mapper" />
+	</bean>
+
+	<!-- <bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"> 
+		<property name="defaultUri" value="http://localhost:8080/broadband/services/holidayService/" 
+		/> </bean> -->
+
+	<!-- <bean id="simpleService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> 
+		<property name="serviceInterface" value="com.mycompany.hr.definitions.HumanResource" 
+		/> <property name="wsdlDocumentUrl" value="http://localhost:8080/broadband/services/holidayService/holiday.wsdl" 
+		/> <property name="namespaceUri" value="http://mycompany.com/hr/schemas" 
+		/> <property name="serviceName" value="HumanResourceService" /> <property 
+		name="portName" value="HumanResourceSoap11" /> </bean> -->
+
+
+	<!-- Spring Email ********************************************************************************** -->
+
+	<!-- SET default mail properties -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="protocol" value="smtp" />
+		<property name="port" value="25" />
+		<property name="username" value="kanny87929@gmail.com" />
+		<property name="password" value="kuangde43" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.timeout">25000</prop>  
+				<!-- true for Gamil -->
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+
+	<!--Asyn send Eamil -->
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="30" />
+	</bean>
+
+	<!-- You can have some pre-configured messagess also which are ready to 
+		send -->
+	<bean id="preConfiguredMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="to" value="xxx@gmail.com"></property>
+		<property name="from" value="xxx@sina.com"></property>
+		<property name="subject" value="Test email from sina." />
+	</bean>
+
+</beans>

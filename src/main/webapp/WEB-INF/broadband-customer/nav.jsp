@@ -1,0 +1,34 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
+
+<div class="navbar navbar-darkgreen navbar-static-top" style="margin-bottom:0; min-height:65px;">
+	<div class="container">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="${ctx }" style="padding: 7px 15px;"> 
+				<img alt="" src="${ctx}/public/bootstrap3/images/logo.png">
+			</a>
+		</div>
+		 
+		<c:if test="${customerSession != null }">
+			<p class="navbar-text pull-right" style="padding-top:8px;">
+				<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
+				<a href="javascript:void(0);" class="navbar-link" style="margin-right:10px;">${customerSession.user_name}</a>
+				<a href="${ctx}/signout" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
+					<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>
+				</a>
+			</p>
+		</c:if>
+		<c:if test="${customerSession == null }">
+			<p class="navbar-text navbar-right" style="padding-top: 8px;">
+     			<a href="${ctx }/login" class="navbar-link" >Sign in</a>
+ 			</p>
+		</c:if>
+	</div>
+</div>
+
+

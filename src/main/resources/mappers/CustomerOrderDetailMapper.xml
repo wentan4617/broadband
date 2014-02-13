@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailMapper">
+	
+	<!-- create customer order -->
+	<insert id="createCustomerOrderDetail" parameterType="CustomerOrderDetail" >
+		INSERT INTO `tm_customer_order_detail`(
+			`order_id`, `detail_plan_name`, `detail_plan_desc`, `detail_plan_price`, 
+			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
+			`detail_plan_memo`) 
+		VALUES (
+			#{customerOrder.id}, #{detail_plan_name}, #{detail_plan_desc}, #{detail_plan_price}, 
+			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
+			#{detail_plan_memo})
+	</insert>
+	
+</mapper>

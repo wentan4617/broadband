@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderMapper">
+	
+	<!-- create customer order -->
+	<insert id="createCustomerOrder" parameterType="CustomerOrder" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order`(
+			`order_serial`, `customer_id`, `order_total_price`, `order_create_date`, `order_status`) 
+		VALUES (
+			#{order_serial}, #{customer.id}, #{order_total_price}, now(), #{order_status})
+	</insert>
+	
+	<!-- update customer order status, when customer first register. -->
+	<update id="updateCustomerOrderStatusByCustomerId" >
+		update tm_customer_order set order_status = #{1} where customer_id = #{0}
+	</update>
+	
+	<!-- update customer order status, when customer first register. -->
+	<update id="updateCustomerOrderStatusById" >
+		update tm_customer_order set order_status = #{1} where id = #{0}
+	</update>
+	
+	<!-- 
+		select customer order id, by customer id 
+		only select order status is pending, top 1
+	-->
+	<select id="selectCustomerOrderIdByCId" resultType="int">
+		SELECT id FROM `tm_customer_order` where customer_id = #{0} and order_status = 'pending' limit 0, 1
+	</select>
+	
+</mapper>

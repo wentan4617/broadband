@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.PlanMapper">
+	
+	<!-- create plan -->
+	<select id="insertPlan" parameterType="Plan">
+		INSERT INTO `tm_plan`(
+			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, 
+			`plan_status`, `plan_type`, `plan_sort`, `memo`, `create_date`, `create_by`) 
+		VALUES (
+			#{plan_name},#{plan_desc},#{plan_price},#{data_flow},
+			#{plan_status},#{plan_type},#{plan_sort},#{memo},now(),#{create_by.id})
+	</select>
+	
+	<!-- select plan page -->
+	<select id="selectPlansByPage" parameterType="Page" resultType="Plan">
+		select * from tm_plan 
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select plan amount -->
+	<select id="selectPlansSum" parameterType="Page" resultType="int">
+		select count(*) from tm_plan 
+	</select>
+	
+	<!-- when create plan, check same name -->
+	<select id="selectExistPlanByName" resultType="int">
+		select count(*) from tm_plan where plan_name = #{0} 
+	</select>
+	
+	<!-- when update plan, check same name -->
+	<select id="selectExistNotSelfPlanfByName" resultType="int">
+		select count(*) from tm_plan where plan_name = #{0} and id != #{1}
+	</select>
+	
+	<!-- update plan -->
+	<update id="updatePlan" parameterType="Plan">
+		UPDATE `tm_plan` SET 
+			`plan_name`=#{plan_name},`plan_desc`=#{plan_desc},`plan_price`=#{plan_price},
+			`data_flow`=#{data_flow},`plan_status`=#{plan_status},`plan_type`=#{plan_type},
+			`plan_sort`=#{plan_sort},`memo`=#{memo},
+			`last_update_date`=now(),`last_update_by`=#{last_update_by.id}
+		WHERE `id`=#{id}
+	</update>
+	
+	<!-- only update plan status -->
+	<update id="updatePlanStatusById" >
+		UPDATE `tm_plan` SET `plan_status`=#{0} where `id`=#{1}
+	</update>
+	
+	<!-- select one plan by id -->
+	<select id="selectPlanById" resultType="Plan">
+		SELECT * FROM `tm_plan` WHERE  id = #{0}
+	</select>
+	
+	<!-- select plans by type -->
+	<select id="selectPlansByType" resultType="Plan">
+		select * from
+	</select>
+	
+</mapper>
