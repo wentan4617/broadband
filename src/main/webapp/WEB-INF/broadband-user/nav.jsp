@@ -34,7 +34,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="#">...</a>
+								<a href="${ctx}/broadband-user/crm/customer/view/1">View Customer</a>
 							</li>
 							<li class="divider"></li>
 							<li>

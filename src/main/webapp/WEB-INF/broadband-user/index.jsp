@@ -32,7 +32,11 @@
                 <div class="caption">
                     <h3>CRM</h3>
                     <p>Simple customer relationship management module</p>
-
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<a href="${ctx }/broadband-user/crm/customer/view/1">View Customer</a>
+                    	</li>
+                    </ul>
                 </div>
             </div>
         </div>

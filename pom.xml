@@ -19,9 +19,7 @@
 		<!-- Spring -->
 		<spring-framework.version>4.0.0.RELEASE</spring-framework.version>
 		<spring-batch.version>2.2.1.RELEASE</spring-batch.version>
-		<spring-ws.version>
-			1.5.2<!-- 2.1.4.RELEASE -->
-		</spring-ws.version>
+		<spring-ws.version>1.5.2<!-- 2.1.4.RELEASE --></spring-ws.version>
 
 		<!-- AOP -->
 		<aspectj.version>1.7.3</aspectj.version>
