@@ -7,8 +7,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.PlanMapper;
+import com.tm.broadband.mapper.TopupMapper;
+import com.tm.broadband.model.Topup;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.Topup;
 
 /**
  * plan service
@@ -20,10 +23,12 @@ import com.tm.broadband.model.Plan;
 public class PlanService {
 
 	private PlanMapper planMapper;
+	private TopupMapper topupMapper;
 
 	@Autowired
-	public PlanService(PlanMapper planMapper) {
+	public PlanService(PlanMapper planMapper, TopupMapper topupMapper) {
 		this.planMapper = planMapper;
+		this.topupMapper = topupMapper;
 	}
 
 	public PlanService() {
@@ -81,19 +86,55 @@ public class PlanService {
 		page.setResults(this.planMapper.selectPlansByPage(page));
 		return page;
 	}
-	
+
 	@Transactional
 	public void editPlansStatus(List<Plan> plans) {
 		if (plans != null) {
 			for (Plan plan : plans) {
-				this.planMapper.updatePlanStatusById(plan.getPlan_status(), plan.getId());
+				this.planMapper.updatePlanStatusById(plan.getPlan_status(),
+						plan.getId());
 			}
 		}
 	}
-	
+
 	@Transactional
 	public List<Plan> queryPlansByType(String type) {
 		return this.planMapper.selectPlansByType(type);
 	}
+
+	/*
+	 * Topup Operation start
+	 */
+
+	@Transactional
+	public void saveTopup(Topup topup) {
+		this.topupMapper.insertTopup(topup);
+	}
+
+	@Transactional
+	public void editTopup(Topup topup) {
+		this.topupMapper.updateTopup(topup);
+	}
+
+	@Transactional
+	public Topup queryTopupById(int id) {
+		return this.topupMapper.selectTopupById(id);
+	}
+
+	@Transactional
+	public List<Topup> queryTopups() {
+		return this.topupMapper.selectTopups();
+	}
+
+	@Transactional
+	public Page<Topup> queryTopupsByPage(Page<Topup> page) {
+		page.setTotalRecord(this.topupMapper.selectTopupsSum(page));
+		page.setResults(this.topupMapper.selectTopupsByPage(page));
+		return page;
+	}
+
+	/*
+	 * Topup Operation end
+	 */
 
 }

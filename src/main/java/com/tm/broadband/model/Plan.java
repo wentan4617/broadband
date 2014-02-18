@@ -28,6 +28,8 @@ public class Plan implements Serializable {
 	private String plan_type;
 	private String plan_sort;
 	private String memo;
+	private String plan_group;
+	private Double plan_new_connection_fee;
 	private Date create_date;
 	private User create_by;
 	private Date last_update_date;
@@ -35,6 +37,22 @@ public class Plan implements Serializable {
 
 	public Plan() {
 
+	}
+
+	public String getPlan_group() {
+		return plan_group;
+	}
+
+	public void setPlan_group(String plan_group) {
+		this.plan_group = plan_group;
+	}
+
+	public Double getPlan_new_connection_fee() {
+		return plan_new_connection_fee;
+	}
+
+	public void setPlan_new_connection_fee(Double plan_new_connection_fee) {
+		this.plan_new_connection_fee = plan_new_connection_fee;
 	}
 
 	public Long getData_flow_k() {

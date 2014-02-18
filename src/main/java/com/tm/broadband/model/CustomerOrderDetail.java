@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class CustomerOrderDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private int id;
 	private CustomerOrder customerOrder;
 	private String detail_plan_name;
@@ -15,6 +15,10 @@ public class CustomerOrderDetail implements Serializable {
 	private String detail_plan_status;
 	private String detail_plan_type;
 	private String detail_plan_sort;
+	private String detail_plan_group;
+	private Double detail_plan_new_connection_fee;
+	private Long detail_topup_data_flow;
+	private Double detail_topup_fee;
 	private String detail_plan_memo;
 
 	public CustomerOrderDetail() {
@@ -91,6 +95,39 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_plan_sort(String detail_plan_sort) {
 		this.detail_plan_sort = detail_plan_sort;
+	}
+
+	public String getDetail_plan_group() {
+		return detail_plan_group;
+	}
+
+	public void setDetail_plan_group(String detail_plan_group) {
+		this.detail_plan_group = detail_plan_group;
+	}
+
+	public Double getDetail_plan_new_connection_fee() {
+		return detail_plan_new_connection_fee;
+	}
+
+	public void setDetail_plan_new_connection_fee(
+			Double detail_plan_new_connection_fee) {
+		this.detail_plan_new_connection_fee = detail_plan_new_connection_fee;
+	}
+
+	public Long getDetail_topup_data_flow() {
+		return detail_topup_data_flow;
+	}
+
+	public void setDetail_topup_data_flow(Long detail_topup_data_flow) {
+		this.detail_topup_data_flow = detail_topup_data_flow;
+	}
+
+	public Double getDetail_topup_fee() {
+		return detail_topup_fee;
+	}
+
+	public void setDetail_topup_fee(Double detail_topup_fee) {
+		this.detail_topup_fee = detail_topup_fee;
 	}
 
 	public String getDetail_plan_memo() {
