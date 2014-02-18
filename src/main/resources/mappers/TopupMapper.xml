@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tm.broadband.mapper.TopupMapper">
+	
+	<!-- create topup -->
+	<select id="insertTopup" parameterType="Topup">
+		INSERT INTO `tm_topup`(`topup_name`, `topup_fee`, `topup_data_flow`, `topup_status`) 
+		VALUES (#{topup_name},#{topup_fee},#{topup_data_flow},#{topup_status})
+	</select>
+	
+	<!-- select topup page -->
+	<select id="selectTopups" resultType="Topup">
+		select * from tm_topup
+	</select>
+	
+	<!-- select topup page -->
+	<select id="selectTopupsByPage" parameterType="Page" resultType="Topup">
+		select * from tm_topup 
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select topup amount -->
+	<select id="selectTopupsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_topup 
+	</select>
+	
+	<!-- update topup -->
+	<update id="updateTopup" parameterType="Topup">
+		UPDATE `tm_topup` SET `topup_name`=#{topup_name},`topup_fee`=#{topup_fee},`topup_data_flow`=#{topup_data_flow},`topup_status`=#{topup_status} 
+		WHERE id=#{id}
+	</update>
+	
+	<!-- select one topup by id -->
+	<select id="selectTopupById" resultType="Topup">
+		SELECT * FROM `tm_Topup` WHERE  id = #{0}
+	</select>
+	
+</mapper>
