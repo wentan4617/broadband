@@ -12,13 +12,14 @@
 	<!-- non-naked plans -->
 	<div class="page-header">
 		<h1>
-			ADSL Plus <small>Please choose what you need</small>
+			Internet | Plans and pricing <small>Please choose what you need</small>
 		</h1>
 	</div>
 	<div class="row">
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<div class="caption">
+					<img class="pull-right" data-src="holder.js/120x86" alt="...">
 					<h3><strong class="text-success">ADSL BROADBAND</strong></h3>
 					<hr/>
 					<div class="well">
@@ -28,10 +29,23 @@
 					</div>
 					<h4><strong class="text-success">How much data do you need?</strong></h4>
 					<div class="btn-group btn-group-justified">
-						<a href="javascript:void(0);" class="btn btn-default">Left</a>
-					  	<a href="javascript:void(0);" class="btn btn-default">Middle</a>
-					  	<a href="javascript:void(0);" class="btn btn-default">Right</a>
+						<a href="javascript:void(0);" class="btn btn-success active">40 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">80 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">120 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">160 GB</a>
 					</div>
+					<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+						<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-30px;margin-top:35px;">$</strong>
+						<strong style="font-size:100px;"> 69 </strong>
+						/ mth
+					</p>
+					<hr style="margin-top:0;"/>
+					<p class="text-success"><strong>How fast is ADSL?</strong></p>
+					<ul class="list-unstyled">
+						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Easy to install</li>
+						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Great for everyday use</li>	
+					</ul>
+					<hr/>
 					<p class="text-center">
 						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
 					</p>
@@ -40,113 +54,88 @@
 		</div>
 		<div class="col-md-4">
 			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/adsl_mid.png" alt="">
 				<div class="caption">
-					<h3>ADSL Middle Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<p>Benefits:</p>
-					<ul >
-						<li>1 PSTN Telephone Line</li>
-						<li>Local call free (National wide)</li>
-						<li><strong class="text-danger">300 GB DATA</strong></li>
-						<li>Calling to Telecom mobile $0.12, non-Telecom mobile $0.19 40 special countries 4.5c/mins</li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
+					<img class="pull-right" data-src="holder.js/120x86" alt="...">
+					<h3><strong class="text-success">ULTRA VDSL&trade; BROADBAND</strong></h3>
+					<hr/>
+					<div class="well">
+						Like ADSL Broadband, using the copper phone line only faster.
+					</div>
+					<h4><strong class="text-success">How much data do you need?</strong></h4>
+					<div class="btn-group btn-group-justified">
+						<a href="javascript:void(0);" class="btn btn-default">40 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-success active">80 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">120 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">160 GB</a>
+					</div>
+					<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+						<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-30px;margin-top:35px;">$</strong>
+						<strong style="font-size:100px;"> 89 </strong>
+						/ mth
+					</p>
+					<hr style="margin-top:0;"/>
+					<p class="text-success"><strong>Why VDSL?</strong></p>
+					<ul class="list-unstyled">
+						<li><span class="glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Straightforward to install</li>
+						<li><span class="glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Better for video and online games</li>	
 					</ul>
+					<hr/>
+					<ul class="list-unstyled">
+						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Between 15-70 Mbps downstream+</li>
+						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Between 5-10 Mbps upstream+</li>	
+					</ul>
+					<hr/>
 					<p class="text-center">
-						<a href="${ctx }/order/5" class="btn btn-success" role="button">Purchase</a> 
+						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
 					</p>
 				</div>
 			</div>
 		</div>
 		<div class="col-md-4">
 			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/adsl_high.png" alt="">
 				<div class="caption">
-					<h3>ADSL High Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<p>Benefits:</p>
-					<ul >
-						<li>1 PSTN Telephone Line</li>
-						<li>Local call free (National wide)</li>
-						<li><strong class="text-danger">Unlimited DATA</strong></li>
-						<li>Calling to Telecom mobile $0.12, non-Telecom mobile $0.19 40 special countries 4.5c/mins</li>
-						<li>Free Router</li>
-						<li>12 months plan </li>
+					<img class="pull-right" data-src="holder.js/120x86" alt="..." >
+					<h3 class="clearfix"><strong class="text-success">ULTRA FIBRE&copy;</strong></h3>
+					<hr style="margin-top:-2px;"/>
+					<div class="well">
+						The broadband standard in NZ. 
+						Fast internet over your copper 
+						phone line.
+					</div>
+					<h4><strong class="text-success">How much data do you need?</strong></h4>
+					<div class="btn-group btn-group-justified">
+						<a href="javascript:void(0);" class="btn btn-default">40 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">80 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-success active">120 GB</a>
+					  	<a href="javascript:void(0);" class="btn btn-default">160 GB</a>
+					</div>
+					<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+						<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-30px;margin-top:35px;">$</strong>
+						<strong style="font-size:100px;"> 79 </strong>
+						/ mth
+					</p>
+					<hr style="margin-top:0;"/>
+					<p class="text-success"><strong>Why Fibre?</strong></p>
+					<ul class="list-unstyled">
+						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Huge jump in speed and capacity</li>
+						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Provides the best available consistency of </li>	
+						<li style="padding:0 55px;">speed to your home</li>	
 					</ul>
+					<hr/>
+					<ul class="list-unstyled">
+						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Up to 30 Mbps downstream+</li>
+						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Up to 10 Mbps upstream+</li>	
+					</ul>
+					<hr/>
 					<p class="text-center">
-						<a href="${ctx }/order/6" class="btn btn-success" role="button">Purchase</a> 
+						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
 					</p>
 				</div>
 			</div>
 		</div>
 	</div>
 	
-	<!-- naked plans -->
-	<div class="page-header">
-		<h1>
-			ADSL Naked <small>Please choose what you need</small>
-		</h1>
-	</div>
-	<div class="row">
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/adsln_low.png" alt="">
-				<div class="caption">
-					<h3>ADSL Naked Low Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<h6>Can apply 1 VoIP number for free, VoIP gateway cost $89</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">100 GB DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/10" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/adsln_mid.png" alt="">
-				<div class="caption">
-					<h3>ADSL Naked Middle Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<h6>&nbsp;</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">300 GB DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/11" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/adsln_high.png" alt="">
-				<div class="caption">
-					<h3>ADSL Naked High Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<h6>&nbsp;</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">Unlimited DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/12" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-	</div>
+	
 </div>
 </div>
 

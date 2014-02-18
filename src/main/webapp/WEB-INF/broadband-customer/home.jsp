@@ -5,11 +5,25 @@
 
 <jsp:include page="header.jsp" />
 
-<jsp:include page="carousel.jsp" />
+<%-- <jsp:include page="carousel.jsp" /> --%>
 
 <div style="background:#eee">
 <div class="container marketing" >
-	
+	<div class="row">
+		<div class="col-lg-8">
+			<jsp:include page="carousel.jsp" />
+		</div>
+		<div class="col-lg-4">
+			<div class="panel panel-default">
+		  		<div class="panel-body">
+			    	<a href="#" class="btn btn-primary btn-lg btn-block">View Plan Top-Up</a>
+			    	<hr/>
+			    	<a href="${ctx }/plans/adsl" class="btn btn-primary btn-lg btn-block">View Plan Prepay</a>
+			  	</div>
+			</div>
+		</div>
+		
+	</div>
 	<div class="row">
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
