@@ -22,9 +22,15 @@
 							<li>
 								<a href="${ctx}/broadband-user/plan/view/1">View Plan</a>
 							</li>
+							<li>
+								<a href="${ctx}/broadband-user/plan/topup/view/1">View Topup</a>
+							</li>
 							<li class="divider"></li>
 							<li>
 								<a href="${ctx}/broadband-user/plan/create">Create Plan</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/plan/topup/create">Create Topup</a>
 							</li>
 						</ul>
 					</li>
