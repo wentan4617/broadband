@@ -2,7 +2,9 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -39,9 +41,18 @@ public class Plan implements Serializable {
 
 	private List<Topup> topups;
 	private String[] topupArray;
+	private Map<String, Object> params = new HashMap<String, Object>();//
 
 	public Plan() {
 
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 	public String getPlan_topupid_array() {

@@ -22,6 +22,8 @@ public interface PlanMapper {
 	List<Plan> selectLikePlansByName(String plan_name);
 
 	List<Plan> selectPlans();
+	
+	List<Plan> selectPlansBySome(Plan plan);
 
 	Plan selectPlanById(int id);
 

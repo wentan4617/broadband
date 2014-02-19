@@ -8,16 +8,16 @@ import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.User;
 
 @Service
-public class UserService {
+public class SystemService {
 	
 	private UserMapper userMapper;
 
 	@Autowired
-	public UserService(UserMapper userMapper) {
+	public SystemService(UserMapper userMapper) {
 		this.userMapper = userMapper;
 	}
 	
-	public UserService() {}
+	public SystemService() {}
 	
 	@Transactional
 	public User queryUserLogin(User user) {

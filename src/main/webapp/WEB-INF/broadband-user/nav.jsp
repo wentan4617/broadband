@@ -20,17 +20,29 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/plan/view/1">View Plan</a>
+								<a href="${ctx}/broadband-user/plan/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Plan
+								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/plan/topup/view/1">View Topup</a>
+								<a href="${ctx}/broadband-user/plan/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Plan
+								</a>
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/plan/create">Create Plan</a>
+								<a href="${ctx}/broadband-user/plan/topup/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Topup
+								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/plan/topup/create">Create Topup</a>
+								<a href="${ctx}/broadband-user/plan/topup/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Topup
+								</a>
 							</li>
 						</ul>
 					</li>
@@ -40,12 +52,12 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/crm/customer/view/1">View Customer</a>
+								<a href="${ctx}/broadband-user/crm/customer/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Customer
+								</a>
 							</li>
 							<li class="divider"></li>
-							<li>
-								<a href="#">...</a>
-							</li>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -65,6 +77,37 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Provision <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+                    			<a href="${ctx }/broadband-user/provision/customer/view/1">
+                    				<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
+                    				Provision Customer Order
+                    			</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="#">...</a>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Data <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="#">...</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="#">...</a>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							System <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li>

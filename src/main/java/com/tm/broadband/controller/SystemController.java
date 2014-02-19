@@ -17,22 +17,22 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 import com.tm.broadband.model.ResponseMessage;
 import com.tm.broadband.model.User;
-import com.tm.broadband.service.UserService;
+import com.tm.broadband.service.SystemService;
 
 /**
- * user controller
+ * system controller
  * 
  * @author Cook1fan
  * 
  */
 @Controller
-public class UserController {
+public class SystemController {
 
-	private UserService userService;
+	private SystemService systemService;
 
 	@Autowired
-	public UserController(UserService userService) {
-		this.userService = userService;
+	public SystemController(SystemService systemService) {
+		this.systemService = systemService;
 	}
 
 	@RequestMapping(value = { "/broadband-user", "/broadband-user/login" })
@@ -53,7 +53,7 @@ public class UserController {
 			return "broadband-user/login";
 		}
 
-		User userSession = this.userService.queryUserLogin(user);
+		User userSession = this.systemService.queryUserLogin(user);
 
 		if (userSession == null) {
 			model.addAttribute("error", "Incorrect account or password");
