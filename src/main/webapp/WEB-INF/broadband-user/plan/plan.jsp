@@ -24,6 +24,16 @@
 							</p>
 						</div>
 						<div class="form-group">
+							<label for="plan_group" class="control-label col-md-3">Plan Group</label>
+							<div class="col-md-3">
+								<form:select path="plan_group" class="form-control">
+									<form:option value="plan-topup">PLAN TOPUP</form:option>
+									<form:option value="plan-prepay">PLAN PREPAY</form:option>
+								</form:select>
+							</div>
+						</div>
+						<jsp:include page="topup-list.jsp"/>
+						<div class="form-group">
 							<label for="plan_type" class="control-label col-md-3">Plan Type</label>
 							<div class="col-md-3">
 								<form:select path="plan_type" class="form-control">
@@ -52,6 +62,18 @@
 							</div>
 							<p class="help-block">
 								<form:errors path="plan_price" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="plan_new_connection_fee" class="control-label col-md-3">New Connection fee (Inc GST)</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<form:input path="plan_new_connection_fee" class="form-control" placeholder="" />
+								</div>
+							</div>
+							<p class="help-block">
+								<form:errors path="plan_new_connection_fee" cssErrorClass="error"/>
 							</p>
 						</div>
 						<div class="form-group">

@@ -38,4 +38,8 @@ public interface PlanMapper {
 	void updatePlanStatusById(String status, int id);
 	
 	List<Plan> selectPlansByType(String type);
+	
+	void insertPlanTopup(int planId, int topupId);
+	
+	void deletePlanTopupById(int planId);
 }
