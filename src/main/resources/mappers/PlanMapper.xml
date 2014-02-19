@@ -68,4 +68,22 @@
 		DELETE FROM tm_plan_topup WHERE plan_id=#{0}
 	</delete>
 	
+	
+	<!-- selectPlansBySome --> 
+	<select id="selectPlansBySome" parameterType="Plan" resultType="Plan">
+		select * from `tm_plan` where 1=1
+		<if test="plan_group != null">
+			and plan_group = #{plan_group}
+		</if>
+		<if test="plan_sort != null">
+			and plan_sort = #{plan_sort}
+		</if>
+		<if test="plan_status != null">
+			and plan_status = #{plan_status}
+		</if>
+		<if test="params.orderby != null">
+			${params.orderby}
+		</if>
+	</select>
+	
 </mapper>

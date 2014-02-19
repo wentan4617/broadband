@@ -16,9 +16,9 @@
 		<div class="col-lg-4">
 			<div class="panel panel-default">
 		  		<div class="panel-body">
-			    	<a href="#" class="btn btn-primary btn-lg btn-block">View Plan Top-Up</a>
+			    	<a href="${ctx }/plans/t" class="btn btn-primary btn-lg btn-block">View Plan Top-Up</a>
 			    	<hr/>
-			    	<a href="${ctx }/plans/adsl" class="btn btn-primary btn-lg btn-block">View Plan Prepay</a>
+			    	<a href="${ctx }/plans/p" class="btn btn-primary btn-lg btn-block">View Plan Prepay</a>
 			  	</div>
 			</div>
 		</div>

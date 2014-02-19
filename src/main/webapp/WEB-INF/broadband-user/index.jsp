@@ -13,15 +13,21 @@
             <div class="thumbnail">
                 <img data-src="holder.js/300x100" alt="...">
                 <div class="caption">
-                    <h3>Plan</h3>
+                    <h3><strong class="text-success">Plan</strong></h3>
                     <p>Create a plan products, plan on-line sales</p>
                     <ul class="list-unstyled">
                     	<li>
+                    		<span class="glyphicon glyphicon-list"></span>
                     		<a href="${ctx }/broadband-user/plan/view/1">View Plan</a>
                     	</li>
                     	<li>
+                    		<span class="glyphicon glyphicon-plus"></span>
                     		<a href="${ctx }/broadband-user/plan/create">Create Plan</a>
                     	</li>
+                    	
+                    </ul>
+                    <ul class="list-unstyled">
+                    	
                     	<li>
                     		<a href="${ctx }/broadband-user/plan/topup/view/1">View Topup</a>
                     	</li>
@@ -36,7 +42,7 @@
             <div class="thumbnail">
                 <img data-src="holder.js/300x100" alt="...">
                 <div class="caption">
-                    <h3>CRM</h3>
+                    <h3><strong class="text-success">CRM</strong></h3>
                     <p>Simple customer relationship management module</p>
                     <ul class="list-unstyled">
                     	<li>
@@ -50,18 +56,18 @@
             <div class="thumbnail">
                 <img data-src="holder.js/300x100" alt="...">
                 <div class="caption">
-                    <h3>Billing</h3>
-                    <p>...</p>
-
+                    <h3><strong class="text-success">Billing</strong></h3>
+                    <p>The generation, management, customer billing transmission, chorus bills.</p>
+					<ul class="list-unstyled">
+					</ul>
                 </div>
             </div>
         </div>
         <div class="col-md-3">
             <div class="thumbnail">
-
                 <img data-src="holder.js/300x100" alt="...">
                 <div class="caption">
-                    <h3>Provision</h3>
+                    <h3><strong class="text-success">Provision</strong></h3>
                     <p>Review all customer purchase orders and payment orders.</p>
                     <ul class="list-unstyled">
                     	<li>
@@ -73,6 +79,34 @@
             </div>
         </div>
     </div>
+	<div class="row">
+		<div class="col-md-3">
+			<div class="thumbnail">
+                <img data-src="holder.js/300x100" alt="...">
+                <div class="caption">
+                    <h3><strong class="text-success">Data</strong></h3>
+                    <p>Configure, manage, query, customer data traffic.</p>
+                    <ul class="list-unstyled">
+                    	
+                    </ul>
+                </div>
+            </div>
+		</div>
+		<div class="col-md-3">
+			<div class="thumbnail">
+                <img data-src="holder.js/300x100" alt="...">
+                <div class="caption">
+                    <h3><strong class="text-success">System</strong></h3>
+                    <p>User management, email, SMS templates.</p>
+                    <ul class="list-unstyled">
+                    	
+                    </ul>
+                </div>
+            </div>
+		</div>
+		<div class="col-md-3"></div>
+		<div class="col-md-3"></div>
+	</div>
 </div>
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

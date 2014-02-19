@@ -112,7 +112,7 @@ public class PlanController {
 		
 		Plan plan = this.planService.queryPlanById(id);
 		
-		if (!"".equals(plan.getPlan_topupid_array())) {
+		if (plan.getPlan_topupid_array() != null && !"".equals(plan.getPlan_topupid_array())) {
 			plan.setTopupArray(plan.getPlan_topupid_array().split(","));
 		}
 		
