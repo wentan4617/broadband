@@ -17,21 +17,22 @@
                     <p>Create a plan products, plan on-line sales</p>
                     <ul class="list-unstyled">
                     	<li>
-                    		<span class="glyphicon glyphicon-list"></span>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/plan/view/1">View Plan</a>
                     	</li>
                     	<li>
-                    		<span class="glyphicon glyphicon-plus"></span>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/plan/create">Create Plan</a>
                     	</li>
-                    	
                     </ul>
+                    <hr/>
                     <ul class="list-unstyled">
-                    	
                     	<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/plan/topup/view/1">View Topup</a>
                     	</li>
                     	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/plan/topup/create">Create Topup</a>
                     	</li>
                     </ul>
@@ -46,6 +47,7 @@
                     <p>Simple customer relationship management module</p>
                     <ul class="list-unstyled">
                     	<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/crm/customer/view/1">View Customer</a>
                     	</li>
                     </ul>
@@ -71,6 +73,7 @@
                     <p>Review all customer purchase orders and payment orders.</p>
                     <ul class="list-unstyled">
                     	<li>
+                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/provision/customer/view/1">Provision Customer Order</a>
                     	</li>
                     </ul>
