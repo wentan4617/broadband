@@ -15,13 +15,15 @@
 				<div class="panel-heading">Plan View</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
-						<thead>
+						<thead >
 							<tr>
 								<th><input type="checkbox" id="checkbox_plans_top" /></th>
 								<th>Plan Name</th>
+								<th>Group</th>
 								<th>Type</th>
 								<th>Sort</th>
 								<th>Monthly fee (Inc GST)($)</th>
+								<th>New Connection fee (Inc GST)($)</th>
 								<th>Data Flow (GB)</th>
 								<th>Status</th>
 								<th>&nbsp;</th>
@@ -39,6 +41,9 @@
 										</a>
 									</td>
 									<td>
+										${plan.plan_group }
+									</td>
+									<td>
 										${plan.plan_type }
 									</td>
 									<td>
@@ -46,6 +51,10 @@
 									</td>
 									<td>
 										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
+										
+									</td>
+									<td>
+										<fmt:formatNumber value="${plan.plan_new_connection_fee }" type="number" pattern="#,#00.00" />
 										
 									</td>
 									<td>${plan.data_flow }</td>

@@ -5,14 +5,14 @@
 <mapper namespace="com.tm.broadband.mapper.PlanMapper">
 	
 	<!-- create plan -->
-	<select id="insertPlan" parameterType="Plan">
+	<insert id="insertPlan" parameterType="Plan" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_plan`(
 			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, 
-			`plan_status`, `plan_type`, `plan_sort`, `memo`, `create_date`, `create_by`) 
+			`plan_status`, `plan_type`, `plan_sort`, `memo`, `plan_group`, `plan_new_connection_fee`,  `create_date`, `create_by`, `plan_topupid_array`) 
 		VALUES (
 			#{plan_name},#{plan_desc},#{plan_price},#{data_flow},
-			#{plan_status},#{plan_type},#{plan_sort},#{memo},now(),#{create_by.id})
-	</select>
+			#{plan_status},#{plan_type},#{plan_sort},#{memo},#{plan_group},#{plan_new_connection_fee},now(),#{create_by.id},#{plan_topupid_array})
+	</insert>
 	
 	<!-- select plan page -->
 	<select id="selectPlansByPage" parameterType="Page" resultType="Plan">
@@ -40,8 +40,8 @@
 		UPDATE `tm_plan` SET 
 			`plan_name`=#{plan_name},`plan_desc`=#{plan_desc},`plan_price`=#{plan_price},
 			`data_flow`=#{data_flow},`plan_status`=#{plan_status},`plan_type`=#{plan_type},
-			`plan_sort`=#{plan_sort},`memo`=#{memo},
-			`last_update_date`=now(),`last_update_by`=#{last_update_by.id}
+			`plan_sort`=#{plan_sort},`memo`=#{memo},`plan_group`=#{plan_group},`plan_new_connection_fee`=#{plan_new_connection_fee},
+			`last_update_date`=now(),`last_update_by`=#{last_update_by.id},`plan_topupid_array`=#{plan_topupid_array}
 		WHERE `id`=#{id}
 	</update>
 	
@@ -57,7 +57,15 @@
 	
 	<!-- select plans by type -->
 	<select id="selectPlansByType" resultType="Plan">
-		select * from
+		select * from tm_plan where plan_type = #{0}
 	</select>
+	
+	<insert id="insertPlanTopup">
+		INSERT INTO tm_plan_topup(plan_id,topup_id) VALUES(#{0},#{1})
+	</insert>
+	
+	<delete id="deletePlanTopupById">
+		DELETE FROM tm_plan_topup WHERE plan_id=#{0}
+	</delete>
 	
 </mapper>

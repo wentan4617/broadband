@@ -1,5 +1,7 @@
 package com.tm.broadband.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,11 @@ public class PlanController {
 		model.addAttribute("plan", new Plan());
 		model.addAttribute("panelheading", "Plan Create");
 		model.addAttribute("action", "/broadband-user/plan/create");
+		
+		// topup
+		List<Topup> topups = this.planService.queryTopups();
+		model.addAttribute("topups",topups);
+		
 		return "broadband-user/plan/plan";
 	}
 	
@@ -57,6 +64,9 @@ public class PlanController {
 		model.addAttribute("action", "/broadband-user/plan/create");
 
 		if (result.hasErrors()) {
+			// topup
+			List<Topup> topups = this.planService.queryTopups();
+			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		
@@ -64,6 +74,9 @@ public class PlanController {
 		
 		if (count > 0) {
 			result.rejectValue("plan_name", "duplicate", "");
+			// topup
+			List<Topup> topups = this.planService.queryTopups();
+			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		
@@ -82,7 +95,8 @@ public class PlanController {
 
 		Page<Plan> page = new Page<Plan>();
 		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by plan_type");
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by plan_status desc,plan_type");
 		this.planService.queryPlansByPage(page);
 		model.addAttribute("page", page);
 
@@ -98,7 +112,15 @@ public class PlanController {
 		
 		Plan plan = this.planService.queryPlanById(id);
 		
+		if (!"".equals(plan.getPlan_topupid_array())) {
+			plan.setTopupArray(plan.getPlan_topupid_array().split(","));
+		}
+		
 		model.addAttribute("plan", plan);
+		
+		// topup
+		List<Topup> topups = this.planService.queryTopups();
+		model.addAttribute("topups",topups);
 		
 		return "broadband-user/plan/plan";
 	}
@@ -115,6 +137,9 @@ public class PlanController {
 		model.addAttribute("action", "/broadband-user/plan/edit");
 		
 		if (result.hasErrors()) {
+			// topup
+			List<Topup> topups = this.planService.queryTopups();
+			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		
@@ -122,6 +147,9 @@ public class PlanController {
 		
 		if (count > 0) {
 			result.rejectValue("plan_name", "duplicate", "");
+			// topup
+			List<Topup> topups = this.planService.queryTopups();
+			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		

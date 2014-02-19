@@ -37,7 +37,27 @@ public class PlanService {
 
 	@Transactional
 	public void savePlan(Plan plan) {
+		
+		// 插入tm_plan表的plan_topupid_array字段
+		if ("plan-topup".equals(plan.getPlan_group()) && plan.getTopupArray() != null) {
+			String idArray = "";
+			for (int i = 0, len = plan.getTopupArray().length; i < len; i++) {
+				idArray += plan.getTopupArray()[i];
+				if (i < len - 1) idArray += ",";
+			}
+			plan.setPlan_topupid_array(idArray);
+			
+		}
+
 		this.planMapper.insertPlan(plan);
+
+		// 插入tm_plan_topup表
+		if ("plan-topup".equals(plan.getPlan_group()) &&  plan.getTopupArray() != null) {
+			for (String topupId : plan.getTopupArray()) {
+				this.planMapper.insertPlanTopup(plan.getId(),
+						Integer.parseInt(topupId));
+			}
+		}
 	}
 
 	@Transactional
@@ -47,7 +67,29 @@ public class PlanService {
 
 	@Transactional
 	public void editPlan(Plan plan) {
+		
+		// 插入tm_plan表的plan_topupid_array字段
+		if ("plan-topup".equals(plan.getPlan_group()) && plan.getTopupArray() != null) {
+			String idArray = "";
+			for (int i = 0, len = plan.getTopupArray().length; i < len; i++) {
+				idArray += plan.getTopupArray()[i];
+				if (i < len - 1) idArray += ",";
+			}
+			plan.setPlan_topupid_array(idArray);
+			
+		}
+
 		this.planMapper.updatePlan(plan);
+		
+		this.planMapper.deletePlanTopupById(plan.getId());
+
+		// 插入tm_plan_topup表
+		if ("plan-topup".equals(plan.getPlan_group()) &&  plan.getTopupArray() != null) {
+			for (String topupId : plan.getTopupArray()) {
+				this.planMapper.insertPlanTopup(plan.getId(),
+						Integer.parseInt(topupId));
+			}
+		}
 	}
 
 	@Transactional

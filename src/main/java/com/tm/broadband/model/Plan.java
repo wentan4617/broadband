@@ -2,6 +2,7 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -34,9 +35,37 @@ public class Plan implements Serializable {
 	private User create_by;
 	private Date last_update_date;
 	private User last_update_by;
+	private String plan_topupid_array;
+
+	private List<Topup> topups;
+	private String[] topupArray;
 
 	public Plan() {
 
+	}
+
+	public String getPlan_topupid_array() {
+		return plan_topupid_array;
+	}
+
+	public void setPlan_topupid_array(String plan_topupid_array) {
+		this.plan_topupid_array = plan_topupid_array;
+	}
+
+	public String[] getTopupArray() {
+		return topupArray;
+	}
+
+	public void setTopupArray(String[] topupArray) {
+		this.topupArray = topupArray;
+	}
+
+	public List<Topup> getTopups() {
+		return topups;
+	}
+
+	public void setTopups(List<Topup> topups) {
+		this.topups = topups;
 	}
 
 	public String getPlan_group() {
