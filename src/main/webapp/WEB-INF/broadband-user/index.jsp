@@ -102,7 +102,25 @@
                     <h3><strong class="text-success">System</strong></h3>
                     <p>User management, email, SMS templates.</p>
                     <ul class="list-unstyled">
-                    	
+                    	<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/user/view/1">View User</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/user/create">Create User</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/notification/view/1">View Notification</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/notification/create">Create Notification</a>
+                    	</li>
                     </ul>
                 </div>
             </div>

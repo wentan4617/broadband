@@ -9,4 +9,46 @@
 		select * from tm_user where login_name = #{login_name} and password = #{password}
 	</select>
 	
+	<insert id="insertUser" parameterType="User">
+		insert into tm_user(login_name,password,user_name,user_role,memo)
+		values(#{login_name},#{password},#{user_name},#{user_role},#{memo})
+	</insert>
+	
+	<update id="updateUser" parameterType="User">
+		UPDATE `tm_user` SET `login_name`=#{login_name},`password`=#{password},
+		`user_name`=#{user_name},`user_role`=#{user_role},`memo`=#{memo} WHERE  `id`=#{id}
+	</update>
+	
+	<!-- select user page -->
+	<select id="selectUsersByPage" parameterType="Page" resultType="User">
+		select * from tm_user 
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select user page -->
+	<select id="selectUsers" resultType="User">
+		select * from tm_user
+	</select>
+	
+	<!-- select user amount -->
+	<select id="selectUsersSum" parameterType="Page" resultType="int">
+		select count(*) from tm_user 
+	</select>
+	
+	<!-- select one user by id -->
+	<select id="selectUserById" resultType="User">
+		SELECT * FROM `tm_user` WHERE  id = #{0}
+	</select>
+	
+	<!-- when create user, check same name -->
+	<select id="selectExistUserByName" resultType="int">
+		select count(*) from tm_user where login_name = #{0} 
+	</select>
+	
+	<!-- when update user, check same name -->
+	<select id="selectExistNotSelfUserfByName" resultType="int">
+		select count(*) from tm_user where login_name = #{0} and id != #{1}
+	</select>
+	
+	
 </mapper>
