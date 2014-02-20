@@ -106,6 +106,8 @@
 		<url-pattern>/broadband-user/crm/*</url-pattern>
 		<url-pattern>/broadband-user/billing/*</url-pattern>
 		<url-pattern>/broadband-user/provision/*</url-pattern>
+		<url-pattern>/broadband-user/data/*</url-pattern>
+		<url-pattern>/broadband-user/system/*</url-pattern>
 	</filter-mapping>
 
 	<error-page>

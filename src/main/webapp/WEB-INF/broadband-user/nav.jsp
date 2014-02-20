@@ -111,11 +111,29 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="#">...</a>
+								<a href="${ctx}/broadband-user/system/user/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View User
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/system/user/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create User
+								</a>
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="#">...</a>
+								<a href="${ctx}/broadband-user/system/notification/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Notification
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/system/notification/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Notification
+								</a>
 							</li>
 						</ul>
 					</li>
@@ -123,7 +141,7 @@
 				<p class="navbar-text pull-right">
 					<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
 					<a href="javascript:void(0);" class="navbar-link" style="margin-right:10px;">${userSession.user_name}</a>
-					<a href="${ctx}/broadband-user/signout" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
+					<a href="${ctx}/broadband-user/signout" data-toggle="tooltip" data-placement="bottom" data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>
 					</a>
 				</p>
