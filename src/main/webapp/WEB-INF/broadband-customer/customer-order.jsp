@@ -7,7 +7,7 @@
 
 <jsp:include page="header.jsp" />
 
-<div style="background:#EFEFEF;padding-bottom:20px;">
+
 <div class="container">
 	<div class="page-header">
 		<h1>
@@ -124,7 +124,7 @@
   		</div>
 	</div>
 </div>
-</div>
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

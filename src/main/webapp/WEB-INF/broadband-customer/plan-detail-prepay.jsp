@@ -8,7 +8,7 @@
 
 <jsp:include page="header.jsp" />
 
-<div style="background:#eee;padding-bottom:20px;">
+
 <div class="container">
 
 	<!-- naked plans -->
@@ -152,8 +152,8 @@
 	</div>
 	
 	
-</div>s
 </div>
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

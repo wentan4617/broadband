@@ -13,6 +13,7 @@
     <link href="${ctx}/public/bootstrap3/css/carousel.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="${ctx}/public/bootstrap3/css/customer.css" rel="stylesheet" type="text/css"  />
     <link href="${ctx}/public/bootstrap3/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link href="${ctx}/public/bootstrap3/css/skins/all.css" rel="stylesheet" type="text/css" />
     <link>
     <!--[if lt IE 9]>
 	<script src="${ctx}/public/bootstrap3/js/html5shiv.js"></script>

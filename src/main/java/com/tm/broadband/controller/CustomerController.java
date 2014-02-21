@@ -64,6 +64,24 @@ public class CustomerController {
 		
 		if ("t".equals(group)) {
 			
+			Plan plan = new Plan();
+			plan.setPlan_group("plan-topup");
+			plan.setPlan_status("selling");
+			plan.setPlan_sort("naked");
+			
+			plans = this.planService.qeryPlansWithTopups(plan);
+			
+			// key = plan_type
+			Map<String, Plan> planMaps = new HashMap<String, Plan>();
+			
+			if (plans != null) {
+				for (Plan p: plans) {
+					planMaps.put(p.getPlan_type(), p);
+				}
+			}
+			
+			model.addAttribute("planMaps", planMaps);
+						
 			url = "broadband-customer/plan-detail-topup";
 			
 		} else if ("p".equals(group)) {

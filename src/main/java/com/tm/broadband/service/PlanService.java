@@ -145,7 +145,11 @@ public class PlanService {
 	public List<Plan> queryPlansBySome(Plan plan) {
 		return this.planMapper.selectPlansBySome(plan);
 	}
-
+	
+	@Transactional
+	public List<Plan> qeryPlansWithTopups(Plan plan) {
+		return this.planMapper.selectPlansWithTopups(plan);
+	}
 	/*
 	 * Topup Operations begin
 	 */

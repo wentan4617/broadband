@@ -86,4 +86,57 @@
 		</if>
 	</select>
 	
+	<!-- select plan with topup -->
+	<select id="selectPlansWithTopups" parameterType="Plan" resultMap="selectPlansWithTopupsResultMap">
+		select 
+			plan.id as p_id, plan.plan_name as p_name, plan.plan_desc as p_desc, plan.plan_price as p_price, 
+			plan.data_flow as p_data_flow, plan.data_flow_k as p_data_flow_k,
+			plan.plan_status as p_status, plan.plan_type as p_type, plan.plan_sort as p_sort, 
+			plan.memo as p_memo, plan.plan_group as p_group, plan.plan_new_connection_fee as p_new_connection_fee,
+			plan.plan_topupid_array as p_topupid_array,
+			
+			topup.id as top_id, topup.topup_name as top_name, topup.topup_fee as top_fee, 
+			topup.topup_data_flow as top_data_flow, topup.topup_status as top_status
+		from tm_plan as plan 
+		left join tm_plan_topup as plantopup on plantopup.plan_id = plan.id
+		left join tm_topup as topup on topup.id = plantopup.topup_id
+		where 1=1
+		<if test="plan_group != null">
+			and plan.plan_group = #{plan_group}
+		</if>
+		<if test="plan_sort != null">
+			and plan.plan_sort = #{plan_sort}
+		</if>
+		<if test="plan_status != null">
+			and plan.plan_status = #{plan_status}
+		</if>
+		<if test="params.orderby != null">
+			${params.orderby}
+		</if>
+	</select>
+	
+	<resultMap type="Plan" id="selectPlansWithTopupsResultMap">
+		<id property="id" column="p_id" />
+  		<result property="plan_name" column="p_name"/>
+  		<result property="plan_desc" column="p_desc"/>
+  		<result property="plan_price" column="p_price"/>
+  		<result property="data_flow" column="p_data_flow"/>
+  		<result property="data_flow_k" column="p_data_flow_k"/>
+  		<result property="plan_status" column="p_status"/>
+  		<result property="plan_type" column="p_type"/>
+  		<result property="plan_sort" column="p_sort"/>
+  		<result property="memo" column="p_memo"/>
+  		<result property="plan_group" column="p_group"/>
+  		<result property="plan_new_connection_fee" column="p_new_connection_fee"/>
+  		<result property="plan_topupid_array" column="p_topupid_array"/>
+  		
+  		<collection property="topups" ofType="Topup">
+  			<id property="id" column="top_id" />
+	  		<result property="topup_name" column="top_name"/>
+	  		<result property="topup_fee" column="top_fee"/>
+	  		<result property="topup_data_flow" column="top_data_flow"/>
+	  		<result property="topup_status" column="top_status"/>
+  		</collection>
+	</resultMap>
+	
 </mapper>

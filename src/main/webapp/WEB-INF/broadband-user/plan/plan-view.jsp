@@ -40,7 +40,7 @@
 											${plan.plan_name }
 										</a>
 									</td>
-									<td>
+									<td class="${plan.plan_group=='plan-topup'?'text-danger':'' }">
 										${plan.plan_group }
 									</td>
 									<td>

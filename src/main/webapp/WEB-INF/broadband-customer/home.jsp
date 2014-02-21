@@ -7,8 +7,23 @@
 
 <%-- <jsp:include page="carousel.jsp" /> --%>
 
-<div style="background:#eee">
+
 <div class="container marketing" >
+	<div class="row">
+		<div class="col-lg-2">
+		</div>
+		<div class="col-lg-8">
+			 <div class="input-group">
+     			<input type="text" class="form-control input-lg" placeholder="Check your address" />
+      			<span class="input-group-btn">
+        			<button class="btn btn-success btn-lg" type="button">Go</button>
+      			</span>
+    		</div>
+		</div>
+		<div class="col-lg-2">
+		</div>
+	</div>
+	<hr/>
 	<div class="row">
 		<div class="col-lg-8">
 			<jsp:include page="carousel.jsp" />
@@ -16,14 +31,14 @@
 		<div class="col-lg-4">
 			<div class="panel panel-default">
 		  		<div class="panel-body">
-			    	<a href="${ctx }/plans/t" class="btn btn-primary btn-lg btn-block">View Plan Top-Up</a>
+			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">View Plan Top-Up</a>
 			    	<hr/>
-			    	<a href="${ctx }/plans/p" class="btn btn-primary btn-lg btn-block">View Plan Prepay</a>
+			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan Prepay</a>
 			  	</div>
 			</div>
 		</div>
-		
 	</div>
+	<hr/>
 	<div class="row">
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
@@ -102,7 +117,7 @@
 
 	</div>
 </div>
-</div>
+
 
 
 
