@@ -92,10 +92,34 @@
 	
 	<!-- select customer page -->
 	<select id="selectCustomersByPage" parameterType="Page" resultType="Customer">
-		select * from tm_customer where 1 = 1
-		<if test="params.status != null">
-			and status = '${params.status}'
-		</if>
+		select * from tm_customer as c
+		left join tm_customer_order as co on co.customer_id = c.id
+		<where>
+			<if test="params.status != null">
+				c.status = '${params.status}'
+			</if>
+			<if test="params.id != null">
+				or c.id = '${params.id}'
+			</if>
+			<if test="params.login_name != null">
+				or c.login_name = '${params.login_name}'
+			</if>
+			<if test="params.phone != null">
+				or c.phone = '${params.phone}'
+			</if>
+			<if test="params.cellphone != null">
+				or c.cellphone = '${params.cellphone}'
+			</if>
+			<if test="params.email != null">
+				or c.email = '${params.email}'
+			</if>
+			<if test="params.svlan != null">
+				or co.svlan = '${params.svlan}'
+			</if>
+			<if test="params.cvlan != null">
+				or co.cvlan = '${params.cvlan}'
+			</if>
+		</where>
 		${params.orderby} limit #{pageOffset}, #{pageSize}
 	</select>
 	

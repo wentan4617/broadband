@@ -238,13 +238,6 @@
 			<version>2.1.4.RELEASE</version>
 		</dependency>
 
-		<!-- PDFBOX -->
-		<dependency>
-			<groupId>org.apache.pdfbox</groupId>
-			<artifactId>pdfbox</artifactId>
-			<version>1.8.2</version>
-		</dependency>
-
 		<!-- http-components -->
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
@@ -277,6 +270,13 @@
 			<groupId>com.sun.mail</groupId>
 			<artifactId>javax.mail</artifactId>
 			<version>1.5.0</version>
+		</dependency>
+		
+		<!-- iText -->
+		<dependency>
+		    <groupId>com.itextpdf</groupId>
+		    <artifactId>itextpdf</artifactId>
+		    <version>5.5.0</version>
 		</dependency>
 
 	</dependencies>

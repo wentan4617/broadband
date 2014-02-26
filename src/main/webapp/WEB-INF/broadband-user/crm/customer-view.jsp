@@ -11,6 +11,10 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
+		
+			<jsp:include page="customer-query.jsp" />
+		
+		
 			<div class="panel panel-default">
 				<div class="panel-heading">customer View</div>
 				<c:if test="${fn:length(page.results) > 0 }">
@@ -86,6 +90,30 @@
 		} else {
 			$('input[name="checkbox_customer"]').prop("checked", false);
 		}
+	});
+	
+	$('input[data-role="query"]').each(function(){
+		var id = $(this).attr('data-id');
+		var val = $(this).prop("checked");
+		//console.log(id);
+		if (val) {
+			$('#' + id).prop("disabled", "");
+		} else {
+			$('#' + id).prop("disabled", "disabled");
+		}
+	});
+	
+	$('input[data-role="query"]').click(function(){
+		var id = $(this).attr('data-id');
+		var val = $(this).prop("checked");
+		//console.log(id);
+		if (val) {
+			$('#' + id).prop("disabled", "");
+		} else {
+			
+			$('#' + id).prop("disabled", "disabled");
+		}
+		
 	});
 })(jQuery);
 </script>
