@@ -142,5 +142,10 @@ public class CRMService {
 	public Customer queryCustomerWhenLogin(Customer customer) {
 		return this.customerMapper.selectCustomerWhenLogin(customer);
 	}
+	
+	@Transactional
+	public List<CustomerOrder> queryCustomerOrdersByCustomerId(int customer_id) {
+		return this.customerOrderMapper.selectCustomerOrdersByCustomerId(customer_id);
+	}
 
 }

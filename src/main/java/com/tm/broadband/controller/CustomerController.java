@@ -27,9 +27,11 @@ import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ResponseMessage;
+import com.tm.broadband.model.Topup;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
@@ -69,7 +71,7 @@ public class CustomerController {
 			plan.setPlan_status("selling");
 			plan.setPlan_sort("naked");
 			
-			plans = this.planService.qeryPlansWithTopups(plan);
+			plans = this.planService.queryPlansWithTopups(plan);
 			
 			// key = plan_type
 			Map<String, Plan> planMaps = new HashMap<String, Plan>();
@@ -118,7 +120,8 @@ public class CustomerController {
 	}
 
 	@RequestMapping("/order/{id}")
-	public String order(Model model, @PathVariable("id") int id) {
+	public String orderPlanPrepay(Model model, 
+			@PathVariable("id") int id) {
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
@@ -127,6 +130,25 @@ public class CustomerController {
 		if (customer == null) {
 			model.addAttribute("customer", new Customer());
 		}
+		
+		return "broadband-customer/customer-order";
+	}
+	
+	@RequestMapping("/order/{id}/topup/{tid}")
+	public String orderPlanTopup(Model model, 
+			@PathVariable("id") int id,
+			@PathVariable("tid") int tid) {
+
+		Plan plan = this.planService.queryPlanById(id);
+		Topup topup = this.planService.queryTopupById(tid);
+		plan.setTopup(topup);
+		model.addAttribute("orderPlan", plan);
+
+		Customer customer = (Customer) model.asMap().get("customer");
+		if (customer == null) {
+			model.addAttribute("customer", new Customer());
+		}
+		
 		return "broadband-customer/customer-order";
 	}
 
@@ -277,8 +299,16 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/customer/home")
-	public String customerHome(Model model) {
+	public String customerHome(Model model, HttpServletRequest req) {
+		
 		model.addAttribute("home", "active");
+		
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+		
+		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrdersByCustomerId(customer.getId());
+		
+		model.addAttribute("customerOrders", customerOrders);
+		
 		return "broadband-customer/customer-home";
 	}
 

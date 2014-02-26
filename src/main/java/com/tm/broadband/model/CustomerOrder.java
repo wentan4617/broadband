@@ -18,6 +18,11 @@ public class CustomerOrder implements Serializable {
 	private Date order_create_date;
 	private String order_status;
 	private Date order_using_start;
+	private Date next_invoice_create_date;
+	private String order_type;
+	private String order_broadband_type;
+	private String svlan;
+	private String cvlan;
 
 	private String order_create_date_str;
 	private String order_using_start_str;
@@ -25,8 +30,25 @@ public class CustomerOrder implements Serializable {
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails;
 
+	public Date getNext_invoice_create_date() {
+		return next_invoice_create_date;
+	}
+
+	public String getOrder_broadband_type() {
+		return order_broadband_type;
+	}
+
+	public void setOrder_broadband_type(String order_broadband_type) {
+		this.order_broadband_type = order_broadband_type;
+	}
+
+	public void setNext_invoice_create_date(Date next_invoice_create_date) {
+		this.next_invoice_create_date = next_invoice_create_date;
+	}
+
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
+				.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -35,7 +57,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_using_start());
+		order_using_start_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
+				.getOrder_using_start());
 		return order_using_start_str;
 	}
 
@@ -114,6 +137,30 @@ public class CustomerOrder implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getOrder_type() {
+		return order_type;
+	}
+
+	public void setOrder_type(String order_type) {
+		this.order_type = order_type;
+	}
+
+	public String getSvlan() {
+		return svlan;
+	}
+
+	public void setSvlan(String svlan) {
+		this.svlan = svlan;
+	}
+
+	public String getCvlan() {
+		return cvlan;
+	}
+
+	public void setCvlan(String cvlan) {
+		this.cvlan = cvlan;
 	}
 
 }

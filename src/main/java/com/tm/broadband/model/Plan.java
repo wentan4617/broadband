@@ -40,11 +40,20 @@ public class Plan implements Serializable {
 	private String plan_topupid_array;
 
 	private List<Topup> topups;
+	private Topup topup;
 	private String[] topupArray;
 	private Map<String, Object> params = new HashMap<String, Object>();//
 
 	public Plan() {
 
+	}
+
+	public Topup getTopup() {
+		return topup;
+	}
+
+	public void setTopup(Topup topup) {
+		this.topup = topup;
 	}
 
 	public Map<String, Object> getParams() {

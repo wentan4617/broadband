@@ -63,18 +63,20 @@
 							<h4>Please choose top-up amount what you needed</h4>
 							<hr/>
 							<c:if test="${fn:length(planMaps['ADSL'].topups) > 0 }">
+								
 								<ul class="list-unstyled topup-list" style="margin-left:40px;">
 									<c:forEach var="topup" items="${planMaps['ADSL'].topups }" varStatus="item">
 										<li>
-											<input type="radio" name="adsl-topup-check" ${item.first?'checked="checked"':''}/> &nbsp; 
+											<input type="radio" name="adsl-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
 											<strong>${topup.topup_name }</strong>
 										</li>
 									</c:forEach>
 								</ul>
 								<hr/>
 								<p class="text-right">
-									<button type="submit" class="btn btn-success">Purchase</button>
+									<a data-id="${planMaps['ADSL'].id}" class="btn btn-success" id="adsl-purchase">Purchase</a>
 								</p>
+								
 							</c:if>
 							<c:if test="${fn:length(planMaps['ADSL'].topups) <= 0 }">
 								<p>
@@ -91,7 +93,7 @@
 							<hr/>
 							<ul class="list-unstyled topup-list" style="margin-left:40px;">
 								<li>
-									<input type="radio" name="vdsl-conn-check" checked="checked" /> &nbsp; 
+									<input type="radio" name="vdsl-conn-check" checked="checked" value="${topup.id }"/> &nbsp; 
 									<strong>
 										Free initial broadband setup includes a standard connection worth $ 
 										<fmt:formatNumber value="${planMaps['VDSL'].plan_new_connection_fee }" type="number" pattern="##00" />
@@ -105,14 +107,14 @@
 								<ul class="list-unstyled topup-list" style="margin-left:40px;">
 									<c:forEach var="topup" items="${planMaps['VDSL'].topups }" varStatus="item">
 										<li>
-											<input type="radio" name="vdsl-topup-check" ${item.first?'checked="checked"':''}/> &nbsp; 
+											<input type="radio" name="vdsl-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
 											<strong>${topup.topup_name }</strong>
 										</li>
 									</c:forEach>
 								</ul>
 								<hr/>
 								<p class="text-right">
-									<button type="submit" class="btn btn-success">Purchase</button>
+									<a data-id="${planMaps['VDSL'].id}" class="btn btn-success" id="vdsl-purchase">Purchase</a>
 								</p>
 							</c:if>
 							<c:if test="${fn:length(planMaps['VDSL'].topups) <= 0 }">
@@ -145,7 +147,7 @@
 								<ul class="list-unstyled topup-list" style="margin-left:40px;">
 									<c:forEach var="topup" items="${planMaps['UFB'].topups }" varStatus="item">
 										<li>
-											<input type="radio" name="ufb-topup-check" ${item.first?'checked="checked"':''}/> &nbsp; 
+											<input type="radio" name="ufb-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
 											<strong>${topup.topup_name }</strong>
 										</li>
 									</c:forEach>
@@ -153,7 +155,7 @@
 								</ul>
 								<hr/>
 								<p class="text-right">
-									<button type="submit" class="btn btn-success">Purchase</button>
+									<a data-id="${planMaps['UFB'].id}" class="btn btn-success" id="ufb-purchase">Purchase</a>
 								</p>
 							</c:if>
 							<c:if test="${fn:length(planMaps['UFB'].topups) <= 0 }">
@@ -204,6 +206,28 @@
 				$('#vdsl-container').hide();
 			}
 		});
+		
+		$('input[name="adsl-topup-check"]').on('ifChecked', function(){
+			var id = $('#adsl-purchase').attr('data-id');
+			var topup_id = this.value;
+			$('#adsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+		});
+		
+		$('input[name="vdsl-topup-check"]').on('ifChecked', function(){
+			var id = $('#vdsl-purchase').attr('data-id');
+			var topup_id = this.value;
+			$('#vdsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+		});
+		
+		$('input[name="ufb-topup-check"]').on('ifChecked', function(){
+			var id = $('#ufb-purchase').attr('data-id');
+			var topup_id = this.value;
+			$('#ufb-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+		});
+		
+		$('#adsl-purchase').attr('href', '${ctx}/order/' + $('#adsl-purchase').attr('data-id') + '/topup/' + $('input[name="adsl-topup-check"]:checked').val());
+		$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('#vdsl-purchase').attr('data-id') + '/topup/' + $('input[name="vdsl-topup-check"]:checked').val());
+		$('#ufb-purchase').attr('href', '${ctx}/order/' + $('#ufb-purchase').attr('data-id') + '/topup/' + $('input[name="ufb-topup-check"]:checked').val());
 
 	})(jQuery);
 </script>

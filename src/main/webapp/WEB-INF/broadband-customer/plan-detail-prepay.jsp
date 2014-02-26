@@ -26,7 +26,7 @@
 					<hr/>
 					<div class="well">
 						The broadband standard in NZ. 
-						Fast internet over your copper 
+						Fast Internet over your copper 
 						phone line.
 					</div>
 					<h4><strong class="text-success">How much data do you need?</strong></h4>
@@ -57,7 +57,8 @@
 					</ul>
 					<hr/>
 					<p class="text-center">
-						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
+						
+						<a class="btn btn-success" id="adsl-purchase" data-id="" data-name="purchase">Purchase</a> 
 					</p>
 				</div>
 			</div>
@@ -99,7 +100,7 @@
 					</ul>
 					<hr/>
 					<p class="text-center">
-						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
+						<a class="btn btn-success" id="vdsl-purchase" data-id="" data-name="purchase">Purchase</a> 
 					</p>
 				</div>
 			</div>
@@ -112,7 +113,7 @@
 					<hr style="margin-top:-2px;"/>
 					<div class="well">
 						The broadband standard in NZ. 
-						Fast internet over your copper 
+						Fast Internet over your copper 
 						phone line.
 					</div>
 					<h4><strong class="text-success">How much data do you need?</strong></h4>
@@ -144,7 +145,7 @@
 					</ul>
 					<hr/>
 					<p class="text-center">
-						<a href="${ctx }/order/4" class="btn btn-success" role="button">Purchase</a> 
+						<a class="btn btn-success" id="ufb-purchase" data-id="" data-name="purchase">Purchase</a> 
 					</p>
 				</div>
 			</div>
@@ -169,17 +170,21 @@
 		$('p[data-name="p-adsl"]').hide();
 		var id = $(this).attr('data-id');
 		$('p[data-id="' + id + '"]').show();
+		
+		$('#adsl-purchase').attr('href', '${ctx}/order/' + id);
 	});
 	
 	$('a[data-name="a-vdsl"]').click(function(){
 			
-			$('a[data-name="a-vdsl"]').removeClass().addClass('btn btn-default');
-			$(this).addClass('btn btn-success active');
-			
-			$('p[data-name="p-vdsl"]').hide();
-			var id = $(this).attr('data-id');
-			$('p[data-id="' + id + '"]').show();
-		});
+		$('a[data-name="a-vdsl"]').removeClass().addClass('btn btn-default');
+		$(this).addClass('btn btn-success active');
+		
+		$('p[data-name="p-vdsl"]').hide();
+		var id = $(this).attr('data-id');
+		$('p[data-id="' + id + '"]').show();
+		
+		$('#vdsl-purchase').attr('href', '${ctx}/order/' + id);
+	});
 		
 	$('a[data-name="a-ufb"]').click(function(){
 		
@@ -189,7 +194,14 @@
 		$('p[data-name="p-ufb"]').hide();
 		var id = $(this).attr('data-id');
 		$('p[data-id="' + id + '"]').show();
+		
+		$('#ufb-purchase').attr('href', '${ctx}/order/' + id);
 	});
+	
+	$('#adsl-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-adsl"][class="btn btn-success active"]').attr('data-id'));
+	$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-vdsl"][class="btn btn-success active"]').attr('data-id'));
+	$('#ufb-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-ufb"][class="btn btn-success active"]').attr('data-id'));
+
 	
 	
 })(jQuery);
