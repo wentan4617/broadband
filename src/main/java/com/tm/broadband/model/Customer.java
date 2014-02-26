@@ -25,30 +25,30 @@ public class Customer implements Serializable {
 	private int id;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
-	private String login_name = "";
+	private String login_name;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class  })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
-	private String password = "";
+	private String password;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
-	private String ck_password = "";
+	private String ck_password;
 
-	private String old_password = "";
-	private String user_name = "";
+	private String old_password;
+	private String user_name;
 
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	private String first_name = "";
+	private String first_name;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	private String last_name = "";
+	private String last_name;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	private String address = "";
+	private String address;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	@Email(groups = { CustomerOrderValidatedMark.class })
-	private String email = "";
-	private String phone = "";
+	private String email;
+	private String phone;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	private String cellphone = "";
-	private String status = "";
+	private String cellphone;
+	private String status;
 	private String invoice_post;
 	private Date register_date;
 	private Date active_date;
@@ -59,7 +59,91 @@ public class Customer implements Serializable {
 
 	// one customer may be get more orders
 	private List<CustomerOrder> customerOrders;
+	private String svlan;
+	private String cvlan;
 	
+	
+	private String id_ck;
+	private String login_name_ck;
+	private String phone_ck;
+	private String cellphone_ck;
+	private String svlan_ck;
+	private String cvlan_ck;
+	private String email_ck;
+	
+	
+
+	public String getId_ck() {
+		return id_ck;
+	}
+
+	public void setId_ck(String id_ck) {
+		this.id_ck = id_ck;
+	}
+
+	public String getLogin_name_ck() {
+		return login_name_ck;
+	}
+
+	public void setLogin_name_ck(String login_name_ck) {
+		this.login_name_ck = login_name_ck;
+	}
+
+	public String getPhone_ck() {
+		return phone_ck;
+	}
+
+	public void setPhone_ck(String phone_ck) {
+		this.phone_ck = phone_ck;
+	}
+
+	public String getCellphone_ck() {
+		return cellphone_ck;
+	}
+
+	public void setCellphone_ck(String cellphone_ck) {
+		this.cellphone_ck = cellphone_ck;
+	}
+
+	public String getSvlan_ck() {
+		return svlan_ck;
+	}
+
+	public void setSvlan_ck(String svlan_ck) {
+		this.svlan_ck = svlan_ck;
+	}
+
+	public String getCvlan_ck() {
+		return cvlan_ck;
+	}
+
+	public void setCvlan_ck(String cvlan_ck) {
+		this.cvlan_ck = cvlan_ck;
+	}
+
+	public String getEmail_ck() {
+		return email_ck;
+	}
+
+	public void setEmail_ck(String email_ck) {
+		this.email_ck = email_ck;
+	}
+
+	public String getSvlan() {
+		return svlan;
+	}
+
+	public void setSvlan(String svlan) {
+		this.svlan = svlan;
+	}
+
+	public String getCvlan() {
+		return cvlan;
+	}
+
+	public void setCvlan(String cvlan) {
+		this.cvlan = cvlan;
+	}
 
 	public Double getBalance() {
 		return balance;
