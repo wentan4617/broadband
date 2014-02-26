@@ -11,7 +11,7 @@
 	</ol>
 	<div class="carousel-inner">
 		<div class="item active">
-			<a href="${ctx }/plans/adsl">
+			<a href="#">
 				<img src="${ctx }/public/bootstrap3/images/slider_adsl.png" class="img-responsive" alt="ADSL">
 			</a>
 			<div class="container">
@@ -19,7 +19,7 @@
 			</div>
 		</div>
 		<div class="item">
-			<a href="${ctx }/plans/vdsl">
+			<a href="#">
 				<img src="${ctx }/public/bootstrap3/images/slider_vdsl.png"  class="img-responsive" alt="VDSL">
 			</a>
 			<div class="container">
@@ -27,7 +27,7 @@
 			</div>
 		</div>
 		<div class="item">
-			<a href="${ctx }/plans/ufb">
+			<a href="#">
 				<img src="${ctx }/public/bootstrap3/images/slider_ufb.png" class="img-responsive" alt="UFB">
 			</a>
 			<div class="container">

@@ -7,11 +7,11 @@
 
 <jsp:include page="header.jsp" />
 
-<div style="background:#EFEFEF;padding-bottom:20px;">
+
 <div class="container">
 	<div class="page-header">
 		<h1>
-			Customer Information <small>Please fill in your basic information, we will contact you</small>
+			Customer Information <small>Please fill in your personal information, we will contact you</small>
 		</h1>
 	</div>
 	
@@ -50,7 +50,7 @@
 					</p>
 				</div>
 				<hr/>
-				<h4>Necessary Information</h4>
+				<h4>Personal Information</h4>
 				<hr/>
 				<div class="form-group">
 					<label for="first_name" class="control-label col-md-3">First name</label>
@@ -101,7 +101,7 @@
 				<hr/>
 				<div class="form-group">
 					<div class="col-md-3 col-md-offset-3">
-						<a href="${ctx }/plans/${fn:toLowerCase(orderPlan.plan_type)}" class="btn btn-success">Back to choose plans</a>&nbsp;
+						<a href="${ctx }/plans/${fn:toLowerCase(orderPlan.plan_group=='plan-topup'?'t':'p')}" class="btn btn-success">Back to choose plans</a>&nbsp;
 						<button type="submit" class="btn btn-success">Continue</button>
 					</div>
 				</div>
@@ -124,7 +124,7 @@
   		</div>
 	</div>
 </div>
-</div>
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

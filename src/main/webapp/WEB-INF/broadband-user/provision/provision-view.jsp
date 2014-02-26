@@ -14,8 +14,6 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">Register Customer View</div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					
-
 					<form id="provisionForm" action="${ctx }/broadband-user/provision/customer/order/status" method="post">
 						<input type="hidden" id="process_way" name="process_way" />
 						
@@ -24,7 +22,7 @@
 						  		<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
 							    	Operate <span class="caret"></span>
 							  	</button>
-							  	<ul class="dropdown-menu" role="menu">
+							  	<ul class="dropdown-menu" data-role="menu">
 							    	<li><a href="javascript:void(0);" id="activeRegisterCusomter">Active Register Customer (Customer Status: <span class="text-danger">verify to active</span>; Order Status: <span class="text-danger">pending to payment</span>)</a></li>
 							  	</ul>
 							</div>

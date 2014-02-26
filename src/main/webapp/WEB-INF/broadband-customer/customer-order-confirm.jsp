@@ -1,11 +1,13 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
+
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
 
-<div style="background:#EFEFEF;padding-bottom:20px;">
+
 <div class="container">
 	<div class="page-header">
 		<h1>
@@ -18,7 +20,7 @@
 			
 			<form class="form-horizontal" action="${ctx }/order/submit" method="post">
 				<div class="row">
-					<div class="col-md-10"><h4>Your Basic Information</h4></div>
+					<div class="col-md-10"><h4>Your Personal Information</h4></div>
 					<div class="col-md-2">
 						<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success ">Back to edit</a>
 					</div>
@@ -87,7 +89,13 @@
 			    		<p class="text-danger">
 			    			Currently, our pre-paid products and services, all pre-paid fees charged for three months, thank you for your cooperation.
 			    		</p>
-			    		<p>&nbsp;</p>
+			    		<p class="text-success">
+			    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
+							<strong>
+								Free initial broadband setup includes a standard connection worth $ 
+								<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##00" />
+							</strong>
+						</p>
 				    	<div class="row">
 				    		<div class="col-md-4">
 				    			<h4>${orderPlan.plan_name }</h4>
@@ -96,7 +104,7 @@
 				    			<h4>$  <strong class="text-success"> ${orderPlan.plan_price} </strong> * 3 months</h4>
 				    		</div>
 				    		<div class="col-md-3">
-				    			<h4>Total Amount: $ <strong class="text-success"> ${orderPlan.plan_price * 3} </strong> </h4>
+				    			<h4>Total Amount: $ <strong class="text-success"> ${orderPlan.plan_price * 3 + orderPlan.plan_new_connection_fee} </strong> </h4>
 				    		</div>
 				    		<div class="col-md-2">
 								<button type="submit" class="btn btn-success">Payment</button>
@@ -108,7 +116,7 @@
 		</div>
 	</div>
 </div>
-</div>
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

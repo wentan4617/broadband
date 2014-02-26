@@ -24,6 +24,8 @@ public interface PlanMapper {
 	List<Plan> selectPlans();
 	
 	List<Plan> selectPlansBySome(Plan plan);
+	
+	List<Plan> selectPlansWithTopups(Plan plan);
 
 	Plan selectPlanById(int id);
 

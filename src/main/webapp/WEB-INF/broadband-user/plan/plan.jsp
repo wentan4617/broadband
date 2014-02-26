@@ -27,16 +27,20 @@
 							<label for="plan_group" class="control-label col-md-4">Plan Group</label>
 							<div class="col-md-3">
 								<form:select path="plan_group" class="form-control">
-									<form:option value="plan-topup">PLAN TOPUP</form:option>
 									<form:option value="plan-prepay">PLAN PREPAY</form:option>
+									<form:option value="plan-topup">PLAN TOPUP</form:option>
 								</form:select>
 							</div>
+							<p class="help-block">
+								<span class="text-danger">When choose <strong>'PLAN TOPUP'</strong>, it will display top-up list.</span>
+							</p>
 						</div>
 						
 						
 						<!-- include topup-list.jsp -->
-						<jsp:include page="topup-list.jsp"/>
-						
+						<div id="topupContainer" style="display: ${plan.plan_group == 'plan-topup' ? 'block;' : 'none;'}">
+							<jsp:include page="topup-list.jsp"/>
+						</div>
 						
 						
 						<div class="form-group">
@@ -134,6 +138,16 @@
 <script type="text/javascript">
 (function($){
 	$('.selectpicker').selectpicker();
+	
+	$('#plan_group').change(function(){
+		//alert(this.value);
+		var val = this.value;
+		if (val === 'plan-topup') {
+			$('#topupContainer').show('fast');
+		} else if (val === 'plan-prepay') {
+			$('#topupContainer').hide('fast');
+		}
+	});
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />

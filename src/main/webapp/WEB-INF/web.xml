@@ -89,6 +89,7 @@
 	<filter-mapping>
 		<filter-name>CustomerSessionFilter</filter-name>
 		<url-pattern>/customer/home</url-pattern>
+		<url-pattern>/customer/data</url-pattern>
 		<url-pattern>/customer/details/*</url-pattern> 
 		<url-pattern>/customer/payment/*</url-pattern>
 		<url-pattern>/customer/billing/*</url-pattern>

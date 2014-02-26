@@ -55,9 +55,19 @@ public class Customer implements Serializable {
 	
 	private String register_date_str;
 	private String active_date_str;
+	private Double balance;
 
 	// one customer may be get more orders
 	private List<CustomerOrder> customerOrders;
+	
+
+	public Double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(Double balance) {
+		this.balance = balance;
+	}
 
 	public String getActive_date_str() {
 		active_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getActive_date());

@@ -23,4 +23,6 @@ public interface CustomerOrderMapper {
 	void updateCustomerOrderStatusById(int id, String status);
 	
 	int selectCustomerOrderIdByCId(int customer_id);
+	
+	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
 }
