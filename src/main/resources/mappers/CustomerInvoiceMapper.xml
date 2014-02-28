@@ -7,13 +7,57 @@
 	<!-- 
 		
 	-->
-	<insert id="insertCustomerInvoice" parameterType="CustomerInvoice">
+	<insert id="insertCustomerInvoice" parameterType="CustomerInvoice" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_invoice`(
-			`invoice_serial`, `customer_id`, `order_id`, `create_date`, 
-			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`) 
+			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
+			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`) 
 		VALUES (
-			#{invoice_serial},#{customer.id},#{order.id},#{create_date},
-			#{amount_payable},#{amount_paid},#{balance},#{status},#{memo})
+			#{invoice_serial},#{customer.id},#{order.id},now(),#{due_date},
+			#{amount_payable},#{amount_paid},#{balance},#{status},#{memo},#{invoice_pdf_path})
 	</insert>
+	
+	<update id="updateCustomerInvoice" parameterType="CustomerInvoice">
+		UPDATE `tm_customer_invoice`
+		<set>
+			<if test="invoice_serial != null">`invoice_serial`=#{invoice_serial},</if>
+			<if test="customer_id != null">`customer_id`=#{customer_id},</if>
+			<if test="order_id != null">`order_id`=#{order_id},</if>
+			<if test="create_date != null">`create_date`=#{create_date},</if>
+			<if test="due_date != null">`due_date`=#{due_date},</if>
+			<if test="amount_payable != null">`amount_payable`=#{amount_payable},</if>
+			<if test="amount_paid != null">`amount_paid`=#{amount_paid},</if>
+			<if test="balance != null">`balance`=#{balance},</if>
+			<if test="status != null">`balance`=#{balance},</if>
+			<if test="memo != null">`balance`=#{balance},</if>
+			<if test="invoice_pdf_path != null">`balance`=#{balance}</if>
+		</set>
+		<where>
+			<if test="id != null">
+				id=#{id}
+			</if>
+		</where>
+	</update>
+	
+	<!-- select customer invoice page -->
+	<select id="selectCustomerInvoicesByPage" parameterType="Page" resultType="CustomerInvoice">
+		select * from tm_customer_invoice 
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select customer invoice amount -->
+	<select id="selectCustomerInvoicesSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_invoice 
+	</select>
+	
+	<!-- select customer invoice page by id -->
+	<select id="selectCustomerInvoicesPageById" parameterType="Page" resultType="CustomerInvoice">
+		select * from tm_customer_invoice where customer_id = ${params.customerId}
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select customer invoice amount by id -->
+	<select id="selectCustomerInvoicesSumById" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_invoice where customer_id = ${params.customerId}
+	</select>
 	
 </mapper>

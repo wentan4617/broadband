@@ -22,6 +22,33 @@
 		update tm_customer_order set order_status = #{1} where id = #{0}
 	</update>
 	
+	<!-- update customer order status, when customer first register. -->
+	<update id="updateCustomerOrderByOrderId" parameterType="CustomerOrder">
+		update tm_customer_order set order_status = #{order_status}, svlan = #{svlan},
+		 cvlan = #{cvlan}, order_using_start = #{order_using_start}, order_status = #{order_status} where id = #{id}
+	</update>
+	
+	<!-- update customer order status, when customer first register. -->
+	<update id="updateCustomerOrder" parameterType="CustomerOrder">
+		update tm_customer_order 
+		<set>
+			<if test="order_serial != null">order_serial = #{order_serial},</if>
+			<if test="customer != null and customer.id != null">customer.id = #{customer.id},</if>
+			<if test="order_total_price != null">order_total_price = #{order_total_price},</if>
+			<if test="order_create_date != null">order_create_date = #{order_create_date},</if>
+			<if test="order_status != null">order_status = #{order_status},</if>
+			<if test="order_using_start != null">order_using_start = #{order_using_start},</if>
+			<if test="next_invoice_create_date != null">next_invoice_create_date = #{next_invoice_create_date},</if>
+			<if test="order_type != null">order_type = #{order_type},</if>
+			<if test="order_broadband_type != null">order_broadband_type = #{order_broadband_type},</if>
+			<if test="svlan != null">svlan = #{svlan},</if>
+			<if test="cvlan != null">cvlan = #{cvlan}</if>
+		</set>
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+	</update>
+	
 	<!-- 
 		select customer order id, by customer id 
 		only select order status is pending, top 1
@@ -43,7 +70,7 @@
 			cod.`detail_plan_type` as cod_detail_plan_type, cod.`detail_plan_sort` as cod_detail_plan_sort, 
 			cod.`detail_plan_group` as cod_detail_plan_group, cod.`detail_plan_new_connection_fee` as cod_detail_plan_new_connection_fee, 
 			cod.`detail_topup_data_flow` as cod_detail_topup_data_flow, cod.`detail_topup_fee` as cod_detail_topup_fee,
-			cod.`detail_plan_memo` as cod_detail_plan_memo 
+			cod.`detail_plan_memo` as cod_detail_plan_memo, cod.`detail_unit` as cod_detail_unit
 		from tm_customer_order as co
 		left join tm_customer_order_detail as cod on cod.order_id = co.id
 		where co.customer_id = #{0}
@@ -71,6 +98,7 @@
 			<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow"/>
 			<result property="detail_topup_fee" column="cod_cod_detail_topup_fee"/>
 			<result property="detail_plan_memo" column="cod_detail_plan_memo"/>
+			<result property="detail_unit" column="cod_detail_unit"/>
 		</collection>
 	</resultMap>
 	

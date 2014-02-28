@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.ProvisionLog;
 
 /**
  * mapping tm_customer_invoice
@@ -16,6 +14,15 @@ import com.tm.broadband.model.ProvisionLog;
 public interface CustomerInvoiceMapper {
 
 	void insertCustomerInvoice(CustomerInvoice customerInvoice);
+	
+	List<CustomerInvoice> selectCustomerInvoicesByPage(Page<CustomerInvoice> page);
+	
+	int selectCustomerInvoicesSum(Page<CustomerInvoice> page);
+	
+	List<CustomerInvoice> selectCustomerInvoicesPageById(Page<CustomerInvoice> page);
+	
+	int selectCustomerInvoicesSumById(Page<CustomerInvoice> page);
 
+	void updateCustomerInvoice(CustomerInvoice customerInvoice);
 	
 }

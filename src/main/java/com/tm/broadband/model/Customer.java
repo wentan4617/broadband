@@ -22,7 +22,7 @@ public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private Integer id;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
 	private String login_name;
@@ -206,11 +206,11 @@ public class Customer implements Serializable {
 		this.invoice_post = invoice_post;
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

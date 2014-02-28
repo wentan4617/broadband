@@ -11,6 +11,7 @@ public class CustomerOrder implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private int id;
+
 	private String order_serial;
 	private Customer customer;
 

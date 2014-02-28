@@ -3,8 +3,6 @@ package com.tm.broadband.mapper;
 import java.util.List;
 
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 
 /**
  * mapping tm_customer_order
@@ -25,4 +23,6 @@ public interface CustomerOrderMapper {
 	int selectCustomerOrderIdByCId(int customer_id);
 	
 	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
+	
+	void updateCustomerOrder(CustomerOrder customerOrder);
 }
