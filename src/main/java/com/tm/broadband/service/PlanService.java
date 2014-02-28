@@ -121,8 +121,9 @@ public class PlanService {
 
 	@Transactional
 	public Page<Plan> queryPlansByPage(Page<Plan> page) {
-		page.setTotalRecord(this.planMapper.selectPlansSum(page));
+		//page.setTotalRecord(this.planMapper.selectPlansSum(page));
 		page.setResults(this.planMapper.selectPlansByPage(page));
+	
 		return page;
 	}
 

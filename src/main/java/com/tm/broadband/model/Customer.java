@@ -22,17 +22,19 @@ public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private Integer id;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
+	
 	private String login_name;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class  })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
+	
 	private String password;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
+	
 	private String ck_password;
-
 	private String old_password;
 	private String user_name;
 
@@ -61,6 +63,7 @@ public class Customer implements Serializable {
 	private List<CustomerOrder> customerOrders;
 	private String svlan;
 	private String cvlan;
+	private String order_broadband_type;
 	
 	
 	private String id_ck;
@@ -72,6 +75,22 @@ public class Customer implements Serializable {
 	private String email_ck;
 	
 	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getOrder_broadband_type() {
+		return order_broadband_type;
+	}
+
+	public void setOrder_broadband_type(String order_broadband_type) {
+		this.order_broadband_type = order_broadband_type;
+	}
 
 	public String getId_ck() {
 		return id_ck;
@@ -206,14 +225,7 @@ public class Customer implements Serializable {
 		this.invoice_post = invoice_post;
 	}
 
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
+	
 	public String getLogin_name() {
 		return login_name;
 	}

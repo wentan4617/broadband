@@ -73,6 +73,8 @@ public class Page<T> {
 
 	public void setResults(List<T> results) {
 		this.results = results;
+		if (this.results != null)
+			this.setTotalRecord(this.results.size());
 	}
 
 	public Map<String, Object> getParams() {

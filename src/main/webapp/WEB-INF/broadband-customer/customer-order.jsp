@@ -7,6 +7,11 @@
 
 <jsp:include page="header.jsp" />
 
+<style>
+.topup-list li {
+	padding: 10px 20px;
+}
+</style>
 
 <div class="container">
 	<div class="page-header">
@@ -48,6 +53,31 @@
 					<p class="help-block">
 						<form:errors path="ck_password" cssErrorClass="error"/>
 					</p>
+				</div>
+				<hr/>
+				<h4>Broadband Options</h4>
+				<hr/>
+				<div class="form-group">
+					<label for="" class="control-label col-md-3">Broadband Type</label>
+					<div class="col-md-3">
+						<ul class="list-unstyled topup-list" >
+							<li>
+								<form:radiobutton path="order_broadband_type" value="new-connection" /> &nbsp;
+								<strong>New Connection Only</strong>
+							</li>
+							<li>
+								<form:radiobutton path="order_broadband_type" value="transition" /> &nbsp;
+								<strong>Transition</strong>
+							</li>
+						</ul>
+					</div>
+					<div class="col-md-6">
+						<div class="well">
+							<p>If you choose a new connection</p>
+							<p> we will charge you $ 99 broadband opening costs</p>
+						</div>
+					</div>
+					
 				</div>
 				<hr/>
 				<h4>Personal Information</h4>
@@ -129,4 +159,15 @@
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript"
+	src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
+<script type="text/javascript">
+(function($) {
+
+	$(':radio').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
+})(jQuery);
+</script>
 <jsp:include page="footer-end.jsp" />

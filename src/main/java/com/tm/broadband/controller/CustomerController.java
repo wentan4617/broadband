@@ -54,7 +54,10 @@ public class CustomerController {
 	@RequestMapping("/home")
 	public String home(Model model) {
 
-		model.addAttribute("customer", new Customer());
+		Customer customer = new Customer();
+		customer.setOrder_broadband_type("new-connection");
+		model.addAttribute("customer", customer);
+		
 		return "broadband-customer/home";
 	}
 
@@ -89,7 +92,7 @@ public class CustomerController {
 		} else if ("p".equals(group)) {
 			
 			Plan plan = new Plan();
-			plan.setPlan_group("plan-prepay");
+			plan.setPlan_group("plan-no-term");
 			plan.setPlan_status("selling");
 			plan.setPlan_sort("naked");
 			plan.getParams().put("orderby", "order by data_flow");
@@ -113,7 +116,7 @@ public class CustomerController {
 			
 			model.addAttribute("planMaps", planMaps);
 			
-			url = "broadband-customer/plan-detail-prepay";
+			url = "broadband-customer/plan-detail-no-term";
 		}
 
 		return url;
@@ -134,14 +137,14 @@ public class CustomerController {
 		return "broadband-customer/customer-order";
 	}
 	
-	@RequestMapping("/order/{id}/topup/{tid}")
+	@RequestMapping("/order/{id}/topup/{amount}")
 	public String orderPlanTopup(Model model, 
 			@PathVariable("id") int id,
-			@PathVariable("tid") int tid) {
+			@PathVariable("amount") int amount) {
 
 		Plan plan = this.planService.queryPlanById(id);
-		Topup topup = this.planService.queryTopupById(tid);
-		plan.setTopup(topup);
+		//Topup topup = this.planService.queryTopupById(tid);
+		//plan.setTopup_amount(topup_amount);
 		model.addAttribute("orderPlan", plan);
 
 		Customer customer = (Customer) model.asMap().get("customer");
@@ -223,30 +226,23 @@ public class CustomerController {
 			customer.setUser_name(customer.getLogin_name());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean
-					.getAmountSettlement()));
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
 			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean
-					.getCardHolderName());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
 			customerTransaction.setCard_name(responseBean.getCardName());
 			customerTransaction.setCard_number(responseBean.getCardNumber());
 			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean
-					.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double
-					.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
 			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
 			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean
-					.getMerchantReference());
-			customerTransaction
-					.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
 			customerTransaction.setSuccess(responseBean.getSuccess());
 			customerTransaction.setTxnMac(responseBean.getTxnMac());
 			customerTransaction.setTransaction_type(responseBean.getTxnType());
 
-			this.crmService.registerCustomer(customer, plan,
-					customerTransaction);
+			this.crmService.registerCustomer(customer, plan, customerTransaction);
 		} else {
 
 		}

@@ -21,9 +21,9 @@
 	</select>
 	
 	<!-- select plan amount -->
-	<select id="selectPlansSum" parameterType="Page" resultType="int">
+	<!-- <select id="selectPlansSum" parameterType="Page" resultType="int">
 		select count(*) from tm_plan 
-	</select>
+	</select> -->
 	
 	<!-- when create plan, check same name -->
 	<select id="selectExistPlanByName" resultType="int">

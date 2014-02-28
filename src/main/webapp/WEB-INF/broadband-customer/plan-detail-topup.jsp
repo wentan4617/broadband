@@ -29,17 +29,17 @@
 					<div class="row">
 						<div class="col-md-4">
 							<a href="javascript:void(0);" class="thumbnail active" data-name="icon" data-id="adsl"> 
-								<img src="${ctx }/public/bootstrap3/images/icon-adsl.gif" alt="...">
+								<img src="${ctx }/public/bootstrap3/images/icon-adsl.png" alt="...">
 							</a>
 						</div>
 						<div class="col-md-4">
 							<a href="javascript:void(0);" class="thumbnail" data-name="icon" data-id="vdsl"> 
-							 	<img src="${ctx }/public/bootstrap3/images/icon-vdsl.gif" alt="...">
+							 	<img src="${ctx }/public/bootstrap3/images/icon-vdsl.png" alt="...">
 							</a>
 						</div>
 						<div class="col-md-4">
 							<a href="javascript:void(0);" class="thumbnail" data-name="icon" data-id="ufb"> 
-								<img src="${ctx }/public/bootstrap3/images/icon-ufb.gif" alt="...">
+								<img src="${ctx }/public/bootstrap3/images/icon-ufb.png" alt="...">
 							</a>
 						</div>
 					</div>
@@ -50,39 +50,49 @@
 							<h2>Standard Broadband</h2>
 							<p>Fast reliable broadband available throughout New Zealand.</p>
 							<hr/>
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="adsl-conn-check" checked="checked" /> &nbsp; 
-									<strong>
-										Free initial broadband setup includes a standard connection worth $ 
-										<fmt:formatNumber value="${planMaps['ADSL'].plan_new_connection_fee }" type="number" pattern="##00" />
-									</strong>
-								</li>
-							</ul>
+							<div class="well">
+								<strong>
+									Free initial broadband setup includes a standard connection worth $ 
+									<fmt:formatNumber value="${planMaps['ADSL'].plan_new_connection_fee }" type="number" pattern="##00" />
+								</strong>
+							</div>
 							<hr/>
 							<h4>Please choose top-up amount what you needed</h4>
 							<hr/>
-							<c:if test="${fn:length(planMaps['ADSL'].topups) > 0 }">
-								
-								<ul class="list-unstyled topup-list" style="margin-left:40px;">
-									<c:forEach var="topup" items="${planMaps['ADSL'].topups }" varStatus="item">
-										<li>
-											<input type="radio" name="adsl-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
-											<strong>${topup.topup_name }</strong>
-										</li>
-									</c:forEach>
-								</ul>
-								<hr/>
-								<p class="text-right">
-									<a data-id="${planMaps['ADSL'].id}" class="btn btn-success" id="adsl-purchase">Purchase</a>
-								</p>
-								
-							</c:if>
-							<c:if test="${fn:length(planMaps['ADSL'].topups) <= 0 }">
-								<p>
-									There are no top-up options.
-								</p>
-							</c:if>
+							<ul class="list-unstyled topup-list" style="margin-left:40px;">
+								<li>
+									<input type="radio" name="adsl-topup-check" checked="checked" value="30"/> &nbsp; 
+									<strong>Top up $ 30</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="50"/> &nbsp; 
+									<strong>Top up $ 50</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="80"/> &nbsp; 
+									<strong>Top up $ 80</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="100"/> &nbsp; 
+									<strong>Top up $ 100</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="120"/> &nbsp; 
+									<strong>Top up $ 120</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="150"/> &nbsp; 
+									<strong>Top up $ 150</strong>
+								</li>
+								<li>
+									<input type="radio" name="adsl-topup-check" value="180"/> &nbsp; 
+									<strong>Top up $ 180</strong>
+								</li>
+							</ul>
+							<hr/>
+							<p class="text-right">
+								<a data-id="${planMaps['ADSL'].id}" class="btn btn-success" id="adsl-purchase">Purchase</a>
+							</p>
 							
 						</div>
 						
@@ -91,37 +101,51 @@
 							<h2>VDSL Broadband</h2>
 							<p>Enjoy broadband that's 3x faster than standard broadband.</p>
 							<hr/>
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="vdsl-conn-check" checked="checked" value="${topup.id }"/> &nbsp; 
-									<strong>
-										Free initial broadband setup includes a standard connection worth $ 
-										<fmt:formatNumber value="${planMaps['VDSL'].plan_new_connection_fee }" type="number" pattern="##00" />
-									</strong>
-								</li>
-							</ul>
+							<div class="well">
+								<strong>
+									Free initial broadband setup includes a standard connection worth $ 
+									<fmt:formatNumber value="${planMaps['VDSL'].plan_new_connection_fee }" type="number" pattern="##00" />
+								</strong>
+							</div>
+							
 							<hr/>
 							<h4>Please choose top-up amount what you needed</h4>
 							<hr/>
-							<c:if test="${fn:length(planMaps['VDSL'].topups) > 0 }">
-								<ul class="list-unstyled topup-list" style="margin-left:40px;">
-									<c:forEach var="topup" items="${planMaps['VDSL'].topups }" varStatus="item">
-										<li>
-											<input type="radio" name="vdsl-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
-											<strong>${topup.topup_name }</strong>
-										</li>
-									</c:forEach>
-								</ul>
-								<hr/>
-								<p class="text-right">
-									<a data-id="${planMaps['VDSL'].id}" class="btn btn-success" id="vdsl-purchase">Purchase</a>
-								</p>
-							</c:if>
-							<c:if test="${fn:length(planMaps['VDSL'].topups) <= 0 }">
-								<p>
-									There are no top-up options.
-								</p>
-							</c:if>
+							
+							<ul class="list-unstyled topup-list" style="margin-left:40px;">
+								<li>
+									<input type="radio" name="vdsl-topup-check" checked="checked" value="30"/> &nbsp; 
+									<strong>Top up $ 30</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="50"/> &nbsp; 
+									<strong>Top up $ 50</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="80"/> &nbsp; 
+									<strong>Top up $ 80</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="100"/> &nbsp; 
+									<strong>Top up $ 100</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="120"/> &nbsp; 
+									<strong>Top up $ 120</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="150"/> &nbsp; 
+									<strong>Top up $ 150</strong>
+								</li>
+								<li>
+									<input type="radio" name="vdsl-topup-check" value="180"/> &nbsp; 
+									<strong>Top up $ 180</strong>
+								</li>
+							</ul>
+							<hr/>
+							<p class="text-right">
+								<a data-id="${planMaps['VDSL'].id}" class="btn btn-success" id="vdsl-purchase">Purchase</a>
+							</p>
 							
 						</div>
 						
@@ -131,38 +155,51 @@
 							<h2>Ultra Fast Broadband</h2>
 							<p>Ultra Fast Broadband is available in parts of New Zealand.</p>
 							<hr/>
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="ufb-conn-check" checked="checked" /> &nbsp; 
-									<strong>
-										Free initial broadband setup includes a standard connection worth $ 
-										<fmt:formatNumber value="${planMaps['UFB'].plan_new_connection_fee }" type="number" pattern="##00" />
-									</strong>
-								</li>
-							</ul>
+							<div class="well">
+								<strong>
+									Free initial broadband setup includes a standard connection worth $ 
+									<fmt:formatNumber value="${planMaps['UFB'].plan_new_connection_fee }" type="number" pattern="##00" />
+								</strong>
+							</div>
 							<hr/>
 							<h4>Please choose top-up amount what you needed</h4>
 							<hr/>
-							<c:if test="${fn:length(planMaps['UFB'].topups) > 0 }">
-								<ul class="list-unstyled topup-list" style="margin-left:40px;">
-									<c:forEach var="topup" items="${planMaps['UFB'].topups }" varStatus="item">
-										<li>
-											<input type="radio" name="ufb-topup-check" ${item.first?'checked="checked"':''} value="${topup.id }"/> &nbsp; 
-											<strong>${topup.topup_name }</strong>
-										</li>
-									</c:forEach>
-									
-								</ul>
-								<hr/>
-								<p class="text-right">
-									<a data-id="${planMaps['UFB'].id}" class="btn btn-success" id="ufb-purchase">Purchase</a>
-								</p>
-							</c:if>
-							<c:if test="${fn:length(planMaps['UFB'].topups) <= 0 }">
-								<p>
-									There are no top-up options.
-								</p>
-							</c:if>
+							
+							<ul class="list-unstyled topup-list" style="margin-left:40px;">
+								<li>
+									<input type="radio" name="ufb-topup-check" checked="checked" value="30"/> &nbsp; 
+									<strong>Top up $ 30</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="50"/> &nbsp; 
+									<strong>Top up $ 50</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="80"/> &nbsp; 
+									<strong>Top up $ 80</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="100"/> &nbsp; 
+									<strong>Top up $ 100</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="120"/> &nbsp; 
+									<strong>Top up $ 120</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="150"/> &nbsp; 
+									<strong>Top up $ 150</strong>
+								</li>
+								<li>
+									<input type="radio" name="ufb-topup-check" value="180"/> &nbsp; 
+									<strong>Top up $ 180</strong>
+								</li>
+							</ul>
+							<hr/>
+							<p class="text-right">
+								<a data-id="${planMaps['UFB'].id}" class="btn btn-success" id="ufb-purchase">Purchase</a>
+							</p>
+							
 							
 						</div>
 					</div>

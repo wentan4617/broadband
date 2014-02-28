@@ -64,5 +64,10 @@ public class ProvisionService {
 			
 		}		
 	}
+	
+	
+	/*public int queryPaidCustomersCount() {
+		return 
+	}*/
 
 }

@@ -7,9 +7,11 @@
 	<!-- create customer order -->
 	<insert id="createCustomerOrder" parameterType="CustomerOrder" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_order`(
-			`order_serial`, `customer_id`, `order_total_price`, `order_create_date`, `order_status`) 
+			`order_serial`, `customer_id`, `order_total_price`, `order_create_date`, `order_status`,
+			`order_type`, `order_broadband_type`) 
 		VALUES (
-			#{order_serial}, #{customer.id}, #{order_total_price}, now(), #{order_status})
+			#{order_serial}, #{customer.id}, #{order_total_price}, now(), #{order_status},
+			#{order_type}, #{order_broadband_type})
 	</insert>
 	
 	<!-- update customer order status, when customer first register. -->

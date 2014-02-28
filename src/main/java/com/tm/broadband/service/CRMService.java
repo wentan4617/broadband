@@ -91,6 +91,8 @@ public class CRMService {
 		customerOrder.setCustomer(customer);
 		customerOrder.setOrder_total_price(plan.getPlan_price() * 3);
 		customerOrder.setOrder_status("paid");
+		customerOrder.setOrder_type(plan.getPlan_group().replace("plan", "order"));
+		customerOrder.setOrder_broadband_type(customer.getOrder_broadband_type());
 		
 		this.customerOrderMapper.createCustomerOrder(customerOrder);
 		System.out.println("customer order id: " + customerOrder.getId());
@@ -104,6 +106,9 @@ public class CRMService {
 		customerOrderDetail.setDetail_plan_status(plan.getPlan_status());
 		customerOrderDetail.setDetail_plan_type(plan.getPlan_type());
 		customerOrderDetail.setDetail_plan_sort(plan.getPlan_sort());
+		customerOrderDetail.setDetail_plan_group(plan.getPlan_group());
+		customerOrderDetail.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
+		
 		customerOrderDetail.setDetail_plan_memo(plan.getMemo());
 		
 		this.customerOrderDetailMapper.createCustomerOrderDetail(customerOrderDetail);

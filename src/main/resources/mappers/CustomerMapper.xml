@@ -9,11 +9,11 @@
 		INSERT INTO `tm_customer`(
 			`login_name`, `password`, `user_name`, 
 			`first_name`, `last_name`, `address`, `email`, `phone`, `cellphone`, 
-			`status`, `register_date`) 
+			`status`, `register_date`, `active_date`, `balance`) 
 		VALUES (
 			#{login_name}, #{password}, #{user_name}, 
 			#{first_name}, #{last_name}, #{address}, #{email}, #{phone}, #{cellphone},
-			#{status}, now())
+			#{status}, now(), now(), #{balance})
 	</insert>
 	
 	<!-- when customer register or administrator create customer, check whether exist same login name -->
@@ -119,16 +119,25 @@
 			<if test="params.cvlan != null">
 				or co.cvlan = '${params.cvlan}'
 			</if>
+			<if test="params.co_status != null">
+				co.status = '${params.co_status}'
+			</if>
 		</where>
 		${params.orderby} limit #{pageOffset}, #{pageSize}
 	</select>
 	
 	<!-- select customer amount -->
 	<select id="selectCustomersSum" parameterType="Page" resultType="int">
-		select count(*) from tm_customer where 1 = 1
-		<if test="params.status != null">
-			and status = '${params.status}'
-		</if>
+		select * from tm_customer as c
+		left join tm_customer_order as co on co.customer_id = c.id
+		<where>
+			<if test="params.status != null">
+				and c.status = '${params.status}'
+			</if>
+			<if test="params.co_status != null">
+				
+			</if>
+		</where>
 	</select>
 	
 	<!-- update customer status -->

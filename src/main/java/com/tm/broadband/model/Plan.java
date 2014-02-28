@@ -43,9 +43,18 @@ public class Plan implements Serializable {
 	private Topup topup;
 	private String[] topupArray;
 	private Map<String, Object> params = new HashMap<String, Object>();//
+	private Double topup_amount;
 
 	public Plan() {
 
+	}
+
+	public Double getTopup_amount() {
+		return topup_amount;
+	}
+
+	public void setTopup_amount(Double topup_amount) {
+		this.topup_amount = topup_amount;
 	}
 
 	public Topup getTopup() {
