@@ -15,8 +15,6 @@ public class CustomerInvoice implements Serializable {
 
 	private Integer id;
 
-	private Integer id_where;
-
 	private String invoice_serial;
 	private Customer customer;
 	private CustomerOrder order;
