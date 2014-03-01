@@ -14,8 +14,11 @@ public class CustomerInvoice implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
+
+	private Integer id_where;
+
 	private String invoice_serial;
-	private Customer cusomter;
+	private Customer customer;
 	private CustomerOrder order;
 	private Date create_date;
 	private Date due_date;
@@ -24,6 +27,7 @@ public class CustomerInvoice implements Serializable {
 	private Double balance;
 	private String status;
 	private String memo;
+	private String invoice_pdf_path;
 
 	public CustomerInvoice() {
 	}
@@ -46,12 +50,12 @@ public class CustomerInvoice implements Serializable {
 		this.invoice_serial = invoice_serial;
 	}
 
-	public Customer getCusomter() {
-		return cusomter;
+	public Customer getCustomer() {
+		return customer;
 	}
 
-	public void setCusomter(Customer cusomter) {
-		this.cusomter = cusomter;
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
 	}
 
 	public CustomerOrder getOrder() {
@@ -120,6 +124,14 @@ public class CustomerInvoice implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getInvoice_pdf_path() {
+		return invoice_pdf_path;
+	}
+
+	public void setInvoice_pdf_path(String invoice_pdf_path) {
+		this.invoice_pdf_path = invoice_pdf_path;
 	}
 
 }

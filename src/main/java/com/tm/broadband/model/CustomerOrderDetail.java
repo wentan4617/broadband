@@ -6,7 +6,7 @@ public class CustomerOrderDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	private Integer id;
 	private CustomerOrder customerOrder;
 	private String detail_plan_name;
 	private String detail_plan_desc;
@@ -20,16 +20,17 @@ public class CustomerOrderDetail implements Serializable {
 	private Long detail_topup_data_flow;
 	private Double detail_topup_fee;
 	private String detail_plan_memo;
+	private Integer detail_unit;
 
 	public CustomerOrderDetail() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -140,6 +141,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Integer getDetail_unit() {
+		return detail_unit;
+	}
+
+	public void setDetail_unit(Integer detail_unit) {
+		this.detail_unit = detail_unit;
 	}
 
 }

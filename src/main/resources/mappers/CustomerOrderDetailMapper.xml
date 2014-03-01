@@ -16,4 +16,5 @@
 			#{detail_plan_memo})
 	</insert>
 	
+	
 </mapper>

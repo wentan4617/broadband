@@ -48,8 +48,10 @@ public class PDFCreator {
 	private Font tahoma_normal_10;
 	private Font tahoma_bold_10;
 	private Font tahoma_bold_white_10;
+	private BaseColor titleBGColor = new BaseColor(92,184,92);
+	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
-	private final String PATH="pdf"+File.separator;
+	private final String PATH = "pdf/";
 	
 	public PDFCreator(){
 		try {
@@ -162,7 +164,7 @@ public class PDFCreator {
         PdfPCell transactionTitleCell = newCell("Recent transactions", tahoma_bold_white_10, 0);
         transactionTitleCell.setPaddingBottom(4);
         transactionTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        transactionTitleCell.setBackgroundColor(new BaseColor(8,55,58));
+        transactionTitleCell.setBackgroundColor(titleBGColor);
         transactionTitleCell.setColspan(4);
         transactionTable.addCell(transactionTitleCell);
         
@@ -224,7 +226,7 @@ public class PDFCreator {
         PdfPCell invoiceSummaryTitleCell = newCell("This Invoice Summary", tahoma_bold_white_10, 0);
         invoiceSummaryTitleCell.setPaddingBottom(4);
         invoiceSummaryTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        invoiceSummaryTitleCell.setBackgroundColor(new BaseColor(8,55,58));
+        invoiceSummaryTitleCell.setBackgroundColor(titleBGColor);
         invoiceSummaryTitleCell.setColspan(4);
         invoiceSummaryTable.addCell(invoiceSummaryTitleCell);
         
@@ -306,57 +308,57 @@ public class PDFCreator {
         paymentSlipTable.addCell(paymentSlipCell);
         
         // LIGHT GRAY TITLE
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Customer ID", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
-        paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
-        paymentSlipCell.setBorderWidthRight(1);
-        paymentSlipCell.setIndent(14);
-        paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Invoice Number", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell("Customer ID", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Due Date", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell("Invoice Number", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
+        paymentSlipCell.setBorderWidthRight(1);
+        paymentSlipCell.setIndent(14);
+        paymentSlipTable.addCell(paymentSlipCell);
+        paymentSlipCell = newCell("Due Date", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setIndent(14);
         paymentSlipTable.addCell(paymentSlipCell);
 
         // LIGHT GRAY VALUE
-        paymentSlipCell = newCell(customer.getLogin_name(), arial_normal_6, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(customer.getLogin_name(), arial_normal_6, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(customerInvoice.getInvoice_serial(), arial_normal_7, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(customerInvoice.getInvoice_serial(), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(TMUtils.dateFormatYYYYMMDD(customerInvoice.getDue_date()), arial_normal_7, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(TMUtils.dateFormatYYYYMMDD(customerInvoice.getDue_date()), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, BaseColor.LIGHT_GRAY);
+        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipTable.addCell(paymentSlipCell);
         paymentSlipCell.setColspan(0);
         
@@ -384,12 +386,12 @@ public class PDFCreator {
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total amount due before", arial_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Total amount due before", arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
@@ -397,7 +399,7 @@ public class PDFCreator {
         // input box begin
         paymentSlipCell = newCell("$98.21", arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
-        paymentSlipCell.setBorderColor(new BaseColor(8,55,58));
+        paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
         paymentSlipCell.setBorderWidthRight(8f);
         paymentSlipCell.setBorderWidthBottom(8f);
@@ -414,22 +416,22 @@ public class PDFCreator {
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total amount due after", arial_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Total amount due after", arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
-        paymentSlipCell.setBorderColor(new BaseColor(8,55,58));
+        paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthRight(2f);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
         paymentSlipCell = newCell("$98.21", arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
-        paymentSlipCell.setBorderColor(new BaseColor(8,55,58));
+        paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
         paymentSlipCell.setBorderWidthRight(8f);
         paymentSlipCell.setBorderWidthBottom(8f);
@@ -450,34 +452,34 @@ public class PDFCreator {
         paymentSlipTable.addCell(paymentSlipCell);
         
         // SEPARATOR BEGIN
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
         // SEPARATOR END
         
         // 
-        paymentSlipCell = newCell("Paying by cheques", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Paying by cheques", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("ENCLOSED AMOUNT", verdana_bold_white_10, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("ENCLOSED AMOUNT", verdana_bold_white_10, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(4);
         paymentSlipCell.setIndent(40);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Please make cheques payable to Total Mobile Solution Services Ltd and", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Please make cheques payable to Total Mobile Solution Services Ltd and", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -486,37 +488,37 @@ public class PDFCreator {
 		sBox.scaleAbsolute(155.25f, 35.25f);
 		sBox.setAbsolutePosition(0, 0);
 		writer.getDirectContent().addImage(sBox);
-        paymentSlipCell = newCell(sBox, arial_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(sBox, arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingLeft(42);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipCell.setRowspan(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
 		// boxes end
-        paymentSlipCell = newCell("write your Login Name on the back of your cheque.", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("write your Login Name on the back of your cheque.", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Please post it with this payment slip to", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Please post it with this payment slip to", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total Mobile Solution Services Ltd. PO Box 68177, Newton, Auckland 1145", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("Total Mobile Solution Services Ltd. PO Box 68177, Newton, Auckland 1145", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("** PLEASE DO NOT SEND CASH", verdana_normal_white_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell("** PLEASE DO NOT SEND CASH", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(40);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(4);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, new BaseColor(8,55,58));
+        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(1);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -566,7 +568,7 @@ public class PDFCreator {
         invoiceDetailsTitleCell = newCell("Invoice Details", tahoma_bold_white_10, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         invoiceDetailsTitleCell.setColspan(10);
-        invoiceDetailsTitleCell.setBackgroundColor(new BaseColor(8,55,58));
+        invoiceDetailsTitleCell.setBackgroundColor(this.titleBGColor);
         invoiceDetailsTitleCell.setPaddingBottom(4);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         invoiceDetailsTitleCell = newCell(" ", tahoma_bold_10, 0);
@@ -791,7 +793,7 @@ public class PDFCreator {
         
         // SECOND PAGE'S HEADER
         headerTable = new PdfPTable(1);
-        invoiceDetailsTitleCell = new PdfPCell(new Phrase(" "));
+        cell = new PdfPCell(new Phrase(" "));
 		pageHeader(writer, headerTable, cell);
         /*
          *
@@ -814,11 +816,11 @@ public class PDFCreator {
 		
 
         // THIRD PAGE'S HEADER
-        document.newPage();
-        headerTable = new PdfPTable(1);
-		cell = new PdfPCell(new Phrase(" "));
-		pageHeader(writer, headerTable, cell);
-		
+//        document.newPage();
+//        headerTable = new PdfPTable(1);
+//		cell = new PdfPCell(new Phrase(" "));
+//		pageHeader(writer, headerTable, cell);
+//		
 		// CLOSE DOCUMENT
         document.close();
         
@@ -841,7 +843,7 @@ public class PDFCreator {
 		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, t2, 44, 730, 0);
 		
 		// seperator
-        LineSeparator UNDERLINE = new LineSeparator(3, 100, new BaseColor(8,55,58), Element.ALIGN_CENTER, -2);
+        LineSeparator UNDERLINE = new LineSeparator(3, 100, titleBGColor, Element.ALIGN_CENTER, -2);
         // adds a separator
         Phrase seperator = new Phrase();
         seperator.add(UNDERLINE);

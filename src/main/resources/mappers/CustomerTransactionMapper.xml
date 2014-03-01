@@ -4,7 +4,7 @@
 
 <mapper namespace="com.tm.broadband.mapper.CustomerTransactionMapper">
 	
-	<!-- 
+	<!--
 		 
 	-->
 	<insert id="insertCustomerTransaction" parameterType="CustomerTransaction">
@@ -21,5 +21,54 @@
 			#{dps_txn_ref},#{merchant_reference},#{response_text},#{success},
 			#{txnMac},#{transaction_type})
 	</insert>
+	
+	<!-- multi-update -->
+	<update id="updateCustomerTransaction" parameterType="CustomerTransaction">
+		UPDATE `tm_customer_transaction`
+		<set>
+			<if test="customer != null and customer.id != null">`customer_id`=#{customer.id},</if>
+			<if test="order != null and order.id != null">`order_id`=#{order.id},</if>
+			<if test="invoice != null and invoice.id != null">`invoice_id`=#{invoice.id},</if>
+			<if test="transaction_date != null">`transaction_date`=#{transaction_date},</if>
+			<if test="amount != null">`amount`=#{amount},</if>
+			<if test="transaction_sort != null">`transaction_sort`=#{transaction_sort}</if>
+		</set>
+		<where>
+			<if test="id != null">
+				`id`=#{id}
+			</if>
+			<if test="customer != null and customer.id != null">
+				and `customer_id`=#{customer.id}
+			</if>
+			<if test="order != null and order.id != null">
+				and `order_id`=#{order.id}
+			</if>
+			<if test="invoice != null and invoice.id_where != null">
+				and `invoice_id`=#{invoice.id_where}
+			</if>
+		</where>
+	</update>
+	
+	<!-- select customer transaction page -->
+	<select id="selectCustomerTransactionsByPage" parameterType="Page" resultType="CustomerTransaction">
+		select * from tm_customer_transaction 
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select customer transaction amount -->
+	<select id="selectCustomerTransactionsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_transaction 
+	</select>
+	
+	<!-- select customer transaction page by id -->
+	<select id="selectCustomerTxsPageByCustomerId" parameterType="Page" resultType="CustomerTransaction">
+		select * from tm_customer_transaction where customer_id = ${params.customerId}
+		${params.orderby} limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select customer transaction amount by id -->
+	<select id="selectCustomerTxsSumByCustomerId" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_transaction where customer_id = ${params.customerId}
+	</select>
 	
 </mapper>

@@ -13,9 +13,10 @@ public class CustomerTransaction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private long id;
+	private Long id;
 	private Customer customer;
 	private CustomerOrder order;
+	private CustomerInvoice invoice;
 	private Date transaction_date;
 	private Double amount;
 	private String auth_code;
@@ -32,8 +33,17 @@ public class CustomerTransaction implements Serializable {
 	private String success;
 	private String txnMac;
 	private String transaction_type;
+	private String transaction_sort;
 
 	public CustomerTransaction() {
+	}
+
+	public CustomerInvoice getInvoice() {
+		return invoice;
+	}
+
+	public void setInvoice(CustomerInvoice invoice) {
+		this.invoice = invoice;
 	}
 
 	public Customer getCustomer() {
@@ -52,11 +62,11 @@ public class CustomerTransaction implements Serializable {
 		this.order = order;
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -190,6 +200,14 @@ public class CustomerTransaction implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getTransaction_sort() {
+		return transaction_sort;
+	}
+
+	public void setTransaction_sort(String transaction_sort) {
+		this.transaction_sort = transaction_sort;
 	}
 
 }

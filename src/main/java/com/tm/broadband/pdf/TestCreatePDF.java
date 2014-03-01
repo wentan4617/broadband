@@ -20,8 +20,8 @@ public class TestCreatePDF {
 		// CUSTOMER
 		Customer customer = new Customer();
 		customer.setLogin_name("SSSSSSSSSSSSSSSSSSSS");
-		customer.setFirst_name("Xiong");
-		customer.setLast_name("Yi Fang");
+		customer.setFirst_name("Yi Fang");
+		customer.setLast_name("Xiong");
 		customer.setAddress("Pt England Road, Point England, Auckland 1072");
 		
 		// ORDER
@@ -33,6 +33,6 @@ public class TestCreatePDF {
 		customerInvoice.setCusomter(customer);
 		customerInvoice.setOrder(customerOrder);
 		
-		new PDFCreator().create("src"+File.separator+"main/webapp/WEB-INF/download/customer/Super Awersome Document.pdf", customerInvoice);
+		new PDFCreator().create("D:///Super Awersome Document.pdf", customerInvoice);
 	}
 }

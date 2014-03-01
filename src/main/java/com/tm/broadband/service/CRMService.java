@@ -153,4 +153,51 @@ public class CRMService {
 		return this.customerOrderMapper.selectCustomerOrdersByCustomerId(customer_id);
 	}
 
+	@Transactional
+	public Page<CustomerInvoice> queryCustomerInvoicesByPage(Page<CustomerInvoice> page) {
+		page.setTotalRecord(this.customerInvoiceMapper.selectCustomerInvoicesSum(page));
+		page.setResults(this.customerInvoiceMapper.selectCustomerInvoicesByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public Page<CustomerTransaction> queryCustomerTransactionsByPage(Page<CustomerTransaction> page) {
+		page.setTotalRecord(this.customerTransactionMapper.selectCustomerTransactionsSum(page));
+		page.setResults(this.customerTransactionMapper.selectCustomerTransactionsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public Page<CustomerTransaction> queryCustomerTransactionsPageByCustomerId(Page<CustomerTransaction> page) {
+		page.setTotalRecord(this.customerTransactionMapper.selectCustomerTxsSumByCustomerId(page));
+		page.setResults(this.customerTransactionMapper.selectCustomerTxsPageByCustomerId(page));
+		return page;
+	}
+
+	@Transactional
+	public Page<CustomerInvoice> queryCustomerInvoicesPageByCustomerId(Page<CustomerInvoice> page) {
+		page.setTotalRecord(this.customerInvoiceMapper.selectCustomerInvoicesSumById(page));
+		page.setResults(this.customerInvoiceMapper.selectCustomerInvoicesPageById(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderCreateInvoice(CustomerOrder customerOrder,
+			CustomerInvoice customerInvoice) {
+		// edit order
+		this.customerOrderMapper.updateCustomerOrder(customerOrder);
+		
+		// insert invoice
+		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
+		
+		// update transaction's invoice_id by customer id and order id
+		CustomerTransaction customerTransaction = new CustomerTransaction();
+		customerTransaction.setCustomer(customerInvoice.getCustomer());
+		customerTransaction.setOrder(customerOrder);
+		customerTransaction.setInvoice(customerInvoice);
+		this.customerTransactionMapper.updateCustomerTransaction(customerTransaction);
+		
+		// generate invoice PDF
+	}
+
 }

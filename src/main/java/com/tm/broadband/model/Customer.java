@@ -225,7 +225,15 @@ public class Customer implements Serializable {
 		this.invoice_post = invoice_post;
 	}
 
-	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	public String getLogin_name() {
 		return login_name;
 	}

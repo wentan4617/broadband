@@ -1,5 +1,6 @@
 package com.tm.broadband.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +41,16 @@ public class TMUtils {
 		if (date != null) 
 			return dateFormat.format(date);
 		return "";
+	}
+	
+	public static Date parseDateYYYYMMDD(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return dateFormat.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
 	}
 
 }
