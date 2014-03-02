@@ -10,19 +10,38 @@ import com.tm.broadband.model.CustomerOrder;
  * @author Cook1fan
  * 
  */
+
+/* SELECT AREA *//* // END SELECT AREA */
+/* =================================================================================== */
+/* INSERT AREA *//* // END INSERT AREA */
+/* =================================================================================== */
+/* UPDATE AREA *//* // END UPDATE AREA */
+/* =================================================================================== */
+/* DELETE AREA *//* // END DELETE AREA */
+
 public interface CustomerOrderMapper {
 
-	void createCustomerOrder(CustomerOrder customerOrder);
-	
-	//void updateCustomerOrderStatus(String status);
-	
-	void updateCustomerOrderStatusByCustomerId(int customer_id, String status);
-	
-	void updateCustomerOrderStatusById(int id, String status);
-	
-	int selectCustomerOrderIdByCId(int customer_id);
+	/* SELECT AREA */
 	
 	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
 	
+	/* // END SELECT AREA */
+	
+	/* =================================================================================== */
+	
+	/* INSERT AREA */
+
+	void insertCustomerOrder(CustomerOrder customerOrder);
+	
+	/* // END INSERT AREA */
+	
+	/* =================================================================================== */
+	
+	/* UPDATE AREA */
+	
 	void updateCustomerOrder(CustomerOrder customerOrder);
+	
+	/* // END UPDATE AREA */
+	/* =================================================================================== */
+	/* DELETE AREA *//* // END DELETE AREA */
 }

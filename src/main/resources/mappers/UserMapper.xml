@@ -2,22 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
 <mapper namespace="com.tm.broadband.mapper.UserMapper">
+	
+	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
 	
 	<!-- user login -->
 	<select id="selectUserLogin" parameterType="User" resultType="User">
 		select * from tm_user where login_name = #{login_name} and password = #{password}
 	</select>
-	
-	<insert id="insertUser" parameterType="User">
-		insert into tm_user(login_name,password,user_name,user_role,memo)
-		values(#{login_name},#{password},#{user_name},#{user_role},#{memo})
-	</insert>
-	
-	<update id="updateUser" parameterType="User">
-		UPDATE `tm_user` SET `login_name`=#{login_name},`password`=#{password},
-		`user_name`=#{user_name},`user_role`=#{user_role},`memo`=#{memo} WHERE  `id`=#{id}
-	</update>
 	
 	<!-- select user page -->
 	<select id="selectUsersByPage" parameterType="Page" resultType="User">
@@ -25,19 +29,9 @@
 		${params.orderby} limit #{pageOffset}, #{pageSize}
 	</select>
 	
-	<!-- select user page -->
-	<select id="selectUsers" resultType="User">
-		select * from tm_user
-	</select>
-	
-	<!-- select user amount -->
+	<!-- select user sum -->
 	<select id="selectUsersSum" parameterType="Page" resultType="int">
 		select count(*) from tm_user 
-	</select>
-	
-	<!-- select one user by id -->
-	<select id="selectUserById" resultType="User">
-		SELECT * FROM `tm_user` WHERE  id = #{0}
 	</select>
 	
 	<!-- when create user, check same name -->
@@ -45,10 +39,51 @@
 		select count(*) from tm_user where login_name = #{0} 
 	</select>
 	
+	<!-- select one user by id -->
+	<select id="selectUserById" resultType="User">
+		SELECT * FROM `tm_user` WHERE  id = #{0}
+	</select>
+	
 	<!-- when update user, check same name -->
 	<select id="selectExistNotSelfUserfByName" resultType="int">
 		select count(*) from tm_user where login_name = #{0} and id != #{1}
 	</select>
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<insert id="insertUser" parameterType="User">
+	insert into tm_user(login_name,password,user_name,user_role,memo)
+	values(#{login_name},#{password},#{user_name},#{user_role},#{memo})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<update id="updateUser" parameterType="User">
+		UPDATE `tm_user` 
+		<set>
+			<if test="login_name != null">`login_name`=#{login_name},</if>
+			<if test="password != null">`password`=#{password},</if>
+			<if test="user_name != null">`user_name`=#{user_name},</if>
+			<if test="user_role != null">`user_role`=#{user_role},</if>
+			<if test="memo != null">`memo`=#{memo}</if>
+		</set>
+		<where>
+			<if test="params.id != null">`id`=#{params.id}</if>
+		</where>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
 	
 	
 </mapper>

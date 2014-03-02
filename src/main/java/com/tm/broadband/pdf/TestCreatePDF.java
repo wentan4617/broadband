@@ -31,7 +31,7 @@ public class TestCreatePDF {
 		
 		// STORE MODEL
 		customerInvoice.setCustomer(customer);
-		customerInvoice.setOrder(customerOrder);
+		customerInvoice.setCustomerOrder(customerOrder);
 		
 		new PDFCreator().create("D:///Super Awersome Document.pdf", customerInvoice);
 	}

@@ -12,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.HttpSessionRequiredException;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,13 +29,10 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.ResponseMessage;
-import com.tm.broadband.model.Topup;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
-import com.tm.broadband.validator.mark.PlanValidatedMark;
 
 @Controller
 @SessionAttributes(value = { "customer", "orderPlan" })
@@ -55,9 +51,11 @@ public class CustomerController {
 	public String home(Model model) {
 
 		Customer customer = new Customer();
-		customer.setOrder_broadband_type("new-connection");
-		model.addAttribute("customer", customer);
+		CustomerOrder customerOrder = new CustomerOrder();
+		customerOrder.setOrder_broadband_type("new-connection");
+		customer.setCustomerOrder(customerOrder);
 		
+		model.addAttribute("customer", customer);
 		return "broadband-customer/home";
 	}
 
@@ -70,11 +68,11 @@ public class CustomerController {
 		if ("t".equals(group)) {
 			
 			Plan plan = new Plan();
-			plan.setPlan_group("plan-topup");
-			plan.setPlan_status("selling");
-			plan.setPlan_sort("naked");
+			plan.getParams().put("plan_group", "plan-topup");
+			plan.getParams().put("plan_status", "selling");
+			plan.getParams().put("plan_sort", "naked");
 			
-			plans = this.planService.queryPlansWithTopups(plan);
+			plans = this.planService.queryPlansBySome(plan);
 			
 			// key = plan_type
 			Map<String, Plan> planMaps = new HashMap<String, Plan>();
@@ -92,9 +90,9 @@ public class CustomerController {
 		} else if ("p".equals(group)) {
 			
 			Plan plan = new Plan();
-			plan.setPlan_group("plan-no-term");
-			plan.setPlan_status("selling");
-			plan.setPlan_sort("naked");
+			plan.getParams().put("plan_group", "plan-no-term");
+			plan.getParams().put("plan_status", "selling");
+			plan.getParams().put("plan_sort", "naked");
 			plan.getParams().put("orderby", "order by data_flow");
 			plans = this.planService.queryPlansBySome(plan);
 			
@@ -143,8 +141,6 @@ public class CustomerController {
 			@PathVariable("amount") int amount) {
 
 		Plan plan = this.planService.queryPlanById(id);
-		//Topup topup = this.planService.queryTopupById(tid);
-		//plan.setTopup_amount(topup_amount);
 		model.addAttribute("orderPlan", plan);
 
 		Customer customer = (Customer) model.asMap().get("customer");
@@ -201,8 +197,7 @@ public class CustomerController {
 		gr.setUrlFail(req.getRequestURL().toString());
 		gr.setUrlSuccess(req.getRequestURL().toString());
 
-		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId,
-				PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
 
 		return "redirect:" + redirectUrl;
 	}
@@ -218,8 +213,7 @@ public class CustomerController {
 		Response responseBean = null;
 
 		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId,
-					PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			customer.setStatus("active");

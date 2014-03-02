@@ -62,7 +62,7 @@ public class CRMService {
 		customerOrder.setOrder_total_price(plan.getPlan_price());
 		customerOrder.setOrder_status("pending");
 		
-		this.customerOrderMapper.createCustomerOrder(customerOrder);
+		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		System.out.println("customer order id: " + customerOrder.getId());
 		
 		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
@@ -76,7 +76,7 @@ public class CRMService {
 		customerOrderDetail.setDetail_plan_sort(plan.getPlan_sort());
 		customerOrderDetail.setDetail_plan_memo(plan.getMemo());
 		
-		this.customerOrderDetailMapper.createCustomerOrderDetail(customerOrderDetail);
+		this.customerOrderDetailMapper.insertCustomerOrderDetail(customerOrderDetail);
 		
 	}
 	
@@ -92,9 +92,9 @@ public class CRMService {
 		customerOrder.setOrder_total_price(plan.getPlan_price() * 3);
 		customerOrder.setOrder_status("paid");
 		customerOrder.setOrder_type(plan.getPlan_group().replace("plan", "order"));
-		customerOrder.setOrder_broadband_type(customer.getOrder_broadband_type());
+		customerOrder.setOrder_broadband_type(customer.getCustomerOrder().getOrder_broadband_type());
 		
-		this.customerOrderMapper.createCustomerOrder(customerOrder);
+		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		System.out.println("customer order id: " + customerOrder.getId());
 		
 		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
@@ -111,10 +111,10 @@ public class CRMService {
 		
 		customerOrderDetail.setDetail_plan_memo(plan.getMemo());
 		
-		this.customerOrderDetailMapper.createCustomerOrderDetail(customerOrderDetail);
+		this.customerOrderDetailMapper.insertCustomerOrderDetail(customerOrderDetail);
 		
 		customerTransaction.setCustomer(customer);
-		customerTransaction.setOrder(customerOrder);
+		customerTransaction.setCustomerOrder(customerOrder);
 		
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
 		
@@ -124,11 +124,6 @@ public class CRMService {
 	@Transactional
 	public int queryExistCustomerByLoginName(String login_name) {
 		return this.customerMapper.selectExistCustomerByLoginName(login_name);
-	}
-	
-	@Transactional
-	public List<Customer> queryCustomersByStatus(String status) {
-		return this.customerMapper.selectCustomersByStatus(status);
 	}
 	
 	@Transactional
@@ -168,33 +163,25 @@ public class CRMService {
 	}
 
 	@Transactional
-	public Page<CustomerTransaction> queryCustomerTransactionsPageByCustomerId(Page<CustomerTransaction> page) {
-		page.setTotalRecord(this.customerTransactionMapper.selectCustomerTxsSumByCustomerId(page));
-		page.setResults(this.customerTransactionMapper.selectCustomerTxsPageByCustomerId(page));
-		return page;
-	}
-
-	@Transactional
-	public Page<CustomerInvoice> queryCustomerInvoicesPageByCustomerId(Page<CustomerInvoice> page) {
-		page.setTotalRecord(this.customerInvoiceMapper.selectCustomerInvoicesSumById(page));
-		page.setResults(this.customerInvoiceMapper.selectCustomerInvoicesPageById(page));
-		return page;
-	}
-
-	@Transactional
-	public void editCustomerOrderCreateInvoice(CustomerOrder customerOrder,
-			CustomerInvoice customerInvoice) {
+	public void editCustomerOrderCreateInvoice(CustomerOrder customerOrder, CustomerInvoice customerInvoice) {
 		// edit order
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
+		
+		// insert provision
 		
 		// insert invoice
 		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
 		
+		//select related transaction record ?
+		
+		
 		// update transaction's invoice_id by customer id and order id
 		CustomerTransaction customerTransaction = new CustomerTransaction();
 		customerTransaction.setCustomer(customerInvoice.getCustomer());
-		customerTransaction.setOrder(customerOrder);
-		customerTransaction.setInvoice(customerInvoice);
+		customerTransaction.setCustomerOrder(customerOrder);
+		customerTransaction.setCustomerInvoice(customerInvoice);
+		
+		customerTransaction.getParams().put("", null);
 		this.customerTransactionMapper.updateCustomerTransaction(customerTransaction);
 		
 		// generate invoice PDF

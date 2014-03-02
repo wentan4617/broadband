@@ -12,7 +12,8 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">Plan View</div>
+				<div class="panel-heading">
+					<h4 class="panel-title">Plan View</h4></div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
 						<thead >

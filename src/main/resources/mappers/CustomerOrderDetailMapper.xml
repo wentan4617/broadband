@@ -2,19 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
 <mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailMapper">
 	
+	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA --><!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	
 	<!-- create customer order -->
-	<insert id="createCustomerOrderDetail" parameterType="CustomerOrderDetail" >
+	<insert id="insertCustomerOrderDetail" parameterType="CustomerOrderDetail" >
 		INSERT INTO `tm_customer_order_detail`(
 			`order_id`, `detail_plan_name`, `detail_plan_desc`, `detail_plan_price`, 
 			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
-			`detail_plan_memo`) 
+			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_topup_data_flow`, 
+			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`) 
 		VALUES (
 			#{customerOrder.id}, #{detail_plan_name}, #{detail_plan_desc}, #{detail_plan_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
-			#{detail_plan_memo})
+			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_topup_data_flow},
+			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit})
 	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+	
 	
 	
 </mapper>

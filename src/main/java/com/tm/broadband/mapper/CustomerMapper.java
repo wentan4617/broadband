@@ -8,25 +8,49 @@ import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
 
 /**
- * mapping tm_customer, userDAO component
+ * mapping tm_customer, customer DAO component
+ * 
  * @author Cook1fan
  *
  */
+
+
+/* SELECT AREA *//* // END SELECT AREA */
+/* =================================================================================== */
+/* INSERT AREA *//* // END INSERT AREA */
+/* =================================================================================== */
+/* UPDATE AREA *//* // END UPDATE AREA */
+/* =================================================================================== */
+/* DELETE AREA *//* // END DELETE AREA */
+
 public interface CustomerMapper {
+	
+	/* SELECT AREA */
+	
+	int selectExistCustomerByLoginName(String login_name);
+	Customer selectCustomerByIdWithCustomerOrder(int id);
+	Customer selectCustomerWhenLogin(Customer customer);
+	List<Customer> selectCustomersByPage(Page<Customer> page);
+	int selectCustomersSum(Page<Customer> page);
+	
+	/* // END SELECT AREA */
+	
+	/* =================================================================================== */
+	
+	/* INSERT AREA */
 	
 	void insertCustomer(Customer customer);
 	
-	int selectExistCustomerByLoginName(String login_name);
+	/* // END INSERT AREA */
 	
-	List<Customer> selectCustomersByStatus(String status);
+	/* =================================================================================== */
 	
-	Customer selectCustomerByIdWithCustomerOrder(int id);
-	
-	List<Customer> selectCustomersByPage(Page<Customer> page);
-	
-	int selectCustomersSum(Page<Customer> page);
+	/* UPDATE AREA */
 	
 	void updateCustomerStatus(Customer customer);
 	
-	Customer selectCustomerWhenLogin(Customer customer);
+	/* // END UPDATE AREA */
+	/* =================================================================================== */
+	/* DELETE AREA *//* // END DELETE AREA */
+	
 }

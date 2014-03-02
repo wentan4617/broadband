@@ -1,10 +1,16 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerOrderDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
 
 	private Integer id;
 	private CustomerOrder customerOrder;
@@ -22,8 +28,21 @@ public class CustomerOrderDetail implements Serializable {
 	private String detail_plan_memo;
 	private Integer detail_unit;
 
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+
+	private Map<String, Object> params = new HashMap<String, Object>();
+
+	/*
+	 * END RELATED PROPERTIES
+	 */
+
 	public CustomerOrderDetail() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Integer getId() {
@@ -149,6 +168,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_unit(Integer detail_unit) {
 		this.detail_unit = detail_unit;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

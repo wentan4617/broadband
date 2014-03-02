@@ -2,158 +2,232 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
 <mapper namespace="com.tm.broadband.mapper.CustomerMapper">
+
+	<!-- DEFINITION AREA -->
 	
-	<!-- when customer register or administrator create customer, insert customer information -->
-	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `tm_customer`(
-			`login_name`, `password`, `user_name`, 
-			`first_name`, `last_name`, `address`, `email`, `phone`, `cellphone`, 
-			`status`, `register_date`, `active_date`, `balance`) 
-		VALUES (
-			#{login_name}, #{password}, #{user_name}, 
-			#{first_name}, #{last_name}, #{address}, #{email}, #{phone}, #{cellphone},
-			#{status}, now(), now(), #{balance})
-	</insert>
+	<sql id="customerColumns">
+		c.`id` 				as c_id, 
+		c.`login_name` 		as c_login_name, 
+		c.`password` 		as c_password,
+		c.`user_name` 		as c_user_name, 
+		c.`first_name` 		as c_first_name, 
+		c.`last_name` 		as c_last_name, 
+		c.`address` 		as c_address, 
+		c.`email` 			as c_email, 
+		c.`phone` 			as c_phone, 
+		c.`cellphone` 		as c_cellphone, 
+		c.`status` 			as c_status, 
+		c.`invoice_post` 	as c_invoice_post,
+		c.`register_date` 	as c_register_date, 
+		c.`active_date` 	as c_active_date, 
+		c.`balance` 		as c_balance
+	</sql>
+	<sql id="customerOrderColumns">
+		co.`id` 							as co_id, 
+		co.`order_serial` 					as co_order_serial, 
+		co.`customer_id` 					as co_customer_id, 
+		co.`order_total_price` 				as co_order_total_price, 
+		co.`order_create_date` 				as co_order_create_date, 
+		co.`order_status` 					as co_order_status, 
+		co.`order_using_start` 				as co_order_using_start,
+		co.`next_invoice_create_date` 		as co_next_invoice_create_date,
+		co.`order_type` 					as co_order_type,
+		co.`order_broadband_type` 			as co_order_broadband_type,
+		co.`svlan`	 						as co_svlan,
+		co.`cvlan` 							as co_cvlan
+	</sql>
+	<sql id="customerOrderDetailColumns">
+		cod.`id` 								as cod_id, 
+		cod.`order_id` 							as cod_order_id, 
+		cod.`detail_plan_name` 					as cod_detail_plan_name,
+		cod.`detail_plan_desc` 					as cod_detail_plan_desc, 
+		cod.`detail_plan_price` 				as cod_detail_plan_price,
+		cod.`detail_data_flow` 					as cod_detail_data_flow, 
+		cod.`detail_plan_status` 				as cod_detail_plan_status,
+		cod.`detail_plan_type` 					as cod_detail_plan_type, 
+		cod.`detail_plan_sort` 					as cod_detail_plan_sort,
+		cod.`detail_plan_group` 				as cod_detail_plan_group,
+		cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee,
+		cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow,
+		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
+		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
+		cod.`detail_unit` 						as cod_detail_unit
+	</sql>
 	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
 	<!-- when customer register or administrator create customer, check whether exist same login name -->
 	<select id="selectExistCustomerByLoginName" resultType="int">
 		select count(*) from tm_customer where login_name = #{0}
 	</select>
-	
-	<!-- select customers by status -->
-	<select id="selectCustomersByStatus" resultType="Customer">
-		select * from tm_customer where status = #{0}
-	</select>
-	
+
 	<!-- select customers by id, with customer order information -->
 	<select id="selectCustomerByIdWithCustomerOrder" resultMap="selectCustomerByIdWithCustomerOrderResultMap">
-		select 
-			c.`id` as c_id, c.`login_name` as c_login_name, c.`password` as c_password, c.`user_name` as c_user_name, 
-			c.`first_name` as c_first_name, c.`last_name` as c_last_name, c.`address` as c_address, c.`email` as c_email, 
-			c.`phone` as c_phone, c.`cellphone` as c_cellphone, c.`status` as c_status, c.`invoice_post` as c_invoice_post, 
-			c.`register_date` as c_register_date, c.`active_date` as c_active_date,
-			
-			co.`id` as co_id, co.`order_serial` as co_order_serial, co.`customer_id` as co_customer_id, 
-			co.`order_total_price` as co_order_total_price, co.`order_create_date` as co_order_create_date, 
-			co.`order_status` as co_order_status, co.`order_using_start` as co_order_using_start,
-			
-			cod.`id` as cod_id, cod.`order_id` as cod_order_id, cod.`detail_plan_name` as cod_detail_plan_name, 
-			cod.`detail_plan_desc` as cod_detail_plan_desc, cod.`detail_plan_price` as cod_detail_plan_price, 
-			cod.`detail_data_flow` as cod_detail_data_flow, cod.`detail_plan_status` as cod_detail_plan_status, 
-			cod.`detail_plan_type` as cod_detail_plan_type, cod.`detail_plan_sort` as cod_detail_plan_sort, 
-			cod.`detail_plan_memo` as cod_detail_plan_memo, cod.`detail_unit` as cod_detail_unit
-			
-			from tm_customer as c
-			LEFT JOIN tm_customer_order as co on co.customer_id = c.id
-			left join tm_customer_order_detail as cod on cod.order_id = co.id
-			
+		select
+			<include refid="customerColumns"/>,
+			<include refid="customerOrderColumns"/>,
+			<include refid="customerOrderDetailColumns"/>
+		from tm_customer as c
+		left join tm_customer_order as co on co.customer_id = c.id
+		left join tm_customer_order_detail as cod on cod.order_id = co.id
 		where c.id = #{0}
 	</select>
-	
-	<resultMap id="selectCustomerByIdWithCustomerOrderResultMap" type="Customer" >
+
+	<resultMap id="selectCustomerByIdWithCustomerOrderResultMap" type="Customer">
 		<id property="id" column="c_id" />
-  		<result property="login_name" column="c_login_name"/>
-  		<result property="password" column="c_password"/>
-  		<result property="user_name" column="c_user_name"/>
-  		<result property="first_name" column="c_first_name"/>
-  		<result property="last_name" column="c_last_name"/>
-  		<result property="address" column="c_address"/>
-  		<result property="email" column="c_email"/>
-  		<result property="phone" column="c_phone"/>
-  		<result property="cellphone" column="c_cellphone"/>
-  		<result property="status" column="c_status"/>
-  		<result property="invoice_post" column="c_invoice_post"/>
-  		<result property="register_date" column="c_register_date"/>
-  		<result property="active_date" column="c_active_date"/>
-  		
-  		<collection property="customerOrders" ofType="CustomerOrder">
-  			<id property="id" column="co_id" />
-  			<result property="order_serial" column="co_order_serial"/>
-  			<result property="order_total_price" column="co_order_total_price"/>
-  			<result property="order_create_date" column="co_order_create_date"/>
-  			<result property="order_status" column="co_order_status"/>
-  			<result property="order_using_start" column="co_order_using_start"/>
-  			
-  			<collection property="customerOrderDetails" ofType="CustomerOrderDetail">
-  				<id property="id" column="cod_id" />
-  				<result property="detail_plan_name" column="cod_detail_plan_name"/>
-  				<result property="detail_plan_desc" column="cod_detail_plan_desc"/>
-  				<result property="detail_plan_price" column="cod_detail_plan_price"/>
-  				<result property="detail_data_flow" column="cod_detail_data_flow"/>
-  				<result property="detail_plan_status" column="cod_detail_plan_status"/>
-  				<result property="detail_plan_type" column="cod_detail_plan_type"/>
-  				<result property="detail_plan_sort" column="cod_detail_plan_sort"/>
-  				<result property="detail_plan_memo" column="cod_detail_plan_memo"/>
-				<result property="detail_unit" column="cod_detail_unit"/>
-  			</collection>
-  		</collection>
+		<result property="login_name" column="c_login_name" />
+		<result property="password" column="c_password" />
+		<result property="user_name" column="c_user_name" />
+		<result property="first_name" column="c_first_name" />
+		<result property="last_name" column="c_last_name" />
+		<result property="address" column="c_address" />
+		<result property="email" column="c_email" />
+		<result property="phone" column="c_phone" />
+		<result property="cellphone" column="c_cellphone" />
+		<result property="status" column="c_status" />
+		<result property="invoice_post" column="c_invoice_post" />
+		<result property="register_date" column="c_register_date" />
+		<result property="active_date" column="c_active_date" />
+		<result property="balance" column="c_balance" />
+
+		<collection property="customerOrders" ofType="CustomerOrder">
+			<id property="id" column="co_id" />
+			<result property="order_serial" column="co_order_serial" />
+			<!-- <result property="customer_id" column="co_customer_id" /> -->
+			<result property="order_total_price" column="co_order_total_price" />
+			<result property="order_create_date" column="co_order_create_date" />
+			<result property="order_status" column="co_order_status" />
+			<result property="order_using_start" column="co_order_using_start" />
+			<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
+			<result property="order_type" column="co_order_type" />
+			<result property="order_broadband_type" column="co_order_broadband_type" />
+			<result property="svlan" column="co_svlan" />
+			<result property="cvlan" column="co_cvlan" />
+
+			<collection property="customerOrderDetails" ofType="CustomerOrderDetail">
+				<id property="id" column="cod_id" />
+				<!-- <id property="order_id" column="cod_order_id" /> -->
+				<result property="detail_plan_name" column="cod_detail_plan_name" />
+				<result property="detail_plan_desc" column="cod_detail_plan_desc" />
+				<result property="detail_plan_price" column="cod_detail_plan_price" />
+				<result property="detail_data_flow" column="cod_detail_data_flow" />
+				<result property="detail_plan_status" column="cod_detail_plan_status" />
+				<result property="detail_plan_type" column="cod_detail_plan_type" />
+				<result property="detail_plan_sort" column="cod_detail_plan_sort" />
+				<result property="detail_plan_group" column="cod_detail_plan_group" />
+				<result property="detail_plan_new_connection_fee" column="cod_detail_plan_new_connection_fee" />
+				<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow" />
+				<result property="detail_topup_fee" column="cod_detail_topup_fee" />
+				<result property="detail_plan_memo" column="cod_detail_plan_memo" />
+				<result property="detail_unit" column="cod_detail_unit" />
+			</collection>
+		</collection>
 	</resultMap>
-	
-	
+
 	<!-- select customer page -->
 	<select id="selectCustomersByPage" parameterType="Page" resultType="Customer">
 		select * from tm_customer as c
 		left join tm_customer_order as co on co.customer_id = c.id
 		<where>
-			<if test="params.status != null">
-				c.status = '${params.status}'
-			</if>
-			<if test="params.id != null">
-				or c.id = '${params.id}'
-			</if>
-			<if test="params.login_name != null">
-				or c.login_name = '${params.login_name}'
-			</if>
-			<if test="params.phone != null">
-				or c.phone = '${params.phone}'
-			</if>
-			<if test="params.cellphone != null">
-				or c.cellphone = '${params.cellphone}'
-			</if>
-			<if test="params.email != null">
-				or c.email = '${params.email}'
-			</if>
-			<if test="params.svlan != null">
-				or co.svlan = '${params.svlan}'
-			</if>
-			<if test="params.cvlan != null">
-				or co.cvlan = '${params.cvlan}'
-			</if>
-			<if test="params.co_status != null">
-				co.status = '${params.co_status}'
-			</if>
+			<if test="params.status != null">c.status = #{params.status}</if>
+			<if test="params.id != null">or c.id = #{params.id}</if>
+			<if test="params.login_name != null">or c.login_name = #{params.login_name}</if>
+			<if test="params.phone != null">or c.phone = #{params.phone}</if>
+			<if test="params.cellphone != null">or c.cellphone = #{params.cellphone}</if>
+			<if test="params.email != null">or c.email = #{params.email}</if>
+			<if test="params.svlan != null">or co.svlan = #{params.svlan}</if>
+			<if test="params.cvlan != null">or co.cvlan = #{params.cvlan}</if>
+			<if test="params.co_status != null">co.status = #{params.co_status}</if>
 		</where>
-		${params.orderby} limit #{pageOffset}, #{pageSize}
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
 	</select>
-	
+
 	<!-- select customer amount -->
 	<select id="selectCustomersSum" parameterType="Page" resultType="int">
-		select * from tm_customer as c
+		select count(*) from tm_customer as c
 		left join tm_customer_order as co on co.customer_id = c.id
 		<where>
-			<if test="params.status != null">
-				and c.status = '${params.status}'
-			</if>
-			<if test="params.co_status != null">
-				
-			</if>
+			<if test="params.status != null">c.status = '${params.status}'</if>
+			<if test="params.id != null">or c.id = '${params.id}'</if>
+			<if test="params.login_name != null">or c.login_name = '${params.login_name}'</if>
+			<if test="params.phone != null">or c.phone = '${params.phone}'</if>
+			<if test="params.cellphone != null">or c.cellphone = '${params.cellphone}'</if>
+			<if test="params.email != null">or c.email = '${params.email}'</if>
+			<if test="params.svlan != null">or co.svlan = '${params.svlan}'</if>
+			<if test="params.cvlan != null">or co.cvlan = '${params.cvlan}'</if>
+			<if test="params.co_status != null">co.status = '${params.co_status}'</if>
 		</where>
 	</select>
+	
+	<!-- customer login -->
+	<select id="selectCustomerWhenLogin" parameterType="Customer" resultType="Customer">
+		select * from tm_customer 
+		where login_name = #{login_name} and password = #{password} and status = #{status}
+	</select>
+	
+	<select id="selectCustomerBySome" parameterType="Customer" resultType="Customer">
+		select * from tm_customer 
+		<where>
+			<if test="params.status != null">status=#{params.status}</if>
+		</where>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<!-- when customer register or administrator create customer, insert customer  information -->
+	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer`(
+		`login_name`, `password`, `user_name`, `first_name`, `last_name`,
+		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`,
+		`register_date`, `active_date`, `balance`)
+		VALUES (
+		#{login_name}, #{password}, #{user_name}, #{first_name}, #{last_name}, 
+		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post},
+		#{register_date}, #{active_date}, #{balance})
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
 	
 	<!-- update customer status -->
 	<update id="updateCustomerStatus" parameterType="Customer">
-		update tm_customer set status = #{status} 
+		update tm_customer set status = #{status}
 		<if test="status == 'active'">
 			, active_date = now()
 		</if>
 		where id = #{id}
 	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
 	
-	
-	<!-- customer login -->
-	<select id="selectCustomerWhenLogin" parameterType="Customer" resultType="Customer">
-		select * from tm_customer where login_name = #{login_name} and password = #{password} and status = #{status}
-	</select>
-	
+	<!-- // END DELETE AREA -->
+
 </mapper>

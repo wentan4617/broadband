@@ -1,6 +1,8 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -16,7 +18,11 @@ public class User implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+
+	private Integer id;
 	@NotEmpty(groups = { UserLoginValidatedMark.class })
 	private String login_name;
 	@NotEmpty(groups = { UserLoginValidatedMark.class })
@@ -25,15 +31,27 @@ public class User implements Serializable {
 	private String user_role;
 	private String memo;
 
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+	
+	/*
+	 * RELATED PROPERTIES
+	 */
+
+	private Map<String, Object> params = new HashMap<String, Object>();
+	/*
+	 * END RELATED PROPERTIES
+	 */
+
 	public User() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -79,6 +97,14 @@ public class User implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

@@ -7,17 +7,15 @@ import java.util.Map;
 public class Page<T> {
 
 	public Page() {
-		// TODO Auto-generated constructor stub
 	}
 
-	private int pageNo = 1;//
-	private int pageSize = 20;//
+	private int pageNo = 1;
+	private int pageSize = 20;
 	private int pageOffset = 0;
-
-	private int totalRecord;//
-	private int totalPage;//
-	private List<T> results;//
-	private Map<String, Object> params = new HashMap<String, Object>();//
+	private int totalRecord;
+	private int totalPage;
+	private List<T> results;
+	private Map<String, Object> params = new HashMap<String, Object>();
 
 	public int getPageOffset() {
 		return pageOffset;
@@ -43,7 +41,7 @@ public class Page<T> {
 	}
 
 	public void setPageSize(int pageSize) {
-	
+
 		this.setPageOffset((this.getPageNo() - 1) * pageSize);
 		this.pageSize = pageSize;
 	}
@@ -73,8 +71,6 @@ public class Page<T> {
 
 	public void setResults(List<T> results) {
 		this.results = results;
-		if (this.results != null)
-			this.setTotalRecord(this.results.size());
 	}
 
 	public Map<String, Object> getParams() {

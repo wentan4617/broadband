@@ -877,7 +877,7 @@ public class PDFCreator {
         Phrase date = new Phrase("Date: ", verdana_bold_8);
         Phrase invoiceNo = new Phrase(" | Invoice No: ", verdana_bold_8);
         Phrase loginName = new Phrase(" | Login Name: ", verdana_bold_8);
-        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getOrder().getOrder_create_date()), arial_normal_8);
+        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getCustomerOrder().getOrder_create_date()), arial_normal_8);
         Phrase invoiceNoField = new Phrase(this.customerInvoice.getInvoice_serial(), arial_normal_8);
         Phrase loginNameField = new Phrase(this.customerInvoice.getCustomer().getLogin_name(), arial_normal_8);
         // put paragraph into table cell

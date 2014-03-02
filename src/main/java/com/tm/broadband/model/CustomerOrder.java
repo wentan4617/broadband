@@ -2,7 +2,9 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.tm.broadband.util.TMUtils;
 
@@ -10,11 +12,12 @@ public class CustomerOrder implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
-
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+	private Integer id;
 	private String order_serial;
 	private Customer customer;
-
 	private Double order_total_price;
 	private Date order_create_date;
 	private String order_status;
@@ -25,67 +28,35 @@ public class CustomerOrder implements Serializable {
 	private String svlan;
 	private String cvlan;
 
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
+	
+	/*
+	 * RELATED PROPERTIES
+	 */
+
 	private String order_create_date_str;
 	private String order_using_start_str;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails;
 
-	public Date getNext_invoice_create_date() {
-		return next_invoice_create_date;
-	}
-
-	public String getOrder_broadband_type() {
-		return order_broadband_type;
-	}
-
-	public void setOrder_broadband_type(String order_broadband_type) {
-		this.order_broadband_type = order_broadband_type;
-	}
-
-	public void setNext_invoice_create_date(Date next_invoice_create_date) {
-		this.next_invoice_create_date = next_invoice_create_date;
-	}
-
-	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
-				.getOrder_create_date());
-		return order_create_date_str;
-	}
-
-	public void setOrder_create_date_str(String order_create_date_str) {
-		this.order_create_date_str = order_create_date_str;
-	}
-
-	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
-				.getOrder_using_start());
-		return order_using_start_str;
-	}
-
-	public void setOrder_using_start_str(String order_using_start_str) {
-		this.order_using_start_str = order_using_start_str;
-	}
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public CustomerOrder() {
-		// TODO Auto-generated constructor stub
 	}
 
-	public List<CustomerOrderDetail> getCustomerOrderDetails() {
-		return customerOrderDetails;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setCustomerOrderDetails(
-			List<CustomerOrderDetail> customerOrderDetails) {
-		this.customerOrderDetails = customerOrderDetails;
-	}
-
-	public Date getOrder_using_start() {
-		return order_using_start;
-	}
-
-	public void setOrder_using_start(Date order_using_start) {
-		this.order_using_start = order_using_start;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getOrder_serial() {
@@ -94,14 +65,6 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_serial(String order_serial) {
 		this.order_serial = order_serial;
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public Customer getCustomer() {
@@ -136,8 +99,20 @@ public class CustomerOrder implements Serializable {
 		this.order_status = order_status;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public Date getOrder_using_start() {
+		return order_using_start;
+	}
+
+	public void setOrder_using_start(Date order_using_start) {
+		this.order_using_start = order_using_start;
+	}
+
+	public Date getNext_invoice_create_date() {
+		return next_invoice_create_date;
+	}
+
+	public void setNext_invoice_create_date(Date next_invoice_create_date) {
+		this.next_invoice_create_date = next_invoice_create_date;
 	}
 
 	public String getOrder_type() {
@@ -146,6 +121,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_type(String order_type) {
 		this.order_type = order_type;
+	}
+
+	public String getOrder_broadband_type() {
+		return order_broadband_type;
+	}
+
+	public void setOrder_broadband_type(String order_broadband_type) {
+		this.order_broadband_type = order_broadband_type;
 	}
 
 	public String getSvlan() {
@@ -162,6 +145,45 @@ public class CustomerOrder implements Serializable {
 
 	public void setCvlan(String cvlan) {
 		this.cvlan = cvlan;
+	}
+
+	public String getOrder_create_date_str() {
+		order_create_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
+		return order_create_date_str;
+	}
+
+	public void setOrder_create_date_str(String order_create_date_str) {
+		this.order_create_date_str = order_create_date_str;
+	}
+
+	public String getOrder_using_start_str() {
+		order_using_start_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_using_start());
+		return order_using_start_str;
+	}
+
+	public void setOrder_using_start_str(String order_using_start_str) {
+		this.order_using_start_str = order_using_start_str;
+	}
+
+	public List<CustomerOrderDetail> getCustomerOrderDetails() {
+		return customerOrderDetails;
+	}
+
+	public void setCustomerOrderDetails(
+			List<CustomerOrderDetail> customerOrderDetails) {
+		this.customerOrderDetails = customerOrderDetails;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

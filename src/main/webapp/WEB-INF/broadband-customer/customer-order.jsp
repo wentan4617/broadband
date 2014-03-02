@@ -62,11 +62,11 @@
 					<div class="col-md-3">
 						<ul class="list-unstyled topup-list" >
 							<li>
-								<form:radiobutton path="order_broadband_type" value="new-connection" /> &nbsp;
+								<form:radiobutton path="customerOrder.order_broadband_type" value="new-connection" /> &nbsp;
 								<strong>New Connection Only</strong>
 							</li>
 							<li>
-								<form:radiobutton path="order_broadband_type" value="transition" /> &nbsp;
+								<form:radiobutton path="customerOrder.order_broadband_type" value="transition" /> &nbsp;
 								<strong>Transition</strong>
 							</li>
 						</ul>

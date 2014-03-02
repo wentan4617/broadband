@@ -69,7 +69,7 @@ public class ProvisionController {
 		
 		User userSession = (User)req.getSession().getAttribute("userSession");
 		
-		this.provisionService.activeRegisterCustomers(customer_ids, userSession.getId());
+		//this.provisionService.activeRegisterCustomers(customer_ids, userSession.getId());
 		attr.addFlashAttribute("success", customer_ids.length + " cusotmers are transformed status (verify to active) and order status (" + process_way + ").");
 		
 		return "redirect:/broadband-user/provision/customer/view/1";
