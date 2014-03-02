@@ -2,73 +2,91 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
 <mapper namespace="com.tm.broadband.mapper.CustomerTransactionMapper">
 	
-	<!--
-		 
-	-->
+	<!-- DEFINITION AREA -->
+	
+	<sql id="pageWhere">
+		<where>
+			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+		</where>
+	</sql>
+	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- SELECT AREA -->
+	
+	<!-- select customer transaction page -->
+	<select id="selectCustomerTransactionsByPage" parameterType="Page" resultType="CustomerTransaction">
+		select * from tm_customer_transaction 
+		<include refid="pageWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select customer transaction sum -->
+	<select id="selectCustomerTransactionsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_transaction 
+		<include refid="pageWhere"/>
+	</select>
+	
+	<!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	
 	<insert id="insertCustomerTransaction" parameterType="CustomerTransaction">
 		INSERT INTO `tm_customer_transaction`(
-			`customer_id`, `order_id`, `transaction_date`, `amount`, 
-			`auth_code`, `cardholder_name`, `card_name`, `card_number`, 
-			`client_info`, `currency_input`, `amount_settlement`, `expiry_date`, 
-			`dps_txn_ref`, `merchant_reference`, `response_text`, `success`, 
-			`txnMac`, `transaction_type`) 
+			`customer_id`, `order_id`, `invoice_id`, `transaction_date`, `amount`, 
+			`auth_code`, `cardholder_name`, `card_name`, `card_number`, `client_info`, 
+			`currency_input`, `amount_settlement`, `expiry_date`, `dps_txn_ref`, 
+			`merchant_reference`, `response_text`, `success`,  `txnMac`, 
+			`transaction_type`, `transaction_sort`) 
 		VALUES (
-			#{customer.id},#{order.id},now(),#{amount},
-			#{auth_code},#{cardholder_name},#{card_name},#{card_number},
-			#{client_info},#{currency_input},#{amount_settlement},#{expiry_date},
-			#{dps_txn_ref},#{merchant_reference},#{response_text},#{success},
-			#{txnMac},#{transaction_type})
+			#{customer.id}, #{customerOrder.id}, #{customerInvoice.id}, #{transaction_date}, #{amount}, 
+			#{auth_code}, #{cardholder_name}, #{card_name}, #{card_number}, #{client_info},
+			#{currency_input}, #{amount_settlement}, #{expiry_date}, #{dps_txn_ref},
+			#{merchant_reference}, #{response_text}, #{success}, #{txnMac},
+			#{transaction_type}, #{transaction_sort})
 	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA -->
 	
 	<!-- multi-update -->
 	<update id="updateCustomerTransaction" parameterType="CustomerTransaction">
 		UPDATE `tm_customer_transaction`
 		<set>
 			<if test="customer != null and customer.id != null">`customer_id`=#{customer.id},</if>
-			<if test="order != null and order.id != null">`order_id`=#{order.id},</if>
-			<if test="invoice != null and invoice.id != null">`invoice_id`=#{invoice.id},</if>
+			<if test="customerOrder != null and customerOrder.id != null">`order_id`=#{customerOrder.id},</if>
+			<if test="customerInvoice != null and customerInvoice.id != null">`invoice_id`=#{customerInvoice.id},</if>
 			<if test="transaction_date != null">`transaction_date`=#{transaction_date},</if>
 			<if test="amount != null">`amount`=#{amount},</if>
 			<if test="transaction_sort != null">`transaction_sort`=#{transaction_sort}</if>
 		</set>
 		<where>
-			<if test="id != null">
-				`id`=#{id}
-			</if>
-			<if test="customer != null and customer.id != null">
-				and `customer_id`=#{customer.id}
-			</if>
-			<if test="order != null and order.id != null">
-				and `order_id`=#{order.id}
-			</if>
-			<if test="invoice != null and invoice.id_where != null">
-				and `invoice_id`=#{invoice.id_where}
-			</if>
+			<if test="params.id != null">`id`=#{id}</if>
+			<if test="params.customer_id != null">and `customer_id`=#{params.customer_id}</if>
+			<if test="params.order_id != null">and `order_id`=#{params.order_id}</if>
+			<if test="params.invoice_id != null">and `invoice_id`=#{params.invoice_id}</if>
 		</where>
 	</update>
 	
-	<!-- select customer transaction page -->
-	<select id="selectCustomerTransactionsByPage" parameterType="Page" resultType="CustomerTransaction">
-		select * from tm_customer_transaction 
-		${params.orderby} limit #{pageOffset}, #{pageSize}
-	</select>
-	
-	<!-- select customer transaction amount -->
-	<select id="selectCustomerTransactionsSum" parameterType="Page" resultType="int">
-		select count(*) from tm_customer_transaction 
-	</select>
-	
-	<!-- select customer transaction page by id -->
-	<select id="selectCustomerTxsPageByCustomerId" parameterType="Page" resultType="CustomerTransaction">
-		select * from tm_customer_transaction where customer_id = ${params.customerId}
-		${params.orderby} limit #{pageOffset}, #{pageSize}
-	</select>
-	
-	<!-- select customer transaction amount by id -->
-	<select id="selectCustomerTxsSumByCustomerId" parameterType="Page" resultType="int">
-		select count(*) from tm_customer_transaction where customer_id = ${params.customerId}
-	</select>
+	<!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
 	
 </mapper>

@@ -32,37 +32,4 @@ public class ProvisionService {
 
 	public ProvisionService() {}
 	
-	@Transactional
-	public void activeRegisterCustomers(String[] customer_ids, int user_id) {
-		
-		if (customer_ids != null) {
-			
-			for (String customer_id: customer_ids) {
-				
-				Customer customer = new Customer();
-				customer.setId(Integer.parseInt(customer_id));
-				customer.setStatus("active");
-				
-				this.customerMapper.updateCustomerStatus(customer);
-				
-				int order_id = this.customerOrderMapper.selectCustomerOrderIdByCId(customer.getId());
-				
-				this.customerOrderMapper.updateCustomerOrderStatusById(order_id, "payment");
-				
-				ProvisionLog log = new ProvisionLog();
-				User user = new User();
-				user.setId(user_id);
-				log.setUser(user);
-				log.setOrder_sort("customer-order");
-				CustomerOrder customerOrder = new CustomerOrder();
-				customerOrder.setId(order_id);
-				log.setOrder_id_customer(customerOrder);
-				log.setProcess_way("pending to payment");
-				
-				this.provisionLogMapper.insertProvisionLog(log);
-			}
-			
-		}		
-	}
-
 }

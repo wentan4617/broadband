@@ -142,7 +142,7 @@ public class PDFCreator {
         headerTable.addCell(cell);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        Customer customer = customerInvoice.getCusomter();
+        Customer customer = customerInvoice.getCustomer();
         cell.setPhrase(new Phrase(customer.getFirst_name()+" "+customer.getLast_name(), tahoma_normal_10));
         headerTable.addCell(cell);
         cell.setPhrase(new Phrase(customer.getAddress(), tahoma_normal_10));
@@ -877,9 +877,9 @@ public class PDFCreator {
         Phrase date = new Phrase("Date: ", verdana_bold_8);
         Phrase invoiceNo = new Phrase(" | Invoice No: ", verdana_bold_8);
         Phrase loginName = new Phrase(" | Login Name: ", verdana_bold_8);
-        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getOrder().getOrder_create_date()), arial_normal_8);
+        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getCustomerOrder().getOrder_create_date()), arial_normal_8);
         Phrase invoiceNoField = new Phrase(this.customerInvoice.getInvoice_serial(), arial_normal_8);
-        Phrase loginNameField = new Phrase(this.customerInvoice.getCusomter().getLogin_name(), arial_normal_8);
+        Phrase loginNameField = new Phrase(this.customerInvoice.getCustomer().getLogin_name(), arial_normal_8);
         // put paragraph into table cell
         basicsP.add(date);
         basicsP.add(dateField);

@@ -6,16 +6,15 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-
-<div class="panel-group" id="accordion">
+<div class="panel-group" id="customerQueryAccordion">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title">
 				<a data-toggle="collapse" data-toggle="collapse"
-					data-parent="#accordion" href="#collapseOne"> Customer Query </a>
+					data-parent="#customerQueryAccordion" href="#collapseCustomerQuery"> Customer Query </a>
 			</h4>
 		</div>
-		<div id="collapseOne" class="panel-collapse collapse in">
+		<div id="collapseCustomerQuery" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<form:form  modelAttribute="customerQuery" method="get" action="${ctx }/broadband-user/crm/customer/query/1" class="form-horizontal">
 				
@@ -49,22 +48,13 @@
 								<form:input path="phone" class="form-control" />
 							</div>
 						</div>
-						<label class="col-md-1 control-label">SVLan:</label>
-						<div class="col-md-2">
+						<label class="col-md-2 control-label">Email</label>
+						<div class="col-md-4">
 							<div class="input-group">
-								<span class="input-group-addon"> 
-									<form:checkbox path="svlan_ck" value="" data-role="query" data-id="svlan"/> 
+								<span class="input-group-addon" > 
+									<form:checkbox path="email_ck" value="" data-role="query" data-id="email"/> 
 								</span> 
-								<form:input path="svlan" class="form-control" />
-							</div>
-						</div>
-						<label class="col-md-1 control-label">CVLan:</label>
-						<div class="col-md-2">
-							<div class="input-group">
-								<span class="input-group-addon">
-									<form:checkbox path="cvlan_ck" value="" data-role="query" data-id="cvlan"/> 
-								</span> 
-								<form:input path="cvlan" class="form-control" />
+								<form:input path="email" class="form-control" />
 							</div>
 						</div>
 					</div>
@@ -78,13 +68,23 @@
 								<form:input path="cellphone" class="form-control" />
 							</div>
 						</div>
-						<label class="col-md-2 control-label">Email</label>
-						<div class="col-md-4">
+						
+						<label class="col-md-1 control-label">SVLan:</label>
+						<div class="col-md-2">
 							<div class="input-group">
-								<span class="input-group-addon" > 
-									<form:checkbox path="email_ck" value="" data-role="query" data-id="email"/> 
+								<span class="input-group-addon"> 
+									<form:checkbox path="svlan_ck" value="" data-role="query" data-id="customerOrder\\.svlan"/> 
 								</span> 
-								<form:input path="email" class="form-control" />
+								<form:input path="customerOrder.svlan" class="form-control" />
+							</div>
+						</div>
+						<label class="col-md-1 control-label">CVLan:</label>
+						<div class="col-md-2">
+							<div class="input-group">
+								<span class="input-group-addon">
+									<form:checkbox path="cvlan_ck" value="" data-role="query" data-id="customerOrder\\.cvlan"/> 
+								</span> 
+								<form:input path="customerOrder.cvlan" class="form-control" />
 							</div>
 						</div>
 					</div>		

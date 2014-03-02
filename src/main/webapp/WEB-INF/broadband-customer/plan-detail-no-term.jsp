@@ -21,7 +21,7 @@
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<div class="caption">
-					<img class="pull-right" data-src="holder.js/120x86" alt="...">
+					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="...">
 					<h3><strong class="text-success">ADSL BROADBAND</strong></h3>
 					<hr/>
 					<div class="well">
@@ -66,7 +66,7 @@
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<div class="caption">
-					<img class="pull-right" data-src="holder.js/120x86" alt="...">
+					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_super-fast.png" alt="...">
 					<h3><strong class="text-success">ULTRA VDSL&trade; BROADBAND</strong></h3>
 					<hr/>
 					<div class="well">
@@ -108,7 +108,7 @@
 		<div class="col-md-4">
 			<div class="thumbnail">
 				<div class="caption">
-					<img class="pull-right" data-src="holder.js/120x86" alt="..." >
+					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_fastest.png" alt="..." >
 					<h3 class="clearfix"><strong class="text-success">ULTRA FIBRE&copy;</strong></h3>
 					<hr style="margin-top:-2px;"/>
 					<div class="well">

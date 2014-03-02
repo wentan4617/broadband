@@ -53,11 +53,6 @@ public class SystemService {
 	}
 
 	@Transactional
-	public List<User> queryUsers() {
-		return this.userMapper.selectUsers();
-	}
-
-	@Transactional
 	public int queryExistUserByName(String login_name) {
 		return this.userMapper.selectExistUserByName(login_name);
 	}

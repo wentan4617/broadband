@@ -1,5 +1,6 @@
 package com.tm.broadband.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +39,9 @@ public class PlanController {
 		this.planService = planService;
 	}
 	
+	/*
+	 * PLAN AREA
+	 */
 	
 	@RequestMapping(value = "/broadband-user/plan/create")
 	public String toPlanCreate(Model model) {
@@ -82,6 +86,7 @@ public class PlanController {
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");
 		plan.setCreate_by(userSession);
+		plan.setCreate_date(new Date());
 		
 		this.planService.savePlan(plan);
 		attr.addFlashAttribute("success", "Create Plan " + plan.getPlan_name() + " is successful.");
@@ -96,7 +101,7 @@ public class PlanController {
 		Page<Plan> page = new Page<Plan>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("orderby", "order by plan_status desc,plan_type");
+		page.getParams().put("orderby", "order by plan_status desc, plan_type");
 		this.planService.queryPlansByPage(page);
 		model.addAttribute("page", page);
 
@@ -155,6 +160,8 @@ public class PlanController {
 		
 		User userSession = (User)req.getSession().getAttribute("userSession");
 		plan.setLast_update_by(userSession);
+		plan.setLast_update_date(new Date(System.currentTimeMillis()));
+		plan.getParams().put("id", plan.getId());
 		
 		this.planService.editPlan(plan);
 		
@@ -164,7 +171,11 @@ public class PlanController {
 	}
 	
 	/*
-	 * Topup Controller start
+	 * END PLAN AREA
+	 */
+	
+	/*
+	 * TOPUP AREA
 	 */
 	
 	@RequestMapping("/broadband-user/plan/topup/view/{pageNo}")
@@ -242,7 +253,7 @@ public class PlanController {
 	}
 	
 	/*
-	 * Topup Controller end
+	 * END TOPUP AREA
 	 */
 
 }

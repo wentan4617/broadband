@@ -10,7 +10,7 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading">${panelheading }</div>
+				<div class="panel-heading"><h4 class="panel-title">${panelheading }</h4></div>
 				<div class="panel-body">
 					<form:form modelAttribute="plan" method="post" action="${ctx}${action }" class="form-horizontal">
 						<form:hidden path="id"/>
@@ -27,20 +27,21 @@
 							<label for="plan_group" class="control-label col-md-4">Plan Group</label>
 							<div class="col-md-3">
 								<form:select path="plan_group" class="form-control">
-									<form:option value="plan-prepay">PLAN PREPAY</form:option>
-									<form:option value="plan-topup">PLAN TOPUP</form:option>
+									<form:option value="plan-no-term">Plan No Term</form:option>
+									<form:option value="plan-term">Plan Term</form:option>
+									<form:option value="plan-topup">Plan Topup</form:option>
 								</form:select>
 							</div>
-							<p class="help-block">
+							<!-- <p class="help-block">
 								<span class="text-danger">When choose <strong>'PLAN TOPUP'</strong>, it will display top-up list.</span>
-							</p>
+							</p> -->
 						</div>
 						
 						
 						<!-- include topup-list.jsp -->
-						<div id="topupContainer" style="display: ${plan.plan_group == 'plan-topup' ? 'block;' : 'none;'}">
+						<%-- <div id="topupContainer" style="display: ${plan.plan_group == 'plan-topup' ? 'block;' : 'none;'}">
 							<jsp:include page="topup-list.jsp"/>
-						</div>
+						</div> --%>
 						
 						
 						<div class="form-group">
@@ -108,23 +109,26 @@
 								</form:select>
 							</div>
 						</div>
-						<div class="form-group">
-							<label for="plan_desc" class="control-label col-md-4">Description</label>
-							<div class="col-md-6">
-								<form:textarea path="plan_desc" class="form-control" rows="6"/>
-							</div>
-						</div>
-						<div class="form-group">
-							<label for="memo" class="control-label col-md-4">Memo</label>
-							<div class="col-md-6">
-								<form:textarea path="memo" class="form-control" rows="6"/>
-							</div>
-						</div>
+						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
 								<button type="submit" class="btn btn-success">Save</button>
 							</div>
 						</div>
+						<hr/>
+						<div class="form-group">
+							<label for="plan_desc" class="control-label col-md-4">Description</label>
+							<div class="col-md-8">
+								<form:textarea path="plan_desc" class="form-control" rows="12"/>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="memo" class="control-label col-md-4">Memo</label>
+							<div class="col-md-8">
+								<form:textarea path="memo" class="form-control" rows="6"/>
+							</div>
+						</div>
+						
 						
 					</form:form>
 				</div>

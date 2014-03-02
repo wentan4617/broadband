@@ -171,6 +171,8 @@ public class SystemController {
 			return "broadband-user/system/user";
 		}
 
+		user.getParams().put("id", user.getId());
+		
 		this.systemService.editUser(user);
 
 		attr.addFlashAttribute("success", "Edit User " + user.getUser_name()

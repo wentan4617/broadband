@@ -2,25 +2,35 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
 <mapper namespace="com.tm.broadband.mapper.PlanMapper">
+
+	<!-- DEFINITION AREA -->
 	
-	<!-- create plan -->
-	<insert id="insertPlan" parameterType="Plan" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `tm_plan`(
-			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, 
-			`plan_status`, `plan_type`, `plan_sort`, `memo`, `plan_group`, `plan_new_connection_fee`,  `create_date`, `create_by`, `plan_topupid_array`) 
-		VALUES (
-			#{plan_name},#{plan_desc},#{plan_price},#{data_flow},
-			#{plan_status},#{plan_type},#{plan_sort},#{memo},#{plan_group},#{plan_new_connection_fee},now(),#{create_by.id},#{plan_topupid_array})
-	</insert>
+	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- SELECT AREA -->
 	
 	<!-- select plan page -->
 	<select id="selectPlansByPage" parameterType="Page" resultType="Plan">
 		select * from tm_plan 
-		${params.orderby} limit #{pageOffset}, #{pageSize}
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
 	</select>
 	
-	<!-- select plan amount -->
+	<!-- select plan sum -->
 	<select id="selectPlansSum" parameterType="Page" resultType="int">
 		select count(*) from tm_plan 
 	</select>
@@ -35,55 +45,22 @@
 		select count(*) from tm_plan where plan_name = #{0} and id != #{1}
 	</select>
 	
-	<!-- update plan -->
-	<update id="updatePlan" parameterType="Plan">
-		UPDATE `tm_plan` SET 
-			`plan_name`=#{plan_name},`plan_desc`=#{plan_desc},`plan_price`=#{plan_price},
-			`data_flow`=#{data_flow},`plan_status`=#{plan_status},`plan_type`=#{plan_type},
-			`plan_sort`=#{plan_sort},`memo`=#{memo},`plan_group`=#{plan_group},`plan_new_connection_fee`=#{plan_new_connection_fee},
-			`last_update_date`=now(),`last_update_by`=#{last_update_by.id},`plan_topupid_array`=#{plan_topupid_array}
-		WHERE `id`=#{id}
-	</update>
-	
-	<!-- only update plan status -->
-	<update id="updatePlanStatusById" >
-		UPDATE `tm_plan` SET `plan_status`=#{0} where `id`=#{1}
-	</update>
-	
 	<!-- select one plan by id -->
 	<select id="selectPlanById" resultType="Plan">
 		SELECT * FROM `tm_plan` WHERE  id = #{0}
 	</select>
 	
-	<!-- select plans by type -->
-	<select id="selectPlansByType" resultType="Plan">
-		select * from tm_plan where plan_type = #{0}
-	</select>
-	
-	<insert id="insertPlanTopup">
-		INSERT INTO tm_plan_topup(plan_id,topup_id) VALUES(#{0},#{1})
-	</insert>
-	
-	<delete id="deletePlanTopupById">
-		DELETE FROM tm_plan_topup WHERE plan_id=#{0}
-	</delete>
-	
 	
 	<!-- selectPlansBySome --> 
 	<select id="selectPlansBySome" parameterType="Plan" resultType="Plan">
-		select * from `tm_plan` where 1=1
-		<if test="plan_group != null">
-			and plan_group = #{plan_group}
-		</if>
-		<if test="plan_sort != null">
-			and plan_sort = #{plan_sort}
-		</if>
-		<if test="plan_status != null">
-			and plan_status = #{plan_status}
-		</if>
-		<if test="params.orderby != null">
-			${params.orderby}
-		</if>
+		select * from `tm_plan` 
+		<where>
+			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
+			<if test="params.plan_sort != null">and plan_sort = #{params.plan_sort}</if>
+			<if test="params.plan_status != null">and plan_status = #{params.plan_status}</if>
+			<if test="params.plan_type != null">and plan_type = #{params.plan_type}</if>
+		</where>
+		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
 	
 	<!-- select plan with topup -->
@@ -138,5 +115,70 @@
 	  		<result property="topup_status" column="top_status"/>
   		</collection>
 	</resultMap>
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<!-- create plan -->
+	<insert id="insertPlan" parameterType="Plan" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_plan`(
+			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, `data_flow_k`,
+			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_new_connection_fee`, 
+			`memo`, `create_date`, `create_by`, plan_topupid_array`, `plan_prepay_months`) 
+		VALUES (
+			#{plan_name}, #{plan_desc}, #{plan_price}, #{data_flow}, #{data_flow_k},
+			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_new_connection_fee}, 
+			#{memo}, #{create_date}, #{create_by.id}, #{plan_topupid_array}, #{plan_prepay_months})
+	</insert>
+	
+	<insert id="insertPlanTopup">
+		insert into `tm_plan_topup`(`plan_id`, `topup_id`) VALUES(#{0}, #{1})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update plan -->
+	<update id="updatePlan" parameterType="Plan">
+		UPDATE `tm_plan` 
+		<set>
+			<if test="plan_name != null">`plan_name`=#{plan_name},</if>
+			<if test="plan_desc != null">`plan_desc`=#{plan_desc},</if>
+			<if test="plan_price != null">`plan_price`=#{plan_price},</if>
+			<if test="data_flow != null">`data_flow`=#{data_flow},</if>
+			<if test="data_flow_k != null">`data_flow_k`=#{data_flow_k},</if>
+			<if test="plan_status != null">`plan_status`=#{plan_status},</if>
+			<if test="plan_type != null">`plan_type`=#{plan_type},</if>
+			<if test="plan_sort != null">`plan_sort`=#{plan_sort},</if>
+			<if test="plan_group != null">`plan_group`=#{plan_group},</if>
+			<if test="plan_new_connection_fee != null">`plan_new_connection_fee`=#{plan_new_connection_fee},</if>
+			<if test="memo != null">`memo`=#{memo},</if>
+			<if test="last_update_date != null">`last_update_date`=#{last_update_date},</if>
+			<if test="last_update_by != null and last_update_by.id != null">`last_update_by`=#{last_update_by.id},</if>
+			<if test="plan_topupid_array != null">`plan_topupid_array`=#{plan_topupid_array},</if>
+			<if test="plan_prepay_months != null">`plan_prepay_months`=#{plan_prepay_months}</if>
+		</set>
+		<where>
+			<if test="params.id != null">`id`=#{params.id}</if>
+		</where>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA -->
+	
+	<delete id="deletePlanTopupById">
+		DELETE FROM tm_plan_topup WHERE plan_id=#{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
 	
 </mapper>

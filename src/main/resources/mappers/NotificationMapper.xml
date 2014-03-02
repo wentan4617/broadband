@@ -2,27 +2,27 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
 <mapper namespace="com.tm.broadband.mapper.NotificationMapper">
 	
-	
-	<insert id="insertNotification" parameterType="Notification">
-		insert into tm_notification(title,content,type)
-		values(#{title},#{content},#{type})
-	</insert>
-	
-	<update id="updateNotification" parameterType="Notification">
-		UPDATE `tm_notification` SET `title`=#{title},`content`=#{content},`type`=#{type}
-	</update>
+	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
 	
 	<!-- select notification page -->
 	<select id="selectNotificationsByPage" parameterType="Page" resultType="Notification">
 		select * from tm_notification 
-		${params.orderby} limit #{pageOffset}, #{pageSize}
-	</select>
-	
-	<!-- select notification page -->
-	<select id="selectNotifications" resultType="Notification">
-		select * from tm_notification
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
 	</select>
 	
 	<!-- select notification amount -->
@@ -30,9 +30,48 @@
 		select count(*) from tm_notification 
 	</select>
 	
+	<!-- select notification page -->
+	<select id="selectNotifications" resultType="Notification">
+		select * from tm_notification
+	</select>
+	
 	<!-- select one notification by id -->
 	<select id="selectNotificationById" resultType="Notification">
 		SELECT * FROM `tm_notification` WHERE  id = #{0}
 	</select>
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<insert id="insertNotification" parameterType="Notification">
+		insert into tm_notification(title, content, type)
+		values(#{title}, #{content}, #{type})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<update id="updateNotification" parameterType="Notification">
+		UPDATE `tm_notification` 
+		<set>
+			<if test="title != null">title=#{title},</if>
+			<if test="content != null">content=#{content},</if>
+			<if test="type != null">type=#{type}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id=#{params.id}</if>
+		</where>
+	</update>
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
 	
 </mapper>

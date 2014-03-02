@@ -31,6 +31,8 @@
 									Create Plan
 								</a>
 							</li>
+							
+							<%-- 
 							<li class="divider"></li>
 							<li>
 								<a href="${ctx}/broadband-user/plan/topup/view/1">
@@ -43,7 +45,7 @@
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 									Create Topup
 								</a>
-							</li>
+							</li> --%>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -64,7 +66,7 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Billing <b class="caret"></b>
 						</a>
-						<ul class="dropdown-menu">
+						<!-- <ul class="dropdown-menu">
 							<li>
 								<a href="#">...</a>
 							</li>
@@ -72,7 +74,7 @@
 							<li>
 								<a href="#">...</a>
 							</li>
-						</ul>
+						</ul> -->
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -85,17 +87,17 @@
                     				Provision Customer Order
                     			</a>
 							</li>
-							<li class="divider"></li>
+							<!-- <li class="divider"></li>
 							<li>
 								<a href="#">...</a>
-							</li>
+							</li> -->
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Data <b class="caret"></b>
 						</a>
-						<ul class="dropdown-menu">
+						<!-- <ul class="dropdown-menu">
 							<li>
 								<a href="#">...</a>
 							</li>
@@ -103,7 +105,7 @@
 							<li>
 								<a href="#">...</a>
 							</li>
-						</ul>
+						</ul> -->
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">

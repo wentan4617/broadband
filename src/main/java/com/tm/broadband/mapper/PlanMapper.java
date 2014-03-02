@@ -6,44 +6,59 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 
 /**
- * mapping tm_plan, planDAO component
+ * mapping tm_plan, plan DAO component
  * 
  * @author Cook1fan
  * 
  */
+
+/* SELECT AREA *//* // END SELECT AREA */
+/* =================================================================================== */
+/* INSERT AREA *//* // END INSERT AREA */
+/* =================================================================================== */
+/* UPDATE AREA *//* // END UPDATE AREA */
+/* =================================================================================== */
+/* DELETE AREA *//* // END DELETE AREA */
+
 public interface PlanMapper {
-
-	void insertPlan(Plan plan);
-
-	void deletePlanById(int id);
-
-	void updatePlan(Plan plan);
-
-	List<Plan> selectLikePlansByName(String plan_name);
-
-	List<Plan> selectPlans();
+	
+	/* SELECT AREA */
 	
 	List<Plan> selectPlansBySome(Plan plan);
-	
 	List<Plan> selectPlansWithTopups(Plan plan);
-
 	Plan selectPlanById(int id);
-
-	Plan selectPlanByName(String plan_name);
-
 	int selectExistPlanByName(String plan_name);
-
 	int selectExistNotSelfPlanfByName(String plan_name, int id);
-	
 	List<Plan> selectPlansByPage(Page<Plan> page);
-	
 	int selectPlansSum(Page<Plan> page);
 	
-	void updatePlanStatusById(String status, int id);
+	/* // END SELECT AREA */
 	
-	List<Plan> selectPlansByType(String type);
+	/* =================================================================================== */
 	
+	/* INSERT AREA */
+	
+	void insertPlan(Plan plan);
 	void insertPlanTopup(int planId, int topupId);
 	
+	/* // END INSERT AREA */
+	
+	/* =================================================================================== */
+	
+	/* UPDATE AREA */
+	
+	void updatePlan(Plan plan);
+	void updatePlanStatusById(String status, int id);
+	
+	/* // END UPDATE AREA */
+	
+	/* =================================================================================== */
+	
+	/* DELETE AREA */
+	
+	void deletePlanById(int id);
 	void deletePlanTopupById(int planId);
+	
+	/* // END DELETE AREA */
+	
 }

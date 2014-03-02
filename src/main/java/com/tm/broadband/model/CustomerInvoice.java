@@ -2,6 +2,8 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * customer invoice, mapping tm_customer_invoice
@@ -13,11 +15,15 @@ public class CustomerInvoice implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+
 	private Integer id;
-	private Integer id_where;
+
 	private String invoice_serial;
 	private Customer customer;
-	private CustomerOrder order;
+	private CustomerOrder customerOrder;
 	private Date create_date;
 	private Date due_date;
 	private Double amount_payable;
@@ -26,6 +32,20 @@ public class CustomerInvoice implements Serializable {
 	private String status;
 	private String memo;
 	private String invoice_pdf_path;
+
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+
+	private Map<String, Object> params = new HashMap<String, Object>();
+
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public CustomerInvoice() {
 	}
@@ -53,13 +73,14 @@ public class CustomerInvoice implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
+	
 
-	public CustomerOrder getOrder() {
-		return order;
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
 	}
 
-	public void setOrder(CustomerOrder order) {
-		this.order = order;
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
 	}
 
 	public Date getCreate_date() {
@@ -118,16 +139,24 @@ public class CustomerInvoice implements Serializable {
 		this.memo = memo;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getInvoice_pdf_path() {
 		return invoice_pdf_path;
 	}
 
 	public void setInvoice_pdf_path(String invoice_pdf_path) {
 		this.invoice_pdf_path = invoice_pdf_path;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

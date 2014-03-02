@@ -16,6 +16,15 @@ html {
 	background: url("../images/top.png") no-repeat;
 }
 
+.logo {
+	display: inline-block;
+	height: 46px;
+	width: 111px;
+	background: url("../images/logo.png") no-repeat;
+	margin-top:-12px;
+	background-size: contain;
+}
+
 body {
 	padding-bottom: 0;
 	background:#f7f7f7;

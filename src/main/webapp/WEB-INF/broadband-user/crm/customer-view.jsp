@@ -16,7 +16,9 @@
 		
 		
 			<div class="panel panel-default">
-				<div class="panel-heading">customer View</div>
+				<div class="panel-heading">
+					<h4 class="panel-title">Customer View</h4>
+				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
 						<thead>

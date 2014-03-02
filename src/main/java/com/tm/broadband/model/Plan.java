@@ -16,11 +16,16 @@ import com.tm.broadband.validator.mark.PlanValidatedMark;
  * @author Cook1fan
  * 
  */
+
 public class Plan implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private int id;
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+
+	private Integer id;
 	@NotEmpty(groups = { PlanValidatedMark.class })
 	private String plan_name;
 	private String plan_desc;
@@ -38,101 +43,33 @@ public class Plan implements Serializable {
 	private Date last_update_date;
 	private User last_update_by;
 	private String plan_topupid_array;
+	private Integer plan_prepay_months;
 
-	private List<Topup> topups;
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
 	private Topup topup;
+	private List<Topup> topups;
 	private String[] topupArray;
-	private Map<String, Object> params = new HashMap<String, Object>();//
+
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public Plan() {
-
 	}
 
-	public Topup getTopup() {
-		return topup;
-	}
-
-	public void setTopup(Topup topup) {
-		this.topup = topup;
-	}
-
-	public Map<String, Object> getParams() {
-		return params;
-	}
-
-	public void setParams(Map<String, Object> params) {
-		this.params = params;
-	}
-
-	public String getPlan_topupid_array() {
-		return plan_topupid_array;
-	}
-
-	public void setPlan_topupid_array(String plan_topupid_array) {
-		this.plan_topupid_array = plan_topupid_array;
-	}
-
-	public String[] getTopupArray() {
-		return topupArray;
-	}
-
-	public void setTopupArray(String[] topupArray) {
-		this.topupArray = topupArray;
-	}
-
-	public List<Topup> getTopups() {
-		return topups;
-	}
-
-	public void setTopups(List<Topup> topups) {
-		this.topups = topups;
-	}
-
-	public String getPlan_group() {
-		return plan_group;
-	}
-
-	public void setPlan_group(String plan_group) {
-		this.plan_group = plan_group;
-	}
-
-	public Double getPlan_new_connection_fee() {
-		return plan_new_connection_fee;
-	}
-
-	public void setPlan_new_connection_fee(Double plan_new_connection_fee) {
-		this.plan_new_connection_fee = plan_new_connection_fee;
-	}
-
-	public Long getData_flow_k() {
-		return data_flow_k;
-	}
-
-	public void setData_flow_k(Long data_flow_k) {
-		this.data_flow_k = data_flow_k;
-	}
-
-	public String getPlan_sort() {
-		return plan_sort;
-	}
-
-	public void setPlan_sort(String plan_sort) {
-		this.plan_sort = plan_sort;
-	}
-
-	public String getPlan_type() {
-		return plan_type;
-	}
-
-	public void setPlan_type(String plan_type) {
-		this.plan_type = plan_type;
-	}
-
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -168,6 +105,14 @@ public class Plan implements Serializable {
 		this.data_flow = data_flow;
 	}
 
+	public Long getData_flow_k() {
+		return data_flow_k;
+	}
+
+	public void setData_flow_k(Long data_flow_k) {
+		this.data_flow_k = data_flow_k;
+	}
+
 	public String getPlan_status() {
 		return plan_status;
 	}
@@ -176,12 +121,44 @@ public class Plan implements Serializable {
 		this.plan_status = plan_status;
 	}
 
+	public String getPlan_type() {
+		return plan_type;
+	}
+
+	public void setPlan_type(String plan_type) {
+		this.plan_type = plan_type;
+	}
+
+	public String getPlan_sort() {
+		return plan_sort;
+	}
+
+	public void setPlan_sort(String plan_sort) {
+		this.plan_sort = plan_sort;
+	}
+
 	public String getMemo() {
 		return memo;
 	}
 
 	public void setMemo(String memo) {
 		this.memo = memo;
+	}
+
+	public String getPlan_group() {
+		return plan_group;
+	}
+
+	public void setPlan_group(String plan_group) {
+		this.plan_group = plan_group;
+	}
+
+	public Double getPlan_new_connection_fee() {
+		return plan_new_connection_fee;
+	}
+
+	public void setPlan_new_connection_fee(Double plan_new_connection_fee) {
+		this.plan_new_connection_fee = plan_new_connection_fee;
 	}
 
 	public Date getCreate_date() {
@@ -216,8 +193,56 @@ public class Plan implements Serializable {
 		this.last_update_by = last_update_by;
 	}
 
+	public String getPlan_topupid_array() {
+		return plan_topupid_array;
+	}
+
+	public void setPlan_topupid_array(String plan_topupid_array) {
+		this.plan_topupid_array = plan_topupid_array;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public Topup getTopup() {
+		return topup;
+	}
+
+	public void setTopup(Topup topup) {
+		this.topup = topup;
+	}
+
+	public List<Topup> getTopups() {
+		return topups;
+	}
+
+	public void setTopups(List<Topup> topups) {
+		this.topups = topups;
+	}
+
+	public String[] getTopupArray() {
+		return topupArray;
+	}
+
+	public void setTopupArray(String[] topupArray) {
+		this.topupArray = topupArray;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public Integer getPlan_prepay_months() {
+		return plan_prepay_months;
+	}
+
+	public void setPlan_prepay_months(Integer plan_prepay_months) {
+		this.plan_prepay_months = plan_prepay_months;
 	}
 
 }

@@ -25,7 +25,7 @@
                     		<a href="${ctx }/broadband-user/plan/create">Create Plan</a>
                     	</li>
                     </ul>
-                    <hr/>
+                   <%--  <hr/>
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
@@ -35,7 +35,7 @@
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/plan/topup/create">Create Topup</a>
                     	</li>
-                    </ul>
+                    </ul> --%>
                 </div>
             </div>
         </div>

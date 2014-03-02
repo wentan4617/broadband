@@ -31,9 +31,12 @@ public class PlanService {
 	}
 
 	public PlanService() {
-
 	}
 
+	/*
+	 * PLAN AREA
+	 */
+	
 	@Transactional
 	public void savePlan(Plan plan) {
 		
@@ -90,23 +93,8 @@ public class PlanService {
 	}
 
 	@Transactional
-	public List<Plan> queryLikePlansByName(String plan_name) {
-		return this.planMapper.selectLikePlansByName(plan_name);
-	}
-
-	@Transactional
-	public List<Plan> queryPlans() {
-		return this.planMapper.selectPlans();
-	}
-
-	@Transactional
 	public Plan queryPlanById(int id) {
 		return this.planMapper.selectPlanById(id);
-	}
-
-	@Transactional
-	public Plan queryPlanByName(String plan_name) {
-		return this.planMapper.selectPlanByName(plan_name);
 	}
 
 	@Transactional
@@ -123,6 +111,7 @@ public class PlanService {
 	public Page<Plan> queryPlansByPage(Page<Plan> page) {
 		page.setTotalRecord(this.planMapper.selectPlansSum(page));
 		page.setResults(this.planMapper.selectPlansByPage(page));
+	
 		return page;
 	}
 
@@ -135,11 +124,6 @@ public class PlanService {
 			}
 		}
 	}
-
-	@Transactional
-	public List<Plan> queryPlansByType(String type) {
-		return this.planMapper.selectPlansByType(type);
-	}
 	
 	@Transactional
 	public List<Plan> queryPlansBySome(Plan plan) {
@@ -150,8 +134,13 @@ public class PlanService {
 	public List<Plan> queryPlansWithTopups(Plan plan) {
 		return this.planMapper.selectPlansWithTopups(plan);
 	}
+	
 	/*
-	 * Topup Operations begin
+	 * END PLAN AREA
+	 */
+	
+	/*
+	 * TOPUP AREA
 	 */
 
 	@Transactional
@@ -171,7 +160,7 @@ public class PlanService {
 
 	@Transactional
 	public List<Topup> queryTopups() {
-		return this.topupMapper.selectTopups();
+		return null; //this.topupMapper.selectTopups();
 	}
 
 	@Transactional
@@ -182,7 +171,7 @@ public class PlanService {
 	}
 
 	/*
-	 * Topup Operations end
+	 * END TOPUP AREA
 	 */
 
 }

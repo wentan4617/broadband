@@ -1,7 +1,6 @@
 package com.tm.broadband.controller;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,7 +43,8 @@ public class CRMController {
 	}
 
 	@RequestMapping("/broadband-user/crm/customer/query/{pageNo}")
-	public String customerQuery(Model model, @PathVariable("pageNo") int pageNo,
+	public String customerQuery(Model model, 
+			@PathVariable("pageNo") int pageNo,
 			@ModelAttribute("customerQuery") Customer customer, RedirectAttributes attr) {
 		
 		Page<Customer> page = new Page<Customer>();
@@ -55,8 +55,9 @@ public class CRMController {
 		page.getParams().put("phone", customer.getPhone());
 		page.getParams().put("cellphone", customer.getCellphone());
 		page.getParams().put("email", customer.getEmail());
-		page.getParams().put("svlan", customer.getSvlan());
-		page.getParams().put("cvlan", customer.getCvlan());
+		page.getParams().put("svlan", customer.getCustomerOrder().getSvlan());
+		page.getParams().put("cvlan", customer.getCustomerOrder().getCvlan());
+		
 		this.crmService.queryCustomersByPage(page);
 		model.addAttribute("page", page);
 		return "broadband-user/crm/customer-view";
@@ -69,17 +70,7 @@ public class CRMController {
 		model.addAttribute("panelheading", "Customer Edit");
 		model.addAttribute("action", "/broadband-user/plan/edit");
 		
-		
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
-		
-		
-//		Page<CustomerTransaction> transactionPage = new Page<CustomerTransaction>();
-//		transactionPage.setPageNo(1);
-//		transactionPage.setPageSize(30);
-//		transactionPage.getParams().put("orderby", "order by transaction_date desc");
-//		this.crmService.queryCustomerTransactionsByPage(transactionPage);
-//		model.addAttribute("transactionPage", transactionPage);
-		
 		
 		model.addAttribute("customer", customer);
 		
@@ -97,8 +88,8 @@ public class CRMController {
 		transactionPage.setPageNo(pageNo);
 		transactionPage.setPageSize(30);
 		transactionPage.getParams().put("orderby", "order by transaction_date desc");
-		transactionPage.getParams().put("customerId", customerId);
-		this.crmService.queryCustomerTransactionsPageByCustomerId(transactionPage);
+		transactionPage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerTransactionsByPage(transactionPage);
 
 		return transactionPage;
 	}
@@ -113,8 +104,8 @@ public class CRMController {
 		invoicePage.setPageNo(pageNo);
 		invoicePage.setPageSize(12);
 		invoicePage.getParams().put("orderby", "order by create_date desc");
-		invoicePage.getParams().put("customerId", customerId);
-		this.crmService.queryCustomerInvoicesPageByCustomerId(invoicePage);
+		invoicePage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 
 		return invoicePage;
 	}
@@ -137,7 +128,7 @@ public class CRMController {
 
 		// CustomerOrder begin
 		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.setId(order_id);
+		customerOrder.getParams().put("id", order_id);
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
@@ -151,11 +142,10 @@ public class CRMController {
 		customerOrder.setOrder_status("using");
 		// CustomerOrder end
 		
-		
 		// CustomerInvoice begin
 		CustomerInvoice customerInvoice = new CustomerInvoice();
 		customerInvoice.setCustomer(customer);
-		customerInvoice.setOrder(customerOrder);
+		customerInvoice.setCustomerOrder(customerOrder);
 		customerInvoice.setAmount_payable(order_total_price);
 		customerInvoice.setAmount_paid(order_total_price);
 		customerInvoice.setBalance(customerInvoice.getAmount_payable()-customerInvoice.getAmount_paid());

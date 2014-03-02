@@ -2,6 +2,8 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * customer transaction, mapping tm_customer_transaction
@@ -13,10 +15,14 @@ public class CustomerTransaction implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+
 	private Long id;
 	private Customer customer;
-	private CustomerOrder order;
-	private CustomerInvoice invoice;
+	private CustomerOrder customerOrder;
+	private CustomerInvoice customerInvoice;
 	private Date transaction_date;
 	private Double amount;
 	private String auth_code;
@@ -35,15 +41,28 @@ public class CustomerTransaction implements Serializable {
 	private String transaction_type;
 	private String transaction_sort;
 
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+
+	private Map<String, Object> params = new HashMap<String, Object>();
+
+	/*
+	 * END RELATED PROPERTIES
+	 */
 	public CustomerTransaction() {
 	}
 
-	public CustomerInvoice getInvoice() {
-		return invoice;
+	public Long getId() {
+		return id;
 	}
 
-	public void setInvoice(CustomerInvoice invoice) {
-		this.invoice = invoice;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public Customer getCustomer() {
@@ -54,20 +73,20 @@ public class CustomerTransaction implements Serializable {
 		this.customer = customer;
 	}
 
-	public CustomerOrder getOrder() {
-		return order;
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
 	}
 
-	public void setOrder(CustomerOrder order) {
-		this.order = order;
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
 	}
 
-	public Long getId() {
-		return id;
+	public CustomerInvoice getCustomerInvoice() {
+		return customerInvoice;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setCustomerInvoice(CustomerInvoice customerInvoice) {
+		this.customerInvoice = customerInvoice;
 	}
 
 	public Date getTransaction_date() {
@@ -198,16 +217,24 @@ public class CustomerTransaction implements Serializable {
 		this.transaction_type = transaction_type;
 	}
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
 	public String getTransaction_sort() {
 		return transaction_sort;
 	}
 
 	public void setTransaction_sort(String transaction_sort) {
 		this.transaction_sort = transaction_sort;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

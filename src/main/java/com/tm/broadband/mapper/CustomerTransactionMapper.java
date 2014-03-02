@@ -11,19 +11,39 @@ import com.tm.broadband.model.Page;
  * @author Cook1fan
  * 
  */
-public interface CustomerTransactionMapper {
 
-	void insertCustomerTransaction(CustomerTransaction customerTransaction);
+/* SELECT AREA *//* // END SELECT AREA */
+/* =================================================================================== */
+/* INSERT AREA *//* // END INSERT AREA */
+/* =================================================================================== */
+/* UPDATE AREA *//* // END UPDATE AREA */
+/* =================================================================================== */
+/* DELETE AREA *//* // END DELETE AREA */
+
+public interface CustomerTransactionMapper {
+	
+	
+	/* SELECT AREA */
 	
 	List<CustomerTransaction> selectCustomerTransactionsByPage(Page<CustomerTransaction> page);
-	
 	int selectCustomerTransactionsSum(Page<CustomerTransaction> page);
 	
-	List<CustomerTransaction> selectCustomerTxsPageByCustomerId(Page<CustomerTransaction> page);
+	/* // END SELECT AREA */
 	
-	int selectCustomerTxsSumByCustomerId(Page<CustomerTransaction> page);
+	/* =================================================================================== */
+	
+	/* INSERT AREA */
+	
+	void insertCustomerTransaction(CustomerTransaction customerTransaction);
+	
+	/* // END INSERT AREA */
+	/* =================================================================================== */
+	/* UPDATE AREA */
 	
 	void updateCustomerTransaction(CustomerTransaction customerTransaction);
-
+	
+	/* // END UPDATE AREA */
+	/* =================================================================================== */
+	/* DELETE AREA *//* // END DELETE AREA */
 	
 }

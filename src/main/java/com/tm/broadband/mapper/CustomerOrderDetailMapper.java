@@ -1,10 +1,6 @@
 package com.tm.broadband.mapper;
 
-import java.util.List;
-
 import com.tm.broadband.model.CustomerOrderDetail;
-import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 
 /**
  * mapping tm_customer_order_detail
@@ -12,7 +8,29 @@ import com.tm.broadband.model.Plan;
  * @author Cook1fan
  * 
  */
-public interface CustomerOrderDetailMapper {
 
-	void createCustomerOrderDetail (CustomerOrderDetail customerOrderDetail);
+/* SELECT AREA *//* // END SELECT AREA */
+/* =================================================================================== */
+/* INSERT AREA *//* // END INSERT AREA */
+/* =================================================================================== */
+/* UPDATE AREA *//* // END UPDATE AREA */
+/* =================================================================================== */
+/* DELETE AREA *//* // END DELETE AREA */
+
+public interface CustomerOrderDetailMapper {
+	
+	/* SELECT AREA *//* // END SELECT AREA */
+	/* =================================================================================== */
+	/* INSERT AREA */
+	
+	void insertCustomerOrderDetail (CustomerOrderDetail customerOrderDetail);
+	
+
+	/* // END INSERT AREA */
+	/* =================================================================================== */
+	/* UPDATE AREA *//* // END UPDATE AREA */
+	/* =================================================================================== */
+	/* DELETE AREA *//* // END DELETE AREA */
+
+	
 }

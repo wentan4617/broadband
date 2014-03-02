@@ -33,7 +33,9 @@
 		  		<div class="panel-body">
 			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">View Plan Top-Up</a>
 			    	<hr/>
-			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan Prepay</a>
+			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan No-Term</a>
+			    	<hr/>
+			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan Term</a>
 			  	</div>
 			</div>
 		</div>
