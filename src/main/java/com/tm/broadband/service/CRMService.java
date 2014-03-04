@@ -1,7 +1,11 @@
 package com.tm.broadband.service;
 
+
+import java.util.Date;
+
 import java.io.File;
 import java.io.IOException;
+
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,16 +98,38 @@ public class CRMService {
 	@Transactional
 	public void registerCustomer(Customer customer, Plan plan, CustomerTransaction customerTransaction) {
 		
+		customer.setRegister_date(new Date(System.currentTimeMillis()));
+		customer.setActive_date(new Date(System.currentTimeMillis()));
+		
 		this.customerMapper.insertCustomer(customer);
 		System.out.println("customer id: " + customer.getId());
 		
 		CustomerOrder customerOrder = new CustomerOrder();
 		customerOrder.setOrder_serial(TMUtils.getCustomerOrderSerial(customer.getLogin_name()));
 		customerOrder.setCustomer(customer);
-		customerOrder.setOrder_total_price(plan.getPlan_price() * 3);
 		customerOrder.setOrder_status("paid");
 		customerOrder.setOrder_type(plan.getPlan_group().replace("plan", "order"));
 		customerOrder.setOrder_broadband_type(customer.getCustomerOrder().getOrder_broadband_type());
+		
+		if ("plan-topup".equals(plan.getPlan_group())) {
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+				customerOrder.setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+				customerOrder.setOrder_total_price(plan.getTopup().getTopup_fee());
+			}
+		} else if ("plan-no-term".equals(plan.getPlan_group())) {
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+				customerOrder.setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+				customerOrder.setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
+			}
+		} else if ("plan-term".equals(plan.getPlan_group())) {
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+
+			}
+		}
 		
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		System.out.println("customer order id: " + customerOrder.getId());
@@ -119,17 +145,17 @@ public class CRMService {
 		customerOrderDetail.setDetail_plan_sort(plan.getPlan_sort());
 		customerOrderDetail.setDetail_plan_group(plan.getPlan_group());
 		customerOrderDetail.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
-		
+		customerOrderDetail.setDetail_topup_fee(plan.getTopup().getTopup_fee());
 		customerOrderDetail.setDetail_plan_memo(plan.getMemo());
+		customerOrderDetail.setDetail_unit(plan.getPlan_prepay_months());
 		
 		this.customerOrderDetailMapper.insertCustomerOrderDetail(customerOrderDetail);
 		
 		customerTransaction.setCustomer(customer);
 		customerTransaction.setCustomerOrder(customerOrder);
+		customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 		
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
-		
-		
 	}
 	
 	@Transactional
@@ -147,6 +173,11 @@ public class CRMService {
 		page.setTotalRecord(this.customerMapper.selectCustomersSum(page));
 		page.setResults(this.customerMapper.selectCustomersByPage(page));
 		return page;
+	}
+	
+	@Transactional
+	public int queryCustomersSumByPage(Page<Customer> page) {
+		return this.customerMapper.selectCustomersSum(page);
 	}
 	
 	@Transactional
@@ -174,6 +205,7 @@ public class CRMService {
 	}
 
 	@Transactional
+
 	public void editCustomerOrderCreateInvoice(
 			Customer customer,
 			CustomerOrder customerOrder,
@@ -256,6 +288,7 @@ public class CRMService {
 			e.printStackTrace();
 		}
 		
+
 		/*
 		 * 
 		 * Invoice PDF generate manipulation end

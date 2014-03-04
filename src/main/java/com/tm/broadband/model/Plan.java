@@ -54,7 +54,7 @@ public class Plan implements Serializable {
 	 */
 	
 	private Map<String, Object> params = new HashMap<String, Object>();
-	private Topup topup;
+	private Topup topup = new Topup();
 	private List<Topup> topups;
 	private String[] topupArray;
 

@@ -12,12 +12,32 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			
+
 			<jsp:include page="provision-query.jsp" />
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4 class="panel-title">Provision Customer View</h4>
+					<h4 class="panel-title">
+
+						${panelheading } &nbsp;
+						
+						<c:if test="${order_status == 'paid' }">
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									Operate <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" data-role="menu">
+									<li>
+										<a href="javascript:void(0);" id="paid_to_ordering">
+											Order Status: 
+											<span class="text-danger">Paid to Ordering</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</c:if>
+					</h4>
+
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<form id="provisionForm"
@@ -25,51 +45,37 @@
 						method="post">
 						<input type="hidden" id="process_way" name="process_way" />
 
-						<div class="panel-body">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle"
-									data-toggle="dropdown">
-									Operate <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" data-role="menu">
-									<li><a href="javascript:void(0);"
-										id="activeRegisterCusomter">Active Register Customer
-											(Customer Status: <span class="text-danger">verify to
-												active</span>; Order Status: <span class="text-danger">pending
-												to payment</span>)
-									</a></li>
-								</ul>
-							</div>
-						</div>
-
 						<table class="table">
 							<thead>
 								<tr>
 									<th><input type="checkbox" id="checkbox_customers_top" /></th>
-									<th>Login Name</th>
-									<th>Password</th>
-									<th>Address</th>
-									<th>Email</th>
-									<th>Phone</th>
-									<th>Register Date</th>
+									<th>Order ID</th>
+									<th>Customer Name</th>
+									<th>Price ($)</th>
+									<th>Create Date</th>
 									<th>Status</th>
+									<th>Type</th>
+									<th>Broadband Type</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="customer" items="${page.results }">
+								<c:forEach var="order" items="${page.results }">
 									<tr>
-										<td><input type="checkbox" name="checkbox_customers"
-											value="${customer.id}" /></td>
-										<td><a href="#" data-name="show_customer_info"
-											data-id="${customer.id}"> ${customer.login_name } </a></td>
-										<td>${customer.password }</td>
-										<td>${customer.address }</td>
-										<td>${customer.email }</td>
-										<td>${customer.cellphone }</td>
-										<td><fmt:formatDate value="${customer.register_date }"
-												type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-										<td>${customer.status}</td>
+										<td><input type="checkbox" name="checkbox_customers" value="${order.id}" /></td>
+										<td>
+											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
+										</td>
+										<td><a href="#" data-name="show_customer_info" data-id="${order.customer.id}"> ${order.customer.user_name } </a></td>
+										<td>
+											<c:if test="${order.order_total_price != null }">
+												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
+											</c:if>
+										</td>
+										<td><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+										<td>${order.order_status }</td>
+										<td>${order.order_type }</td>
+										<td>${order.order_broadband_type }</td>
 										<td>&nbsp;</td>
 									</tr>
 								</c:forEach>
@@ -78,10 +84,9 @@
 								<tr>
 									<td colspan="11">
 										<ul class="pagination">
-											<c:forEach var="num" begin="1" end="${page.totalPage }"
-												step="1">
-												<li class="${page.pageNo == num ? 'active' : ''}"><a
-													href="${ctx}/broadband-user/provision/customer/view/${num}">${num}</a>
+											<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
+												<li class="${page.pageNo == num ? 'active' : ''}">
+													<a href="${ctx}/broadband-user/provision/customer/view/${num}/${order_status}">${num}</a>
 												</li>
 											</c:forEach>
 										</ul>
@@ -106,22 +111,23 @@
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
-	(function($) {
-		$('#checkbox_customers_top').click(function() {
-			var b = $(this).prop("checked");
-			if (b) {
-				$('input[name="checkbox_customers"]').prop("checked", true);
-			} else {
-				$('input[name="checkbox_customers"]').prop("checked", false);
-			}
-		});
+(function($) {
+	$('#checkbox_customers_top').click(function() {
+		var b = $(this).prop("checked");
+		if (b) {
+			$('input[name="checkbox_customers"]').prop("checked", true);
+		} else {
+			$('input[name="checkbox_customers"]').prop("checked", false);
+		}
+	});
 
-		$('#activeRegisterCusomter').click(function() {
+	$('#activeRegisterCusomter').click(function() {
 
-			$('#process_way').val('pending to payment');
-			$('#provisionForm').submit();
-		});
-	})(jQuery);
+		$('#process_way').val('pending to payment');
+		$('#provisionForm').submit();
+	});
+
+})(jQuery);
 </script>
 
 <!-- provision customer order information model -->

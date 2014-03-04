@@ -88,5 +88,40 @@
 		<property name="from" value="xxx@sina.com"></property>
 		<property name="subject" value="Test email from sina." />
 	</bean>
+	
+	
+	<!-- ///////////////////////////////////////////////////////////////////////// -->
+	<!-- timer configuration -->
+
+	<!-- normal business Bean -->
+	<!-- <bean name="importPhoneCard" class="com.telnet.gm.util.ImportPhoneCard" /> -->
+
+	<!-- assignment -->
+	<!-- <bean id="importPhoneCardJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="importPhoneCard" />
+		<property name="targetMethod" value="importRecords" />
+	</bean> -->
+	
+	<!-- trigger -->
+	<!-- <bean id="importPhoneCardTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="importPhoneCardJob" />
+		<property name="cronExpression" value="0 0 4 * * ?"></property>
+	</bean> -->
+
+	<!-- plan -->
+	<!-- <bean name="testScheduler"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="importPhoneCardTrigger" />
+			</list>
+		</property>
+		<property name="schedulerContextAsMap">
+			<map>
+				<entry key="timeout" value="30" />
+			</map>
+		</property>
+	</bean> -->
 
 </beans>
