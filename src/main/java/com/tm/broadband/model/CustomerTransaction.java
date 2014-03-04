@@ -22,7 +22,7 @@ public class CustomerTransaction implements Serializable {
 	private Long id;
 	private Customer customer;
 	private CustomerOrder customerOrder;
-	private CustomerInvoice customerInvoice;
+	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private Date transaction_date;
 	private Double amount;
 	private String auth_code;

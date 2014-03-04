@@ -121,7 +121,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping("/order/{id}")
-	public String orderPlanPrepay(Model model, 
+	public String orderPlanNoTerm(Model model, 
 			@PathVariable("id") int id) {
 
 		Plan plan = this.planService.queryPlanById(id);
@@ -138,10 +138,11 @@ public class CustomerController {
 	@RequestMapping("/order/{id}/topup/{amount}")
 	public String orderPlanTopup(Model model, 
 			@PathVariable("id") int id,
-			@PathVariable("amount") int amount) {
+			@PathVariable("amount") Double amount) {
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
+		plan.getTopup().setTopup_fee(amount);
 
 		Customer customer = (Customer) model.asMap().get("customer");
 		if (customer == null) {
@@ -162,8 +163,7 @@ public class CustomerController {
 			return "broadband-customer/customer-order";
 		}
 
-		int count = this.crmService.queryExistCustomerByLoginName(customer
-				.getLogin_name());
+		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
 
 		if (count > 0) {
 			result.rejectValue("login_name", "duplicate", "");
@@ -185,8 +185,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/order/submit", method = RequestMethod.POST)
-	public String orderSubmit(Model model, HttpServletRequest req,
-			RedirectAttributes attr) {
+	public String orderSubmit(Model model, HttpServletRequest req, RedirectAttributes attr) {
 
 		GenerateRequest gr = new GenerateRequest();
 
@@ -206,9 +205,8 @@ public class CustomerController {
 	public String toSignupPayment(Model model,
 			@ModelAttribute("customer") Customer customer,
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
-			SessionStatus status,
-			@RequestParam(value = "result", required = true) String result)
-			throws Exception {
+			@RequestParam(value = "result", required = true) String result,
+			SessionStatus status) throws Exception {
 
 		Response responseBean = null;
 
@@ -218,6 +216,7 @@ public class CustomerController {
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			customer.setStatus("active");
 			customer.setUser_name(customer.getLogin_name());
+			customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
 			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
@@ -235,6 +234,7 @@ public class CustomerController {
 			customerTransaction.setSuccess(responseBean.getSuccess());
 			customerTransaction.setTxnMac(responseBean.getTxnMac());
 			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setTransaction_sort(plan.getPlan_group());
 
 			this.crmService.registerCustomer(customer, plan, customerTransaction);
 		} else {
@@ -248,13 +248,6 @@ public class CustomerController {
 		return "broadband-customer/customer-order-result";
 	}
 
-	/*
-	 * @RequestMapping(value = "/order/result") public String orderResult(Model
-	 * model, SessionStatus status) {
-	 * 
-	 * status.isComplete(); return "broadband-customer/customer-order-result"; }
-	 */
-
 	@RequestMapping(value = "/login")
 	public String login(Model model) {
 
@@ -263,8 +256,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(
-			Model model,
+	public String login(Model model,
 			@ModelAttribute("customer") @Validated(CustomerLoginValidatedMark.class) Customer customer,
 			BindingResult result, HttpServletRequest req,
 			RedirectAttributes attr) {
@@ -274,8 +266,7 @@ public class CustomerController {
 		}
 
 		customer.setStatus("active");
-		Customer customerSession = this.crmService
-				.queryCustomerWhenLogin(customer);
+		Customer customerSession = this.crmService.queryCustomerWhenLogin(customer);
 
 		if (customerSession == null) {
 			model.addAttribute("error", "Incorrect login name or password");

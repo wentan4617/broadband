@@ -18,15 +18,15 @@
 		<div id="collapseOne" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<div class="btn-group btn-group-lg">
-					<button type="button" class="btn btn-default">
-						Paid Customers View &nbsp;<span class="badge">42</span>
-					</button>
-					<button type="button" class="btn btn-default">
-						Ordering Customers View&nbsp;<span class="badge">42</span>
-					</button>
-					<button type="button" class="btn btn-default">
-						Using Customers View&nbsp;<span class="badge">42</span>
-					</button>
+					<a href="${ctx }/broadband-user/provision/customer/view/1/paid" data-name="queryBtn" class="btn btn-default ${paidActive }">
+						Order Paid Customers View &nbsp;<span class="badge">${paidSum }</span>
+					</a>
+					<a href="${ctx }/broadband-user/provision/customer/view/1/ordering" data-name="queryBtn" class="btn btn-default ${orderingActive }">
+						Order Ordering Customers View &nbsp;<span class="badge">${orderingSum }</span>
+					</a>
+					<a href="${ctx }/broadband-user/provision/customer/view/1/using" data-name="queryBtn" class="btn btn-default ${usingActive }">
+						Order Using Customers View &nbsp;<span class="badge">${usingSum }</span>
+					</a>
 				</div>
 			</div>
 		</div>

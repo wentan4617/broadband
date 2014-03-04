@@ -22,7 +22,15 @@
 				<div class="row">
 					<div class="col-md-10"><h4>Your Personal Information</h4></div>
 					<div class="col-md-2">
-						<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success ">Back to edit</a>
+						<c:choose>
+							<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
+								<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success ">Back to edit</a>
+							</c:when>
+							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+								<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success ">Back to edit</a>
+							</c:when>
+						</c:choose>
+						
 					</div>
 				</div>
 				<hr/>
@@ -70,8 +78,6 @@
 				</div>
 				<div class="form-group">
 					<div class="col-md-3 col-md-offset-3">
-						
-						
 					</div>
 				</div>
 				
@@ -86,30 +92,148 @@
 				  	</a>
 			  		<div class="media-body">
 			    		<h4 class="media-heading text-info">Your current purchase of plan</h4>
-			    		<p class="text-danger">
-			    			Currently, our pre-paid products and services, all pre-paid fees charged for three months, thank you for your cooperation.
-			    		</p>
-			    		<p class="text-success">
-			    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
-							<strong>
-								Free initial broadband setup includes a standard connection worth $ 
-								<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##00" />
-							</strong>
-						</p>
-				    	<div class="row">
-				    		<div class="col-md-4">
-				    			<h4>${orderPlan.plan_name }</h4>
-				    		</div>
-				    		<div class="col-md-3">
-				    			<h4>$  <strong class="text-success"> ${orderPlan.plan_price} </strong> * 3 months</h4>
-				    		</div>
-				    		<div class="col-md-3">
-				    			<h4>Total Amount: $ <strong class="text-success"> ${orderPlan.plan_price * 3 + orderPlan.plan_new_connection_fee} </strong> </h4>
-				    		</div>
-				    		<div class="col-md-2">
-								<button type="submit" class="btn btn-success">Payment</button>
-							</div>
-				    	</div>
+			    		
+			    		<c:choose>
+			    		
+			    			
+			    			<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
+			    				<p class="text-danger">
+			    					Currently, our pre-paid products and services, all pre-paid fees charged for ${orderPlan.plan_prepay_months } months, thank you for your cooperation.
+			    				</p>
+			    				<c:choose>
+			    					<c:when test="${customer.customerOrder.order_broadband_type == 'new-connection' }">
+			    						<p class="text-success">
+							    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
+											<strong>
+												Free initial broadband setup includes a standard connection worth $ 
+												<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##.00" />
+											</strong>
+										</p>
+										<div class="row">
+								    		<div class="col-md-4">
+								    			<h4>${orderPlan.plan_name }</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				$  
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_price}" type="number" pattern="##.00" />
+								    				</strong> * ${orderPlan.plan_prepay_months } months
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				Total Amount: $ 
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months + orderPlan.plan_new_connection_fee}" type="number" pattern="##.00" />
+								    				 </strong> 
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-2">
+												<button type="submit" class="btn btn-success">Payment</button>
+											</div>
+								    	</div>
+			    					</c:when>
+			    					<c:when test="${customer.customerOrder.order_broadband_type == 'transition' }">
+			    						<p class="text-success">&nbsp;</p>
+			    						<div class="row">
+								    		<div class="col-md-4">
+								    			<h4>${orderPlan.plan_name }</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				$  
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_price}" type="number" pattern="##.00" />	
+								    				</strong> * ${orderPlan.plan_prepay_months } months
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				Total Amount: $ 
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="##.00" />	
+								    				</strong> 
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-2">
+												<button type="submit" class="btn btn-success">Payment</button>
+											</div>
+								    	</div>
+			    					</c:when>
+			    				</c:choose>
+			    			</c:when>
+			    			
+			    			
+			    			<c:otherwise>
+			    				<p class="text-danger">&nbsp;</p>
+			    				<c:choose>
+			    					<c:when test="${customer.customerOrder.order_broadband_type == 'new-connection' }">
+			    						<p class="text-success">
+							    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
+											<strong>
+												Free initial broadband setup includes a standard connection worth $ 
+												<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##.00" />
+											</strong>
+										</p>
+										<div class="row">
+								    		<div class="col-md-4">
+								    			<h4>${orderPlan.plan_name }</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				$  
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_new_connection_fee}" type="number" pattern="##.00" />
+								    				</strong> + <fmt:formatNumber value="${orderPlan.topup.topup_fee } " type="number" pattern="##.00" />
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				Total Amount: $ 
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.plan_new_connection_fee + orderPlan.topup.topup_fee} " type="number" pattern="##.00" />
+								    				</strong> 
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-2">
+												<button type="submit" class="btn btn-success">Payment</button>
+											</div>
+								    	</div>
+			    					</c:when>
+			    					<c:when test="${customer.customerOrder.order_broadband_type == 'transition' }">
+			    						<p class="text-success">&nbsp;</p>
+			    						<div class="row">
+								    		<div class="col-md-4">
+								    			<h4>${orderPlan.plan_name }</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				$  
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.topup.topup_fee} " type="number" pattern="##.00" />
+								    					
+								    				</strong>
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-3">
+								    			<h4>
+								    				Total Amount: $ 
+								    				<strong class="text-success"> 
+								    					<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##.00" />
+								    				</strong> 
+								    			</h4>
+								    		</div>
+								    		<div class="col-md-2">
+												<button type="submit" class="btn btn-success">Payment</button>
+											</div>
+								    	</div>
+			    					</c:when>
+			    				</c:choose>
+			    			</c:otherwise>
+			    		</c:choose>
+			    		
+			    		
 			  		</div>
 				</div>
 			</form>

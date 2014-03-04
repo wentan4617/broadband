@@ -27,14 +27,17 @@
 							<label for="plan_group" class="control-label col-md-4">Plan Group</label>
 							<div class="col-md-3">
 								<form:select path="plan_group" class="form-control">
+									<form:option value="">None</form:option>
 									<form:option value="plan-no-term">Plan No Term</form:option>
 									<form:option value="plan-term">Plan Term</form:option>
 									<form:option value="plan-topup">Plan Topup</form:option>
 								</form:select>
 							</div>
-							<!-- <p class="help-block">
-								<span class="text-danger">When choose <strong>'PLAN TOPUP'</strong>, it will display top-up list.</span>
-							</p> -->
+							<div class="col-md-5">
+								<div class="well">
+									<span class="text-danger">When choose different options, it will display other input items.</span>
+								</div>
+							</div>
 						</div>
 						
 						
@@ -43,11 +46,29 @@
 							<jsp:include page="topup-list.jsp"/>
 						</div> --%>
 						
+						<div id="noTermContainer" style="display: ${plan.plan_group == 'plan-no-term' ? 'block;' : 'none;'}">
+							<hr/>
+							<div class="form-group">
+								<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<form:input path="plan_prepay_months" class="form-control" placeholder="" />
+										<span class="input-group-addon">Months</span>
+									</div>
+								</div>
+								<p class="help-block">
+									<form:errors path="plan_prepay_months" cssErrorClass="error"/>
+								</p>
+							</div>
+							<hr/>
+						</div>
+						
 						
 						<div class="form-group">
 							<label for="plan_type" class="control-label col-md-4">Plan Type</label>
 							<div class="col-md-3">
 								<form:select path="plan_type" class="form-control">
+									<form:option value="">None</form:option>
 									<form:option value="ADSL">ADSL</form:option>
 									<form:option value="VDSL">VDSL</form:option>
 									<form:option value="UFB">UFB</form:option>
@@ -58,6 +79,7 @@
 							<label for="plan_sort" class="control-label col-md-4">Plan Sort</label>
 							<div class="col-md-3">
 								<form:select path="plan_sort" class="form-control">
+									<form:option value="">None</form:option>
 									<form:option value="NON-NAKED">NON-NAKED</form:option>
 									<form:option value="NAKED">NAKED</form:option>
 								</form:select>
@@ -144,12 +166,23 @@
 	$('.selectpicker').selectpicker();
 	
 	$('#plan_group').change(function(){
-		//alert(this.value);
 		var val = this.value;
 		if (val === 'plan-topup') {
 			$('#topupContainer').show('fast');
-		} else if (val === 'plan-prepay') {
+			$('#noTermContainer').hide('fast');
+			$('#TermContainer').hide('fast');
+		} else if (val === 'plan-no-term') {
 			$('#topupContainer').hide('fast');
+			$('#noTermContainer').show('fast');
+			$('#TermContainer').hide('fast');
+		} else if (val === 'plan-term') {
+			$('#topupContainer').hide('fast');
+			$('#noTermContainer').hide('fast');
+			$('#TermContainer').show('fast');
+		} else {
+			$('#topupContainer').hide('fast');
+			$('#noTermContainer').hide('fast');
+			$('#TermContainer').hide('fast');
 		}
 	});
 })(jQuery);

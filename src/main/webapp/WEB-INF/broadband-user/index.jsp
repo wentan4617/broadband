@@ -74,7 +74,7 @@
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/provision/customer/view/1">Provision Customer Order</a>
+                    		<a href="${ctx }/broadband-user/provision/customer/view/1/paid">Provision Customer Order</a>
                     	</li>
                     </ul>
 

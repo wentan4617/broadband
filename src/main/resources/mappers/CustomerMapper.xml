@@ -66,6 +66,28 @@
 		cod.`detail_unit` 						as cod_detail_unit
 	</sql>
 	
+	<sql id="customerPageWhere">
+		<where>
+			<choose>
+				<when test="params.where =='query_order_status'">
+					<if test="params.status != null">c.status = #{params.status}</if>
+					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
+				</when>
+				<otherwise>
+					<if test="params.status != null">c.status = #{params.status}</if>
+					<if test="params.id != null">or c.id = #{params.id}</if>
+					<if test="params.login_name != null">or c.login_name = #{params.login_name}</if>
+					<if test="params.phone != null">or c.phone = #{params.phone}</if>
+					<if test="params.cellphone != null">or c.cellphone = #{params.cellphone}</if>
+					<if test="params.email != null">or c.email = #{params.email}</if>
+					<if test="params.svlan != null">or co.svlan = #{params.svlan}</if>
+					<if test="params.cvlan != null">or co.cvlan = #{params.cvlan}</if>
+					<if test="params.order_status != null">or co.order_status = #{params.order_status}</if>
+				</otherwise>
+			</choose>
+			
+		</where>
+	</sql>
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
@@ -144,17 +166,7 @@
 	<select id="selectCustomersByPage" parameterType="Page" resultType="Customer">
 		select * from tm_customer as c
 		left join tm_customer_order as co on co.customer_id = c.id
-		<where>
-			<if test="params.status != null">c.status = #{params.status}</if>
-			<if test="params.id != null">or c.id = #{params.id}</if>
-			<if test="params.login_name != null">or c.login_name = #{params.login_name}</if>
-			<if test="params.phone != null">or c.phone = #{params.phone}</if>
-			<if test="params.cellphone != null">or c.cellphone = #{params.cellphone}</if>
-			<if test="params.email != null">or c.email = #{params.email}</if>
-			<if test="params.svlan != null">or co.svlan = #{params.svlan}</if>
-			<if test="params.cvlan != null">or co.cvlan = #{params.cvlan}</if>
-			<if test="params.co_status != null">co.status = #{params.co_status}</if>
-		</where>
+		<include refid="customerPageWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
 	</select>
@@ -163,17 +175,7 @@
 	<select id="selectCustomersSum" parameterType="Page" resultType="int">
 		select count(*) from tm_customer as c
 		left join tm_customer_order as co on co.customer_id = c.id
-		<where>
-			<if test="params.status != null">c.status = '${params.status}'</if>
-			<if test="params.id != null">or c.id = '${params.id}'</if>
-			<if test="params.login_name != null">or c.login_name = '${params.login_name}'</if>
-			<if test="params.phone != null">or c.phone = '${params.phone}'</if>
-			<if test="params.cellphone != null">or c.cellphone = '${params.cellphone}'</if>
-			<if test="params.email != null">or c.email = '${params.email}'</if>
-			<if test="params.svlan != null">or co.svlan = '${params.svlan}'</if>
-			<if test="params.cvlan != null">or co.cvlan = '${params.cvlan}'</if>
-			<if test="params.co_status != null">co.status = '${params.co_status}'</if>
-		</where>
+		<include refid="customerPageWhere"/>
 	</select>
 	
 	<!-- customer login -->

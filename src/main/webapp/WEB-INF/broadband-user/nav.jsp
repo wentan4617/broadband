@@ -82,7 +82,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-                    			<a href="${ctx }/broadband-user/provision/customer/view/1">
+                    			<a href="${ctx }/broadband-user/provision/customer/view/1/paid">
                     				<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
                     				Provision Customer Order
                     			</a>
