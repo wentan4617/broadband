@@ -27,6 +27,12 @@ public interface CustomerInvoiceMapper {
 	List<CustomerInvoice> selectCustomerInvoicesByPage(Page<CustomerInvoice> page);
 	int selectCustomerInvoicesSum(Page<CustomerInvoice> page);
 	
+	CustomerInvoice selectCustomerInvoiceById(int id);
+	
+	CustomerInvoice selectCustomerLastInvoiceById(int id);
+	
+	String selectCustomerInvoiceFilePathById(int id);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

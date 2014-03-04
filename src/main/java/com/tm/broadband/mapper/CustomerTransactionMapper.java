@@ -28,6 +28,10 @@ public interface CustomerTransactionMapper {
 	List<CustomerTransaction> selectCustomerTransactionsByPage(Page<CustomerTransaction> page);
 	int selectCustomerTransactionsSum(Page<CustomerTransaction> page);
 	
+	CustomerTransaction selectCustomerTransactionByInvoiceId(int id);
+	
+	CustomerTransaction selectCustomerTransaction(CustomerTransaction customerTransaction);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

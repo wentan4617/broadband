@@ -9,6 +9,7 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.util.TMUtils;
 
 public class TestCreatePDF {
 
@@ -16,9 +17,11 @@ public class TestCreatePDF {
 		// INVOICE
 		CustomerInvoice customerInvoice = new CustomerInvoice();
 		customerInvoice.setInvoice_serial("TMBSSS201402111205");
+		customerInvoice.setId(060001);
 		
 		// CUSTOMER
 		Customer customer = new Customer();
+		customer.setId(070001);
 		customer.setLogin_name("SSSSSSSSSSSSSSSSSSSS");
 		customer.setFirst_name("Yi Fang");
 		customer.setLast_name("Xiong");
@@ -32,7 +35,13 @@ public class TestCreatePDF {
 		// STORE MODEL
 		customerInvoice.setCustomer(customer);
 		customerInvoice.setCustomerOrder(customerOrder);
-		
-		new PDFCreator().create("D:///Super Awersome Document.pdf", customerInvoice);
+//		
+//		String filePath = TMUtils.createPath(
+//				"broadband"
+//				+File.separator+"customers"
+//				+File.separator+customer.getId()
+//				+File.separator+customerInvoice.getId()+".pdf");
+//		new InvoicePDFCreator().create( filePath);
+		System.out.println(System.getProperty("user.dir")+File.separator);
 	}
 }

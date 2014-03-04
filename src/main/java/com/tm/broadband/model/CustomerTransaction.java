@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tm.broadband.util.TMUtils;
+
 /**
  * customer transaction, mapping tm_customer_transaction
  * 
@@ -50,6 +52,7 @@ public class CustomerTransaction implements Serializable {
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
+	private String transaction_date_str;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -235,6 +238,15 @@ public class CustomerTransaction implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getTransaction_date_str() {
+		transaction_date_str = TMUtils.dateFormatYYYYMMDD(this.getTransaction_date());
+		return transaction_date_str;
+	}
+
+	public void setTransaction_date_str(String transaction_date_str) {
+		this.transaction_date_str = transaction_date_str;
 	}
 
 }

@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <div class="panel-group" id="customerOrderAccordion">
@@ -30,7 +31,7 @@
 								Create Date</label>
 							<div class="col-md-3">
 								<div class="input-group">
-									<p class="form-control-static">${customerOrder.order_create_date}</p>
+									<p class="form-control-static"><fmt:formatDate  value="${customerOrder.order_create_date}" type="date" /></p>
 								</div>
 							</div>
 						</div>
@@ -39,7 +40,7 @@
 								Status</label>
 							<div class="col-md-3">
 								<div class="input-group">
-									<p id="${customerOrder.id}_order_status"
+									<p id="${customerOrder.id}_order_status" data-val="${customerOrder.order_status}"
 										class="form-control-static">${customerOrder.order_status}</p>
 								</div>
 							</div>
@@ -81,15 +82,21 @@
 							<div class="col-md-3">
 								<div class="input-group">
 									<p id="${customerOrder.id}_order_using_start"
-										class="form-control-static">${customerOrder.order_using_start}</p>
+										class="form-control-static">${customerOrder.order_using_start_str}</p>
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="cvlan" class="control-label col-md-3">CVLan</label>
-							<div class="col-md-9">
+							<div class="col-md-3">
 								<div class="input-group">
 									<p id="${customerOrder.id}_cvlan" class="form-control-static">${customerOrder.cvlan}</p>
+								</div>
+							</div>
+							<label for="next_invoice_create_date" class="control-label col-md-3">Next Invoice Create Date</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<p id="${customerOrder.id}_next_invoice_create_date" class="form-control-static">${customerOrder.next_invoice_create_date_str}</p>
 								</div>
 							</div>
 						</div>
@@ -131,27 +138,29 @@
 						<label class="control-label col-md-2">Service Giving Date</label>
 						<div class="col-md-2">
 							<input id="${customerOrder.id}_order_using_start_input"
-								class="form-control" placeholder="Start Date" />
+								class="form-control" placeholder="Start Date" value="2014-03-16"/>
 						</div>
 						<label class="control-label col-md-1">SVLan</label>
 						<div class="col-md-2">
 							<input id="${customerOrder.id}_svlan_input" class="form-control"
-								placeholder="SVLan" />
+								placeholder="SVLan" value="1"/>
 						</div>
 						<label class="control-label col-md-1">CVLan</label>
 						<div class="col-md-2">
 							<input id="${customerOrder.id}_cvlan_input" class="form-control"
-								placeholder="CVLan" />
+								placeholder="CVLan" value="1"/>
 						</div>
 						<div class="col-md-2">
 							<c:if test="${customerOrder.svlan!=null}">
-								<button id="${customerOrder.id}cvlan" type="submit"
-									class="btn btn-danger" >Edit</button>
+								<a href="javascript:void(0);" id="${customerOrder.id}"
+									class="btn btn-danger" data-name="edit">Edit</a>
 							</c:if>
 							<c:if test="${customerOrder.svlan==null}">
 								<a href="javascript:void(0);" id="${customerOrder.id}"
 									class="btn btn-success" data-name="save">Save</a>
 							</c:if>
+								<a href="javascript:void(0);" id="${customerOrder.id}"
+									class="btn btn-danger" data-name="edit" style="display:none;">Edit</a>
 						</div>
 					</div>
 				</form>

@@ -40,6 +40,7 @@ public class CustomerOrder implements Serializable {
 
 	private String order_create_date_str;
 	private String order_using_start_str;
+	private String next_invoice_create_date_str;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails;
@@ -148,7 +149,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -157,7 +158,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_using_start());
+		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start());
 		return order_using_start_str;
 	}
 
@@ -184,6 +185,15 @@ public class CustomerOrder implements Serializable {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public String getNext_invoice_create_date_str() {
+		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this.getNext_invoice_create_date()));
+		return next_invoice_create_date_str;
+	}
+
+	public void setNext_invoice_create_date_str(String next_invoice_create_date_str) {
+		this.next_invoice_create_date_str = next_invoice_create_date_str;
 	}
 
 }
