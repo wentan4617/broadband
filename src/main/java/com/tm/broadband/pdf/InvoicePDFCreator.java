@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,13 +23,19 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.itextpdf.text.pdf.draw.LineSeparator;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.util.TMUtils;
 
-public class PDFCreator {
+public class InvoicePDFCreator {
 	
 	private CustomerInvoice customerInvoice;
+	private CompanyDetail companyDetail;
+	private Customer customer;
+	private List<CustomerOrder> customerOrders;
 
 	private Font arial_normal_6;
 	private Font arial_normal_7;
@@ -51,49 +56,47 @@ public class PDFCreator {
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
-	private final String PATH = "pdf/";
 	
-	public PDFCreator(){
+	public InvoicePDFCreator(){
 		try {
-			BaseFont bf_arial_normal_6 = BaseFont.createFont(PATH+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_6 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_6 = new Font(bf_arial_normal_6, 6, Font.NORMAL);
-			BaseFont bf_arial_normal_7 = BaseFont.createFont(PATH+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_7 = new Font(bf_arial_normal_7, 7, Font.NORMAL);
-			BaseFont bf_arial = BaseFont.createFont(PATH+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_8 = new Font(bf_arial, 8, Font.NORMAL);
-			BaseFont bf_arial_normal_white_8 = BaseFont.createFont(PATH+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_white_8 = new Font(bf_arial_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_arial_normal_10 = BaseFont.createFont(PATH+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_10 = new Font(bf_arial_normal_10, 10, Font.NORMAL);
-			BaseFont bf_lucida_sans_unicode_9 = BaseFont.createFont(PATH+"font-family/Lucida Sans Unicode.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_lucida_sans_unicode_9 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Lucida Sans Unicode.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.lucida_sans_unicode_9 = new Font(bf_lucida_sans_unicode_9, 9, Font.NORMAL);
-			BaseFont bf_verdana_normal_8 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_8 = new Font(bf_verdana_normal_8, 8, Font.NORMAL);
-			BaseFont bf_verdana_7 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_7 = new Font(bf_verdana_7, 7, Font.BOLD);
-			BaseFont bf_verdana_8 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_8 = new Font(bf_verdana_8, 8, Font.BOLD);
-			BaseFont bf_verdana_normal_white_8 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_white_8 = new Font(bf_verdana_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_verdana_bold_10 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_10 = new Font(bf_verdana_bold_10, 10, Font.BOLD);
-			BaseFont bf_verdana_bold_white_10 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_white_10 = new Font(bf_verdana_bold_white_10, 10, Font.BOLD, BaseColor.WHITE);
-			BaseFont bf_verdana_normal_14 = BaseFont.createFont(PATH+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_14 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_14 = new Font(bf_verdana_normal_14, 14, Font.NORMAL);
-			BaseFont bf_tahoma_10 = BaseFont.createFont(PATH+"font-family/tahoma.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahoma.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_normal_10 = new Font(bf_tahoma_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_10 = BaseFont.createFont(PATH+"font-family/tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_bold_10 = new Font(bf_tahoma_bold_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_white_10 = BaseFont.createFont(PATH+"font-family/tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_bold_white_10 = new Font(bf_tahoma_bold_white_10, 10, Font.NORMAL, BaseColor.WHITE);
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void create(String outputFile, CustomerInvoice customerInvoice) throws DocumentException, MalformedURLException, IOException{
-		this.customerInvoice = customerInvoice;
+	public void create(String outputFile) throws DocumentException, MalformedURLException, IOException{
         Document document = new Document(PageSize.A4);
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
         document.open();
@@ -101,22 +104,22 @@ public class PDFCreator {
         /*
          * TEST INVOICE TOTAL AMOUNT BEGIN
          */
-        List<Integer> orderList = new ArrayList<Integer>();
-        orderList.add(1);
-        orderList.add(2);
-        orderList.add(3);
-        orderList.add(4);
-        orderList.add(5);
-        orderList.add(6);
-        Iterator<Integer> iter = orderList.iterator();
-        int totalPrice = 0;
-        int temp = 0;
-        while(iter.hasNext()){
-        	temp = Integer.parseInt(iter.next().toString());
-        	totalPrice+=temp;
-        	System.out.println(temp);
-        }
-        System.out.println(totalPrice);
+//        List<Integer> orderList = new ArrayList<Integer>();
+//        orderList.add(1);
+//        orderList.add(2);
+//        orderList.add(3);
+//        orderList.add(4);
+//        orderList.add(5);
+//        orderList.add(6);
+//        Iterator<Integer> iter = orderList.iterator();
+//        int totalPrice = 0;
+//        int temp = 0;
+//        while(iter.hasNext()){
+//        	temp = Integer.parseInt(iter.next().toString());
+//        	totalPrice+=temp;
+//        	System.out.println(temp);
+//        }
+//        System.out.println(totalPrice);
         /*
          * TEST INVOICE TOTAL AMOUNT END
          */
@@ -142,7 +145,7 @@ public class PDFCreator {
         headerTable.addCell(cell);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        Customer customer = customerInvoice.getCustomer();
+        Customer customer = this.getCustomer();
         cell.setPhrase(new Phrase(customer.getFirst_name()+" "+customer.getLast_name(), tahoma_normal_10));
         headerTable.addCell(cell);
         cell.setPhrase(new Phrase(customer.getAddress(), tahoma_normal_10));
@@ -182,14 +185,25 @@ public class PDFCreator {
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
         
-        // SECOND ROW
-        transactionColumnsCell = newCell("2014-02-12", verdana_normal_8, 0);
+        // CONTENT ROW/ROWS
+        transactionColumnsCell = newCell(this.getCustomerInvoice().getCreate_date_str(), verdana_normal_8, 0);
         transactionColumnsCell.setIndent(10);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("Payment - Credit Card", verdana_normal_8, 0);
+        transactionColumnsCell = newCell(this.getCustomerInvoice().getInvoice_desc(), verdana_normal_8, 0);
         transactionColumnsCell.setColspan(2);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("-$ 92.09", verdana_normal_8, 0);
+        transactionColumnsCell = newCell(" $ " + this.getCustomerInvoice().getAmount_payable(), verdana_normal_8, 0);
+        transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        transactionTable.addCell(transactionColumnsCell);
+        
+        // CONTENT ROW/ROWS
+        transactionColumnsCell = newCell(this.getCustomerInvoice().getPaid_date_str(), verdana_normal_8, 0);
+        transactionColumnsCell.setIndent(10);
+        transactionTable.addCell(transactionColumnsCell);
+        transactionColumnsCell = newCell(this.getCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
+        transactionColumnsCell.setColspan(2);
+        transactionTable.addCell(transactionColumnsCell);
+        transactionColumnsCell = newCell("-$ " + this.getCustomerInvoice().getAmount_paid(), verdana_normal_8, 0);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
         
@@ -204,7 +218,7 @@ public class PDFCreator {
         transactionColumnsCell.setColspan(3);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("$ 0.00", verdana_bold_10, 0);
+        transactionColumnsCell = newCell("$ "+ (this.getCustomerInvoice().getAmount_payable()-this.getCustomerInvoice().getAmount_paid()), verdana_bold_10, 0);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
         PdfPCell lastCell = new PdfPCell(new Phrase(" "));
@@ -236,7 +250,23 @@ public class PDFCreator {
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ 85.40", verdana_normal_8, 0);
+        // last invoice detail
+        Double totalInvoiceAmount = this.getCustomerInvoice().getLastCustomerInvoice().getAmount_payable();
+        String afterTaxAmountStr = "";
+        String taxAmountStr = "";
+        if(totalInvoiceAmount > 0){
+        	// plus tax fee
+            afterTaxAmountStr = String.valueOf(totalInvoiceAmount/1.15);
+            afterTaxAmountStr = afterTaxAmountStr.substring(0, afterTaxAmountStr.indexOf(".")+3);
+            
+            // tax fee
+            taxAmountStr = String.valueOf(totalInvoiceAmount-totalInvoiceAmount/1.15);
+            taxAmountStr = taxAmountStr.substring(0, taxAmountStr.indexOf(".")+3);
+        } else {
+        	afterTaxAmountStr = totalInvoiceAmount.toString();
+        	taxAmountStr = totalInvoiceAmount.toString();
+        }
+        invoiceSummaryColumnsCell = newCell("$ " + afterTaxAmountStr, verdana_normal_8, 0);
         invoiceSummaryColumnsCell.setPaddingTop(10);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
@@ -246,7 +276,7 @@ public class PDFCreator {
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ 12.81", verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("$ "+taxAmountStr, verdana_normal_8, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         
@@ -255,7 +285,8 @@ public class PDFCreator {
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ 98.21", verdana_normal_8, 0);
+        // include tax fee
+        invoiceSummaryColumnsCell = newCell("$ "+totalInvoiceAmount.toString(), verdana_normal_8, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         invoiceSummaryColumnsCell = newCell(" ", arial_normal_8, 0);
@@ -275,10 +306,10 @@ public class PDFCreator {
         invoiceSummaryColumnsCell.setColspan(2);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("2014-02-16", verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell(this.getCustomerInvoice().getDue_date_str(), verdana_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ 98.21", verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell("$ "+totalInvoiceAmount.toString(), verdana_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         document.add(invoiceSummaryTable);
@@ -293,13 +324,13 @@ public class PDFCreator {
         paymentSlipTable.setTotalWidth(535);
         PdfPCell paymentSlipCell = newCell(" ", arial_normal_10, 0);
         paymentSlipCell.setColspan(5);
-        Image img = Image.getInstance("src/main/resources/pdf/img/scissor_separator.png");
+        Image img = Image.getInstance("pdf"+File.separator+"img"+File.separator+"scissor_separator.png");
         img.setWidthPercentage(100);
         paymentSlipCell.setImage(img);
         paymentSlipTable.addCell(paymentSlipCell);
 
         // WHITE TITLE
-        paymentSlipCell = newCell("Total Mobile Solution", verdana_bold_8, 0);
+        paymentSlipCell = newCell(this.getCompanyDetail().getName(), verdana_bold_8, 0);
         paymentSlipCell.setRowspan(4);
         paymentSlipTable.addCell(paymentSlipCell);
         paymentSlipCell = newCell("Payment Slip", verdana_bold_10, 0);
@@ -334,19 +365,19 @@ public class PDFCreator {
         paymentSlipTable.addCell(paymentSlipCell);
 
         // LIGHT GRAY VALUE
-        paymentSlipCell = newCell(customer.getLogin_name(), arial_normal_6, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCustomer().getId().toString(), arial_normal_6, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(customerInvoice.getInvoice_serial(), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCustomerInvoice().getId().toString(), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(TMUtils.dateFormatYYYYMMDD(customerInvoice.getDue_date()), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCustomerInvoice().getDue_date_str(), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -391,13 +422,13 @@ public class PDFCreator {
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell("$98.21", arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(totalInvoiceAmount.toString(), arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
@@ -408,11 +439,11 @@ public class PDFCreator {
         paymentSlipCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box end
-        paymentSlipCell = newCell("Bank: BNZ", arial_normal_8, 0);
+        paymentSlipCell = newCell("Bank: "+this.getCompanyDetail().getBank_name(), arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Name of Account: WorldNet Services Limited", arial_normal_8, 0);
+        paymentSlipCell = newCell("Name of Account: "+this.getCompanyDetail().getBank_account_name(), arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -421,7 +452,7 @@ public class PDFCreator {
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("2014-02-16", arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
@@ -429,7 +460,7 @@ public class PDFCreator {
         paymentSlipCell.setBorderWidthRight(2f);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell("$98.21", arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(totalInvoiceAmount.toString(), arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
@@ -440,7 +471,7 @@ public class PDFCreator {
         paymentSlipCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box end
-        paymentSlipCell = newCell("Account Number: 02-0192-0087576-000", arial_normal_8, 0);
+        paymentSlipCell = newCell("Account Number: "+this.getCompanyDetail().getBank_account_number(), arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -484,7 +515,7 @@ public class PDFCreator {
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
 		// boxes begin
-		Image sBox = Image.getInstance("src/main/resources/pdf/img/box_large_white.png");
+		Image sBox = Image.getInstance("pdf"+File.separator+"img"+File.separator+"box_large_white.png");
 		sBox.scaleAbsolute(155.25f, 35.25f);
 		sBox.setAbsolutePosition(0, 0);
 		writer.getDirectContent().addImage(sBox);
@@ -495,7 +526,7 @@ public class PDFCreator {
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
 		// boxes end
-        paymentSlipCell = newCell("write your Login Name on the back of your cheque.", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("write your Name and Phone Number on the back of your cheque.", verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -506,7 +537,7 @@ public class PDFCreator {
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total Mobile Solution Services Ltd. PO Box 68177, Newton, Auckland 1145", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCompanyDetail().getName()+" "+this.getCompanyDetail().getAddress(), verdana_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -620,7 +651,7 @@ public class PDFCreator {
          * 
          */
         // PRODUCT BEGIN
-        invoiceDetailsTitleCell = newCell("095701578", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", verdana_bold_7, 0);
         invoiceDetailsTitleCell.setFixedHeight(14);
         invoiceDetailsTitleCell.setPaddingTop(4);
         invoiceDetailsTitleCell.setIndent(14);
@@ -628,84 +659,146 @@ public class PDFCreator {
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEMS BEGIN
         // PRODUCT ITEM BEGIN
-        invoiceDetailsTitleCell = newCell("Landline Monthly Fee", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setIndent(22);
-        invoiceDetailsTitleCell.setColspan(4);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("2014-02-19  -  2014-03-18", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setColspan(2);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$43.48", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("1.00", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$43.48", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+        List<CustomerOrder> listOrders = this.getCustomerOrders();
+        Iterator<CustomerOrder> iterOrders = listOrders.iterator();
+        Double totalPrice = 0.0;
+        while(iterOrders.hasNext()){
+        	CustomerOrder customerOrder = iterOrders.next();
+            List<CustomerOrderDetail> listOrderDetails = customerOrder.getCustomerOrderDetails();
+            Iterator<CustomerOrderDetail> iterOrderDetails = listOrderDetails.iterator();
+	        while(iterOrderDetails.hasNext()){
+	        	CustomerOrderDetail customerOrderDetail = iterOrderDetails.next();
+	        	
+	        	  if(customerOrderDetail.getDetail_plan_price()!=null && customerOrderDetail.getDetail_plan_price()>0){
+		  	          totalPrice+=customerOrderDetail.getDetail_plan_new_connection_fee()+(customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit());
+	              	  // two row
+	                  invoiceDetailsTitleCell = newCell("Broadband New Connection", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setIndent(22);
+	                  invoiceDetailsTitleCell.setColspan(4);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  // term date
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setColspan(2);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_new_connection_fee().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell("1", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_new_connection_fee().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  //
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_name(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setIndent(22);
+	                  invoiceDetailsTitleCell.setColspan(4);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  // term date
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setColspan(2);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_price().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_unit().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  
+	              } else {
+	  	        	totalPrice+=(customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit());
+	            	  // one row
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_name(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setIndent(22);
+	                  invoiceDetailsTitleCell.setColspan(4);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  // term date
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setColspan(2);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_price().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_unit().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+	              }
+	        }
+        }
         // PRODUCT ITEM END
         // PRODUCT ITEM BEGIN
-        invoiceDetailsTitleCell = newCell("Call Charge", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setIndent(22);
-        invoiceDetailsTitleCell.setColspan(4);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("2014-12-02  -  2014-06-30", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setColspan(2);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$8.01", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("1.00", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$8.01", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("Call Charge", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setIndent(22);
+//        invoiceDetailsTitleCell.setColspan(4);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("2014-12-02  -  2014-06-30", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setColspan(2);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("$8.01", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("1", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("$8.01", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEM END
         // PRODUCT ITEMS BEGIN
         // PRODUCT END
         
         // #####EMTRY SPACE BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setColspan(10);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setColspan(10);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // #####EMTRY SPACE END
         
         // PRODUCT BEGIN
-        invoiceDetailsTitleCell = newCell("Kanny@adsl.world-net.co.nz", verdana_bold_7, 0);
-        invoiceDetailsTitleCell.setFixedHeight(14);
-        invoiceDetailsTitleCell.setPaddingTop(4);
-        invoiceDetailsTitleCell.setIndent(14);
-        invoiceDetailsTitleCell.setColspan(10);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("Kanny@adsl.world-net.co.nz", verdana_bold_7, 0);
+//        invoiceDetailsTitleCell.setFixedHeight(14);
+//        invoiceDetailsTitleCell.setPaddingTop(4);
+//        invoiceDetailsTitleCell.setIndent(14);
+//        invoiceDetailsTitleCell.setColspan(10);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEMS BEGIN
         // PRODUCT ITEM BEGIN
-        invoiceDetailsTitleCell = newCell("FS/FS 100G + 100G Internet Monthly Fee", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setIndent(22);
-        invoiceDetailsTitleCell.setColspan(4);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("2014-02-19  -  2014-03-18", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setColspan(2);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("1.00", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
-        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("FS/FS 100G + 100G Internet Monthly Fee", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setIndent(22);
+//        invoiceDetailsTitleCell.setColspan(4);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("2014-02-19  -  2014-03-18", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setColspan(2);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("1", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+//        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
+//        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEM END
         // PRODUCT ITEMS END
         // PRODUCT END
@@ -735,10 +828,12 @@ public class PDFCreator {
         invoiceDetailsTitleCell.setFixedHeight(14);
         invoiceDetailsTitleCell.setColspan(7);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+        String totalBeforeGST = String.valueOf(totalPrice/1.15);
+        totalBeforeGST=totalBeforeGST.substring(0, totalBeforeGST.indexOf(".")+3);
         invoiceDetailsTitleCell = newCell("Total before GST", arial_normal_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$85.40", arial_normal_8, 0);
+        invoiceDetailsTitleCell = newCell(totalBeforeGST, arial_normal_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // FIRST ROW END
@@ -750,7 +845,9 @@ public class PDFCreator {
         invoiceDetailsTitleCell = newCell("GST at 15%", arial_normal_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$12.81", arial_normal_8, 0);
+        String totalGST = String.valueOf(totalPrice-totalPrice/1.15);
+        totalGST=totalGST.substring(0, totalGST.indexOf(".")+3);
+        invoiceDetailsTitleCell = newCell(totalGST, arial_normal_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // SECOND ROW END
@@ -772,7 +869,7 @@ public class PDFCreator {
         invoiceDetailsTitleCell = newCell("Invoice Total", verdana_bold_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("$98.21", verdana_bold_8, 0);
+        invoiceDetailsTitleCell = newCell(String.valueOf(totalPrice), verdana_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // TOTAL AMOUNT END
@@ -831,13 +928,13 @@ public class PDFCreator {
 	private void pageHeader(PdfWriter writer, PdfPTable headerTable, PdfPCell cell) throws MalformedURLException, IOException, DocumentException{
 		headerTable.setTotalWidth(510);
         // logo & start
-		Image logo = Image.getInstance("src/main/resources/pdf/img/logo_top_final.png");
+		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
 		logo.scaleAbsolute(171f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);
 		
 		Phrase t1 = new Phrase("Statement / Tax Invoice", verdana_normal_14);
-		Phrase t2 = new Phrase("GST Registration Number: 99 728 906", lucida_sans_unicode_9);
+		Phrase t2 = new Phrase("GST Registration Number: "+this.getCompanyDetail().getGst_registration_number(), lucida_sans_unicode_9);
 		PdfContentByte canvas = writer.getDirectContentUnder();
 		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, t1, 44, 744, 0);
 		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, t2, 44, 730, 0);
@@ -854,13 +951,13 @@ public class PDFCreator {
 		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase("Total Mobile Solution Limited", arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getName(), arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase("PO Box 68177, Newton, Auckland 1145", arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getAddress(), arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase("Tel: 64 9 880 1001  /  Fax: 64 9 880 1009", arial_normal_8));
+        cell.setPhrase(new Phrase("Tel: "+this.getCompanyDetail().getTelephone()+"  /  Fax: "+this.getCompanyDetail().getFax(), arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase("www.cyberpark.co.nz", arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getDomain(), arial_normal_8));
         headerTable.addCell(cell);
         cell = new PdfPCell(seperator);
 		cell.setBorder(0);
@@ -876,10 +973,10 @@ public class PDFCreator {
         Paragraph basicsP = new Paragraph();
         Phrase date = new Phrase("Date: ", verdana_bold_8);
         Phrase invoiceNo = new Phrase(" | Invoice No: ", verdana_bold_8);
-        Phrase loginName = new Phrase(" | Login Name: ", verdana_bold_8);
-        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getCustomerOrder().getOrder_create_date()), arial_normal_8);
-        Phrase invoiceNoField = new Phrase(this.customerInvoice.getInvoice_serial(), arial_normal_8);
-        Phrase loginNameField = new Phrase(this.customerInvoice.getCustomer().getLogin_name(), arial_normal_8);
+        Phrase loginName = new Phrase(" | Customer Id: ", verdana_bold_8);
+        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getCreate_date()), arial_normal_8);
+        Phrase invoiceNoField = new Phrase(this.customerInvoice.getId().toString(), arial_normal_8);
+        Phrase loginNameField = new Phrase(this.getCustomer().getId().toString(), arial_normal_8);
         // put paragraph into table cell
         basicsP.add(date);
         basicsP.add(dateField);
@@ -922,5 +1019,38 @@ public class PDFCreator {
 		pcell.setBackgroundColor(color);
 		return pcell;
 	}
+
+	public CustomerInvoice getCustomerInvoice() {
+		return customerInvoice;
+	}
+
+	public void setCustomerInvoice(CustomerInvoice customerInvoice) {
+		this.customerInvoice = customerInvoice;
+	}
+
+	public CompanyDetail getCompanyDetail() {
+		return companyDetail;
+	}
+
+	public void setCompanyDetail(CompanyDetail companyDetail) {
+		this.companyDetail = companyDetail;
+	}
+
+	public Customer getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+
+	public List<CustomerOrder> getCustomerOrders() {
+		return customerOrders;
+	}
+
+	public void setCustomerOrders(List<CustomerOrder> customerOrders) {
+		this.customerOrders = customerOrders;
+	}
+
 	
 }

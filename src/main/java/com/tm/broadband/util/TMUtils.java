@@ -1,5 +1,6 @@
 package com.tm.broadband.util;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -51,6 +52,18 @@ public class TMUtils {
 				e.printStackTrace();
 			}
 		return null;
+	}
+	
+	public static String createPath(String path){
+		String temp = System.getenv("SystemRoot");
+		String realPath = temp.substring(0, temp.indexOf("\\")+1) + path;
+		
+        File file = new File(realPath);
+        if(!file.getParentFile().exists()){
+        	file.getParentFile().mkdirs();
+        }
+        
+        return realPath;
 	}
 
 }

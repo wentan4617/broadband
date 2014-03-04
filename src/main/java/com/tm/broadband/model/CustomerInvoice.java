@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tm.broadband.util.TMUtils;
+
 /**
  * customer invoice, mapping tm_customer_invoice
  * 
@@ -32,10 +34,19 @@ public class CustomerInvoice implements Serializable {
 	private String status;
 	private String memo;
 	private String invoice_pdf_path;
+	private Date paid_date;
+	private String paid_type;
+	private Integer last_invoice_id;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
+	
+	private String create_date_str;
+	private String due_date_str;
+	private CustomerInvoice lastCustomerInvoice;
+	private String paid_date_str;
+	private String invoice_desc;
 
 	/*
 	 * RELATED PROPERTIES
@@ -81,6 +92,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setCustomerOrder(CustomerOrder customerOrder) {
 		this.customerOrder = customerOrder;
+	}
+
+	public CustomerInvoice getLastCustomerInvoice() {
+		return lastCustomerInvoice;
+	}
+
+	public void setLastCustomerInvoice(CustomerInvoice lastCustomerInvoice) {
+		this.lastCustomerInvoice = lastCustomerInvoice;
 	}
 
 	public Date getCreate_date() {
@@ -157,6 +176,69 @@ public class CustomerInvoice implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCreate_date_str() {
+		create_date_str = TMUtils.dateFormatYYYYMMDD(this.getCreate_date());
+		return create_date_str;
+	}
+
+	public void setCreate_date_str(String create_date_str) {
+		this.create_date_str = create_date_str;
+	}
+
+	public String getDue_date_str() {
+		if(this.getDue_date() != null){
+			this.setDue_date_str(TMUtils.dateFormatYYYYMMDD(this.getDue_date()));
+		} else {
+			this.setDue_date_str("");
+		}
+		return due_date_str;
+	}
+
+	public void setDue_date_str(String due_date_str) {
+		this.due_date_str = due_date_str;
+	}
+
+	public Date getPaid_date() {
+		return paid_date;
+	}
+
+	public void setPaid_date(Date paid_date) {
+		this.paid_date = paid_date;
+	}
+
+	public String getPaid_type() {
+		return paid_type;
+	}
+
+	public void setPaid_type(String paid_type) {
+		this.paid_type = paid_type;
+	}
+
+	public Integer getLast_invoice_id() {
+		return last_invoice_id;
+	}
+
+	public void setLast_invoice_id(Integer last_invoice_id) {
+		this.last_invoice_id = last_invoice_id;
+	}
+
+	public String getPaid_date_str() {
+		this.setPaid_date_str(TMUtils.dateFormatYYYYMMDD(this.getPaid_date()));
+		return paid_date_str;
+	}
+
+	public void setPaid_date_str(String paid_date_str) {
+		this.paid_date_str = paid_date_str;
+	}
+
+	public String getInvoice_desc() {
+		return invoice_desc;
+	}
+
+	public void setInvoice_desc(String invoice_desc) {
+		this.invoice_desc = invoice_desc;
 	}
 
 }

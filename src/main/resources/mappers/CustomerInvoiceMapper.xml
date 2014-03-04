@@ -42,6 +42,16 @@
 		<include refid="pageWhere"/>
 	</select>
 	
+	<!-- select customer invoice by invoice_id -->
+	<select id="selectCustomerInvoiceById" parameterType="int" resultType="CustomerInvoice">
+		SELECT * FROM `tm_customer_invoice` WHERE id=#{0}
+	</select>
+	
+	<!-- select customer invoice file path by invoice_id -->
+	<select id="selectCustomerInvoiceFilePathById" parameterType="int" resultType="String">
+		SELECT invoice_pdf_path FROM `tm_customer_invoice` WHERE id=#{0}
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
@@ -49,10 +59,10 @@
 	<insert id="insertCustomerInvoice" parameterType="CustomerInvoice" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_invoice`(
 			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
-			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`) 
+			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, `paid_date`, `paid_type`, `last_invoice_id`) 
 		VALUES (
-			#{invoice_serial}, #{customer.id}, #{order.id}, #{create_date}, #{due_date},
-			#{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path})
+			#{invoice_serial}, #{customer.id}, #{customerOrder.id}, #{create_date}, #{due_date},
+			#{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, #{paid_date}, #{paid_type}, #{last_invoice_id})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -70,9 +80,12 @@
 			<if test="amount_payable != null">`amount_payable`=#{amount_payable},</if>
 			<if test="amount_paid != null">`amount_paid`=#{amount_paid},</if>
 			<if test="balance != null">`balance`=#{balance},</if>
-			<if test="status != null">`balance`=#{balance},</if>
-			<if test="memo != null">`balance`=#{balance},</if>
-			<if test="invoice_pdf_path != null">`balance`=#{balance}</if>
+			<if test="status != null">`status`=#{status},</if>
+			<if test="memo != null">`memo`=#{memo},</if>
+			<if test="invoice_pdf_path != null">`invoice_pdf_path`=#{invoice_pdf_path},</if>
+			<if test="paid_date != null">`paid_date`=#{paid_date},</if>
+			<if test="paid_type != null">`paid_type`=#{paid_type},</if>
+			<if test="last_invoice_id != null">`last_invoice_id`=#{last_invoice_id}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
