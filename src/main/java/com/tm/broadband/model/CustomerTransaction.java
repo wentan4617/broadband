@@ -53,6 +53,7 @@ public class CustomerTransaction implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String transaction_date_str;
+	private Integer invoice_id;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -247,6 +248,14 @@ public class CustomerTransaction implements Serializable {
 
 	public void setTransaction_date_str(String transaction_date_str) {
 		this.transaction_date_str = transaction_date_str;
+	}
+
+	public Integer getInvoice_id() {
+		return invoice_id;
+	}
+
+	public void setInvoice_id(Integer invoice_id) {
+		this.invoice_id = invoice_id;
 	}
 
 }

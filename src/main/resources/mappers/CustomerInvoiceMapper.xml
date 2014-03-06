@@ -21,6 +21,14 @@
 			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
 		</where>
 	</sql>
+	<sql id="customerInvoiceWhere">
+		<where>
+			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+			<if test="params.order_id != null">and order_id=#{params.order_id}</if>
+			<if test="params.status != null">and status=#{params.status}</if>
+			<if test="params.by_max_id != null">and id=(SELECT MAX(id) FROM tm_customer_invoice)</if>
+		</where>
+	</sql>
 	
 	<!-- // DEFINITION AREA -->
 	
@@ -50,6 +58,12 @@
 	<!-- select customer invoice file path by invoice_id -->
 	<select id="selectCustomerInvoiceFilePathById" parameterType="int" resultType="String">
 		SELECT invoice_pdf_path FROM `tm_customer_invoice` WHERE id=#{0}
+	</select>
+	
+	<!-- select customer invoice by some -->
+	<select id="selectCustomerInvoiceBySome" parameterType="CustomerInvoice" resultType="CustomerInvoice">
+		SELECT * FROM `tm_customer_invoice`
+		<include refid="customerInvoiceWhere"/>
 	</select>
 	
 	<!-- // END SELECT AREA -->

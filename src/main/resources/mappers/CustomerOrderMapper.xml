@@ -76,6 +76,13 @@
 		</where>
 	</sql>
 	
+	<sql id="customerOrderWhere">
+		<where>
+			<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
+			<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
+		</where>
+	</sql>
+	
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
@@ -224,6 +231,17 @@
 		where co.id = #{id}
 	</select>
 	
+	<select id="selectCustomerOrdersBySome" resultMap="selectCustomerOrderWithCustomerAndCustomerOrderDetailsResultMap">
+		select 
+			<include refid="customerOrderColumns"/>,
+			<include refid="customerColumns"/>,
+			<include refid="customerOrderDetailColumns"/>
+		from tm_customer_order as co
+		left join tm_customer as c on c.id = co.customer_id
+		left join tm_customer_order_detail as cod on cod.order_id = co.id
+		<include refid="customerOrderWhere"/>
+	</select>
+	
 	<resultMap type="CustomerOrder" id="selectCustomerOrderWithCustomerAndCustomerOrderDetailsResultMap">
 		<id property="id" column="co_id" />
 		<result property="order_serial" column="co_order_serial" />
@@ -269,7 +287,7 @@
 		update tm_customer_order 
 		<set>
 			<if test="order_serial != null">order_serial = #{order_serial},</if>
-			<if test="customer != null and customer.id != null">customer.id = #{customer.id},</if>
+			<if test="customer != null and customer.id != null">customer_id = #{customer.id},</if>
 			<if test="order_total_price != null">order_total_price = #{order_total_price},</if>
 			<if test="order_create_date != null">order_create_date = #{order_create_date},</if>
 			<if test="order_status != null">order_status = #{order_status},</if>

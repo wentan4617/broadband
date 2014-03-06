@@ -1,11 +1,14 @@
 package com.tm.broadband.service;
 
 
-import java.util.Date;
-
 import java.io.File;
 import java.io.IOException;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -196,7 +199,7 @@ public class CRMService {
 		page.setResults(this.customerInvoiceMapper.selectCustomerInvoicesByPage(page));
 		return page;
 	}
-
+	
 	@Transactional
 	public Page<CustomerTransaction> queryCustomerTransactionsByPage(Page<CustomerTransaction> page) {
 		page.setTotalRecord(this.customerTransactionMapper.selectCustomerTransactionsSum(page));
@@ -205,7 +208,6 @@ public class CRMService {
 	}
 
 	@Transactional
-
 	public void editCustomerOrderCreateInvoice(
 			Customer customer,
 			CustomerOrder customerOrder,
@@ -213,6 +215,7 @@ public class CRMService {
 			CustomerTransaction customerTransaction,
 			User user,
 			ProvisionLog proLog) {
+		
 		// edit order
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 		
@@ -251,7 +254,7 @@ public class CRMService {
 		
 		// get Customer by customer_id
 		Customer invoiceCustomer = this.customerMapper.selectCustomerByIdWithCustomerOrder(customer.getId());
-		// get CustomerOrders by customer_id
+		// get CustomerOrders
 		List<CustomerOrder> invoiceCustomerOrders = invoiceCustomer.getCustomerOrders();
 		
 		// get CustomerInvoice by invoice_id
@@ -271,7 +274,10 @@ public class CRMService {
 				+File.separator+"customers"
 				+File.separator+customer.getId()
 				+File.separator+customerInvoice.getId()+".pdf");
+		// set file path
 		customerInvoice.setInvoice_pdf_path(filePath);
+		// add sql condition: id
+		customerInvoice.getParams().put("id", customerInvoice.getId());
 		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 		
 		// initialize invoice's important informations
@@ -304,11 +310,127 @@ public class CRMService {
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 		// insert provision
 		this.provisionLogMapper.insertProvisionLog(proLog);
+		
 	}
 
 	@Transactional 
 	public String queryCustomerInvoiceFilePathById(int id){
 		return this.customerInvoiceMapper.selectCustomerInvoiceFilePathById(id);
+	}
+
+	@Transactional 
+	public void createNextInvoice(CustomerOrder customerOrder) throws ParseException{
+		List<CustomerOrder> customerOrdersList = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrder);
+		Iterator<CustomerOrder> customerOrdersIter = customerOrdersList.iterator();
+		while(customerOrdersIter.hasNext()){
+
+			// initiate models begin
+			CustomerInvoice customerPreviousInvoice = new CustomerInvoice();
+			CustomerInvoice customerInvoice = new CustomerInvoice();
+			// initiate models end
+			
+			// get specific models begin
+			customerOrder = customerOrdersIter.next();
+				// get distinctions of time begin
+			Date begin = customerOrder.getOrder_using_start();
+			Date end =  customerOrder.getNext_invoice_create_date();
+			// seconds
+			long between = (end.getTime()-begin.getTime())/1000;
+			// days
+			long lastInvoiceDistinctinsOfDay = between/(24*3600);
+				// get distinctions of time end
+
+				// set next invoice date begin
+			int nextInvoiceDay = new Long(lastInvoiceDistinctinsOfDay).intValue();
+			Calendar calNextInvoiceDay = Calendar.getInstance();
+			calNextInvoiceDay.setTime(customerOrder.getNext_invoice_create_date());
+			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+				// set next invoice date end
+			
+			// update customer order's next invoice create day begin
+			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+			customerOrder.getParams().put("id", customerOrder.getId());
+			this.customerOrderMapper.updateCustomerOrder(customerOrder);
+			// update customer order's next invoice create day end
+			
+			Customer customer = customerOrder.getCustomer();
+			customerPreviousInvoice.getParams().put("customer_id", customer.getId());
+			customerPreviousInvoice.getParams().put("order_id", customerOrder.getId());
+			customerPreviousInvoice.getParams().put("status", "paid");
+			customerPreviousInvoice.getParams().put("by_max_id", "");
+			// get specific models end
+			
+			// get customer's previous invoice details begin
+			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
+			customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
+			// get customer's previous invoice detail end
+			
+			// set customer's new invoice details begin
+				// set invoice due date begin
+			Date invoiceCreateDay = new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-30");
+			int invoiceDueDay = 15;
+			Calendar calInvoiceDueDay = Calendar.getInstance();
+			calInvoiceDueDay.setTime(invoiceCreateDay);
+			calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
+				// set invoice due date end
+			
+			customerInvoice.setLast_invoice_id(customerPreviousInvoice.getId());
+			customerInvoice.setCustomer(customer);
+			customerInvoice.setCustomerOrder(customerOrder);
+			customerInvoice.setCreate_date(invoiceCreateDay);
+			customerInvoice.setDue_date(calInvoiceDueDay.getTime());
+			customerInvoice.setAmount_payable(customerOrder.getOrder_total_price());
+			customerInvoice.setStatus("unpaid");
+			customerInvoice.setAmount_paid(0.0);
+			customerInvoice.setBalance(0.0);
+			// set customer's new invoice details end
+			this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
+			
+			// get customer invoice by invoice_id
+			CustomerInvoice invoiceCustomerInvoice = this.customerInvoiceMapper.selectCustomerInvoiceById(customerInvoice.getId());
+			invoiceCustomerInvoice.setLastCustomerInvoice(this.customerInvoiceMapper.selectCustomerInvoiceById(customerPreviousInvoice.getId()));
+
+			// initialize invoice's important informations
+			// store company detail begin
+			CompanyDetail companyDetail = new CompanyDetail();
+			companyDetail.setGst_registration_number("99 728 906");
+			companyDetail.setName("Total Mobile Solution Limited");
+			companyDetail.setAddress("PO Box 68177, Newton, Auckland 1145");
+			companyDetail.setTelephone("64 9 880 1001");
+			companyDetail.setFax("64 9 880 1009");
+			companyDetail.setDomain("www.cyberpark.co.nz");
+			//
+			companyDetail.setBank_name("BNZ");
+			companyDetail.setBank_account_name("WorldNet Services Limited");
+			companyDetail.setBank_account_number("02-0192-0087576-000");
+			// store company detail end
+			InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+			invoicePDF.setCompanyDetail(companyDetail);
+			invoicePDF.setCustomer(customer);
+			List<CustomerOrder> customerOrders = new ArrayList<CustomerOrder>();
+			customerOrders.add(customerOrder);
+			invoicePDF.setCustomerOrders(customerOrders);
+			invoicePDF.setCustomerInvoice(invoiceCustomerInvoice);
+			
+			// create specific directories and generate invoice PDF
+			String filePath = TMUtils.createPath(
+					"broadband"
+					+File.separator+"customers"
+					+File.separator+customer.getId()
+					+File.separator+customerInvoice.getId()+".pdf");
+			// set file path
+			customerInvoice.setInvoice_pdf_path(filePath);
+			// add sql condition: id
+			customerInvoice.getParams().put("id", customerInvoice.getId());
+			this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
+			
+			try {
+				// generate invoice PDF
+				invoicePDF.create(filePath);
+			} catch (DocumentException | IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 }

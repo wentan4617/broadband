@@ -203,7 +203,7 @@ public class InvoicePDFCreator {
         transactionColumnsCell = newCell(this.getCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
         transactionColumnsCell.setColspan(2);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("-$ " + this.getCustomerInvoice().getAmount_paid(), verdana_normal_8, 0);
+        transactionColumnsCell = newCell("$ -" + this.getCustomerInvoice().getAmount_paid(), verdana_normal_8, 0);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
         

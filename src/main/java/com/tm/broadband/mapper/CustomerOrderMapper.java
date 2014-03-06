@@ -25,10 +25,13 @@ public interface CustomerOrderMapper {
 	/* SELECT AREA */
 	
 	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
+	
 	CustomerOrder selectCustomerOrderById(int id);
 	
 	List<CustomerOrder> selectCustomerOrdersByPage(Page<CustomerOrder> page);
 	int selectCustomerOrdersSum(Page<CustomerOrder> page);
+	
+	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
 	
 	/* // END SELECT AREA */
 	

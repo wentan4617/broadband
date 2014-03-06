@@ -29,6 +29,7 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($){
+	
 
 	$.getTxPage = function(pageNo) {
 		
@@ -40,7 +41,11 @@
 				html += '<table class="table">';
 				html += '<thead>';
 				html += '<tr>';
+				html += '<th>Reference</th>';
+				html += '<th>Transaction Type</th>';
 				html += '<th>Transaction Date</th>';
+				html += '<th>Card Name</th>';
+				html += '<th>Transaction Sort</th>';
 				html += '<th>Amount</th>';
 				html += '<th>&nbsp;</th>';
 				html += '</tr>';
@@ -49,7 +54,11 @@
 				for (var i = 0, len = page.results.length; i < len; i++) {
 					var tx = page.results[i];
 					html += '<tr>';
+					html += '<td>Transaction# - ' + tx.id + '</td>';
+					html += '<td>' + tx.transaction_type + '</td>';
 					html += '<td>' + tx.transaction_date_str + '</td>';
+					html += '<td>' + tx.card_name + '</td>';
+					html += '<td>' + tx.transaction_sort + '</td>';
 					html += '<td>' + tx.amount + '</td>';
 					html += '<td>&nbsp;</td>';
 					html += '</tr>';
@@ -83,13 +92,13 @@
 		
 		$.get('${ctx}/broadband-user/crm/invoice/view/' + pageNo+'/'+ ${customer.id}, callbackPage, "json");
 		
-		function callbackPage(page){
+		function callbackPage(map){
 			var html = "";
-			if (page.results != null && page.results.length > 0) {
+			if (map.invoicePage.results != null && map.invoicePage.results.length > 0) {
 				html += '<table class="table">';
 				html += '<thead>';
 				html += '<tr>';
-				html += '<th>Invoice ID</th>';
+				html += '<th>Reference</th>';
 				html += '<th>Create Date</th>';
 				html += '<th>Due Date</th>';
 				html += '<th>Amount Payable</th>';
@@ -100,12 +109,27 @@
 				html += '</tr>';
 				html += '</thead>';
 				html += '<tbody>';
-				for (var i = 0, len = page.results.length; i < len; i++) {
-					var invoice = page.results[i];
+				for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
+					var invoice = map.invoicePage.results[i];
+					for (var j = 0, txLen = map.transactionPage.results.length; j < txLen; j++) {
+						var tx = map.transactionPage.results[j];
+						if(tx.invoice_id==invoice.id){
+							html += '<tr>';
+							html += '<td>Transaction# - ' + tx.id + '</td>';
+							html += '<td>' + tx.transaction_date_str + '</td>';
+							html += '<td>&nbsp;</td>';
+							html += '<td>' + invoice.amount_payable + '</td>';
+							html += '<td>' + invoice.amount_paid + '</td>';
+							html += '<td>' + invoice.balance + '</td>';
+							html += '<td>' + invoice.status + '</td>';
+							html += '<td>&nbsp;</td>';
+							html += '</tr>';
+						}
+					}
 					html += '<tr>';
-					html += '<td>' + invoice.id + '</td>';
+					html += '<td>Invoice# - ' + invoice.id + '</td>';
 					html += '<td>' + invoice.create_date_str + '</td>';
-					html += '<td>' + invoice.due_date_str + '</td>';
+					invoice.status!='unpaid'&&invoice.status!='not_pay_off'?html+='<td>&nbsp;</td>':html+='<td>'+invoice.due_date_str+'</td>';
 					html += '<td>' + invoice.amount_payable + '</td>';
 					html += '<td>' + invoice.amount_paid + '</td>';
 					html += '<td>' + invoice.balance + '</td>';
@@ -118,8 +142,8 @@
 				html += '<tr>';
 				html += '<td colspan="11">';
 				html += '<ul class="pagination">';
-				for (var i = 1, len = page.totalPage; i <= len; i++) {
-					html += '<li class="' + (page.pageNo == i ? 'active' : '') + '">';
+				for (var i = 1, len = map.invoicePage.totalPage; i <= len; i++) {
+					html += '<li class="' + (map.invoicePage.pageNo == i ? 'active' : '') + '">';
 					html += '<a href="javascript:void(0);" onclick="$.getInvoicePage(' + i + ')">' + i + '</a>';
 					html += '</li>';
 				}
@@ -133,7 +157,7 @@
 				html += '<div class="alert alert-warning">No records have been found.</div>';
 				html += '</div>';
 			}
-			
+
 			$('#invoiceContainer').html(html);
 		}
 	}
@@ -210,9 +234,9 @@
 			order_next_invoice_create_date.html(order.next_invoice_create_date_str);
 		}, "json");
 	});
-	
-	$.getInvoicePage(1);
+
 	$.getTxPage(1);
+	$.getInvoicePage(1);
 	
 	
 	

@@ -33,6 +33,8 @@ public interface CustomerInvoiceMapper {
 	
 	String selectCustomerInvoiceFilePathById(int id);
 	
+	List<CustomerInvoice> selectCustomerInvoiceBySome(CustomerInvoice customerInvoice);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

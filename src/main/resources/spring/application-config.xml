@@ -94,27 +94,27 @@
 	<!-- timer configuration -->
 
 	<!-- normal business Bean -->
-	<!-- <bean name="importPhoneCard" class="com.telnet.gm.util.ImportPhoneCard" /> -->
+	<bean name="customerCreateInvoicePDFEachMonth" class="com.tm.broadband.quartz.CustomerCreateInvoicePDFEachMonth" />
 
 	<!-- assignment -->
-	<!-- <bean id="importPhoneCardJob"
+	<bean id="customerCreateInvoicePDFEachMonthJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="importPhoneCard" />
-		<property name="targetMethod" value="importRecords" />
-	</bean> -->
+		<property name="targetObject" ref="customerCreateInvoicePDFEachMonth" />
+		<property name="targetMethod" value="createNextInvoicePDF" />
+	</bean>
 	
 	<!-- trigger -->
-	<!-- <bean id="importPhoneCardTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="importPhoneCardJob" />
-		<property name="cronExpression" value="0 0 4 * * ?"></property>
-	</bean> -->
+	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
+		<property name="cronExpression" value="0-59/10 * * * * ?"></property>
+	</bean>
 
 	<!-- plan -->
-	<!-- <bean name="testScheduler"
+	<bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="importPhoneCardTrigger" />
+				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
@@ -122,6 +122,6 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean> -->
+	</bean>
 
 </beans>
