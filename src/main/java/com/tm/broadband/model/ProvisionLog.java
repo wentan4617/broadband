@@ -7,7 +7,11 @@ public class ProvisionLog implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	private int id;
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+	
+	private Integer id;
 	private User user;
 	private Date process_datetime;
 	private String order_sort;
@@ -15,16 +19,26 @@ public class ProvisionLog implements Serializable {
 	//private ChorusOrder order_id_chorus;
 	private String process_way;
 	private String process_memo;
+	
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
 
-	public ProvisionLog() {
-		// TODO Auto-generated constructor stub
-	}
+	/*
+	 * RELATED PROPERTIES
+	 */
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
-	public int getId() {
+	public ProvisionLog() {}
+
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 
@@ -79,5 +93,7 @@ public class ProvisionLog implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	
 
 }

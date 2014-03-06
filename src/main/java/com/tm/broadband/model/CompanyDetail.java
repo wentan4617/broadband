@@ -4,11 +4,12 @@ import java.io.Serializable;
 
 public class CompanyDetail implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+	
 	private String name;
 	private String address;
 	private String telephone;
@@ -18,6 +19,18 @@ public class CompanyDetail implements Serializable {
 	private String bank_name;
 	private String bank_account_name;
 	private String bank_account_number;
+	
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public String getName() {
 		return name;
