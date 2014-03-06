@@ -28,7 +28,7 @@
 								</button>
 								<ul class="dropdown-menu" data-role="menu">
 									<li>
-										<a href="javascript:void(0);" id="paid_to_ordering">
+										<a href="javascript:void(0);" id="paid_to_ordering" data-val="ordering">
 											Order Status: 
 											<span class="text-danger">Paid to Ordering</span>
 										</a>
@@ -44,11 +44,12 @@
 						action="${ctx }/broadband-user/provision/customer/order/status"
 						method="post">
 						<input type="hidden" id="process_way" name="process_way" />
-
+						<input type="hidden" id="order_status" name="order_status" value="${order_status}"/>
+						<input type="hidden" id="change_order_status" name="change_order_status" />
 						<table class="table">
 							<thead>
 								<tr>
-									<th><input type="checkbox" id="checkbox_customers_top" /></th>
+									<th><input type="checkbox" id="checkbox_orders_top" /></th>
 									<th>Order ID</th>
 									<th>Customer Name</th>
 									<th>Price ($)</th>
@@ -62,7 +63,7 @@
 							<tbody>
 								<c:forEach var="order" items="${page.results }">
 									<tr>
-										<td><input type="checkbox" name="checkbox_customers" value="${order.id}" /></td>
+										<td><input type="checkbox" name="checkbox_orders" value="${order.id}" /></td>
 										<td>
 											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
 										</td>
@@ -112,18 +113,19 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($) {
-	$('#checkbox_customers_top').click(function() {
+	$('#checkbox_orders_top').click(function() {
 		var b = $(this).prop("checked");
 		if (b) {
-			$('input[name="checkbox_customers"]').prop("checked", true);
+			$('input[name="checkbox_orders"]').prop("checked", true);
 		} else {
-			$('input[name="checkbox_customers"]').prop("checked", false);
+			$('input[name="checkbox_orders"]').prop("checked", false);
 		}
 	});
 
-	$('#activeRegisterCusomter').click(function() {
+	$('#paid_to_ordering').click(function() {
 
-		$('#process_way').val('pending to payment');
+		$('#process_way').val('paid to ordering');
+		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});
 

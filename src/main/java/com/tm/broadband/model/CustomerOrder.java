@@ -15,6 +15,7 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * TABLE MAPPING PROPERTIES
 	 */
+	
 	private Integer id;
 	private String order_serial;
 	private Customer customer;
@@ -44,6 +45,7 @@ public class CustomerOrder implements Serializable {
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails;
+	private ProvisionLog tempProvsionLog;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -194,6 +196,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setNext_invoice_create_date_str(String next_invoice_create_date_str) {
 		this.next_invoice_create_date_str = next_invoice_create_date_str;
+	}
+
+	public ProvisionLog getTempProvsionLog() {
+		return tempProvsionLog;
+	}
+
+	public void setTempProvsionLog(ProvisionLog tempProvsionLog) {
+		this.tempProvsionLog = tempProvsionLog;
 	}
 
 }

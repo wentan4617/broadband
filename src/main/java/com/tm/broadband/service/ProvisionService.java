@@ -51,5 +51,16 @@ public class ProvisionService {
 		return this.customerOrderMapper.selectCustomerOrderById(id);
 	}
 	
+
+	@Transactional
+	public void changeCustomerOrderStatus(List<CustomerOrder> list) {
+		
+		for (CustomerOrder customerOrder : list) {
+			this.customerOrderMapper.updateCustomerOrder(customerOrder);
+			this.provisionLogMapper.insertProvisionLog(customerOrder.getTempProvsionLog());
+		}
+		
+	}
+	
 	
 }

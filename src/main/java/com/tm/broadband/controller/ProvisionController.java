@@ -1,6 +1,10 @@
 package com.tm.broadband.controller;
 
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +21,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.ProvisionService;
@@ -74,16 +79,6 @@ public class ProvisionController {
 		return "broadband-user/provision/provision-view";
 	}
 	
-	/*@RequestMapping(value = "/broadband-user/provision/customer/{id}")
-	@ResponseBody
-	public Customer queryCustomerOrderWithCustomer(Model model,
-			@PathVariable(value = "id") int id) {
-
-		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
-		
-		return customer;
-	}*/
-	
 	@RequestMapping(value = "/broadband-user/provision/customer/order/{id}")
 	@ResponseBody
 	public CustomerOrder queryCustomerOrderWithCustomer(Model model,
@@ -95,20 +90,42 @@ public class ProvisionController {
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/order/status", method = RequestMethod.POST)
 	public String changeCustomerOrderStatus(Model model,
-			@RequestParam(value = "checkbox_customers", required = false) String[] customer_ids,
+			@RequestParam(value = "checkbox_orders", required = false) String[] order_ids,
 			@RequestParam(value = "process_way") String process_way,
 			@RequestParam(value = "order_status") String order_status,
+			@RequestParam(value = "change_order_status") String change_order_status,
 			HttpServletRequest req, RedirectAttributes attr) {
 
-		if (customer_ids == null) {
+		if (order_ids == null) {
 			attr.addFlashAttribute("error", "Please choose one customer at least.");
 			return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
 		}
 		
 		User userSession = (User)req.getSession().getAttribute("userSession");
 		
+		List<CustomerOrder> list = new ArrayList<CustomerOrder>();
 		
-		attr.addFlashAttribute("success", customer_ids.length + " order of cusotmers are transformed status (" + process_way + ").");
+		for (String order_id : order_ids) {
+			
+			CustomerOrder customerOrder = new CustomerOrder();
+			customerOrder.setOrder_status(change_order_status);
+			customerOrder.getParams().put("id", Integer.parseInt(order_id));
+			
+			ProvisionLog log = new ProvisionLog();
+			log.setUser(userSession);
+			log.setProcess_datetime(new Date(System.currentTimeMillis()));
+			log.setOrder_sort("customer-order");
+			log.setOrder_id_customer(customerOrder);
+			log.setProcess_way(process_way);
+			
+			customerOrder.setTempProvsionLog(log);
+			
+			list.add(customerOrder);
+		}
+		
+		this.provisionService.changeCustomerOrderStatus(list);
+		
+		attr.addFlashAttribute("success", order_ids.length + " order of cusotmers are transformed status (" + process_way + ").");
 		
 		return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
 	}

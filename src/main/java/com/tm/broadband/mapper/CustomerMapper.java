@@ -14,7 +14,6 @@ import com.tm.broadband.model.User;
  *
  */
 
-
 /* SELECT AREA *//* // END SELECT AREA */
 /* =================================================================================== */
 /* INSERT AREA *//* // END INSERT AREA */
