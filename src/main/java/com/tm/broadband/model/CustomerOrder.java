@@ -15,7 +15,7 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * TABLE MAPPING PROPERTIES
 	 */
-	
+
 	private Integer id;
 	private String order_serial;
 	private Customer customer;
@@ -28,13 +28,16 @@ public class CustomerOrder implements Serializable {
 	private String order_broadband_type;
 	private String svlan;
 	private String cvlan;
-
+	private String transition_provider_name;
+	private String transition_account_holder_name;
+	private String transition_account_number;
+	private String transition_porting_number;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
-	
+
 	private Map<String, Object> params = new HashMap<String, Object>();
-	
+
 	/*
 	 * RELATED PROPERTIES
 	 */
@@ -151,7 +154,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this
+				.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -160,7 +164,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start());
+		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this
+				.getOrder_using_start());
 		return order_using_start_str;
 	}
 
@@ -190,11 +195,13 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getNext_invoice_create_date_str() {
-		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this.getNext_invoice_create_date()));
+		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this
+				.getNext_invoice_create_date()));
 		return next_invoice_create_date_str;
 	}
 
-	public void setNext_invoice_create_date_str(String next_invoice_create_date_str) {
+	public void setNext_invoice_create_date_str(
+			String next_invoice_create_date_str) {
 		this.next_invoice_create_date_str = next_invoice_create_date_str;
 	}
 
@@ -204,6 +211,39 @@ public class CustomerOrder implements Serializable {
 
 	public void setTempProvsionLog(ProvisionLog tempProvsionLog) {
 		this.tempProvsionLog = tempProvsionLog;
+	}
+
+	public String getTransition_provider_name() {
+		return transition_provider_name;
+	}
+
+	public void setTransition_provider_name(String transition_provider_name) {
+		this.transition_provider_name = transition_provider_name;
+	}
+
+	public String getTransition_account_holder_name() {
+		return transition_account_holder_name;
+	}
+
+	public void setTransition_account_holder_name(
+			String transition_account_holder_name) {
+		this.transition_account_holder_name = transition_account_holder_name;
+	}
+
+	public String getTransition_account_number() {
+		return transition_account_number;
+	}
+
+	public void setTransition_account_number(String transition_account_number) {
+		this.transition_account_number = transition_account_number;
+	}
+
+	public String getTransition_porting_number() {
+		return transition_porting_number;
+	}
+
+	public void setTransition_porting_number(String transition_porting_number) {
+		this.transition_porting_number = transition_porting_number;
 	}
 
 }

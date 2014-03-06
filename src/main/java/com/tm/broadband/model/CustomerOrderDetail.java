@@ -27,6 +27,8 @@ public class CustomerOrderDetail implements Serializable {
 	private Double detail_topup_fee;
 	private String detail_plan_memo;
 	private Integer detail_unit;
+	private String detail_type;
+	private Integer detail_is_next_pay;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -176,6 +178,22 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public String getDetail_type() {
+		return detail_type;
+	}
+
+	public void setDetail_type(String detail_type) {
+		this.detail_type = detail_type;
+	}
+
+	public Integer getDetail_is_next_pay() {
+		return detail_is_next_pay;
+	}
+
+	public void setDetail_is_next_pay(Integer detail_is_next_pay) {
+		this.detail_is_next_pay = detail_is_next_pay;
 	}
 
 }
