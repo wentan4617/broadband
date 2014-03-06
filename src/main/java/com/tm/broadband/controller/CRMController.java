@@ -7,6 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -110,7 +112,7 @@ public class CRMController {
 	
 	@RequestMapping(value = "/broadband-user/crm/invoice/view/{pageNo}/{customerId}")
 	@ResponseBody
-	public Page<CustomerInvoice> InvoicePage(Model model,
+	public Map<String, Object> InvoicePage(Model model,
 			@PathVariable(value = "pageNo") int pageNo,
 			@PathVariable(value = "customerId") int customerId) {
 		
@@ -120,8 +122,18 @@ public class CRMController {
 		invoicePage.getParams().put("orderby", "order by create_date desc");
 		invoicePage.getParams().put("customer_id", customerId);
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
-
-		return invoicePage;
+		
+		Page<CustomerTransaction> transactionPage = new Page<CustomerTransaction>();
+		transactionPage.setPageNo(0);
+		transactionPage.setPageSize(Integer.MAX_VALUE);
+		transactionPage.getParams().put("orderby", "order by transaction_date desc");
+		transactionPage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerTransactionsByPage(transactionPage);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("invoicePage", invoicePage);
+		map.put("transactionPage", transactionPage);
+		return map;
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/save")

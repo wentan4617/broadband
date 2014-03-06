@@ -48,7 +48,7 @@
 	
 	<!-- select customer transaction page -->
 	<select id="selectCustomerTransactionsByPage" parameterType="Page" resultType="CustomerTransaction">
-		select * from tm_customer_transaction 
+		select * from tm_customer_transaction
 		<include refid="pageWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
