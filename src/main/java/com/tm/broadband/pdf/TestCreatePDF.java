@@ -43,5 +43,9 @@ public class TestCreatePDF {
 //				+File.separator+customerInvoice.getId()+".pdf");
 //		new InvoicePDFCreator().create( filePath);
 		System.out.println(System.getProperty("user.dir")+File.separator);
+		
+		float a = 43.00f;
+		a= (float)(Math.round((double)a*100)/100.00);
+		System.out.println(a);
 	}
 }

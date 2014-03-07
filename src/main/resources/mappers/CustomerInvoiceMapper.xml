@@ -23,10 +23,20 @@
 	</sql>
 	<sql id="customerInvoiceWhere">
 		<where>
-			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
-			<if test="params.order_id != null">and order_id=#{params.order_id}</if>
-			<if test="params.status != null">and status=#{params.status}</if>
-			<if test="params.by_max_id != null">and id=(SELECT MAX(id) FROM tm_customer_invoice)</if>
+			<choose>
+				<when test="params.by_max_id != null">
+					id=(
+						SELECT MAX(id) FROM tm_customer_invoice 
+						WHERE status=#{params.status} AND customer_id=#{params.customer_id}
+						AND order_id=#{params.order_id} AND status=#{params.status}
+					)
+				</when>
+				<otherwise>
+					<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+					<if test="params.order_id != null">and order_id=#{params.order_id}</if>
+					<if test="params.status != null">and status=#{params.status}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	

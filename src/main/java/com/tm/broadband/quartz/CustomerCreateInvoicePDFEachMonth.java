@@ -9,7 +9,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.service.CRMService;
 
 /** 
-* Business Method
+* Automatically Generating Next Invoices With PDF When Given Date Match next_invoice_date
 * 
 * @author DON CHEN
 */ 

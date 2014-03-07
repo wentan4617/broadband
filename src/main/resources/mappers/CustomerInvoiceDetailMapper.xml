@@ -12,35 +12,44 @@
 <!-- =================================================================================== -->
 <!-- DELETE AREA --><!-- // END DELETE AREA -->
 
-<mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailMapper">
+<mapper namespace="com.tm.broadband.mapper.CustomerInvoiceDetailMapper">
 	
-	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- DEFINITION AREA -->
+	
+	<!-- // DEFINITION AREA -->
+	
 	<!-- =================================================================================== -->
-	<!-- SELECT AREA --><!-- // END SELECT AREA -->
+	
+	<!-- SELECT AREA -->
+	
+	<!--  -->
+	<select id="selectCustomerInvoiceDetailsByCustomerInvoiceId" parameterType="int" resultType="CustomerInvoiceDetail">
+		SELECT * FROM `tm_customer_invoice_detail` WHERE invoice_id = #{0}
+	</select>
+	
+	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
 	
-	<!-- create customer order -->
-	<insert id="insertCustomerOrderDetail" parameterType="CustomerOrderDetail" >
-		INSERT INTO `tm_customer_order_detail`(
-			`order_id`, `detail_plan_name`, `detail_plan_desc`, `detail_plan_price`, 
-			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
-			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_topup_data_flow`, 
-			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_type`, `detail_is_next_pay`) 
+	<!-- insert customer invoice detail -->
+	<insert id="insertCustomerInvoiceDetail" parameterType="CustomerInvoiceDetail">
+		INSERT INTO `tm_customer_invoice_detail`(
+			`invoice_id`, `invoice_detail_name`, `invoice_detail_desc`,
+			`invoice_detail_price`, `invoice_detail_unit`, `invoice_detail_date`,
+			`invoice_detail_discount`)
 		VALUES (
-			#{customerOrder.id}, #{detail_plan_name}, #{detail_plan_desc}, #{detail_plan_price}, 
-			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
-			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_topup_data_flow},
-			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_type}, #{detail_is_next_pay})
+			#{customerInvoice.id},#{invoice_detail_name},#{invoice_detail_desc},#{invoice_detail_price},
+			#{invoice_detail_unit},#{invoice_detail_date},#{invoice_detail_discount})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
 	<!-- =================================================================================== -->
-	<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+	<!-- UPDATE AREA -->
+	
+	
+	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
 	<!-- DELETE AREA --><!-- // END DELETE AREA -->
 
-	
-	
 	
 </mapper>

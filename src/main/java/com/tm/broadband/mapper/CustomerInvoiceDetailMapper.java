@@ -2,16 +2,13 @@ package com.tm.broadband.mapper;
 
 import java.util.List;
 
-import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.User;
+import com.tm.broadband.model.CustomerInvoiceDetail;
 
 /**
- * mapping tm_customer, customer DAO component
+ * mapping tm_customer_invoice_detail
  * 
- * @author Cook1fan
- *
+ * @author StevenChen
+ * 
  */
 
 /* SELECT AREA *//* // END SELECT AREA */
@@ -22,16 +19,10 @@ import com.tm.broadband.model.User;
 /* =================================================================================== */
 /* DELETE AREA *//* // END DELETE AREA */
 
-public interface CustomerMapper {
+public interface CustomerInvoiceDetailMapper {
 	
 	/* SELECT AREA */
 	
-	int selectExistCustomerByLoginName(String login_name);
-	Customer selectCustomerByIdWithCustomerOrder(int id);
-	Customer selectCustomerWhenLogin(Customer customer);
-	List<Customer> selectCustomersByPage(Page<Customer> page);
-	int selectCustomersSum(Page<Customer> page);
-	Customer selectCustomerById(int id);
 	
 	/* // END SELECT AREA */
 	
@@ -39,7 +30,9 @@ public interface CustomerMapper {
 	
 	/* INSERT AREA */
 	
-	void insertCustomer(Customer customer);
+	void insertCustomerInvoiceDetail(CustomerInvoiceDetail customerInvoiceDetail);
+	
+	List<CustomerInvoiceDetail> selectCustomerInvoiceDetailsByCustomerInvoiceId(int id);
 	
 	/* // END INSERT AREA */
 	
@@ -47,10 +40,10 @@ public interface CustomerMapper {
 	
 	/* UPDATE AREA */
 	
-	void updateCustomerStatus(Customer customer);
+	
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA *//* // END DELETE AREA */
-	
+
 }
