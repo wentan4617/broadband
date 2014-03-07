@@ -134,7 +134,25 @@
 					html += '<td>' + invoice.amount_paid + '</td>';
 					html += '<td>' + invoice.balance + '</td>';
 					html += '<td>' + invoice.status + '</td>';
-					html += '<td><a target="_blank" href="${ctx}/broadband-user/crm/customer/order/download/' + invoice.id + '"><span class="glyphicon glyphicon-floppy-disk"></span></a></td>';
+					var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
+					var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/mail-send/' + invoice.id;
+					var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
+					if(invoice.invoice_pdf_path != null){
+						html += '<td><a target="_blank" href="' + downloadUrl + '"><span class="glyphicon glyphicon-floppy-disk" title="download invoice PDF"></span></a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="' + sendUrl + '" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a></td>';
+					}else{
+						html += '<td><a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '<script type="text\/javascript">														';
+						html += '	function generatePDFByClick(obj){													';
+						html += '		obj.style.display=\'none\';														';
+						html += '		document.getElementById(\'' + invoice.id + 'download\').style.display=\'\';		';
+						html += '		document.getElementById(\'' + invoice.id + 'send\').style.display=\'\';			';
+						html += '		var xmlhttp=new XMLHttpRequest();												';
+						html += '		xmlhttp.open("GET","' + generateUrl + '",true);									';
+						html += '		xmlhttp.send();																	';
+						html += '	}																					';
+						html += '<\/script>																				';
+						html += '<a target="_self" href="javascript:void(0);"  onclick="generatePDFByClick(this);" title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a></td>';
+					}
 					html += '</tr>';
 				}
 				html += '</tbody>';

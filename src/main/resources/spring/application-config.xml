@@ -106,7 +106,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0-59/10 * * * * ?"></property>
+		<property name="cronExpression" value="0-59/30 * * * * ?"></property>
 	</bean>
 
 	<!-- plan -->

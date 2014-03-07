@@ -36,13 +36,6 @@ public class CustomerInvoiceDetail implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 
-	/*
-	 * END RELATED PROPERTIES
-	 */
-
-	public CustomerInvoiceDetail() {
-	}
-
 	public Integer getId() {
 		return id;
 	}
@@ -61,6 +54,7 @@ public class CustomerInvoiceDetail implements Serializable {
 
 	public String getInvoice_detail_name() {
 		return invoice_detail_name;
+
 	}
 
 	public void setInvoice_detail_name(String invoice_detail_name) {
@@ -105,6 +99,7 @@ public class CustomerInvoiceDetail implements Serializable {
 
 	public void setInvoice_detail_discount(Double invoice_detail_discount) {
 		this.invoice_detail_discount = invoice_detail_discount;
+
 	}
 
 	public Map<String, Object> getParams() {
@@ -118,6 +113,4 @@ public class CustomerInvoiceDetail implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	
 }

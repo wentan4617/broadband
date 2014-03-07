@@ -65,5 +65,13 @@ public class TMUtils {
         
         return realPath;
 	}
+	
+	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
+	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	public static String fillDecimal(String sum){
+		sum = String.valueOf(Math.round((double)Double.valueOf(sum)*100)/100.00);
+		return sum.length()-sum.indexOf(".")-1 < 2 ? sum += "0" : sum;
+	}
+
 
 }

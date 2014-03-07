@@ -80,7 +80,7 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/edit/{id}")
-	public String toPlanEdit(Model model,
+	public String toCustomerEdit(Model model,
 			@PathVariable(value = "id") int id) {
 		
 		model.addAttribute("panelheading", "Customer Edit");
@@ -138,83 +138,46 @@ public class CRMController {
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/save")
 	@ResponseBody
-	public CustomerOrder toCustomerInvoiceCreate(Model model,
-			@RequestParam("customer_id") int customer_id,
+	public CustomerOrder saveCustomerOrderEdit(Model model,
 			@RequestParam("order_id") int order_id,
 			@RequestParam("cvlan_input") String cvlan_input,
 			@RequestParam("svlan_input") String svlan_input,
 			@RequestParam("order_using_start_input") String order_using_start_input,
-			@RequestParam("order_total_price") Double order_total_price,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
 			HttpServletRequest req) {
-		
-		// get user from session
-		User user = (User) req.getSession().getAttribute("userSession");
-		
-		// Customer begin
-		Customer customer = new Customer();
-		customer.setId(customer_id);
-		// Customer end
 
-		// CustomerOrder begin
+		// customer order begin
 		CustomerOrder customerOrder = new CustomerOrder();
 		customerOrder.getParams().put("id", order_id);
 		customerOrder.setId(order_id);
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-		
+		// next invoice date
+		if(order_detail_unit==null){
+			order_detail_unit = 1;
+		}
 		int nextInvoiceDay = 30 * order_detail_unit - 15;
 		Calendar calnextInvoiceDay = Calendar.getInstance();
 		calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
 		calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-		
+		// set next invoice date
 		customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
 		customerOrder.setOrder_status("using");
-		// CustomerOrder end
+		// customer order end
 		
-		// CustomerInvoice begin
-		
-		CustomerInvoice customerInvoice = new CustomerInvoice();
-		customerInvoice.setCustomer(customer);
-		customerInvoice.setCustomerOrder(customerOrder);
-		customerInvoice.setCreate_date(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-
-		int invoiceDueDay = 30 * order_detail_unit;
-		Calendar calInvoiceDueDay = Calendar.getInstance();
-		calInvoiceDueDay.setTime(customerInvoice.getCreate_date());
-		calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
-		
-		customerInvoice.setDue_date(calInvoiceDueDay.getTime());
-		customerInvoice.setAmount_payable(order_total_price);
-		customerInvoice.setAmount_paid(order_total_price);
-		customerInvoice.setBalance(customerInvoice.getAmount_payable()-customerInvoice.getAmount_paid());
-		customerInvoice.setStatus("paid");
-		// CustomerInvoice end
-		
-		// CustomerTransaction begin
-		CustomerTransaction customerTransaction = new CustomerTransaction();
-//		customerTransaction.setCustomer(customer);
-//		customerTransaction.setCustomerOrder(customerOrder);
-		customerTransaction.getParams().put("customer_id", customer.getId());
-		customerTransaction.getParams().put("order_id", customerOrder.getId());
-		customerTransaction.getParams().put("where", "invoice_id_is_null");
-		customerTransaction.getParams().put("transaction_sort", "plan-no-term");
-		// CustomerTransaction end
-		
-		
-		// ProvisionLog begin
+		// provision log begin
 		ProvisionLog proLog = new ProvisionLog();
+		// get user from session
+		User user = (User) req.getSession().getAttribute("userSession");
 		proLog.setUser(user);
 		proLog.setOrder_id_customer(customerOrder);
 		proLog.setOrder_sort("customer-order");
 		proLog.setProcess_way("paid to using");
-		// ProvisionLog end
+		// provision log end
 
 		
-		this.crmService.editCustomerOrderCreateInvoice(
-				customer, customerOrder, customerInvoice,
-				customerTransaction, user, proLog);
+		this.crmService.editCustomerOrder(customerOrder, proLog);
 		
 		// mailer
 		
@@ -259,9 +222,17 @@ public class CRMController {
 		this.crmService.editCustomerOrderAndCreateProvision(customerOrder, proLog);
 		return customerOrder;
 	}
+
+	// create invoice PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
+	@ResponseBody
+	public void generateInvoicePDF(Model model
+    		,@PathVariable(value = "invoiceId") int invoiceId){
+		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
+	}
 	
 	// download invoice PDF directly
-	@RequestMapping(value = "/broadband-user/crm/customer/order/download/{invoiceId}")
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/download/{invoiceId}")
     public ResponseEntity<byte[]> downloadInvoicePDF(Model model
     		,@PathVariable(value = "invoiceId") int invoiceId) throws IOException {
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);

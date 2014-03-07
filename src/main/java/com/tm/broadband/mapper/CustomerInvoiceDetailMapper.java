@@ -10,6 +10,14 @@ import com.tm.broadband.model.Page;
  * mapping tm_customer_invoice
  * 
  * @author Cook1fan
+=======
+import com.tm.broadband.model.CustomerInvoiceDetail;
+
+/**
+ * mapping tm_customer_invoice_detail
+ * 
+ * @author StevenChen
+>>>>>>> 518d78062f301ea9e06aaa30e0947a73a20bdb91
  * 
  */
 
@@ -24,9 +32,8 @@ import com.tm.broadband.model.Page;
 public interface CustomerInvoiceDetailMapper {
 	
 	/* SELECT AREA */
-	
-	
-	
+	List<CustomerInvoiceDetail> selectCustomerInvoiceDetailsByCustomerInvoiceId(int id);
+
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

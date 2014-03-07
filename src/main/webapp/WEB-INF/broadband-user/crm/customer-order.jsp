@@ -1,8 +1,8 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <div class="panel-group" id="customerOrderAccordion">
@@ -106,28 +106,31 @@
 					<table class="table">
 						<thead>
 							<tr>
-								<th>Plan Name</th>
+								<th>Detail Name</th>
 								<th>Plan Type</th>
 								<th>Plan Sort</th>
 								<th>Plan Status</th>
 								<th>Data Flow</th>
-								<th>Plan Price</th>
+								<th>Detail Price</th>
 								<th>Unit</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="customerOrderDetail"
-								items="${customerOrder.customerOrderDetails}">
+							<c:forEach var="customerOrderDetail" items="${customerOrder.customerOrderDetails}">
 								<tr>
-									<td>${customerOrderDetail.detail_plan_name}</td>
+									<td>${customerOrderDetail.detail_name}</td>
 									<td>${customerOrderDetail.detail_plan_type}</td>
 									<td>${customerOrderDetail.detail_plan_sort}</td>
 									<td>${customerOrderDetail.detail_plan_status}</td>
 									<td>${customerOrderDetail.detail_data_flow}</td>
-									<td>${customerOrderDetail.detail_plan_price}</td>
-									<td id="${customerOrder.id}_order_detail_unit"
-										data-val="${customerOrderDetail.detail_unit}">${customerOrderDetail.detail_unit}</td>
+									<td>${customerOrderDetail.detail_price}</td>
+									<td 
+										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-') > -1}">
+											id="${customerOrder.id}_order_detail_unit"
+											data-val="${customerOrderDetail.detail_unit}"
+										</c:if>
+									>${customerOrderDetail.detail_unit}</td>
 									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>

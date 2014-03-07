@@ -63,7 +63,6 @@ public class CustomerOrderDetail implements Serializable {
 		this.customerOrder = customerOrder;
 	}
 
-	
 
 	public Long getDetail_data_flow() {
 		return detail_data_flow;

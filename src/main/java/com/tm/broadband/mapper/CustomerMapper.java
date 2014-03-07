@@ -31,6 +31,7 @@ public interface CustomerMapper {
 	Customer selectCustomerWhenLogin(Customer customer);
 	List<Customer> selectCustomersByPage(Page<Customer> page);
 	int selectCustomersSum(Page<Customer> page);
+	Customer selectCustomerById(int id);
 	
 	/* // END SELECT AREA */
 	

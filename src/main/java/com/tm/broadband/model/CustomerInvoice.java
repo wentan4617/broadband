@@ -3,6 +3,7 @@ package com.tm.broadband.model;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.tm.broadband.util.TMUtils;
@@ -47,12 +48,16 @@ public class CustomerInvoice implements Serializable {
 	private CustomerInvoice lastCustomerInvoice;
 	private String paid_date_str;
 	private String invoice_desc;
+	private Integer customer_id;
 
 	/*
 	 * RELATED PROPERTIES
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
+	
+	// one invoice to many invoice details
+	private List<CustomerInvoiceDetail> customerInvoiceDetails;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -239,6 +244,23 @@ public class CustomerInvoice implements Serializable {
 
 	public void setInvoice_desc(String invoice_desc) {
 		this.invoice_desc = invoice_desc;
+	}
+
+	public List<CustomerInvoiceDetail> getCustomerInvoiceDetails() {
+		return customerInvoiceDetails;
+	}
+
+	public void setCustomerInvoiceDetails(
+			List<CustomerInvoiceDetail> customerInvoiceDetails) {
+		this.customerInvoiceDetails = customerInvoiceDetails;
+	}
+
+	public Integer getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
 	}
 
 }
