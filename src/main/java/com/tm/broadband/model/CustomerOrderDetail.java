@@ -14,9 +14,9 @@ public class CustomerOrderDetail implements Serializable {
 
 	private Integer id;
 	private CustomerOrder customerOrder;
-	private String detail_plan_name;
-	private String detail_plan_desc;
-	private Double detail_plan_price;
+	private String detail_name;
+	private String detail_desc;
+	private Double detail_price;
 	private Long detail_data_flow;
 	private String detail_plan_status;
 	private String detail_plan_type;
@@ -63,29 +63,7 @@ public class CustomerOrderDetail implements Serializable {
 		this.customerOrder = customerOrder;
 	}
 
-	public String getDetail_plan_name() {
-		return detail_plan_name;
-	}
-
-	public void setDetail_plan_name(String detail_plan_name) {
-		this.detail_plan_name = detail_plan_name;
-	}
-
-	public String getDetail_plan_desc() {
-		return detail_plan_desc;
-	}
-
-	public void setDetail_plan_desc(String detail_plan_desc) {
-		this.detail_plan_desc = detail_plan_desc;
-	}
-
-	public Double getDetail_plan_price() {
-		return detail_plan_price;
-	}
-
-	public void setDetail_plan_price(Double detail_plan_price) {
-		this.detail_plan_price = detail_plan_price;
-	}
+	
 
 	public Long getDetail_data_flow() {
 		return detail_data_flow;
@@ -194,6 +172,30 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_is_next_pay(Integer detail_is_next_pay) {
 		this.detail_is_next_pay = detail_is_next_pay;
+	}
+
+	public String getDetail_name() {
+		return detail_name;
+	}
+
+	public void setDetail_name(String detail_name) {
+		this.detail_name = detail_name;
+	}
+
+	public String getDetail_desc() {
+		return detail_desc;
+	}
+
+	public void setDetail_desc(String detail_desc) {
+		this.detail_desc = detail_desc;
+	}
+
+	public Double getDetail_price() {
+		return detail_price;
+	}
+
+	public void setDetail_price(Double detail_price) {
+		this.detail_price = detail_price;
 	}
 
 }

@@ -19,6 +19,7 @@ public class CompanyDetail implements Serializable {
 	private String bank_name;
 	private String bank_account_name;
 	private String bank_account_number;
+	private String term_contracts;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -102,6 +103,18 @@ public class CompanyDetail implements Serializable {
 
 	public void setBank_account_number(String bank_account_number) {
 		this.bank_account_number = bank_account_number;
+	}
+
+	public String getTerm_contracts() {
+		return term_contracts;
+	}
+
+	public void setTerm_contracts(String term_contracts) {
+		this.term_contracts = term_contracts;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 }

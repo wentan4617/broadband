@@ -110,7 +110,7 @@
 	</bean>
 
 	<!-- plan -->
-	<bean name="testScheduler"
+	<!-- <bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -122,6 +122,6 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean>
+	</bean> -->
 
 </beans>

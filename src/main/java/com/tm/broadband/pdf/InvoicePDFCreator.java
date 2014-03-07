@@ -669,8 +669,8 @@ public class InvoicePDFCreator {
 	        while(iterOrderDetails.hasNext()){
 	        	CustomerOrderDetail customerOrderDetail = iterOrderDetails.next();
 	        	
-	        	  if(customerOrderDetail.getDetail_plan_price()!=null && customerOrderDetail.getDetail_plan_price()>0){
-		  	          totalPrice+=customerOrderDetail.getDetail_plan_new_connection_fee()+(customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit());
+	        	  if(customerOrderDetail.getDetail_price()!=null && customerOrderDetail.getDetail_price()>0){
+		  	          totalPrice+=customerOrderDetail.getDetail_plan_new_connection_fee()+(customerOrderDetail.getDetail_price()*customerOrderDetail.getDetail_unit());
 	              	  // two row
 	                  invoiceDetailsTitleCell = newCell("Broadband New Connection", arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setIndent(22);
@@ -693,7 +693,7 @@ public class InvoicePDFCreator {
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 	                  //
-	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_name(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_name(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setIndent(22);
 	                  invoiceDetailsTitleCell.setColspan(4);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
@@ -701,7 +701,7 @@ public class InvoicePDFCreator {
 	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setColspan(2);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_price().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_price().toString(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
@@ -710,14 +710,14 @@ public class InvoicePDFCreator {
 	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_unit().toString(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 	                  
 	              } else {
-	  	        	totalPrice+=(customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit());
+	  	        	totalPrice+=(customerOrderDetail.getDetail_price()*customerOrderDetail.getDetail_unit());
 	            	  // one row
-	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_name(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_name(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setIndent(22);
 	                  invoiceDetailsTitleCell.setColspan(4);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
@@ -725,7 +725,7 @@ public class InvoicePDFCreator {
 	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setColspan(2);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_plan_price().toString(), arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_price().toString(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 	                  invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
@@ -734,7 +734,7 @@ public class InvoicePDFCreator {
 	                  invoiceDetailsTitleCell = newCell(customerOrderDetail.getDetail_unit().toString(), arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_plan_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
+	                  invoiceDetailsTitleCell = newCell((customerOrderDetail.getDetail_price()*customerOrderDetail.getDetail_unit())+"", arial_normal_7, 0);
 	                  invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 	                  invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 	              }

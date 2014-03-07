@@ -1,6 +1,7 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,13 +20,12 @@ public class CustomerInvoiceDetail implements Serializable {
 	 */
 	private Integer id;
 	private CustomerInvoice customerInvoice;
-	private String invoice_plan_name;
-	private String invoice_plan_desc;
-	private String invoice_plan_price;
-	private String invoice_plan_new_connection_fee;
-	private String invoice_unit;
-	private String invoice_hardware_name;
-	private String invoice_hardware_price;
+	private String invoice_detail_name;
+	private String invoice_detail_desc;
+	private Double invoice_detail_price;
+	private Integer invoice_detail_unit;
+	private Date invoice_detail_date;
+	private Double invoice_detail_discount;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -59,61 +59,52 @@ public class CustomerInvoiceDetail implements Serializable {
 		this.customerInvoice = customerInvoice;
 	}
 
-	public String getInvoice_plan_name() {
-		return invoice_plan_name;
+	public String getInvoice_detail_name() {
+		return invoice_detail_name;
 	}
 
-	public void setInvoice_plan_name(String invoice_plan_name) {
-		this.invoice_plan_name = invoice_plan_name;
+	public void setInvoice_detail_name(String invoice_detail_name) {
+		this.invoice_detail_name = invoice_detail_name;
 	}
 
-	public String getInvoice_plan_desc() {
-		return invoice_plan_desc;
+	public String getInvoice_detail_desc() {
+		return invoice_detail_desc;
 	}
 
-	public void setInvoice_plan_desc(String invoice_plan_desc) {
-		this.invoice_plan_desc = invoice_plan_desc;
+	public void setInvoice_detail_desc(String invoice_detail_desc) {
+		this.invoice_detail_desc = invoice_detail_desc;
 	}
 
-	public String getInvoice_plan_price() {
-		return invoice_plan_price;
+	public Double getInvoice_detail_price() {
+		return invoice_detail_price;
 	}
 
-	public void setInvoice_plan_price(String invoice_plan_price) {
-		this.invoice_plan_price = invoice_plan_price;
+	public void setInvoice_detail_price(Double invoice_detail_price) {
+		this.invoice_detail_price = invoice_detail_price;
 	}
 
-	public String getInvoice_plan_new_connection_fee() {
-		return invoice_plan_new_connection_fee;
+	public Integer getInvoice_detail_unit() {
+		return invoice_detail_unit;
 	}
 
-	public void setInvoice_plan_new_connection_fee(
-			String invoice_plan_new_connection_fee) {
-		this.invoice_plan_new_connection_fee = invoice_plan_new_connection_fee;
+	public void setInvoice_detail_unit(Integer invoice_detail_unit) {
+		this.invoice_detail_unit = invoice_detail_unit;
 	}
 
-	public String getInvoice_unit() {
-		return invoice_unit;
+	public Date getInvoice_detail_date() {
+		return invoice_detail_date;
 	}
 
-	public void setInvoice_unit(String invoice_unit) {
-		this.invoice_unit = invoice_unit;
+	public void setInvoice_detail_date(Date invoice_detail_date) {
+		this.invoice_detail_date = invoice_detail_date;
 	}
 
-	public String getInvoice_hardware_name() {
-		return invoice_hardware_name;
+	public Double getInvoice_detail_discount() {
+		return invoice_detail_discount;
 	}
 
-	public void setInvoice_hardware_name(String invoice_hardware_name) {
-		this.invoice_hardware_name = invoice_hardware_name;
-	}
-
-	public String getInvoice_hardware_price() {
-		return invoice_hardware_price;
-	}
-
-	public void setInvoice_hardware_price(String invoice_hardware_price) {
-		this.invoice_hardware_price = invoice_hardware_price;
+	public void setInvoice_detail_discount(Double invoice_detail_discount) {
+		this.invoice_detail_discount = invoice_detail_discount;
 	}
 
 	public Map<String, Object> getParams() {
@@ -128,4 +119,5 @@ public class CustomerInvoiceDetail implements Serializable {
 		return serialVersionUID;
 	}
 
+	
 }

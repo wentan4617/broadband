@@ -1,6 +1,7 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +48,7 @@ public class CustomerOrder implements Serializable {
 	private String next_invoice_create_date_str;
 
 	// one order may be get more details
-	private List<CustomerOrderDetail> customerOrderDetails;
+	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
 	private ProvisionLog tempProvsionLog;
 
 	/*

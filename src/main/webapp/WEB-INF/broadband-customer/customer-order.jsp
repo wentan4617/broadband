@@ -54,6 +54,8 @@
 						<form:errors path="ck_password" cssErrorClass="error"/>
 					</p>
 				</div>
+				
+				<!-- Broadband Options -->
 				<hr/>
 				<h4>Broadband Options</h4>
 				<hr/>
@@ -77,8 +79,51 @@
 							<p> we will charge you $ 99 broadband opening costs</p>
 						</div>
 					</div>
-					
 				</div>
+				
+				
+				<!-- Transition Information -->
+				<div id="transitionContainer" >
+					<hr/>
+					<h4>Transition Information</h4>
+					<hr/>
+					<div class="form-group">
+						<label for="" class="control-label col-md-3">Your Current Provider Name</label>
+						<div class="col-md-3">
+							<form:input path="customerOrder.transition_provider_name" class="form-control" placeholder="" />
+						</div>
+						<div class="col-md-6">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-md-3">Account Holder Name</label>
+						<div class="col-md-3">
+							<form:input path="customerOrder.transition_account_holder_name" class="form-control" placeholder="" />
+						</div>
+						<div class="col-md-6">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-md-3">Your Current Account Number</label>
+						<div class="col-md-3">
+							<form:input path="customerOrder.transition_account_number" class="form-control" placeholder="" />
+						</div>
+						<div class="col-md-6">
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="" class="control-label col-md-3">Your Porting Number</label>
+						<div class="col-md-3">
+							<form:input path="customerOrder.transition_porting_number" class="form-control" placeholder="" />
+						</div>
+						<div class="col-md-6">
+						</div>
+					</div>
+				
+				</div>
+				
+				
+				<!-- Personal Information -->
 				<hr/>
 				<h4>Personal Information</h4>
 				<hr/>
@@ -167,6 +212,23 @@
 	$(':radio').iCheck({
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
+	});
+	
+	function toggleTransitionContainer(val) {
+		if (val === "new-connection") {
+			$('#transitionContainer').hide('fast');
+		} else if (val === "transition") {
+			$('#transitionContainer').show('fast');
+		}
+	}
+	
+	toggleTransitionContainer('${customer.customerOrder.order_broadband_type}');
+	
+	
+	$('input[name="customerOrder\\.order_broadband_type"]').on('ifChecked', function(){
+		
+		var val = this.value;
+		toggleTransitionContainer(val);
 	});
 })(jQuery);
 </script>

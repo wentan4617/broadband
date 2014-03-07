@@ -51,9 +51,9 @@
 	<sql id="customerOrderDetailColumns">
 		cod.`id` 								as cod_id, 
 		cod.`order_id` 							as cod_order_id, 
-		cod.`detail_plan_name` 					as cod_detail_plan_name,
-		cod.`detail_plan_desc` 					as cod_detail_plan_desc, 
-		cod.`detail_plan_price` 				as cod_detail_plan_price,
+		cod.`detail_name` 						as cod_detail_name,
+		cod.`detail_desc` 						as cod_detail_desc, 
+		cod.`detail_price` 						as cod_detail_price,
 		cod.`detail_data_flow` 					as cod_detail_data_flow, 
 		cod.`detail_plan_status` 				as cod_detail_plan_status,
 		cod.`detail_plan_type` 					as cod_detail_plan_type, 
@@ -145,9 +145,9 @@
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail">
 				<id property="id" column="cod_id" />
 				<!-- <id property="order_id" column="cod_order_id" /> -->
-				<result property="detail_plan_name" column="cod_detail_plan_name" />
-				<result property="detail_plan_desc" column="cod_detail_plan_desc" />
-				<result property="detail_plan_price" column="cod_detail_plan_price" />
+				<result property="detail_name" column="cod_detail_name" />
+				<result property="detail_desc" column="cod_detail_desc" />
+				<result property="detail_price" column="cod_detail_price" />
 				<result property="detail_data_flow" column="cod_detail_data_flow" />
 				<result property="detail_plan_status" column="cod_detail_plan_status" />
 				<result property="detail_plan_type" column="cod_detail_plan_type" />
