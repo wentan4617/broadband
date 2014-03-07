@@ -33,56 +33,6 @@
 		c.`active_date` 	as c_active_date, 
 		c.`balance` 		as c_balance
 	</sql>
-	<sql id="customerOrderColumns">
-		co.`id` 							as co_id, 
-		co.`order_serial` 					as co_order_serial, 
-		co.`customer_id` 					as co_customer_id, 
-		co.`order_total_price` 				as co_order_total_price, 
-		co.`order_create_date` 				as co_order_create_date, 
-		co.`order_status` 					as co_order_status, 
-		co.`order_using_start` 				as co_order_using_start,
-		co.`next_invoice_create_date` 		as co_next_invoice_create_date,
-		co.`order_type` 					as co_order_type,
-		co.`order_broadband_type` 			as co_order_broadband_type,
-		co.`svlan`	 						as co_svlan,
-		co.`cvlan` 							as co_cvlan
-	</sql>
-	<sql id="customerOrderDetailColumns">
-		cod.`id` 								as cod_id, 
-		cod.`order_id` 							as cod_order_id, 
-		cod.`detail_name` 						as cod_detail_name,
-		cod.`detail_desc` 						as cod_detail_desc, 
-		cod.`detail_price` 						as cod_detail_price,
-		cod.`detail_data_flow` 					as cod_detail_data_flow, 
-		cod.`detail_plan_status` 				as cod_detail_plan_status,
-		cod.`detail_plan_type` 					as cod_detail_plan_type, 
-		cod.`detail_plan_sort` 					as cod_detail_plan_sort,
-		cod.`detail_plan_group` 				as cod_detail_plan_group,
-		cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee,
-		cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow,
-		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
-		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
-		cod.`detail_unit` 						as cod_detail_unit,
-		cod.`detail_type` 						as cod_detail_type,
-		cod.`detail_is_next_pay` 				as cod_detail_is_next_pay
-	</sql>
-	<sql id="customerOrderPageWhere">
-		<where>
-			<choose>
-				<when test="params.where == 'query_order_status'">
-					<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
-					<if test="params.status != null">and c.status=#{params.status}</if>
-				</when>
-			</choose>
-		</where>
-	</sql>
-	
-	<sql id="customerOrderWhere">
-		<where>
-			<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
-			<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
-		</where>
-	</sql>
 	
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
@@ -101,7 +51,7 @@
 		<result property="active_date" column="c_active_date" />
 		<result property="balance" column="c_balance" />
 	</resultMap>
-	
+
 	<sql id="customerOrderColumns">
 		co.`id` 								as co_id, 
 		co.`order_serial` 						as co_order_serial, 
@@ -156,7 +106,7 @@
 		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
 		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
 		cod.`detail_unit` 						as cod_detail_unit,
-		cod.`detail_type`, 						as cod_detail_type,
+		cod.`detail_type` 						as cod_detail_type,
 		cod.`detail_is_next_pay`				as cod_detail_is_next_pay
 	</sql>
 	
