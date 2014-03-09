@@ -2,12 +2,22 @@ package com.tm.broadband.mapper;
 
 import java.util.List;
 
+import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.Page;
+
+/**
+ * mapping tm_customer_invoice
+ * 
+ * @author Cook1fan
+=======
 import com.tm.broadband.model.CustomerInvoiceDetail;
 
 /**
  * mapping tm_customer_invoice_detail
  * 
  * @author StevenChen
+>>>>>>> 518d78062f301ea9e06aaa30e0947a73a20bdb91
  * 
  */
 
@@ -22,8 +32,8 @@ import com.tm.broadband.model.CustomerInvoiceDetail;
 public interface CustomerInvoiceDetailMapper {
 	
 	/* SELECT AREA */
-	
-	
+	List<CustomerInvoiceDetail> selectCustomerInvoiceDetailsByCustomerInvoiceId(int id);
+
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */
@@ -31,8 +41,6 @@ public interface CustomerInvoiceDetailMapper {
 	/* INSERT AREA */
 	
 	void insertCustomerInvoiceDetail(CustomerInvoiceDetail customerInvoiceDetail);
-	
-	List<CustomerInvoiceDetail> selectCustomerInvoiceDetailsByCustomerInvoiceId(int id);
 	
 	/* // END INSERT AREA */
 	

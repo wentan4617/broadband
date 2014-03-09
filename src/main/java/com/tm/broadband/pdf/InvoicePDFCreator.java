@@ -716,6 +716,7 @@ public class InvoicePDFCreator {
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEM(S) BEGIN
         Double totalPrice = 0.0;
+
         listInvoiceDetails = currentCustomerInvoice.getCustomerInvoiceDetails();
         iterInvoiceDetails = listInvoiceDetails.iterator();
     	// get invoice detail(s) from invoice

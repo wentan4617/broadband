@@ -63,29 +63,6 @@ public class CustomerOrderDetail implements Serializable {
 		this.customerOrder = customerOrder;
 	}
 
-	public String getDetail_name() {
-		return detail_name;
-	}
-
-	public void setDetail_name(String detail_name) {
-		this.detail_name = detail_name;
-	}
-
-	public String getDetail_desc() {
-		return detail_desc;
-	}
-
-	public void setDetail_desc(String detail_desc) {
-		this.detail_desc = detail_desc;
-	}
-
-	public Double getDetail_price() {
-		return detail_price;
-	}
-
-	public void setDetail_price(Double detail_price) {
-		this.detail_price = detail_price;
-	}
 
 	public Long getDetail_data_flow() {
 		return detail_data_flow;
@@ -194,6 +171,30 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_is_next_pay(Integer detail_is_next_pay) {
 		this.detail_is_next_pay = detail_is_next_pay;
+	}
+
+	public String getDetail_name() {
+		return detail_name;
+	}
+
+	public void setDetail_name(String detail_name) {
+		this.detail_name = detail_name;
+	}
+
+	public String getDetail_desc() {
+		return detail_desc;
+	}
+
+	public void setDetail_desc(String detail_desc) {
+		this.detail_desc = detail_desc;
+	}
+
+	public Double getDetail_price() {
+		return detail_price;
+	}
+
+	public void setDetail_price(Double detail_price) {
+		this.detail_price = detail_price;
 	}
 
 }

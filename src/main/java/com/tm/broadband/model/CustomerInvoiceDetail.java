@@ -23,8 +23,8 @@ public class CustomerInvoiceDetail implements Serializable {
 	private String invoice_detail_name;
 	private String invoice_detail_desc;
 	private Double invoice_detail_price;
-	private Date invoice_detail_date;
 	private Integer invoice_detail_unit;
+	private Date invoice_detail_date;
 	private Double invoice_detail_discount;
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -54,6 +54,7 @@ public class CustomerInvoiceDetail implements Serializable {
 
 	public String getInvoice_detail_name() {
 		return invoice_detail_name;
+
 	}
 
 	public void setInvoice_detail_name(String invoice_detail_name) {
@@ -76,6 +77,14 @@ public class CustomerInvoiceDetail implements Serializable {
 		this.invoice_detail_price = invoice_detail_price;
 	}
 
+	public Integer getInvoice_detail_unit() {
+		return invoice_detail_unit;
+	}
+
+	public void setInvoice_detail_unit(Integer invoice_detail_unit) {
+		this.invoice_detail_unit = invoice_detail_unit;
+	}
+
 	public Date getInvoice_detail_date() {
 		return invoice_detail_date;
 	}
@@ -84,12 +93,13 @@ public class CustomerInvoiceDetail implements Serializable {
 		this.invoice_detail_date = invoice_detail_date;
 	}
 
-	public Integer getInvoice_detail_unit() {
-		return invoice_detail_unit;
+	public Double getInvoice_detail_discount() {
+		return invoice_detail_discount;
 	}
 
-	public void setInvoice_detail_unit(Integer invoice_detail_unit) {
-		this.invoice_detail_unit = invoice_detail_unit;
+	public void setInvoice_detail_discount(Double invoice_detail_discount) {
+		this.invoice_detail_discount = invoice_detail_discount;
+
 	}
 
 	public Map<String, Object> getParams() {
@@ -100,21 +110,7 @@ public class CustomerInvoiceDetail implements Serializable {
 		this.params = params;
 	}
 
-	public Double getInvoice_detail_discount() {
-		return invoice_detail_discount;
-	}
-
-	public void setInvoice_detail_discount(Double invoice_detail_discount) {
-		this.invoice_detail_discount = invoice_detail_discount;
-	}
-
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-	/*
-	 * END RELATED PROPERTIES
-	 */
-
-
 }

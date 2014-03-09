@@ -122,6 +122,6 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean>
+	</bean> 
 
 </beans>
