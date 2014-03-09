@@ -60,9 +60,9 @@
 		<include refid="pageWhere"/>
 	</select>
 	
-	<!-- select customer transaction by invoice_id -->
-	<select id="selectCustomerTransactionByInvoiceId" parameterType="int" resultType="CustomerTransaction">
-		select * from tm_customer_transaction where invoice_id=#{0}
+	<!-- select customer transaction by customer_id -->
+	<select id="selectCustomerTransactionsByCustomerId" parameterType="int" resultType="CustomerTransaction">
+		select * from tm_customer_transaction where customer_id=#{0}
 	</select>
 	
 	<!-- select customer transaction by invoice_id -->

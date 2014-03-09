@@ -35,6 +35,8 @@ public interface CustomerInvoiceMapper {
 	
 	List<CustomerInvoice> selectCustomerInvoiceBySome(CustomerInvoice customerInvoice);
 	
+	CustomerInvoice selectInvoiceWithLastInvoiceIdById(int id);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

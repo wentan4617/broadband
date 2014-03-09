@@ -27,8 +27,8 @@
 				<when test="params.by_max_id != null">
 					id=(
 						SELECT MAX(id) FROM tm_customer_invoice 
-						WHERE status=#{params.status} AND customer_id=#{params.customer_id}
-						AND order_id=#{params.order_id} AND status=#{params.status}
+						WHERE customer_id=#{params.customer_id}
+						AND order_id=#{params.order_id}
 					)
 				</when>
 				<otherwise>
@@ -38,6 +38,71 @@
 				</otherwise>
 			</choose>
 		</where>
+	</sql>
+	
+	<sql id="customerInvoiceColumns">
+		i.`id`						as i_id,
+		i.`invoice_serial`			as i_invoice_serial,
+		i.`create_date`				as i_create_date,
+		i.`due_date`				as i_due_date,
+		i.`amount_payable`			as i_amount_payable,
+		i.`amount_paid`				as i_amount_paid,
+		i.`balance`					as i_balance,
+		i.`status`					as i_status,
+		i.`memo`					as i_memo,
+		i.`invoice_pdf_path`		as i_invoice_pdf_path,
+		i.`paid_date`				as i_paid_date,
+		i.`paid_type`				as i_paid_type,
+		i.`last_invoice_id`			as i_last_invoice_id
+	</sql>
+	<sql id="customerLastInvoiceColumns">
+		li.`id`							as li_id,
+		li.`invoice_serial`				as li_invoice_serial,
+		li.`create_date`				as li_create_date,
+		li.`due_date`					as li_due_date,
+		li.`amount_payable`				as li_amount_payable,
+		li.`amount_paid`				as li_amount_paid,
+		li.`balance`					as li_balance,
+		li.`status`						as li_status,
+		li.`memo`						as li_memo,
+		li.`invoice_pdf_path`			as li_invoice_pdf_path,
+		li.`paid_date`					as li_paid_date,
+		li.`paid_type`					as li_paid_type,
+		li.`last_invoice_id`			as li_last_invoice_id
+	</sql>
+	<sql id="customerColumns">
+		  c.`id`				as c_id
+		, c.`login_name`		as c_login_name
+		, c.`password`			as c_password
+		, c.`user_name`			as c_user_name
+		, c.`first_name`		as c_first_name
+		, c.`last_name`			as c_last_name
+		, c.`address`			as c_address
+		, c.`email`				as c_email
+		, c.`phone`				as c_phone
+		, c.`cellphone`			as c_cellphone
+		, c.`status`			as c_status
+		, c.`invoice_post`		as c_invoice_post
+		, c.`register_date`		as c_register_date
+		, c.`active_date`		as c_active_date
+		, c.`balance`			as c_balance
+	</sql>
+	<sql id="customerOrderColumns">
+		  co.`id`								as co_id
+		, co.`order_serial`						as co_order_serial
+		, co.`order_total_price`				as co_order_total_price
+		, co.`order_create_date`				as co_order_create_date
+		, co.`order_status`						as co_order_status
+		, co.`order_using_start`				as co_order_using_start
+		, co.`next_invoice_create_date`			as co_next_invoice_create_date
+		, co.`order_type`						as co_order_type
+		, co.`order_broadband_type`				as co_order_broadband_type
+		, co.`svlan`							as co_svlan
+		, co.`cvlan`							as co_cvlan
+		, co.`transition_provider_name`			as co_transition_provider_name
+		, co.`transition_account_holder_name`	as co_transition_account_holder_name
+		, co.`transition_account_number`		as co_transition_account_number
+		, co.`transition_porting_number`		as co_transition_porting_number
 	</sql>
 	
 	<!-- // DEFINITION AREA -->
@@ -75,6 +140,86 @@
 		SELECT * FROM `tm_customer_invoice`
 		<include refid="customerInvoiceWhere"/>
 	</select>
+	
+	<!-- select customer invoice last_invoice_id by id -->
+	<select id="selectInvoiceWithLastInvoiceIdById" parameterType="int" resultMap="selectInvoiceWithLastInvoiceIdByIdResultMap">
+		SELECT
+		<include refid="customerInvoiceColumns"/>,
+		<include refid="customerLastInvoiceColumns"/>,
+		<include refid="customerColumns"/>
+		FROM `tm_customer_invoice` as i
+		left join tm_customer_invoice as li on li.id = i.last_invoice_id
+		left join tm_customer as c on c.id = i.customer_id
+		WHERE i.id=#{0};
+	</select>
+	
+	<resultMap id="selectInvoiceWithLastInvoiceIdByIdResultMap" type="CustomerInvoice">
+		<id property="id" column="i_id" />
+		<result property="invoice_serial" column="i_invoice_serial" />
+		<result property="create_date" column="i_create_date" />
+		<result property="due_date" column="i_due_date" />
+		<result property="amount_payable" column="i_amount_payable" />
+		<result property="amount_paid" column="i_amount_paid" />
+		<result property="balance" column="i_balance" />
+		<result property="status" column="i_status" />
+		<result property="memo" column="i_memo" />
+		<result property="invoice_pdf_path" column="i_invoice_pdf_path" />
+		<result property="paid_date" column="i_paid_date" />
+		<result property="paid_type" column="i_paid_type" />
+		<result property="last_invoice_id" column="i_last_invoice_id" />
+		
+		<association property="customer" javaType="Customer">
+			<id property="id" column="c_id" />
+			<result property="login_name" column="c_login_name" />
+			<result property="password" column="c_password" />
+			<result property="user_name" column="c_user_name" />
+			<result property="first_name" column="c_first_name" />
+			<result property="last_name" column="c_last_name" />
+			<result property="address" column="c_address" />
+			<result property="email" column="c_email" />
+			<result property="phone" column="c_phone" />
+			<result property="cellphone" column="c_cellphone" />
+			<result property="status" column="c_status" />
+			<result property="invoice_post" column="c_invoice_post" />
+			<result property="register_date" column="c_register_date" />
+			<result property="active_date" column="c_active_date" />
+			<result property="balance" column="c_balance" />
+		</association>
+		
+		<association property="customerOrder" javaType="CustomerOrder">
+			<id property="id" column="co_id" />
+			<result property="order_serial" column="co_order_serial" />
+			<result property="order_total_price" column="co_order_total_price" />
+			<result property="order_create_date" column="co_order_create_date" />
+			<result property="order_status" column="co_order_status" />
+			<result property="order_using_start" column="co_order_using_start" />
+			<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
+			<result property="order_type" column="co_order_type" />
+			<result property="order_broadband_type" column="co_order_broadband_type" />
+			<result property="svlan" column="co_svlan" />
+			<result property="cvlan" column="co_cvlan" />
+			<result property="transition_provider_name" column="co_transition_provider_name" />
+			<result property="transaction_account_holder_name" column="co_transaction_account_holder_name" />
+			<result property="transaction_account_number" column="co_transaction_account_number" />
+			<result property="transaction_porting_number" column="co_transaction_porting_number" />
+		</association>
+		
+		<association property="lastCustomerInvoice" javaType="CustomerInvoice">
+			<id property="id" column="li_id" />
+			<result property="invoice_serial" column="li_invoice_serial" />
+			<result property="create_date" column="li_create_date" />
+			<result property="due_date" column="li_due_date" />
+			<result property="amount_payable" column="li_amount_payable" />
+			<result property="amount_paid" column="li_amount_paid" />
+			<result property="balance" column="li_balance" />
+			<result property="status" column="li_status" />
+			<result property="memo" column="li_memo" />
+			<result property="invoice_pdf_path" column="li_invoice_pdf_path" />
+			<result property="paid_date" column="li_paid_date" />
+			<result property="paid_type" column="li_paid_type" />
+			<result property="last_invoice_id" column="li_last_invoice_id" />
+		</association>
+	</resultMap>
 	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->

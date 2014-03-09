@@ -21,7 +21,11 @@ public class CustomerCreateInvoicePDFEachMonth {
 		public void createNextInvoicePDF() throws ParseException {
                 
                 CustomerOrder customerOrder = new CustomerOrder();
+                // only compare with the order which is in using status
                 customerOrder.getParams().put("order_status", "using");
+                
+                // this is to compare the next_invoice_create_date, if matched then
+                // generate that invoice into PDF form
                 customerOrder.getParams().put("next_invoice_create_date", 
                 		new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-30"));
                 

@@ -41,7 +41,7 @@
 							<div class="col-md-3">
 								<div class="input-group">
 									<p id="${customerOrder.id}_order_status" data-val="${customerOrder.order_status}"
-										class="form-control-static">${customerOrder.order_status}</p>
+										class="form-control-static"><strong>${customerOrder.order_status}</strong></p>
 								</div>
 							</div>
 							<label for="order_type" class="control-label col-md-3">Order
@@ -66,7 +66,7 @@
 								<div class="input-group">
 									<p id="${customerOrder.id}_order_total_price"
 										data-val="${customerOrder.order_total_price}"
-										class="form-control-static">${customerOrder.order_total_price}</p>
+										class="form-control-static "><strong>${customerOrder.order_total_price}</strong></p>
 								</div>
 							</div>
 						</div>
@@ -100,6 +100,37 @@
 								</div>
 							</div>
 						</div>
+						<!--  if broadband type is transition then show below rows -->
+						<c:if test="${customerOrder.order_broadband_type=='transition'}">
+							<div class="form-group">
+								<label for="transition_provider_name" class="control-label col-md-3">Transition Provider Name</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<p id="${customerOrder.id}_transition_provider_name" class="form-control-static">${customerOrder.transition_provider_name}</p>
+									</div>
+								</div>
+								<label for="transition_account_holder_name" class="control-label col-md-3">Transition Account Holder</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<p id="${customerOrder.id}_transition_account_holder_name" class="form-control-static">${customerOrder.transition_account_holder_name}</p>
+									</div>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="transition_account_number" class="control-label col-md-3">Transition Account Number</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<p id="${customerOrder.id}_transition_account_number" class="form-control-static">${customerOrder.transition_account_number}</p>
+									</div>
+								</div>
+								<label for="transition_porting_number" class="control-label col-md-3">Transition Porting Number</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<p id="${customerOrder.id}_transition_porting_number" class="form-control-static">${customerOrder.transition_porting_number}</p>
+									</div>
+								</div>
+							</div>
+						</c:if>
 					</div>
 					<hr />
 					<!-- order details -->
@@ -122,9 +153,9 @@
 									<td>${customerOrderDetail.detail_name}</td>
 									<td>${customerOrderDetail.detail_plan_type}</td>
 									<td>${customerOrderDetail.detail_plan_sort}</td>
-									<td>${customerOrderDetail.detail_plan_status}</td>
+									<td><strong>${customerOrderDetail.detail_plan_status}</strong></td>
 									<td>${customerOrderDetail.detail_data_flow}</td>
-									<td>${customerOrderDetail.detail_price}</td>
+									<td><strong>${customerOrderDetail.detail_price}</strong></td>
 									<td 
 										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-') > -1}">
 											id="${customerOrder.id}_order_detail_unit"

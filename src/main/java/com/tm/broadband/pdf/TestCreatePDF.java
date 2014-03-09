@@ -3,17 +3,21 @@ package com.tm.broadband.pdf;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.ParseException;
 import java.util.Date;
+
+import javax.ejb.CreateException;
 
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.quartz.CustomerCreateInvoicePDFEachMonth;
 import com.tm.broadband.util.TMUtils;
 
 public class TestCreatePDF {
 
-	public static void main(String[] args) throws DocumentException, MalformedURLException, IOException {
+	public static void main(String[] args) throws DocumentException, MalformedURLException, IOException, ParseException {
 		// INVOICE
 		CustomerInvoice customerInvoice = new CustomerInvoice();
 		customerInvoice.setInvoice_serial("TMBSSS201402111205");
@@ -47,5 +51,6 @@ public class TestCreatePDF {
 		float a = 43.00f;
 		a= (float)(Math.round((double)a*100)/100.00);
 		System.out.println(a);
+		
 	}
 }

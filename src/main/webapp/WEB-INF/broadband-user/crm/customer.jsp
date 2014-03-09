@@ -29,7 +29,7 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($){
-	
+
 
 	$.getTxPage = function(pageNo) {
 		
@@ -111,47 +111,70 @@
 				html += '<tbody>';
 				for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
 					var invoice = map.invoicePage.results[i];
-					for (var j = 0, txLen = map.transactionPage.results.length; j < txLen; j++) {
-						var tx = map.transactionPage.results[j];
+					for (var j = 0, txLen = map.transactionsList.length; j < txLen; j++) {
+						var tx = map.transactionsList[j];
+						console.log(tx.invoice_id);
 						if(tx.invoice_id==invoice.id){
-							html += '<tr>';
+							html += '<tr class="success">';
 							html += '<td>Transaction# - ' + tx.id + '</td>';
 							html += '<td>' + tx.transaction_date_str + '</td>';
 							html += '<td>&nbsp;</td>';
-							html += '<td>' + invoice.amount_payable + '</td>';
+							html += '<td>&nbsp;</td>';
 							html += '<td>' + invoice.amount_paid + '</td>';
-							html += '<td>' + invoice.balance + '</td>';
+							html += '<td>&nbsp;</td>';
 							html += '<td>' + invoice.status + '</td>';
 							html += '<td>&nbsp;</td>';
 							html += '</tr>';
 						}
 					}
-					html += '<tr>';
+					html += '<tr ';
+					
+					// if unpaid or not pay off then class=danger else class=active
+					invoice.status=='unpaid' || invoice.status=='not_pay_off' ? html+='class="danger"' : html+='';
+					html += '>';
 					html += '<td>Invoice# - ' + invoice.id + '</td>';
 					html += '<td>' + invoice.create_date_str + '</td>';
-					invoice.status!='unpaid'&&invoice.status!='not_pay_off'?html+='<td>&nbsp;</td>':html+='<td>'+invoice.due_date_str+'</td>';
-					html += '<td>' + invoice.amount_payable + '</td>';
-					html += '<td>' + invoice.amount_paid + '</td>';
-					html += '<td>' + invoice.balance + '</td>';
-					html += '<td>' + invoice.status + '</td>';
+					invoice.status!='unpaid' && invoice.status!='not_pay_off' ? html+='<td>&nbsp;</td>' : html+='<td><strong style="color:red;">'+invoice.due_date_str+'</strong></td>';
+					html += '<td><strong>' + invoice.amount_payable + '</strong></td>';
+					html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
+					html += '<td><strong>' + invoice.balance + '</strong></td>';
+					html += '<td><strong>' + invoice.status + '</strong></td>';
 					var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
 					var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/mail-send/' + invoice.id;
 					var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
 					if(invoice.invoice_pdf_path != null){
-						html += '<td><a target="_blank" href="' + downloadUrl + '"><span class="glyphicon glyphicon-floppy-disk" title="download invoice PDF"></span></a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="' + sendUrl + '" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a></td>';
+						html += '<td>';
+						// regenerate icon
+						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+						// download icon
+						html += '<a target="_blank" href="' + downloadUrl + '" title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+						// send icon
+						html += '<a target="_blank" href="' + sendUrl + '" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '</td>';
 					}else{
-						html += '<td><a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+						// generate first invoice PDF
+						html += '<td>';
+						// regenerate icon
+						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+						// download icon
+						html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+						// send icon
+						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+						
+						// showed before first time click generate invoice PDF icon
 						html += '<script type="text\/javascript">														';
-						html += '	function generatePDFByClick(obj){													';
-						html += '		obj.style.display=\'none\';														';
+						html += '	function showOthers(obj){															';
+						html += '		obj.style.display = "none";														';
+						html += '		document.getElementById(\'' + invoice.id + 'regenerate\').style.display=\'\';	';
 						html += '		document.getElementById(\'' + invoice.id + 'download\').style.display=\'\';		';
 						html += '		document.getElementById(\'' + invoice.id + 'send\').style.display=\'\';			';
-						html += '		var xmlhttp=new XMLHttpRequest();												';
-						html += '		xmlhttp.open("GET","' + generateUrl + '",true);									';
-						html += '		xmlhttp.send();																	';
+						html += '		var xmlHttp = new XMLHttpRequest;												';
+						html += '		xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\');							';
+						html += '		xmlHttp.send();																	';
 						html += '	}																					';
 						html += '<\/script>																				';
-						html += '<a target="_self" href="javascript:void(0);"  onclick="generatePDFByClick(this);" title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a></td>';
+						html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
+						html += '</td>';
 					}
 					html += '</tr>';
 				}

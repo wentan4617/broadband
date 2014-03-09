@@ -4,7 +4,6 @@ package com.tm.broadband.service;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -276,6 +275,11 @@ public class CRMService {
 		page.setResults(this.customerTransactionMapper.selectCustomerTransactionsByPage(page));
 		return page;
 	}
+	
+	@Transactional
+	public List<CustomerTransaction> queryCustomerTransactionsByCustomerId(int id) {
+		return this.customerTransactionMapper.selectCustomerTransactionsByCustomerId(id);
+	}
 
 	@Transactional
 	public void editCustomerOrder(CustomerOrder customerOrder, ProvisionLog proLog) {
@@ -320,12 +324,12 @@ public class CRMService {
 		
 		// invoice PDF generator manipulation begin
 		// get necessary models begin
-		// get invoice
-		CustomerInvoice customerInvoice = this.customerInvoiceMapper.selectCustomerInvoiceById(invoiceId);
+		// get last invoice, customer and current invoice it self at the same time by using left join
+		CustomerInvoice customerInvoice = this.customerInvoiceMapper.selectInvoiceWithLastInvoiceIdById(invoiceId);
 		// get invoice details
 		customerInvoice.setCustomerInvoiceDetails(this.customerInvoiceDetailMapper.selectCustomerInvoiceDetailsByCustomerInvoiceId(invoiceId));
-		// get customer details
-		Customer customer = this.customerMapper.selectCustomerById(customerInvoice.getCustomer_id());
+		// get customer details from invoice
+		Customer customer = customerInvoice.getCustomer();
 		// get necessary models end
 
 		// create specific directories and generate invoice PDF
@@ -333,7 +337,7 @@ public class CRMService {
 				"broadband"
 				+File.separator+"customers"
 				+File.separator+customer.getId()
-				+File.separator+customerInvoice.getId()+".pdf");
+				+File.separator+"Invoice - #"+customerInvoice.getId()+".pdf");
 		// set file path
 		customerInvoice.setInvoice_pdf_path(filePath);
 		// add sql condition: id
@@ -388,25 +392,17 @@ public class CRMService {
 			/*
 			 * set next invoice date begin
 			 */
-			// get distinctions of time begin
-//			Date begin = customerOrder.getOrder_using_start();
-//			Date end =  customerOrder.getNext_invoice_create_date();
-//			// seconds
-//			long between = (end.getTime()-begin.getTime())/1000;
-//			// days
-//			long lastInvoiceDistinctinsOfDay = between/(24*3600);
-			// get distinctions of time end
 			
 			// get next invoice date
-//			int nextInvoiceDay = 15;// new Long(lastInvoiceDistinctinsOfDay).intValue();
-//			Calendar calNextInvoiceDay = Calendar.getInstance();
-//			calNextInvoiceDay.setTime(customerOrder.getNext_invoice_create_date());
-//			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+			int nextInvoiceDay = 30;
+			Calendar calNextInvoiceDay = Calendar.getInstance();
+			calNextInvoiceDay.setTime(customerOrder.getNext_invoice_create_date());
+			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 
 			// update customer order's next invoice create day begin
-//			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-//			customerOrder.getParams().put("id", customerOrder.getId());
-//			this.customerOrderMapper.updateCustomerOrder(customerOrder);
+			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+			customerOrder.getParams().put("id", customerOrder.getId());
+			this.customerOrderMapper.updateCustomerOrder(customerOrder);
 			// update customer order's next invoice create day end
 			/*
 			 * set next invoice date end
@@ -418,7 +414,6 @@ public class CRMService {
 			CustomerInvoice customerPreviousInvoice = new CustomerInvoice();
 			customerPreviousInvoice.getParams().put("customer_id", customer.getId());
 			customerPreviousInvoice.getParams().put("order_id", customerOrder.getId());
-			customerPreviousInvoice.getParams().put("status", "paid");
 			customerPreviousInvoice.getParams().put("by_max_id", "");
 			// customer previous invoice
 			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
@@ -438,10 +433,10 @@ public class CRMService {
 			
 			/*
 			 * 
-			 * 		NEED TO CHANGE TO new Date() WHILE BEFORE TO PRODUCT MODE
+			 * 		invoiceCreateDay HAVE TO ASSIGN TO new Date() BEFORE PRODUCT MODE
 			 * 
 			 */
-			Date invoiceCreateDay = new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-30");
+			Date invoiceCreateDay = new Date();
 			// set invoice due date begin
 			int invoiceDueDay = 15;
 			Calendar calInvoiceDueDay = Calendar.getInstance();
@@ -475,32 +470,32 @@ public class CRMService {
 						// add invoice detail to list
 						customerInvoiceDetailList.add(customerInvoiceDetail);
 						// increase amountPayable
-						amountPayable = customerOrderDetail.getDetail_price() * customerOrderDetail.getDetail_unit();
+						amountPayable = customerOrderDetail.getDetail_price() * customerInvoiceDetail.getInvoice_detail_unit();
 					}
-					// if type contains new connection
-					if(customerOrderDetail.getDetail_type().indexOf("new-connection")>0){
-						customerInvoiceDetail.setCustomerInvoice(customerInvoice);
-						customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
-						customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price());
-						customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit());
-						customerInvoiceDetailList.add(customerInvoiceDetail);
-					}
-					// if type contains transition
-					if(customerOrderDetail.getDetail_type().indexOf("transition")>0){
-						customerInvoiceDetail.setCustomerInvoice(customerInvoice);
-						customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
-						customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price());
-						customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit());
-						customerInvoiceDetailList.add(customerInvoiceDetail);
-					}
-					// if type contains top-up
-					if(customerOrderDetail.getDetail_type().indexOf("top-up")>0){
-						
-					}
-					// if type contains hardware-
-					if(customerOrderDetail.getDetail_type().indexOf("hardware-")>0){
-						
-					}
+//					// if type contains new connection
+//					if(customerOrderDetail.getDetail_type().indexOf("new-connection")>0){
+//						customerInvoiceDetail.setCustomerInvoice(customerInvoice);
+//						customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
+//						customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price());
+//						customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit());
+//						customerInvoiceDetailList.add(customerInvoiceDetail);
+//					}
+//					// if type contains transition
+//					if(customerOrderDetail.getDetail_type().indexOf("transition")>0){
+//						customerInvoiceDetail.setCustomerInvoice(customerInvoice);
+//						customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
+//						customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price());
+//						customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit());
+//						customerInvoiceDetailList.add(customerInvoiceDetail);
+//					}
+//					// if type contains top-up
+//					if(customerOrderDetail.getDetail_type().indexOf("top-up")>0){
+//						
+//					}
+//					// if type contains hardware-
+//					if(customerOrderDetail.getDetail_type().indexOf("hardware-")>0){
+//						
+//					}
 				}
 			}
 			customerInvoice.setAmount_payable(amountPayable+customerPreviousInvoice.getBalance());
@@ -539,7 +534,7 @@ public class CRMService {
 					"broadband"
 					+File.separator+"customers"
 					+File.separator+customer.getId()
-					+File.separator+customerInvoice.getId()+".pdf");
+					+File.separator+"Invoice - #"+customerInvoice.getId()+".pdf");
 			// set file path
 			customerInvoice.setInvoice_pdf_path(filePath);
 			// add sql condition: id
