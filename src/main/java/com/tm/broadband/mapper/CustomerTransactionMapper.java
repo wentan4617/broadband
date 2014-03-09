@@ -28,7 +28,7 @@ public interface CustomerTransactionMapper {
 	List<CustomerTransaction> selectCustomerTransactionsByPage(Page<CustomerTransaction> page);
 	int selectCustomerTransactionsSum(Page<CustomerTransaction> page);
 	
-	CustomerTransaction selectCustomerTransactionByInvoiceId(int id);
+	List<CustomerTransaction> selectCustomerTransactionsByCustomerId(int id);
 	
 	CustomerTransaction selectCustomerTransaction(CustomerTransaction customerTransaction);
 	

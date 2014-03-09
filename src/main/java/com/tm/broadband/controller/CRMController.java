@@ -123,16 +123,9 @@ public class CRMController {
 		invoicePage.getParams().put("customer_id", customerId);
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 		
-		Page<CustomerTransaction> transactionPage = new Page<CustomerTransaction>();
-		transactionPage.setPageNo(0);
-		transactionPage.setPageSize(Integer.MAX_VALUE);
-		transactionPage.getParams().put("orderby", "order by transaction_date desc");
-		transactionPage.getParams().put("customer_id", customerId);
-		this.crmService.queryCustomerTransactionsByPage(transactionPage);
-		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("invoicePage", invoicePage);
-		map.put("transactionPage", transactionPage);
+		map.put("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customerId));
 		return map;
 	}
 	
@@ -225,10 +218,12 @@ public class CRMController {
 
 	// create invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
-	@ResponseBody
-	public void generateInvoicePDF(Model model
+	public String generateInvoicePDF(Model model
     		,@PathVariable(value = "invoiceId") int invoiceId){
+		System.out.println("generating invoice PDF - #"+invoiceId);
 		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
+		// jump to an empty page and close it
+		return "broadband-user/crm/new-window";
 	}
 	
 	// download invoice PDF directly
