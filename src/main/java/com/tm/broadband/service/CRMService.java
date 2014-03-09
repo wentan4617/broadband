@@ -225,6 +225,7 @@ public class CRMService {
 		
 		customerTransaction.setCustomer(customer);
 		customerTransaction.setCustomerOrder(customer.getCustomerOrder());
+		customerTransaction.setCustomerInvoice(customerInvoice);
 		customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 		
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
