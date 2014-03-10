@@ -89,8 +89,8 @@
 							<ul class="list-unstyled" style="margin-left:50px;">
 								<c:if test="${fn:length(co.customerOrderDetails) > 0 }">
 									<c:forEach var="cod" items="${co.customerOrderDetails }">
-										<li><h2>${cod.detail_plan_name }</h2></li>
-										<li><h2>$ <fmt:formatNumber value="${cod.detail_plan_price }" type="number" pattern="#,#00.00" /></h2></li>
+										<li><h2>${cod.detail_name }</h2></li>
+										<li><h2>$ <fmt:formatNumber value="${cod.detail_price }" type="number" pattern="#,#00.00" /></h2></li>
 										<li><h2>${cod.detail_data_flow } GB</h2></li>
 									</c:forEach>
 								</c:if>
