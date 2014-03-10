@@ -140,7 +140,7 @@
 					html += '<td><strong>' + invoice.balance + '</strong></td>';
 					html += '<td><strong>' + invoice.status + '</strong></td>';
 					var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
-					var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/mail-send/' + invoice.id;
+					var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id;
 					var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
 					if(invoice.invoice_pdf_path != null){
 						html += '<td>';
@@ -149,7 +149,7 @@
 						// download icon
 						html += '<a target="_blank" href="' + downloadUrl + '" title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
 						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '<a target="_blank" href="' + sendUrl + '" onclick="return confirm(\'Send chosen invoice to customer?\');" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
 						html += '</td>';
 					}else{
 						// generate first invoice PDF
@@ -159,7 +159,7 @@
 						// download icon
 						html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
 						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '<a target="_blank" href="' + sendUrl + '" onclick="return confirm(\'Send chosen invoice to customer?\');" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
 						
 						// showed before first time click generate invoice PDF icon
 						html += '<script type="text\/javascript">														';

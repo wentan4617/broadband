@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
@@ -245,5 +246,43 @@ public class CRMController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;
     }
+    
+    /*
+     * application mail controller begin
+     */
+    
+	// send invoice PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}")
+	public String sendInvoicePDF(Model model
+    		,@PathVariable(value = "invoiceId") int invoiceId){
+		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
+		
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		
+		// setting properties and sending mail to customer email address
+		// recipient
+		applicationEmail.setAddressee("stevenchen1989930@gmail.com");
+		// sender
+		applicationEmail.setFrom("kanny87929@gmail.com");
+		// reply to
+		applicationEmail.setReplyTo("kanny87929@gmail.com");
+		// subject
+		applicationEmail.setSubject("Invoice from Total Mobile Solution Limited");
+		// content
+		applicationEmail.setContent("Thank You! For using our service.");
+		// attachment name
+		applicationEmail.setAttachName("Invoice - #" + invoiceId + ".pdf");
+		// attachment path
+		applicationEmail.setAttachPath(filePath);
+		
+		// send mail
+		this.crmService.sendMail(applicationEmail);
+		
+		return "broadband-user/progress-accomplished";
+	}
+
+    /*
+     * application mail controller end
+     */
 
 }

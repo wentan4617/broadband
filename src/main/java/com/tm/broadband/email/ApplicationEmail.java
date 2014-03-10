@@ -6,14 +6,22 @@ public class ApplicationEmail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	/** ÊÕ¼þÈË **/
+	/** ï¿½Õ¼ï¿½ï¿½ï¿½ **/
 	private String addressee;
-	/** ³­ËÍ¸ø **/
+	/** ï¿½ï¿½ï¿½Í¸ï¿½ **/
 	private String cc;
-	/** ÓÊ¼þÖ÷Ìâ **/
+	/** ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 	private String subject;
-	/** ÓÊ¼þÄÚÈÝ **/
+	/** ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ **/
 	private String content;
+	// attach path
+	private String attachPath;
+	// attach name
+	private String attachName;
+	// from
+	private String from;
+	// reply to
+	private String replyTo;
 
 	public ApplicationEmail() {
 		// TODO Auto-generated constructor stub
@@ -53,6 +61,38 @@ public class ApplicationEmail implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getAttachPath() {
+		return attachPath;
+	}
+
+	public void setAttachPath(String attachPath) {
+		this.attachPath = attachPath;
+	}
+
+	public String getAttachName() {
+		return attachName;
+	}
+
+	public void setAttachName(String attachName) {
+		this.attachName = attachName;
+	}
+
+	public String getFrom() {
+		return from;
+	}
+
+	public void setFrom(String from) {
+		this.from = from;
+	}
+
+	public String getReplyTo() {
+		return replyTo;
+	}
+
+	public void setReplyTo(String replyTo) {
+		this.replyTo = replyTo;
 	}
 
 }
