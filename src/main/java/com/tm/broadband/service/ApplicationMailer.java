@@ -1,5 +1,6 @@
 package com.tm.broadband.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 
@@ -9,6 +10,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -50,12 +52,16 @@ public class ApplicationMailer implements Mailer {
 		MimeMessage mime = new MimeMessage(session);
 		MimeMessageHelper helper = new MimeMessageHelper(mime, true, "utf-8");
 
-		helper.setFrom("kanny87929@gmail.com");// ������
+		helper.setFrom(email.getFrom());// ������
 		helper.setTo(InternetAddress.parse(email.getAddressee()));// �ռ���
 		// helper.setBcc("administrator@chinaptp.com");//����
-		helper.setReplyTo("kanny87929@gmail.com");// �ظ���
+		helper.setReplyTo(email.getReplyTo());// �ظ���
 		helper.setSubject(email.getSubject());// �ʼ�����
 		helper.setText(email.getContent(), true);// true��ʾ�趨html��ʽ
+		
+		// set attach details
+		FileSystemResource file = new FileSystemResource(new File(email.getAttachPath()));
+		helper.addAttachment(email.getAttachName(),file);
 		
 		mailSender.send(mime);
 	}

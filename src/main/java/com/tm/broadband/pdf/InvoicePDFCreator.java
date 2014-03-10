@@ -3,6 +3,7 @@ package com.tm.broadband.pdf;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.util.List;
@@ -315,7 +316,10 @@ public class InvoicePDFCreator {
         }
         // current invoice
         // this invoice amount is consist of (current invoice total amount + last invoice balance - current customer invoice paid fees)
-        Double thisInvoicetotalAmount = currentInvoiceDetailTotalPrice + lastBalance - currentCustomerInvoice.getAmount_paid();
+        // preventing subtraction inaccuracy
+        BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
+        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(currentCustomerInvoice.getAmount_paid()));
+        Double thisInvoicetotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
         Double afterTaxAmount = 0.0;
         Double taxAmount = 0.0;
         if(thisInvoicetotalAmount > 0){

@@ -3,6 +3,7 @@ package com.tm.broadband.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -10,11 +11,14 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.mail.MessagingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
+import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
@@ -53,6 +57,7 @@ public class CRMService {
 	private CustomerTransactionMapper customerTransactionMapper;
 	private ProvisionLogMapper provisionLogMapper;
 	private CompanyDetailMapper companyDetailMapper;
+	private ApplicationMailer applicationMailer;
 
 	public CRMService() { }
 	
@@ -64,7 +69,8 @@ public class CRMService {
 			CustomerInvoiceDetailMapper customerInvoiceDetailMapper,
 			CustomerTransactionMapper customerTransactionMapper,
 			ProvisionLogMapper provisionLogMapper,
-			CompanyDetailMapper companyDetailMapper) {
+			CompanyDetailMapper companyDetailMapper,
+			ApplicationMailer applicationMailer) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -73,6 +79,7 @@ public class CRMService {
 		this.customerInvoiceDetailMapper = customerInvoiceDetailMapper;
 		this.provisionLogMapper = provisionLogMapper;
 		this.companyDetailMapper = companyDetailMapper;
+		this.applicationMailer = applicationMailer;
 	}
 	
 	@Transactional
@@ -351,20 +358,20 @@ public class CRMService {
 			e.printStackTrace();
 		}
 		// invoice PDF generator manipulation end
+		
 	}
 
 	@Transactional 
-	public void createNextInvoice(CustomerOrder customerOrder) throws ParseException{
+	public void createNextInvoice(CustomerOrder customerOrder, ApplicationEmail applicationEmail) throws ParseException{
 		List<CustomerOrder> customerOrdersList = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrder);
 
 		// initialize invoice's important informations
-		// store company detail begin
-		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
-		// store company detail end
-
-
 		Iterator<CustomerOrder> customerOrdersIter = customerOrdersList.iterator();
 		while(customerOrdersIter.hasNext()){
+			System.out.println(customerOrdersIter);
+			// store company detail begin
+			CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+			// store company detail end
 			
 			/*
 			 * get specific models begin
@@ -428,13 +435,6 @@ public class CRMService {
 			calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
 			// set invoice due date end
 			
-			
-			
-			
-			
-			
-			
-			
 			customerInvoice.setLast_invoice_id(customerPreviousInvoice.getId());
 			customerInvoice.setCustomer(customer);
 			customerInvoice.setCustomerOrder(customerOrder);
@@ -489,11 +489,13 @@ public class CRMService {
 //					}
 				}
 			}
-			customerInvoice.setAmount_payable(amountPayable+customerPreviousInvoice.getBalance());
+			customerInvoice.setAmount_payable(amountPayable + customerPreviousInvoice.getBalance());
 			customerInvoice.setStatus("unpaid");
 			customerInvoice.setAmount_paid(0.0);
+			BigDecimal currentTotalPayable = new BigDecimal(String.valueOf((amountPayable + customerPreviousInvoice.getBalance())));
+			BigDecimal currentAmountPaid = new BigDecimal(String.valueOf(customerInvoice.getAmount_paid()));
 			// balance = payable - paid
-			customerInvoice.setBalance((amountPayable + customerPreviousInvoice.getBalance()) - customerInvoice.getAmount_paid());
+			customerInvoice.setBalance(currentTotalPayable.subtract(currentAmountPaid).doubleValue());
 			// set customer's new invoice details end
 			
 			// get generated key while performing insertion
@@ -538,6 +540,19 @@ public class CRMService {
 			} catch (DocumentException | IOException e) {
 				e.printStackTrace();
 			}
+			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
+			applicationEmail.setAttachPath(filePath);
+			this.sendMail(applicationEmail);
+		}
+	}
+	
+	@Transactional
+	public void sendMail(ApplicationEmail applicationEmail){
+
+		try {
+			this.applicationMailer.sendMailBySynchronizationMode(applicationEmail);
+		} catch (MessagingException | IOException e) {
+			e.printStackTrace();
 		}
 	}
 

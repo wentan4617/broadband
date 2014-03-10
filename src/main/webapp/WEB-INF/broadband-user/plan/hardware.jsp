@@ -26,7 +26,10 @@
 						<div class="form-group">
 							<label for="hardware_type" class="control-label col-md-4">Hardware Type</label>
 							<div class="col-md-3">
-								<form:input path="hardware_type" class="form-control" placeholder="Hardware Type" />
+								<form:select path="hardware_type" class="form-control">
+									<form:option value="none">None</form:option>
+									<form:option value="router">Router</form:option>
+								</form:select>
 							</div>
 							<p class="help-block">
 								<form:errors path="hardware_type" cssErrorClass="error"/>
@@ -50,7 +53,7 @@
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="hardware_price" class="form-control" placeholder="Hardware Price" />
+									<form:input path="hardware_price" class="form-control" />
 								</div>
 							</div>
 							<p class="help-block">
@@ -62,7 +65,7 @@
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="hardware_cost" class="form-control" placeholder="Hardware Cost" />
+									<form:input path="hardware_cost" class="form-control" />
 								</div>
 							</div>
 							<p class="help-block">
