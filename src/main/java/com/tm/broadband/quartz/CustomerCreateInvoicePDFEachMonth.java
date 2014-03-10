@@ -24,6 +24,7 @@ public class CustomerCreateInvoicePDFEachMonth {
                 // only compare with the order which is in using status
                 customerOrder.getParams().put("order_status", "using");
                 
+                // production mode use new Date() instead SimpleDateFormat().parse()
                 // this is to compare the next_invoice_create_date, if matched then
                 // generate that invoice into PDF form
                 customerOrder.getParams().put("next_invoice_create_date", 

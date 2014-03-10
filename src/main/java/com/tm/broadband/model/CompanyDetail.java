@@ -2,6 +2,10 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
+
 public class CompanyDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -9,15 +13,24 @@ public class CompanyDetail implements Serializable {
 	/*
 	 * TABLE MAPPING PROPERTIES
 	 */
-	
+
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String name;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String address;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String telephone;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String fax;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String domain;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String gst_registration_number;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String bank_name;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String bank_account_name;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String bank_account_number;
 	private String term_contracts;
 	

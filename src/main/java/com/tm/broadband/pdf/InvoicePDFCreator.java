@@ -390,9 +390,15 @@ public class InvoicePDFCreator {
         img.setWidthPercentage(100);
         paymentSlipCell.setImage(img);
         paymentSlipTable.addCell(paymentSlipCell);
+        
+        // cartoon img
+		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"cartoon_done.png");
+		cartoon.scaleAbsolute(80f, 40.5f);
+		cartoon.setAbsolutePosition(50, 165);
+		writer.getDirectContent().addImage(cartoon);
 
         // WHITE TITLE
-        paymentSlipCell = newCell(this.getCompanyDetail().getName(), verdana_bold_8, 0);
+        paymentSlipCell = newCell("", verdana_bold_8, 0);
         paymentSlipCell.setRowspan(4);
         paymentSlipTable.addCell(paymentSlipCell);
         paymentSlipCell = newCell("Payment Slip", verdana_bold_10, 0);

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.HardwareMapper">
+	
+	<!-- DEFINITION AREA -->
+
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- SELECT AREA -->
+	
+
+	<!-- select hardware by id -->
+	<select id="selectHardwareById" parameterType="int" resultType="Hardware">
+		select * from tm_hardware where id = #{0}
+	</select>
+
+	<!-- select hardware page -->
+	<select id="selectHardwaresByPage" parameterType="Page" resultType="Hardware">
+		select * from tm_hardware
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select hardware sum -->
+	<select id="selectHardwaresSum" parameterType="Page" resultType="int">
+		select count(*) from tm_hardware
+	</select>
+	
+	<!-- when create hardware, check same name -->
+	<select id="selectExistHardwareByName" resultType="int">
+		select count(*) from tm_hardware where hardware_name = #{0} 
+	</select>
+	
+	<!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	
+	<!-- insert hardware -->
+	<insert id="insertHardware" parameterType="Hardware">
+		INSERT INTO `tm_hardware`(`hardware_name`, `hardware_desc`, `hardware_type`, `hardware_status`, `hardware_price`, `hardware_cost`)
+		VALUES (#{hardware_name},#{hardware_desc},#{hardware_type},#{hardware_status},#{hardware_price},#{hardware_cost})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA -->
+		
+	<!-- update plan -->
+	<update id="updateHardware" parameterType="Hardware">
+		UPDATE `tm_hardware` 
+		<set>
+			<if test="hardware_name != null">`hardware_name`=#{hardware_name},</if>
+			<if test="hardware_desc != null">`hardware_desc`=#{hardware_desc},</if>
+			<if test="hardware_type != null">`hardware_type`=#{hardware_type},</if>
+			<if test="hardware_status != null">`hardware_status`=#{hardware_status},</if>
+			<if test="hardware_price != null">`hardware_price`=#{hardware_price},</if>
+			<if test="hardware_cost != null">`hardware_cost`=#{hardware_cost}</if>
+		</set>
+		<where>
+			<if test="params.id != null">`id`=#{params.id}</if>
+		</where>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteHardwareById">
+		DELETE FROM tm_hardware WHERE id=#{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+	
+</mapper>

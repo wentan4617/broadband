@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
 import com.tm.broadband.validator.mark.NotificationValidatedMark;
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 import com.tm.broadband.validator.mark.UserValidatedMark;
@@ -271,5 +273,45 @@ public class SystemController {
 	
 	/*
 	 * Notification Controller end
+	 */
+	
+	/*
+	 * CompanyDetail Controller begin
+	 */
+
+	@RequestMapping(value = "/broadband-user/system/company-detail/pre-edit")
+	public String toCompanyDetailEdit(Model model) {
+
+		model.addAttribute("panelheading", "Company Detail Edit");
+		model.addAttribute("action", "/broadband-user/system/company-detail/edit");
+
+		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+
+		model.addAttribute("companyDetail", companyDetail);
+
+		return "broadband-user/system/company-detail";
+	}
+	
+	@RequestMapping(value = "/broadband-user/system/company-detail/edit", method = RequestMethod.POST)
+	public String doCompanyDetailEdit(
+			Model model,
+			@ModelAttribute("companyDetail") @Validated(CompanyDetailValidatedMark.class) CompanyDetail companyDetail,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		model.addAttribute("panelheading", "Company Detail Edit");
+		model.addAttribute("action", "/broadband-user/system/company-detail/edit");
+
+		if (result.hasErrors()) {
+			return "/broadband-user/system/company-detail";
+		}
+
+		this.systemService.editCompanyDetail(companyDetail);
+
+		attr.addFlashAttribute("success", "Edit company detail successful.");
+
+		return "redirect:/broadband-user/system/company-detail/pre-edit";
+	}
+	/*
+	 * CompanyDetail Controller end
 	 */
 }

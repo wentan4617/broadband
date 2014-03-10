@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CompanyDetailMapper">
+	
+	<!-- DEFINITION AREA -->
+
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- SELECT AREA -->
+	
+
+	<select id="selectCompanyDetail" resultType="CompanyDetail">
+		SELECT * FROM `tm_company_detail`
+	</select>
+
+	
+	<!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA -->
+	
+	<update id="updateCompanyDetail" parameterType="CompanyDetail">
+		UPDATE `tm_company_detail`
+		<set>
+			<if test="name != null">`name`=#{name},</if>
+			<if test="address != null">`address`=#{address},</if>
+			<if test="telephone != null">`telephone`=#{telephone},</if>
+			<if test="fax != null">`fax`=#{fax},</if>
+			<if test="domain != null">`domain`=#{domain},</if>
+			<if test="gst_registration_number != null">`gst_registration_number`=#{gst_registration_number},</if>
+			<if test="bank_name != null">`bank_name`=#{bank_name},</if>
+			<if test="bank_account_name != null">`bank_account_name`=#{bank_account_name},</if>
+			<if test="bank_account_number != null">`bank_account_number`=#{bank_account_number},</if>
+			<if test="term_contracts != null">`term_contracts`=#{term_contracts}</if>
+		</set>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+	
+</mapper>
