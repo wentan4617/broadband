@@ -21,6 +21,9 @@
     		</div>
 		</div>
 		<div class="col-lg-2">
+			<a href="http://chorus-viewer.ufbmaps.co.nz/" target="_blank" class="btn btn-success btn-lg" >
+  				<span class="glyphicon glyphicon-map-marker"></span> Map
+			</a>
 		</div>
 	</div>
 	<hr/>
@@ -30,12 +33,10 @@
 		</div>
 		<div class="col-lg-4">
 			<div class="panel panel-default">
-		  		<div class="panel-body">
+		  		<div class="panel-body" style="height:330px;">
 			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">View Plan Top-Up</a>
 			    	<hr/>
 			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan No-Term</a>
-			    	<hr/>
-			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan Term</a>
 			  	</div>
 			</div>
 		</div>
@@ -121,7 +122,7 @@
 </div>
 
 
-
+<%-- <jsp:include page="chorus-map.jsp" /> --%>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

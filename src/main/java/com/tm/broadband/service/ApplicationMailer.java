@@ -50,13 +50,13 @@ public class ApplicationMailer implements Mailer {
 		MimeMessage mime = new MimeMessage(session);
 		MimeMessageHelper helper = new MimeMessageHelper(mime, true, "utf-8");
 
-		helper.setFrom("kanny87929@gmail.com");// ·¢¼şÈË
-		helper.setTo(InternetAddress.parse(email.getAddressee()));// ÊÕ¼şÈË
-		// helper.setBcc("administrator@chinaptp.com");//°µËÍ
-		helper.setReplyTo("kanny87929@gmail.com");// »Ø¸´µ½
-		helper.setSubject(email.getSubject());// ÓÊ¼şÖ÷Ìâ
-		helper.setText(email.getContent(), true);// true±íÊ¾Éè¶¨html¸ñÊ½
-
+		helper.setFrom("kanny87929@gmail.com");// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		helper.setTo(InternetAddress.parse(email.getAddressee()));// ï¿½Õ¼ï¿½ï¿½ï¿½
+		// helper.setBcc("administrator@chinaptp.com");//ï¿½ï¿½ï¿½ï¿½
+		helper.setReplyTo("kanny87929@gmail.com");// ï¿½Ø¸ï¿½ï¿½ï¿½
+		helper.setSubject(email.getSubject());// ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½
+		helper.setText(email.getContent(), true);// trueï¿½ï¿½Ê¾ï¿½è¶¨htmlï¿½ï¿½Ê½
+		
 		mailSender.send(mime);
 	}
 
