@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.UserMapper;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
@@ -17,12 +19,15 @@ public class SystemService {
 
 	private UserMapper userMapper;
 	private NotificationMapper notificationMapper;
+	private CompanyDetailMapper companyDetailMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
-			NotificationMapper notificationMapper) {
+			NotificationMapper notificationMapper,
+			CompanyDetailMapper companyDetailMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
+		this.companyDetailMapper = companyDetailMapper;
 	}
 
 	public SystemService() {
@@ -117,4 +122,22 @@ public class SystemService {
 	 * Notification Service begin
 	 */
 
+	
+	/*
+	 * CompanyDetail Service Begin
+	 */
+
+	@Transactional
+	public void editCompanyDetail(CompanyDetail companyDetail) {
+		this.companyDetailMapper.updateCompanyDetail(companyDetail);;
+	}
+	
+	@Transactional
+	public CompanyDetail queryCompanyDetail() {
+		return this.companyDetailMapper.selectCompanyDetail();
+	}
+	
+	/*
+	 * CompanyDetail Service End
+	 */
 }

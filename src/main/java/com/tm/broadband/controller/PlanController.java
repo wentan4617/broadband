@@ -16,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Topup;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.validator.mark.HardwareValidatedMark;
 import com.tm.broadband.validator.mark.PlanValidatedMark;
 import com.tm.broadband.validator.mark.TopupValidatedMark;
 
@@ -254,6 +256,95 @@ public class PlanController {
 	
 	/*
 	 * END TOPUP AREA
+	 */
+	
+	/*
+	 * Hardware Controller begin
+	 */
+	
+	@RequestMapping(value = "/broadband-user/plan/hardware/view/{pageNo}")
+	public String hardwareView(Model model,
+			@PathVariable(value = "pageNo") int pageNo) {
+
+		Page<Hardware> page = new Page<Hardware>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by hardware_status desc, hardware_type");
+		this.planService.queryHardwaresByPage(page);
+		model.addAttribute("page", page);
+
+		return "broadband-user/plan/hardware-view";
+	}
+
+	@RequestMapping(value = "/broadband-user/plan/hardware/create")
+	public String toHardwareCreate(Model model) {
+
+		model.addAttribute("hardware", new Hardware());
+		model.addAttribute("panelheading", "Hardware Create");
+		model.addAttribute("action", "/broadband-user/plan/hardware/create");
+		
+		return "broadband-user/plan/hardware";
+	}
+
+	@RequestMapping(value = "/broadband-user/plan/hardware/create", method = RequestMethod.POST)
+	public String doHardwareCreate(
+			Model model,
+			@ModelAttribute("hardware") @Validated(HardwareValidatedMark.class) Hardware hardware,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		
+		model.addAttribute("panelheading", "Hardware Create");
+		model.addAttribute("action", "/broadband-user/plan/hardware/create");
+
+		
+		int count = this.planService.queryExistPlanByName(hardware.getHardware_name());
+		
+		if (count > 0) {
+			result.rejectValue("hardware_name", "duplicate", "");
+			return "broadband-user/plan/hardware";
+		}
+		
+		this.planService.saveHardware(hardware);
+		attr.addFlashAttribute("success", "Create Hardware " + hardware.getHardware_name() + " is successful.");
+
+		return "redirect:/broadband-user/plan/hardware/view/1";
+	}
+
+	@RequestMapping(value = "/broadband-user/plan/hardware/edit/{id}")
+	public String toHardwareEdit(Model model,
+			@PathVariable(value = "id") int id) {
+		
+		model.addAttribute("panelheading", "Hardware Edit");
+		model.addAttribute("action", "/broadband-user/plan/hardware/edit");
+		
+		Hardware hardware = this.planService.queryHardwareById(id);
+		
+		model.addAttribute("hardware", hardware);
+		
+		return "broadband-user/plan/hardware";
+	}
+
+	@RequestMapping(value = "/broadband-user/plan/hardware/edit", method = RequestMethod.POST)
+	public String doHardwareEdit(
+			Model model,
+			@ModelAttribute("hardware") @Validated(HardwareValidatedMark.class) Hardware hardware,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		
+		model.addAttribute("panelheading", "Hardware Edit");
+		model.addAttribute("action", "/broadband-user/plan/hardware/edit");
+		
+		hardware.getParams().put("id", hardware.getId());
+		
+		this.planService.editHardware(hardware);
+		
+		attr.addFlashAttribute("success", "Edit Hardware " + hardware.getHardware_name() + " is successful.");
+	
+		return "redirect:/broadband-user/plan/hardware/view/1";
+	}
+
+	/*
+	 * Hardware Controller end
 	 */
 
 }

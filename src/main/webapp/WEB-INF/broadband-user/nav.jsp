@@ -31,6 +31,19 @@
 									Create Plan
 								</a>
 							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="${ctx}/broadband-user/plan/hardware/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Hardware
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/plan/hardware/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Hardware
+								</a>
+							</li>
 							
 							<%-- 
 							<li class="divider"></li>
@@ -135,6 +148,13 @@
 								<a href="${ctx}/broadband-user/system/notification/create">
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 									Create Notification
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="${ctx}/broadband-user/system/company-detail/pre-edit">
+									<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+									Edit Company Detail
 								</a>
 							</li>
 						</ul>

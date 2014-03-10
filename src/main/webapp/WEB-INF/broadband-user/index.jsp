@@ -25,6 +25,17 @@
                     		<a href="${ctx }/broadband-user/plan/create">Create Plan</a>
                     	</li>
                     </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/plan/hardware/view/1">View Hardware</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/plan/hardware/create">Create Hardware</a>
+                    	</li>
+                    </ul>
                    <%--  <hr/>
                     <ul class="list-unstyled">
                     	<li>
@@ -120,6 +131,13 @@
                     	<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/system/notification/create">Create Notification</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/company-detail/pre-edit">Edit Company Detail</a>
                     	</li>
                     </ul>
                 </div>

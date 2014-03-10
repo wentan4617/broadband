@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
+import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -51,6 +52,7 @@ public class CRMService {
 	private CustomerInvoiceDetailMapper customerInvoiceDetailMapper;
 	private CustomerTransactionMapper customerTransactionMapper;
 	private ProvisionLogMapper provisionLogMapper;
+	private CompanyDetailMapper companyDetailMapper;
 
 	public CRMService() { }
 	
@@ -61,7 +63,8 @@ public class CRMService {
 			CustomerInvoiceMapper customerInvoiceMapper,
 			CustomerInvoiceDetailMapper customerInvoiceDetailMapper,
 			CustomerTransactionMapper customerTransactionMapper,
-			ProvisionLogMapper provisionLogMapper) {
+			ProvisionLogMapper provisionLogMapper,
+			CompanyDetailMapper companyDetailMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -69,6 +72,7 @@ public class CRMService {
 		this.customerInvoiceMapper = customerInvoiceMapper;
 		this.customerInvoiceDetailMapper = customerInvoiceDetailMapper;
 		this.provisionLogMapper = provisionLogMapper;
+		this.companyDetailMapper = companyDetailMapper;
 	}
 	
 	@Transactional
@@ -309,17 +313,7 @@ public class CRMService {
 	@Transactional
 	public void createInvoicePDFByInvoiceID(int invoiceId){
 		// store company details begin
-		CompanyDetail companyDetail = new CompanyDetail();
-		companyDetail.setGst_registration_number("99 728 906");
-		companyDetail.setName("Total Mobile Solution Limited");
-		companyDetail.setAddress("PO Box 68177, Newton, Auckland 1145");
-		companyDetail.setTelephone("64 9 880 1001");
-		companyDetail.setFax("64 9 880 1009");
-		companyDetail.setDomain("www.cyberpark.co.nz");
-		//
-		companyDetail.setBank_name("BNZ");
-		companyDetail.setBank_account_name("WorldNet Services Limited");
-		companyDetail.setBank_account_number("02-0192-0087576-000");
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company details end
 		
 		// invoice PDF generator manipulation begin
@@ -365,17 +359,7 @@ public class CRMService {
 
 		// initialize invoice's important informations
 		// store company detail begin
-		CompanyDetail companyDetail = new CompanyDetail();
-		companyDetail.setGst_registration_number("99 728 906");
-		companyDetail.setName("Total Mobile Solution Limited");
-		companyDetail.setAddress("PO Box 68177, Newton, Auckland 1145");
-		companyDetail.setTelephone("64 9 880 1001");
-		companyDetail.setFax("64 9 880 1009");
-		companyDetail.setDomain("www.cyberpark.co.nz");
-		//
-		companyDetail.setBank_name("BNZ");
-		companyDetail.setBank_account_name("WorldNet Services Limited");
-		companyDetail.setBank_account_number("02-0192-0087576-000");
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
 
 
@@ -443,6 +427,13 @@ public class CRMService {
 			calInvoiceDueDay.setTime(invoiceCreateDay);
 			calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
 			// set invoice due date end
+			
+			
+			
+			
+			
+			
+			
 			
 			customerInvoice.setLast_invoice_id(customerPreviousInvoice.getId());
 			customerInvoice.setCustomer(customer);

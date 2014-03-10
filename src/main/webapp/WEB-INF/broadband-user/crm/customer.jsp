@@ -120,7 +120,7 @@
 							html += '<td>' + tx.transaction_date_str + '</td>';
 							html += '<td>&nbsp;</td>';
 							html += '<td>&nbsp;</td>';
-							html += '<td>' + invoice.amount_paid + '</td>';
+							html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
 							html += '<td>&nbsp;</td>';
 							html += '<td>' + invoice.status + '</td>';
 							html += '<td>&nbsp;</td>';

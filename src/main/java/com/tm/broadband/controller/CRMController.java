@@ -218,12 +218,10 @@ public class CRMController {
 
 	// create invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
-	public String generateInvoicePDF(Model model
+	@ResponseBody
+	public void generateInvoicePDF(Model model
     		,@PathVariable(value = "invoiceId") int invoiceId){
-		System.out.println("generating invoice PDF - #"+invoiceId);
 		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
-		// jump to an empty page and close it
-		return "broadband-user/crm/new-window";
 	}
 	
 	// download invoice PDF directly

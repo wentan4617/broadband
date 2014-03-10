@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tm.broadband.mapper.HardwareMapper;
 import com.tm.broadband.mapper.PlanMapper;
 import com.tm.broadband.mapper.TopupMapper;
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Topup;
@@ -23,11 +25,14 @@ public class PlanService {
 
 	private PlanMapper planMapper;
 	private TopupMapper topupMapper;
+	private HardwareMapper hardwareMapper;
 
 	@Autowired
-	public PlanService(PlanMapper planMapper, TopupMapper topupMapper) {
+	public PlanService(PlanMapper planMapper, TopupMapper topupMapper,
+			HardwareMapper hardwareMapper) {
 		this.planMapper = planMapper;
 		this.topupMapper = topupMapper;
+		this.hardwareMapper = hardwareMapper;
 	}
 
 	public PlanService() {
@@ -172,6 +177,41 @@ public class PlanService {
 
 	/*
 	 * END TOPUP AREA
+	 */
+	
+	/*
+	 * Hardware Begin
+	 */
+	
+	@Transactional
+	public void saveHardware(Hardware hardware) {
+		this.hardwareMapper.insertHardware(hardware);
+	}
+
+	@Transactional
+	public void editHardware(Hardware hardware) {
+		this.hardwareMapper.updateHardware(hardware);
+	}
+
+	@Transactional
+	public Hardware queryHardwareById(int id) {
+		return this.hardwareMapper.selectHardwareById(id);
+	}
+
+	@Transactional
+	public Page<Hardware> queryHardwaresByPage(Page<Hardware> page) {
+		page.setTotalRecord(this.hardwareMapper.selectHardwaresSum(page));
+		page.setResults(this.hardwareMapper.selectHardwaresByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public int queryExistHardwareByName(String hardware_name) {
+		return this.hardwareMapper.selectExistHardwareByName(hardware_name);
+	}
+	
+	/*
+	 * Hardware end
 	 */
 
 }
