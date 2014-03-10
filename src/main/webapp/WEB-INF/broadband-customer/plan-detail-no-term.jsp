@@ -14,7 +14,7 @@
 	<!-- naked plans -->
 	<div class="page-header">
 		<h1>
-			Internet | Plans and pricing <small>Please choose what you need</small>
+			1. Internet | Plans and pricing <small>Please choose what you need</small>
 		</h1>
 	</div>
 	<div class="row">
@@ -37,27 +37,22 @@
 						</c:forEach>
 					</div>
 					<c:forEach var="plan" items="${planMaps['ADSL'] }" varStatus="item">
-						<p style="display:${!item.first?'none':'block'}" data-name="p-adsl" data-id="${plan.id }" class="text-center text-success" style="position:relative;margin-bottom:0;">
-							<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-							<strong style="font-size:100px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
-							</strong>
-							/ mth
-						</p>
-					</c:forEach>
-					<hr style="margin-top:0;"/>
-					<p class="text-success"><strong>How fast is ADSL?</strong></p>
-					<ul class="list-unstyled" style="height:80px;">
-						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Easy to install</li>
-						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Great for everyday use</li>	
-					</ul>
-					<hr/>
-					<ul class="list-unstyled" style="height:40px;" >
+						<div style="display:${!item.first?'none':'block'}" data-name="p-adsl" data-id="${plan.id }" >
+							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
+								<strong style="font-size:100px;"> 
+									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								</strong>
+								/ mth
+							</p>
+							<hr style="margin-top:0;"/>
+							<h3 class="text-success">${plan.plan_name }</h3>
+							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+						</div>
 						
-					</ul>
+					</c:forEach>
 					<hr/>
 					<p class="text-center">
-						
 						<a class="btn btn-success" id="adsl-purchase" data-id="" data-name="purchase">Purchase</a> 
 					</p>
 				</div>
@@ -79,25 +74,19 @@
 						</c:forEach>
 					</div>
 					<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
-						<p style="display:${!item.first?'none':'block'}" data-name="p-vdsl" data-id="${plan.id }" class="text-center text-success" style="position:relative;margin-bottom:0;">
-							<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-							<strong style="font-size:100px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
-							</strong>
-							/ mth
-						</p>
+						<div style="display:${!item.first?'none':'block'}" data-name="p-vdsl" data-id="${plan.id }" >
+							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
+								<strong style="font-size:100px;"> 
+									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								</strong>
+								/ mth
+							</p>
+							<hr style="margin-top:0;"/>
+							<h3 class="text-success">${plan.plan_name }</h3>
+							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+						</div>
 					</c:forEach>
-					<hr style="margin-top:0;"/>
-					<p class="text-success"><strong>Why VDSL?</strong></p>
-					<ul class="list-unstyled" style="height:80px;">
-						<li><span class="glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Straightforward to install</li>
-						<li><span class="glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Better for video and online games</li>	
-					</ul>
-					<hr/>
-					<ul class="list-unstyled">
-						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Between 15-70 Mbps downstream+</li>
-						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Between 5-10 Mbps upstream+</li>	
-					</ul>
 					<hr/>
 					<p class="text-center">
 						<a class="btn btn-success" id="vdsl-purchase" data-id="" data-name="purchase">Purchase</a> 
@@ -123,26 +112,20 @@
 						</c:forEach>
 					</div>
 					<c:forEach var="plan" items="${planMaps['UFB'] }" varStatus="item">
-						<p style="display:${!item.first?'none':'block'}" data-name="p-ufb" data-id="${plan.id }" class="text-center text-success" style="position:relative;margin-bottom:0;">
-							<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-							<strong style="font-size:100px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
-							</strong>
-							/ mth
-						</p>
+						<div style="display:${!item.first?'none':'block'}" data-name="p-ufb" data-id="${plan.id }" >
+							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
+								<strong style="font-size:100px;"> 
+									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								</strong>
+								/ mth
+							</p>
+							<hr style="margin-top:0;"/>
+							<h3 class="text-success">${plan.plan_name }</h3>
+							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+						</div>
 					</c:forEach>
-					<hr style="margin-top:0;"/>
-					<p class="text-success"><strong>Why Fibre?</strong></p>
-					<ul class="list-unstyled" style="height:80px;">
-						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Huge jump in speed and capacity</li>
-						<li><span class="glyphicon glyphicon glyphicon-ok-sign" style="padding:0 20px;"></span>Provides the best available consistency of </li>	
-						<li style="padding:0 55px;">speed to your home</li>	
-					</ul>
-					<hr/>
-					<ul class="list-unstyled">
-						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Up to 30 Mbps downstream+</li>
-						<li><span class="glyphicon glyphicon-cloud-download" style="padding:0 20px;"></span>Up to 10 Mbps upstream+</li>	
-					</ul>
+					
 					<hr/>
 					<p class="text-center">
 						<a class="btn btn-success" id="ufb-purchase" data-id="" data-name="purchase">Purchase</a> 
@@ -167,9 +150,9 @@
 		$('a[data-name="a-adsl"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
 		
-		$('p[data-name="p-adsl"]').hide();
+		$('div[data-name="p-adsl"]').hide();
 		var id = $(this).attr('data-id');
-		$('p[data-id="' + id + '"]').show();
+		$('div[data-id="' + id + '"]').show();
 		
 		$('#adsl-purchase').attr('href', '${ctx}/order/' + id);
 	});
@@ -179,9 +162,9 @@
 		$('a[data-name="a-vdsl"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
 		
-		$('p[data-name="p-vdsl"]').hide();
+		$('div[data-name="p-vdsl"]').hide();
 		var id = $(this).attr('data-id');
-		$('p[data-id="' + id + '"]').show();
+		$('div[data-id="' + id + '"]').show();
 		
 		$('#vdsl-purchase').attr('href', '${ctx}/order/' + id);
 	});
@@ -191,9 +174,9 @@
 		$('a[data-name="a-ufb"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
 		
-		$('p[data-name="p-ufb"]').hide();
+		$('div[data-name="p-ufb"]').hide();
 		var id = $(this).attr('data-id');
-		$('p[data-id="' + id + '"]').show();
+		$('div[data-id="' + id + '"]').show();
 		
 		$('#ufb-purchase').attr('href', '${ctx}/order/' + id);
 	});
