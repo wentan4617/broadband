@@ -24,15 +24,6 @@
 							</p>
 						</div>
 						<div class="form-group">
-							<label for="content" class="control-label col-md-4">Content</label>
-							<div class="col-md-3">
-								<form:input path="content" class="form-control" placeholder="Content" />
-							</div>
-							<p class="help-block">
-								<form:errors path="content" cssErrorClass="error"/>
-							</p>
-						</div>
-						<div class="form-group">
 							<label for="type" class="control-label col-md-4">Type</label>
 							<div class="col-md-3">
 								<form:select path="type" class="form-control">
@@ -46,7 +37,15 @@
 								<button type="submit" class="btn btn-success">Save</button>
 							</div>
 						</div>
-						
+						<div class="form-group">
+							<label for="content" class="control-label col-md-4">Content</label>
+							<div class="col-md-3">
+								<form:textarea path="content" class="form-control" placeholder="Content" />
+							</div>
+							<p class="help-block">
+								<form:errors path="content" cssErrorClass="error"/>
+							</p>
+						</div>
 					</form:form>
 				</div>
 			</div>

@@ -191,9 +191,15 @@ public class TMUtils {
 	}
 	
 	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerInvoice inv, CompanyDetail company){
-		mailAtValueRetriever(noti,cus);
-		mailAtValueRetriever(noti,inv);
-		mailAtValueRetriever(noti,company);
+		if(cus!=null){
+			mailAtValueRetriever(noti,cus);
+		}
+		if(inv!=null){
+			mailAtValueRetriever(noti,inv);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
+		}
 	}
 	
 	public static String preventNull(String property){

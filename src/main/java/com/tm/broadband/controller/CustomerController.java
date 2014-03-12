@@ -32,10 +32,6 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.tm.broadband.paymentexpress.Response;
-import com.tm.broadband.paymentexpress.GenerateRequest;
-import com.tm.broadband.paymentexpress.PayConfig;
-import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
@@ -44,6 +40,10 @@ import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.paymentexpress.GenerateRequest;
+import com.tm.broadband.paymentexpress.PayConfig;
+import com.tm.broadband.paymentexpress.PxPay;
+import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
@@ -412,20 +412,20 @@ public class CustomerController {
 		return "broadband-customer/customer-data";
 	}
 
-	@RequestMapping(value = "/customer/billing/{customerId}/{pageNo}")
+	@RequestMapping(value = "/customer/billing/{pageNo}")
 	public String customerBilling(Model model,
 			@PathVariable(value = "pageNo") int pageNo,
-			@PathVariable(value = "customerId") int customerId) {
-		
+			HttpServletRequest request) {
+		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
 		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
 		invoicePage.setPageNo(pageNo);
 		invoicePage.setPageSize(12);
 		invoicePage.getParams().put("orderby", "order by create_date desc");
-		invoicePage.getParams().put("customer_id", customerId);
+		invoicePage.getParams().put("customer_id", customer.getId());
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 		
 		model.addAttribute("page",invoicePage);
-		model.addAttribute("transactionsList",this.crmService.queryCustomerTransactionsByCustomerId(customerId));
+		model.addAttribute("transactionsList",this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
 		return "broadband-customer/customer-billing";
 	}
 

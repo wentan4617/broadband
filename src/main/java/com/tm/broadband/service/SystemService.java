@@ -136,8 +136,20 @@ public class SystemService {
 	public CompanyDetail queryCompanyDetail() {
 		return this.companyDetailMapper.selectCompanyDetail();
 	}
-	
+
 	/*
 	 * CompanyDetail Service End
+	 */
+
+	/*
+	 * Notification begin
+	 */
+	
+	public Notification queryNotificationBySort(String sort) {
+		return this.notificationMapper.selectNotificationBySort(sort);
+	}
+	
+	/*
+	 * Notification end
 	 */
 }
