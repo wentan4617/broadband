@@ -19,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -40,6 +42,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
 public class CRMController {
@@ -93,13 +96,34 @@ public class CRMController {
 			@PathVariable(value = "id") int id) {
 		
 		model.addAttribute("panelheading", "Customer Edit");
-		model.addAttribute("action", "/broadband-user/plan/edit");
+		model.addAttribute("action", "/broadband-user/crm/customer/edit");
 		
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
 		
 		model.addAttribute("customer", customer);
-		
+
 		return "broadband-user/crm/customer";
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/edit")
+	public String doCustomerEdit(Model model
+			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
+			,BindingResult result
+			,RedirectAttributes attr) {
+		
+		model.addAttribute("panelheading", "Customer Edit");
+		model.addAttribute("action", "/broadband-user/crm/customer/edit");
+
+		if (result.hasErrors()) {
+			customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer.getId());
+			return "broadband-user/crm/customer";
+		}
+		customer.getParams().put("id", customer.getId());
+		this.crmService.editCustomer(customer);
+		
+		attr.addFlashAttribute("success", "Edit Customer " + customer.getLogin_name() + " is successful.");
+		
+		return "redirect:/broadband-user/crm/customer/query/1";
 	}
 	
 	

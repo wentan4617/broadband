@@ -307,6 +307,11 @@ public class CRMService {
 	}
 
 	@Transactional
+	public void editCustomer(Customer customer) {
+		this.customerMapper.updateCustomer(customer);
+	}
+
+	@Transactional
 	public void editCustomerOrder(CustomerOrder customerOrder, ProvisionLog proLog) {
 		// edit order
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
@@ -558,7 +563,7 @@ public class CRMService {
 			Notification notification = this.notificationMapper.selectNotificationBySort("invoice");
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-			applicationEmail.setAddressee(customer.getEmail()); // customer.getEmail()
+			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email

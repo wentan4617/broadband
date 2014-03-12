@@ -93,11 +93,9 @@
 							</div>
 						</div>
 					</div>
-					<div class="col-md-7" id="customerOrderContainer">
-						
-					</div>
+					<div class="col-md-7" id="customerOrderContainer"></div>
+					<div class="col-md-12"  id="customerOrderDetailContainer"></div>
 				</div>
-				
 			</div>
 		</div>
 	</div>
@@ -169,52 +167,53 @@
 					html += '<p class="form-control-static">' + customerOrder.order_using_start_str + '</p>';
 					html += '</div>';
 					html += '</div>';
-					html += '<hr/>';
-					html += '<h4>Plan Information</h4>';
-					html += '<hr/>';
+					
+					var detailHtml = "";
+					detailHtml += '<div class="panel panel-default">';
+					detailHtml += '<div class="panel-heading">';
+					detailHtml += 'Order Details<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+					detailHtml += '</div>';
+					detailHtml += '<div class="panel-body">';
+					detailHtml += '<table class="table">';
+					detailHtml += '<thead>';
+					detailHtml += '<tr>';
+					detailHtml += '<th>Detail name</th>';
+					detailHtml += '<th>Detail type</th>';
+					detailHtml += '<th>Data flow</th>';
+					detailHtml += '<th>Status</th>';
+					detailHtml += '<th>Type</th>';
+					detailHtml += '<th>Sort</th>';
+					detailHtml += '<th>Unit</th>';
+					detailHtml += '<th>Price</th>';
+					detailHtml += '</tr>';
+					detailHtml += '</thead>';
+					detailHtml += '<tbody>';
+
+					
 					
 					var  customerOrderDetails = customerOrder.customerOrderDetails;
 					for (var j = 0, jlen = customerOrderDetails.length; j < jlen; j++) {
 						var customerOrderDetail = customerOrderDetails[j];
-						html += '<div class="form-group">';
-						html += '<label class="col-sm-3 control-label">Plan name:</label>';
-						html += '<div class="col-sm-9">';
-						html += '<p class="form-control-static">' + customerOrderDetail.detail_plan_name + '</p>';
-						html += '</div>';
-						html += '</div>';
-						html += '<div class="form-group">';
-						html += '<label class="col-sm-3 control-label">Price:</label>';
-						html += '<div class="col-sm-3">';
-						html += '<p class="form-control-static">$ ' + customerOrderDetail.detail_plan_price + '</p>';
-						html += '</div>';
-						html += '</div>';
-						html += '<div class="form-group">';
-						html += '<label class="col-sm-3 control-label">Data flow:</label>';
-						html += '<div class="col-sm-2">';
-						html += '<p class="form-control-static">' + customerOrderDetail.detail_data_flow + '</p>';
-						html += '</div>';
-						html += '<label class="col-sm-3 control-label">Status:</label>';
-						html += '<div class="col-sm-3">';
-						html += '<p class="form-control-static">' + customerOrderDetail.detail_plan_status + '</p>';
-						html += '</div>';
-						html += '</div>';
-						
-						html += '<div class="form-group">';
-						html += '<label class="col-sm-3 control-label">Type:</label>';
-						html += '<div class="col-sm-2">';
-						html += '<p class="form-control-static">' + customerOrderDetail.detail_plan_type + '</p>';
-						html += '</div>';
-						html += '<label class="col-sm-3 control-label">Sort:</label>';
-						html += '<div class="col-sm-3">';
-						html += '<p class="form-control-static">' + customerOrderDetail.detail_plan_sort + '</p>';
-						html += '</div>';
-						html += '</div>';
+						detailHtml += '<tr>';
+						detailHtml += '<td>' + customerOrderDetail.detail_name + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_type != null ? customerOrderDetail.detail_type : ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow != null ? customerOrderDetail.detail_data_flow : ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status != null ? customerOrderDetail.detail_plan_status : ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_plan_type != null ? customerOrderDetail.detail_plan_type : ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort != null ? customerOrderDetail.detail_plan_sort : ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_unit != null ? customerOrderDetail.detail_unit : ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price != null ? customerOrderDetail.detail_price : ' ') + '</strong></td>';
+						detailHtml += '</tr>';
 					}
-					
-					html += '</form>';
-					html += '</div>';
+
+					detailHtml += '</tbody>';
+					detailHtml += '</table>';
+					detailHtml += '</form>';
+					detailHtml += '</div>';
+					detailHtml += '</div>';
 					
 					$('#customerOrderContainer').html(html);
+					$('#customerOrderDetailContainer').html(detailHtml);
 				}
 				
 			}, 'json');

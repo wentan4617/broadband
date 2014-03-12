@@ -57,6 +57,7 @@
 									<th>Status</th>
 									<th>Type</th>
 									<th>Broadband Type</th>
+									<th>Post</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -67,7 +68,7 @@
 										<td>
 											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
 										</td>
-										<td><a href="#" data-name="show_customer_info" data-id="${order.customer.id}"> ${order.customer.user_name } </a></td>
+										<td><a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> ${order.customer.user_name } </a></td>
 										<td>
 											<c:if test="${order.order_total_price != null }">
 												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
@@ -77,6 +78,11 @@
 										<td>${order.order_status }</td>
 										<td>${order.order_type }</td>
 										<td>${order.order_broadband_type }</td>
+										<td>
+											<c:if test="${order.hardware_post > 0}">
+												<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="hardware need to be post"><span class="glyphicon glyphicon-gift"></span></a>
+											</c:if>
+										</td>
 										<td>&nbsp;</td>
 									</tr>
 								</c:forEach>

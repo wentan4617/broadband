@@ -104,13 +104,13 @@
 	</bean>
 	
 	<!-- trigger -->
-	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<!-- <bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
 		<property name="cronExpression" value="0-59/10 * * * * ?"></property>
-	</bean>
+	</bean> -->
 
 	<!-- plan -->
-	<bean name="testScheduler"
+	<!-- <bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -122,6 +122,6 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean>
+	</bean> -->
 
 </beans>

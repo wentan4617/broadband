@@ -29,6 +29,8 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer detail_unit;
 	private String detail_type;
 	private Integer detail_is_next_pay;
+	private Integer is_post;
+	private String hardware_comment;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -205,6 +207,20 @@ public class CustomerOrderDetail implements Serializable {
 		this.order_id = order_id;
 	}
 
-	
+	public Integer getIs_post() {
+		return is_post;
+	}
+
+	public void setIs_post(Integer is_post) {
+		this.is_post = is_post;
+	}
+
+	public String getHardware_comment() {
+		return hardware_comment;
+	}
+
+	public void setHardware_comment(String hardware_comment) {
+		this.hardware_comment = hardware_comment;
+	}
 
 }

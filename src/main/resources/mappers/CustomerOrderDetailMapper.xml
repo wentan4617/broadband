@@ -26,12 +26,14 @@
 			`order_id`, `detail_name`, `detail_desc`, `detail_price`, 
 			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
 			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_topup_data_flow`, 
-			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_type`, `detail_is_next_pay`) 
+			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_type`, `detail_is_next_pay`,
+			`is_post`, `hardware_comment`) 
 		VALUES (
 			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
 			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_topup_data_flow},
-			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_type}, #{detail_is_next_pay})
+			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_type}, #{detail_is_next_pay},
+			#{is_post}, #{hardware_comment})
 	</insert>
 	
 	<!-- // END INSERT AREA -->

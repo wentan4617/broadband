@@ -13,6 +13,7 @@ public class Notification implements Serializable {
 	private String title;
 	private String content;
 	private String type;
+	private String sort;
 
 	public int getId() {
 		return id;
@@ -52,6 +53,14 @@ public class Notification implements Serializable {
 
 	public Notification() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public String getSort() {
+		return sort;
+	}
+
+	public void setSort(String sort) {
+		this.sort = sort;
 	}
 
 }

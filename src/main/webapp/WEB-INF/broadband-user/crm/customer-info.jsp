@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <!-- Customer Basic Details -->
@@ -20,11 +21,9 @@
 					action="${ctx}${action }" class="form-horizontal">
 					<form:hidden path="id" />
 					<div class="form-group">
-						<label for="customer_name" class="control-label col-md-3">Customer
-							Name</label>
+						<label for="customer_name" class="control-label col-md-3">Customer Name</label>
 						<div class="col-md-3">
-							<form:input path="login_name" class="form-control"
-								placeholder="Customer Name" />
+							<form:input path="login_name" class="form-control" placeholder="Customer Name" />
 						</div>
 						<p class="help-block">
 							<form:errors path="login_name" cssErrorClass="error" />
@@ -33,8 +32,7 @@
 					<div class="form-group">
 						<label for="password" class="control-label col-md-3">Password</label>
 						<div class="col-md-3">
-							<form:input path="password" class="form-control"
-								placeholder="Password" />
+							<form:input path="password" class="form-control" placeholder="Password" />
 						</div>
 						<p class="help-block">
 							<form:errors path="password" cssErrorClass="error" />
@@ -51,22 +49,18 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label for="last_name" class="control-label col-md-3">Last
-							Name</label>
+						<label for="last_name" class="control-label col-md-3">Last Name</label>
 						<div class="col-md-3">
-							<form:input path="last_name" class="form-control"
-								placeholder="Last Name" />
+							<form:input path="last_name" class="form-control" placeholder="Last Name" />
 						</div>
 						<p class="help-block">
 							<form:errors path="last_name" cssErrorClass="error" />
 						</p>
 					</div>
 					<div class="form-group">
-						<label for="first_name" class="control-label col-md-3">First
-							Name</label>
+						<label for="first_name" class="control-label col-md-3">First Name</label>
 						<div class="col-md-3">
-							<form:input path="first_name" class="form-control"
-								placeholder="First Name" />
+							<form:input path="first_name" class="form-control" placeholder="First Name" />
 						</div>
 						<p class="help-block">
 							<form:errors path="first_name" cssErrorClass="error" />
@@ -75,8 +69,7 @@
 					<div class="form-group">
 						<label for="address" class="control-label col-md-3">Address</label>
 						<div class="col-md-3">
-							<form:input path="address" class="form-control"
-								placeholder="Address" />
+							<form:input path="address" class="form-control" placeholder="Address" />
 						</div>
 						<p class="help-block">
 							<form:errors path="address" cssErrorClass="error" />
@@ -103,34 +96,25 @@
 					<div class="form-group">
 						<label for="cellphone" class="control-label col-md-3">Cellphone</label>
 						<div class="col-md-3">
-							<form:input path="cellphone" class="form-control"
-								placeholder="Cellphone" />
+							<form:input path="cellphone" class="form-control" placeholder="Cellphone" />
 						</div>
 						<p class="help-block">
 							<form:errors path="cellphone" cssErrorClass="error" />
 						</p>
 					</div>
 					<div class="form-group">
-						<label for="register_date" class="control-label col-md-3">Register
-							Date</label>
+						<label for="register_date_str" class="control-label col-md-3">Register Date</label>
 						<div class="col-md-3">
-							<form:input path="register_date_str" class="form-control"
-								placeholder="Register Date" />
+							<!-- <form:input path='register_date_str' class="form-control" placeholder="Register Date" /> -->
+							<fmt:formatDate value="${customer.register_date}" type="both"/>
 						</div>
-						<p class="help-block">
-							<form:errors path="register_date_str" cssErrorClass="error" />
-						</p>
 					</div>
 					<div class="form-group">
-						<label for="active_date" class="control-label col-md-3">Active
-							Date</label>
+						<label for="active_date_str" class="control-label col-md-3">Active Date</label>
 						<div class="col-md-3">
-							<form:input path="active_date_str" class="form-control"
-								placeholder="Active Date" />
+							<!-- <form:input path="active_date_str" class="form-control" placeholder="Active Date" /> -->
+							<fmt:formatDate value="${customer.active_date}" type="both"/>
 						</div>
-						<p class="help-block">
-							<form:errors path="active_date_str" cssErrorClass="error" />
-						</p>
 					</div>
 					<div class="form-group">
 						<label for="balance" class="control-label col-md-3">Balance</label>
@@ -140,9 +124,6 @@
 								<form:input path="balance" class="form-control" placeholder="" />
 							</div>
 						</div>
-						<p class="help-block">
-							<form:errors path="balance" cssErrorClass="error" />
-						</p>
 					</div>
 					<div class="form-group">
 						<div class="col-md-3 col-md-offset-3">
