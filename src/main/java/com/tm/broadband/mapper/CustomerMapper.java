@@ -4,8 +4,6 @@ import java.util.List;
 
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.User;
 
 /**
  * mapping tm_customer, customer DAO component
@@ -46,6 +44,8 @@ public interface CustomerMapper {
 	/* =================================================================================== */
 	
 	/* UPDATE AREA */
+	
+	void updateCustomer(Customer customer);
 	
 	void updateCustomerStatus(Customer customer);
 	

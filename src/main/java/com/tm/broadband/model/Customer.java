@@ -12,7 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
-import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 /**
  * customer information, mapping tm_customer
@@ -29,30 +29,30 @@ public class Customer implements Serializable {
 	 */
 
 	private Integer id;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class })
 	private String login_name;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class })
 	private String password;
 	private String user_name;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String first_name;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String last_name;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 500, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class })
 	private String address;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Email(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 40, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Email(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class })
 	private String email;
-	@Length(min = 1, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String phone;
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { CustomerOrderValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String cellphone;
 	private String status;
 	private String invoice_post;
@@ -69,11 +69,9 @@ public class Customer implements Serializable {
 	 */
 	
 	private Map<String, Object> params = new HashMap<String, Object>();
-	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerOrderValidatedMark.class })
 	private String ck_password;
 	private String old_password;
-	
+
 	private String register_date_str;
 	private String active_date_str;
 

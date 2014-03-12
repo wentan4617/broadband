@@ -232,6 +232,30 @@
 		</if>
 		where id = #{id}
 	</update>
+	
+	<!-- update customer -->
+	<update id="updateCustomer" parameterType="Customer">
+		update tm_customer
+		<set>
+			<if test="login_name != null">login_name = #{login_name},</if>
+			<if test="password != null">password = #{password},</if>
+			<if test="user_name != null">user_name = #{user_name},</if>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="cellphone != null">cellphone = #{cellphone},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="invoice_post != null">invoice_post = #{invoice_post},</if>
+			<if test="register_date != null">register_date = #{register_date},</if>
+			<if test="active_date != null">active_date = #{active_date},</if>
+			<if test="balance != null">balance = #{balance}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id=#{params.id}</if>
+		</where>
+	</update>
 
 	<!-- // END UPDATE AREA -->
 

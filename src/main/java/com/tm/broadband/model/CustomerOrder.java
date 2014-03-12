@@ -33,6 +33,7 @@ public class CustomerOrder implements Serializable {
 	private String transition_account_holder_name;
 	private String transition_account_number;
 	private String transition_porting_number;
+	private String hardware_post;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -264,6 +265,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setCustomer_id(Integer customer_id) {
 		this.customer_id = customer_id;
+	}
+
+	public String getHardware_post() {
+		return hardware_post;
+	}
+
+	public void setHardware_post(String hardware_post) {
+		this.hardware_post = hardware_post;
 	}
 	
 }
