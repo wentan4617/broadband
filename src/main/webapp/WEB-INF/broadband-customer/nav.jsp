@@ -32,8 +32,11 @@
 			
 			<c:if test="${customerSession != null }">
 				<p class="navbar-text pull-right" >
-					<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
-					<a href="${ctx }/customer/home" class="navbar-link" style="margin-right:10px;">${customerSession.user_name}</a>
+					
+					<a href="${ctx }/customer/home" class="navbar-link" style="margin-right:10px;">
+						<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
+						${customerSession.user_name}
+					</a>
 					<a href="${ctx}/signout" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>
 					</a>

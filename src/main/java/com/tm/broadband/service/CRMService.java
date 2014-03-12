@@ -552,7 +552,7 @@ public class CRMService {
 			Notification notification = this.notificationMapper.selectNotificationBySort("invoice");
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-			applicationEmail.setAddressee("stevenchen1989930@gmail.com"); // customer.getEmail()
+			applicationEmail.setAddressee(customer.getEmail()); // customer.getEmail()
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
@@ -561,7 +561,7 @@ public class CRMService {
 		}
 	}
 	
-	@Transactional
+	
 	public void sendMail(ApplicationEmail applicationEmail){
 		this.applicationMailer.sendMailByAsynchronousMode(applicationEmail);
 	}
