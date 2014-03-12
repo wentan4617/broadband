@@ -79,7 +79,7 @@
 										<c:forEach var="num" begin="1" end="${page.totalPage }"
 											step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}"><a
-												href="${ctx}/customer/billing/${customerSession.id}/${num}">${num}</a>
+												href="${ctx}/customer/billing/${num}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>

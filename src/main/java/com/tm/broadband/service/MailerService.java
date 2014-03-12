@@ -23,7 +23,7 @@ import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.model.CompanyDetail;
 
 @Service
-public class ApplicationMailer implements Mailer {
+public class MailerService implements Mailer {
 
 	private JavaMailSenderImpl mailSender;
 	private TaskExecutor taskExecutor;
@@ -31,7 +31,7 @@ public class ApplicationMailer implements Mailer {
 	private CompanyDetailMapper companyDetailMapper;
 
 	@Autowired
-	public ApplicationMailer(JavaMailSenderImpl mailSender,
+	public MailerService(JavaMailSenderImpl mailSender,
 			TaskExecutor taskExecutor, SimpleMailMessage preConfiguredMessage, CompanyDetailMapper companyDetailMapper) {
 		this.mailSender = mailSender;
 		this.taskExecutor = taskExecutor;
@@ -39,7 +39,7 @@ public class ApplicationMailer implements Mailer {
 		this.companyDetailMapper = companyDetailMapper;
 	}
 
-	public ApplicationMailer() {
+	public MailerService() {
 	}
 
 	/**

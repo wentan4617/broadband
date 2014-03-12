@@ -27,24 +27,32 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.MailerService;
+import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 
 @Controller
 public class CRMController {
 
 	private CRMService crmService;
+	private MailerService mailerService;
+	private SystemService systemService;
 
 	@Autowired
-	public CRMController(CRMService crmService) {
+	public CRMController(CRMService crmService, MailerService mailerService, SystemService systemService) {
 		this.crmService = crmService;
+		this.mailerService = mailerService;
+		this.systemService = systemService;
 	}
 
 	@RequestMapping("/broadband-user/crm/customer/view/{pageNo}")
@@ -252,27 +260,34 @@ public class CRMController {
      */
     
 	// send invoice PDF directly
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}")
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}/{customerId}")
 	public String sendInvoicePDF(Model model
-    		,@PathVariable(value = "invoiceId") int invoiceId){
+    		,@PathVariable(value = "invoiceId") int invoiceId
+    		,@PathVariable(value = "customerId") int customerId){
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
+		Customer customer = this.crmService.queryCustomerById(customerId);
+		Notification notification = this.systemService.queryNotificationBySort("invoice");
+		CustomerInvoice inv = new CustomerInvoice();
+		inv.setId(invoiceId);
+		CompanyDetail company = this.systemService.queryCompanyDetail();
+		
+		TMUtils.mailAtValueRetriever(notification, customer, inv, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
-		
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee("stevenchen1989930@gmail.com");
+		applicationEmail.setAddressee(customer.getEmail());
 		// subject
-		applicationEmail.setSubject("Invoice from Total Mobile Solution Limited");
+		applicationEmail.setSubject(notification.getTitle());
 		// content
-		applicationEmail.setContent("Thank You! For using our service.");
+		applicationEmail.setContent(notification.getContent());
 		// attachment name
 		applicationEmail.setAttachName("Invoice - #" + invoiceId + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		
 		// send mail
-		this.crmService.sendMail(applicationEmail);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		return "broadband-user/progress-accomplished";
 	}

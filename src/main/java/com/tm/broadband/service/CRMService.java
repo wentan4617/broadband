@@ -58,8 +58,10 @@ public class CRMService {
 	private CustomerTransactionMapper customerTransactionMapper;
 	private ProvisionLogMapper provisionLogMapper;
 	private CompanyDetailMapper companyDetailMapper;
-	private ApplicationMailer applicationMailer;
 	private NotificationMapper notificationMapper;
+	
+	// service
+	private MailerService mailerService;
 
 	public CRMService() { }
 	
@@ -72,7 +74,7 @@ public class CRMService {
 			CustomerTransactionMapper customerTransactionMapper,
 			ProvisionLogMapper provisionLogMapper,
 			CompanyDetailMapper companyDetailMapper,
-			ApplicationMailer applicationMailer,
+			MailerService mailerService,
 			NotificationMapper notificationMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
@@ -82,7 +84,7 @@ public class CRMService {
 		this.customerInvoiceDetailMapper = customerInvoiceDetailMapper;
 		this.provisionLogMapper = provisionLogMapper;
 		this.companyDetailMapper = companyDetailMapper;
-		this.applicationMailer = applicationMailer;
+		this.mailerService = mailerService;
 		this.notificationMapper = notificationMapper;
 	}
 	
@@ -251,6 +253,11 @@ public class CRMService {
 	@Transactional
 	public int queryExistCustomerByLoginName(String login_name) {
 		return this.customerMapper.selectExistCustomerByLoginName(login_name);
+	}
+
+	@Transactional
+	public Customer queryCustomerById(int id) {
+		return this.customerMapper.selectCustomerById(id);
 	}
 	
 	@Transactional
@@ -557,26 +564,7 @@ public class CRMService {
 			// binding attachment name & path to email
 			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
-			this.sendMail(applicationEmail);
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		}
 	}
-	
-
-	public void sendMail(ApplicationEmail applicationEmail){
-		this.applicationMailer.sendMailByAsynchronousMode(applicationEmail);
-	}
-	
-	
-	/*
-	 * CompanyDetail begin
-	 */
-	
-	public CompanyDetail queryCompanyDetail() {
-		return this.companyDetailMapper.selectCompanyDetail();
-	}
-	
-	/*
-	 * CompanyDetail end
-	 */
-
 }
