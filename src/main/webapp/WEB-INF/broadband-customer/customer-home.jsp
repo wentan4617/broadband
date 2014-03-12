@@ -100,8 +100,6 @@
 					</c:if>
 					<c:if test="${fn:length(customerOrders) < 0 }">
 					</c:if>
-						
-						
 					
 				</div>
 			</div>

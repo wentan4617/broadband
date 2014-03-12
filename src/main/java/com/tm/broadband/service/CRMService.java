@@ -34,6 +34,7 @@ import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -83,106 +84,107 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public void registerCustomer(Customer customer, Plan plan, CustomerTransaction customerTransaction) {
+	public void registerCustomer(Customer customer, Plan plan, List<Hardware> hardwares, CustomerTransaction customerTransaction) {
 		
 		customer.setRegister_date(new Date(System.currentTimeMillis()));
 		customer.setActive_date(new Date(System.currentTimeMillis()));
 		
 		this.customerMapper.insertCustomer(customer);
-		System.out.println("customer id: " + customer.getId());
+		//System.out.println("customer id: " + customer.getId());
 		
-		customer.getCustomerOrder().setCustomer(customer);
+		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
+		customer.getCustomerOrder().setCustomer_id(customer.getId());
 		customer.getCustomerOrder().setOrder_status("paid");
 		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 		
-		CustomerOrderDetail dplan = new CustomerOrderDetail();
-		dplan.setCustomerOrder(customer.getCustomerOrder());
-		dplan.setDetail_name(plan.getPlan_name());
-		dplan.setDetail_desc(plan.getPlan_desc());
-		dplan.setDetail_price(plan.getPlan_price());
-		dplan.setDetail_data_flow(plan.getData_flow());
-		dplan.setDetail_plan_status(plan.getPlan_status());
-		dplan.setDetail_plan_type(plan.getPlan_type());
-		dplan.setDetail_plan_sort(plan.getPlan_sort());
-		dplan.setDetail_plan_group(plan.getPlan_group());
-		dplan.setDetail_plan_memo(plan.getMemo());
-		dplan.setDetail_unit(plan.getPlan_prepay_months());
+		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
+		cod_plan.setDetail_name(plan.getPlan_name());
+		cod_plan.setDetail_desc(plan.getPlan_desc());
+		cod_plan.setDetail_price(plan.getPlan_price());
+		cod_plan.setDetail_data_flow(plan.getData_flow());
+		cod_plan.setDetail_plan_status(plan.getPlan_status());
+		cod_plan.setDetail_plan_type(plan.getPlan_type());
+		cod_plan.setDetail_plan_sort(plan.getPlan_sort());
+		cod_plan.setDetail_plan_group(plan.getPlan_group());
+		cod_plan.setDetail_plan_memo(plan.getMemo());
+		cod_plan.setDetail_unit(plan.getPlan_prepay_months());
 		
 		
 		if ("plan-topup".equals(plan.getPlan_group())) {
 			
-			dplan.setDetail_type("plan-topup");
-			dplan.setDetail_is_next_pay(0);
+			cod_plan.setDetail_type("plan-topup");
+			cod_plan.setDetail_is_next_pay(0);
 			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(dplan);
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
 			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
 				
-				CustomerOrderDetail dconn = new CustomerOrderDetail();
-				dconn.setCustomerOrder(customer.getCustomerOrder());
-				dconn.setDetail_name("Broadband New Connection");
-				dconn.setDetail_price(plan.getPlan_new_connection_fee());
-				dconn.setDetail_is_next_pay(0);
-				dconn.setDetail_type("new-connection");
-				dconn.setDetail_unit(1);
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_type("new-connection");
+				cod_conn.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(dconn);
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
 				
 			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
 				customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
 				
-				CustomerOrderDetail dtrans = new CustomerOrderDetail();
-				dtrans.setCustomerOrder(customer.getCustomerOrder());
-				dtrans.setDetail_name("Broadband Transition");
-				dtrans.setDetail_is_next_pay(0);
-				dtrans.setDetail_type("transition");
-				dtrans.setDetail_unit(1);
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_type("transition");
+				cod_trans.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(dtrans);
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
 			}
 			
-			CustomerOrderDetail dtopup = new CustomerOrderDetail();
-			dtopup.setCustomerOrder(customer.getCustomerOrder());
-			dtopup.setDetail_name("Broadband Top-Up");
-			dtopup.setDetail_price(plan.getTopup().getTopup_fee());
-			dtopup.setDetail_is_next_pay(0);
-			customer.getCustomerOrder().getCustomerOrderDetails().add(dtopup);
+			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+			cod_topup.setDetail_name("Broadband Top-Up");
+			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
+			cod_topup.setDetail_is_next_pay(0);
+			
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(plan.getPlan_group())) {
 			
-			dplan.setDetail_type("plan-no-term");
-			dplan.setDetail_is_next_pay(1);
+			cod_plan.setDetail_type("plan-no-term");
+			cod_plan.setDetail_is_next_pay(1);
 			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(dplan);
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
 			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
 			
-				CustomerOrderDetail dconn = new CustomerOrderDetail();
-				dconn.setCustomerOrder(customer.getCustomerOrder());
-				dconn.setDetail_name("Broadband New Connection");
-				dconn.setDetail_price(plan.getPlan_new_connection_fee());
-				dconn.setDetail_is_next_pay(0);
-				dconn.setDetail_type("new-connection");
-				dconn.setDetail_unit(1);
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_type("new-connection");
+				cod_conn.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(dconn);
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
 				
 			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
 				
-				CustomerOrderDetail dtrans = new CustomerOrderDetail();
-				dtrans.setCustomerOrder(customer.getCustomerOrder());
-				dtrans.setDetail_name("Broadband Transition");
-				dtrans.setDetail_is_next_pay(0);
-				dtrans.setDetail_type("transition");
-				dtrans.setDetail_unit(1);
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_type("transition");
+				cod_trans.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(dtrans);
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
 			}
+			
 		} else if ("plan-term".equals(plan.getPlan_group())) {
+			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 
 			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
@@ -190,13 +192,29 @@ public class CRMService {
 			}
 		}
 		
-		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
-		System.out.println("customer order id: " + customer.getCustomerOrder().getId());
+		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
+			//System.out.println(chd.getId());
+			for (Hardware hd : hardwares) {
+				if (chd.getId() == hd.getId()) {
+					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+					cod_hd.setDetail_name(hd.getHardware_name());
+					cod_hd.setDetail_price(hd.getHardware_price());
+					cod_hd.setDetail_is_next_pay(0);
+					cod_hd.setDetail_type("hardware-router");
+					cod_hd.setDetail_unit(1);
+					customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
+					break;
+				}
+			}
+		}
 		
-
+		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
+		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
+		
 		CustomerInvoice customerInvoice = new CustomerInvoice();
-		customerInvoice.setCustomer(customer);
-		customerInvoice.setCustomerOrder(customer.getCustomerOrder());
+		customerInvoice.setCustomer_id(customer.getId());
+		customerInvoice.setOrder_id(customer.getCustomerOrder().getId());
 		customerInvoice.setCreate_date(new Date(System.currentTimeMillis()));
 		customerInvoice.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
 		customerInvoice.setAmount_paid(customerTransaction.getAmount());
@@ -204,28 +222,14 @@ public class CRMService {
 		customerInvoice.setStatus("paid");
 		customerInvoice.setPaid_date(new Date(System.currentTimeMillis()));
 		customerInvoice.setPaid_type(customerTransaction.getCard_name());
-
-		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
-		customerOrderDetail.setCustomerOrder(customer.getCustomerOrder());
-		customerOrderDetail.setDetail_name(plan.getPlan_name());
-		customerOrderDetail.setDetail_desc(plan.getPlan_desc());
-		customerOrderDetail.setDetail_price(plan.getPlan_price());
-		customerOrderDetail.setDetail_data_flow(plan.getData_flow());
-		customerOrderDetail.setDetail_plan_status(plan.getPlan_status());
-		customerOrderDetail.setDetail_plan_type(plan.getPlan_type());
-		customerOrderDetail.setDetail_plan_sort(plan.getPlan_sort());
-		customerOrderDetail.setDetail_plan_group(plan.getPlan_group());
-		customerOrderDetail.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
-		customerOrderDetail.setDetail_topup_fee(plan.getTopup().getTopup_fee());
-		customerOrderDetail.setDetail_plan_memo(plan.getMemo());
-		customerOrderDetail.setDetail_unit(plan.getPlan_prepay_months());
 		
 		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
 		
 		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
+			cod.setOrder_id(customer.getCustomerOrder().getId());
 			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			cid.setCustomerInvoice(customerInvoice);
+			cid.setInvoice_id(customerInvoice.getId());
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_desc(cod.getDetail_desc());
 			cid.setInvoice_detail_price(cod.getDetail_price());
@@ -233,9 +237,9 @@ public class CRMService {
 			this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
 		
-		customerTransaction.setCustomer(customer);
-		customerTransaction.setCustomerOrder(customer.getCustomerOrder());
-		customerTransaction.setCustomerInvoice(customerInvoice);
+		customerTransaction.setCustomer_id(customer.getId());
+		customerTransaction.setOrder_id(customer.getCustomerOrder().getId());
+		customerTransaction.setInvoice_id(customerInvoice.getId());
 		customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 		
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);

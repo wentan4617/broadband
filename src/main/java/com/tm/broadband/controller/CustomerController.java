@@ -1,6 +1,7 @@
 package com.tm.broadband.controller;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,9 @@ import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
@@ -35,7 +38,7 @@ import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 
 @Controller
-@SessionAttributes(value = { "customer", "orderPlan" })
+@SessionAttributes(value = { "customer", "orderPlan", "hardwares" })
 public class CustomerController {
 
 	private PlanService planService;
@@ -49,12 +52,9 @@ public class CustomerController {
 
 	@RequestMapping("/home")
 	public String home(Model model) {
-
-		Customer customer = new Customer();
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.setOrder_broadband_type("new-connection");
-		customer.setCustomerOrder(customerOrder);
 		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
 		model.addAttribute("customer", customer);
 		return "broadband-customer/home";
 	}
@@ -126,11 +126,11 @@ public class CustomerController {
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
-
-		Customer customer = (Customer) model.asMap().get("customer");
-		if (customer == null) {
-			model.addAttribute("customer", new Customer());
-		}
+		
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		model.addAttribute("hardwares", hardwares);
 		
 		return "broadband-customer/customer-order";
 	}
@@ -143,11 +143,11 @@ public class CustomerController {
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
 		plan.getTopup().setTopup_fee(amount);
-
-		Customer customer = (Customer) model.asMap().get("customer");
-		if (customer == null) {
-			model.addAttribute("customer", new Customer());
-		}
+		
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		model.addAttribute("hardwares", hardwares);
 		
 		return "broadband-customer/customer-order";
 	}
@@ -179,8 +179,103 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/order/confirm")
-	public String orderConfirm(Model model) {
+	public String orderConfirm(Model model,
+			@ModelAttribute("customer") Customer customer,
+			@ModelAttribute("orderPlan") Plan plan, 
+			@ModelAttribute("hardwares") List<Hardware> hardwares, 
+			RedirectAttributes attr) {
+		
+		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
+		customer.getCustomerOrder().setOrder_create_date(new Date());
 
+		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
+		cod_plan.setDetail_name(plan.getPlan_name());
+		cod_plan.setDetail_price(plan.getPlan_price());
+		cod_plan.setDetail_unit(plan.getPlan_prepay_months());
+		
+		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
+		
+		if ("plan-topup".equals(plan.getPlan_group())) {
+			
+			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
+				
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				
+			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
+				
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+			}
+			
+			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+			cod_topup.setDetail_name("Broadband Top-Up");
+			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
+			cod_topup.setDetail_unit(1);
+			
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
+			
+		} else if ("plan-no-term".equals(plan.getPlan_group())) {
+			
+			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
+			
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				
+			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
+				
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+			}
+			
+		} else if ("plan-term".equals(plan.getPlan_group())) {
+			
+			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+
+			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+
+			}
+		}
+		
+		
+		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
+			//System.out.println(chd.getId());
+			for (Hardware hd : hardwares) {
+				if (chd.getId() == hd.getId()) {
+					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+					cod_hd.setDetail_name(hd.getHardware_name());
+					cod_hd.setDetail_price(hd.getHardware_price());
+					cod_hd.setDetail_unit(1);
+					customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
+					break;
+				}
+			}
+		}
+		
+		
 		return "broadband-customer/customer-order-confirm";
 	}
 
@@ -192,6 +287,7 @@ public class CustomerController {
 		gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
+		
 		System.out.println(req.getRequestURL().toString());
 		gr.setUrlFail(req.getRequestURL().toString());
 		gr.setUrlSuccess(req.getRequestURL().toString());
@@ -205,6 +301,7 @@ public class CustomerController {
 	public String toSignupPayment(Model model,
 			@ModelAttribute("customer") Customer customer,
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
+			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			@RequestParam(value = "result", required = true) String result,
 			SessionStatus status) throws Exception {
 
@@ -214,6 +311,7 @@ public class CustomerController {
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
 			customer.setStatus("active");
 			customer.setUser_name(customer.getLogin_name());
 			customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
@@ -236,7 +334,10 @@ public class CustomerController {
 			customerTransaction.setTransaction_type(responseBean.getTxnType());
 			customerTransaction.setTransaction_sort(plan.getPlan_group());
 
-			this.crmService.registerCustomer(customer, plan, customerTransaction);
+			this.crmService.registerCustomer(customer, plan, hardwares, customerTransaction);
+			
+			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id());
+			
 		} else {
 
 		}

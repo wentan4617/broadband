@@ -19,7 +19,7 @@ public class CustomerOrder implements Serializable {
 
 	private Integer id;
 	private String order_serial;
-	private Customer customer;
+	private Integer customer_id;
 	private Double order_total_price;
 	private Date order_create_date;
 	private String order_status;
@@ -33,23 +33,26 @@ public class CustomerOrder implements Serializable {
 	private String transition_account_holder_name;
 	private String transition_account_number;
 	private String transition_porting_number;
+	
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
 
-	private Map<String, Object> params = new HashMap<String, Object>();
+	
 
 	/*
 	 * RELATED PROPERTIES
 	 */
-
+	private Map<String, Object> params = new HashMap<String, Object>();
 	private String order_create_date_str;
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
+	private Customer customer;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
 	private ProvisionLog tempProvsionLog;
+	private List<Hardware> hardwares = new ArrayList<Hardware>();
 
 	/*
 	 * END RELATED PROPERTIES
@@ -247,4 +250,20 @@ public class CustomerOrder implements Serializable {
 		this.transition_porting_number = transition_porting_number;
 	}
 
+	public List<Hardware> getHardwares() {
+		return hardwares;
+	}
+
+	public void setHardwares(List<Hardware> hardwares) {
+		this.hardwares = hardwares;
+	}
+
+	public Integer getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
+	}
+	
 }

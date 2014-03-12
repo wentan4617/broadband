@@ -13,7 +13,7 @@ public class CustomerOrderDetail implements Serializable {
 	 */
 
 	private Integer id;
-	private CustomerOrder customerOrder;
+	private Integer order_id;
 	private String detail_name;
 	private String detail_desc;
 	private Double detail_price;
@@ -39,7 +39,7 @@ public class CustomerOrderDetail implements Serializable {
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
-
+	private CustomerOrder customerOrder;
 	/*
 	 * END RELATED PROPERTIES
 	 */
@@ -196,5 +196,15 @@ public class CustomerOrderDetail implements Serializable {
 	public void setDetail_price(Double detail_price) {
 		this.detail_price = detail_price;
 	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
+	}
+
+	
 
 }

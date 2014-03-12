@@ -293,7 +293,7 @@
 			`transition_provider_name`, `transition_account_holder_name`, 
 			`transition_account_number`, `transition_porting_number`) 
 		VALUES (
-			#{order_serial}, #{customer.id}, #{order_total_price}, now(), #{order_status},
+			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
 			#{transition_account_number}, #{transition_porting_number})
@@ -310,7 +310,7 @@
 		update tm_customer_order 
 		<set>
 			<if test="order_serial != null">order_serial = #{order_serial},</if>
-			<if test="customer != null and customer.id != null">customer_id = #{customer.id},</if>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
 			<if test="order_total_price != null">order_total_price = #{order_total_price},</if>
 			<if test="order_create_date != null">order_create_date = #{order_create_date},</if>
 			<if test="order_status != null">order_status = #{order_status},</if>

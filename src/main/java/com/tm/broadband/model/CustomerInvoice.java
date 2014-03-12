@@ -23,10 +23,9 @@ public class CustomerInvoice implements Serializable {
 	 */
 
 	private Integer id;
-
 	private String invoice_serial;
-	private Customer customer;
-	private CustomerOrder customerOrder;
+	private Integer customer_id;
+	private Integer order_id;
 	private Date create_date;
 	private Date due_date;
 	private Double amount_payable;
@@ -42,22 +41,22 @@ public class CustomerInvoice implements Serializable {
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
-	
-	private String create_date_str;
-	private String due_date_str;
-	private CustomerInvoice lastCustomerInvoice;
-	private String paid_date_str;
-	private String invoice_desc;
-	private Integer customer_id;
 
 	/*
 	 * RELATED PROPERTIES
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
-	
+	private String create_date_str;
+	private String due_date_str;
+	private CustomerInvoice lastCustomerInvoice;
+	private String paid_date_str;
+	private String invoice_desc;
 	// one invoice to many invoice details
 	private List<CustomerInvoiceDetail> customerInvoiceDetails;
+
+	private Customer customer;
+	private CustomerOrder customerOrder;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -89,7 +88,6 @@ public class CustomerInvoice implements Serializable {
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
 	}
-	
 
 	public CustomerOrder getCustomerOrder() {
 		return customerOrder;
@@ -193,7 +191,7 @@ public class CustomerInvoice implements Serializable {
 	}
 
 	public String getDue_date_str() {
-		if(this.getDue_date() != null){
+		if (this.getDue_date() != null) {
 			this.setDue_date_str(TMUtils.dateFormatYYYYMMDD(this.getDue_date()));
 		} else {
 			this.setDue_date_str("");
@@ -261,6 +259,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setCustomer_id(Integer customer_id) {
 		this.customer_id = customer_id;
+	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
 	}
 
 }

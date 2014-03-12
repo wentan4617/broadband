@@ -25,6 +25,15 @@ html {
 	background-size: contain;
 }
 
+.logo_ct {
+	display: inline-block;
+	height: 70px;
+	width: 70px;
+	background: url("../images/cartoon.png") no-repeat;
+	
+	background-size: contain;
+}
+
 body {
 	padding-bottom: 0;
 	background:#f7f7f7;

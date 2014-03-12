@@ -231,7 +231,7 @@
 			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
 			`paid_date`, `paid_type`, `last_invoice_id`) 
 		VALUES (
-			#{invoice_serial}, #{customer.id}, #{customerOrder.id}, #{create_date}, #{due_date},
+			#{invoice_serial}, #{customer_id}, #{order_id}, #{create_date}, #{due_date},
 			#{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
 			#{paid_date}, #{paid_type}, #{last_invoice_id})
 	</insert>
@@ -244,8 +244,8 @@
 		update `tm_customer_invoice`
 		<set>
 			<if test="invoice_serial != null">`invoice_serial`=#{invoice_serial},</if>
-			<if test="customer != null and customer.id != null">`customer_id`=#{customer.id},</if>
-			<if test="customerOrder != null and customerOrder.id != null">`order_id`=#{customerOrder.id},</if>
+			<if test="customer_id != null">`customer_id`=#{customer_id},</if>
+			<if test="order_id != null">`order_id`=#{order_id},</if>
 			<if test="create_date != null">`create_date`=#{create_date},</if>
 			<if test="due_date != null">`due_date`=#{due_date},</if>
 			<if test="amount_payable != null">`amount_payable`=#{amount_payable},</if>

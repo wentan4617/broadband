@@ -22,9 +22,9 @@ public class CustomerTransaction implements Serializable {
 	 */
 
 	private Long id;
-	private Customer customer;
-	private CustomerOrder customerOrder;
-	private CustomerInvoice customerInvoice = new CustomerInvoice();
+	private Integer customer_id;
+	private Integer order_id;
+	private Integer invoice_id;
 	private Date transaction_date;
 	private Double amount;
 	private String auth_code;
@@ -53,7 +53,9 @@ public class CustomerTransaction implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String transaction_date_str;
-	private Integer invoice_id;
+	private Customer customer;
+	private CustomerOrder customerOrder;
+	private CustomerInvoice customerInvoice = new CustomerInvoice();
 
 	/*
 	 * END RELATED PROPERTIES
@@ -242,7 +244,8 @@ public class CustomerTransaction implements Serializable {
 	}
 
 	public String getTransaction_date_str() {
-		transaction_date_str = TMUtils.dateFormatYYYYMMDD(this.getTransaction_date());
+		transaction_date_str = TMUtils.dateFormatYYYYMMDD(this
+				.getTransaction_date());
 		return transaction_date_str;
 	}
 
@@ -256,6 +259,22 @@ public class CustomerTransaction implements Serializable {
 
 	public void setInvoice_id(Integer invoice_id) {
 		this.invoice_id = invoice_id;
+	}
+
+	public Integer getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
+	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
 	}
 
 }

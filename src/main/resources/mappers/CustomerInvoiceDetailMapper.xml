@@ -39,7 +39,7 @@
 			`invoice_id`, `invoice_detail_name`, `invoice_detail_desc`, `invoice_detail_price`, 
 			`invoice_detail_unit`, `invoice_detail_date`, `invoice_detail_discount`) 
 		VALUES (
-			#{customerInvoice.id}, #{invoice_detail_name}, #{invoice_detail_desc}, #{invoice_detail_price},
+			#{invoice_id}, #{invoice_detail_name}, #{invoice_detail_desc}, #{invoice_detail_price},
 			#{invoice_detail_unit}, #{invoice_detail_date}, #{invoice_detail_discount})
 
 	</insert>
