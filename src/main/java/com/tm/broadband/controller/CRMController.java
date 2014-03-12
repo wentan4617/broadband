@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
@@ -45,6 +47,7 @@ import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
+@SessionAttributes("customer")
 public class CRMController {
 
 	private CRMService crmService;
@@ -109,17 +112,20 @@ public class CRMController {
 	public String doCustomerEdit(Model model
 			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
 			,BindingResult result
-			,RedirectAttributes attr) {
+			,RedirectAttributes attr
+			,SessionStatus status) {
 		
 		model.addAttribute("panelheading", "Customer Edit");
 		model.addAttribute("action", "/broadband-user/crm/customer/edit");
 
 		if (result.hasErrors()) {
-			customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer.getId());
+			//customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer.getId());
 			return "broadband-user/crm/customer";
 		}
 		customer.getParams().put("id", customer.getId());
 		this.crmService.editCustomer(customer);
+		
+		status.setComplete();
 		
 		attr.addFlashAttribute("success", "Edit Customer " + customer.getLogin_name() + " is successful.");
 		

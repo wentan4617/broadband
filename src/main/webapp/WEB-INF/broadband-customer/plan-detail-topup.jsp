@@ -104,7 +104,7 @@
 							
 							<hr/>
 							<p class="text-right">
-								<a data-id="${planMaps['VDSL'].id}" class="btn btn-success" id="vdsl-purchase">Purchase</a>
+								<a data-id="${planMaps['VDSL'].id}" class="btn btn-success btn-lg" id="vdsl-purchase">Continue</a>
 							</p>
 							
 						</div>
@@ -137,7 +137,7 @@
 							
 							<hr/>
 							<p class="text-right">
-								<a data-id="${planMaps['UFB'].id}" class="btn btn-success" id="ufb-purchase">Purchase</a>
+								<a data-id="${planMaps['UFB'].id}" class="btn btn-success btn-lg" id="ufb-purchase">Continue</a>
 							</p>
 							
 							
