@@ -262,10 +262,6 @@ public class CRMController {
 		// setting properties and sending mail to customer email address
 		// recipient
 		applicationEmail.setAddressee("stevenchen1989930@gmail.com");
-		// sender
-		applicationEmail.setFrom("kanny87929@gmail.com");
-		// reply to
-		applicationEmail.setReplyTo("kanny87929@gmail.com");
 		// subject
 		applicationEmail.setSubject("Invoice from Total Mobile Solution Limited");
 		// content

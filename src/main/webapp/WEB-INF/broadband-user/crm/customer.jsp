@@ -22,14 +22,34 @@
 			<!-- Customer Transaction Info Module -->
 			<jsp:include page="customer-transaction.jsp" />
 			
+
+			<!-- Modal -->
+			<div class="modal fade" id="customer-invoice-mail-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			  <div class="modal-dialog">
+			    <div class="modal-content">
+			      <div class="modal-header">
+			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			        <h4 class="modal-title" id="myModalLabel">Email Confirmation</h4>
+			      </div>
+			      <div class="modal-body">
+			        <h4 class="modal-title" id="myModalLabel" style='text-align:center'>Send chosen invoice to customer?</h4>
+			      </div>
+			      <div class="modal-footer">
+			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+			        <button type="button" data-name="btn_send_mail" class="btn btn-primary">Send</button>
+			      </div>
+			    </div><!-- /.modal-content -->
+			  </div><!-- /.modal-dialog -->
+			</div><!-- /.modal -->
+
 		</div>
 	</div>
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
-(function($){
 
+(function($){
 
 	$.getTxPage = function(pageNo) {
 		
@@ -113,7 +133,6 @@
 					var invoice = map.invoicePage.results[i];
 					for (var j = 0, txLen = map.transactionsList.length; j < txLen; j++) {
 						var tx = map.transactionsList[j];
-						console.log(tx.invoice_id);
 						if(tx.invoice_id==invoice.id){
 							html += '<tr class="success">';
 							html += '<td>Transaction# - ' + tx.id + '</td>';
@@ -145,21 +164,21 @@
 					if(invoice.invoice_pdf_path != null){
 						html += '<td>';
 						// regenerate icon
-						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
 						// download icon
-						html += '<a target="_blank" href="' + downloadUrl + '" title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+						html += '<a target="_blank" href="' + downloadUrl + '" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
 						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" onclick="return confirm(\'Send chosen invoice to customer?\');" title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + '" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
 						html += '</td>';
 					}else{
 						// generate first invoice PDF
 						html += '<td>';
 						// regenerate icon
-						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
 						// download icon
-						html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+						html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
 						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" onclick="return confirm(\'Send chosen invoice to customer?\');" id="' + invoice.id + 'send" title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
 						
 						// showed before first time click generate invoice PDF icon
 						html += '<script type="text\/javascript">														';
@@ -173,7 +192,7 @@
 						html += '		xmlHttp.send();																	';
 						html += '	}																					';
 						html += '<\/script>																				';
-						html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
+						html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
 						html += '</td>';
 					}
 					html += '</tr>';
@@ -200,6 +219,10 @@
 			}
 
 			$('#invoiceContainer').html(html);
+			$('a[data-toggle="tooltip"]').tooltip();
+			
+			
+			
 		}
 	}
 	
@@ -216,35 +239,42 @@
 		var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 		var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
 		
-		var data = {
-				'customer_id':'${customer.id}'
-				,'order_id':this.id
-				,'cvlan_input':cvlan_input
-				,'svlan_input':svlan_input
-				,'order_using_start_input':order_using_start_input
-				,'order_total_price':order_total_price
-				,'order_detail_unit':order_detail_unit_attr
-				};
+		// if status not ordering then into statement
+		if(order_status.attr('data-val')!='ordering'){
+			// if yes then performing Ajax action
+			if(confirm('Confirm to save these changes')){
+				var data = {
+						'customer_id':'${customer.id}'
+						,'order_id':this.id
+						,'cvlan_input':cvlan_input
+						,'svlan_input':svlan_input
+						,'order_using_start_input':order_using_start_input
+						,'order_total_price':order_total_price
+						,'order_detail_unit':order_detail_unit_attr
+						};
+				
+				var url = "${ctx}/broadband-user/crm/customer/order/save";
+				$.get(url, data, function(order){
+					var oBtnSave = $('a[data-name="save"]');
+					// hide Save Btn
+					oBtnSave.css('display', 'none');
+					var oBtnEdit = $('a[data-name="edit"]');
+					// show Edit Btn
+					oBtnEdit.css('display', '');
+					
+					// rewrite innerHTML
+					cvlan.html(cvlan_input);
+					svlan.html(svlan_input);
+					order_using_start.html(order_using_start_input);
+					order_status.html(order.order_status);
+					order_next_invoice_create_date.html(order.next_invoice_create_date_str);
+					
+					// reload invoice page one
+					$.getInvoicePage(1);
+				}, "json");
+			}
+		}
 		
-		var url = "${ctx}/broadband-user/crm/customer/order/save";
-		$.get(url, data, function(order){
-			var oBtnSave = $('a[data-name="save"]');
-			// hide Save Btn
-			oBtnSave.css('display', 'none');
-			var oBtnEdit = $('a[data-name="edit"]');
-			// show Edit Btn
-			oBtnEdit.css('display', '');
-			
-			// rewrite innerHTML
-			cvlan.html(cvlan_input);
-			svlan.html(svlan_input);
-			order_using_start.html(order_using_start_input);
-			order_status.html(order.order_status);
-			order_next_invoice_create_date.html(order.next_invoice_create_date_str);
-			
-			// reload invoice page one
-			$.getInvoicePage(1);
-		}, "json");
 	});
 	
 	$('a[data-name="edit"]').click(function(){
@@ -257,7 +287,6 @@
 		var order_using_start = $('#'+this.id+'_order_using_start');
 		var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 		var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
-		
 		var data = {
 				'customer_id':'${customer.id}'
 				,'order_id':this.id
@@ -271,7 +300,7 @@
 		$.get(url, data, function(order){
 			cvlan.html(cvlan_input);
 			svlan.html(svlan_input);
-			order_using_start.html(order_using_start_input);
+			order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
 			order_next_invoice_create_date.html(order.next_invoice_create_date_str);
 		}, "json");
 	});

@@ -187,7 +187,7 @@
 						<div class="col-md-2">
 							<c:if test="${customerOrder.svlan!=null}">
 								<a href="javascript:void(0);" id="${customerOrder.id}"
-									class="btn btn-danger" data-name="edit">Edit</a>
+									class="btn btn-danger" onclick="return confirm('');" data-name="edit">Edit</a>
 							</c:if>
 							<c:if test="${customerOrder.svlan==null}">
 								<a href="javascript:void(0);" id="${customerOrder.id}"

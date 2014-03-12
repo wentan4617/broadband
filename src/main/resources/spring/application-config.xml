@@ -60,8 +60,6 @@
 		<property name="protocol" value="smtp" />
 		<property name="port" value="465" />
 		<!-- need to change before publish -->
-		<property name="username" value="kanny87929@gmail.com" />
-		<property name="password" value="kuangde43" />
 		<property name="javaMailProperties">
 			<props>
 				<prop key="mail.smtp.auth">true</prop>
@@ -106,13 +104,13 @@
 	</bean>
 	
 	<!-- trigger -->
-	<!-- <bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
 		<property name="cronExpression" value="0-59/10 * * * * ?"></property>
-	</bean> -->
+	</bean>
 
 	<!-- plan -->
-	<!-- <bean name="testScheduler"
+	<bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -124,6 +122,6 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean> -->
+	</bean>
 
 </beans>

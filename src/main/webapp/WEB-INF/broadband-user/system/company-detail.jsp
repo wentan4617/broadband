@@ -95,14 +95,34 @@
 							</p>
 						</div>
 						<div class="form-group">
-							<label for="term_contracts" class="control-label col-md-4">Term Contracts</label>
-							<div class="col-md-8">
-								<form:textarea path="term_contracts" class="form-control" rows="12"/>
+							<label for="company_email" class="control-label col-md-4">Company Email</label>
+							<div class="col-md-3">
+								<form:input path="company_email" class="form-control" placeholder="Company Email" />
 							</div>
+							<p class="help-block">
+								<form:errors path="company_email" cssErrorClass="error"/>
+							</p>
 						</div>
+						<div class="form-group">
+							<label for="company_email_password" class="control-label col-md-4">Company Email Password</label>
+							<div class="col-md-3">
+								<form:input path="company_email_password" class="form-control" placeholder="Company Email Password" />
+							</div>
+							<p class="help-block">
+								<form:errors path="company_email_password" cssErrorClass="error"/>
+							</p>
+						</div>
+						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
 								<button type="submit" class="btn btn-success">Save</button>
+							</div>
+						</div>
+						<hr/>
+						<div class="form-group">
+							<label for="term_contracts" class="control-label col-md-4">Term Contracts</label>
+							<div class="col-md-8">
+								<form:textarea path="term_contracts" class="form-control" rows="12"/>
 							</div>
 						</div>
 						

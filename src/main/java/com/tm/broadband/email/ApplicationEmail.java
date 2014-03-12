@@ -18,10 +18,6 @@ public class ApplicationEmail implements Serializable {
 	private String attachPath;
 	// attach name
 	private String attachName;
-	// from
-	private String from;
-	// reply to
-	private String replyTo;
 
 	public ApplicationEmail() {
 		// TODO Auto-generated constructor stub
@@ -77,22 +73,6 @@ public class ApplicationEmail implements Serializable {
 
 	public void setAttachName(String attachName) {
 		this.attachName = attachName;
-	}
-
-	public String getFrom() {
-		return from;
-	}
-
-	public void setFrom(String from) {
-		this.from = from;
-	}
-
-	public String getReplyTo() {
-		return replyTo;
-	}
-
-	public void setReplyTo(String replyTo) {
-		this.replyTo = replyTo;
 	}
 
 }

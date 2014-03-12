@@ -13,26 +13,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.email.Mailer;
+import com.tm.broadband.mapper.CompanyDetailMapper;
+import com.tm.broadband.model.CompanyDetail;
 
 @Service
 public class ApplicationMailer implements Mailer {
 
-	private JavaMailSender mailSender;
+	private JavaMailSenderImpl mailSender;
 	private TaskExecutor taskExecutor;
 	private SimpleMailMessage preConfiguredMessage;
+	private CompanyDetailMapper companyDetailMapper;
 
 	@Autowired
-	public ApplicationMailer(JavaMailSender mailSender,
-			TaskExecutor taskExecutor, SimpleMailMessage preConfiguredMessage) {
+	public ApplicationMailer(JavaMailSenderImpl mailSender,
+			TaskExecutor taskExecutor, SimpleMailMessage preConfiguredMessage, CompanyDetailMapper companyDetailMapper) {
 		this.mailSender = mailSender;
 		this.taskExecutor = taskExecutor;
 		this.preConfiguredMessage = preConfiguredMessage;
+		this.companyDetailMapper = companyDetailMapper;
 	}
 
 	public ApplicationMailer() {
@@ -47,17 +51,19 @@ public class ApplicationMailer implements Mailer {
 	 */
 	public void sendMailBySynchronizationMode(ApplicationEmail email)
 			throws MessagingException, IOException {
-
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+		mailSender.setUsername(companyDetail.getCompany_email());
+		mailSender.setPassword(companyDetail.getCompany_email_password());
 		Session session = Session.getDefaultInstance(new Properties());
 		MimeMessage mime = new MimeMessage(session);
 		MimeMessageHelper helper = new MimeMessageHelper(mime, true, "utf-8");
 
-		helper.setFrom(email.getFrom());// ������
-		helper.setTo(InternetAddress.parse(email.getAddressee()));// �ռ���
-		// helper.setBcc("administrator@chinaptp.com");//����
-		helper.setReplyTo(email.getReplyTo());// �ظ���
-		helper.setSubject(email.getSubject());// �ʼ�����
-		helper.setText(email.getContent(), true);// true��ʾ�趨html��ʽ
+		helper.setFrom(companyDetail.getCompany_email());// from
+		helper.setTo(InternetAddress.parse(email.getAddressee()));// to
+		// helper.setBcc("administrator@chinaptp.com");// 
+		helper.setReplyTo(companyDetail.getCompany_email());// reply to
+		helper.setSubject(email.getSubject());// subject
+		helper.setText(email.getContent(), true);// content
 		
 		// set attach details
 		FileSystemResource file = new FileSystemResource(new File(email.getAttachPath()));

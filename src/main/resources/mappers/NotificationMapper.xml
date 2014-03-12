@@ -40,6 +40,11 @@
 		SELECT * FROM `tm_notification` WHERE  id = #{0}
 	</select>
 	
+	<!-- select one notification by sort -->
+	<select id="selectNotificationBySort" resultType="Notification">
+		SELECT * FROM `tm_notification` WHERE  sort = #{0}
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	
 	<!-- =================================================================================== -->
@@ -47,8 +52,8 @@
 	<!-- INSERT AREA -->
 	
 	<insert id="insertNotification" parameterType="Notification">
-		insert into tm_notification(title, content, type)
-		values(#{title}, #{content}, #{type})
+		insert into tm_notification(title, content, type, sort)
+		values(#{title}, #{content}, #{type}, #{sort})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -63,6 +68,7 @@
 			<if test="title != null">title=#{title},</if>
 			<if test="content != null">content=#{content},</if>
 			<if test="type != null">type=#{type}</if>
+			<if test="sort != null">sort=#{sort}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
