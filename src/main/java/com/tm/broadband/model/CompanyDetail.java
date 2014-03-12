@@ -33,6 +33,10 @@ public class CompanyDetail implements Serializable {
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String bank_account_number;
 	private String term_contracts;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
+	private String company_email;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
+	private String company_email_password;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -128,6 +132,22 @@ public class CompanyDetail implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCompany_email() {
+		return company_email;
+	}
+
+	public void setCompany_email(String company_email) {
+		this.company_email = company_email;
+	}
+
+	public String getCompany_email_password() {
+		return company_email_password;
+	}
+
+	public void setCompany_email_password(String company_email_password) {
+		this.company_email_password = company_email_password;
 	}
 
 }

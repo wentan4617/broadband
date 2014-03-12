@@ -1,5 +1,11 @@
 package com.tm.broadband.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +14,10 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,8 +36,10 @@ import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
@@ -299,9 +311,20 @@ public class CustomerController {
 		return "broadband-customer/customer-data";
 	}
 
-	@RequestMapping(value = "/customer/billing")
-	public String customerBilling(Model model) {
-		model.addAttribute("billing", "active");
+	@RequestMapping(value = "/customer/billing/{customerId}/{pageNo}")
+	public String customerBilling(Model model,
+			@PathVariable(value = "pageNo") int pageNo,
+			@PathVariable(value = "customerId") int customerId) {
+		
+		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
+		invoicePage.setPageNo(pageNo);
+		invoicePage.setPageSize(12);
+		invoicePage.getParams().put("orderby", "order by create_date desc");
+		invoicePage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
+		
+		model.addAttribute("page",invoicePage);
+		model.addAttribute("transactionsList",this.crmService.queryCustomerTransactionsByCustomerId(customerId));
 		return "broadband-customer/customer-billing";
 	}
 
@@ -316,5 +339,27 @@ public class CustomerController {
 		request.getSession().invalidate();
 		return "redirect:/home";
 	}
+	
+	// download invoice PDF directly
+	@RequestMapping(value = "/broadband-customer/billing/invoice/pdf/download/{invoiceId}")
+    public ResponseEntity<byte[]> downloadInvoicePDF(Model model
+    		,@PathVariable(value = "invoiceId") int invoiceId) throws IOException {
+		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType( MediaType.parseMediaType( "application/pdf" ) );
+        // get file name with file's suffix
+        String filename = "Invoice_"+URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
 
 }

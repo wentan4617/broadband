@@ -7,16 +7,34 @@ import com.tm.broadband.model.Page;
 
 public interface NotificationMapper {
 
-	void insertNotification(Notification notification);
-
-	void updateNotification(Notification notification);
+	/* SELECT AREA */
 
 	Notification selectNotificationById(int id);
 
 	List<Notification> selectNotifications();
 
 	List<Notification> selectNotificationsByPage(Page<Notification> page);
-	
 	int selectNotificationsSum(Page<Notification> page);
+	
+	Notification selectNotificationBySort(String sort);
 
+	/* // END SELECT AREA */
+	
+	/* =================================================================================== */
+
+	/* INSERT AREA */
+
+	void insertNotification(Notification notification);
+	
+	/* // END INSERT AREA */
+	
+	/* =================================================================================== */
+
+	/* UPDATE AREA */
+
+	void updateNotification(Notification notification);
+	
+	/* // END UPDATE AREA */
+	/* =================================================================================== */
+	/* DELETE AREA *//* // END DELETE AREA */
 }

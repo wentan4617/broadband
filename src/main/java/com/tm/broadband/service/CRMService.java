@@ -11,8 +11,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.mail.MessagingException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +24,7 @@ import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
+import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
@@ -34,6 +33,7 @@ import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -58,6 +58,7 @@ public class CRMService {
 	private ProvisionLogMapper provisionLogMapper;
 	private CompanyDetailMapper companyDetailMapper;
 	private ApplicationMailer applicationMailer;
+	private NotificationMapper notificationMapper;
 
 	public CRMService() { }
 	
@@ -70,7 +71,8 @@ public class CRMService {
 			CustomerTransactionMapper customerTransactionMapper,
 			ProvisionLogMapper provisionLogMapper,
 			CompanyDetailMapper companyDetailMapper,
-			ApplicationMailer applicationMailer) {
+			ApplicationMailer applicationMailer,
+			NotificationMapper notificationMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -80,6 +82,7 @@ public class CRMService {
 		this.provisionLogMapper = provisionLogMapper;
 		this.companyDetailMapper = companyDetailMapper;
 		this.applicationMailer = applicationMailer;
+		this.notificationMapper = notificationMapper;
 	}
 	
 	@Transactional
@@ -540,6 +543,14 @@ public class CRMService {
 			} catch (DocumentException | IOException e) {
 				e.printStackTrace();
 			}
+			
+			// binding attachment name & path to email
+			Notification notification = this.notificationMapper.selectNotificationBySort("invoice");
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			applicationEmail.setAddressee("stevenchen1989930@gmail.com"); // customer.getEmail()
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
 			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.sendMail(applicationEmail);
@@ -548,12 +559,21 @@ public class CRMService {
 	
 	@Transactional
 	public void sendMail(ApplicationEmail applicationEmail){
-
-		try {
-			this.applicationMailer.sendMailBySynchronizationMode(applicationEmail);
-		} catch (MessagingException | IOException e) {
-			e.printStackTrace();
-		}
+		this.applicationMailer.sendMailByAsynchronousMode(applicationEmail);
 	}
+	
+	
+	/*
+	 * CompanyDetail begin
+	 */
+	
+	@Transactional
+	public CompanyDetail queryCompanyDetail() {
+		return this.companyDetailMapper.selectCompanyDetail();
+	}
+	
+	/*
+	 * CompanyDetail end
+	 */
 
 }
