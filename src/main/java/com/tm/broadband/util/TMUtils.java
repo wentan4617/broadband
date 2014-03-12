@@ -81,8 +81,7 @@ public class TMUtils {
 	/*
 	 * mail at value retriever methods begin
 	 */
-	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CompanyDetail company){
+	public static void mailAtValueRetriever(Notification noti, Customer cus){
 		// title begin
 		// retrieve customer details begin
 		noti.setTitle(noti.getTitle().replaceAll("@<customer_id>", String.valueOf(preventNull(cus.getId()))));
@@ -101,20 +100,7 @@ public class TMUtils {
 		noti.setTitle(noti.getTitle().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date_str())));
 		noti.setTitle(noti.getTitle().replaceAll("@<customer_balance>", String.valueOf(preventNull(cus.getBalance()))));
 		// retrieve customer details end
-		// retrieve company details begin
-		noti.setTitle(noti.getTitle().replaceAll("@<company_name>", preventNull(company.getName())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_address>", preventNull(company.getAddress())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_telephone>", preventNull(company.getTelephone())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_fax>", preventNull(company.getFax())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_domain>", preventNull(company.getDomain())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_gst_registration_number>", preventNull(company.getGst_registration_number())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_name>", preventNull(company.getBank_name())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_name>", preventNull(company.getBank_account_name())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_number>", preventNull(company.getBank_account_number())));
-		noti.setTitle(noti.getTitle().replaceAll("@<company_company_email>", preventNull(company.getCompany_email())));
-		// retrieve company details end
 		// title end
-		
 		// content begin
 		// retrieve customer details begin
 		noti.setContent(noti.getContent().replaceAll("@<customer_id>", String.valueOf(preventNull(cus.getId()))));
@@ -133,6 +119,25 @@ public class TMUtils {
 		noti.setContent(noti.getContent().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date_str())));
 		noti.setContent(noti.getContent().replaceAll("@<customer_balance>", String.valueOf(preventNull(cus.getBalance()))));
 		// retrieve customer details end
+		// content end
+	}
+	public static void mailAtValueRetriever(Notification noti, CompanyDetail company){
+		// title begin
+		// retrieve company details begin
+		noti.setTitle(noti.getTitle().replaceAll("@<company_name>", preventNull(company.getName())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_address>", preventNull(company.getAddress())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_telephone>", preventNull(company.getTelephone())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_fax>", preventNull(company.getFax())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_domain>", preventNull(company.getDomain())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_gst_registration_number>", preventNull(company.getGst_registration_number())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_name>", preventNull(company.getBank_name())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_name>", preventNull(company.getBank_account_name())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_number>", preventNull(company.getBank_account_number())));
+		noti.setTitle(noti.getTitle().replaceAll("@<company_company_email>", preventNull(company.getCompany_email())));
+		// retrieve company details end
+		// title end
+		
+		// content begin
 		// retrieve company details begin
 		noti.setContent(noti.getContent().replaceAll("@<company_name>", preventNull(company.getName())));
 		noti.setContent(noti.getContent().replaceAll("@<company_address>", preventNull(company.getAddress())));
@@ -147,8 +152,7 @@ public class TMUtils {
 		// retrieve company details end
 		// content end
 	}
-	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerInvoice inv, CompanyDetail company){
+	public static void mailAtValueRetriever(Notification noti, CustomerInvoice inv){
 		// title begin
 		// retrieve invoice details begin
 		noti.setTitle(noti.getTitle().replaceAll("@<invoice_id>", String.valueOf(preventNull(inv.getId()))));
@@ -184,9 +188,12 @@ public class TMUtils {
 		noti.setContent(noti.getContent().replaceAll("@<invoice_last_invoice_id>", String.valueOf(preventNull(inv.getLast_invoice_id()))));
 		// retrieve invoice details end
 		// content end
-		
-		// call essential mail at value retriever method
-		mailAtValueRetriever(noti,cus,company);
+	}
+	
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerInvoice inv, CompanyDetail company){
+		mailAtValueRetriever(noti,cus);
+		mailAtValueRetriever(noti,inv);
+		mailAtValueRetriever(noti,company);
 	}
 	
 	public static String preventNull(String property){

@@ -375,7 +375,6 @@ public class CRMService {
 		// initialize invoice's important informations
 		Iterator<CustomerOrder> customerOrdersIter = customerOrdersList.iterator();
 		while(customerOrdersIter.hasNext()){
-			System.out.println(customerOrdersIter);
 			// store company detail begin
 			CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 			// store company detail end
@@ -443,8 +442,8 @@ public class CRMService {
 			// set invoice due date end
 			
 			customerInvoice.setLast_invoice_id(customerPreviousInvoice.getId());
-			customerInvoice.setCustomer(customer);
-			customerInvoice.setCustomerOrder(customerOrder);
+			customerInvoice.setCustomer_id(customer.getId());
+			customerInvoice.setOrder_id(customerOrder.getId());
 			customerInvoice.setCreate_date(invoiceCreateDay);
 			customerInvoice.setDue_date(calInvoiceDueDay.getTime());
 			// detail holder begin
@@ -461,7 +460,7 @@ public class CRMService {
 				if(customerOrderDetail.getDetail_is_next_pay().equals(1)){
 					// if type contains plan-
 					if(customerOrderDetail.getDetail_type().indexOf("plan-")!= -1 && customerOrderDetail.getDetail_type().indexOf("plan-topup") == -1){
-						customerInvoiceDetail.setCustomerInvoice(customerInvoice);
+						customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
 						customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
 						customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price());
 						customerInvoiceDetail.setInvoice_detail_unit(1);
@@ -516,7 +515,7 @@ public class CRMService {
 			while(iterCustomerInvoiceDetails.hasNext()){
 				CustomerInvoiceDetail customerInvoiceDetail = iterCustomerInvoiceDetails.next();
 				// mark up invoice id
-				customerInvoiceDetail.setCustomerInvoice(customerInvoice);
+				customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
 				this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(customerInvoiceDetail);
 			}
 			
@@ -548,20 +547,21 @@ public class CRMService {
 				e.printStackTrace();
 			}
 			
-			// binding attachment name & path to email
+			
 			Notification notification = this.notificationMapper.selectNotificationBySort("invoice");
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail()); // customer.getEmail()
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
 			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.sendMail(applicationEmail);
 		}
 	}
 	
-	
+
 	public void sendMail(ApplicationEmail applicationEmail){
 		this.applicationMailer.sendMailByAsynchronousMode(applicationEmail);
 	}
@@ -571,7 +571,6 @@ public class CRMService {
 	 * CompanyDetail begin
 	 */
 	
-	@Transactional
 	public CompanyDetail queryCompanyDetail() {
 		return this.companyDetailMapper.selectCompanyDetail();
 	}
