@@ -84,7 +84,7 @@
 			`merchant_reference`, `response_text`, `success`,  `txnMac`, 
 			`transaction_type`, `transaction_sort`) 
 		VALUES (
-			#{customer.id}, #{customerOrder.id}, #{customerInvoice.id}, #{transaction_date}, #{amount}, 
+			#{customer_id}, #{order_id}, #{invoice_id}, #{transaction_date}, #{amount}, 
 			#{auth_code}, #{cardholder_name}, #{card_name}, #{card_number}, #{client_info},
 			#{currency_input}, #{amount_settlement}, #{expiry_date}, #{dps_txn_ref},
 			#{merchant_reference}, #{response_text}, #{success}, #{txnMac},

@@ -19,7 +19,7 @@ public class CustomerInvoiceDetail implements Serializable {
 	 * TABLE MAPPING PROPERTIES
 	 */
 	private Integer id;
-	private CustomerInvoice customerInvoice;
+	private Integer invoice_id;
 	private String invoice_detail_name;
 	private String invoice_detail_desc;
 	private Double invoice_detail_price;
@@ -35,6 +35,11 @@ public class CustomerInvoiceDetail implements Serializable {
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
+	private CustomerInvoice customerInvoice;
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public Integer getId() {
 		return id;
@@ -113,4 +118,14 @@ public class CustomerInvoiceDetail implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
+
+	public Integer getInvoice_id() {
+		return invoice_id;
+	}
+
+	public void setInvoice_id(Integer invoice_id) {
+		this.invoice_id = invoice_id;
+	}
+	
+	
 }

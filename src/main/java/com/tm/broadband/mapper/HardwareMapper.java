@@ -24,6 +24,7 @@ public interface HardwareMapper {
 	/* SELECT AREA */
 
 	List<Hardware> selectHardwaresByPage(Page<Hardware> page);
+	List<Hardware> selectHardwaresBySome(Hardware hardware);
 	int selectHardwaresSum(Page<Hardware> page);
 	Hardware selectHardwareById(int id);
 

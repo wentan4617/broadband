@@ -1,244 +1,152 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
-
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
 
+<style>
+.personal-info li{
+	padding:5px 40px;
+}
 
+
+
+</style>
 <div class="container">
 	<div class="page-header">
 		<h1>
-			Customer Information Review and Payment
+			3. Customer Information Review and Checkout 
 		</h1>
 	</div>
 	<div class="panel panel-default">
-		<div class="panel-heading">Please review your application information to payment</div>
+		<div class="panel-heading">Please review your application information to checkout</div>
 		<div class="panel-body">
-			
-			<form class="form-horizontal" action="${ctx }/order/submit" method="post">
-				<div class="row">
-					<div class="col-md-10"><h4>Your Personal Information</h4></div>
-					<div class="col-md-2">
-						<c:choose>
-							<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-								<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success ">Back to edit</a>
-							</c:when>
-							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-								<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success ">Back to edit</a>
-							</c:when>
-						</c:choose>
+			<div class="row">
+				<div class="col-md-8">
+					<div class="row">
+						<div class="col-md-3">
+							<h1>Order</h1>
+						</div>
+						<div class="col-md-8 text-right">
+							<span class="logo_ct"></span>
+						</div>
+					</div>
+					<hr style="margin-top:0;"/>
+					<div class="row">
+						<div class="col-md-6">
+							<p class="text-success"><strong>Personal Information:</strong></p>
+							<ul class="list-unstyled personal-info">
+								<li><strong class="text-info">${customer.login_name }</strong></li>
+								<li><strong class="text-info">${customer.first_name }&nbsp;${customer.last_name }</strong></li>
+								<li><strong class="text-info"><a href="mailto:#">${customer.email }</a></strong></li>
+								<li><strong class="text-info">${customer.cellphone }</strong></li>
+								<li><strong class="text-info">${customer.address }</strong></li>
+							</ul>
+						</div>
+						<div class="col-md-6 ">
+							<p class="text-success"><strong>&nbsp;</strong></p>
+							<ul class="list-unstyled personal-info pull-right">
+								<li>
+									Order Date: 
+									<strong class="text-info">
+										<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
+									</strong>
+								</li>
+								<li>
+									Total Price: 
+									<strong class="text-info">
+										NZ$ <fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+									</strong>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr/>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Service / Product</th>
+						<th>Unit Price</th>
+						<th>Discount</th>
+						<th>Qty</th>
+						<th>Subtotal</th>
+					</tr>
+				</thead>
+				<tbody>
+					<c:forEach var="detail" items="${customer.customerOrder.customerOrderDetails }">
+						<tr>
+							<td>${detail.detail_name }</td>
+							<td>
+								<fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" />
+								
+							</td>
+							<td></td>
+							<td>${detail.detail_unit }</td>
+							<td>
+								<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+								
+							</td>
+						</tr>
+					</c:forEach>
+				</tbody>
+			</table>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-8">
+				
+					<table class="table">
+						<tbody>
+							<tr>
+								<td>Total before GST</td>
+								<td>
+									NZ$ 
+									<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
+								</td>
+							</tr>
+							<tr>
+								<td>GST at 15% </td>
+								<td>
+									NZ$ 
+									<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Order Total</strong></td>
+								<td>
+									<strong class="text-success">
+										NZ$ 
+										<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+									</strong>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<hr/>
+			<div class="row">
+				<div class="col-md-2 col-md-offset-8">
+					<c:choose>
+						<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
+							<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg">Back to edit</a>
+						</c:when>
+						<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success btn-lg">Back to edit</a>
+						</c:when>
+					</c:choose>
+				</div>
+				<div class="col-md-2">
+					<form class="form-horizontal" action="${ctx }/order/submit" method="post">
 						
-					</div>
+						<button type="submit" class="btn btn-success btn-lg">Checkout</button>
+					</form>
 				</div>
-				<hr/>
-				<div class="form-group">
-					<label for="login_name" class="control-label col-md-3">Your login name</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.login_name }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="password" class="control-label col-md-3">Password</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.password }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="first_name" class="control-label col-md-3">First name</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.first_name }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="last_name" class="control-label col-md-3">Last name</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.last_name }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="email" class="control-label col-md-3">Your Email</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.email }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="cellphone" class="control-label col-md-3">Your Phone</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.cellphone }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label for="address" class="control-label col-md-3">Your Address</label>
-					<div class="col-md-3">
-						<p class="form-control-static">${customer.address }</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-3 col-md-offset-3">
-					</div>
-				</div>
-				
-				
-				<!-- plan show -->
-				<hr/>
-				<h4>Please payment your plan</h4>
-				<hr/>
-				<div class="media">
-				  	<a class="pull-left" href="#">
-				    	<img class="media-object" data-src="holder.js/120x120" alt="...">
-				  	</a>
-			  		<div class="media-body">
-			    		<h4 class="media-heading text-info">Your current purchase of plan</h4>
-			    		
-			    		<c:choose>
-			    		
-			    			
-			    			<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-			    				<p class="text-danger">
-			    					Currently, our pre-paid products and services, all pre-paid fees charged for ${orderPlan.plan_prepay_months } months, thank you for your cooperation.
-			    				</p>
-			    				<c:choose>
-			    					<c:when test="${customer.customerOrder.order_broadband_type == 'new-connection' }">
-			    						<p class="text-success">
-							    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
-											<strong>
-												Free initial broadband setup includes a standard connection worth $ 
-												<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##.00" />
-											</strong>
-										</p>
-										<div class="row">
-								    		<div class="col-md-4">
-								    			<h4>${orderPlan.plan_name }</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				$  
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_price}" type="number" pattern="##.00" />
-								    				</strong> * ${orderPlan.plan_prepay_months } months
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				Total Amount: $ 
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months + orderPlan.plan_new_connection_fee}" type="number" pattern="##.00" />
-								    				 </strong> 
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-2">
-												<button type="submit" class="btn btn-success">Payment</button>
-											</div>
-								    	</div>
-			    					</c:when>
-			    					<c:when test="${customer.customerOrder.order_broadband_type == 'transition' }">
-			    						<p class="text-success">&nbsp;</p>
-			    						<div class="row">
-								    		<div class="col-md-4">
-								    			<h4>${orderPlan.plan_name }</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				$  
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_price}" type="number" pattern="##.00" />	
-								    				</strong> * ${orderPlan.plan_prepay_months } months
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				Total Amount: $ 
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="##.00" />	
-								    				</strong> 
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-2">
-												<button type="submit" class="btn btn-success">Payment</button>
-											</div>
-								    	</div>
-			    					</c:when>
-			    				</c:choose>
-			    			</c:when>
-			    			
-			    			
-			    			<c:otherwise>
-			    				<p class="text-danger">&nbsp;</p>
-			    				<c:choose>
-			    					<c:when test="${customer.customerOrder.order_broadband_type == 'new-connection' }">
-			    						<p class="text-success">
-							    			<span class="glyphicon glyphicon-star" style="margin-right:10px;"></span>
-											<strong>
-												Free initial broadband setup includes a standard connection worth $ 
-												<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="##.00" />
-											</strong>
-										</p>
-										<div class="row">
-								    		<div class="col-md-4">
-								    			<h4>${orderPlan.plan_name }</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				$  
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_new_connection_fee}" type="number" pattern="##.00" />
-								    				</strong> + <fmt:formatNumber value="${orderPlan.topup.topup_fee } " type="number" pattern="##.00" />
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				Total Amount: $ 
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.plan_new_connection_fee + orderPlan.topup.topup_fee} " type="number" pattern="##.00" />
-								    				</strong> 
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-2">
-												<button type="submit" class="btn btn-success">Payment</button>
-											</div>
-								    	</div>
-			    					</c:when>
-			    					<c:when test="${customer.customerOrder.order_broadband_type == 'transition' }">
-			    						<p class="text-success">&nbsp;</p>
-			    						<div class="row">
-								    		<div class="col-md-4">
-								    			<h4>${orderPlan.plan_name }</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				$  
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.topup.topup_fee} " type="number" pattern="##.00" />
-								    					
-								    				</strong>
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-3">
-								    			<h4>
-								    				Total Amount: $ 
-								    				<strong class="text-success"> 
-								    					<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##.00" />
-								    				</strong> 
-								    			</h4>
-								    		</div>
-								    		<div class="col-md-2">
-												<button type="submit" class="btn btn-success">Payment</button>
-											</div>
-								    	</div>
-			    					</c:when>
-			    				</c:choose>
-			    			</c:otherwise>
-			    		</c:choose>
-			    		
-			    		
-			  		</div>
-				</div>
-			</form>
+			</div>
 		</div>
 	</div>
+	
 </div>
 
 

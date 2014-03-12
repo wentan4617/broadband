@@ -18,7 +18,7 @@
 
 	<!-- topup plans -->
 	<div class="page-header">
-		<h1>Choose your broadband</h1>
+		<h1>1. Choose your broadband</h1>
 	</div>
 
 	<!-- plan content -->
@@ -57,41 +57,21 @@
 								</strong>
 							</div>
 							<hr/>
-							<h4>Please choose top-up amount what you needed</h4>
-							<hr/>
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="adsl-topup-check" checked="checked" value="30"/> &nbsp; 
-									<strong>Top up $ 30</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="50"/> &nbsp; 
-									<strong>Top up $ 50</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="80"/> &nbsp; 
-									<strong>Top up $ 80</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="100"/> &nbsp; 
-									<strong>Top up $ 100</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="120"/> &nbsp; 
-									<strong>Top up $ 120</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="150"/> &nbsp; 
-									<strong>Top up $ 150</strong>
-								</li>
-								<li>
-									<input type="radio" name="adsl-topup-check" value="180"/> &nbsp; 
-									<strong>Top up $ 180</strong>
-								</li>
-							</ul>
+							<h4>Please choose top-up amount what you needed ? 
+								&nbsp;&nbsp;&nbsp;
+								<select name="adsl-topup-check" class="selectpicker" data-style="btn-success">
+									<option value="30">Top up $ 30</option>
+									<option value="50">Top up $ 50</option>
+									<option value="80">Top up $ 80</option>
+									<option value="100">Top up $ 100</option>
+									<option value="120">Top up $ 120</option>
+									<option value="150">Top up $ 150</option>
+									<option value="180">Top up $ 180</option>
+								</select>
+							</h4>
 							<hr/>
 							<p class="text-right">
-								<a data-id="${planMaps['ADSL'].id}" class="btn btn-success" id="adsl-purchase">Purchase</a>
+								<a data-id="${planMaps['ADSL'].id}" class="btn btn-success btn-lg" id="adsl-purchase">Continue</a>
 							</p>
 							
 						</div>
@@ -109,39 +89,19 @@
 							</div>
 							
 							<hr/>
-							<h4>Please choose top-up amount what you needed</h4>
-							<hr/>
+							<h4>Please choose top-up amount what you needed ? 
+								&nbsp;&nbsp;&nbsp;
+								<select name="vdsl-topup-check" class="selectpicker" data-style="btn-success">
+									<option value="30">Top up $ 30</option>
+									<option value="50">Top up $ 50</option>
+									<option value="80">Top up $ 80</option>
+									<option value="100">Top up $ 100</option>
+									<option value="120">Top up $ 120</option>
+									<option value="150">Top up $ 150</option>
+									<option value="180">Top up $ 180</option>
+								</select>
+							</h4>
 							
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="vdsl-topup-check" checked="checked" value="30"/> &nbsp; 
-									<strong>Top up $ 30</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="50"/> &nbsp; 
-									<strong>Top up $ 50</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="80"/> &nbsp; 
-									<strong>Top up $ 80</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="100"/> &nbsp; 
-									<strong>Top up $ 100</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="120"/> &nbsp; 
-									<strong>Top up $ 120</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="150"/> &nbsp; 
-									<strong>Top up $ 150</strong>
-								</li>
-								<li>
-									<input type="radio" name="vdsl-topup-check" value="180"/> &nbsp; 
-									<strong>Top up $ 180</strong>
-								</li>
-							</ul>
 							<hr/>
 							<p class="text-right">
 								<a data-id="${planMaps['VDSL'].id}" class="btn btn-success" id="vdsl-purchase">Purchase</a>
@@ -162,39 +122,19 @@
 								</strong>
 							</div>
 							<hr/>
-							<h4>Please choose top-up amount what you needed</h4>
-							<hr/>
+							<h4>Please choose top-up amount what you needed ? 
+								&nbsp;&nbsp;&nbsp;
+								<select name="ufb-topup-check" class="selectpicker" data-style="btn-success">
+									<option value="30">Top up $ 30</option>
+									<option value="50">Top up $ 50</option>
+									<option value="80">Top up $ 80</option>
+									<option value="100">Top up $ 100</option>
+									<option value="120">Top up $ 120</option>
+									<option value="150">Top up $ 150</option>
+									<option value="180">Top up $ 180</option>
+								</select>
+							</h4>
 							
-							<ul class="list-unstyled topup-list" style="margin-left:40px;">
-								<li>
-									<input type="radio" name="ufb-topup-check" checked="checked" value="30"/> &nbsp; 
-									<strong>Top up $ 30</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="50"/> &nbsp; 
-									<strong>Top up $ 50</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="80"/> &nbsp; 
-									<strong>Top up $ 80</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="100"/> &nbsp; 
-									<strong>Top up $ 100</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="120"/> &nbsp; 
-									<strong>Top up $ 120</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="150"/> &nbsp; 
-									<strong>Top up $ 150</strong>
-								</li>
-								<li>
-									<input type="radio" name="ufb-topup-check" value="180"/> &nbsp; 
-									<strong>Top up $ 180</strong>
-								</li>
-							</ul>
 							<hr/>
 							<p class="text-right">
 								<a data-id="${planMaps['UFB'].id}" class="btn btn-success" id="ufb-purchase">Purchase</a>
@@ -215,57 +155,54 @@
 <script type="text/javascript"
 	src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <script type="text/javascript"
-	src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
+	src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
-	(function($) {
+(function($) {
+	
+	$('.selectpicker').selectpicker();
 
-		$(':radio').iCheck({
-			checkboxClass : 'icheckbox_square-green',
-			radioClass : 'iradio_square-green'
-		});
+	$('a[data-name="icon"]').click(function(){
+		var val = $(this).attr('data-id');
+		$('a[data-name="icon"]').removeClass('active');
+		$(this).addClass('active');
+		//alert(val);
+		if (val === 'adsl') {
+			$('#adsl-container').show();
+			$('#vdsl-container').hide();
+			$('#ufb-container').hide();
+		} else if (val === 'vdsl') {
+			$('#vdsl-container').show();
+			$('#adsl-container').hide();
+			$('#ufb-container').hide();
+		} else if (val === 'ufb') {
+			$('#ufb-container').show();
+			$('#adsl-container').hide();
+			$('#vdsl-container').hide();
+		}
+	});
+	
+	$('select[name="adsl-topup-check"]').on('change', function(){
+		var id = $('#adsl-purchase').attr('data-id');
+		var topup_id = this.value;
+		$('#adsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+	});
+	
+	$('select[name="vdsl-topup-check"]').on('change', function(){
+		var id = $('#vdsl-purchase').attr('data-id');
+		var topup_id = this.value;
+		$('#vdsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+	});
+	
+	$('select[name="ufb-topup-check"]').on('change', function(){
+		var id = $('#ufb-purchase').attr('data-id');
+		var topup_id = this.value;
+		$('#ufb-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
+	});
+	
+	$('#adsl-purchase').attr('href', '${ctx}/order/' + $('#adsl-purchase').attr('data-id') + '/topup/' + $('select[name="adsl-topup-check"]').val());
+	$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('#vdsl-purchase').attr('data-id') + '/topup/' + $('select[name="vdsl-topup-check"]').val());
+	$('#ufb-purchase').attr('href', '${ctx}/order/' + $('#ufb-purchase').attr('data-id') + '/topup/' + $('select[name="ufb-topup-check"]').val());
 
-		$('a[data-name="icon"]').click(function(){
-			var val = $(this).attr('data-id');
-			$('a[data-name="icon"]').removeClass('active');
-			$(this).addClass('active');
-			//alert(val);
-			if (val === 'adsl') {
-				$('#adsl-container').show();
-				$('#vdsl-container').hide();
-				$('#ufb-container').hide();
-			} else if (val === 'vdsl') {
-				$('#vdsl-container').show();
-				$('#adsl-container').hide();
-				$('#ufb-container').hide();
-			} else if (val === 'ufb') {
-				$('#ufb-container').show();
-				$('#adsl-container').hide();
-				$('#vdsl-container').hide();
-			}
-		});
-		
-		$('input[name="adsl-topup-check"]').on('ifChecked', function(){
-			var id = $('#adsl-purchase').attr('data-id');
-			var topup_id = this.value;
-			$('#adsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-		});
-		
-		$('input[name="vdsl-topup-check"]').on('ifChecked', function(){
-			var id = $('#vdsl-purchase').attr('data-id');
-			var topup_id = this.value;
-			$('#vdsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-		});
-		
-		$('input[name="ufb-topup-check"]').on('ifChecked', function(){
-			var id = $('#ufb-purchase').attr('data-id');
-			var topup_id = this.value;
-			$('#ufb-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-		});
-		
-		$('#adsl-purchase').attr('href', '${ctx}/order/' + $('#adsl-purchase').attr('data-id') + '/topup/' + $('input[name="adsl-topup-check"]:checked').val());
-		$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('#vdsl-purchase').attr('data-id') + '/topup/' + $('input[name="vdsl-topup-check"]:checked').val());
-		$('#ufb-purchase').attr('href', '${ctx}/order/' + $('#ufb-purchase').attr('data-id') + '/topup/' + $('input[name="ufb-topup-check"]:checked').val());
-
-	})(jQuery);
+})(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

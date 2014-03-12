@@ -45,6 +45,13 @@
 		select count(*) from tm_hardware where hardware_name = #{0} 
 	</select>
 	
+	<select id="selectHardwaresBySome" parameterType="Hardware" resultType="Hardware">
+		select * from tm_hardware
+		<where>
+			<if test="params.hardware_status != null">hardware_status = #{params.hardware_status}</if>
+		</where>
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->

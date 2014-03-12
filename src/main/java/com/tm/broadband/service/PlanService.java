@@ -210,6 +210,11 @@ public class PlanService {
 		return this.hardwareMapper.selectExistHardwareByName(hardware_name);
 	}
 	
+	@Transactional
+	public List<Hardware> queryHardwaresBySome(Hardware hardware) {
+		return this.hardwareMapper.selectHardwaresBySome(hardware);
+	}
+	
 	/*
 	 * Hardware end
 	 */
