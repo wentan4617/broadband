@@ -399,7 +399,14 @@ public class CustomerController {
 		
 		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
 		
-		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrdersByCustomerId(customer.getId());
+		CustomerOrder customerOrder = new CustomerOrder();
+		customerOrder.getParams().put("where", "query_status_no_discard_cancel");
+		customerOrder.getParams().put("customer_id", customer.getId());
+		customerOrder.getParams().put("order_status", "discard");
+		customerOrder.getParams().put("order_status_1", "cancel");
+		
+		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(customerOrder);
+		customer.setCustomerOrders(customerOrders);
 		
 		model.addAttribute("customerOrders", customerOrders);
 		

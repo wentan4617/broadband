@@ -24,13 +24,14 @@ public interface CustomerOrderMapper {
 
 	/* SELECT AREA */
 	
-	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
-	
-	CustomerOrder selectCustomerOrderById(int id);
+	CustomerOrder selectCustomerOrder(CustomerOrder customerOrder);
+	List<CustomerOrder> selectCustomerOrders(CustomerOrder customerOrder);
 	
 	List<CustomerOrder> selectCustomerOrdersByPage(Page<CustomerOrder> page);
 	int selectCustomerOrdersSum(Page<CustomerOrder> page);
 	
+	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
+	CustomerOrder selectCustomerOrderById(int id);
 	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
 	
 	/* // END SELECT AREA */

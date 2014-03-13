@@ -34,12 +34,11 @@ public class CustomerOrder implements Serializable {
 	private String transition_account_number;
 	private String transition_porting_number;
 	private Integer hardware_post;
+	private Integer order_broadband_owner;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
-
-	
 
 	/*
 	 * RELATED PROPERTIES
@@ -273,6 +272,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setHardware_post(Integer hardware_post) {
 		this.hardware_post = hardware_post;
+	}
+
+	public Integer getOrder_broadband_owner() {
+		return order_broadband_owner;
+	}
+
+	public void setOrder_broadband_owner(Integer order_broadband_owner) {
+		this.order_broadband_owner = order_broadband_owner;
 	}
 
 	

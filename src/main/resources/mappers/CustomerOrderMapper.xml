@@ -109,12 +109,15 @@
 		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
 		cod.`detail_unit` 						as cod_detail_unit,
 		cod.`detail_type` 						as cod_detail_type,
-		cod.`detail_is_next_pay`				as cod_detail_is_next_pay
+		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
+		cod.`is_post`							as cod_is_post,
+		cod.`hardware_comment`					as cod_hardware_comment,
+		cod.`track_code`						as cod_track_code
 	</sql>
 	
 	<resultMap type="CustomerOrderDetail" id="CustomerOrderDetailResultMap">
 		<id property="id" column="cod_id" />
-		<!-- <id property="order_id" column="cod_order_id" /> -->
+		<id property="order_id" column="cod_order_id" />
 		<result property="detail_name" column="cod_detail_name" />
 		<result property="detail_desc" column="cod_detail_desc" />
 		<result property="detail_price" column="cod_detail_price" />
@@ -130,6 +133,9 @@
 		<result property="detail_unit" column="cod_detail_unit" />
 		<result property="detail_type" column="cod_detail_type" />
 		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
+		<result property="is_post" column="cod_is_post" />
+		<result property="hardware_comment" column="cod_hardware_comment" />
+		<result property="track_code" column="cod_track_code" />
 	</resultMap>
 	
 	<sql id="customerOrderPageWhere">
@@ -145,18 +151,66 @@
 	
 	<sql id="customerOrderWhere">
 		<where>
-			<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
-			<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
+			<choose>
+				<when test="params.where == 'query_status_no_discard_cancel'">
+					<if test="params.customer_id != null">co.customer_id=#{params.customer_id}</if>
+					<if test="params.order_status != null and params.order_status_1 != null">and (co.order_status!=#{params.order_status} or co.order_status!=#{params.order_status_1})</if>
+				</when>
+				<otherwise>
+					<if test="params.customer_id != null">co.customer_id=#{params.customer_id}</if>
+					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
+					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
-	
-	
-	
+
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
 	
 	<!-- SELECT AREA -->
+	
+	<select id="selectCustomerOrder" parameterType="CustomerOrder" resultMap="selectCustomerOrdersResultMap">
+		select
+			<include refid="customerOrderColumns"/>,
+			<include refid="customerOrderDetailColumns"/>
+		from tm_customer_order as co
+		left join tm_customer_order_detail as cod on cod.order_id = co.id
+		<include refid="customerOrderWhere"/>
+	</select>
+	
+	<select id="selectCustomerOrders"  parameterType="CustomerOrder" resultMap="selectCustomerOrdersResultMap">
+		select
+			<include refid="customerOrderColumns"/>,
+			<include refid="customerOrderDetailColumns"/>
+		from tm_customer_order as co
+		left join tm_customer_order_detail as cod on cod.order_id = co.id
+		<include refid="customerOrderWhere"/>
+	</select>
+	
+	<resultMap type="CustomerOrder" id="selectCustomerOrdersResultMap">
+		<id property="id" column="co_id" />
+		<result property="order_serial" column="co_order_serial" />
+		<result property="customer_id" column="co_customer_id" />
+		<result property="order_total_price" column="co_order_total_price" />
+		<result property="order_create_date" column="co_order_create_date" />
+		<result property="order_status" column="co_order_status" />
+		<result property="order_using_start" column="co_order_using_start" />
+		<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
+		<result property="order_type" column="co_order_type" />
+		<result property="order_broadband_type" column="co_order_broadband_type" />
+		<result property="svlan" column="co_svlan" />
+		<result property="cvlan" column="co_cvlan" />
+		<result property="transition_provider_name" column="co_transition_provider_name" />
+		<result property="transition_account_holder_name" column="co_transition_account_holder_name" />
+		<result property="transition_account_number" column="co_transition_account_number" />
+		<result property="transition_porting_number" column="co_transition_porting_number" />
+		<result property="hardware_post" column="co_hardware_post" />
+		
+		<!-- <association property="customer" resultMap="customerResultMap"/> -->
+		<collection property="customerOrderDetails" resultMap="CustomerOrderDetailResultMap" />
+	</resultMap>
 	
 	<!-- select one customer all orders and detail -->
 	<select id="selectCustomerOrdersByCustomerId" resultMap="selectCustomerOrdersByCustomerIdResultMap">
@@ -261,7 +315,7 @@
 	<resultMap type="CustomerOrder" id="selectCustomerOrderWithCustomerAndCustomerOrderDetailsResultMap">
 		<id property="id" column="co_id" />
 		<result property="order_serial" column="co_order_serial" />
-		<!-- <result property="customer_id" column="co_customer_id" /> -->
+		<result property="customer_id" column="co_customer_id" />
 		<result property="order_total_price" column="co_order_total_price" />
 		<result property="order_create_date" column="co_order_create_date" />
 		<result property="order_status" column="co_order_status" />
