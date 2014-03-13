@@ -423,7 +423,8 @@ public class CustomerController {
 	public String customerBilling(Model model,
 			@PathVariable(value = "pageNo") int pageNo,
 			HttpServletRequest request) {
-		model.addAttribute("billing", "active");
+		
+		model.addAttribute("bills", "active");
 		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
 		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
 		invoicePage.setPageNo(pageNo);
@@ -435,6 +436,25 @@ public class CustomerController {
 		model.addAttribute("page",invoicePage);
 		model.addAttribute("transactionsList",this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
 		return "broadband-customer/customer-billing";
+	}
+
+	@RequestMapping(value = "/customer/discard-billing/{pageNo}")
+	public String customerDiscardBilling(Model model,
+			@PathVariable(value = "pageNo") int pageNo,
+			HttpServletRequest request) {
+
+		model.addAttribute("discard_bills", "active");
+		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
+		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
+		invoicePage.setPageNo(pageNo);
+		invoicePage.setPageSize(12);
+		invoicePage.getParams().put("orderby", "order by create_date desc");
+		invoicePage.getParams().put("customer_id", customer.getId());
+		invoicePage.getParams().put("status", "discard");
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
+		
+		model.addAttribute("page",invoicePage);
+		return "broadband-customer/customer-discard-billing";
 	}
 
 	@RequestMapping(value = "/customer/payment")

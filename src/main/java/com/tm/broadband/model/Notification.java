@@ -1,6 +1,8 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Notification implements Serializable {
 
@@ -15,6 +17,16 @@ public class Notification implements Serializable {
 	private String type;
 	private String sort;
 
+	/*
+	 * BEGIN RELATED PROPERTIES
+	 */
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
+	
 	public int getId() {
 		return id;
 	}
@@ -61,6 +73,14 @@ public class Notification implements Serializable {
 
 	public void setSort(String sort) {
 		this.sort = sort;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

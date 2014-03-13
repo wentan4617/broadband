@@ -262,7 +262,7 @@ public class SystemController {
 		if (result.hasErrors()) {
 			return "broadband-user/system/notification";
 		}
-
+		notification.getParams().put("id", notification.getId());
 		this.systemService.editNotification(notification);
 
 		attr.addFlashAttribute("success", "Edit Notification " + notification.getTitle()

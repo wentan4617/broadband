@@ -15,8 +15,8 @@
 					<form:form modelAttribute="notification" method="post" action="${ctx}${action }" class="form-horizontal">
 						<form:hidden path="id"/>
 						<div class="form-group">
-							<label for="title" class="control-label col-md-4">Title</label>
-							<div class="col-md-3">
+							<label for="title" class="control-label col-md-2">Title</label>
+							<div class="col-md-8">
 								<form:input path="title" class="form-control" placeholder="Title" />
 							</div>
 							<p class="help-block">
@@ -24,11 +24,22 @@
 							</p>
 						</div>
 						<div class="form-group">
-							<label for="type" class="control-label col-md-4">Type</label>
+							<label for="type" class="control-label col-md-2">Type</label>
 							<div class="col-md-3">
 								<form:select path="type" class="form-control">
 									<form:option value="email">Email</form:option>
 									<form:option value="sms">SMS</form:option>
+								</form:select>
+							</div>
+							<label for="sort" class="control-label col-md-2">Sort</label>
+							<div class="col-md-3">
+								<form:select path="sort" class="form-control">
+									<form:option value="register">Register</form:option>
+									<form:option value="invoice">Invoice</form:option>
+									<form:option value="payment">Payment</form:option>
+									<form:option value="topup">Topup</form:option>
+									<form:option value="service-giving">Service Giving</form:option>
+									<form:option value="service-terminating">Service Terminating</form:option>
 								</form:select>
 							</div>
 						</div>
@@ -38,9 +49,9 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="content" class="control-label col-md-4">Content</label>
-							<div class="col-md-3">
-								<form:textarea path="content" class="form-control" placeholder="Content" />
+							<label for="content" class="control-label col-md-2">Content</label>
+							<div class="col-md-10">
+								<form:textarea path="content" class="form-control" rows="40" />
 							</div>
 							<p class="help-block">
 								<form:errors path="content" cssErrorClass="error"/>

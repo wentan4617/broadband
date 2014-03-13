@@ -55,7 +55,8 @@ public class PlanService {
 			plan.setPlan_topupid_array(idArray);
 			
 		}
-
+		
+		System.out.println(plan.getPlan_topupid_array());
 		this.planMapper.insertPlan(plan);
 
 		

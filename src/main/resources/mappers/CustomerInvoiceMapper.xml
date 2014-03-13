@@ -19,6 +19,7 @@
 	<sql id="pageWhere">
 		<where>
 			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+			<if test="params.status != null">and status=#{params.status}</if>
 		</where>
 	</sql>
 	<sql id="customerInvoiceWhere">

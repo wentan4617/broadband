@@ -115,7 +115,7 @@ public class CRMController {
 			,RedirectAttributes attr
 			,SessionStatus status) {
 		
-		model.addAttribute("panelheading", "Customer Edit");
+		model.addAttribute("panelheading", "Essential Information");
 		model.addAttribute("action", "/broadband-user/crm/customer/edit");
 
 		if (result.hasErrors()) {
@@ -279,7 +279,7 @@ public class CRMController {
         // set spring framework media type
         headers.setContentType( MediaType.parseMediaType( "application/pdf" ) );
         // get file name with file's suffix
-        String filename = "Invoice_"+URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
         headers.setContentDispositionFormData( filename, filename );
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;

@@ -29,7 +29,7 @@
 								<th>Email</th>
 								<th>Mobile</th>
 								<th>Status</th>
-								<th>Register On</th>
+								<th>Registered On</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
