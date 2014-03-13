@@ -423,6 +423,7 @@ public class CustomerController {
 	public String customerBilling(Model model,
 			@PathVariable(value = "pageNo") int pageNo,
 			HttpServletRequest request) {
+		model.addAttribute("billing", "active");
 		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
 		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
 		invoicePage.setPageNo(pageNo);

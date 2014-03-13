@@ -19,59 +19,70 @@
 				<div class="panel-heading">View Billing</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
-						<thead>
-							<tr>
-								<th>Date</th>
-								<th>Due Date</th>
-								<th>Reference</th>
-								<th>Amount Payable</th>
-								<th>Amount Paid</th>
-								<th>&nbsp;</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="invoice" items="${page.results}">
-								<c:forEach var="tx" items="${transactionsList}">
-									<c:if test="${tx.invoice_id==invoice.id}">
-										<tr class="active">
-											<td>${tx.transaction_date_str}</td>
-											<td>&nbsp;</td>
-											<td>${tx.card_name}</td>
-											<td>&nbsp;</td>
-											<td><strong><fmt:formatNumber
-														value="${invoice.amount_paid}" type="number"
-														pattern="#,##0.00" /></strong></td>
-											<td>&nbsp;</td>
-										</tr>
-									</c:if>
-								</c:forEach>
-								<tr
-									class="${invoice.status=='unpaid' || invoice.status=='not_pay_off' ? danger : ''}">
-									<td>${invoice.create_date_str}</td>
-									<c:if
-										test="${invoice.status!='unpaid' && invoice.status!='not_pay_off'}">
-										<td>&nbsp;</td>
-									</c:if>
-									<c:if
-										test="${invoice.status=='unpaid' || invoice.status=='not_pay_off'}">
-										<td><strong style="color: red;">${invoice.due_date_str}</strong></td>
-									</c:if>
-									<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
-									<td><strong><fmt:formatNumber
-												value="${invoice.amount_payable}" type="number"
-												pattern="#,##0.00" /></strong></td>
-									<td><strong>&nbsp;</strong></td>
-									<!-- download icon -->
-									<td><c:if test="${invoice.invoice_pdf_path!=null}">
-											<a target="_blank"
-												href="${ctx}/broadband-customer/billing/invoice/pdf/download/${invoice.id}"
-												data-toggle="tooltip" data-placement="bottom"
-												data-original-title="download invoice PDF"><span
-												class="glyphicon glyphicon-cloud-download"></span></a>
-										</c:if></td>
+							<c:forEach var="co" items="${customerSession.customerOrders}">
+							<thead>
+								<tr>
+									<th colspan="6"><h3>Order Serial:${co.id}</h3></th>
 								</tr>
+								<tr>
+									<th>Date</th>
+									<th>Due Date</th>
+									<th>Reference</th>
+									<th>Amount Payable</th>
+									<th>Amount Paid</th>
+									<th>&nbsp;</th>
+								</tr>
+							</thead>
+							<tbody>
+							<c:forEach var="invoice" items="${page.results}">
+								<c:if test="${co.id == invoice.order_id}">
+									<c:forEach var="tx" items="${transactionsList}">
+										<c:if test="${tx.invoice_id==invoice.id}">
+											<tr class="active">
+												<td>${tx.transaction_date_str}</td>
+												<td>&nbsp;</td>
+												<td>${tx.card_name}</td>
+												<td>&nbsp;</td>
+												<td>
+													<strong><fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
+												</td>
+												<td>&nbsp;</td>
+											</tr>
+										</c:if>
+									</c:forEach>
+									<tr class="${invoice.status=='unpaid' || invoice.status=='not_pay_off' ? danger : ''}">
+										<td>${invoice.create_date_str}</td>
+										<c:if test="${invoice.status!='unpaid' && invoice.status!='not_pay_off'}">
+											<td>&nbsp;</td>
+										</c:if>
+										<c:if test="${invoice.status=='unpaid' || invoice.status=='not_pay_off'}">
+											<td><strong style="color: red;">${invoice.due_date_str}</strong></td>
+										</c:if>
+										<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
+										<td>
+											<strong><fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
+										</td>
+										<td>
+											<strong>&nbsp;</strong>
+										</td>
+										<!-- download icon -->
+										<td>
+											<c:if test="${invoice.invoice_pdf_path!=null}">
+												<a target="_blank"
+													href="${ctx}/broadband-customer/billing/invoice/pdf/download/${invoice.id}"
+													data-toggle="tooltip" data-placement="bottom"
+													data-original-title="download invoice PDF">
+													<span class="glyphicon glyphicon-cloud-download"></span>
+												</a>
+											</c:if>
+										</td>
+									</tr>
+								</c:if>
 							</c:forEach>
+						</c:forEach>
+						
 						</tbody>
+						
 						<tfoot>
 							<tr>
 								<td colspan="11">
