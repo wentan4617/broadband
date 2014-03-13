@@ -16,7 +16,7 @@
 		</div>
 		<div class="col-md-9">
 			<div class="panel panel-success">
-				<div class="panel-heading">View Billing</div>
+				<div class="panel-heading">View Discard Billing</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
 							<c:forEach var="co" items="${customerSession.customerOrders}">
@@ -51,14 +51,9 @@
 											</tr>
 										</c:if>
 									</c:forEach>
-									<tr class="${invoice.status=='unpaid' || invoice.status=='not_pay_off' ? danger : ''}">
+									<tr class="warning">
 										<td>${invoice.create_date_str}</td>
-										<c:if test="${invoice.status!='unpaid' && invoice.status!='not_pay_off'}">
-											<td>&nbsp;</td>
-										</c:if>
-										<c:if test="${invoice.status=='unpaid' || invoice.status=='not_pay_off'}">
-											<td><strong style="color: red;">${invoice.due_date_str}</strong></td>
-										</c:if>
+										<td><strong style="color: red;">${invoice.due_date_str}</strong></td>
 										<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
 										<td>
 											<strong><fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>

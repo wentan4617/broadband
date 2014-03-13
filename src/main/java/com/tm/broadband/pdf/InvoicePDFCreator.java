@@ -746,14 +746,20 @@ public class InvoicePDFCreator {
         		// price == null then sub total = 0
         		subTotal = 0.0;
         		price = 0.0;
-        		unit = 0;
+        		unit = customerInvoiceDetail.getInvoice_detail_unit();
         	}
         	// if unit empty
         	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() == null){
         		// price * 1
         		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*1);
         		price = customerInvoiceDetail.getInvoice_detail_price();
-        		unit = customerInvoiceDetail.getInvoice_detail_unit();
+        		unit = 0;
+        	}
+        	if(customerInvoiceDetail.getInvoice_detail_price() == null && customerInvoiceDetail.getInvoice_detail_unit() == null){
+        		// if price & unit both empty
+        		subTotal = 0.0;
+        		price = 0.0;
+        		unit = 0;
         	}
 			// plan name
 			invoiceDetailsTitleCell = newCell(customerInvoiceDetail.getInvoice_detail_name(), arial_normal_7, 0);

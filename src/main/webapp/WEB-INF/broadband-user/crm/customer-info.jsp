@@ -107,10 +107,10 @@
 					</div>
 					<div class="form-group">
 						<label for="address" class="control-label col-md-2">Address</label>
-						<div class="col-md-7">
+						<div class="col-md-9">
 							<form:input path="address" class="form-control" placeholder="Address" />
 						</div>
-						<p class="help-block col-md-2">
+						<p class="help-block col-md-1">
 							<form:errors path="address" cssErrorClass="error" />
 						</p>
 					</div>

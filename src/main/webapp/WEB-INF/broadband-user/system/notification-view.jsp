@@ -20,6 +20,7 @@
 								<th><input type="checkbox" id="checkbox_notifications_top" /></th>
 								<th>Title</th>
 								<th>Type</th>
+								<th>Sort</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
@@ -34,9 +35,8 @@
 											${notification.title }
 										</a>
 									</td>
-									<td>
-										${notification.type }
-									</td>
+									<td>${notification.type }</td>
+									<td>${notification.sort }</td>
 									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>

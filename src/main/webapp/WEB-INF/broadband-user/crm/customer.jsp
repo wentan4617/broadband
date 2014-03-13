@@ -128,24 +128,24 @@
 					html += '<tr>';
 					html += '<th colspan="8"><h1>Order Serial: ' + orderIds[o] + '</h1></th>';
 					html += '</tr>';
+					html += '<tr>';
+					html += '<th>Reference</th>';
+					html += '<th>Create Date</th>';
+					html += '<th>Due Date</th>';
+					html += '<th>Amount Payable</th>';
+					html += '<th>Amount Paid</th>';
+					html += '<th>Balance</th>';
+					html += '<th>Status</th>';
+					html += '<th>&nbsp;</th>';
+					html += '</tr>';
+					html += '</thead>';
+					html += '<tbody>';
 					for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
 						var invoice = map.invoicePage.results[i];
 						if(orderIds[o]==invoice.order_id){
 							for (var t = 0, txLen = map.transactionsList.length; t < txLen; t++) {
 								var tx = map.transactionsList[t];
 								if(tx.invoice_id==invoice.id){
-									html += '<tr>';
-									html += '<th>Reference</th>';
-									html += '<th>Create Date</th>';
-									html += '<th>Due Date</th>';
-									html += '<th>Amount Payable</th>';
-									html += '<th>Amount Paid</th>';
-									html += '<th>Balance</th>';
-									html += '<th>Status</th>';
-									html += '<th>&nbsp;</th>';
-									html += '</tr>';
-									html += '</thead>';
-									html += '<tbody>';
 									html += '<tr class="success">';
 									html += '<td>Transaction# - ' + tx.id + '</td>';
 									html += '<td>' + tx.transaction_date_str + '</td>';
@@ -171,7 +171,7 @@
 							html += '<td><strong>' + invoice.balance + '</strong></td>';
 							html += '<td><strong>' + invoice.status + '</strong></td>';
 							var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
-							var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id;
+							var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + ${customer.id};
 							var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
 							if(invoice.invoice_pdf_path != null){
 								html += '<td>';
