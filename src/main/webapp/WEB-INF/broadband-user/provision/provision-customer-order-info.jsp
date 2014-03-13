@@ -6,13 +6,13 @@
 	<div class="modal-dialog" style="width:1200px;">
 		<div class="modal-content">
 			<div class="modal-body">
-				
 				<div class="row">
 					<div class="col-md-5">
 						<div class="panel panel-default">
 							<div class="panel-heading">
-								Customer Information
-								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h3 class="panel-title">Customer Information
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								</h3>
 							</div>
 							<div class="panel-body">
 								<form class="form-horizontal" role="form">
@@ -20,12 +20,6 @@
 								    	<label class="col-sm-4 control-label">Login Name:</label>
 								    	<div class="col-sm-8">
 								      		<p class="form-control-static" id="c_login_name"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Password:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_password"></p>
 								    	</div>
 								  	</div>
 								  	<div class="form-group">
@@ -65,7 +59,7 @@
 								    	</div>
 								  	</div>
 								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Cell Phone:</label>
+								    	<label class="col-sm-4 control-label">Mobile:</label>
 								    	<div class="col-sm-8">
 								      		<p class="form-control-static" id="c_cellphone"></p>
 								    	</div>
@@ -80,12 +74,6 @@
 								    	<label class="col-sm-4 control-label">Register Date:</label>
 								    	<div class="col-sm-8">
 								      		<p class="form-control-static" id="c_register_date"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Active Date:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_active_date"></p>
 								    	</div>
 								  	</div>
 								</form>
@@ -107,17 +95,15 @@
 	var order_id = null;
 	
 	$('a[data-name="show_customer_order_info"]').click(function(){
-		
 		order_id = $(this).attr('data-id');
-		
 		$('#provision-customer-order-info-modal').modal("show");
 	});
 	
 	$('#provision-customer-order-info-modal').on('show.bs.modal', function (e) {
 		
 		if (order_id != null) {
+			
 			$.get('${ctx}/broadband-user/provision/customer/order/' + order_id, function(customerOrder){
-				
 				//console.log(customerOrder);
 				var customer = customerOrder.customer;
 				if (customer != null) {
@@ -138,8 +124,10 @@
 					
 					html += '<div class="panel panel-default">';
 					html += '<div class="panel-heading">';
+					html += '<h3 class="panel-title">';
 					html += 'Order Serial: <span class="text-danger">' + customerOrder.id + '</span>';
 					html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+					html += '</h3>';
 					html += '</div>';
 					html += '<div class="panel-body">';
 					html += '<form class="form-horizontal" role="form">';
@@ -222,7 +210,9 @@
 					var detailHtml = "";
 					detailHtml += '<div class="panel panel-default">';
 					detailHtml += '<div class="panel-heading">';
+					detailHtml += '<h3 class="panel-title">'
 					detailHtml += 'Order Details<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+					detailHtml += '</h3>';
 					detailHtml += '</div>';
 					detailHtml += '<div class="panel-body">';
 					detailHtml += '<table class="table">';
@@ -273,7 +263,7 @@
 		
 		
 	});
-	//
+	
 })(jQuery);
 </script>
 
