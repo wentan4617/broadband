@@ -24,14 +24,12 @@
 						<thead>
 							<tr>
 								<th><input type="checkbox" id="checkbox_customer_top" /></th>
-								<th>Customer Name</th>
+								<th>Customer</th>
 								<th>Address</th>
 								<th>Email</th>
-								<th>Phone</th>
-								<th>Cell Phone</th>
+								<th>Mobile</th>
 								<th>Status</th>
-								<th>Register Date</th>
-								<th>Active Date</th>
+								<th>Register On</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
@@ -48,11 +46,9 @@
 									</td>
 									<td>${customer.address }</td>
 									<td>${customer.email }</td>
-									<td>${customer.phone }</td>
 									<td>${customer.cellphone }</td>
 									<td>${customer.status}</td>
 									<td>${customer.register_date_str }</td>
-									<td>${customer.active_date_str}</td>
 									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
