@@ -50,7 +50,11 @@
 <script type="text/javascript">
 
 (function($){
-
+	
+	var orderIds = new Array();
+	<c:forEach var="co" items="${customer.customerOrders }">
+		orderIds.push('${co.id}');
+	</c:forEach>
 	$.getTxPage = function(pageNo) {
 		
 		$.get('${ctx}/broadband-user/crm/transaction/view/' + pageNo +'/'+ ${customer.id}, callbackPage, "json");
@@ -116,87 +120,100 @@
 			var html = "";
 			if (map.invoicePage.results != null && map.invoicePage.results.length > 0) {
 				html += '<table class="table">';
-				html += '<thead>';
-				html += '<tr>';
-				html += '<th>Reference</th>';
-				html += '<th>Create Date</th>';
-				html += '<th>Due Date</th>';
-				html += '<th>Amount Payable</th>';
-				html += '<th>Amount Paid</th>';
-				html += '<th>Balance</th>';
-				html += '<th>Status</th>';
-				html += '<th>&nbsp;</th>';
-				html += '</tr>';
-				html += '</thead>';
-				html += '<tbody>';
-				for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
-					var invoice = map.invoicePage.results[i];
-					for (var j = 0, txLen = map.transactionsList.length; j < txLen; j++) {
-						var tx = map.transactionsList[j];
-						if(tx.invoice_id==invoice.id){
-							html += '<tr class="success">';
-							html += '<td>Transaction# - ' + tx.id + '</td>';
-							html += '<td>' + tx.transaction_date_str + '</td>';
-							html += '<td>&nbsp;</td>';
-							html += '<td>&nbsp;</td>';
+				
+				console.log(orderIds);
+				// ieterating order's related invoices according to each and every order id
+				for (var o = 0, len = orderIds.length; o < len; o++){
+					html += '<thead>';
+					html += '<tr>';
+					html += '<th colspan="8"><h1>Order Serial: ' + orderIds[o] + '</h1></th>';
+					html += '</tr>';
+					for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
+						var invoice = map.invoicePage.results[i];
+						if(orderIds[o]==invoice.order_id){
+							for (var t = 0, txLen = map.transactionsList.length; t < txLen; t++) {
+								var tx = map.transactionsList[t];
+								if(tx.invoice_id==invoice.id){
+									html += '<tr>';
+									html += '<th>Reference</th>';
+									html += '<th>Create Date</th>';
+									html += '<th>Due Date</th>';
+									html += '<th>Amount Payable</th>';
+									html += '<th>Amount Paid</th>';
+									html += '<th>Balance</th>';
+									html += '<th>Status</th>';
+									html += '<th>&nbsp;</th>';
+									html += '</tr>';
+									html += '</thead>';
+									html += '<tbody>';
+									html += '<tr class="success">';
+									html += '<td>Transaction# - ' + tx.id + '</td>';
+									html += '<td>' + tx.transaction_date_str + '</td>';
+									html += '<td>&nbsp;</td>';
+									html += '<td>&nbsp;</td>';
+									html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
+									html += '<td>&nbsp;</td>';
+									html += '<td>' + invoice.status + '</td>';
+									html += '<td>&nbsp;</td>';
+									html += '</tr>';
+								}
+							}
+							html += '<tr ';
+							
+							// if unpaid or not pay off then class=danger else class=active
+							invoice.status=='unpaid' || invoice.status=='not_pay_off' ? html+='class="danger"' : html+='';
+							html += '>';
+							html += '<td>Invoice# - ' + invoice.id + '</td>';
+							html += '<td>' + invoice.create_date_str + '</td>';
+							invoice.status!='unpaid' && invoice.status!='not_pay_off' ? html+='<td>&nbsp;</td>' : html+='<td><strong style="color:red;">'+invoice.due_date_str+'</strong></td>';
+							html += '<td><strong>' + invoice.amount_payable + '</strong></td>';
 							html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
-							html += '<td>&nbsp;</td>';
-							html += '<td>' + invoice.status + '</td>';
-							html += '<td>&nbsp;</td>';
+							html += '<td><strong>' + invoice.balance + '</strong></td>';
+							html += '<td><strong>' + invoice.status + '</strong></td>';
+							var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
+							var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id;
+							var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
+							if(invoice.invoice_pdf_path != null){
+								html += '<td>';
+								// regenerate icon
+								html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+								// download icon
+								html += '<a target="_blank" href="' + downloadUrl + '" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+								// send icon
+								html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + '" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
+								html += '</td>';
+							}else{
+								// generate first invoice PDF
+								html += '<td>';
+								// regenerate icon
+								html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
+								// download icon
+								html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
+								// send icon
+								html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
+								
+								// showed before first time click generate invoice PDF icon
+								html += '<script type="text\/javascript">														';
+								html += '	function showOthers(obj){															';
+								html += '		obj.style.display = "none";														';
+								html += '		document.getElementById(\'' + invoice.id + 'regenerate\').style.display=\'\';	';
+								html += '		document.getElementById(\'' + invoice.id + 'download\').style.display=\'\';		';
+								html += '		document.getElementById(\'' + invoice.id + 'send\').style.display=\'\';			';
+								html += '		var xmlHttp = new XMLHttpRequest;												';
+								html += '		xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\');							';
+								html += '		xmlHttp.send();																	';
+								html += '	}																					';
+								html += '<\/script>																				';
+								html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
+								html += '</td>';
+							}
 							html += '</tr>';
 						}
 					}
-					html += '<tr ';
-					
-					// if unpaid or not pay off then class=danger else class=active
-					invoice.status=='unpaid' || invoice.status=='not_pay_off' ? html+='class="danger"' : html+='';
-					html += '>';
-					html += '<td>Invoice# - ' + invoice.id + '</td>';
-					html += '<td>' + invoice.create_date_str + '</td>';
-					invoice.status!='unpaid' && invoice.status!='not_pay_off' ? html+='<td>&nbsp;</td>' : html+='<td><strong style="color:red;">'+invoice.due_date_str+'</strong></td>';
-					html += '<td><strong>' + invoice.amount_payable + '</strong></td>';
-					html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
-					html += '<td><strong>' + invoice.balance + '</strong></td>';
-					html += '<td><strong>' + invoice.status + '</strong></td>';
-					var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
-					var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id;
-					var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
-					if(invoice.invoice_pdf_path != null){
-						html += '<td>';
-						// regenerate icon
-						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
-						// download icon
-						html += '<a target="_blank" href="' + downloadUrl + '" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
-						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + '" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
-						html += '</td>';
-					}else{
-						// generate first invoice PDF
-						html += '<td>';
-						// regenerate icon
-						html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
-						// download icon
-						html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
-						// send icon
-						html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
-						
-						// showed before first time click generate invoice PDF icon
-						html += '<script type="text\/javascript">														';
-						html += '	function showOthers(obj){															';
-						html += '		obj.style.display = "none";														';
-						html += '		document.getElementById(\'' + invoice.id + 'regenerate\').style.display=\'\';	';
-						html += '		document.getElementById(\'' + invoice.id + 'download\').style.display=\'\';		';
-						html += '		document.getElementById(\'' + invoice.id + 'send\').style.display=\'\';			';
-						html += '		var xmlHttp = new XMLHttpRequest;												';
-						html += '		xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\');							';
-						html += '		xmlHttp.send();																	';
-						html += '	}																					';
-						html += '<\/script>																				';
-						html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
-						html += '</td>';
-					}
-					html += '</tr>';
 				}
+				
+				
+				
 				html += '</tbody>';
 				html += '<tfoot>';
 				html += '<tr>';

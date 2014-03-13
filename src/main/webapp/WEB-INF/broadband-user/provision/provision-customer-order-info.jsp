@@ -110,8 +110,6 @@
 		
 		order_id = $(this).attr('data-id');
 		
-		console.log(order_id);
-		
 		$('#provision-customer-order-info-modal').modal("show");
 	});
 	
@@ -150,7 +148,7 @@
 					html += '<div class="form-group">';
 					html += '<label class="col-sm-2 control-label">Price:</label>';
 					html += '<div class="col-sm-2">';
-					html += '<p class="form-control-static">$ ' + customerOrder.order_total_price + '</p>';
+					html += '<p class="form-control-static">$ ' + (customerOrder.order_total_price||"") + '</p>';
 					html += '</div>';
 					html += '<label class="col-sm-4 control-label">Create Date:</label>';
 					html += '<div class="col-sm-3">';
@@ -167,6 +165,59 @@
 					html += '<p class="form-control-static">' + customerOrder.order_using_start_str + '</p>';
 					html += '</div>';
 					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-8 control-label">Next Invoice Create Date:</label>';
+					html += '<div class="col-sm-3">';
+					html += '<p class="form-control-static">' + customerOrder.next_invoice_create_date_str + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-8 control-label">Order Broadband Type:</label>';
+					html += '<div class="col-sm-3">';
+					html += '<p class="form-control-static">' + customerOrder.order_broadband_type + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-8 control-label">Hardware Post:</label>';
+					html += '<div class="col-sm-3">';
+					html += '<p class="form-control-static">' + (customerOrder.hardware_post||"") + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-2 control-label">SVLan:</label>';
+					html += '<div class="col-sm-4">';
+					html += '<p class="form-control-static">' + (customerOrder.svlan||"") + '</p>';
+					html += '</div>';
+					html += '<label class="col-sm-1 control-label">CVLan:</label>';
+					html += '<div class="col-sm-4">';
+					html += '<p class="form-control-static">' + (customerOrder.cvlan||"") + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-5 control-label">Transition Provider Name:</label>';
+					html += '<div class="col-sm-6">';
+					html += '<p class="form-control-static">' + customerOrder.transition_provider_name + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-5 control-label">Transition Account Holder Name:</label>';
+					html += '<div class="col-sm-6">';
+					html += '<p class="form-control-static">' + customerOrder.transition_account_holder_name + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-5 control-label">Transition Account Number:</label>';
+					html += '<div class="col-sm-6">';
+					html += '<p class="form-control-static">' + customerOrder.transition_account_number + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '<div class="form-group">';
+					html += '<label class="col-sm-5 control-label">Transition Porting Number :</label>';
+					html += '<div class="col-sm-6">';
+					html += '<p class="form-control-static">' + customerOrder.transition_porting_number  + '</p>';
+					html += '</div>';
+					html += '</div>';
+					html += '</form>';
 					
 					var detailHtml = "";
 					detailHtml += '<div class="panel panel-default">';
@@ -185,30 +236,31 @@
 					detailHtml += '<th>Sort</th>';
 					detailHtml += '<th>Unit</th>';
 					detailHtml += '<th>Price</th>';
+					detailHtml += '<th>Track Code</th>';
+					detailHtml += '<th>&nbsp;</th>';
 					detailHtml += '</tr>';
 					detailHtml += '</thead>';
 					detailHtml += '<tbody>';
-
-					
 					
 					var  customerOrderDetails = customerOrder.customerOrderDetails;
 					for (var j = 0, jlen = customerOrderDetails.length; j < jlen; j++) {
 						var customerOrderDetail = customerOrderDetails[j];
 						detailHtml += '<tr>';
 						detailHtml += '<td>' + customerOrderDetail.detail_name + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_type != null ? customerOrderDetail.detail_type : ' ') + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow != null ? customerOrderDetail.detail_data_flow : ' ') + '</td>';
-						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status != null ? customerOrderDetail.detail_plan_status : ' ') + '</strong></td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_plan_type != null ? customerOrderDetail.detail_plan_type : ' ') + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort != null ? customerOrderDetail.detail_plan_sort : ' ') + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_unit != null ? customerOrderDetail.detail_unit : ' ') + '</td>';
-						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price != null ? customerOrderDetail.detail_price : ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_type || ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow || ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status || ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_plan_type || ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort || ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_unit || ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price || ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.track_code || ' ') + '</td>';
+						detailHtml += '<td><a href="javascript:void(0);" data-name="show_comment"><span class="glyphicon glyphicon-comment"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" data-name="show_comment_trackcode"><span class="glyphicon glyphicon-italic"></span></a></td>';
 						detailHtml += '</tr>';
 					}
 
 					detailHtml += '</tbody>';
 					detailHtml += '</table>';
-					detailHtml += '</form>';
 					detailHtml += '</div>';
 					detailHtml += '</div>';
 					
