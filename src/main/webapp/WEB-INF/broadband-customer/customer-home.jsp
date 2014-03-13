@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
@@ -10,6 +9,11 @@
 <jsp:include page="header.jsp" />
 <jsp:include page="alert.jsp" />
 
+<style>
+.personal-info li{
+	padding:5px 40px;
+}
+</style>
 <div class="container">
 	<div class="row">
 		<div class="col-md-3">
@@ -17,90 +21,97 @@
 		</div>
 		<div class="col-md-9">
 			<div class="panel panel-success">
-				<div class="panel-heading">Home</div>
+				<div class="panel-heading">
+					<h3 class="panel-title">
+						Home
+					</h3>
+				</div>
 				<div class="panel-body">
 					<div class="page-header" style="margin-top: 0;">
-						<h3>
+						<h3 class="text-success">
 							Personal Information 
-							<div class="btn-group">
-						  		<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-							    	Operate <span class="caret"></span>
-							  	</button>
-							  	<ul class="dropdown-menu" data-role="menu">
-							    	<li><a href="javascript:void(0);" >Change Password</a></li>
-							  	</ul>
-							</div>
 						</h3>
 					</div>
-					<form class="form-horizontal" data-role="form">
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Login Name:</label>
-							<div class="col-sm-4">
-								<p class="form-control-static">${customerSession.login_name }</p>
-							</div>
-							<label class="col-sm-2 control-label">Register Date:</label>
-							<div class="col-sm-4">
-								<p class="form-control-static">
-									<fmt:formatDate  value="${customerSession.register_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" />
-									
-								</p>
-							</div>
+					<div class="row">
+						<div class="col-md-5">
+							<ul class="list-unstyled personal-info">
+								<li><strong class="text-info">${customerSession.login_name }</strong></li>
+								<li><strong class="text-info">${customerSession.first_name }&nbsp;${customer.last_name }</strong></li>
+								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
+								<li><strong class="text-info">${customerSession.cellphone }</strong></li>
+								<li><strong class="text-info">${customerSession.address }</strong></li>
+							</ul>
 						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Phone:</label>
-							<div class="col-sm-4">
-								<p class="form-control-static">
-									${customerSession.phone }
-								</p>
-							</div>
-							<label class="col-sm-2 control-label">Mobile:</label>
-							<div class="col-sm-4">
-								<p class="form-control-static">
-									${customerSession.cellphone }
-								</p>
-							</div>
+						<div class="col-md-7">
+							<ul class="list-unstyled personal-info">
+								<li>
+									<strong class="text-info">Current Credit:</strong> NZ$ <strong class="text-success">${customerSession.balance }</strong>
+									<a href="#" class="btn btn-success pull-right" style="width:120px;">Top Up</a>
+								</li>
+								<li><hr/></li>
+								<li>
+									<strong class="text-info">Invoice Balance:</strong> NZ$ <strong class="text-success">${customerSession.balance }</strong>
+									<a href="#" class="btn btn-success pull-right" style="width:120px;">Make Payment</a>
+								</li>
+								
+							</ul>
 						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Address:</label>
-							<div class="col-sm-10">
-								<p class="form-control-static">
-									${customerSession.address }
-								</p>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="col-sm-2 control-label">Email:</label>
-							<div class="col-sm-4">
-								<p class="form-control-static">
-									${customerSession.email }
-								</p>
-							</div>
-						</div>
-					</form>
-					<hr />
-					<div class="page-header" style="margin-top: 0;">
-						<h3>
-							Plan Information <small></small>
-						</h3>
 					</div>
 					
+					<hr />
+					<div class="page-header" style="margin-top: 0;">
+						<h3 class="text-success">
+							Plan Information 
+						</h3>
+					</div>
 					<c:if test="${fn:length(customerOrders) > 0}">
 						<c:forEach var="co" items="${customerOrders}">
-							<ul class="list-unstyled" style="margin-left:50px;">
-								<c:if test="${fn:length(co.customerOrderDetails) > 0 }">
-									<c:forEach var="cod" items="${co.customerOrderDetails }">
-										<li><h2>${cod.detail_name }</h2></li>
-										<li><h2>$ <fmt:formatNumber value="${cod.detail_price }" type="number" pattern="#,#00.00" /></h2></li>
-										<li><h2>${cod.detail_data_flow } GB</h2></li>
-									</c:forEach>
-								</c:if>
-								<li>Service Start Date: <h2>${customerOrder.order_using_start }</h2></li>
-							</ul>
+							<div class="well">
+								<ul class="list-unstyled personal-info">
+									<c:if test="${fn:length(co.customerOrderDetails) > 0 }">
+										<c:forEach var="cod" items="${co.customerOrderDetails }">
+											<c:if test="${fn:contains(cod.detail_type, 'plan-')}">
+												<li><h4 class="text-info" style="margin:0;">${cod.detail_name }</h4></li>
+												<li><hr style="margin:0;"/></li>
+												<li>
+													<ul class="list-unstyled personal-info">
+														<li><strong class="text-success">Service Start on</strong> ${customerOrder.order_using_start }</li>
+														<li><strong class="text-success">renew automatically on</strong> ${customerOrder.order_using_start }</li>
+													</ul>
+												</li>
+												<li>
+													<ul class="list-inline" style="margin-left:40px">
+														<li>
+															<a href="#" class="btn btn-success">Change Plan</a>
+														</li>
+														<li>
+															<a href="#" class="btn btn-success">Cancel Plan</a>
+														</li>
+														<li>
+															<a href="#" class="btn btn-success">Data Usage</a>
+														</li>
+													</ul>
+												</li>
+											</c:if>
+											<c:if test="${fn:contains(cod.detail_type, 'hardware-')}">
+												<li><hr style="margin:0;"/></li>
+												<li>
+													<h4 class="text-info" style="margin:0;">
+														${cod.detail_name }&nbsp;
+														<span class="label label-warning">${cod.track_code }</span>
+													</h4>
+													
+													
+												</li>
+											</c:if>
+										</c:forEach>
+									</c:if>
+								</ul>
+							</div>
 						</c:forEach>
 					</c:if>
 					<c:if test="${fn:length(customerOrders) < 0 }">
 					</c:if>
-					
 				</div>
 			</div>
 		</div>

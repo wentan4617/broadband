@@ -206,7 +206,9 @@ public class CRMService {
 					cod_hd.setDetail_price(hd.getHardware_price());
 					cod_hd.setDetail_is_next_pay(0);
 					cod_hd.setDetail_type("hardware-router");
+					cod_hd.setIs_post(0);
 					cod_hd.setDetail_unit(1);
+					customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
 					customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
 					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
 					break;
@@ -285,6 +287,16 @@ public class CRMService {
 	@Transactional
 	public List<CustomerOrder> queryCustomerOrdersByCustomerId(int customer_id) {
 		return this.customerOrderMapper.selectCustomerOrdersByCustomerId(customer_id);
+	}
+	
+	@Transactional
+	public CustomerOrder queryCustomerOrder(CustomerOrder customerOrder) {
+		return this.customerOrderMapper.selectCustomerOrder(customerOrder);
+	}
+	
+	@Transactional
+	public List<CustomerOrder> queryCustomerOrders(CustomerOrder customerOrder) {
+		return this.customerOrderMapper.selectCustomerOrders(customerOrder);
 	}
 
 	@Transactional
