@@ -43,6 +43,15 @@
 								<li><strong class="text-info">${customer.cellphone }</strong></li>
 								<li><strong class="text-info">${customer.address }</strong></li>
 							</ul>
+							<c:if test="${customer.customerOrder.order_broadband_type == 'transition' }">
+								<p class="text-success"><strong>Provider Information:</strong></p>
+								<ul class="list-unstyled personal-info">
+									<li><strong class="text-info">${customer.customerOrder.transition_provider_name }</strong></li>
+									<li><strong class="text-info">${customer.customerOrder.transition_account_holder_name }</strong></li>
+									<li><strong class="text-info">${customer.customerOrder.transition_account_number }</strong></li>
+									<li><strong class="text-info">${customer.customerOrder.transition_porting_number }</strong></li>
+								</ul>
+							</c:if>
 						</div>
 						<div class="col-md-6 ">
 							<p class="text-success"><strong>&nbsp;</strong></p>
