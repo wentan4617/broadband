@@ -87,7 +87,7 @@ public class PlanController {
 		}
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");
-		plan.setCreate_by(userSession);
+		plan.setCreate_by(userSession.getId());
 		plan.setCreate_date(new Date());
 		
 		this.planService.savePlan(plan);
@@ -161,7 +161,7 @@ public class PlanController {
 		}
 		
 		User userSession = (User)req.getSession().getAttribute("userSession");
-		plan.setLast_update_by(userSession);
+		plan.setLast_update_by(userSession.getId());
 		plan.setLast_update_date(new Date(System.currentTimeMillis()));
 		plan.getParams().put("id", plan.getId());
 		
