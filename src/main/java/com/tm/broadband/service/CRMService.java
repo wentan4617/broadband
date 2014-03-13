@@ -231,6 +231,7 @@ public class CRMService {
 		customerInvoice.setPaid_type(customerTransaction.getCard_name());
 		
 		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
+		customer.setCustomerInvoice(customerInvoice);
 		
 		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
 			cod.setOrder_id(customer.getCustomerOrder().getId());
@@ -591,4 +592,31 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		}
 	}
+	
+	
+	/*
+	 * Notification BEGIN
+	 */
+	
+	@Transactional
+	public Notification queryNotificationBySort(String sort){
+		return this.notificationMapper.selectNotificationBySort(sort);
+	}
+	
+	/*
+	 * Notification END
+	 */
+
+	/*
+	 * CompanyDetail BEGIN
+	 */
+	
+	@Transactional
+	public CompanyDetail queryCompanyDetail(){
+		return this.companyDetailMapper.selectCompanyDetail();
+	}
+	
+	/*
+	 * CompanyDetail END
+	 */
 }
