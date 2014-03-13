@@ -48,6 +48,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
 @SessionAttributes(value = { "customer", "orderPlan", "hardwares" })
@@ -167,7 +168,7 @@ public class CustomerController {
 	@RequestMapping(value = "/order", method = RequestMethod.POST)
 	public String doOrder(
 			Model model,
-			@ModelAttribute("customer") @Validated(CustomerOrderValidatedMark.class) Customer customer,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer,
 			BindingResult result, HttpServletRequest req,
 			RedirectAttributes attr) {
 
