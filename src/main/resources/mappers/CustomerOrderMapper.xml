@@ -381,6 +381,7 @@
 			<if test="transition_account_number != null">transition_account_number=#{transition_account_number},</if>
 			<if test="transition_porting_number != null">transition_porting_number=#{transition_porting_number},</if>
 			<if test="hardware_post != null">hardware_post=#{hardware_post}</if>
+			
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

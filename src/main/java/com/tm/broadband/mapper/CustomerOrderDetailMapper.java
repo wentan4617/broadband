@@ -28,7 +28,11 @@ public interface CustomerOrderDetailMapper {
 
 	/* // END INSERT AREA */
 	/* =================================================================================== */
-	/* UPDATE AREA *//* // END UPDATE AREA */
+	/* UPDATE AREA */
+	
+	void updateCustomerOrderDetail(CustomerOrderDetail customerOrderDetail);
+	
+	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA *//* // END DELETE AREA */
 

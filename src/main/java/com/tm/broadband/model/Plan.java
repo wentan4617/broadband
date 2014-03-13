@@ -39,9 +39,9 @@ public class Plan implements Serializable {
 	private String plan_group;
 	private Double plan_new_connection_fee;
 	private Date create_date;
-	private User create_by;
+	private Integer create_by;
 	private Date last_update_date;
-	private User last_update_by;
+	private Integer last_update_by;
 	private String plan_topupid_array;
 	private Integer plan_prepay_months;
 
@@ -169,13 +169,7 @@ public class Plan implements Serializable {
 		this.create_date = create_date;
 	}
 
-	public User getCreate_by() {
-		return create_by;
-	}
-
-	public void setCreate_by(User create_by) {
-		this.create_by = create_by;
-	}
+	
 
 	public Date getLast_update_date() {
 		return last_update_date;
@@ -185,13 +179,7 @@ public class Plan implements Serializable {
 		this.last_update_date = last_update_date;
 	}
 
-	public User getLast_update_by() {
-		return last_update_by;
-	}
-
-	public void setLast_update_by(User last_update_by) {
-		this.last_update_by = last_update_by;
-	}
+	
 
 	public String getPlan_topupid_array() {
 		return plan_topupid_array;
@@ -243,6 +231,22 @@ public class Plan implements Serializable {
 
 	public void setPlan_prepay_months(Integer plan_prepay_months) {
 		this.plan_prepay_months = plan_prepay_months;
+	}
+
+	public Integer getCreate_by() {
+		return create_by;
+	}
+
+	public void setCreate_by(Integer create_by) {
+		this.create_by = create_by;
+	}
+
+	public Integer getLast_update_by() {
+		return last_update_by;
+	}
+
+	public void setLast_update_by(Integer last_update_by) {
+		this.last_update_by = last_update_by;
 	}
 
 }

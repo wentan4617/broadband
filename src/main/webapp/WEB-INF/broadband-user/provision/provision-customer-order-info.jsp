@@ -101,6 +101,8 @@
 	
 	$('#provision-customer-order-info-modal').on('show.bs.modal', function (e) {
 		
+		$('a[data-name]').popover('destroy');
+		
 		if (order_id != null) {
 			
 			$.get('${ctx}/broadband-user/provision/customer/order/' + order_id, function(customerOrder){
@@ -166,9 +168,9 @@
 					html += '</div>';
 					html += '</div>';
 					html += '<div class="form-group">';
-					html += '<label class="col-sm-8 control-label">Hardware Post:</label>';
+					html += '<label class="col-sm-8 control-label">Hardware needs to be sent:</label>';
 					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static">' + (customerOrder.hardware_post||"") + '</p>';
+					html += '<p class="form-control-static" id="hardware_post_' + customerOrder.id + '">' + (customerOrder.hardware_post||0) + '</p>';
 					html += '</div>';
 					html += '</div>';
 					html += '<div class="form-group">';
@@ -214,7 +216,6 @@
 					detailHtml += 'Order Details<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
 					detailHtml += '</h3>';
 					detailHtml += '</div>';
-					detailHtml += '<div class="panel-body">';
 					detailHtml += '<table class="table">';
 					detailHtml += '<thead>';
 					detailHtml += '<tr>';
@@ -226,7 +227,6 @@
 					detailHtml += '<th>Sort</th>';
 					detailHtml += '<th>Unit</th>';
 					detailHtml += '<th>Price</th>';
-					detailHtml += '<th>Track Code</th>';
 					detailHtml += '<th>&nbsp;</th>';
 					detailHtml += '</tr>';
 					detailHtml += '</thead>';
@@ -235,7 +235,15 @@
 					var  customerOrderDetails = customerOrder.customerOrderDetails;
 					for (var j = 0, jlen = customerOrderDetails.length; j < jlen; j++) {
 						var customerOrderDetail = customerOrderDetails[j];
-						detailHtml += '<tr>';
+						detailHtml += '<tr id="htr_' + customerOrderDetail.id + '"';
+						if (customerOrderDetail.detail_type.indexOf('hardware-') > -1) {
+							if (customerOrderDetail.is_post != 1) {
+								detailHtml += ' class="warning" ';
+							} else {
+								detailHtml += ' class="success" ';
+							}
+						} 
+						detailHtml += '>';
 						detailHtml += '<td>' + customerOrderDetail.detail_name + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_type || ' ') + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow || ' ') + '</td>';
@@ -244,18 +252,116 @@
 						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort || ' ') + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_unit || ' ') + '</td>';
 						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price || ' ') + '</strong></td>';
-						detailHtml += '<td>' + (customerOrderDetail.track_code || ' ') + '</td>';
-						detailHtml += '<td><a href="javascript:void(0);" data-name="show_comment"><span class="glyphicon glyphicon-comment"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" data-name="show_comment_trackcode"><span class="glyphicon glyphicon-italic"></span></a></td>';
+						detailHtml += '<td>';
+						if (customerOrderDetail.detail_type.indexOf('hardware-') > -1) {
+							detailHtml += '<a href="javascript:void(0);" data-name="show_comment_trackcode" data-id="' + customerOrderDetail.id + '"';
+							detailHtml += 'data-is_post="' + (customerOrderDetail.is_post||0) + '"';
+							detailHtml += 'data-track_code="' + (customerOrderDetail.track_code||"") + '"';
+							detailHtml += 'data-comment="' + (customerOrderDetail.hardware_comment||"") + '"';
+							detailHtml += '>';
+							detailHtml += '<span class="glyphicon glyphicon-edit"></span>';
+							detailHtml += '</a>';
+						}
+						detailHtml += '</td>';
 						detailHtml += '</tr>';
 					}
 
 					detailHtml += '</tbody>';
 					detailHtml += '</table>';
 					detailHtml += '</div>';
-					detailHtml += '</div>';
 					
 					$('#customerOrderContainer').html(html);
 					$('#customerOrderDetailContainer').html(detailHtml);
+					
+					$('a[data-name="show_comment_trackcode"]').each(function(){
+						
+						var $this = $(this);
+						
+						var detailid = $this.attr('data-id');
+						var is_post = $this.attr('data-is_post');
+						var track_code = $this.attr('data-track_code');
+						var comment = $this.attr('data-comment');
+						
+						var pop = "";
+						pop += '<input type="text" class="form-control" placeholder="Post Track Code" id="trackcode_' + detailid + '" value="' + track_code + '"/>';
+						pop += '<hr/>';
+						pop += '<textarea class="form-control" rows="3" placeholder="Comment" id="comment_' + detailid + '">' + comment + '</textarea><hr/>';
+						pop += '<button class="btn btn-success" data-name="trackcode_btn" data-id="' + detailid + '" id="detail_save_' + detailid + '">Save</button>';
+						
+						var opt = {
+							html: true
+							, placement: 'left'
+							, title: 'Track Code And Comment'
+							, content: pop
+							, container: 'div[id="provision-customer-order-info-modal"]'
+						};
+						
+						$this.popover(opt);
+						
+					});
+					
+					$('div[id="provision-customer-order-info-modal"]').delegate('button[data-name="trackcode_btn"]', 'click', function(){
+						//alert('a');
+						//console.log($('#trackcode_' + detail_id).val() + $('#comment_' + detail_id).val());
+						var detail_id = $(this).attr('data-id');
+						var data = {
+							'order_id': customerOrder.id
+							, 'hardware_post': customerOrder.hardware_post||0
+							, 'detail_id': detail_id
+							, 'is_post': ($('a[data-id="' +  detail_id + '"]').attr('data-is_post') == '1' ? 0 : 1)
+							, 'comment': $('#comment_' + detail_id).val()
+							, 'trackcode': $('#trackcode_' + detail_id).val()
+						};
+						//console.log(data);
+						var url = '${ctx}/broadband-user/provision/customer/order/detail/set';
+						$.post(url, data, function(cod){
+							if (cod != null) {
+								$('a[data-id="' + cod.params['id'] + '"]')
+									.attr("data-is_post", cod.is_post)
+									.attr("data-track_code", cod.track_code)
+									.attr("data-comment", cod.hardware_comment)
+								/* $('#trackcode_'  + cod.params['id']).val(cod.track_code);
+								$('#comment_'  + cod.params['id']).val(cod.hardware_comment); */
+								$('#hardware_post_' + customerOrder.id).text(customerOrder.hardware_post = cod.customerOrder.hardware_post);
+								if (cod.is_post == 1) {
+									$('#htr_' + cod.params['id']).removeClass('warning').addClass('success');
+								} else {
+									$('#htr_' + cod.params['id']).removeClass('success').addClass('warning');
+								}
+								
+								$('a[data-name]').popover('destroy');
+								$('a[data-name="show_comment_trackcode"]').each(function(){
+									
+									var $this = $(this);
+									
+									var detailid = $this.attr('data-id');
+									var is_post = $this.attr('data-is_post');
+									var track_code = $this.attr('data-track_code');
+									var comment = $this.attr('data-comment');
+									
+									var pop = "";
+									pop += '<input type="text" class="form-control" placeholder="Post Track Code" id="trackcode_' + detailid + '" value="' + track_code + '"/>';
+									pop += '<hr/>';
+									pop += '<textarea class="form-control" rows="3" placeholder="Comment" id="comment_' + detailid + '">' + comment + '</textarea><hr/>';
+									pop += '<button class="btn btn-success" data-name="trackcode_btn" data-id="' + detailid + '" id="detail_save_' + detailid + '">Save</button>';
+									
+									var opt = {
+										html: true
+										, placement: 'left'
+										, title: 'Track Code And Comment'
+										, content: pop
+										, container: 'div[id="provision-customer-order-info-modal"]'
+									};
+									
+									$this.popover(opt);
+									
+								});
+							}
+						});
+						//$this.popover('hide');
+
+
+					});
 				}
 				
 			}, 'json');

@@ -311,7 +311,7 @@
 				,'svlan_input':svlan_input
 				,'order_using_start_input':order_using_start_input
 				,'order_detail_unit':order_detail_unit_attr
-				};
+			};
 		
 		var url = "${ctx}/broadband-user/crm/customer/order/edit";
 		$.get(url, data, function(order){
