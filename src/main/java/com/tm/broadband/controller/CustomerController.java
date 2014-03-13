@@ -355,15 +355,20 @@ public class CustomerController {
 
 		}
 
-		model.addAttribute("responseBean", responseBean);
+		attr.addFlashAttribute("responseBean", responseBean);
 
 		status.isComplete();
 
+		return "redirect:/order/result";
+	}
+	
+	@RequestMapping(value = "/order/result")
+	public String toOrderResult() {
 		return "broadband-customer/customer-order-result";
 	}
 
 	@RequestMapping(value = "/login")
-	public String login(Model model) {
+	public String toLogin(Model model) {
 
 		model.addAttribute("customer", new Customer());
 		return "broadband-customer/login";
