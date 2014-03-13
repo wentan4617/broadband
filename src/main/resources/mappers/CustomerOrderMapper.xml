@@ -109,7 +109,10 @@
 		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
 		cod.`detail_unit` 						as cod_detail_unit,
 		cod.`detail_type` 						as cod_detail_type,
-		cod.`detail_is_next_pay`				as cod_detail_is_next_pay
+		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
+		cod.`is_post` 							as cod_is_post,
+		cod.`hardware_comment` 					as cod_hardware_comment,
+		cod.`track_code`						as cod_track_code
 	</sql>
 	
 	<resultMap type="CustomerOrderDetail" id="CustomerOrderDetailResultMap">
@@ -128,6 +131,9 @@
 		<result property="detail_topup_fee" column="cod_detail_topup_fee" />
 		<result property="detail_plan_memo" column="cod_detail_plan_memo" />
 		<result property="detail_unit" column="cod_detail_unit" />
+		<result property="detail_type" column="cod_detail_type" />
+		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
+		<result property="is_post" column="cod_is_post" />
 		<result property="detail_type" column="cod_detail_type" />
 		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
 	</resultMap>

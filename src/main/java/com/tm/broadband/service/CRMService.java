@@ -428,6 +428,13 @@ public class CRMService {
 			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
 			if(!customerPreviousInvoicesList.toString().equals("[]")){
 				customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
+				
+				// if status is not paid then update the status to discard
+				if(!customerPreviousInvoice.getStatus().equals("paid")){
+					customerPreviousInvoice.getParams().put("id", customerPreviousInvoice.getId());
+					customerPreviousInvoice.setStatus("discard");
+					this.customerInvoiceMapper.updateCustomerInvoice(customerPreviousInvoice);
+				}
 			}
 			// current invoice model
 			CustomerInvoice customerInvoice = new CustomerInvoice();

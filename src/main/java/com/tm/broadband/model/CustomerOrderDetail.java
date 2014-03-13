@@ -31,6 +31,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer detail_is_next_pay;
 	private Integer is_post;
 	private String hardware_comment;
+	private String track_code;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -221,6 +222,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setHardware_comment(String hardware_comment) {
 		this.hardware_comment = hardware_comment;
+	}
+
+	public String getTrack_code() {
+		return track_code;
+	}
+
+	public void setTrack_code(String track_code) {
+		this.track_code = track_code;
 	}
 
 }
