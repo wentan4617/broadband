@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
@@ -86,6 +87,37 @@ public class ProvisionController {
 		return customerOrder;
 	}
 	
+	@RequestMapping(value = "/broadband-user/provision/customer/order/detail/set", method = RequestMethod.POST)
+	@ResponseBody
+	public CustomerOrderDetail orderDetailSet(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("hardware_post") int hardware_post,
+			@RequestParam("detail_id") int detail_id,
+			@RequestParam("is_post") int is_post,
+			@RequestParam("comment") String comment,
+			@RequestParam("trackcode") String trackcode) {
+		
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		cod.setIs_post(is_post);
+		cod.setHardware_comment(comment);
+		cod.setTrack_code(trackcode);
+		cod.getParams().put("id", detail_id);
+		
+		CustomerOrder co = new CustomerOrder();
+		if (cod.getIs_post() == 1) {
+			co.setHardware_post(hardware_post - 1);
+		} else {
+			co.setHardware_post(hardware_post + 1);
+		}
+		co.getParams().put("id", order_id);
+
+		this.provisionService.setHardwarePost(co, cod);
+		
+		cod.setCustomerOrder(co);
+		
+		return cod;
+	}
+	
 	@RequestMapping(value = "/broadband-user/provision/customer/order/status", method = RequestMethod.POST)
 	public String changeCustomerOrderStatus(Model model,
 			@RequestParam(value = "checkbox_orders", required = false) String[] order_ids,
@@ -127,5 +159,7 @@ public class ProvisionController {
 		
 		return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
 	}
+	
+	
 
 }

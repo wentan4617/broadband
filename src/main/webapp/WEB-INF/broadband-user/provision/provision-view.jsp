@@ -39,6 +39,8 @@
 					</h4>
 
 				</div>
+				
+				
 				<c:if test="${fn:length(page.results) > 0 }">
 					<form id="provisionForm"
 						action="${ctx }/broadband-user/provision/customer/order/status"
@@ -102,6 +104,9 @@
 							</tfoot>
 						</table>
 					</form>
+					<!-- <button id="element" type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="left" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+					  Popover on left
+					</button> -->
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<div class="panel-body">
@@ -119,6 +124,9 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($) {
+	
+	
+	
 	$('#checkbox_orders_top').click(function() {
 		var b = $(this).prop("checked");
 		if (b) {

@@ -38,7 +38,36 @@
 	
 	<!-- // END INSERT AREA -->
 	<!-- =================================================================================== -->
-	<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+	<!-- UPDATE AREA -->
+	
+	<update id="updateCustomerOrderDetail" parameterType="CustomerOrderDetail">
+		UPDATE `tm_customer_order_detail` 
+		<set>
+			<if test="order_id != null">order_id=#{order_id},</if>
+			<if test="detail_name != null">detail_name=#{detail_name},</if>
+			<if test="detail_desc != null">detail_desc=#{detail_desc},</if>
+			<if test="detail_price != null">detail_price=#{detail_price},</if>
+			<if test="detail_data_flow != null">detail_data_flow=#{detail_data_flow},</if>
+			<if test="detail_plan_status != null">detail_plan_status=#{detail_plan_status},</if>
+			<if test="detail_plan_type != null">detail_plan_type=#{detail_plan_type},</if>
+			<if test="detail_plan_sort != null">detail_plan_sort=#{detail_plan_sort},</if>
+			<if test="detail_plan_group != null">detail_plan_group=#{detail_plan_group},</if>
+			<if test="detail_plan_new_connection_fee != null">detail_plan_new_connection_fee=#{detail_plan_new_connection_fee},</if>
+			<if test="detail_topup_data_flow != null">detail_topup_data_flow=#{detail_topup_data_flow},</if>
+			<if test="detail_topup_fee != null">detail_topup_fee=#{detail_topup_fee},</if>
+			<if test="detail_plan_memo != null">detail_plan_memo=#{detail_plan_memo},</if>
+			<if test="detail_unit != null">detail_unit=#{detail_unit},</if>
+			<if test="detail_type != null">detail_type=#{detail_type},</if>
+			<if test="detail_is_next_pay != null">detail_is_next_pay=#{detail_is_next_pay},</if>
+			<if test="is_post != null">is_post=#{is_post},</if>
+			<if test="hardware_comment != null">hardware_comment=#{hardware_comment},</if>
+			<if test="track_code != null">track_code=#{track_code}</if>
+		</set>
+		<where>
+			<if test="params.id !=null">id=#{params.id}</if>
+		</where>
+	</update>
+	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
 	<!-- DELETE AREA --><!-- // END DELETE AREA -->
 

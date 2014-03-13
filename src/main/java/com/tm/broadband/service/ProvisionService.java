@@ -7,10 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -21,14 +23,17 @@ public class ProvisionService {
 	
 	private CustomerMapper customerMapper;
 	private CustomerOrderMapper customerOrderMapper;
+	private CustomerOrderDetailMapper customerOrderDetailMapper;
 	private ProvisionLogMapper provisionLogMapper;
 	
 	@Autowired
 	public ProvisionService(CustomerMapper customerMapper, 
 			CustomerOrderMapper customerOrderMapper,
+			CustomerOrderDetailMapper customerOrderDetailMapper,
 			ProvisionLogMapper provisionLogMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
+		this.customerOrderDetailMapper = customerOrderDetailMapper;
 		this.provisionLogMapper = provisionLogMapper;
 	}
 
@@ -59,7 +64,12 @@ public class ProvisionService {
 			this.customerOrderMapper.updateCustomerOrder(customerOrder);
 			this.provisionLogMapper.insertProvisionLog(customerOrder.getTempProvsionLog());
 		}
-		
+	}
+	
+	@Transactional
+	public void setHardwarePost(CustomerOrder co, CustomerOrderDetail cod) {
+		this.customerOrderMapper.updateCustomerOrder(co);
+		this.customerOrderDetailMapper.updateCustomerOrderDetail(cod);
 	}
 	
 	

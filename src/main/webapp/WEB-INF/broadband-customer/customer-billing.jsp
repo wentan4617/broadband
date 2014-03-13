@@ -19,7 +19,7 @@
 				<div class="panel-heading">View Billing</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
-							<c:forEach var="co" items="${customerSession.customerOrders}">
+						<c:forEach var="co" items="${customerSession.customerOrders}">
 							<thead>
 								<tr>
 									<th colspan="6"><h3>Order Serial:${co.id}</h3></th>
