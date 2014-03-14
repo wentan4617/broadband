@@ -80,13 +80,13 @@
 						</div>
 						<hr/>
 						<div class="form-group">
-							<label for="hardware_desc" class="control-label col-md-4">Hardware Desc</label>
-							<div class="col-md-8">
-								<form:textarea path="hardware_desc" class="form-control" rows="12"/>
+							<!-- <label for="hardware_desc" class="control-label col-md-4">Hardware Desc</label> -->
+							<div class="col-md-12">
+								<form:textarea path="hardware_desc" class="form-control" rows="24"/>
 							</div>
-							<p class="help-block">
+							<%-- <p class="help-block">
 								<form:errors path="hardware_desc" cssErrorClass="error"/>
-							</p>
+							</p> --%>
 						</div>
 					</form:form>
 				</div>
