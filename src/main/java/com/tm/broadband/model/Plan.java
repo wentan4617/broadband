@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.validator.mark.PlanValidatedMark;
@@ -29,6 +31,7 @@ public class Plan implements Serializable {
 	@NotEmpty(groups = { PlanValidatedMark.class })
 	private String plan_name;
 	private String plan_desc;
+	@NotNull(groups = { PlanValidatedMark.class })
 	private Double plan_price;
 	private Long data_flow;
 	private Long data_flow_k;
