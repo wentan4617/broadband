@@ -77,6 +77,7 @@ public class Customer implements Serializable {
 
 	// one customer may be get more orders
 	private CustomerOrder customerOrder = new CustomerOrder();
+	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;
 	
 
@@ -331,6 +332,14 @@ public class Customer implements Serializable {
 
 	public void setEmail_ck(String email_ck) {
 		this.email_ck = email_ck;
+	}
+
+	public CustomerInvoice getCustomerInvoice() {
+		return customerInvoice;
+	}
+
+	public void setCustomerInvoice(CustomerInvoice customerInvoice) {
+		this.customerInvoice = customerInvoice;
 	}
 	
 	

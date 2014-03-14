@@ -32,12 +32,15 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.paymentexpress.GenerateRequest;
@@ -45,9 +48,10 @@ import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
-import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
@@ -56,11 +60,14 @@ public class CustomerController {
 
 	private PlanService planService;
 	private CRMService crmService;
+	private MailerService mailerService;
 
 	@Autowired
-	public CustomerController(PlanService planService, CRMService crmService) {
+	public CustomerController(PlanService planService, CRMService crmService
+			,MailerService mailerService) {
 		this.planService = planService;
 		this.crmService = crmService;
+		this.mailerService = mailerService;
 	}
 
 	@RequestMapping("/home")
@@ -350,6 +357,25 @@ public class CustomerController {
 			this.crmService.registerCustomer(customer, plan, hardwares, customerTransaction);
 			
 			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id());
+
+			String filePath = TMUtils.createPath(
+					"broadband"
+					+File.separator+"customers"
+					+File.separator+customer.getId()
+					+File.separator+"Invoice - #"+customerTransaction.getInvoice_id()+".pdf");
+			
+			Notification notification = this.crmService.queryNotificationBySort("register");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			CompanyDetail companyDetail = new CompanyDetail();
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("Invoice - #" + customerTransaction.getInvoice_id() + ".pdf");
+			applicationEmail.setAttachPath(filePath);
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 		} else {
 

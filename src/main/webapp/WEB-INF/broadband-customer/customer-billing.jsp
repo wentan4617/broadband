@@ -22,7 +22,7 @@
 						<c:forEach var="co" items="${customerSession.customerOrders}">
 							<thead>
 								<tr>
-									<th colspan="6"><h3>Order Serial:${co.id}</h3></th>
+									<th colspan="7"><h3>Order Serial:${co.id}</h3></th>
 								</tr>
 								<tr>
 									<th>Date</th>
@@ -47,6 +47,7 @@
 												<td>
 													<strong><fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
 												</td>
+												<td>&nbsp;</td>
 												<td>&nbsp;</td>
 											</tr>
 										</c:if>
