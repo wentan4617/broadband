@@ -99,28 +99,8 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
-	$('.selectpicker').selectpicker();
 	
-	$('#plan_group').change(function(){
-		var val = this.value;
-		if (val === 'plan-topup') {
-			$('#topupContainer').show('fast');
-			$('#noTermContainer').hide('fast');
-			$('#TermContainer').hide('fast');
-		} else if (val === 'plan-no-term') {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').show('fast');
-			$('#TermContainer').hide('fast');
-		} else if (val === 'plan-term') {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').hide('fast');
-			$('#TermContainer').show('fast');
-		} else {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').hide('fast');
-			$('#TermContainer').hide('fast');
-		}
-	});
+	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />

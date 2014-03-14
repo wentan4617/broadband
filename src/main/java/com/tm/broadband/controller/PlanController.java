@@ -296,6 +296,9 @@ public class PlanController {
 		model.addAttribute("panelheading", "Hardware Create");
 		model.addAttribute("action", "/broadband-user/plan/hardware/create");
 
+		if (result.hasErrors()) {
+			return "broadband-user/plan/hardware";
+		}
 		
 		int count = this.planService.queryExistPlanByName(hardware.getHardware_name());
 		
@@ -333,6 +336,10 @@ public class PlanController {
 		
 		model.addAttribute("panelheading", "Hardware Edit");
 		model.addAttribute("action", "/broadband-user/plan/hardware/edit");
+		
+		if (result.hasErrors()) {
+			return "broadband-user/plan/hardware";
+		}
 		
 		hardware.getParams().put("id", hardware.getId());
 		
