@@ -72,16 +72,12 @@ public class CustomerController {
 
 	@RequestMapping("/home")
 	public String home(Model model) {
-		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
-		model.addAttribute("customer", customer);
 		return "broadband-customer/home";
 	}
 
 	@RequestMapping("/plans/{group}")
 	public String plans(Model model, @PathVariable("group") String group) {
-
+		
 		List<Plan> plans = null;
 		String url = "";
 		
@@ -143,6 +139,10 @@ public class CustomerController {
 	@RequestMapping("/order/{id}")
 	public String orderPlanNoTerm(Model model, 
 			@PathVariable("id") int id) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
+		model.addAttribute("customer", customer);
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
@@ -159,6 +159,10 @@ public class CustomerController {
 	public String orderPlanTopup(Model model, 
 			@PathVariable("id") int id,
 			@PathVariable("amount") Double amount) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
+		model.addAttribute("customer", customer);
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
@@ -200,10 +204,14 @@ public class CustomerController {
 
 	@RequestMapping(value = "/order/confirm")
 	public String orderConfirm(Model model,
-			@ModelAttribute("customer") Customer customer,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result,
 			@ModelAttribute("orderPlan") Plan plan, 
 			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			RedirectAttributes attr) {
+		
+		if (result.hasErrors()) {
+			return "broadband-customer/customer-order";
+		}
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setOrder_create_date(new Date());
@@ -280,21 +288,22 @@ public class CustomerController {
 		}
 		
 		
-		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
-			//System.out.println(chd.getId());
-			for (Hardware hd : hardwares) {
-				if (chd.getId() == hd.getId()) {
-					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-					cod_hd.setDetail_name(hd.getHardware_name());
-					cod_hd.setDetail_price(hd.getHardware_price());
-					cod_hd.setDetail_unit(1);
-					customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
-					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
-					break;
+		if (hardwares != null) {
+			for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
+				//System.out.println(chd.getId());
+				for (Hardware hd : hardwares) {
+					if (chd.getId() == hd.getId()) {
+						CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+						cod_hd.setDetail_name(hd.getHardware_name());
+						cod_hd.setDetail_price(hd.getHardware_price());
+						cod_hd.setDetail_unit(1);
+						customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+						customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
+						break;
+					}
 				}
 			}
 		}
-		
 		
 		return "broadband-customer/customer-order-confirm";
 	}
@@ -319,11 +328,16 @@ public class CustomerController {
 
 	@RequestMapping(value = "/order/submit")
 	public String toSignupPayment(Model model,
-			@ModelAttribute("customer") Customer customer,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult error,
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
 			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			@RequestParam(value = "result", required = true) String result,
-			SessionStatus status) throws Exception {
+			SessionStatus status
+			) throws Exception {
+		
+		if (error.hasErrors()) {
+			return "broadband-customer/customer-order";
+		}
 
 		Response responseBean = null;
 
@@ -377,19 +391,19 @@ public class CustomerController {
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
+			status.setComplete();
 		} else {
 
 		}
 
 		attr.addFlashAttribute("responseBean", responseBean);
 
-		status.isComplete();
-
 		return "redirect:/order/result";
 	}
 	
 	@RequestMapping(value = "/order/result")
-	public String toOrderResult() {
+	public String toOrderResult(SessionStatus status) {
+		
 		return "broadband-customer/customer-order-result";
 	}
 
@@ -440,6 +454,8 @@ public class CustomerController {
 		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(customerOrder);
 		customer.setCustomerOrders(customerOrders);
 		
+		customer.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customer.getId(), "unpaid"));
+		
 		model.addAttribute("customerOrders", customerOrders);
 		
 		return "broadband-customer/customer-home";
@@ -470,7 +486,7 @@ public class CustomerController {
 		return "broadband-customer/customer-billing";
 	}
 
-	@RequestMapping(value = "/customer/discard-billing/{pageNo}")
+	@RequestMapping(value = "/customer/billing/discard/{pageNo}")
 	public String customerDiscardBilling(Model model,
 			@PathVariable(value = "pageNo") int pageNo,
 			HttpServletRequest request) {
@@ -488,6 +504,13 @@ public class CustomerController {
 		model.addAttribute("page",invoicePage);
 		return "broadband-customer/customer-discard-billing";
 	}
+	
+	@RequestMapping("/customer/topup")
+	public String customerTopup(Model model) {
+		model.addAttribute("home", "active");
+		return "broadband-customer/customer-payment-topup";
+	}
+	
 
 	@RequestMapping(value = "/customer/payment")
 	public String customerPayment(Model model) {

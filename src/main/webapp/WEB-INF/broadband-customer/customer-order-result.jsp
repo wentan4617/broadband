@@ -5,6 +5,7 @@
 
 <jsp:include page="header.jsp" />
 <div class="container" style="padding-bottom: 200px; padding-top: 20px;">
+
 	<c:if test="${responseBean != null && responseBean.success == '1' }">
 		<div class="alert alert-success alert-dismissable">
 			<h1>Congratulations ! ! !</h1>
@@ -32,7 +33,7 @@
 			<h1>Sorry, the payment is failure.</h1>
 			<h2>
 				<a href="${ctx }/order/confirm">Click Here</a> to return to the
-				payment page.
+				order confirm page.
 			</h2>
 			<p>&nbsp;</p>
 			<p>

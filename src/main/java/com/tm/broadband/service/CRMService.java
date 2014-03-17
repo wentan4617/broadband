@@ -153,6 +153,7 @@ public class CRMService {
 			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
 			cod_topup.setDetail_type("plan-topup");
 			cod_topup.setDetail_is_next_pay(0);
+			cod_topup.setDetail_unit(1);
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
 			
@@ -620,4 +621,15 @@ public class CRMService {
 	/*
 	 * CompanyDetail END
 	 */
+	
+	
+	/*
+	 * customer invoice
+	 * */
+	public Double queryCustomerInvoicesBalanceByCid(int cid, String status) {
+		return this.customerInvoiceMapper.selectCustomerInvoicesBalanceByCidAndStatus(cid, status);
+	}
+	/*
+	 * end customer invoice
+	 * */
 }

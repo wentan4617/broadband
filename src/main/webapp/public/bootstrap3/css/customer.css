@@ -48,3 +48,7 @@ body {
 	background-color: #08373a;
 	border-color: #386d71;
 }
+
+.customer-panel-height {
+	min-height:500px;
+}

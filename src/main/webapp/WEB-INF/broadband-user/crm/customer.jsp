@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -9,52 +10,70 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-		
+
 			<!-- Customer Basic Info Module -->
 			<jsp:include page="customer-info.jsp" />
-			
+
 			<!-- Customer Order Info Module -->
 			<jsp:include page="customer-order.jsp" />
-			
+
 			<!-- Customer Invoice Info Module -->
 			<jsp:include page="customer-invoice.jsp" />
-			
+
 			<!-- Customer Transaction Info Module -->
 			<jsp:include page="customer-transaction.jsp" />
-			
+
 
 			<!-- Modal -->
-			<div class="modal fade" id="customer-invoice-mail-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" id="myModalLabel">Email Confirmation</h4>
-			      </div>
-			      <div class="modal-body">
-			        <h4 class="modal-title" id="myModalLabel" style='text-align:center'>Send chosen invoice to customer?</h4>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			        <button type="button" data-name="btn_send_mail" class="btn btn-primary">Send</button>
-			      </div>
-			    </div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
+			<div class="modal fade" id="customer-invoice-mail-modal"
+				tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+				aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal"
+								aria-hidden="true">&times;</button>
+							<h4 class="modal-title" id="myModalLabel">Email Confirmation</h4>
+						</div>
+						<div class="modal-body">
+							<h4 class="modal-title" id="myModalLabel"
+								style='text-align: center'>Send chosen invoice to customer?</h4>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default"
+								data-dismiss="modal">Cancel</button>
+							<button type="button" data-name="btn_send_mail"
+								class="btn btn-primary">Send</button>
+						</div>
+					</div>
+					<!-- /.modal-content -->
+				</div>
+				<!-- /.modal-dialog -->
+			</div>
+			<!-- /.modal -->
 
 		</div>
 	</div>
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
-
 (function($){
 	
+	$('.input-group.date').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose: true,
+	    todayHighlight: true
+	});
+	
 	var orderIds = new Array();
+	
 	<c:forEach var="co" items="${customer.customerOrders }">
 		orderIds.push('${co.id}');
 	</c:forEach>
+	
+	
 	$.getTxPage = function(pageNo) {
 		
 		$.get('${ctx}/broadband-user/crm/transaction/view/' + pageNo +'/'+ ${customer.id}, callbackPage, "json");
@@ -268,7 +287,7 @@
 						,'order_using_start_input':order_using_start_input
 						,'order_total_price':order_total_price
 						,'order_detail_unit':order_detail_unit_attr
-						};
+					};
 				
 				var url = "${ctx}/broadband-user/crm/customer/order/save";
 				$.get(url, data, function(order){

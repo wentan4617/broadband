@@ -34,7 +34,7 @@ public class CustomerOrder implements Serializable {
 	private String transition_account_number;
 	private String transition_porting_number;
 	private Integer hardware_post;
-	private Integer order_broadband_owner;
+	private Date order_due;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -274,14 +274,15 @@ public class CustomerOrder implements Serializable {
 		this.hardware_post = hardware_post;
 	}
 
-	public Integer getOrder_broadband_owner() {
-		return order_broadband_owner;
+	public Date getOrder_due() {
+		return order_due;
 	}
 
-	public void setOrder_broadband_owner(Integer order_broadband_owner) {
-		this.order_broadband_owner = order_broadband_owner;
+	public void setOrder_due(Date order_due) {
+		this.order_due = order_due;
 	}
 
+	
 	
 	
 }
