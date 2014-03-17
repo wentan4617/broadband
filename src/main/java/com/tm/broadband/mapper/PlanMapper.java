@@ -32,6 +32,8 @@ public interface PlanMapper {
 	List<Plan> selectPlansByPage(Page<Plan> page);
 	int selectPlansSum(Page<Plan> page);
 	
+	List<String> selectDistinctPlanGroup();
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

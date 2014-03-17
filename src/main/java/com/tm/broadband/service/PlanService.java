@@ -137,6 +137,11 @@ public class PlanService {
 	}
 	
 	@Transactional
+	public List<String> queryDistinctPlanGroup() {
+		return this.planMapper.selectDistinctPlanGroup();
+	}
+	
+	@Transactional
 	public List<Plan> queryPlansWithTopups(Plan plan) {
 		return this.planMapper.selectPlansWithTopups(plan);
 	}

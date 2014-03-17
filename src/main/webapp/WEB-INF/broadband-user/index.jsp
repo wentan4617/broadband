@@ -63,6 +63,10 @@
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/crm/customer/view/1">View Customer</a>
                     	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/crm/customer/pre-create">Create Customer</a>
+						</li>
                     </ul>
 			  	</div>
 			</div>

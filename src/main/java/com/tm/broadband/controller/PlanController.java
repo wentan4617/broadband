@@ -300,12 +300,6 @@ public class PlanController {
 			return "broadband-user/plan/hardware";
 		}
 		
-		int count = this.planService.queryExistPlanByName(hardware.getHardware_name());
-		
-		if (count > 0) {
-			result.rejectValue("hardware_name", "duplicate", "");
-			return "broadband-user/plan/hardware";
-		}
 		
 		this.planService.saveHardware(hardware);
 		attr.addFlashAttribute("success", "Create Hardware " + hardware.getHardware_name() + " is successful.");

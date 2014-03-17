@@ -50,6 +50,10 @@
 		SELECT * FROM `tm_plan` WHERE  id = #{0}
 	</select>
 	
+	<!-- select distinct plan_group -->
+	<select id="selectDistinctPlanGroup" resultType="String">
+		SELECT DISTINCT plan_group FROM `tm_plan`
+	</select>
 	
 	<!-- selectPlansBySome --> 
 	<select id="selectPlansBySome" parameterType="Plan" resultType="Plan">
