@@ -24,6 +24,7 @@ public interface CustomerInvoiceMapper {
 	
 	/* SELECT AREA */
 	
+	
 	List<CustomerInvoice> selectCustomerInvoicesByPage(Page<CustomerInvoice> page);
 	int selectCustomerInvoicesSum(Page<CustomerInvoice> page);
 	
@@ -36,6 +37,8 @@ public interface CustomerInvoiceMapper {
 	List<CustomerInvoice> selectCustomerInvoiceBySome(CustomerInvoice customerInvoice);
 	
 	CustomerInvoice selectInvoiceWithLastInvoiceIdById(int id);
+	
+	Double selectCustomerInvoicesBalanceByCidAndStatus(int cid, String status);
 	
 	/* // END SELECT AREA */
 	

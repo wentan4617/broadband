@@ -15,7 +15,7 @@
 			<jsp:include page="sidebar.jsp" />
 		</div>
 		<div class="col-md-9">
-			<div class="panel panel-success">
+			<div class="panel panel-success customer-panel-height">
 				<div class="panel-heading">View Billing</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">

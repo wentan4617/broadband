@@ -171,8 +171,11 @@
 					<div class="form-group">
 						<label class="control-label col-md-2">Service Giving Date</label>
 						<div class="col-md-2">
-							<input id="${customerOrder.id}_order_using_start_input"
-								class="form-control" placeholder="Start Date" value="2014-03-16"/>
+							<div class="input-group date">
+								<input id="${customerOrder.id}_order_using_start_input"
+									class="form-control" placeholder="Start Date" value="2014-03-16"/>
+									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							</div>
 						</div>
 						<label class="control-label col-md-1">SVLan</label>
 						<div class="col-md-2">

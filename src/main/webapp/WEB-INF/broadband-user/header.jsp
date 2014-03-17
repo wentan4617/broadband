@@ -11,7 +11,7 @@
     <link rel="shortcut icon" type="image/ico"  href="${ctx}/public/bootstrap3/images/icon.png"/>
     <link href="${ctx}/public/bootstrap3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="${ctx}/public/bootstrap3/css/user.css" rel="stylesheet" type="text/css"  />
-    <link href="${ctx}/public/bootstrap3/css/datepicker.css" rel="stylesheet" type="text/css" />
+    <link href="${ctx}/public/bootstrap3/css/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]>
 	<script src="${ctx}/public/bootstrap3/js/html5shiv.js"></script>

@@ -200,43 +200,46 @@
 					
 					</div>
 				</div>
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h3 class="panel-title">
-							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
-								Hardware
-							</a>
-						</h3>
-					</div>
-					
-					<div id="hardware" class="panel-collapse collapse in">
-						<div class="panel-body">
-							<c:forEach var="hardware" items="${hardwares }" varStatus="item">
-								<div class="panel panel-success">
-									<div class="panel-body bg-success">
-										<h3 class="text-success" style="margin-top:0;"><strong>${hardware.hardware_name }</strong></h3>
-									  	<p>${hardware.hardware_desc }</p>
+				
+				<!-- hardware -->
+				<c:if test="${fn:length(hardwares) > 0}">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h3 class="panel-title">
+								<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
+									Hardware
+								</a>
+							</h3>
+						</div>
+						
+						<div id="hardware" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<c:forEach var="hardware" items="${hardwares }" varStatus="item">
+									<div class="panel panel-success">
+										<div class="panel-body bg-success">
+											<h3 class="text-success" style="margin-top:0;"><strong>${hardware.hardware_name }</strong></h3>
+										  	<p>${hardware.hardware_desc }</p>
+										</div>
+										<ul class="list-unstyled topup-list">
+											<li>
+												<form:radiobutton path="customerOrder.hardwares[${item.index }].id"  data-name="addons" data-id="${hardware.id }" data-price="${hardware.hardware_price }"/> &nbsp;
+												<strong>None</strong>
+												<span id="none_${hardware.id }" class="text-danger"></span>
+											</li>
+											<li>
+												<form:radiobutton path="customerOrder.hardwares[${item.index }].id" value="${hardware.id }" data-name="addons" data-id="${hardware.id }" data-price="${hardware.hardware_price }" data-hname="${hardware.hardware_name }"/> &nbsp;
+												<strong>${hardware.hardware_name }</strong>
+												<span id="hp_${hardware.id }" class="text-danger">Add NZ$ [${hardware.hardware_price}]</span>
+											</li>
+										</ul>
 									</div>
-									<ul class="list-unstyled topup-list">
-										<li>
-											<form:radiobutton path="customerOrder.hardwares[${item.index }].id"  data-name="addons" data-id="${hardware.id }" data-price="${hardware.hardware_price }"/> &nbsp;
-											<strong>None</strong>
-											<span id="none_${hardware.id }" class="text-danger"></span>
-										</li>
-										<li>
-											<form:radiobutton path="customerOrder.hardwares[${item.index }].id" value="${hardware.id }" data-name="addons" data-id="${hardware.id }" data-price="${hardware.hardware_price }" data-hname="${hardware.hardware_name }"/> &nbsp;
-											<strong>${hardware.hardware_name }</strong>
-											<span id="hp_${hardware.id }" class="text-danger">Add NZ$ [${hardware.hardware_price}]</span>
-										</li>
-									</ul>
-								</div>
-								
-							</c:forEach>
+									
+								</c:forEach>
+							</div>
 						</div>
 					</div>
-				</div>
-		
-			<!-- hardware -->
+				</c:if>
+				
 		</div>
 		<div class="col-md-3" >
 			<div data-spy="affix" data-offset-top="150" class="panel panel-success">

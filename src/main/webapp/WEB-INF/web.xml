@@ -80,6 +80,18 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- customer order session filter -->
+	<filter>
+		<filter-name>CustomerOrderSessionFilter</filter-name>
+		<filter-class>com.tm.broadband.filter.CustomerOrderSessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CustomerOrderSessionFilter</filter-name>
+		<url-pattern>/order</url-pattern>
+		<url-pattern>/order/confirm</url-pattern>
+		<url-pattern>/order/submit</url-pattern>
+	</filter-mapping>
 
 	<!-- customer session filter -->
 	<filter>

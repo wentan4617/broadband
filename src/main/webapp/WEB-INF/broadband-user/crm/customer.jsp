@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -25,14 +26,23 @@
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
-
 (function($){
 	
+	$('.input-group.date').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose: true,
+	    todayHighlight: true
+	});
+	
 	var orderIds = new Array();
+	
 	<c:forEach var="co" items="${customer.customerOrders }">
 		orderIds.push('${co.id}');
 	</c:forEach>
+	
+	
 	$.getTxPage = function(pageNo) {
 		
 		$.get('${ctx}/broadband-user/crm/transaction/view/' + pageNo +'/'+ ${customer.id}, callbackPage, "json");
@@ -246,7 +256,7 @@
 						,'order_using_start_input':order_using_start_input
 						,'order_total_price':order_total_price
 						,'order_detail_unit':order_detail_unit_attr
-						};
+					};
 				
 				var url = "${ctx}/broadband-user/crm/customer/order/save";
 				$.get(url, data, function(order){
