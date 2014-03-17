@@ -72,6 +72,12 @@
 									View Customer
 								</a>
 							</li>
+							<li>
+								<a href="${ctx}/broadband-user/crm/customer/pre-create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Customer
+								</a>
+							</li>
 							<li class="divider"></li>
 						</ul>
 					</li>

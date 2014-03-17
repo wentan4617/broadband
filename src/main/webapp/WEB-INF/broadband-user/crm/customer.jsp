@@ -9,39 +9,17 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-		
-			<!-- Customer Basic Info Module -->
-			<jsp:include page="customer-info.jsp" />
-			
-			<!-- Customer Order Info Module -->
-			<jsp:include page="customer-order.jsp" />
-			
-			<!-- Customer Invoice Info Module -->
-			<jsp:include page="customer-invoice.jsp" />
-			
-			<!-- Customer Transaction Info Module -->
-			<jsp:include page="customer-transaction.jsp" />
-			
-
-			<!-- Modal -->
-			<div class="modal fade" id="customer-invoice-mail-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			  <div class="modal-dialog">
-			    <div class="modal-content">
-			      <div class="modal-header">
-			        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-			        <h4 class="modal-title" id="myModalLabel">Email Confirmation</h4>
-			      </div>
-			      <div class="modal-body">
-			        <h4 class="modal-title" id="myModalLabel" style='text-align:center'>Send chosen invoice to customer?</h4>
-			      </div>
-			      <div class="modal-footer">
-			        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
-			        <button type="button" data-name="btn_send_mail" class="btn btn-primary">Send</button>
-			      </div>
-			    </div><!-- /.modal-content -->
-			  </div><!-- /.modal-dialog -->
-			</div><!-- /.modal -->
-
+				<!-- Customer Basic Info Module -->
+				<jsp:include page="customer-info.jsp" />
+				
+				<!-- Customer Order Info Module -->
+				<jsp:include page="customer-order.jsp" />
+				
+				<!-- Customer Invoice Info Module -->
+				<jsp:include page="customer-invoice.jsp" />
+				
+				<!-- Customer Transaction Info Module -->
+				<jsp:include page="customer-transaction.jsp" />
 		</div>
 	</div>
 </div>
