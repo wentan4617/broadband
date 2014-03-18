@@ -4,6 +4,133 @@
 
 <mapper namespace="com.tm.broadband.mapper.ProvisionLogMapper">
 	
+<!-- DEFINITION AREA -->
+
+	<sql id="provisionLogColumns">
+		p.`id`					as p_id,
+		p.`process_datetime`	as p_process_datetime,
+		p.`order_sort`			as p_order_sort,
+		p.`process_way`			as p_process_way,
+		p.`process_memo`		as p_process_memo
+	</sql>
+	<sql id="userColumns">
+		u.`id`				as u_id,
+		u.`login_name`		as u_login_name,
+		u.`password`		as u_password,
+		u.`user_name`		as u_user_name,
+		u.`user_role`		as u_user_role,
+		u.`memo`			as u_memo
+	</sql>
+	<sql id="customerOrderColumns">
+		cus_o.`id` 							as cus_o_id, 
+		cus_o.`order_serial` 				as cus_o_order_serial, 
+		cus_o.`customer_id` 				as cus_o_customer_id, 
+		cus_o.`order_total_price` 			as cus_o_order_total_price, 
+		cus_o.`order_create_date` 			as cus_o_order_create_date, 
+		cus_o.`order_status` 				as cus_o_order_status, 
+		cus_o.`order_using_start` 			as cus_o_order_using_start,
+		cus_o.`next_invoice_create_date` 	as cus_o_next_invoice_create_date,
+		cus_o.`order_type` 					as cus_o_order_type,
+		cus_o.`order_broadband_type` 		as cus_o_order_broadband_type,
+		cus_o.`svlan`	 					as cus_o_svlan,
+		cus_o.`cvlan` 						as cus_o_cvlan
+	</sql>
+	
+	<!-- 
+	<sql id="chorusOrderColumns">
+		ch_o.`id` 							as ch_o_id, 
+		ch_o.`order_serial` 				as ch_o_order_serial, 
+		ch_o.`customer_id` 					as ch_o_customer_id, 
+		ch_o.`order_total_price` 			as ch_o_order_total_price, 
+		ch_o.`order_create_date` 			as ch_o_order_create_date, 
+		ch_o.`order_status` 				as ch_o_order_status, 
+		ch_o.`order_using_start` 			as ch_o_order_using_start,
+		ch_o.`next_invoice_create_date` 	as ch_o_next_invoice_create_date,
+		ch_o.`order_type` 					as ch_o_order_type,
+		ch_o.`order_broadband_type` 		as ch_o_order_broadband_type,
+		ch_o.`svlan`	 					as ch_o_svlan,
+		ch_o.`cvlan` 						as ch_o_cvlan
+	</sql>
+	 -->
+	 
+	<!--
+		<include refid="chorusOrderColumns"/> 
+	 -->
+	 
+	<!--
+		tm_customer_order as ch_o
+	 -->
+	
+	<!-- 
+	<association property="order_id_chorus" javaType="CustomerOrder">
+		<id property="id" column="cus_oid" />
+		<result property="order_serial" column="ch_o_order_serial" />
+		<result property="order_total_price" column="ch_o_order_total_price" />
+		<result property="order_create_date" column="ch_o_order_create_date" />
+		<result property="order_status" column="ch_o_order_status" />
+		<result property="order_using_start" column="ch_o_order_using_start" />
+		<result property="next_invoice_create_date" column="ch_o_next_invoice_create_date" />
+		<result property="order_type" column="ch_o_order_type" />
+		<result property="order_broadband_type" column="ch_o_order_broadband_type" />
+		<result property="svlan" column="ch_o_svlan" />
+		<result property="cvlan" column="ch_o_cvlan" />
+	</association>
+	-->
+
+<!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA -->
+
+	<select id="selectProvisionLogById">
+		SELECT * FROM tm_provision_log WHERE id=#{0}
+	</select>
+
+	<select id="selectProvisionLogsByPage" parameterType="Page" resultMap="selectProvisionLogsByPageResultMap">
+		SELECT
+			<include refid="provisionLogColumns"/>,
+			<include refid="userColumns"/>,
+			<include refid="customerOrderColumns"/>
+		FROM tm_provision_log as p,
+		tm_user as u,
+		tm_customer_order as cus_o
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	<select id="selectProvisionLogsSum" parameterType="Page" resultType="int">
+		SELECT COUNT(*) FROM tm_provision_log
+	</select>
+	
+	<resultMap type="ProvisionLog" id="selectProvisionLogsByPageResultMap">
+		<id property="id" column="p_id"/>
+		<result property="process_datetime" column="p_process_datetime"/>
+		<result property="order_sort" column="p_order_sort"/>
+		<result property="process_way" column="p_process_way"/>
+		<result property="process_memo" column="p_process_memo"/>
+		<association property="user" javaType="User">
+			<id property="id" column="u_id"/>
+			<result property="login_name" column="u_login_name"/>
+			<result property="password" column="u_password"/>
+			<result property="user_name" column="u_user_name"/>
+			<result property="user_role" column="u_user_role"/>
+			<result property="memo" column="u_memo"/>
+		</association>
+		<association property="order_id_customer" javaType="CustomerOrder">
+			<id property="id" column="cus_o_id" />
+			<result property="order_serial" column="cus_o_order_serial" />
+			<result property="order_total_price" column="cus_o_order_total_price" />
+			<result property="order_create_date" column="cus_o_order_create_date" />
+			<result property="order_status" column="cus_o_order_status" />
+			<result property="order_using_start" column="cus_o_order_using_start" />
+			<result property="next_invoice_create_date" column="cus_o_next_invoice_create_date" />
+			<result property="order_type" column="cus_o_order_type" />
+			<result property="order_broadband_type" column="cus_o_order_broadband_type" />
+			<result property="svlan" column="cus_o_svlan" />
+			<result property="cvlan" column="cus_o_cvlan" />
+		</association>
+	</resultMap>
+<!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA -->
 	<!-- 
 		when every update customer order status, insert log 
 		`order_id_chorus`, 
@@ -18,5 +145,28 @@
 			#{order_id_customer.id}, 
 			#{process_way}, #{process_memo})
 	</insert>
+<!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA -->
+
+	<!-- update provision log -->
+	<update id="updateProvisionLog" parameterType="ProvisionLog">
+		UPDATE tm_provision_log
+		<set>
+			<if test="user.id != null">user_id=#{user.id},</if>
+			<if test="process_datetime != null">process_datetime=#{process_datetime},</if>
+			<if test="order_sort != null">order_sort=#{order_sort},</if>
+			<if test="order_id_customer.id != null">order_id_customer=#{order_id_customer.id},</if>
+			<if test="process_way != null">process_way=#{process_way},</if>
+			<if test="process_memo != null">process_memo=#{process_memo}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id=#{params.id}</if>
+		</where>
+	</update>
+	
+<!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
 	
 </mapper>

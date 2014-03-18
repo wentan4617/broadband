@@ -159,7 +159,20 @@ public class ProvisionController {
 		
 		return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
 	}
+
 	
-	
+	@RequestMapping(value = "/broadband-user/provision/view/{pageNo}")
+	public String provisionLogView(Model model,
+			@PathVariable(value = "pageNo") int pageNo) {
+
+		Page<ProvisionLog> page = new Page<ProvisionLog>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by p.order_sort desc, p.process_way");
+		this.provisionService.queryProvisionLogsByPage(page);
+		model.addAttribute("page", page);
+
+		return "broadband-user/provision/provision-log-view";
+	}
 
 }

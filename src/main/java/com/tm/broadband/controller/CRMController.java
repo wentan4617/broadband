@@ -385,22 +385,24 @@ public class CRMController {
 		return url;
 	}
 	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create")
 	public String toCustomerOrderCreate(Model model,
 			@ModelAttribute("customer") 
 			@Validated(CustomerValidatedMark.class) Customer customer,
 			BindingResult result) {
+
 		
 		if (result.hasErrors()) {
 			return "broadband-user/crm/customer-create";
 		}
-		
 		model.addAttribute("customerOrder", new CustomerOrder());
 		
 		Plan plan = new Plan();
 		plan.getParams().put("plan_status", "selling");
 		List<Plan> plans = this.planService.queryPlansBySome(plan);
 		model.addAttribute("plans", plans);
+
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");

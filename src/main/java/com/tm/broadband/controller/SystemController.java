@@ -145,6 +145,11 @@ public class SystemController {
 		model.addAttribute("action", "/broadband-user/system/user/edit");
 
 		User user = this.systemService.queryUserById(id);
+		
+		// iterating auths of this user
+		if (user.getAuth() != null && !"".equals(user.getAuth())) {
+			user.setAuthArray(user.getAuth().split(","));
+		}
 
 		model.addAttribute("user", user);
 

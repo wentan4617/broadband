@@ -10,13 +10,10 @@ import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
-import com.tm.broadband.model.User;
 
 @Service
 public class ProvisionService {
@@ -71,6 +68,22 @@ public class ProvisionService {
 		this.customerOrderMapper.updateCustomerOrder(co);
 		this.customerOrderDetailMapper.updateCustomerOrderDetail(cod);
 	}
+
+	@Transactional
+	public Page<ProvisionLog> queryProvisionLogsByPage(Page<ProvisionLog> page) {
+		page.setTotalRecord(this.provisionLogMapper.selectProvisionLogsSum(page));
+		page.setResults(this.provisionLogMapper.selectProvisionLogsByPage(page));
+		return page;
+	}
 	
+	@Transactional
+	public ProvisionLog queryProvisionLogById(int id){
+		return this.provisionLogMapper.selectProvisionLogById(id);
+	}
+	
+	@Transactional
+	public void editProvisionLog(ProvisionLog provisionLog){
+		this.provisionLogMapper.updateProvisionLog(provisionLog);
+	}
 	
 }

@@ -30,6 +30,7 @@ public class User implements Serializable {
 	private String user_name;
 	private String user_role;
 	private String memo;
+	private String auth;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -40,6 +41,7 @@ public class User implements Serializable {
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
+	private String[] authArray;
 	/*
 	 * END RELATED PROPERTIES
 	 */
@@ -105,6 +107,22 @@ public class User implements Serializable {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public String getAuth() {
+		return auth;
+	}
+
+	public void setAuth(String auth) {
+		this.auth = auth;
+	}
+
+	public String[] getAuthArray() {
+		return authArray;
+	}
+
+	public void setAuthArray(String[] authArray) {
+		this.authArray = authArray;
 	}
 
 }

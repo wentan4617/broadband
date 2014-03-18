@@ -50,18 +50,164 @@
 								</form:select>
 							</div>
 						</div>
+						<hr/>
+						<h4>User Authentication</h4>
+						<div class="form-group">
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>Plan</h3>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/view" /> View Plan
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/create" /> Create Plan
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/edit" /> Edit Plan
+										</label>
+									</li>
+								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/hardware/view" /> View Hardware
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/hardware/create" /> Create Hardware
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/hardware/edit" /> Edit Hardware
+										</label>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>CRM</h3>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/customer/view" /> View Customer
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/customer/pre-create" /> Create Customer
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/customer/edit" /> Edit Customer
+										</label>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>Billing</h3>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>Provision</h3>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="provision/view" /> View Provision
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="provision/customer/view" /> Provision Customer Order
+										</label>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>Data</h3>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+											<h3>System</h3>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/user/view" /> View User
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/user/create" /> Create User
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/user/edit" /> Edit User
+										</label>
+									</li>
+								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/view" /> View Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/create" /> Create Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/edit" /> Edit Notification
+										</label>
+									</li>
+								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/company-detail/pre-edit" /> Edit Company Detail
+										</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<hr/>
+						<div class="form-group">
+							<div class="col-md-3 col-md-offset-4">
+								<button type="submit" class="btn btn-success">Save</button>
+							</div>
+						</div>
+						<hr/>
 						<div class="form-group">
 							<label for="memo" class="control-label col-md-4">Memo</label>
 							<div class="col-md-6">
 								<form:textarea path="memo" class="form-control" rows="6"/>
 							</div>
 						</div>
-						<div class="form-group">
-							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save</button>
-							</div>
-						</div>
-						
 					</form:form>
 				</div>
 			</div>

@@ -63,6 +63,7 @@
 			<if test="params.plan_sort != null">and plan_sort = #{params.plan_sort}</if>
 			<if test="params.plan_status != null">and plan_status = #{params.plan_status}</if>
 			<if test="params.plan_type != null">and plan_type = #{params.plan_type}</if>
+			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
 		</where>
 		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
