@@ -284,7 +284,7 @@ public class SystemController {
 	 * CompanyDetail Controller begin
 	 */
 
-	@RequestMapping(value = "/broadband-user/system/company-detail/pre-edit")
+	@RequestMapping(value = "/broadband-user/system/company-detail/edit")
 	public String toCompanyDetailEdit(Model model) {
 
 		model.addAttribute("panelheading", "Company Detail Edit");

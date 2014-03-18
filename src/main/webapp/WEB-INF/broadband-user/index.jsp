@@ -153,7 +153,7 @@
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/system/company-detail/pre-edit">Edit Company Detail</a>
+                    		<a href="${ctx }/broadband-user/system/company-detail/edit">Edit Company Detail</a>
                     	</li>
                     </ul>
 			  	</div>

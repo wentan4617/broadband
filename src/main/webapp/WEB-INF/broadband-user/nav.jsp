@@ -165,7 +165,7 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/system/company-detail/pre-edit">
+								<a href="${ctx}/broadband-user/system/company-detail/edit">
 									<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
 									Edit Company Detail
 								</a>
