@@ -44,11 +44,23 @@ public class SystemService {
 
 	@Transactional
 	public void saveUser(User user) {
+		String auth = "";
+		for (int i = 0, len = user.getAuthArray().length; i < len; i++) {
+			auth += user.getAuthArray()[i];
+			if (i < len - 1) auth += ",";
+		}
+		user.setAuth(auth);
 		this.userMapper.insertUser(user);
 	}
 
 	@Transactional
 	public void editUser(User user) {
+		String auth = "";
+		for (int i = 0, len = user.getAuthArray().length; i < len; i++) {
+			auth += user.getAuthArray()[i];
+			if (i < len - 1) auth += ",";
+		}
+		user.setAuth(auth);
 		this.userMapper.updateUser(user);
 	}
 

@@ -56,8 +56,8 @@
 	<!-- INSERT AREA -->
 	
 	<insert id="insertUser" parameterType="User">
-	insert into tm_user(login_name,password,user_name,user_role,memo)
-	values(#{login_name},#{password},#{user_name},#{user_role},#{memo})
+		insert into tm_user(login_name,password,user_name,user_role,memo,auth)
+		values(#{login_name},#{password},#{user_name},#{user_role},#{memo},#{auth})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -72,7 +72,8 @@
 			<if test="password != null">`password`=#{password},</if>
 			<if test="user_name != null">`user_name`=#{user_name},</if>
 			<if test="user_role != null">`user_role`=#{user_role},</if>
-			<if test="memo != null">`memo`=#{memo}</if>
+			<if test="memo != null">`memo`=#{memo},</if>
+			<if test="auth != null">`auth`=#{auth}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>

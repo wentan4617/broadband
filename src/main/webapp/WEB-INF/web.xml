@@ -122,6 +122,21 @@
 		<url-pattern>/broadband-user/data/*</url-pattern>
 		<url-pattern>/broadband-user/system/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- user auth filter -->
+	<filter>
+		<filter-name>UserAuthFilter</filter-name>
+		<filter-class>com.tm.broadband.filter.UserAuthFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UserAuthFilter</filter-name>
+		<url-pattern>/broadband-user/plan/*</url-pattern>
+		<url-pattern>/broadband-user/crm/*</url-pattern>
+		<url-pattern>/broadband-user/billing/*</url-pattern>
+		<url-pattern>/broadband-user/provision/*</url-pattern>
+		<url-pattern>/broadband-user/data/*</url-pattern>
+		<url-pattern>/broadband-user/system/*</url-pattern>
+	</filter-mapping>
 
 	<error-page>
 		<error-code>400</error-code>

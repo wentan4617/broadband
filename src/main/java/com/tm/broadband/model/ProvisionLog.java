@@ -2,6 +2,8 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProvisionLog implements Serializable {
 
@@ -16,7 +18,7 @@ public class ProvisionLog implements Serializable {
 	private Date process_datetime;
 	private String order_sort;
 	private CustomerOrder order_id_customer;
-	//private ChorusOrder order_id_chorus;
+//	private ChorusOrder order_id_chorus;
 	private String process_way;
 	private String process_memo;
 	
@@ -27,6 +29,8 @@ public class ProvisionLog implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
 	
 	/*
 	 * END RELATED PROPERTIES
@@ -94,6 +98,12 @@ public class ProvisionLog implements Serializable {
 		return serialVersionUID;
 	}
 
-	
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
 
 }

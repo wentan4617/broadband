@@ -363,7 +363,6 @@ public class CRMController {
 
 		if (count > 0) {
 			result.rejectValue("login_name", "duplicate", "");
-			System.out.println("greater than 0 in customer");
 			return "broadband-user/crm/customer-create";
 		}
 
@@ -383,7 +382,7 @@ public class CRMController {
 	public String toCustomerOrderCreate(Model model
 			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
 			,BindingResult result) {
-		
+		model.addAttribute("customerOrder", new CustomerOrder());
 		// customer
 		model.addAttribute("panelheading", "Order Create");
 		model.addAttribute("action", "/broadband-user/crm/customer/create");
@@ -400,7 +399,6 @@ public class CRMController {
 		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
 
 		if (count > 0) {
-			System.out.println("greater than 0 in order");
 			result.rejectValue("login_name", "duplicate", "");
 			return "broadband-user/crm/customer-create";
 		}
@@ -431,10 +429,22 @@ public class CRMController {
 	public Map<String, Object> getPlanByType(Model model
 			,@PathVariable(value = "planType") String planType) {
 		Plan plan = new Plan();
-		plan.getParams().put("plan_type", planType);
+		plan.getParams().put("plan_group", planType);
+		plan.getParams().put("plan_status", "selling");
 		List<Plan> plans = this.planService.queryPlansBySome(plan);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("plans", plans);
+		return map;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/hardware/view/{planType}")
+	@ResponseBody
+	public Map<String, Object> getHardwareBySelling(Model model) {
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("hardwares", hardwares);
 		return map;
 	}
 	

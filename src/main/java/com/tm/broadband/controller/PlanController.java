@@ -65,7 +65,7 @@ public class PlanController {
 			@ModelAttribute("plan") @Validated(PlanValidatedMark.class) Plan plan,
 			BindingResult result, HttpServletRequest req,
 			RedirectAttributes attr) {
-		
+
 		model.addAttribute("panelheading", "Plan Create");
 		model.addAttribute("action", "/broadband-user/plan/create");
 
