@@ -28,7 +28,7 @@
 						</thead>
 						<tbody>
 							<c:forEach var="user" items="${page.results }">
-								<tr class="${user.user_role == 'administrator' ? 'success' : '' }">
+								<tr class="">
 									<td>
 										<input type="checkbox" name="checkbox_users" value="${user.id}"/>
 									</td>

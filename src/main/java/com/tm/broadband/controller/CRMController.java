@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -336,24 +338,18 @@ public class CRMController {
 	 * BEGIN back-end create customer model
 	 */
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/pre-create")
+	@RequestMapping(value = "/broadband-user/crm/customer/create")
 	public String toCustomerCreate(Model model) {
 		model.addAttribute(new Customer());
-		model.addAttribute("panelheading", "Customer Create");
-		model.addAttribute("action", "/broadband-user/crm/customer/create");
-		model.addAttribute("nextAction", "/broadband-user/crm/customer/order/pre-create");
-
 		return "broadband-user/crm/customer-create";
 	}
 
-	@RequestMapping(value = "/broadband-user/crm/customer/create")
-	public String doCustomerCreate(Model model
-			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
-			,BindingResult result
-			,RedirectAttributes attr) {
-		
-		model.addAttribute("panelheading", "Essential Information");
-		model.addAttribute("action", "/broadband-user/crm/customer/create");
+	@RequestMapping(value = "/broadband-user/crm/customer/create", method = RequestMethod.POST)
+	public String doCustomerCreate(Model model,
+			@ModelAttribute("customer") 
+			@Validated(CustomerValidatedMark.class) Customer customer,
+			BindingResult result, RedirectAttributes attr,
+			@RequestParam("action") String action) {
 
 		if (result.hasErrors()) {
 			return "broadband-user/crm/customer-create";
@@ -371,42 +367,42 @@ public class CRMController {
 			return "broadband-user/crm/customer-create";
 		}
 		
-		this.crmService.createCustomer(customer);
+		customer.setRegister_date(new Date());
+		customer.setActive_date(new Date());
+		customer.setBalance(0d);
 		
-		attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
+		String url = "";
+		if ("save".equals(action)) {
+			url = "redirect:/broadband-user/crm/customer/query/1";
+			this.crmService.createCustomer(customer);
+			attr.addFlashAttribute("success",
+					"Create Customer " + customer.getLogin_name()
+							+ " is successful.");
+		} else if ("next".equals(action)) {
+			url = "redirect:/broadband-user/crm/customer/order/create";
+		}
 		
-		return "redirect:/broadband-user/crm/customer/query/1";
+		return url;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/pre-create")
-	public String toCustomerOrderCreate(Model model
-			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
-			,BindingResult result) {
-		model.addAttribute("customerOrder", new CustomerOrder());
-		// customer
-		model.addAttribute("panelheading", "Order Create");
-		model.addAttribute("action", "/broadband-user/crm/customer/create");
-		model.addAttribute("nextAction", "/broadband-user/crm/customer/order/pre-create");
-		// order
-		model.addAttribute("orderAction", "/broadband-user/crm/customer/order/create");
-		model.addAttribute("orderNextAction", "/broadband-user/crm/customer/order/pre-create");
-		model.addAttribute("backAction", "/broadband-user/crm/customer/back-pre-create");
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/create")
+	public String toCustomerOrderCreate(Model model,
+			@ModelAttribute("customer") 
+			@Validated(CustomerValidatedMark.class) Customer customer,
+			BindingResult result) {
+
 		
 		if (result.hasErrors()) {
 			return "broadband-user/crm/customer-create";
 		}
+		model.addAttribute("customerOrder", new CustomerOrder());
 		
-		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
+		Plan plan = new Plan();
+		plan.getParams().put("plan_status", "selling");
+		List<Plan> plans = this.planService.queryPlansBySome(plan);
+		model.addAttribute("plans", plans);
 
-		if (count > 0) {
-			result.rejectValue("login_name", "duplicate", "");
-			return "broadband-user/crm/customer-create";
-		}
-
-		if (!customer.getPassword().equals(customer.getCk_password())) {
-			result.rejectValue("ck_password", "incorrectConfirmPassowrd", "");
-			return "broadband-user/crm/customer-create";
-		}
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
@@ -416,37 +412,12 @@ public class CRMController {
 		return "broadband-user/crm/order-create";
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/back-pre-create")
+	@RequestMapping(value = "/broadband-user/crm/customer/create/back")
 	public String toBackCustomerCreate(Model model) {
-		model.addAttribute("panelheading", "Customer Create");
-		model.addAttribute("action", "/broadband-user/crm/customer/create");
-		model.addAttribute("nextAction", "/broadband-user/crm/customer/order/pre-create");
 		return "broadband-user/crm/customer-create";
 	}
 
-	@RequestMapping(value = "/broadband-user/crm/customer/order/plan/view/{planType}")
-	@ResponseBody
-	public Map<String, Object> getPlanByType(Model model
-			,@PathVariable(value = "planType") String planType) {
-		Plan plan = new Plan();
-		plan.getParams().put("plan_group", planType);
-		plan.getParams().put("plan_status", "selling");
-		List<Plan> plans = this.planService.queryPlansBySome(plan);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("plans", plans);
-		return map;
-	}
 
-	@RequestMapping(value = "/broadband-user/crm/customer/order/hardware/view/{planType}")
-	@ResponseBody
-	public Map<String, Object> getHardwareBySelling(Model model) {
-		Hardware hardware = new Hardware();
-		hardware.getParams().put("hardware_status", "selling");
-		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("hardwares", hardwares);
-		return map;
-	}
 	
 	/**
 	 * END back-end create customer model

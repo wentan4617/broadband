@@ -21,7 +21,7 @@ public class Hardware implements Serializable {
 	private Integer id;
 	@NotEmpty(groups = { HardwareValidatedMark.class})
 	private String hardware_name;
-	@NotEmpty(groups = { HardwareValidatedMark.class})
+//	@NotEmpty(groups = { HardwareValidatedMark.class})
 	private String hardware_desc;
 	@NotEmpty(groups = { HardwareValidatedMark.class})
 	private String hardware_type;

@@ -105,7 +105,7 @@
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/pre-create" /> Create Customer
+											<form:checkbox path="authArray" value="crm/customer/create" /> Create Customer
 										</label>
 									</li>
 									<li>
@@ -125,7 +125,7 @@
 							<div class="col-md-2">
 								<ul class="list-unstyled">
 									<li>
-											<h3>Provision</h3>
+										<h3>Provision</h3>
 									</li>
 									<li>
 										<label> 
@@ -189,7 +189,7 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/company-detail/pre-edit" /> Edit Company Detail
+											<form:checkbox path="authArray" value="system/company-detail/edit" /> Edit Company Detail
 										</label>
 									</li>
 								</ul>
