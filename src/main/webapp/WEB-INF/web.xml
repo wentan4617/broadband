@@ -130,12 +130,45 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>UserAuthFilter</filter-name>
-		<url-pattern>/broadband-user/plan/*</url-pattern>
-		<url-pattern>/broadband-user/crm/*</url-pattern>
+		
+		<!-- Plan Module BEGIN -->
+		<url-pattern>/broadband-user/plan/view/*</url-pattern>
+		<url-pattern>/broadband-user/plan/create</url-pattern>
+		<url-pattern>/broadband-user/plan/edit/*</url-pattern>
+		<url-pattern>/broadband-user/plan/hardware/view/*</url-pattern>
+		<url-pattern>/broadband-user/plan/hardware/create</url-pattern>
+		<url-pattern>/broadband-user/plan/hardware/edit/*</url-pattern>
+		<!-- Plan Module END -->
+		
+		<!-- CRM Module BEGIN -->
+		<url-pattern>/broadband-user/crm/customer/view/*</url-pattern>
+		<url-pattern>/broadband-user/crm/customer/create</url-pattern>
+		<url-pattern>/broadband-user/crm/customer/edit/*</url-pattern>
+		<!-- CRM Module END -->
+		
+		<!-- Billing Module BEGIN -->
 		<url-pattern>/broadband-user/billing/*</url-pattern>
-		<url-pattern>/broadband-user/provision/*</url-pattern>
+		<!-- Billing Module END -->
+		
+		<!-- Provision Module BEGIN -->
+		<url-pattern>/broadband-user/provision/view/*</url-pattern>
+		<url-pattern>/broadband-user/provision/customer/view/*</url-pattern>
+		<!-- Provision Module END -->
+		
+		<!-- Data Module BEGIN -->
 		<url-pattern>/broadband-user/data/*</url-pattern>
-		<url-pattern>/broadband-user/system/*</url-pattern>
+		<!-- Data Module END -->
+		
+		<!-- System Module BEGIN -->
+		<url-pattern>/broadband-user/system/user/view/*</url-pattern>
+		<url-pattern>/broadband-user/system/user/create</url-pattern>
+		<url-pattern>/broadband-user/system/user/edit/*</url-pattern>
+		<url-pattern>/broadband-user/system/notification/view/*</url-pattern>
+		<url-pattern>/broadband-user/system/notification/create</url-pattern>
+		<url-pattern>/broadband-user/system/notification/edit/*</url-pattern>
+		<url-pattern>/broadband-user/system/company-detail/edit</url-pattern>
+		<!-- System Module END -->
+		
 	</filter-mapping>
 
 	<error-page>
