@@ -15,17 +15,18 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
-							data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">${panelheading }</a>
+							data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">Customer Create</a>
 					</h4>
 				</div>
 				<div id="collapseCustomerInfo" class="panel-collapse collapse in">
 					<div class="panel-body">
-						<h4 class="text-success">Create customer's account</h4>
+					
+						<!-- customer account -->
+						<h4 class="text-success">Create customer account</h4>
 						<hr/>
-						<form:form modelAttribute="customer" method="post" id="customerFrom"
-							action="${ctx}${action }" class="form-horizontal">
+						<form:form modelAttribute="customer" action="${ctx}/broadband-user/crm/customer/create" method="post" id="customerFrom" class="form-horizontal">
 							<div class="form-group">
-								<label for="customer_name" class="control-label col-md-3">Login Name</label>
+								<label for="customer_name" class="control-label col-md-3">Customer login name</label>
 								<div class="col-md-3">
 									<form:input path="login_name" class="form-control" placeholder="Login Name" />
 								</div>
@@ -36,7 +37,7 @@
 							<div class="form-group">
 								<label for="password" class="control-label col-md-3">Password</label>
 								<div class="col-md-3">
-									<form:input path="password" class="form-control" placeholder="Password" />
+									<form:password path="password" class="form-control" placeholder="Password" />
 								</div>
 								<p class="help-block col-md-6">
 									<form:errors path="password" cssErrorClass="error" />
@@ -51,6 +52,12 @@
 									<form:errors path="ck_password" cssErrorClass="error"/>
 								</p>
 							</div>
+							
+							
+							<!-- Personal Information -->
+							<hr/>
+							<h4 class="text-success">Personal Information</h4>
+							<hr/>
 							<div class="form-group">
 								<label for="first_name" class="control-label col-md-3">First Name</label>
 								<div class="col-md-3">
@@ -69,16 +76,7 @@
 									<form:errors path="last_name" cssErrorClass="error" />
 								</p>
 							</div>
-							<div class="form-group">
-								<label for="status" class="control-label col-md-3">Status</label>
-								<div class="col-md-3">
-									<form:select path="status" class="form-control">
-										<form:option value="verify">verify</form:option>
-										<form:option value="active">active</form:option>
-										<form:option value="disabled">disabled</form:option>
-									</form:select>
-								</div>
-							</div>
+							
 							<div class="form-group">
 								<label for="cellphone" class="control-label col-md-3">Cellphone</label>
 								<div class="col-md-3">
@@ -115,15 +113,27 @@
 									<form:errors path="address" cssErrorClass="error" />
 								</p>
 							</div>
+							
+							<!-- Other options -->
+							<hr/>
+							<h4 class="text-success">Other Options</h4>
 							<hr/>
 							<div class="form-group">
-								<div class="col-md-offset-4">
-									<span class="col-md-offset-1">
-										<a  href="javascript:void(0);"class="btn btn-success" id="save">Save</a>
-									</span>
-									<span class="col-md-offset-1">
-										<a  href="javascript:void(0);"class="btn btn-success" id="next">Next</a>
-									</span>
+								<label for="status" class="control-label col-md-3">Status</label>
+								<div class="col-md-3">
+									<form:select path="status" class="form-control">
+										<%-- <form:option value="verify">verify</form:option> --%>
+										<form:option value="active">active</form:option>
+										<form:option value="disabled">disabled</form:option>
+									</form:select>
+								</div>
+							</div>
+							<hr/>
+							<div class="form-group">
+								<div class="col-md-3 col-md-offset-3">
+									<a  href="javascript:void(0);"class="btn btn-success" id="save">Save</a>
+									<a  href="javascript:void(0);"class="btn btn-success" id="next">Next</a>
+									<input type="hidden" name="action" id="action"/>
 								</div>
 							</div>
 						</form:form>
@@ -138,14 +148,14 @@
 <script type="text/javascript">
 (function($){
 	
-	var saveAction = '${ctx}${action}';
-	var nextAction = '${ctx}${nextAction}';
-	
 	$('#save').click(function(){
-		$('#customerFrom').attr('action', saveAction).submit();
+		$('#action').val('save');
+		$('#customerFrom').submit();
 	});
 	$('#next').click(function(){
-		$('#customerFrom').attr('action', nextAction).submit();
+
+		$('#action').val('next');
+		$('#customerFrom').submit();
 	});
 	
 })(jQuery);

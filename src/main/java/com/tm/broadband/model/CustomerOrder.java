@@ -48,6 +48,7 @@ public class CustomerOrder implements Serializable {
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
 	private Customer customer;
+	private Plan plan;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
@@ -280,6 +281,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_due(Date order_due) {
 		this.order_due = order_due;
+	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
 	}
 
 	

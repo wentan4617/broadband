@@ -65,7 +65,7 @@
                     	</li>
 						<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/crm/customer/pre-create">Create Customer</a>
+                    		<a href="${ctx }/broadband-user/crm/customer/create">Create Customer</a>
 						</li>
                     </ul>
 			  	</div>

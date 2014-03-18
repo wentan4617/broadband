@@ -44,7 +44,7 @@
 					<div id="application" class="panel-collapse collapse in">
 						<div class="panel-body">
 							
-							
+								<!-- customer account -->
 								<h4 class="text-success">Create your account</h4>
 								<hr/>
 								<div class="form-group">
