@@ -10,6 +10,7 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 import com.tm.broadband.validator.mark.PlanValidatedMark;
 
 /**
@@ -27,6 +28,7 @@ public class Plan implements Serializable {
 	 * TABLE MAPPING PROPERTIES
 	 */
 
+	@NotNull(groups = { CustomerOrderValidatedMark.class })
 	private Integer id;
 	@NotEmpty(groups = { PlanValidatedMark.class })
 	private String plan_name;
@@ -39,6 +41,7 @@ public class Plan implements Serializable {
 	private String plan_type;
 	private String plan_sort;
 	private String memo;
+	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	private String plan_group;
 	private Double plan_new_connection_fee;
 	private Date create_date;
@@ -55,7 +58,7 @@ public class Plan implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
-	
+
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private Topup topup = new Topup();
 	private List<Topup> topups;
@@ -172,8 +175,6 @@ public class Plan implements Serializable {
 		this.create_date = create_date;
 	}
 
-	
-
 	public Date getLast_update_date() {
 		return last_update_date;
 	}
@@ -181,8 +182,6 @@ public class Plan implements Serializable {
 	public void setLast_update_date(Date last_update_date) {
 		this.last_update_date = last_update_date;
 	}
-
-	
 
 	public String getPlan_topupid_array() {
 		return plan_topupid_array;

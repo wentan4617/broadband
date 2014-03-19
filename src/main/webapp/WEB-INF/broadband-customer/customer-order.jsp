@@ -133,7 +133,7 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label for="" class="control-label col-md-4">Your Porting Number</label>
+										<label for="" class="control-label col-md-4">Your Telecom Number</label>
 										<div class="col-md-4">
 											<form:input path="customerOrder.transition_porting_number" class="form-control" placeholder="" />
 										</div>
