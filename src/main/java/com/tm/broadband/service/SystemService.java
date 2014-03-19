@@ -1,5 +1,6 @@
 package com.tm.broadband.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CompanyDetailMapper;
+import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
@@ -20,14 +23,17 @@ public class SystemService {
 	private UserMapper userMapper;
 	private NotificationMapper notificationMapper;
 	private CompanyDetailMapper companyDetailMapper;
+	private CustomerMapper customerMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
 			NotificationMapper notificationMapper,
-			CompanyDetailMapper companyDetailMapper) {
+			CompanyDetailMapper companyDetailMapper,
+			CustomerMapper customerMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
 		this.companyDetailMapper = companyDetailMapper;
+		this.customerMapper = customerMapper;
 	}
 
 	public SystemService() {
@@ -163,5 +169,18 @@ public class SystemService {
 	
 	/*
 	 * Notification end
+	 */
+	
+	/**
+	 * Chart Services BEGIN
+	 */
+	
+	@Transactional
+	public List<Customer> queryCustomersByRegisterDate(Date start, Date end){
+		return this.customerMapper.selectCustomersByRegisterDate(start, end);
+	}
+	
+	/**
+	 * Chart Services END
 	 */
 }

@@ -1,5 +1,6 @@
 package com.tm.broadband.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.tm.broadband.model.Customer;
@@ -30,6 +31,8 @@ public interface CustomerMapper {
 	List<Customer> selectCustomersByPage(Page<Customer> page);
 	int selectCustomersSum(Page<Customer> page);
 	Customer selectCustomerById(int id);
+	
+	List<Customer> selectCustomersByRegisterDate(Date start, Date end);
 	
 	/* // END SELECT AREA */
 	

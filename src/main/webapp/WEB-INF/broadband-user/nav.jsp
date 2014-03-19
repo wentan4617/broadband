@@ -170,6 +170,13 @@
 									Edit Company Detail
 								</a>
 							</li>
+							<li class="divider"></li>
+	                    	<li>
+								<a href="${ctx}/broadband-user/system/chart/customer-register">
+									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+									Chart(Register Customer)
+								</a>
+	                    	</li>
 						</ul>
 					</li>
 				</ul>
