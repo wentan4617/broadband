@@ -9,9 +9,6 @@
 .personal-info li{
 	padding:5px 40px;
 }
-
-
-
 </style>
 <div class="container">
 	<div class="page-header">

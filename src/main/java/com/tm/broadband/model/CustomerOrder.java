@@ -7,7 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
+import org.hibernate.validator.constraints.NotEmpty;
+
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 
 public class CustomerOrder implements Serializable {
 
@@ -26,6 +31,7 @@ public class CustomerOrder implements Serializable {
 	private Date order_using_start;
 	private Date next_invoice_create_date;
 	private String order_type;
+	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	private String order_broadband_type;
 	private String svlan;
 	private String cvlan;
@@ -48,6 +54,7 @@ public class CustomerOrder implements Serializable {
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
 	private Customer customer;
+	@Valid
 	private Plan plan;
 
 	// one order may be get more details
