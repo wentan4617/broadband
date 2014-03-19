@@ -199,6 +199,10 @@
 			<if test="params.status != null">status=#{params.status}</if>
 		</where>
 	</select>
+	
+	<select id="selectCustomersByRegisterDate" parameterType="Date" resultType="Customer">
+		select * from tm_customer where CONVERT(register_date, DATE) between CONVERT(#{0}, DATE) and CONVERT(#{1}, DATE)
+	</select>
 
 	<!-- // END SELECT AREA -->
 

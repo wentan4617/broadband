@@ -5,11 +5,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.RegisterCustomer;
 
 public class TMUtils {
 	
@@ -225,6 +228,86 @@ public class TMUtils {
 
 	/*
 	 * mail at value retriever methods begin
+	 */
+
+	/**
+	 * Methods from Calendar BEGIN
+	 * @param registerCustomers
+	 */
+	public static void thisWeekDateForRegisterStatistic(List<RegisterCustomer> registerCustomers) {
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		cal.setFirstDayOfWeek(Calendar.MONDAY); // Monday as first day
+		
+		RegisterCustomer statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Mon. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Tues. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Wed. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Thur. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Fri. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Sat. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+
+		statistic = new RegisterCustomer();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		statistic.setRegisterDate(cal.getTime());
+		statistic.setRegisterWeekDate_str("Sun. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
+		statistic.setRegisterCount(0);
+		registerCustomers.add(statistic);
+	}
+	
+	public static void thisMonthDateForRegisterStatistic(int year, int month, List<RegisterCustomer> registerCustomers) {
+		Calendar c = Calendar.getInstance(Locale.CHINA);
+		c.set(Calendar.DAY_OF_MONTH, 1); // set date
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month - 1);
+		int maxDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		RegisterCustomer statistic = null;
+		for (int i = 0; i < maxDay; i++) {
+			statistic = new RegisterCustomer();
+			c.set(Calendar.DAY_OF_MONTH, i+1);
+			statistic.setRegisterDate(c.getTime());
+			statistic.setRegisterCount(0);
+			registerCustomers.add(statistic);
+		}
+	}
+	
+	
+	/**
+	 * Methods from Calendar END
 	 */
 
 }

@@ -167,6 +167,7 @@
 		<url-pattern>/broadband-user/system/notification/create</url-pattern>
 		<url-pattern>/broadband-user/system/notification/edit/*</url-pattern>
 		<url-pattern>/broadband-user/system/company-detail/edit</url-pattern>
+		<url-pattern>/broadband-user/system/chart/customer-register</url-pattern>
 		<!-- System Module END -->
 		
 	</filter-mapping>

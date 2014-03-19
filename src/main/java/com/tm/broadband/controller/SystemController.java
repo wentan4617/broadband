@@ -1,5 +1,10 @@
 package com.tm.broadband.controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +19,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.RegisterCustomer;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
 import com.tm.broadband.validator.mark.NotificationValidatedMark;
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
@@ -319,4 +327,89 @@ public class SystemController {
 	/*
 	 * CompanyDetail Controller end
 	 */
+	
+	/**
+	 * 
+	 */
+
+	@RequestMapping(value = "/broadband-user/system/chart/customer-register/{yearMonth}")
+	public String toChartCustomerRegister(Model model,
+			@PathVariable(value = "yearMonth") String yearMonth) {
+		
+		model.addAttribute("panelheading", "Customer Register Statistics");
+		
+		/**
+		 * WEEK STATISTIC BEGIN
+		 */
+		List<RegisterCustomer> weekRegisterStatistics = new ArrayList<RegisterCustomer>();
+		TMUtils.thisWeekDateForRegisterStatistic(weekRegisterStatistics);
+		
+		List<Customer> weekCustomers = this.systemService.queryCustomersByRegisterDate(
+				// monday
+				weekRegisterStatistics.get(0).getRegisterDate()
+				// sunday
+				,weekRegisterStatistics.get(weekRegisterStatistics.size()-1).getRegisterDate()
+			);
+		for (RegisterCustomer registerCustomer : weekRegisterStatistics) {
+			for (Customer customer : weekCustomers) {
+				if(TMUtils.dateFormatYYYYMMDD(registerCustomer.getRegisterDate())
+						.equals(TMUtils.dateFormatYYYYMMDD(customer.getRegister_date()))){
+					registerCustomer.setRegisterCount(registerCustomer.getRegisterCount()+1);
+				}
+			}
+		}
+		
+		model.addAttribute("weekRegisterStatistics", weekRegisterStatistics);
+		/**
+		 * WEEK STATISTIC END
+		 */
+		
+		/**
+		 * MONTH STATISTIC BEGIN
+		 */
+
+		Integer year = null;
+		Integer month = null;
+		
+		if(yearMonth.equals("0")){
+			Calendar c = Calendar.getInstance(Locale.CHINA);
+			// get this year
+			year = c.get(Calendar.YEAR);
+			// get this month
+			month = c.get(Calendar.MONTH)+1;
+			yearMonth = year.toString()+"-"+month.toString();
+		} else {
+			String[] temp = yearMonth.split("-");
+			year = Integer.parseInt(temp[0]);
+			month = Integer.parseInt(temp[1]);
+		}
+		
+		List<RegisterCustomer> monthRegisterStatistics = new ArrayList<RegisterCustomer>();
+		TMUtils.thisMonthDateForRegisterStatistic(year, month, monthRegisterStatistics);
+		List<Customer> monthCustomers = this.systemService.queryCustomersByRegisterDate(
+				// first date of month
+				monthRegisterStatistics.get(0).getRegisterDate()
+				// last date of month
+				,monthRegisterStatistics.get(monthRegisterStatistics.size()-1).getRegisterDate()
+			);
+		for (RegisterCustomer registerCustomer : monthRegisterStatistics) {
+			for (Customer customer : monthCustomers) {
+				
+				// if registerCustomer's register date(filtered monthly dates) equals to customer's register date
+				if(TMUtils.dateFormatYYYYMMDD(registerCustomer.getRegisterDate()).equals(TMUtils.dateFormatYYYYMMDD(customer.getRegister_date()))){
+					registerCustomer.setRegisterCount(registerCustomer.getRegisterCount()+1);
+				}
+			}
+		}
+		
+		model.addAttribute("monthRegisterStatistics", monthRegisterStatistics);
+		model.addAttribute("yearMonth",yearMonth);
+		
+		/**
+		 * MONTH STATISTIC END
+		 */
+		
+		
+		return "broadband-user/system/customer-register-chart";
+	}
 }

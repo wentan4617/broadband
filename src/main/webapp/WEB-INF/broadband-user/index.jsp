@@ -156,6 +156,13 @@
                     		<a href="${ctx }/broadband-user/system/company-detail/edit">Edit Company Detail</a>
                     	</li>
                     </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/chart/customer-register/0">Chart(Register Customer)</a>
+                    	</li>
+                    </ul>
 			  	</div>
 			</div>
 		</div>

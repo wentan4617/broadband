@@ -193,6 +193,14 @@
 										</label>
 									</li>
 								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/chart/customer-register" /> Chart(Register Customer)
+										</label>
+									</li>
+								</ul>
 							</div>
 						</div>
 						<hr/>
