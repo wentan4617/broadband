@@ -69,7 +69,12 @@
 		co.`transition_account_holder_name`  	as co_transition_account_holder_name,
 		co.`transition_account_number`			as co_transition_account_number,
 		co.`transition_porting_number`			as co_transition_porting_number,
-		co.`hardware_post`						as co_hardware_post
+		co.`hardware_post`						as co_hardware_post,
+		
+		co.`order_due`							as co_order_due,
+		co.`pstn_count`							as co_pstn_count,
+		co.`pstn_rental_amount`					as co_pstn_rental_amount,
+		co.`term_period`						as co_term_period
 	</sql>
 	
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
@@ -90,6 +95,10 @@
 		<result property="transition_account_number" column="co_transition_account_number" />
 		<result property="transition_porting_number" column="co_transition_porting_number" />
 		<result property="hardware_post" column="co_hardware_post" />
+		<result property="order_due" column="co_order_due" />
+		<result property="pstn_count" column="co_pstn_count" />
+		<result property="pstn_rental_amount" column="co_pstn_rental_amount" />
+		<result property="term_period" column="co_term_period" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -112,7 +121,8 @@
 		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
 		cod.`is_post`							as cod_is_post,
 		cod.`hardware_comment`					as cod_hardware_comment,
-		cod.`track_code`						as cod_track_code
+		cod.`track_code`						as cod_track_code,
+		cod.`pstn_number` 						as cod_pstn_number
 	</sql>
 	
 	<resultMap type="CustomerOrderDetail" id="CustomerOrderDetailResultMap">
@@ -136,6 +146,7 @@
 		<result property="is_post" column="cod_is_post" />
 		<result property="hardware_comment" column="cod_hardware_comment" />
 		<result property="track_code" column="cod_track_code" />
+		<result property="pstn_number" column="cod_pstn_number" />
 	</resultMap>
 	
 	<sql id="customerOrderPageWhere">
@@ -348,12 +359,14 @@
 			`order_serial`, `customer_id`, `order_total_price`, `order_create_date`, `order_status`,
 			`order_type`, `order_broadband_type`, 
 			`transition_provider_name`, `transition_account_holder_name`, 
-			`transition_account_number`, `transition_porting_number`, `hardware_post`) 
+			`transition_account_number`, `transition_porting_number`, `hardware_post`,
+			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`) 
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
-			#{transition_account_number}, #{transition_porting_number}, #{hardware_post})
+			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
+			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -381,8 +394,12 @@
 			<if test="transition_account_holder_name != null">transition_account_holder_name=#{transition_account_holder_name},</if>
 			<if test="transition_account_number != null">transition_account_number=#{transition_account_number},</if>
 			<if test="transition_porting_number != null">transition_porting_number=#{transition_porting_number},</if>
-			<if test="hardware_post != null">hardware_post=#{hardware_post}</if>
+			<if test="hardware_post != null">hardware_post=#{hardware_post},</if>
 			
+			<if test="hardware_post != null">order_due=#{order_due},</if>
+			<if test="hardware_post != null">pstn_count=#{pstn_count},</if>
+			<if test="hardware_post != null">pstn_rental_amount=#{pstn_rental_amount},</if>
+			<if test="hardware_post != null">term_period=#{term_period}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

@@ -29,10 +29,10 @@
 						<form:form modelAttribute="customerOrder" id="orderForm" action="${ctx}/broadband-user/crm/customer/order/create" method="post" class="form-horizontal">
 							<div class="form-group">
 								<label for="plan.plan_group" class="control-label col-md-3">Plan Group</label>
-								<div class="col-md-3">
+								<div class="col-md-6">
 									<form:select path="plan.plan_group" class="selectpicker show-tick form-control">
 										<form:option value="">None</form:option>
-										<form:option value="plan-topup">Plan Topup</form:option>
+										<form:option value="plan-topup">Plan Top-Up</form:option>
 										<form:option value="plan-no-term">Plan No Term</form:option>
 										<form:option value="plan-term">Plan Term</form:option>
 									</form:select>
@@ -41,9 +41,10 @@
 									<form:errors path="plan.plan_group" cssErrorClass="error"/>
 								</p>
 							</div>
+							
 							<div class="form-group">
 								<label for="plan.plan_name" class="control-label col-md-3">Plan Name</label>
-								<div class="col-md-3">
+								<div class="col-md-6">
 									<form:select path="plan.id" class="selectpicker show-tick form-control">
 										<form:option value="">None</form:option>
 									</form:select>
@@ -52,9 +53,25 @@
 									<form:errors path="plan.id" cssErrorClass="error"/>
 								</p>
 							</div>
+							
+							<div class="form-group" id="topupContainer">
+								<label for="" class="control-label col-md-3"></label>
+								<div class="col-md-6">
+									<form:select path="plan.topup.topup_fee" class="selectpicker show-tick form-control">
+										<form:option value="30">Top up $ 30</form:option>
+										<form:option value="50">Top up $ 50</form:option>
+										<form:option value="80">Top up $ 80</form:option>
+										<form:option value="100">Top up $ 100</form:option>
+										<form:option value="120">Top up $ 120</form:option>
+										<form:option value="150">Top up $ 150</form:option>
+										<form:option value="180">Top up $ 180</form:option>
+									</form:select>
+								</div>
+							</div>
+							
 							<div class="form-group">
 								<label for="order_broadband_type" class="control-label col-md-3">Broadband Option</label>
-								<div class="col-md-3">
+								<div class="col-md-6">
 									<form:select path="order_broadband_type" class="selectpicker show-tick form-control">
 										<form:option value="">None</form:option>
 										<form:option value="new-connection">New Connection</form:option>
@@ -113,76 +130,94 @@
 									</div>
 								</div>
 							</div>
+							
+							<!-- declare -->
+							<c:set var="hasHardware" value="0"></c:set>
+							<c:set var="hasPstn" value="0"></c:set>
+							<c:forEach var="cod" items="${customerOrder.customerOrderDetails }">
+								<c:if test="${fn:contains(cod.detail_type, 'hardware') }">
+									<c:set var="hasHardware" value="1"></c:set>
+								</c:if>
+								<c:if test="${fn:contains(cod.detail_type, 'pstn') }">
+									<c:set var="hasPstn" value="1"></c:set>
+								</c:if>
+							</c:forEach>
+							
 								
 							<!-- hardware  -->
-							<div id="hardwareContainer" style="display:${fn:length(customerOrder.customerOrderDetails) > 0 ? 'block': 'none'}">
-								
-								
+							<div id="hardwareContainer" style="display:${hasHardware == '1' ? 'block': 'none'}">
 								<hr/>
 								<h4 class="text-success">
 									Add-ons Hardware
 								</h4>
 								<hr/>
 								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
-									<div class="form-group" id="hardware_${item.index }" data-hardware-enable="${cod.detail_type == '' ? '0': '1'}" style="display:${cod.detail_type == '' ? 'none': 'block'}">
-										<div class="col-md-3"></div>
-										<div class="col-md-5">
-											<form:select path="customerOrderDetails[${item.index }].detail_name" class="selectpicker show-tick form-control" items="${hardwares }" itemLabel="hardware_name" itemValue="hardware_name" />
-											<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }" />
-										</div>
-										<div class="col-md-2">
-											<div class="input-group">
-												<span class="input-group-addon">$</span>
-												<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
+									<c:if test="${fn:contains(cod.detail_type, 'hardware') }">
+										<div class="form-group" id="hardware_${item.index }" data-enable data-hardware-enable="1" >
+											<div class="col-md-3"></div>
+											<div class="col-md-5">
+												<form:select path="customerOrderDetails[${item.index }].detail_name" class="selectpicker show-tick form-control" items="${hardwares }" itemLabel="hardware_name" itemValue="hardware_name" />
+												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }" />
+											</div>
+											<div class="col-md-2">
+												<div class="input-group">
+													<span class="input-group-addon">$</span>
+													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<form:input path="customerOrderDetails[${item.index }].detail_unit" class="form-control" />
+											</div>
+											<div class="col-md-1">
+												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="hardware_remove">
+													<span class="glyphicon glyphicon-remove"></span>
+												</a>
 											</div>
 										</div>
-										<div class="col-md-1">
-											<form:input path="customerOrderDetails[${item.index }].detail_unit" class="form-control" />
-										</div>
-										<div class="col-md-1">
-											<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="hardware_remove">
-												<span class="glyphicon glyphicon-remove"></span>
-											</a>
-										</div>
-									</div>
+									</c:if>
 								</c:forEach>
 									
 							</div>
 							
 							<!-- PSTN -->
-							<%-- <div id="pstnContainer" style="display:none">
+							<div id="pstnContainer" style="display:${hasPstn == '1' ? 'block': 'none'}">
 								<hr/>
 								<h4 class="text-success">
 									Add-ons PSTN
 								</h4>
-								<c:forEach begin="0" end="4" step="1" varStatus="item">
-									<div class="form-group" id="pstn_${item.index }" style="display:none;" data-pstn-enable="0">
-										<label for="" class="control-label col-md-3">PSTN ${item.index+1 }</label>
-										<div class="col-md-5">
-											<form:input path="customerOrderDetails[${item.index+5 }].detail_name" class="form-control" placeholder="e.g.:5789941"/>
-											<form:hidden path="customerOrderDetails[${item.index+5 }].detail_type" value="pstn"/>
-										</div>
-										<div class="col-md-2">
-											<div class="input-group">
-												<span class="input-group-addon">$</span>
-												<form:input path="customerOrderDetails[${item.index+5 }].detail_price" class="form-control" value="25.00"/>
+								<hr/>
+								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
+									<c:if test="${fn:contains(cod.detail_type, 'pstn') }">
+										<div class="form-group" id="pstn_${item.index }" data-enable data-pstn-enable="1" >
+											<label for="" class="control-label col-md-3">PSTN</label>
+											<div class="col-md-4">
+												<form:input path="customerOrderDetails[${item.index }].detail_name" class="form-control" placeholder="Personal Landline or Business Landline"/>
+												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }"/>
 											</div>
-											
+											<div class="col-md-2">
+												<form:input path="customerOrderDetails[${item.index }].pstn_number" class="form-control" placeholder="e.g.:5789941"/>
+											</div>
+											<div class="col-md-2">
+												<div class="input-group">
+													<span class="input-group-addon">$</span>
+													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="pstn_remove">
+													<span class="glyphicon glyphicon-remove"></span>
+												</a>
+											</div>
 										</div>
-										<div class="col-md-1">
-											<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="pstn_remove">
-												<span class="glyphicon glyphicon-remove"></span>
-											</a>
-										</div>
-									</div>
+									</c:if>
 								</c:forEach>
-							</div> --%>
+							</div>
 							
 							<hr/>
 							<div class="form-group">
 								<div class="col-md-4 col-md-offset-3">
 									<a href="${ctx}/broadband-user/crm/customer/create/back" class="btn btn-success" id="back">Back</a>
-									<a href="javascript:void(0);"class="btn btn-success" id="save">Save</a>
+									<!-- <a href="javascript:void(0);"class="btn btn-success" id="save">Save</a> -->
 									<a href="javascript:void(0);"class="btn btn-success" id="next">Next</a>
 									<input type="hidden" name="action" id="action"/>
 								</div>
@@ -200,9 +235,6 @@
 	<c:if test="${plan.plan_group == 'plan-no-term' }"></c:if>
 	<c:if test="${plan.plan_group == 'plan-term' }"></c:if>
 </c:forEach>
-
-
-
 	
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
@@ -218,6 +250,8 @@
 		var plan = {
 			'id': ${plan.id}
 			, 'plan_name': '${plan.plan_name}'
+			, 'pstn_count': '${plan.pstn_count}'
+			, 'pstn_rental_amount': '${plan.pstn_rental_amount}'
 		}
 		<c:if test="${plan.plan_group == 'plan-topup' }">
 			topup_plans.push(plan);
@@ -236,14 +270,15 @@
 	var term_html = '<option value="">None</option>';
 	$.each(topup_plans, function(i, plan){
 		var sel = (plan.id == '${customerOrder.plan.id}' ? 'selected' : '');
-		topup_html += '<option value="' + plan.id + '"' + sel + '>' + plan.plan_name + '</option>';
+		topup_html += '<option value="' + plan.id + '"' + sel + ' data-pstn="">' + plan.plan_name + '</option>';
 	});
 	$.each(no_term_plans, function(i, plan){
 		var sel = (plan.id == '${customerOrder.plan.id}' ? 'selected' : '');
 		no_term_html += '<option value="' + plan.id + '"' + sel + '>' + plan.plan_name + '</option>';
 	});
 	$.each(term_plans, function(i, plan){
-		term_html += '<option value="' + plan.id + '">' + plan.plan_name + '</option>';
+		var sel = (plan.id == '${customerOrder.plan.id}' ? 'selected' : '');
+		term_html += '<option value="' + plan.id + '"' + sel + '>' + plan.plan_name + '</option>';
 	});
 	
 	$('.selectpicker').selectpicker();
@@ -263,11 +298,25 @@
 		$('.selectpicker').selectpicker('refresh');
 	}
 	
+	function fillTopupSelect(val, group) {
+		//alert(val);
+		if (val != "" && group == 'plan-topup') {
+			$('#topupContainer').show();
+		} else {
+			$('#topupContainer').hide();
+		}
+	}
+	
 	fillPlanNameSelect($('#plan\\.plan_group').val());
+	fillTopupSelect($('#plan\\.id').val(), $('#plan\\.plan_group').val());
 	
 	$('#plan\\.plan_group').on("change", function(){
 		fillPlanNameSelect(this.value);
-		
+		fillTopupSelect($('#plan\\.id').val(), this.value);
+	});
+	
+	$('#plan\\.id').on("change", function(){
+		fillTopupSelect(this.value, $('#plan\\.plan_group').val());
 	});
 	
 	$('#save').click(function(){
@@ -281,14 +330,14 @@
 	
 	$('#addHardware').click(function(){
 		$('#hardwareContainer').css('display', 'block');
-		var index = $('div[data-hardware-enable]').length;
+		var index = $('div[data-enable]').length;
 		var html = '';
-		html += '<div class="form-group" id="hardware_' + index+ '" data-hardware-enable="1" >';
+		html += '<div class="form-group" id="hardware_' + index+ '" data-enable data-hardware-enable="1" >';
 		html += '	<div class="col-md-3"></div>';
 		html += '	<div class="col-md-5">';
-		html += '		<select name="customerOrderDetails[' + index+ '].detail_name" class="selectpicker show-tick form-control">';
+		html += '		<select name="customerOrderDetails[' + index+ '].detail_name" class="selectpicker show-tick form-control" data-name="harewareSelect">';
 		<c:forEach var="hd" items="${hardwares }">
-		html += '<option value="${hd.hardware_name}">${hd.hardware_name}</option>';
+		html += '<option value="${hd.hardware_name}" data-hd-price="${hd.hardware_price}" data-target="' + index+ '">${hd.hardware_name}</option>';
 		</c:forEach>
 		html += '		</select>';
 		html += '		<input type="hidden" name="customerOrderDetails[' + index+ '].detail_type" value="hardware-router" id="dtype_' + index+ '"/>';
@@ -296,21 +345,22 @@
 		html += '	<div class="col-md-2">';
 		html += '		<div class="input-group">';
 		html += '			<span class="input-group-addon">$</span>';
-		html += '				<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" />';
-		html += '			</div>';
+		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" />';
 		html += '		</div>';
-		html += '		<div class="col-md-1">';
-		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_unit" class="form-control" value="1"/>';
-		html += '		</div>';
-		html += '		<div class="col-md-1">';
-		html += '			<a href="javascript:void(0);" class="btn btn-default" data-index="' + index+ '" data-name="hardware_remove">';
-		html += '				<span class="glyphicon glyphicon-remove"></span>';
-		html += '			</a>';
-		html += '		</div>';
+		html += '	</div>';
+		html += '	<div class="col-md-1">';
+		html += '		<input type="text" name="customerOrderDetails[' + index+ '].detail_unit" class="form-control" value="1"/>';
+		html += '	</div>';
+		html += '	<div class="col-md-1">';
+		html += '		<a href="javascript:void(0);" class="btn btn-default" data-index="' + index+ '" data-name="hardware_remove">';
+		html += '			<span class="glyphicon glyphicon-remove"></span>';
+		html += '		</a>';
 		html += '	</div>';
 		html += '</div>';
 		$('#hardwareContainer').append(html);
 		$('.selectpicker').selectpicker('refresh');
+		var price = $('select[name="customerOrderDetails\\[' + index + '\\]\\.detail_name"] option:selected').attr('data-hd-price');
+		$('input[name="customerOrderDetails\\[' + index + '\\]\\.detail_price"]').val(price);
 	});
 	
 	$('#hardwareContainer').delegate('a[data-name="hardware_remove"]', 'click', function(){
@@ -323,26 +373,59 @@
 		}
 	});
 	
-	$('#addPSTN').click(function(){
-		$('#pstnContainer').css('display', 'block');
-		$('div[data-pstn-enable="0"]').each(function(i){
-			if (i == 0) {
-				$(this).css("display", "block").attr('data-pstn-enable', '1');
-			}
-		});
+	$('#hardwareContainer').delegate('select[data-name="harewareSelect"]', 'change', function(){
+		var $option = $(this).find("option:selected");
+		var price = $option.attr('data-hd-price');
+		var indexTarget = $option.attr('data-target');
+		$('input[name="customerOrderDetails\\[' + indexTarget + '\\]\\.detail_price"]').val(price);
+		//alert(price);
 	});
 	
-	$('a[data-name="pstn_remove"]').click(function(){
+	
+	$('#addPSTN').click(function(){
+		$('#pstnContainer').css('display', 'block');
+		var index = $('div[data-enable]').length;
+		var html = '';
+		html += '<div class="form-group" id="pstn_' + index+ '" data-enable data-pstn-enable="1" >';
+		html += '	<label for="" class="control-label col-md-3">PSTN</label>';
+		html += '	<div class="col-md-4">';
+		html += '		<input type="text" name="customerOrderDetails[' + index+ '].detail_name" class="form-control" value="Home Landline or Business Landline" placeholder="Home Landline or Business Landline"/>';
+		html += '		<input type="hidden" name="customerOrderDetails[' + index+ '].detail_type" value="pstn" id="dtype_' + index+ '"/>';
+		html += '	</div>';
+		html += '	<div class="col-md-2">';
+		html += '		<input type="text" name="customerOrderDetails[' + index+ '].pstn_number" class="form-control" placeholder="e.g.:5789941"/>';
+		html += '	</div>';
+		html += '	<div class="col-md-2">';
+		html += '		<div class="input-group">';
+		html += '			<span class="input-group-addon">$</span>';
+		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" value="0.00"/>';
+		html += '		</div>';
+		html += '	</div>';
+		html += '	<div class="col-md-1">';
+		html += '		<a href="javascript:void(0);" class="btn btn-default" data-index="' + index+ '" data-name="pstn_remove">';
+		html += '			<span class="glyphicon glyphicon-remove"></span>';
+		html += '		</a>';
+		html += '	</div>';
+		html += '</div>';
+		$('#pstnContainer').append(html);
+		$('.selectpicker').selectpicker('refresh');
+	});
+	
+	$('#pstnContainer').delegate('a[data-name="pstn_remove"]', 'click', function(){
 		var index = $(this).attr('data-index');
-		$('#pstn_' + index).css("display", "none").attr('data-pstn-enable', '0');
-		var len = $('div[data-pstn-enable="0"]').length;
-		if (len == 5) {
+		$('#pstn_' + index).attr('data-pstn-enable', '0').css("display", "none");
+		$('#dtype_' + index).val('');
+		var len = $('div[data-pstn-enable="1"]').length;
+		if (len == 0) {
 			$('#pstnContainer').css('display', 'none');
 		}
 	});
 	
 	$('#order_broadband_type').on('change', function(){
-		var val = this.value;
+		showTransitionContainer(this.value);
+	});
+	
+	function showTransitionContainer(val) {
 		if (val === "new-connection") {
 			$('#transitionContainer').hide('fast');
 		} else if (val === "transition"){
@@ -350,7 +433,9 @@
 		} else {
 			$('#transitionContainer').hide('fast');
 		}
-	});
+	}
+	
+	showTransitionContainer($('#order_broadband_type').val());
 	
 	var a = "${fn:length(customerOrder.customerOrderDetails)}";
 

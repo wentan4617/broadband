@@ -46,7 +46,9 @@
 							<jsp:include page="topup-list.jsp"/>
 						</div> --%>
 						
-						<div id="noTermContainer" style="display: ${plan.plan_group == 'plan-no-term' ? 'block;' : 'none;'}">
+						
+						<div id="noTermContainer" style="display: 
+							<c:if test="${plan.plan_group == 'plan-no-term' || plan.plan_group == 'plan-term'}">block</c:if>">
 							<hr/>
 							<div class="form-group">
 								<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
@@ -58,6 +60,18 @@
 								</div>
 								<p class="help-block">
 									<form:errors path="plan_prepay_months" cssErrorClass="error"/>
+								</p>
+							</div>
+							<div class="form-group">
+								<label for="term_period" class="control-label col-md-4">Term Period</label>
+								<div class="col-md-3">
+									<div class="input-group">
+										<form:input path="term_period" class="form-control" placeholder="" />
+										<span class="input-group-addon">Months</span>
+									</div>
+								</div>
+								<p class="help-block">
+									<form:errors path="term_period" cssErrorClass="error"/>
 								</p>
 							</div>
 							<hr/>
@@ -122,6 +136,28 @@
 							</p>
 						</div>
 						<div class="form-group">
+							<label for="pstn_count" class="control-label col-md-4">PSTN Amount</label>
+							<div class="col-md-3">
+								<form:input path="pstn_count" class="form-control" placeholder="" />
+							</div>
+							<p class="help-block">
+								<form:errors path="pstn_count" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="pstn_rental_amount" class="control-label col-md-4">PSTN Rental Amount</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<form:input path="pstn_rental_amount" class="form-control" placeholder="" />
+								</div>
+							</div>
+							<p class="help-block">
+								<form:errors path="pstn_rental_amount" cssErrorClass="error"/>
+							</p>
+						</div>
+						
+						<div class="form-group">
 							<label for="plan_status" class="control-label col-md-4">Status</label>
 							<div class="col-md-3">
 								<form:select path="plan_status" class="form-control">
@@ -170,19 +206,19 @@
 		if (val === 'plan-topup') {
 			$('#topupContainer').show('fast');
 			$('#noTermContainer').hide('fast');
-			$('#TermContainer').hide('fast');
+			//$('#termContainer').hide('fast');
 		} else if (val === 'plan-no-term') {
 			$('#topupContainer').hide('fast');
 			$('#noTermContainer').show('fast');
-			$('#TermContainer').hide('fast');
+			//$('#termContainer').hide('fast');
 		} else if (val === 'plan-term') {
 			$('#topupContainer').hide('fast');
-			$('#noTermContainer').hide('fast');
-			$('#TermContainer').show('fast');
+			$('#noTermContainer').show('fast');
+			//$('#termContainer').show('fast');
 		} else {
 			$('#topupContainer').hide('fast');
 			$('#noTermContainer').hide('fast');
-			$('#TermContainer').hide('fast');
+			//$('#termContainer').hide('fast');
 		}
 	});
 })(jQuery);
