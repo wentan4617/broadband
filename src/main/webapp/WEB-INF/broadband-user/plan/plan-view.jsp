@@ -15,7 +15,7 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Plan View</h4></div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					<table class="table">
+					<table class="table" style="font-size:12px;">
 						<thead >
 							<tr>
 								<th><input type="checkbox" id="checkbox_plans_top" /></th>
@@ -27,7 +27,6 @@
 								<th>New Connection fee (Inc GST)($)</th>
 								<th>Data Flow (GB)</th>
 								<th>Status</th>
-								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -41,7 +40,12 @@
 											${plan.plan_name }
 										</a>
 									</td>
-									<td class="${plan.plan_group=='plan-topup'?'text-danger':'' }">
+									<td  class="<c:choose>
+										<c:when test="${plan.plan_group=='plan-topup'}">text-danger</c:when>
+										<c:when test="${plan.plan_group=='plan-no-term'}">text-info</c:when>
+										<c:when test="${plan.plan_group=='plan-term'}">text-warning</c:when>
+									</c:choose>">
+									
 										${plan.plan_group }
 									</td>
 									<td>
@@ -60,7 +64,6 @@
 									</td>
 									<td>${plan.data_flow }</td>
 									<td>${plan.plan_status}</td>
-									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
 						</tbody>

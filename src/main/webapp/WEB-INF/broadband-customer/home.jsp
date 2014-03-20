@@ -34,9 +34,9 @@
 		<div class="col-lg-4">
 			<div class="panel panel-default">
 		  		<div class="panel-body" style="height:330px;">
-			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">View Plan Top-Up</a>
+			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">Join Our Plan Top-Up</a>
 			    	<hr/>
-			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">View Plan No-Term</a>
+			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">Join Our Plan No-Term</a>
 			  	</div>
 			</div>
 		</div>

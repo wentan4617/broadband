@@ -46,6 +46,7 @@ import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
+import com.tm.broadband.model.Topup;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
@@ -480,8 +481,6 @@ public class CRMController {
 			return "broadband-user/crm/order-create";
 		}
 		
-		
-		
 		String url = "";
 		if ("save".equals(action)) {
 			url = "redirect:/broadband-user/crm/customer/query/1";
@@ -512,11 +511,23 @@ public class CRMController {
 		}
 		
 		customer.setCustomerOrder(customerOrder);
-		customer.getCustomerOrder().setOrder_create_date(new Date());
+		customerOrder.setOrder_create_date(new Date());
+		
+		List<CustomerOrderDetail> retains = new ArrayList<CustomerOrderDetail>();
+		if (customerOrder.getCustomerOrderDetails() != null) {
+			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+				if ("hardware-router".equals(cod.getDetail_type()) 
+						|| "pstn".equals(cod.getDetail_type())) {
+					retains.add(cod);
+				}
+			}
+		}
+		customerOrder.getCustomerOrderDetails().retainAll(retains);
 		
 		if (plans != null) {
 			for (Plan plan: plans) {
 				if (plan.getId() == customerOrder.getPlan().getId()) {
+					plan.setTopup(customerOrder.getPlan().getTopup());
 					customerOrder.setPlan(plan);
 					break;
 				}
@@ -529,30 +540,30 @@ public class CRMController {
 		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
 		
-		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
+		customerOrder.getCustomerOrderDetails().add(cod_plan);
 		
 		if ("plan-topup".equals(customerOrder.getPlan().getPlan_group())) {
 			
 			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getTopup().getTopup_fee());
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getTopup().getTopup_fee());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
 				cod_conn.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				customerOrder.getCustomerOrderDetails().add(cod_conn);
 				
 			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+				customerOrder.getCustomerOrderDetails().add(cod_trans);
 			}
 			
 			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
@@ -560,38 +571,54 @@ public class CRMController {
 			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
 			cod_topup.setDetail_unit(1);
 			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
+			customerOrder.getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(customerOrder.getPlan().getPlan_group())) {
 			
 			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 			
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
 				cod_conn.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				customerOrder.getCustomerOrderDetails().add(cod_conn);
 				
-			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_unit(1);
 				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+				customerOrder.getCustomerOrderDetails().add(cod_trans);
 			}
 			
 		} else if ("plan-term".equals(customerOrder.getPlan().getPlan_group())) {
 			
 			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+				
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+				
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_conn);
 
 			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
-
+					
+				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+				
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_trans);
 			}
 		}
 		
@@ -599,8 +626,9 @@ public class CRMController {
 			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
 				if ("hardware-router".equals(cod.getDetail_type())) {
 					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
-				} else {
-					
+				} else if ("pstn".equals(cod.getDetail_type())){
+					cod.setDetail_unit(1);
+					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
 				}
 			}
 		}
@@ -614,7 +642,10 @@ public class CRMController {
 	}
 
 
-	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/create/back")
+	public String toBackOrderCreate(Model model) {
+		return "broadband-user/crm/order-create";
+	}
 	/**
 	 * END back-end create customer model
 	 */

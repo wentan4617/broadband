@@ -132,11 +132,13 @@
 		INSERT INTO `tm_plan`(
 			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, `data_flow_k`,
 			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_new_connection_fee`, 
-			`memo`, `create_date`, `create_by`, `plan_topupid_array`, `plan_prepay_months`) 
+			`memo`, `create_date`, `create_by`, `plan_topupid_array`, `plan_prepay_months`, 
+			`pstn_count`, `pstn_rental_amount`, `term_period`) 
 		VALUES (
 			#{plan_name}, #{plan_desc}, #{plan_price}, #{data_flow}, #{data_flow_k},
 			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_new_connection_fee}, 
-			#{memo}, #{create_date}, #{create_by}, #{plan_topupid_array}, #{plan_prepay_months})
+			#{memo}, #{create_date}, #{create_by}, #{plan_topupid_array}, #{plan_prepay_months}, 
+			#{pstn_count}, #{pstn_rental_amount}, #{term_period})
 	</insert>
 	
 	<insert id="insertPlanTopup">
@@ -167,7 +169,10 @@
 			<if test="last_update_date != null">`last_update_date`=#{last_update_date},</if>
 			<if test="last_update_by != null">`last_update_by`=#{last_update_by},</if>
 			<if test="plan_topupid_array != null">`plan_topupid_array`=#{plan_topupid_array},</if>
-			<if test="plan_prepay_months != null">`plan_prepay_months`=#{plan_prepay_months}</if>
+			<if test="plan_prepay_months != null">`plan_prepay_months`=#{plan_prepay_months},</if>
+			<if test="plan_prepay_months != null">`pstn_count`=#{pstn_count},</if>
+			<if test="plan_prepay_months != null">`pstn_rental_amount`=#{pstn_rental_amount},</if>
+			<if test="plan_prepay_months != null">`term_period`=#{term_period}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>

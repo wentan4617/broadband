@@ -41,6 +41,9 @@ public class CustomerOrder implements Serializable {
 	private String transition_porting_number;
 	private Integer hardware_post;
 	private Date order_due;
+	private Integer pstn_count;
+	private Double pstn_rental_amount;
+	private Integer term_period;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -296,6 +299,30 @@ public class CustomerOrder implements Serializable {
 
 	public void setPlan(Plan plan) {
 		this.plan = plan;
+	}
+
+	public Integer getPstn_count() {
+		return pstn_count;
+	}
+
+	public void setPstn_count(Integer pstn_count) {
+		this.pstn_count = pstn_count;
+	}
+
+	public Double getPstn_rental_amount() {
+		return pstn_rental_amount;
+	}
+
+	public void setPstn_rental_amount(Double pstn_rental_amount) {
+		this.pstn_rental_amount = pstn_rental_amount;
+	}
+
+	public Integer getTerm_period() {
+		return term_period;
+	}
+
+	public void setTerm_period(Integer term_period) {
+		this.term_period = term_period;
 	}
 
 	
