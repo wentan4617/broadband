@@ -133,20 +133,17 @@
 			</div>
 			<hr/>
 			<div class="row">
-				<div class="col-md-2 col-md-offset-8">
+				<div class="col-md-12">
 					<c:choose>
 						<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-							<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg">Back to edit</a>
+							<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left">Back</a>
 						</c:when>
 						<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success btn-lg">Back to edit</a>
+							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success btn-lg pull-left">Back</a>
 						</c:when>
 					</c:choose>
-				</div>
-				<div class="col-md-2">
 					<form class="form-horizontal" action="${ctx }/order/submit" method="post">
-						
-						<button type="submit" class="btn btn-success btn-lg">Checkout</button>
+						<button type="submit" class="btn btn-success btn-lg pull-right">Checkout</button>
 					</form>
 				</div>
 			</div>
