@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
@@ -51,10 +53,11 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
-@SessionAttributes({"customer","orderPlan", "hardwares"})
+@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })
 public class CRMController {
 
 	private CRMService crmService;
@@ -389,7 +392,7 @@ public class CRMController {
 	public String doCustomerCreate(Model model,
 			@ModelAttribute("customer") 
 			@Validated(CustomerValidatedMark.class) Customer customer,
-			BindingResult result, RedirectAttributes attr,
+			BindingResult result, RedirectAttributes attr, SessionStatus status,
 			@RequestParam("action") String action) {
 
 		if (result.hasErrors()) {
@@ -416,9 +419,8 @@ public class CRMController {
 		if ("save".equals(action)) {
 			url = "redirect:/broadband-user/crm/customer/query/1";
 			this.crmService.createCustomer(customer);
-			attr.addFlashAttribute("success",
-					"Create Customer " + customer.getLogin_name()
-							+ " is successful.");
+			attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
+			status.setComplete();
 		} else if ("next".equals(action)) {
 			url = "redirect:/broadband-user/crm/customer/order/create";
 		}
@@ -441,6 +443,7 @@ public class CRMController {
 		
 		Plan plan = new Plan();
 		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("orderby", "order by plan_type");
 		List<Plan> plans = this.planService.queryPlansBySome(plan);
 		model.addAttribute("plans", plans);
 
@@ -451,6 +454,158 @@ public class CRMController {
 		model.addAttribute("hardwares", hardwares);
 
 		return "broadband-user/crm/order-create";
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/create", method = RequestMethod.POST)
+	public String doCustomerOrderCreate(Model model,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
+			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
+			RedirectAttributes attr, @RequestParam("action") String action, SessionStatus status) {
+
+		if (customerOrder.getCustomerOrderDetails() != null) {
+			List<CustomerOrderDetail> removedCods = new ArrayList<CustomerOrderDetail>();
+			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+				System.out.println(cod.getDetail_type());
+				if ("".equals(cod.getDetail_type())) {
+					removedCods.add(cod);
+				} 
+			}
+			customerOrder.getCustomerOrderDetails().removeAll(removedCods);
+		}
+		 
+		if (c_result.hasErrors()) {
+			return "broadband-user/crm/customer-create";
+		}
+		if (co_result.hasErrors()) {
+			return "broadband-user/crm/order-create";
+		}
+		
+		
+		
+		String url = "";
+		if ("save".equals(action)) {
+			url = "redirect:/broadband-user/crm/customer/query/1";
+			//this.crmService.createCustomer(customer);
+			attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
+			status.setComplete();
+		} else if ("next".equals(action)) {
+			url = "redirect:/broadband-user/crm/customer/order/confirm";
+		}
+		
+		return url;
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm")
+	public String orderConfirm(Model model,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
+			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
+			@ModelAttribute("plans") List<Plan> plans, 
+			@ModelAttribute("hardwares") List<Hardware> hardwares, 
+			RedirectAttributes attr) {
+		
+		if (c_result.hasErrors()) {
+			return "broadband-user/crm/customer-create";
+		}
+		if (co_result.hasErrors()) {
+			return "broadband-user/crm/order-create";
+		}
+		
+		customer.setCustomerOrder(customerOrder);
+		customer.getCustomerOrder().setOrder_create_date(new Date());
+		
+		if (plans != null) {
+			for (Plan plan: plans) {
+				if (plan.getId() == customerOrder.getPlan().getId()) {
+					customerOrder.setPlan(plan);
+					break;
+				}
+			}
+		}
+
+		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
+		
+		cod_plan.setDetail_name(customerOrder.getPlan().getPlan_name());
+		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price());
+		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
+		
+		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
+		
+		if ("plan-topup".equals(customerOrder.getPlan().getPlan_group())) {
+			
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getTopup().getTopup_fee());
+				
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
+				
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+			}
+			
+			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+			cod_topup.setDetail_name("Broadband Top-Up");
+			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
+			cod_topup.setDetail_unit(1);
+			
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
+			
+		} else if ("plan-no-term".equals(customerOrder.getPlan().getPlan_group())) {
+			
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+			
+				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				
+			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				
+				customer.getCustomerOrder().setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+				
+				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_unit(1);
+				
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
+			}
+			
+		} else if ("plan-term".equals(customerOrder.getPlan().getPlan_group())) {
+			
+			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+
+			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+
+			}
+		}
+		
+		if (customerOrder.getCustomerOrderDetails() != null) {
+			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+				if ("hardware-router".equals(cod.getDetail_type())) {
+					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
+				} else {
+					
+				}
+			}
+		}
+		
+		return "broadband-user/crm/order-confirm";
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/create/back")
