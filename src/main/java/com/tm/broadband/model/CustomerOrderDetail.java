@@ -32,6 +32,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer is_post;
 	private String hardware_comment;
 	private String track_code;
+	private String pstn_number;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -43,6 +44,8 @@ public class CustomerOrderDetail implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private CustomerOrder customerOrder;
+	
+	
 	/*
 	 * END RELATED PROPERTIES
 	 */
@@ -232,4 +235,12 @@ public class CustomerOrderDetail implements Serializable {
 		this.track_code = track_code;
 	}
 
+	public String getPstn_number() {
+		return pstn_number;
+	}
+
+	public void setPstn_number(String pstn_number) {
+		this.pstn_number = pstn_number;
+	}
+	
 }

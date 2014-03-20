@@ -141,12 +141,11 @@
 						</div>
 						<hr/>
 						<div class="row">
-							<div class="col-md-2 col-md-offset-8">
-								
-							</div>
-							<div class="col-md-2">
-								
-								
+							<div class="col-md-12">
+								<a href="${ctx}/broadband-user/crm/customer/order/create/back" class="btn btn-success btn-lg pull-left" id="back">Back</a>
+								<form class="form-horizontal" action="${ctx }/order/submit" method="post">
+									<button type="submit" class="btn btn-success btn-lg pull-right">Checkout</button>
+								</form>
 							</div>
 						</div>
 						
