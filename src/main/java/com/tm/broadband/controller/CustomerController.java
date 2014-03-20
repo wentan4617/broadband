@@ -50,6 +50,8 @@ import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.service.SmserService;
+import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -61,13 +63,19 @@ public class CustomerController {
 	private PlanService planService;
 	private CRMService crmService;
 	private MailerService mailerService;
+	private SystemService systemService;
+	private SmserService smserService;
 
 	@Autowired
 	public CustomerController(PlanService planService, CRMService crmService
-			,MailerService mailerService) {
+			,MailerService mailerService
+			,SystemService systemService,
+			SmserService smserService) {
 		this.planService = planService;
 		this.crmService = crmService;
 		this.mailerService = mailerService;
+		this.systemService = systemService;
+		this.smserService = smserService;
 	}
 
 	@RequestMapping("/home")
@@ -378,9 +386,9 @@ public class CustomerController {
 					+File.separator+customer.getId()
 					+File.separator+"Invoice - #"+customerTransaction.getInvoice_id()+".pdf");
 			
-			Notification notification = this.crmService.queryNotificationBySort("register");
+			Notification notification = this.crmService.queryNotificationBySort("register", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			CompanyDetail companyDetail = new CompanyDetail();
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
@@ -391,6 +399,11 @@ public class CustomerController {
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
+			// get sms register template from db
+			notification = this.crmService.queryNotificationBySort("register", "sms");
+			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer, notification);
 			status.setComplete();
 		} else {
 

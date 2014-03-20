@@ -172,7 +172,7 @@
 							</li>
 							<li class="divider"></li>
 	                    	<li>
-								<a href="${ctx}/broadband-user/system/chart/customer-register">
+								<a href="${ctx}/broadband-user/system/chart/customer-register/0">
 									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
 									Chart(Register Customer)
 								</a>

@@ -65,9 +65,12 @@ public class MailerService implements Mailer {
 		helper.setSubject(email.getSubject());// subject
 		helper.setText(email.getContent(), true);// content
 		
-		// set attach details
-		FileSystemResource file = new FileSystemResource(new File(email.getAttachPath()));
-		helper.addAttachment(email.getAttachName(),file);
+		// set attach details if attachName and attachPath are both not null and not empty string
+		if((email.getAttachName() != null && email.getAttachPath() != null) 
+				&& (!email.getAttachName().equals("") && !email.getAttachPath().equals(""))){
+			FileSystemResource file = new FileSystemResource(new File(email.getAttachPath()));
+			helper.addAttachment(email.getAttachName(),file);
+		}
 		
 		mailSender.send(mime);
 	}

@@ -62,6 +62,7 @@ public class CRMService {
 	
 	// service
 	private MailerService mailerService;
+	private SmserService smserService;
 
 	public CRMService() { }
 	
@@ -75,7 +76,8 @@ public class CRMService {
 			ProvisionLogMapper provisionLogMapper,
 			CompanyDetailMapper companyDetailMapper,
 			MailerService mailerService,
-			NotificationMapper notificationMapper) {
+			NotificationMapper notificationMapper,
+			SmserService smserService) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -86,6 +88,7 @@ public class CRMService {
 		this.companyDetailMapper = companyDetailMapper;
 		this.mailerService = mailerService;
 		this.notificationMapper = notificationMapper;
+		this.smserService = smserService;
 	}
 	
 	@Transactional
@@ -587,7 +590,7 @@ public class CRMService {
 			}
 			
 			
-			Notification notification = this.notificationMapper.selectNotificationBySort("invoice");
+			Notification notification = this.notificationMapper.selectNotificationBySort("invoice", "email");
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
@@ -597,6 +600,12 @@ public class CRMService {
 			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			notification = this.notificationMapper.selectNotificationBySort("invoice", "sms");
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer, notification);
 		}
 	}
 	
@@ -606,8 +615,8 @@ public class CRMService {
 	 */
 	
 	@Transactional
-	public Notification queryNotificationBySort(String sort){
-		return this.notificationMapper.selectNotificationBySort(sort);
+	public Notification queryNotificationBySort(String sort, String type){
+		return this.notificationMapper.selectNotificationBySort(sort, type);
 	}
 	
 	/*

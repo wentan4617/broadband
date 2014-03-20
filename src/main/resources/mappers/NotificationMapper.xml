@@ -42,7 +42,7 @@
 	
 	<!-- select one notification by sort -->
 	<select id="selectNotificationBySort" resultType="Notification">
-		SELECT * FROM `tm_notification` WHERE  sort = #{0}
+		SELECT * FROM `tm_notification` WHERE  sort = #{0} AND type = #{1}
 	</select>
 	
 	<!-- // END SELECT AREA -->

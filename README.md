@@ -24,7 +24,7 @@ demand version 1.0.1 2014-03-16
 * 在customer登入后，可以进行支付，topup
 * 用户可以对自己购买的plan，进行change, cancel, stop等操作
 * 后台开始编写，创建customer, 创建customer的plan, 管理员可帮助customer进行支付操作(STEVEN-1)
-* 完善各类email模版，SMS模版(STEVEN-3)
+* [完善各类email模版，SMS模版](STEVEN-3)
 * 用户，注册成功，make payment成功，top up成功，change, cancel, stop他的order，需要发送email和sms
 * 管理员帮助客户支付，启动某一个用户的order, change, cancel, stop，需要发送email
 * 创建post_pay类型的order, 加入pstn电话的相关表

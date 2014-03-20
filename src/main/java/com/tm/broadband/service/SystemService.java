@@ -163,8 +163,8 @@ public class SystemService {
 	 * Notification begin
 	 */
 	
-	public Notification queryNotificationBySort(String sort) {
-		return this.notificationMapper.selectNotificationBySort(sort);
+	public Notification queryNotificationBySort(String sort, String type) {
+		return this.notificationMapper.selectNotificationBySort(sort, type);
 	}
 	
 	/*
