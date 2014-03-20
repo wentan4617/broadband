@@ -48,6 +48,7 @@ import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -60,14 +61,17 @@ public class CRMController {
 	private MailerService mailerService;
 	private SystemService systemService;
 	private PlanService planService;
+	private SmserService smserService;
 
 	@Autowired
 	public CRMController(CRMService crmService, MailerService mailerService, SystemService systemService,
-			PlanService planService) {
+			PlanService planService,
+			SmserService smserService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.planService = planService;
+		this.smserService = smserService;
 	}
 
 	@RequestMapping("/broadband-user/crm/customer/view/{pageNo}")
@@ -180,6 +184,7 @@ public class CRMController {
 	@ResponseBody
 	public CustomerOrder saveCustomerOrderEdit(Model model,
 			@RequestParam("order_id") int order_id,
+			@RequestParam("customer_id") int customer_id,
 			@RequestParam("cvlan_input") String cvlan_input,
 			@RequestParam("svlan_input") String svlan_input,
 			@RequestParam("order_using_start_input") String order_using_start_input,
@@ -220,6 +225,22 @@ public class CRMController {
 		this.crmService.editCustomerOrder(customerOrder, proLog);
 		
 		// mailer
+		Customer customer = this.crmService.queryCustomerById(customer_id);
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		// call mail at value retriever
+		TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+		// get sms register template from db
+		notification = this.systemService.queryNotificationBySort("service-giving", "sms");
+		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+		// send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer, notification);
 		
 		return customerOrder;
 	}
@@ -227,6 +248,7 @@ public class CRMController {
 	@ResponseBody
 	public CustomerOrder toCustomerInvoiceEdit(Model model,
 			@RequestParam("order_id") int order_id,
+			@RequestParam("customer_id") int customer_id,
 			@RequestParam("cvlan_input") String cvlan_input,
 			@RequestParam("svlan_input") String svlan_input,
 			@RequestParam("order_using_start_input") String order_using_start_input,
@@ -244,7 +266,8 @@ public class CRMController {
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
 		
-		int nextInvoiceDay = 30 * order_detail_unit - 15;
+		
+		int nextInvoiceDay = order_detail_unit==null ? 30 : 30 * order_detail_unit - 15;
 		Calendar calnextInvoiceDay = Calendar.getInstance();
 		calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
 		calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
@@ -260,6 +283,24 @@ public class CRMController {
 		// ProvisionLog end
 		
 		this.crmService.editCustomerOrderAndCreateProvision(customerOrder, proLog);
+		
+		Customer customer = this.crmService.queryCustomerById(customer_id);
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		// call mail at value retriever
+		TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+		// get sms register template from db
+		notification = this.systemService.queryNotificationBySort("service-giving", "sms");
+		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+		// send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer, notification);
+		
 		return customerOrder;
 	}
 
@@ -304,7 +345,7 @@ public class CRMController {
     		,@PathVariable(value = "customerId") int customerId){
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
 		Customer customer = this.crmService.queryCustomerById(customerId);
-		Notification notification = this.systemService.queryNotificationBySort("invoice");
+		Notification notification = this.systemService.queryNotificationBySort("invoice", "email");
 		CustomerInvoice inv = new CustomerInvoice();
 		inv.setId(invoiceId);
 		CompanyDetail company = this.systemService.queryCompanyDetail();

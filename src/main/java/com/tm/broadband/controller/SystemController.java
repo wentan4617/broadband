@@ -322,7 +322,7 @@ public class SystemController {
 
 		attr.addFlashAttribute("success", "Edit company detail successful.");
 
-		return "redirect:/broadband-user/system/company-detail/pre-edit";
+		return "redirect:/broadband-user/system/company-detail/edit";
 	}
 	/*
 	 * CompanyDetail Controller end

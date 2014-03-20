@@ -66,7 +66,8 @@
                 <prop key="mail.smtp.starttls.enable">false</prop>
 				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
 				<prop key="mail.smtp.socketFactory.fallback">false</prop>
-				<prop key="mail.smtp.timeout">25000</prop>
+				<prop key="mail.smtp.timeout">120000</prop>
+				<prop key="mail.smtp.connectiontimeout">120000</prop>
 				<!-- true for Gamil -->
 				<prop key="mail.debug">true</prop>
 			</props>

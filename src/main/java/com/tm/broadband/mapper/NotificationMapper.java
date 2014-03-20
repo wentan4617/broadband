@@ -16,7 +16,7 @@ public interface NotificationMapper {
 	List<Notification> selectNotificationsByPage(Page<Notification> page);
 	int selectNotificationsSum(Page<Notification> page);
 	
-	Notification selectNotificationBySort(String sort);
+	Notification selectNotificationBySort(String sort, String type);
 
 	/* // END SELECT AREA */
 	
