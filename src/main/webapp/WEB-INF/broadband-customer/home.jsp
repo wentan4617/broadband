@@ -14,7 +14,7 @@
 		</div>
 		<div class="col-lg-8">
 			 <div class="input-group">
-     			<input type="text" class="form-control input-lg" placeholder="Check your address" />
+     			<input id="address" type="text" class="form-control input-lg" placeholder="Check your address" />
       			<span class="input-group-btn">
         			<button class="btn btn-success btn-lg" type="button">Go</button>
       			</span>
@@ -120,11 +120,13 @@
 
 	</div>
 </div>
-
+<div id="map_canvas" style="width:720px;height:600px;"></div>
 
 <%-- <jsp:include page="chorus-map.jsp" /> --%>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />
