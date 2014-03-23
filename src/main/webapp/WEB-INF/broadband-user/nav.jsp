@@ -78,7 +78,7 @@
 									Create Customer
 								</a>
 							</li>
-							<li class="divider"></li>
+							<!-- <li class="divider"></li> -->
 						</ul>
 					</li>
 					<li class="dropdown">
