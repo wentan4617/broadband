@@ -259,6 +259,24 @@ public class CRMService {
 	}
 	
 	@Transactional
+	public void saveCustomerOrder(Customer customer, CustomerOrder customerOrder) {
+		
+		customer.setRegister_date(new Date(System.currentTimeMillis()));
+		customer.setActive_date(new Date(System.currentTimeMillis()));
+		
+		this.customerMapper.insertCustomer(customer);
+		//System.out.println("customer id: " + customer.getId());
+		customerOrder.setCustomer_id(customer.getId());
+		
+		this.customerOrderMapper.insertCustomerOrder(customerOrder);
+		
+		for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+			cod.setOrder_id(customerOrder.getId());
+			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
+		}
+	}
+	
+	@Transactional
 	public int queryExistCustomerByLoginName(String login_name) {
 		return this.customerMapper.selectExistCustomerByLoginName(login_name);
 	}

@@ -21,6 +21,22 @@
 
 						${panelheading } &nbsp;
 						
+						<c:if test="${order_status == 'pending' }">
+							<div class="btn-group">
+								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+									Operate <span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" data-role="menu">
+									<li>
+										<a href="javascript:void(0);" id="pending_to_ordering" data-val="ordering">
+											Order Status: 
+											<span class="text-danger">Pending to Ordering</span>
+										</a>
+									</li>
+								</ul>
+							</div>
+						</c:if>
+						
 						<c:if test="${order_status == 'paid' }">
 							<div class="btn-group">
 								<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -135,6 +151,12 @@
 			$('input[name="checkbox_orders"]').prop("checked", false);
 		}
 	});
+	
+	$('#pending_to_ordering').click(function(){
+		$('#process_way').val('pending to ordering');
+		$('#change_order_status').val($(this).attr('data-val'));
+		$('#provisionForm').submit();
+	});
 
 	$('#paid_to_ordering').click(function() {
 
@@ -142,6 +164,8 @@
 		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});
+	
+	
 
 })(jQuery);
 </script>
