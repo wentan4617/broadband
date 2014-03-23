@@ -83,7 +83,7 @@ public class CRMController {
 		
 		Page<Customer> page = new Page<Customer>();
 		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by c.status");
+		page.getParams().put("orderby", "order by register_date desc");
 		this.crmService.queryCustomersByPage(page);
 		model.addAttribute("page", page);
 		model.addAttribute("customerQuery", new Customer());
@@ -97,7 +97,7 @@ public class CRMController {
 		
 		Page<Customer> page = new Page<Customer>();
 		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by c.status");
+		page.getParams().put("orderby", "order by register_date desc");
 		page.getParams().put("id", customer.getId());
 		page.getParams().put("login_name", customer.getLogin_name());
 		page.getParams().put("phone", customer.getPhone());

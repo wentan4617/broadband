@@ -43,8 +43,8 @@
 							</ul>
 						</div>
 						<div class="col-md-7">
-							<ul class="list-unstyled personal-info">
-								<li>
+							<div class="row">
+								<div class="col-md-6">
 									<strong class="text-info">
 										Current Credit:
 									</strong> 
@@ -53,6 +53,8 @@
 										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />
 										
 									</strong>
+								</div>
+								<div class="col-md-6">
 									<div class="btn-group pull-right">
 										<button type="button" style="width:120px;" class="btn btn-success  dropdown-toggle" data-toggle="dropdown">
 									   		Top Up <span class="caret"></span>
@@ -62,9 +64,11 @@
 									    	<li><a href="#">Voucher</a></li>
 									  	</ul>
 									</div>
-								</li>
-								<li><hr/></li>
-								<li>
+								</div>
+							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-md-6">
 									<strong class="text-info">
 										Invoice Balance:
 									</strong> 
@@ -73,10 +77,12 @@
 										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
 										
 									</strong>
+								</div>
+								<div class="col-md-6">
+									
 									<a href="#" class="btn btn-success pull-right" style="width:120px;">Make Payment</a>
-								</li>
-								
-							</ul>
+								</div>
+							</div>
 						</div>
 					</div>
 					
@@ -93,6 +99,7 @@
 									<c:if test="${fn:length(co.customerOrderDetails) > 0 }">
 										<c:forEach var="cod" items="${co.customerOrderDetails }">
 											<c:if test="${fn:contains(cod.detail_type, 'plan-')}">
+												<li><hr style="margin:0;"/></li>
 												<li><h4 class="text-info" style="margin:0;">${cod.detail_name }</h4></li>
 												<li><hr style="margin:0;"/></li>
 												<li>
@@ -119,11 +126,14 @@
 												<li><hr style="margin:0;"/></li>
 												<li>
 													<h4 class="text-info" style="margin:0;">
-														${cod.detail_name }&nbsp;
-														<span class="label label-warning">${cod.track_code }</span>
+														${cod.detail_name }&nbsp;&nbsp;&nbsp;
+														<c:if test="${cod.is_post == 1 }">
+															<span class="label label-warning">${cod.track_code }</span>
+														</c:if>
+														<c:if test="${cod.is_post == 0 }">
+															
+														</c:if>
 													</h4>
-													
-													
 												</li>
 											</c:if>
 										</c:forEach>
