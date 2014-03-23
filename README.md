@@ -3,6 +3,12 @@ broadband 1.0 2014
 
 Total Mobile Solution Internet Service Web Project
 
+
+demand version 1.0.3 2014-03-24
+
+* [google map address in company-detail table](kanny)
+* [pppoe_loginname, pppoe_password, in customer order](kanny)
+
 demand version 1.0.2 2014-03-17
 
 * 前后台购买plan时，在checkout前，要勾选company的term condition
@@ -12,7 +18,6 @@ demand version 1.0.2 2014-03-17
 * [customerOrder表，添加, pstn_count,默认是plan的pstn数量，可另外添加数量，pstn_rental_amount](kanny)
 * [罗列出所有provision的log](STEVEN-6)
 * 在CRM下面新增添加customer功能，三个页面：customer创建页，plan创建页，invoice查看页。(STEVEN-1.1)
-* Customer order detail区加个plan group列
 
 demand version 1.0.1 2014-03-16
 
