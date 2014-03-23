@@ -398,7 +398,7 @@ public class CRMService {
 				"broadband"
 				+File.separator+"customers"
 				+File.separator+customer.getId()
-				+File.separator+"Invoice - #"+customerInvoice.getId()+".pdf");
+				+File.separator+"Invoice-"+customerInvoice.getId()+".pdf");
 		// set file path
 		customerInvoice.setInvoice_pdf_path(filePath);
 		// add sql condition: id
@@ -593,7 +593,7 @@ public class CRMService {
 					"broadband"
 					+File.separator+"customers"
 					+File.separator+customer.getId()
-					+File.separator+"Invoice - #"+customerInvoice.getId()+".pdf");
+					+File.separator+"Invoice-"+customerInvoice.getId()+".pdf");
 			// set file path
 			customerInvoice.setInvoice_pdf_path(filePath);
 			// add sql condition: id
@@ -615,7 +615,7 @@ public class CRMService {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("Invoice - #" + customerInvoice.getId() + ".pdf");
+			applicationEmail.setAttachName("Invoice-" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 

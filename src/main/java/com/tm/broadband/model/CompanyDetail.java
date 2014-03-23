@@ -37,6 +37,8 @@ public class CompanyDetail implements Serializable {
 	private String company_email;
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String company_email_password;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
+	private String google_map_address;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -148,6 +150,14 @@ public class CompanyDetail implements Serializable {
 
 	public void setCompany_email_password(String company_email_password) {
 		this.company_email_password = company_email_password;
+	}
+
+	public String getGoogle_map_address() {
+		return google_map_address;
+	}
+
+	public void setGoogle_map_address(String google_map_address) {
+		this.google_map_address = google_map_address;
 	}
 
 }

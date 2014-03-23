@@ -365,7 +365,7 @@ public class CRMController {
 		// content
 		applicationEmail.setContent(notification.getContent());
 		// attachment name
-		applicationEmail.setAttachName("Invoice - #" + invoiceId + ".pdf");
+		applicationEmail.setAttachName("Invoice-" + invoiceId + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		

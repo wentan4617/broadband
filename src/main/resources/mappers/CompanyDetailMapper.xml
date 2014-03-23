@@ -51,7 +51,8 @@
 			<if test="bank_account_number != null">`bank_account_number`=#{bank_account_number},</if>
 			<if test="company_email != null">`company_email`=#{company_email},</if>
 			<if test="company_email_password != null">`company_email_password`=#{company_email_password},</if>
-			<if test="term_contracts != null">`term_contracts`=#{term_contracts}</if>
+			<if test="term_contracts != null">`term_contracts`=#{term_contracts},</if>
+			<if test="google_map_address != null">`google_map_address`=#{google_map_address}</if>
 		</set>
 	</update>
 	
