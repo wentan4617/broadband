@@ -8,7 +8,7 @@
 			&copy; 2014 Total Mobile Solution Limited &middot;
 		</p>
 		<p>
-			<a href="#">About Us</a>
+			<a href="${ctx }/about-us">About Us</a>
 			&middot;
 			<a href="#">Contact</a>
 			&middot;

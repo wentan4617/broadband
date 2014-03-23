@@ -156,6 +156,15 @@
 								<form:errors path="address" cssErrorClass="error"/>
 							</p>
 						</div>
+						<div class="form-group">
+							<label for="google_map_address" class="control-label col-md-2">Google Map Address</label>
+							<div class="col-md-9">
+								<form:input path="google_map_address" class="form-control" placeholder="Google Map Address" />
+							</div>
+							<p class="help-block col-md-1">
+								<form:errors path="google_map_address" cssErrorClass="error"/>
+							</p>
+						</div>
 						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">

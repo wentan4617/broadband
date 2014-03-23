@@ -558,5 +558,13 @@ public class CustomerController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;
     }
+    
+
+	@RequestMapping(value = "/about-us")
+	public String toAboutUs(Model model) {
+		
+		model.addAttribute("mapAddress",this.systemService.queryCompanyDetail().getGoogle_map_address());
+		return "broadband-customer/about-us";
+	}
 
 }
