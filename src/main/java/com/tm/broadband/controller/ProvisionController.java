@@ -51,7 +51,10 @@ public class ProvisionController {
 		this.provisionService.queryCustomerOrdersByPage(page);
 		model.addAttribute("page", page);
 		
-		if ("paid".equals(order_status)) {
+		if ("pending".equals(order_status)) {
+			model.addAttribute("pendingActive", "active");
+			model.addAttribute("panelheading", "Order Pending Customers View");
+		} else if ("paid".equals(order_status)) {
 			model.addAttribute("paidActive", "active");
 			model.addAttribute("panelheading", "Order Paid Customers View");
 		} else if ("ordering".equals(order_status)) {
@@ -60,17 +63,29 @@ public class ProvisionController {
 		} else if ("using".equals(order_status)) {
 			model.addAttribute("usingActive", "active");
 			model.addAttribute("panelheading", "Order Using Customers View");
+		} else if ("cancel".equals(order_status)) {
+			model.addAttribute("cancelActive", "active");
+			model.addAttribute("panelheading", "Order Cancel Customers View");
+		} else if ("discard".equals(order_status)) {
+			model.addAttribute("discardActive", "active");
+			model.addAttribute("panelheading", "Order Discard Customers View");
 		}
 		
 		Page<CustomerOrder> p = new Page<CustomerOrder>();
 		p.getParams().put("where", "query_order_status");
 		p.getParams().put("status", "active");
+		p.getParams().put("order_status", "pending");
+		model.addAttribute("pendingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		p.getParams().put("order_status", "paid");
 		model.addAttribute("paidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		p.getParams().put("order_status", "ordering");
 		model.addAttribute("orderingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		p.getParams().put("order_status", "using");
 		model.addAttribute("usingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		p.getParams().put("order_status", "cancel");
+		model.addAttribute("cancelSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		p.getParams().put("order_status", "discard");
+		model.addAttribute("discardSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
 		model.addAttribute("order_status", order_status);
 		

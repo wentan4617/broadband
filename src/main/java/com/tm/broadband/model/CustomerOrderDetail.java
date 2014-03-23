@@ -27,6 +27,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Double detail_topup_fee;
 	private String detail_plan_memo;
 	private Integer detail_unit;
+	
 	private String detail_type;
 	private Integer detail_is_next_pay;
 	private Integer is_post;

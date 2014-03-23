@@ -533,16 +533,27 @@ public class CRMController {
 				}
 			}
 		}
+		
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		
 		cod_plan.setDetail_name(customerOrder.getPlan().getPlan_name());
+		cod_plan.setDetail_desc(customerOrder.getPlan().getPlan_desc());
 		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price());
+		cod_plan.setDetail_data_flow(customerOrder.getPlan().getData_flow());
+		cod_plan.setDetail_plan_status(customerOrder.getPlan().getPlan_status());
+		cod_plan.setDetail_plan_type(customerOrder.getPlan().getPlan_type());
+		cod_plan.setDetail_plan_sort(customerOrder.getPlan().getPlan_sort());
+		cod_plan.setDetail_plan_group(customerOrder.getPlan().getPlan_group());
+		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
 		
 		customerOrder.getCustomerOrderDetails().add(cod_plan);
 		
 		if ("plan-topup".equals(customerOrder.getPlan().getPlan_group())) {
+			
+			cod_plan.setDetail_type("plan-topup");
+			cod_plan.setDetail_is_next_pay(0);
 			
 			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 				
@@ -551,6 +562,8 @@ public class CRMController {
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_conn);
@@ -561,19 +574,27 @@ public class CRMController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_trans);
 			}
 			
 			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+			
 			cod_topup.setDetail_name("Broadband Top-Up");
 			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
+			cod_topup.setDetail_type("plan-topup");
+			cod_topup.setDetail_is_next_pay(0);
 			cod_topup.setDetail_unit(1);
 			
 			customerOrder.getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(customerOrder.getPlan().getPlan_group())) {
+			
+			cod_plan.setDetail_type("plan-no-term");
+			cod_plan.setDetail_is_next_pay(1);
 			
 			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 				
@@ -582,6 +603,8 @@ public class CRMController {
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_conn);
@@ -592,6 +615,8 @@ public class CRMController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_trans);
@@ -606,6 +631,8 @@ public class CRMController {
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_conn);
@@ -616,6 +643,8 @@ public class CRMController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_trans);
@@ -625,9 +654,13 @@ public class CRMController {
 		if (customerOrder.getCustomerOrderDetails() != null) {
 			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
 				if ("hardware-router".equals(cod.getDetail_type())) {
+					cod.setDetail_is_next_pay(0);
+					cod.setIs_post(0);
+					customerOrder.setHardware_post(customerOrder.getHardware_post() == null ? 1 : customerOrder.getHardware_post() + 1);
 					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
 				} else if ("pstn".equals(cod.getDetail_type())){
 					cod.setDetail_unit(1);
+					cod.setDetail_is_next_pay(1);
 					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
 				}
 			}
@@ -645,6 +678,31 @@ public class CRMController {
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create/back")
 	public String toBackOrderCreate(Model model) {
 		return "broadband-user/crm/order-create";
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
+	public String orderSave(Model model,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
+			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
+			RedirectAttributes attr, SessionStatus status) {
+		
+		if (c_result.hasErrors()) {
+			return "broadband-user/crm/customer-create";
+		}
+		if (co_result.hasErrors()) {
+			return "broadband-user/crm/order-create";
+		}
+		
+		customer.setUser_name(customer.getLogin_name());
+		customerOrder.setOrder_status("pending");
+		customerOrder.setOrder_type(customerOrder.getPlan().getPlan_group().replace("plan", "order"));
+		
+		this.crmService.saveCustomerOrder(customer, customerOrder);
+		attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
+		status.setComplete();
+		
+		return "redirect:/broadband-user/crm/customer/query/1";
 	}
 	/**
 	 * END back-end create customer model
