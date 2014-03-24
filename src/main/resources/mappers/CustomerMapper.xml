@@ -46,7 +46,9 @@
 		co.`order_type` 					as co_order_type,
 		co.`order_broadband_type` 			as co_order_broadband_type,
 		co.`svlan`	 						as co_svlan,
-		co.`cvlan` 							as co_cvlan
+		co.`cvlan` 							as co_cvlan,
+		co.`pppoe_loginname`				as co_pppoe_loginname,
+		co.`pppoe_password`					as co_pppoe_password
 	</sql>
 	<sql id="customerOrderDetailColumns">
 		cod.`id` 								as cod_id, 
@@ -148,6 +150,8 @@
 			<result property="order_broadband_type" column="co_order_broadband_type" />
 			<result property="svlan" column="co_svlan" />
 			<result property="cvlan" column="co_cvlan" />
+			<result property="pppoe_loginname" column="co_pppoe_loginname" />
+			<result property="pppoe_password" column="co_pppoe_password" />
 
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail">
 				<id property="id" column="cod_id" />

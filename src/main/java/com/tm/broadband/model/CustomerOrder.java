@@ -44,6 +44,8 @@ public class CustomerOrder implements Serializable {
 	private Integer pstn_count;
 	private Double pstn_rental_amount;
 	private Integer term_period;
+	private String pppoe_loginname;
+	private String pppoe_password;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -323,6 +325,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setTerm_period(Integer term_period) {
 		this.term_period = term_period;
+	}
+
+	public String getPppoe_loginname() {
+		return pppoe_loginname;
+	}
+
+	public void setPppoe_loginname(String pppoe_loginname) {
+		this.pppoe_loginname = pppoe_loginname;
+	}
+
+	public String getPppoe_password() {
+		return pppoe_password;
+	}
+
+	public void setPppoe_password(String pppoe_password) {
+		this.pppoe_password = pppoe_password;
 	}
 
 	

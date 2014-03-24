@@ -1,6 +1,7 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,7 @@ public class CustomerOrderDetail implements Serializable {
 	
 	private String detail_type;
 	private Integer detail_is_next_pay;
+	private Date detail_expired;
 	private Integer is_post;
 	private String hardware_comment;
 	private String track_code;
@@ -242,6 +244,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setPstn_number(String pstn_number) {
 		this.pstn_number = pstn_number;
+	}
+
+	public Date getDetail_expired() {
+		return detail_expired;
+	}
+
+	public void setDetail_expired(Date detail_expired) {
+		this.detail_expired = detail_expired;
 	}
 	
 }

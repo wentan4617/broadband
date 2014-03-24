@@ -11,8 +11,7 @@
       body { height: 100%; margin: 0; padding: 0 }
       #map_canvas { height: 100% }
     </style>
-    <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBVW1VF22QhBHMntGWSOt1Vqi5l88cPak8&sensor=true&region=NZ">
+    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBVW1VF22QhBHMntGWSOt1Vqi5l88cPak8&sensor=true&region=NZ">
     </script>
     <script type="text/javascript">
 
