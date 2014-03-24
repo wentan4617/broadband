@@ -4,7 +4,7 @@
 <div class="navbar-inverse" style="padding-bottom:50px;">
 <div class="container" >
     <footer style="margin-top: 10px;">
-        <p class="pull-right">
+        <p class="pull-right" style="color:#fff">
 			&copy; 2014 Total Mobile Solution Limited &middot;
 		</p>
 		<p>
