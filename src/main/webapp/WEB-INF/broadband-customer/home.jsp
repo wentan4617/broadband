@@ -120,13 +120,13 @@
 
 	</div>
 </div>
-<div id="map_canvas" style="width:720px;height:600px;"></div>
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <%-- <jsp:include page="chorus-map.jsp" /> --%>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
-<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places" type="text/javascript"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />

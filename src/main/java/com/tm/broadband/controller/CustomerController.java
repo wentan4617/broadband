@@ -384,7 +384,7 @@ public class CustomerController {
 					"broadband"
 					+File.separator+"customers"
 					+File.separator+customer.getId()
-					+File.separator+"Invoice - #"+customerTransaction.getInvoice_id()+".pdf");
+					+File.separator+"Invoice-"+customerTransaction.getInvoice_id()+".pdf");
 			
 			Notification notification = this.crmService.queryNotificationBySort("register", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -395,7 +395,7 @@ public class CustomerController {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("Invoice - #" + customerTransaction.getInvoice_id() + ".pdf");
+			applicationEmail.setAttachName("Invoice-" + customerTransaction.getInvoice_id() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			

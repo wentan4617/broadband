@@ -353,11 +353,22 @@ public class CRMService {
 	}
 
 	@Transactional
+	public void createCustomerOrderDetail(CustomerOrderDetail customerOrderDetail) {
+		this.customerOrderDetailMapper.insertCustomerOrderDetail(customerOrderDetail);
+	}
+
+	@Transactional
 	public void editCustomerOrder(CustomerOrder customerOrder, ProvisionLog proLog) {
 		// edit order
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 		// insert provision
 		this.provisionLogMapper.insertProvisionLog(proLog);
+	}
+	
+	@Transactional
+	public void editCustomerOrder(CustomerOrder customerOrder) {
+		// edit order
+		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 	}
 
 	@Transactional

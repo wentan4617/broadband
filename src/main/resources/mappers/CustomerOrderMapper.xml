@@ -74,7 +74,9 @@
 		co.`order_due`							as co_order_due,
 		co.`pstn_count`							as co_pstn_count,
 		co.`pstn_rental_amount`					as co_pstn_rental_amount,
-		co.`term_period`						as co_term_period
+		co.`term_period`						as co_term_period,
+		co.`pppoe_loginname`					as co_pppoe_loginname,
+		co.`pppoe_password`						as co_pppoe_password
 	</sql>
 	
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
@@ -99,6 +101,8 @@
 		<result property="pstn_count" column="co_pstn_count" />
 		<result property="pstn_rental_amount" column="co_pstn_rental_amount" />
 		<result property="term_period" column="co_term_period" />
+		<result property="pppoe_loginname" column="co_pppoe_loginname" />
+		<result property="pppoe_password" column="co_pppoe_password" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -360,13 +364,13 @@
 			`order_type`, `order_broadband_type`, 
 			`transition_provider_name`, `transition_account_holder_name`, 
 			`transition_account_number`, `transition_porting_number`, `hardware_post`,
-			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`) 
+			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`) 
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
 			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
-			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period})
+			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -395,11 +399,12 @@
 			<if test="transition_account_number != null">transition_account_number=#{transition_account_number},</if>
 			<if test="transition_porting_number != null">transition_porting_number=#{transition_porting_number},</if>
 			<if test="hardware_post != null">hardware_post=#{hardware_post},</if>
-			
-			<if test="hardware_post != null">order_due=#{order_due},</if>
-			<if test="hardware_post != null">pstn_count=#{pstn_count},</if>
-			<if test="hardware_post != null">pstn_rental_amount=#{pstn_rental_amount},</if>
-			<if test="hardware_post != null">term_period=#{term_period}</if>
+			<if test="order_due != null">order_due=#{order_due},</if>
+			<if test="pstn_count != null">pstn_count=#{pstn_count},</if>
+			<if test="pstn_rental_amount != null">pstn_rental_amount=#{pstn_rental_amount},</if>
+			<if test="term_period != null">term_period=#{term_period},</if>
+			<if test="pppoe_loginname != null">pppoe_loginname=#{pppoe_loginname},</if>
+			<if test="pppoe_password != null">pppoe_password=#{pppoe_password}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

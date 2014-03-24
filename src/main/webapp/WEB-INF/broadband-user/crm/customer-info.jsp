@@ -5,8 +5,6 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="../alert.jsp" />
-
 <!-- Customer Basic Details -->
 <div class="panel-group" id="customerInfoAccordion">
 	<div class="panel panel-default">

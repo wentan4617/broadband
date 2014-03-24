@@ -46,7 +46,6 @@ import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
-import com.tm.broadband.model.Topup;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
@@ -248,6 +247,39 @@ public class CRMController {
 		
 		return customerOrder;
 	}
+
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/save")
+	public String doCustomerOrderDetailCreate(Model model
+			,@RequestParam("order_id") int order_id
+			,@RequestParam("customer_id") int customer_id
+			,@RequestParam("detail_name") String detail_name
+			,@RequestParam("detail_price") Double detail_price
+			,@RequestParam("detail_unit") Integer detail_unit
+			,@RequestParam("detail_expired") String detail_expired
+			,@RequestParam("detail_type") String detail_type) {
+		
+		model.addAttribute("panelheading", "Customer Edit");
+		model.addAttribute("action", "/broadband-user/crm/customer/edit");
+		
+		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
+		customerOrderDetail.setOrder_id(order_id);
+		customerOrderDetail.setDetail_name(detail_name);
+		customerOrderDetail.setDetail_price(detail_price);
+		customerOrderDetail.setDetail_unit(detail_unit);
+		customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
+		customerOrderDetail.setDetail_type(detail_type);
+		this.crmService.createCustomerOrderDetail(customerOrderDetail);
+		
+		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer_id);
+		
+		model.addAttribute("customer", customer);
+		
+		model.addAttribute("success", "Create Customer Order Detail is successful.");
+
+		return "broadband-user/crm/customer";
+	}
+	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/edit")
 	@ResponseBody
 	public CustomerOrder toCustomerInvoiceEdit(Model model,
@@ -706,6 +738,50 @@ public class CRMController {
 	}
 	/**
 	 * END back-end create customer model
+	 */
+	
+	/**
+	 * BEGIN PPPoE Controller
+	 */
+	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/save")
+	@ResponseBody
+	public CustomerOrder saveCustomerOrderPPPPoEEdit(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("order_pppoe_loginname_input") String order_pppoe_loginname_input,
+			@RequestParam("order_pppoe_password_input") String order_pppoe_password_input,
+			HttpServletRequest req) {
+
+		// customer order begin
+		CustomerOrder customerOrder = new CustomerOrder();
+		customerOrder.getParams().put("id", order_id);
+		customerOrder.setPppoe_loginname(order_pppoe_loginname_input);
+		customerOrder.setPppoe_password(order_pppoe_password_input);
+
+		this.crmService.editCustomerOrder(customerOrder);
+		
+		return customerOrder;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit")
+	@ResponseBody
+	public CustomerOrder toCustomerPPPoEEdit(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("order_pppoe_loginname_input") String order_pppoe_loginname_input,
+			@RequestParam("order_pppoe_password_input") String order_pppoe_password_input,
+			HttpServletRequest req) {
+		
+		// CustomerOrder begin
+		CustomerOrder customerOrder = new CustomerOrder();
+		customerOrder.getParams().put("id", order_id);
+		customerOrder.setPppoe_loginname(order_pppoe_loginname_input);
+		customerOrder.setPppoe_password(order_pppoe_password_input);
+
+		this.crmService.editCustomerOrder(customerOrder);
+		
+		return customerOrder;
+	}
+	/**
+	 * END PPPoE Controller
 	 */
 
 }

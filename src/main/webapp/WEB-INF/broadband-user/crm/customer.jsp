@@ -30,6 +30,10 @@
 <script type="text/javascript">
 (function($){
 	
+	$('a[data-name="add_discount"]').click(function(){
+		$('input[name="order_id"]').val($(this).attr('data-val'));
+	});
+	
 	$('.input-group.date').datepicker({
 	    format: "yyyy-mm-dd",
 	    autoclose: true,
@@ -307,6 +311,61 @@
 			svlan.html(svlan_input);
 			order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
 			order_next_invoice_create_date.html(order.next_invoice_create_date_str);
+		}, "json");
+	});
+	
+	$('a[data-name="pppoe_save"]').click(function(){
+		var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
+		var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
+		
+		var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
+		var order_pppoe_password = $('#'+this.id+'_pppoe_password');
+		
+		// if yes then performing Ajax action
+		if(confirm('Confirm to save PPPoE Login Name & Password')){
+			var data = {
+					 'order_id':this.id
+					,'order_pppoe_loginname_input':order_pppoe_loginname_input
+					,'order_pppoe_password_input':order_pppoe_password_input
+				};
+			
+			var url = "${ctx}/broadband-user/crm/customer/order/ppppoe/save";
+			$.get(url, data, function(order){
+				var oBtnSave = $('a[data-name="pppoe_save"]');
+				// hide Save Btn
+				oBtnSave.css('display', 'none');
+				var oBtnEdit = $('a[data-name="pppoe_edit"]');
+				// show Edit Btn
+				oBtnEdit.css('display', '');
+				
+				// rewrite innerHTML
+				order_pppoe_loginname.html(order_pppoe_loginname_input);
+				order_pppoe_password.html(order_pppoe_password_input);
+				
+			}, "json");
+		}
+	});
+	
+	$('a[data-name="pppoe_edit"]').click(function(){
+		var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
+		var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
+		
+		var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
+		var order_pppoe_password = $('#'+this.id+'_pppoe_password');
+		
+		var data = {
+				 'order_id':this.id
+				,'order_pppoe_loginname_input':order_pppoe_loginname_input
+				,'order_pppoe_password_input':order_pppoe_password_input
+			};
+		
+		var url = "${ctx}/broadband-user/crm/customer/order/ppppoe/edit";
+		$.get(url, data, function(order){
+			
+			// rewrite innerHTML
+			order_pppoe_loginname.html(order_pppoe_loginname_input);
+			order_pppoe_password.html(order_pppoe_password_input);
+			
 		}, "json");
 	});
 
