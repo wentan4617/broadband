@@ -167,18 +167,17 @@
 						</div>
 						<hr/>
 						<div class="form-group">
-							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save</button>
+							<div class="col-md-2 col-md-offset-2">
+								<button type="submit" class="btn btn-success btn-lg btn-block">Save</button>
 							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
-							<label for="term_contracts" class="control-label col-md-3">Term Contracts</label>
-							<div class="col-md-9">
+							<label for="term_contracts" class="control-label col-md-2">Term Contracts</label>
+							<div class="col-md-10">
 								<form:textarea path="term_contracts" class="form-control" rows="30"/>
 							</div>
 						</div>
-						
 					</form:form>
 				</div>
 			</div>

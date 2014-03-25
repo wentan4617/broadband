@@ -28,9 +28,9 @@
 								</button>
 								<ul class="dropdown-menu" data-role="menu">
 									<li>
-										<a href="javascript:void(0);" id="pending_to_ordering" data-val="ordering">
+										<a href="javascript:void(0);" id="pending_to_ordering" data-val="ordering-pending">
 											Order Status: 
-											<span class="text-danger">Pending to Ordering</span>
+											<span class="text-danger">Pending to Ordering-Pending</span>
 										</a>
 									</li>
 								</ul>
@@ -44,9 +44,9 @@
 								</button>
 								<ul class="dropdown-menu" data-role="menu">
 									<li>
-										<a href="javascript:void(0);" id="paid_to_ordering" data-val="ordering">
+										<a href="javascript:void(0);" id="paid_to_ordering" data-val="ordering-paid">
 											Order Status: 
-											<span class="text-danger">Paid to Ordering</span>
+											<span class="text-danger">Paid to Ordering-Paid</span>
 										</a>
 									</li>
 								</ul>
@@ -153,14 +153,14 @@
 	});
 	
 	$('#pending_to_ordering').click(function(){
-		$('#process_way').val('pending to ordering');
+		$('#process_way').val('pending to ordering-pending');
 		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});
 
 	$('#paid_to_ordering').click(function() {
 
-		$('#process_way').val('paid to ordering');
+		$('#process_way').val('paid to ordering-paid');
 		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});

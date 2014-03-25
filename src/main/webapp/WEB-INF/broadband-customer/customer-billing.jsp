@@ -22,7 +22,9 @@
 						<c:forEach var="co" items="${customerSession.customerOrders}">
 							<thead>
 								<tr>
-									<th colspan="7"><h3>Order Serial:${co.id}</h3></th>
+									<th colspan="7">
+										<h4 class="text-success" style="margin:2px;">Order Serial:&nbsp;<small>${co.id}</small> </h4>
+									</th>
 								</tr>
 								<tr>
 									<th>Date</th>
@@ -30,7 +32,6 @@
 									<th>Reference</th>
 									<th>Amount Payable</th>
 									<th>Amount Paid</th>
-									<th>Status</th>
 									<th>&nbsp;</th>
 								</tr>
 							</thead>
@@ -45,9 +46,8 @@
 												<td>${tx.card_name}</td>
 												<td>&nbsp;</td>
 												<td>
-													<strong><fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
+													<strong>NZ$ <fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
 												</td>
-												<td>&nbsp;</td>
 												<td>&nbsp;</td>
 											</tr>
 										</c:if>
@@ -62,12 +62,9 @@
 										</c:if>
 										<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
 										<td>
-											<strong><fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
+											<strong>NZ$ <fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
 										</td>
-										<td>${invoice.status}</td>
-										<td>
-											<strong>&nbsp;</strong>
-										</td>
+										<td><strong>&nbsp;</strong></td>
 										<!-- download icon -->
 										<td>
 											<c:if test="${invoice.invoice_pdf_path!=null}">
@@ -104,8 +101,7 @@
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<div class="panel-body">
-						<div class="alert alert-warning">No records have been
-							found.</div>
+						<div class="alert alert-warning">No records have been found.</div>
 					</div>
 				</c:if>
 			</div>

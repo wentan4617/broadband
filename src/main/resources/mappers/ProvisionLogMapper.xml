@@ -8,7 +8,10 @@
 
 	<sql id="provisionLogColumns">
 		p.`id`					as p_id,
+		p.`user_id`				as p_user_id,
 		p.`process_datetime`	as p_process_datetime,
+		p.`order_id_customer`	as p_order_id_customer,
+		p.`order_id_chorus`		as p_order_id_chorus,
 		p.`order_sort`			as p_order_sort,
 		p.`process_way`			as p_process_way,
 		p.`process_memo`		as p_process_memo
@@ -20,20 +23,6 @@
 		u.`user_name`		as u_user_name,
 		u.`user_role`		as u_user_role,
 		u.`memo`			as u_memo
-	</sql>
-	<sql id="customerOrderColumns">
-		cus_o.`id` 							as cus_o_id, 
-		cus_o.`order_serial` 				as cus_o_order_serial, 
-		cus_o.`customer_id` 				as cus_o_customer_id, 
-		cus_o.`order_total_price` 			as cus_o_order_total_price, 
-		cus_o.`order_create_date` 			as cus_o_order_create_date, 
-		cus_o.`order_status` 				as cus_o_order_status, 
-		cus_o.`order_using_start` 			as cus_o_order_using_start,
-		cus_o.`next_invoice_create_date` 	as cus_o_next_invoice_create_date,
-		cus_o.`order_type` 					as cus_o_order_type,
-		cus_o.`order_broadband_type` 		as cus_o_order_broadband_type,
-		cus_o.`svlan`	 					as cus_o_svlan,
-		cus_o.`cvlan` 						as cus_o_cvlan
 	</sql>
 	
 	<!-- 
@@ -88,11 +77,10 @@
 	<select id="selectProvisionLogsByPage" parameterType="Page" resultMap="selectProvisionLogsByPageResultMap">
 		SELECT
 			<include refid="provisionLogColumns"/>,
-			<include refid="userColumns"/>,
-			<include refid="customerOrderColumns"/>
-		FROM tm_provision_log as p,
-		tm_user as u,
-		tm_customer_order as cus_o
+			<include refid="userColumns"/>
+		FROM tm_provision_log as p
+		left join tm_user as u on u.id = p.user_id
+		
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
 	</select>
@@ -102,7 +90,10 @@
 	
 	<resultMap type="ProvisionLog" id="selectProvisionLogsByPageResultMap">
 		<id property="id" column="p_id"/>
+		<result property="user_id" column="p_user_id"/>
 		<result property="process_datetime" column="p_process_datetime"/>
+		<result property="order_id_customer" column="p_order_id_customer"/>
+		<result property="order_id_chorus" column="p_order_id_chorus"/>
 		<result property="order_sort" column="p_order_sort"/>
 		<result property="process_way" column="p_process_way"/>
 		<result property="process_memo" column="p_process_memo"/>
@@ -113,19 +104,6 @@
 			<result property="user_name" column="u_user_name"/>
 			<result property="user_role" column="u_user_role"/>
 			<result property="memo" column="u_memo"/>
-		</association>
-		<association property="order_id_customer" javaType="CustomerOrder">
-			<id property="id" column="cus_o_id" />
-			<result property="order_serial" column="cus_o_order_serial" />
-			<result property="order_total_price" column="cus_o_order_total_price" />
-			<result property="order_create_date" column="cus_o_order_create_date" />
-			<result property="order_status" column="cus_o_order_status" />
-			<result property="order_using_start" column="cus_o_order_using_start" />
-			<result property="next_invoice_create_date" column="cus_o_next_invoice_create_date" />
-			<result property="order_type" column="cus_o_order_type" />
-			<result property="order_broadband_type" column="cus_o_order_broadband_type" />
-			<result property="svlan" column="cus_o_svlan" />
-			<result property="cvlan" column="cus_o_cvlan" />
 		</association>
 	</resultMap>
 <!-- // END SELECT AREA -->
@@ -138,11 +116,11 @@
 	<insert id="insertProvisionLog" parameterType="ProvisionLog">
 		INSERT INTO `tm_provision_log`(
 			`user_id`, `process_datetime`, `order_sort`, 
-			`order_id_customer`, 
+			`order_id_customer`, `order_id_chorus`,
 			`process_way`, `process_memo`) 
 		VALUES (
-			#{user.id}, now(), #{order_sort},
-			#{order_id_customer.id}, 
+			#{user_id}, #{process_datetime}, #{order_sort},
+			#{order_id_customer}, #{order_id_chorus},
 			#{process_way}, #{process_memo})
 	</insert>
 <!-- // END INSERT AREA -->
@@ -153,10 +131,11 @@
 	<update id="updateProvisionLog" parameterType="ProvisionLog">
 		UPDATE tm_provision_log
 		<set>
-			<if test="user.id != null">user_id=#{user.id},</if>
+			<if test="user_id != null">user_id=#{user_id},</if>
 			<if test="process_datetime != null">process_datetime=#{process_datetime},</if>
 			<if test="order_sort != null">order_sort=#{order_sort},</if>
-			<if test="order_id_customer.id != null">order_id_customer=#{order_id_customer.id},</if>
+			<if test="order_id_customer != null">order_id_customer=#{order_id_customer},</if>
+			<if test="order_id_chorus != null">order_id_customer=#{order_id_chorus},</if>
 			<if test="process_way != null">process_way=#{process_way},</if>
 			<if test="process_memo != null">process_memo=#{process_memo}</if>
 		</set>

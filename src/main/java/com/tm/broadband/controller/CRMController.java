@@ -219,7 +219,7 @@ public class CRMController {
 		// get user from session
 		User user = (User) req.getSession().getAttribute("userSession");
 		proLog.setUser(user);
-		proLog.setOrder_id_customer(customerOrder);
+		//proLog.setOrder_id_customer(customerOrder);
 		proLog.setOrder_sort("customer-order");
 		proLog.setProcess_way("paid to using");
 		// provision log end
@@ -313,7 +313,7 @@ public class CRMController {
 		// ProvisionLog begin
 		ProvisionLog proLog = new ProvisionLog();
 		proLog.setUser(user);
-		proLog.setOrder_id_customer(customerOrder);
+		//proLog.setOrder_id_customer(customerOrder);
 		proLog.setOrder_sort("customer-order");
 		proLog.setProcess_way("paid to using");
 		// ProvisionLog end
@@ -362,7 +362,7 @@ public class CRMController {
         
         HttpHeaders headers = new HttpHeaders();
         // set spring framework media type
-        headers.setContentType( MediaType.parseMediaType( "application/pdf" ) );
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
         // get file name with file's suffix
         String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
         headers.setContentDispositionFormData( filename, filename );

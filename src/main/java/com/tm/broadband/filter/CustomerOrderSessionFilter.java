@@ -34,7 +34,7 @@ public class CustomerOrderSessionFilter implements Filter {
 		System.out.println("orderPlan:" + orderPlan);
 		
 		String url = req.getRequestURL().toString();
-		System.out.println(url);
+		System.out.println("CustomerOrderSessionFilter: " + url);
 		
 		if (customer != null && orderPlan != null ) {
 			chain.doFilter(request, response);

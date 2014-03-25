@@ -5,18 +5,14 @@
 <div class="container" >
     <footer style="margin-top: 10px;">
         <p class="pull-right" style="color:#fff">
-			&copy; 2014 Total Mobile Solution Limited &middot;
+			&copy; 2014 CyberPark Limited &middot;
 		</p>
 		<p>
-			<a href="${ctx }/about-us">About Us</a>
+			<a href="${ctx }/about-us">About CyberPark</a>
 			&middot;
 			<a href="#">Contact</a>
 			&middot;
-			<a href="#">Careers</a>
-			&middot;
-			<a href="#">Terms & Conditons</a>
-			&middot;
-			<a href="#">Partners</a>
+			<a href="#">Terms & Conditions</a>
 		</p>
     </footer>
 </div>

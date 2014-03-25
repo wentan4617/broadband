@@ -277,6 +277,12 @@ public class CRMService {
 	}
 	
 	@Transactional
+	public void customerTopup(Customer customer, CustomerTransaction customerTransaction) {
+		this.customerMapper.updateCustomer(customer);
+		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
+	}
+	
+	@Transactional
 	public int queryExistCustomerByLoginName(String login_name) {
 		return this.customerMapper.selectExistCustomerByLoginName(login_name);
 	}

@@ -47,7 +47,13 @@ public class ProvisionController {
 		page.getParams().put("where", "query_order_status");
 		page.getParams().put("orderby", "order by co.order_create_date");
 		page.getParams().put("status", "active");
-		page.getParams().put("order_status", order_status);
+		if (order_status.equals("ordering")) {
+			page.getParams().put("order_status", order_status + "-paid");
+			page.getParams().put("order_status_1", order_status + "-pending");
+		} else {
+			page.getParams().put("order_status", order_status);
+		}
+		
 		this.provisionService.queryCustomerOrdersByPage(page);
 		model.addAttribute("page", page);
 		
@@ -78,7 +84,8 @@ public class ProvisionController {
 		model.addAttribute("pendingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		p.getParams().put("order_status", "paid");
 		model.addAttribute("paidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
-		p.getParams().put("order_status", "ordering");
+		p.getParams().put("order_status", "ordering-pending");
+		p.getParams().put("order_status_1", "ordering-paid");
 		model.addAttribute("orderingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		p.getParams().put("order_status", "using");
 		model.addAttribute("usingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
@@ -157,10 +164,10 @@ public class ProvisionController {
 			customerOrder.getParams().put("id", Integer.parseInt(order_id));
 			
 			ProvisionLog log = new ProvisionLog();
-			log.setUser(userSession);
+			log.setUser_id(userSession.getId());
 			log.setProcess_datetime(new Date(System.currentTimeMillis()));
 			log.setOrder_sort("customer-order");
-			log.setOrder_id_customer(customerOrder);
+			log.setOrder_id_customer(Integer.parseInt(order_id));
 			log.setProcess_way(process_way);
 			
 			customerOrder.setTempProvsionLog(log);
@@ -183,7 +190,7 @@ public class ProvisionController {
 		Page<ProvisionLog> page = new Page<ProvisionLog>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("orderby", "order by p.order_sort desc, p.process_way");
+		page.getParams().put("orderby", "order by process_datetime desc");
 		this.provisionService.queryProvisionLogsByPage(page);
 		model.addAttribute("page", page);
 

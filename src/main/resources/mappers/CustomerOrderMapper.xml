@@ -158,6 +158,7 @@
 			<choose>
 				<when test="params.where == 'query_order_status'">
 					<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
+					<if test="params.order_status_1 != null">or co.order_status=#{params.order_status_1}</if>
 					<if test="params.status != null">and c.status=#{params.status}</if>
 				</when>
 			</choose>

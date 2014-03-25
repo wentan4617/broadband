@@ -59,7 +59,7 @@
 										<button type="button" style="width:120px;" class="btn btn-success  dropdown-toggle" data-toggle="dropdown">
 									   		Top Up <span class="caret"></span>
 									  	</button>
-									  	<ul class="dropdown-menu" role="menu">
+									  	<ul class="dropdown-menu" data-role="menu">
 									    	<li><a href="${ctx }/customer/topup">Credit Card</a></li>
 									    	<li><a href="#">Voucher</a></li>
 									  	</ul>

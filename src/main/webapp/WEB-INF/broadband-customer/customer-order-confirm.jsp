@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
@@ -131,19 +132,28 @@
 					</table>
 				</div>
 			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
+					<label class="well checkbox-inline pull-right">
+						<input type="checkbox" id="termckb" value="1" checked="checked"/>
+						<a class="btn btn-link btn-lg"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
+					</label>
+				</div>
+			</div>
 			<hr/>
 			<div class="row">
 				<div class="col-md-12">
 					<c:choose>
 						<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-							<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left">Back</a>
+							<a href="${ctx }/order/${orderPlan.id}" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
 						</c:when>
 						<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success btn-lg pull-left">Back</a>
+							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
 						</c:when>
 					</c:choose>
-					<form class="form-horizontal" action="${ctx }/order/submit" method="post">
-						<button type="submit" class="btn btn-success btn-lg pull-right">Checkout</button>
+					<form class="form-horizontal" action="${ctx }/order/submit" method="post" id="checkoutForm">
+						<button type="submit" style="width:120px;" class="btn btn-success btn-lg pull-right">Checkout</button>
 					</form>
 				</div>
 			</div>
@@ -152,8 +162,41 @@
 	
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="cyberParkTerm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:800px;">
+    	<div class="modal-content">
+      		<div class="modal-header">
+        		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        		<h4 class="modal-title" id="myModalLabel">CyberPark Terms & Conditions</h4>
+      		</div>
+      		<div class="modal-body">
+        		${company.term_contracts }
+      		</div>
+    	</div><!-- /.modal-content -->
+  	</div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
+<script type="text/javascript">
+(function(){
+	$(':checkbox').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
+	
+	$('button[type="submit"]').click(function(e){
+		e.preventDefault();
+		var b = $('#termckb').prop('checked');
+		if (b) {
+			$('#checkoutForm').submit();
+		} else {
+			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
+		}
+	});
+})(jQuery);
+</script>
 <jsp:include page="footer-end.jsp" />
