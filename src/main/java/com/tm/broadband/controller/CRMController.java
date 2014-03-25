@@ -47,6 +47,10 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.paymentexpress.GenerateRequest;
+import com.tm.broadband.paymentexpress.PayConfig;
+import com.tm.broadband.paymentexpress.PxPay;
+import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
@@ -192,59 +196,72 @@ public class CRMController {
 			@RequestParam("svlan_input") String svlan_input,
 			@RequestParam("order_using_start_input") String order_using_start_input,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
+			@RequestParam("order_status") String order_status,
 			HttpServletRequest req) {
-
-		// customer order begin
 		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("id", order_id);
-		customerOrder.setId(order_id);
-		customerOrder.setSvlan(svlan_input);
-		customerOrder.setCvlan(cvlan_input);
-		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-		// next invoice date
-		if(order_detail_unit==null){
-			order_detail_unit = 1;
+		
+		if(order_status.equals("ordering-paid")){
+			
+			// customer order begin
+			customerOrder = new CustomerOrder();
+			customerOrder.getParams().put("id", order_id);
+			customerOrder.setId(order_id);
+			customerOrder.setSvlan(svlan_input);
+			customerOrder.setCvlan(cvlan_input);
+			customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
+			// next invoice date
+			if(order_detail_unit==null){
+				order_detail_unit = 1;
+			}
+			int nextInvoiceDay = 30 * order_detail_unit - 15;
+			Calendar calnextInvoiceDay = Calendar.getInstance();
+			calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
+			calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+			// set next invoice date
+			customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
+			customerOrder.setOrder_status("using");
+			// customer order end
+			
+			// provision log begin
+			ProvisionLog proLog = new ProvisionLog();
+			// get user from session
+			User user = (User) req.getSession().getAttribute("userSession");
+			proLog.setUser(user);
+			proLog.setOrder_id_customer(customerOrder);
+			proLog.setOrder_sort("customer-order");
+			proLog.setProcess_way("paid to using");
+			// provision log end
+
+			
+			this.crmService.editCustomerOrder(customerOrder, proLog);
+			
+			// mailer
+			Customer customer = this.crmService.queryCustomerById(customer_id);
+			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+			Notification notification = this.systemService.queryNotificationBySort("register-pre-pay", "email");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			notification = this.systemService.queryNotificationBySort("register-pre-pay", "sms");
+			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			
 		}
-		int nextInvoiceDay = 30 * order_detail_unit - 15;
-		Calendar calnextInvoiceDay = Calendar.getInstance();
-		calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-		calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-		// set next invoice date
-		customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
-		customerOrder.setOrder_status("using");
-		// customer order end
-		
-		// provision log begin
-		ProvisionLog proLog = new ProvisionLog();
-		// get user from session
-		User user = (User) req.getSession().getAttribute("userSession");
-		proLog.setUser(user);
-		proLog.setOrder_id_customer(customerOrder);
-		proLog.setOrder_sort("customer-order");
-		proLog.setProcess_way("paid to using");
-		// provision log end
 
-		
-		this.crmService.editCustomerOrder(customerOrder, proLog);
-		
-		// mailer
-		Customer customer = this.crmService.queryCustomerById(customer_id);
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		if(order_status.equals("ordering-pending")){
+			Notification notificationEmail = this.systemService.queryNotificationBySort("register-post-pay", "email");
+			Notification notificationSMS = this.systemService.queryNotificationBySort("register-post-pay", "sms");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+        	this.crmService.createInvoicePDF(customerOrder, applicationEmail, notificationEmail, notificationSMS);
+		}
 
-		// get sms register template from db
-		notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer, notification);
-		
 		return customerOrder;
 	}
 
@@ -782,6 +799,79 @@ public class CRMController {
 	}
 	/**
 	 * END PPPoE Controller
+	 */
+	
+	
+	/**
+	 * BEGIN Payment
+	 */
+
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/{invoice_id}")
+	public String toInvoicePayment(Model model, HttpServletRequest req, RedirectAttributes attr
+			,@PathVariable("invoice_id") Integer invoice_id) {
+
+		GenerateRequest gr = new GenerateRequest();
+
+		gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+
+		String path = req.getScheme()+"://"+req.getLocalName()+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
+		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
+		
+		System.out.println(wholePath);
+		gr.setUrlFail(wholePath);
+		gr.setUrlSuccess(wholePath);
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/result/{invoice_id}")
+	public String toSignupPayment(Model model
+			,@PathVariable("invoice_id") Integer invoice_id
+			, RedirectAttributes attr
+			,@RequestParam(value = "result", required = true) String result
+			,SessionStatus status
+			) throws Exception {
+		Response responseBean = null;
+		CustomerInvoice customerInvoice = this.crmService.queryCustomerInvoiceById(invoice_id);
+		Customer customer = this.crmService.queryCustomerById(customerInvoice.getCustomer_id());
+
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			
+//			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//			// call mail at value retriever
+//			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+//			applicationEmail.setAddressee(customer.getEmail());
+//			applicationEmail.setSubject(notification.getTitle());
+//			applicationEmail.setContent(notification.getContent());
+//			// binding attachment name & path to email
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//			
+//			// get sms register template from db
+//			notification = this.crmService.queryNotificationBySort("payment", "sms");
+//			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+		} else {
+
+		}
+
+		attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+
+		return "redirect:/broadband-user/crm/customer/edit/"+customer.getId();
+	}
+
+	/**
+	 * END Payment
 	 */
 
 }

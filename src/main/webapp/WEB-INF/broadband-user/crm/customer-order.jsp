@@ -233,11 +233,11 @@
 								<div class="form-group">
 									<label class="control-label col-md-6"></label>
 									<div class="col-md-6">
-										<c:if test="${customerOrder.svlan!=null}">
+										<c:if test="${customerOrder.order_using_start!=null}">
 											<a href="javascript:void(0);" id="${customerOrder.id}"
 												class="btn btn-danger pull-right" data-name="edit">Edit</a>
 										</c:if>
-										<c:if test="${customerOrder.svlan==null}">
+										<c:if test="${customerOrder.order_using_start==null}">
 											<a href="javascript:void(0);" id="${customerOrder.id}"
 												class="btn btn-success pull-right" data-name="save">Save</a>
 										</c:if>
@@ -261,6 +261,7 @@
 								<th>Data Flow</th>
 								<th>Detail Price</th>
 								<th>Unit</th>
+								<th>Detail Expired</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
@@ -280,6 +281,7 @@
 											data-val="${customerOrderDetail.detail_unit}"
 										</c:if>
 									>${customerOrderDetail.detail_unit}</td>
+									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
@@ -288,7 +290,7 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-primary btn-lg pull-right" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#myModal">
+									<a class="btn btn-success btn-lg pull-right" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#myModal">
 									  Add Discount
 									</a>
 								</td>
@@ -301,7 +303,7 @@
 	</div>
 </div>
 
-<!-- Modal -->
+<!-- Add Discount Modal -->
 <form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/save" method="post">
 	<input type="hidden" name="order_id"/>
 	<input type="hidden" name="customer_id" value="${customer.id}"/>
@@ -310,7 +312,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+	        <h4 class="modal-title" id="myModalLabel">Add Discount</h4>
 	      </div>
 	      <div class="modal-body">
 			<div class="form-group">
@@ -334,7 +336,10 @@
 			<div class="form-group">
 				<label class="control-label col-md-4">Detail Expired</label>
 				<div class="col-md-6">
-					<input name="detail_expired" class="form-control" placeholder="Detail Expired"/>
+					<div class="input-group date">
+						<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
+						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					</div>
 				</div>
 			</div>
 			<div class="form-group">
@@ -347,7 +352,7 @@
 			</div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="submit" class="btn btn-primary" id="discount_save">Save changes</button>
+	        <button type="submit" class="btn btn-success" id="discount_save">Save changes</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

@@ -34,7 +34,8 @@
 							<label for="sort" class="control-label col-md-2">Sort</label>
 							<div class="col-md-3">
 								<form:select path="sort" class="form-control">
-									<form:option value="register">Register</form:option>
+									<form:option value="register-post-pay">Register Post Pay</form:option>
+									<form:option value="register-pre-pay">Register Pre Pay</form:option>
 									<form:option value="invoice">Invoice</form:option>
 									<form:option value="payment">Payment</form:option>
 									<form:option value="topup">Topup</form:option>
