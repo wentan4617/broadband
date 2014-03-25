@@ -440,6 +440,55 @@ public class CRMService {
 
 	@Transactional 
 	public void createNextInvoice(CustomerOrder customerOrder, ApplicationEmail applicationEmail) throws ParseException{
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
+		createInvoicePDF(customerOrder, applicationEmail, notificationEmail, notificationSMS);
+	}
+	
+	
+	/*
+	 * Notification BEGIN
+	 */
+	
+	@Transactional
+	public Notification queryNotificationBySort(String sort, String type){
+		return this.notificationMapper.selectNotificationBySort(sort, type);
+	}
+	
+	/*
+	 * Notification END
+	 */
+
+	/*
+	 * CompanyDetail BEGIN
+	 */
+	
+	@Transactional
+	public CompanyDetail queryCompanyDetail(){
+		return this.companyDetailMapper.selectCompanyDetail();
+	}
+	
+	/*
+	 * CompanyDetail END
+	 */
+	
+	
+	/*
+	 * customer invoice
+	 * */
+	public Double queryCustomerInvoicesBalanceByCid(int cid, String status) {
+		return this.customerInvoiceMapper.selectCustomerInvoicesBalanceByCidAndStatus(cid, status);
+	}
+	
+	public CustomerInvoice queryCustomerInvoiceById(int id){
+		return this.customerInvoiceMapper.selectCustomerInvoiceById(id);
+	}
+	/*
+	 * end customer invoice
+	 * */
+	
+	@Transactional
+	public void createInvoicePDF(CustomerOrder customerOrder, ApplicationEmail applicationEmail, Notification notificationEmail, Notification notificationSMS){
 		List<CustomerOrder> customerOrdersList = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrder);
 
 		// initialize invoice's important informations
@@ -625,60 +674,20 @@ public class CRMService {
 			}
 			
 			
-			Notification notification = this.notificationMapper.selectNotificationBySort("invoice", "email");
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
 			// binding attachment name & path to email
 			applicationEmail.setAttachName("Invoice-" + customerInvoice.getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			notification = this.notificationMapper.selectNotificationBySort("invoice", "sms");
-			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
 		}
 	}
-	
-	
-	/*
-	 * Notification BEGIN
-	 */
-	
-	@Transactional
-	public Notification queryNotificationBySort(String sort, String type){
-		return this.notificationMapper.selectNotificationBySort(sort, type);
-	}
-	
-	/*
-	 * Notification END
-	 */
-
-	/*
-	 * CompanyDetail BEGIN
-	 */
-	
-	@Transactional
-	public CompanyDetail queryCompanyDetail(){
-		return this.companyDetailMapper.selectCompanyDetail();
-	}
-	
-	/*
-	 * CompanyDetail END
-	 */
-	
-	
-	/*
-	 * customer invoice
-	 * */
-	public Double queryCustomerInvoicesBalanceByCid(int cid, String status) {
-		return this.customerInvoiceMapper.selectCustomerInvoicesBalanceByCidAndStatus(cid, status);
-	}
-	/*
-	 * end customer invoice
-	 * */
 }
