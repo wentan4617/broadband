@@ -82,15 +82,21 @@ public class ProvisionController {
 		p.getParams().put("status", "active");
 		p.getParams().put("order_status", "pending");
 		model.addAttribute("pendingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
 		p.getParams().put("order_status", "paid");
 		model.addAttribute("paidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
 		p.getParams().put("order_status", "ordering-pending");
 		p.getParams().put("order_status_1", "ordering-paid");
 		model.addAttribute("orderingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		p.getParams().remove("order_status_1");
+		
 		p.getParams().put("order_status", "using");
 		model.addAttribute("usingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
 		p.getParams().put("order_status", "cancel");
 		model.addAttribute("cancelSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
 		p.getParams().put("order_status", "discard");
 		model.addAttribute("discardSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
