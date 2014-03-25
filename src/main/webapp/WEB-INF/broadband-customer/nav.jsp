@@ -14,7 +14,7 @@
 			</a>
 		</div>
 		<div class="collapse navbar-collapse">
-			<ul class="nav navbar-nav">
+			<%-- <ul class="nav navbar-nav">
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
 						<strong style="font-size:18px;"> Internet </strong><b class="caret"></b>
@@ -28,7 +28,7 @@
 						</li>
 					</ul>
 				</li> 
-			</ul>
+			</ul> --%>
 			
 			<c:if test="${customerSession != null }">
 				<p class="navbar-text pull-right" >

@@ -313,11 +313,14 @@ public class CustomerController {
 			}
 		}
 		
+		CompanyDetail cd = this.systemService.queryCompanyDetail();
+		model.addAttribute("company", cd);
+		
 		return "broadband-customer/customer-order-confirm";
 	}
 
-	@RequestMapping(value = "/order/submit", method = RequestMethod.POST)
-	public String orderSubmit(Model model, HttpServletRequest req, RedirectAttributes attr) {
+	@RequestMapping(value = "/order/checkout", method = RequestMethod.POST)
+	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
 
 		GenerateRequest gr = new GenerateRequest();
 
@@ -334,7 +337,7 @@ public class CustomerController {
 		return "redirect:" + redirectUrl;
 	}
 
-	@RequestMapping(value = "/order/submit")
+	@RequestMapping(value = "/order/checkout")
 	public String toSignupPayment(Model model,
 			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult error,
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
@@ -494,8 +497,8 @@ public class CustomerController {
 		invoicePage.getParams().put("customer_id", customer.getId());
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 		
-		model.addAttribute("page",invoicePage);
-		model.addAttribute("transactionsList",this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
+		model.addAttribute("page", invoicePage);
+		model.addAttribute("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
 		return "broadband-customer/customer-billing";
 	}
 
@@ -522,6 +525,75 @@ public class CustomerController {
 	public String customerTopup(Model model) {
 		model.addAttribute("home", "active");
 		return "broadband-customer/customer-payment-topup";
+	}
+	
+	@RequestMapping(value = "/customer/topup/checkout", method = RequestMethod.POST)
+	public String topupCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
+			@RequestParam("topup") Double topup) {
+
+		GenerateRequest gr = new GenerateRequest();
+
+		gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+		
+		System.out.println(req.getRequestURL().toString());
+		gr.setUrlFail(req.getRequestURL().toString());
+		gr.setUrlSuccess(req.getRequestURL().toString());
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/customer/topup/checkout")
+	public String toTopupSuccess(Model model,
+			@RequestParam(value = "result", required = true) String result,
+			RedirectAttributes attr, HttpServletRequest request
+			) throws Exception {
+		
+		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+
+		Response responseBean = null;
+
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			customer.getParams().put("id", customer.getId());
+
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setTransaction_sort("");
+			
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			
+			this.crmService.customerTopup(customer, customerTransaction);
+			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
+			
+		} else {
+			
+			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
+		}
+
+		return "redirect:/customer/topup";
 	}
 	
 

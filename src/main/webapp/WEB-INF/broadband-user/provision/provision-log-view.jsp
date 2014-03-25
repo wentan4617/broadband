@@ -13,7 +13,8 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4 class="panel-title">Provision View (Customer Order)</h4></div>
+					<h4 class="panel-title">Provision View (Customer Order)</h4>
+				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
 						<thead >
@@ -21,7 +22,7 @@
 								<th><input type="checkbox" id="checkbox_provisions_top" /></th>
 								<th>Provision Id</th>
 								<th>Operator</th>
-								<th>Process Datetime</th>
+								<th>Process Time</th>
 								<th>Order Sort</th>
 								<th>Customer Order Id</th>
 								<th>Process Way</th>
@@ -47,7 +48,7 @@
 										${provision.order_sort }
 									</td>
 									<td>
-										${provision.order_id_customer.id }
+										${provision.order_id_customer }
 									</td>
 									<td>
 										${provision.process_way }
@@ -57,18 +58,18 @@
 							</c:forEach>
 						</tbody>
 						<tfoot>
-						<tr>
-							<td colspan="11">
-								<ul class="pagination">
-									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
-										<li class="${page.pageNo == num ? 'active' : ''}">
-											<a href="${ctx}/broadband-user/provision/view/${num}">${num}</a>
-										</li>
-									</c:forEach>
-								</ul>
-							</td>
-						</tr>
-					</tfoot>
+							<tr>
+								<td colspan="11">
+									<ul class="pagination">
+										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
+											<li class="${page.pageNo == num ? 'active' : ''}">
+												<a href="${ctx}/broadband-user/provision/view/${num}">${num}</a>
+											</li>
+										</c:forEach>
+									</ul>
+								</td>
+							</tr>
+						</tfoot>
 					</table>
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">

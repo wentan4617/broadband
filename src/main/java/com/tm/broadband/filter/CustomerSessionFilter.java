@@ -28,7 +28,7 @@ public class CustomerSessionFilter implements Filter {
 		Customer customer = (Customer)req.getSession().getAttribute("customerSession");
 		
 		String url = req.getRequestURL().toString();
-		System.out.println(url);
+		System.out.println("CustomerSessionFilter: " + url);
 		
 		if (customer != null) {
 			chain.doFilter(request, response);

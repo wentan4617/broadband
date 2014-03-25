@@ -8,20 +8,20 @@ import java.util.Map;
 public class ProvisionLog implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	/*
 	 * TABLE MAPPING PROPERTIES
 	 */
-	
+
 	private Integer id;
-	private User user;
+	private Integer user_id;
 	private Date process_datetime;
 	private String order_sort;
-	private CustomerOrder order_id_customer;
-//	private ChorusOrder order_id_chorus;
+	private Integer order_id_customer;
+	private Integer order_id_chorus;
 	private String process_way;
 	private String process_memo;
-	
+
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -29,14 +29,19 @@ public class ProvisionLog implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
-	
+
 	private Map<String, Object> params = new HashMap<String, Object>();
-	
+	private User user;
+	private CustomerOrder customerOrder;
+
+	// private ChorusOrder chorusOrder;
+
 	/*
 	 * END RELATED PROPERTIES
 	 */
 
-	public ProvisionLog() {}
+	public ProvisionLog() {
+	}
 
 	public Integer getId() {
 		return id;
@@ -70,14 +75,6 @@ public class ProvisionLog implements Serializable {
 		this.order_sort = order_sort;
 	}
 
-	public CustomerOrder getOrder_id_customer() {
-		return order_id_customer;
-	}
-
-	public void setOrder_id_customer(CustomerOrder order_id_customer) {
-		this.order_id_customer = order_id_customer;
-	}
-
 	public String getProcess_way() {
 		return process_way;
 	}
@@ -104,6 +101,38 @@ public class ProvisionLog implements Serializable {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public Integer getOrder_id_customer() {
+		return order_id_customer;
+	}
+
+	public void setOrder_id_customer(Integer order_id_customer) {
+		this.order_id_customer = order_id_customer;
+	}
+
+	public Integer getOrder_id_chorus() {
+		return order_id_chorus;
+	}
+
+	public void setOrder_id_chorus(Integer order_id_chorus) {
+		this.order_id_chorus = order_id_chorus;
+	}
+
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
+	}
+
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
 	}
 
 }

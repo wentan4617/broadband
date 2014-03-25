@@ -1,4 +1,4 @@
-broadband 1.0 2014
+broadband 1.0.x 2014
 =========
 
 Total Mobile Solution Internet Service Web Project
@@ -6,6 +6,7 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.3 2014-03-24
 
+* 后台添加hardware删除功能
 * 后天添加plan删除功能，改变状态功能，group,type, sort, status
 * 继续下次出账单的时间，改为在月份单位上增加，而不是在天单位上增加 (steven)
 * 后台customer inovice部分，给还没有付款的invoice添加支付功能，支付类型为罗列出来的5种(steven)
@@ -16,7 +17,7 @@ demand version 1.0.3 2014-03-24
 
 demand version 1.0.2 2014-03-17
 
-* 前后台购买plan时，在checkout前，要勾选company的term condition
+* [前后台购买plan时，在checkout前，要勾选company的term condition](kanny)
 * 前后台增加voucher支付方式
 * [添加tm_voucher表，记录所有voucher](kanny)
 * [plan表添加，pstn_count字段，表明此plan默认配有几根pstn电话线，pstn_rental_amount,单条pstn的租用费用](kanny)
