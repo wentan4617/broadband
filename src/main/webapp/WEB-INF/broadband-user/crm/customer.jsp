@@ -289,7 +289,7 @@
 						,'svlan_input':svlan_input
 						,'order_using_start_input':order_using_start_input
 						,'order_total_price':order_total_price
-						,'order_detail_unit':order_detail_unit_attr
+						,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
 						,'order_status':order_status.attr('data-val')
 					};
 				
@@ -329,22 +329,24 @@
 		var order_using_start = $('#'+this.id+'_order_using_start');
 		var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 		var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
-		var data = {
-				'customer_id':'${customer.id}'
-				,'order_id':this.id
-				,'cvlan_input':cvlan_input
-				,'svlan_input':svlan_input
-				,'order_using_start_input':order_using_start_input
-				,'order_detail_unit':order_detail_unit_attr
-			};
-		
-		var url = "${ctx}/broadband-user/crm/customer/order/edit";
-		$.get(url, data, function(order){
-			cvlan.html(cvlan_input);
-			svlan.html(svlan_input);
-			order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
-			order_next_invoice_create_date.html(order.next_invoice_create_date_str);
-		}, "json");
+		if(confirm('Confirm to edit these changes')){
+			var data = {
+					'customer_id':'${customer.id}'
+					,'order_id':this.id
+					,'cvlan_input':cvlan_input
+					,'svlan_input':svlan_input
+					,'order_using_start_input':order_using_start_input
+					,'order_detail_unit':order_detail_unit_attr
+				};
+			
+			var url = "${ctx}/broadband-user/crm/customer/order/edit";
+			$.get(url, data, function(order){
+				cvlan.html(cvlan_input);
+				svlan.html(svlan_input);
+				order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
+				order_next_invoice_create_date.html(order.next_invoice_create_date_str);
+			}, "json");
+		}
 	});
 	
 	$('a[data-name="pppoe_save"]').click(function(){

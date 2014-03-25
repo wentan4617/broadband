@@ -173,6 +173,7 @@
 					<if test="params.order_status != null and params.order_status_1 != null">and (co.order_status!=#{params.order_status} or co.order_status!=#{params.order_status_1})</if>
 				</when>
 				<otherwise>
+					<if test="params.id != null">co.id=#{params.id}</if>
 					<if test="params.customer_id != null">co.customer_id=#{params.customer_id}</if>
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>

@@ -16,7 +16,11 @@
 	
 	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
 	<!-- =================================================================================== -->
-	<!-- SELECT AREA --><!-- // END SELECT AREA -->
+	<!-- SELECT AREA -->
+	<select id="selectCustomerOrderDetailsByOrderId" parameterType="int" resultType="CustomerOrderDetail">
+		SELECT * FROM `tm_customer_order_detail` WHERE order_id = #{0}
+	</select>
+	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
 	
