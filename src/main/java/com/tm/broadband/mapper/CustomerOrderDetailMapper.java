@@ -1,5 +1,7 @@
 package com.tm.broadband.mapper;
 
+import java.util.List;
+
 import com.tm.broadband.model.CustomerOrderDetail;
 
 /**
@@ -9,7 +11,8 @@ import com.tm.broadband.model.CustomerOrderDetail;
  * 
  */
 
-/* SELECT AREA *//* // END SELECT AREA */
+/* SELECT AREA */
+/* // END SELECT AREA */
 /* =================================================================================== */
 /* INSERT AREA *//* // END INSERT AREA */
 /* =================================================================================== */
@@ -19,7 +22,9 @@ import com.tm.broadband.model.CustomerOrderDetail;
 
 public interface CustomerOrderDetailMapper {
 	
-	/* SELECT AREA *//* // END SELECT AREA */
+	/* SELECT AREA */
+	public List<CustomerOrderDetail> selectCustomerOrderDetailsByOrderId(int order_id);
+	/* // END SELECT AREA */
 	/* =================================================================================== */
 	/* INSERT AREA */
 	

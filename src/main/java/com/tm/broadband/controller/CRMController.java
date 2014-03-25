@@ -199,16 +199,27 @@ public class CRMController {
 			@RequestParam("order_status") String order_status,
 			HttpServletRequest req) {
 		CustomerOrder customerOrder = new CustomerOrder();
+		// customer order begin
+		customerOrder = new CustomerOrder();
+		customerOrder.getParams().put("id", order_id);
+		customerOrder.setId(order_id);
+		customerOrder.setSvlan(svlan_input);
+		customerOrder.setCvlan(cvlan_input);
+		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
+		
+		// provision log begin
+		ProvisionLog proLog = new ProvisionLog();
+		// get user from session
+		User user = (User) req.getSession().getAttribute("userSession");
+		proLog.setUser(user);
+		proLog.setOrder_id_customer(order_id);
+		proLog.setOrder_sort("customer-order");
+		proLog.setProcess_way("paid to using");
+		// provision log end
+		customerOrder.setOrder_status("using");
 
 		if(order_status.equals("ordering-paid")){
 			
-			// customer order begin
-			customerOrder = new CustomerOrder();
-			customerOrder.getParams().put("id", order_id);
-			customerOrder.setId(order_id);
-			customerOrder.setSvlan(svlan_input);
-			customerOrder.setCvlan(cvlan_input);
-			customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
 			// next invoice date
 			if(order_detail_unit==null){
 				order_detail_unit = 1;
@@ -219,18 +230,7 @@ public class CRMController {
 			calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 			// set next invoice date
 			customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
-			customerOrder.setOrder_status("using");
 			// customer order end
-			
-			// provision log begin
-			ProvisionLog proLog = new ProvisionLog();
-			// get user from session
-			User user = (User) req.getSession().getAttribute("userSession");
-			proLog.setUser(user);
-			proLog.setOrder_id_customer(order_id);
-			proLog.setOrder_sort("customer-order");
-			proLog.setProcess_way("paid to using");
-			// provision log end
 
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 			
@@ -255,6 +255,8 @@ public class CRMController {
 		}
 
 		if(order_status.equals("ordering-pending")){
+			this.crmService.editCustomerOrder(customerOrder, proLog);
+			
 			Notification notificationEmail = this.systemService.queryNotificationBySort("register-post-pay", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("register-post-pay", "sms");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -842,24 +844,54 @@ public class CRMController {
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setTransaction_sort(this.crmService.queryCustomerOrderDetailGroupByOrderId(customerInvoice.getOrder_id()));
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setOrder_id(customerInvoice.getOrder_id());
+			customerTransaction.setInvoice_id(customerInvoice.getId());
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			this.crmService.createCustomerTransaction(customerTransaction);
 			
+			customerInvoice.setStatus("paid");
+			customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
+			customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+			customerInvoice.getParams().put("id", invoice_id);
+			this.crmService.editCustomerInvoice(customerInvoice);
 			
-//			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
-//			ApplicationEmail applicationEmail = new ApplicationEmail();
-//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-//			// call mail at value retriever
-//			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//			applicationEmail.setAddressee(customer.getEmail());
-//			applicationEmail.setSubject(notification.getTitle());
-//			applicationEmail.setContent(notification.getContent());
-//			// binding attachment name & path to email
-//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//			
-//			// get sms register template from db
-//			notification = this.crmService.queryNotificationBySort("payment", "sms");
-//			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//			// send sms to customer's mobile phone
-//			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.crmService.createInvoicePDFByInvoiceID(invoice_id);
+			
+			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			
+			// get sms register template from db
+			notification = this.crmService.queryNotificationBySort("payment", "sms");
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer, notification);
 		} else {
 
 		}

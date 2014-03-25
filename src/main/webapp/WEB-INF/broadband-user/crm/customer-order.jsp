@@ -276,7 +276,7 @@
 									<td>${customerOrderDetail.detail_data_flow}</td>
 									<td><strong>${customerOrderDetail.detail_price}</strong></td>
 									<td 
-										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-') > -1}">
+										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-term') > -1 || fn:indexOf(customerOrderDetail.detail_type,'plan-no-term') > -1}">
 											id="${customerOrder.id}_order_detail_unit"
 											data-val="${customerOrderDetail.detail_unit}"
 										</c:if>
