@@ -152,7 +152,7 @@
 							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
 						</c:when>
 					</c:choose>
-					<form class="form-horizontal" action="${ctx }/order/submit" method="post" id="checkoutForm">
+					<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
 						<button type="submit" style="width:120px;" class="btn btn-success btn-lg pull-right">Checkout</button>
 					</form>
 				</div>

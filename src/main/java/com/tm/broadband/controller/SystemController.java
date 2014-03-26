@@ -77,8 +77,7 @@ public class SystemController {
 		}
 
 		req.getSession().setAttribute("userSession", userSession);
-		attr.addFlashAttribute("success",
-				"Welcome to CyberTech Broadband Manager System.");
+		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
 
 		return "redirect:/broadband-user/index";
 	}
