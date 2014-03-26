@@ -1,10 +1,10 @@
 package com.tm.broadband.pdf;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.Notification;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
 
@@ -64,16 +64,27 @@ public class TestAll {
 //		
 //		Calendar c = Calendar.getInstance(Locale.CHINA);
 //		System.out.println(c.get(Calendar.YEAR));
-		CompanyDetail company = new CompanyDetail();
-		company.setName("Total Mobile Solution");
-		Customer customer = new Customer();
-		customer.setCellphone("02102387392");
-		customer.setFirst_name("Dong");
-		customer.setLast_name("Chen");
-		Notification notification = new Notification();
-		notification.setContent("Dear @<customer_first_name> @<customer_last_name>, This is a reminder that your next payment for @<company_name> Service is coming up. We have attached a copy of your invoice in PDF format and sent it to your email. Thank you for choosing @<company_name>!!");
-		TMUtils.mailAtValueRetriever(notification, customer, company);
-		smserService.sendSMSByAsynchronousMode(customer, notification);
+//		CompanyDetail company = new CompanyDetail();
+//		company.setName("Total Mobile Solution");
+//		Customer customer = new Customer();
+//		customer.setCellphone("02102387392");
+//		customer.setFirst_name("Dong");
+//		customer.setLast_name("Chen");
+//		Notification notification = new Notification();
+//		notification.setContent("Dear @<customer_first_name> @<customer_last_name>, This is a reminder that your next payment for @<company_name> Service is coming up. We have attached a copy of your invoice in PDF format and sent it to your email. Thank you for choosing @<company_name>!!");
+//		TMUtils.mailAtValueRetriever(notification, customer, company);
+//		smserService.sendSMSByAsynchronousMode(customer, notification);
+		
+
+		// month * unit
+		int nextInvoiceMonth = 1 * 5;
+		int nextInvoiceDay = -15;
+		Calendar calNextInvoiceDay = Calendar.getInstance();
+		calNextInvoiceDay.setTime(new Date());
+		calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+		calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+		
+		System.out.println(TMUtils.dateFormatYYYYMMDD(calNextInvoiceDay.getTime()));
 	}
 	
 

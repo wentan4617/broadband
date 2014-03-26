@@ -268,7 +268,7 @@ public class CRMController {
 
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/save")
-	public String doCustomerOrderDetailCreate(Model model
+	public String doCustomerOrderDetailDiscountCreate(Model model
 			,@RequestParam("order_id") int order_id
 			,@RequestParam("customer_id") int customer_id
 			,@RequestParam("detail_name") String detail_name
@@ -293,7 +293,26 @@ public class CRMController {
 		
 		model.addAttribute("customer", customer);
 		
-		model.addAttribute("success", "Create Customer Order Detail is successful.");
+		model.addAttribute("success", "Create Customer Order Detail Discount is successful.");
+
+		return "broadband-user/crm/customer";
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/remove")
+	public String doCustomerOrderDetailDiscountRemove(Model model
+			,@RequestParam("order_detail_id") int order_detail_id
+			,@RequestParam("customer_id") int customer_id) {
+		
+		model.addAttribute("panelheading", "Customer Edit");
+		model.addAttribute("action", "/broadband-user/crm/customer/edit");
+		
+		this.crmService.removeCustomerOrderDetailById(order_detail_id);
+		
+		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer_id);
+		
+		model.addAttribute("customer", customer);
+		
+		model.addAttribute("success", "Remove Customer Order Detail Discount is successful.");
 
 		return "broadband-user/crm/customer";
 	}
@@ -516,7 +535,6 @@ public class CRMController {
 		if (customerOrder.getCustomerOrderDetails() != null) {
 			List<CustomerOrderDetail> removedCods = new ArrayList<CustomerOrderDetail>();
 			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
-				System.out.println(cod.getDetail_type());
 				if ("".equals(cod.getDetail_type())) {
 					removedCods.add(cod);
 				} 
@@ -820,7 +838,6 @@ public class CRMController {
 		String path = req.getScheme()+"://"+req.getLocalName()+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
 		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
 		
-		System.out.println(wholePath);
 		gr.setUrlFail(wholePath);
 		gr.setUrlSuccess(wholePath);
 

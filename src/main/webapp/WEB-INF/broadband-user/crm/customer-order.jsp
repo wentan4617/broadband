@@ -65,7 +65,7 @@
 								<div class="form-group">
 									<label for="order_total_price" class="control-label col-md-6">Order Total Price</label>
 									<div class="col-md-6">
-										<p id="${customerOrder.id}_order_total_price" data-val="${customerOrder.order_total_price}" class="form-control-static "><strong>${customerOrder.order_total_price}</strong></p>
+										<p id="${customerOrder.id}_order_total_price" data-val="${customerOrder.order_total_price}" class="form-control-static "><strong><fmt:formatNumber value="${customerOrder.order_total_price}" type="number" pattern="#,#00.00" /></strong></p>
 									</div>
 								</div>
 								<div class="form-group">
@@ -263,6 +263,7 @@
 								<th>Unit</th>
 								<th>Detail Expired</th>
 								<th>&nbsp;</th>
+								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -274,7 +275,7 @@
 									<td>${customerOrderDetail.detail_plan_sort}</td>
 									<td><strong>${customerOrderDetail.detail_plan_status}</strong></td>
 									<td>${customerOrderDetail.detail_data_flow}</td>
-									<td><strong>${customerOrderDetail.detail_price}</strong></td>
+									<td><strong><fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,#00.00" /></strong></td>
 									<td 
 										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-term') > -1 || fn:indexOf(customerOrderDetail.detail_type,'plan-no-term') > -1}">
 											id="${customerOrder.id}_order_detail_unit"
@@ -283,6 +284,13 @@
 									>${customerOrderDetail.detail_unit}</td>
 									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 									<td>&nbsp;</td>
+									<td>&nbsp;
+										<c:if test="${customerOrderDetail.detail_type=='discount'}">
+											<a class="btn btn-danger btn-xs" href="javascript:void(0);" data-name="remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
+											  <span class="glyphicon glyphicon-trash"></span> Remove
+											</a>
+										</c:if>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -290,7 +298,7 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-success btn-lg pull-right" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#myModal">
+									<a class="btn btn-success btn-xs pull-left" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
 									  Add Discount
 									</a>
 								</td>
@@ -303,56 +311,81 @@
 	</div>
 </div>
 
-<!-- Add Discount Modal -->
-<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/save" method="post">
-	<input type="hidden" name="order_id"/>
+<!-- Remove Discount Modal -->
+<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/remove" method="post">
+	<input type="hidden" name="order_detail_id"/>
 	<input type="hidden" name="customer_id" value="${customer.id}"/>
-	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal fade" id="removeDiscountModal" tabindex="-1" role="dialog" aria-labelledby="removeDiscountModalLabel" aria-hidden="true">
 	  <div class="modal-dialog">
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h4 class="modal-title" id="myModalLabel">Add Discount</h4>
+	        <h4 class="modal-title" id="removeDiscountModalLabel">Remove Discount</h4>
 	      </div>
 	      <div class="modal-body">
 			<div class="form-group">
-				<label class="control-label col-md-4">Detail Name</label>
+				<label class="control-label col-md-8">Are you sure want to remove this discount?</label>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-warning" id="discount_save">YES, Remove</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
+<!-- Add Discount Modal -->
+<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/save" method="post">
+	<input type="hidden" name="order_id"/>
+	<input type="hidden" name="customer_id" value="${customer.id}"/>
+	<div class="modal fade" id="addDiscountModal" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h4 class="modal-title" id="addDiscountModalLabel">Add Discount</h4>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-md-4">Discount Name</label>
 				<div class="col-md-6">
-					<input name="detail_name" class="form-control" placeholder="Detail Name"/>
+					<input name="detail_name" class="form-control input-sm" placeholder="Discount Name"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-4">Detail Price</label>
+				<label class="control-label col-md-4">Discount Amount</label>
 				<div class="col-md-6">
-					<input name="detail_price" class="form-control" placeholder="Detail Price"/>
+					<input name="detail_price" class="form-control input-sm" placeholder="Discount Amount"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-4">Detail Unit</label>
+				<label class="control-label col-md-4">Discount Unit</label>
 				<div class="col-md-6">
-					<input name="detail_unit" class="form-control" placeholder="Detail Unit"/>
+					<input name="detail_unit" class="form-control input-sm" placeholder="Discount Unit"/>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-4">Detail Expired</label>
+				<label class="control-label col-md-4">Discount Expired</label>
 				<div class="col-md-6">
-					<div class="input-group date">
+						<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
+				<!-- 	<div class="input-group date">
 						<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
 						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-					</div>
+					</div> -->
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="control-label col-md-4">Detail Type</label>
+				<label class="control-label col-md-4">Discount Type</label>
 				<div class="col-md-6">
-					<select name="detail_type" class="form-control">
+					<select name="detail_type" class="form-control input-sm">
 						<option value="discount">Discount</option>
 					</select>
 				</div>
 			</div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="submit" class="btn btn-success" id="discount_save">Save changes</button>
+	        <button type="submit" class="btn btn-success" id="discount_save">Save Discount</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

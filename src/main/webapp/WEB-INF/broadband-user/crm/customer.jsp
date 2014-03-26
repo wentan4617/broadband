@@ -34,6 +34,10 @@
 		$('input[name="order_id"]').val($(this).attr('data-val'));
 	});
 	
+	$('a[data-name="remove_discount"]').click(function(){
+		$('input[name="order_detail_id"]').val($(this).attr('data-val'));
+	});
+	
 	$('.input-group.date').datepicker({
 	    format: "yyyy-mm-dd",
 	    autoclose: true,
@@ -113,7 +117,6 @@
 			if (map.invoicePage.results != null && map.invoicePage.results.length > 0) {
 				html += '<table class="table">';
 				
-				console.log(orderIds);
 				// ieterating order's related invoices according to each and every order id
 				for (var o = 0, len = orderIds.length; o < len; o++){
 					html += '<thead>';
@@ -144,7 +147,8 @@
 									html += '<td>' + tx.transaction_date_str + '</td>';
 									html += '<td>&nbsp;</td>';
 									html += '<td>&nbsp;</td>';
-									html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
+									var txAmount_paid = new Number(invoice.amount_paid);
+									html += '<td><strong>' + txAmount_paid.toFixed(2) + '</strong></td>';
 									html += '<td>&nbsp;</td>';
 									html += '<td>' + invoice.status + '</td>';
 									html += '<td>&nbsp;</td>';
@@ -160,15 +164,18 @@
 							html += '<td>Invoice# - ' + invoice.id + '</td>';
 							html += '<td>' + invoice.create_date_str + '</td>';
 							invoice.status!='unpaid' && invoice.status!='not_pay_off' ? html+='<td>&nbsp;</td>' : html+='<td><strong style="color:red;">'+invoice.due_date_str+'</strong></td>';
-							html += '<td><strong>' + invoice.amount_payable + '</strong></td>';
-							html += '<td><strong>' + invoice.amount_paid + '</strong></td>';
-							html += '<td><strong>' + invoice.balance + '</strong></td>';
+							var invoiceAmount_payable = new Number(invoice.amount_payable);
+							var invoiceAmount_paid = new Number(invoice.amount_paid);
+							var invoiceBalance = new Number(invoice.balance);
+							html += '<td><strong>' + invoiceAmount_payable.toFixed(2) + '</strong></td>';
+							html += '<td><strong>' + invoiceAmount_paid.toFixed(2) + '</strong></td>';
+							html += '<td><strong>' + invoiceBalance.toFixed(2) + '</strong></td>';
 							html += '<td><strong>' + invoice.status + '</strong></td>';
 							if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
 								html += '<td>';
 								html += '	<div class="btn-group dropup">';
-								html += '		<button type="button" class="btn btn-primary btn-sm">Payment</button>';
-								html += '		<button type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown">';
+								html += '		<button type="button" class="btn btn-primary btn-xs">Make Payment</button>';
+								html += '		<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">';
 								html += '			<span class="caret"></span>';
 								html += '			<span class="sr-only">Toggle Dropdown</span>';
 								html += '		</button>';

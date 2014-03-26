@@ -123,6 +123,7 @@
 		cod.`detail_unit` 						as cod_detail_unit,
 		cod.`detail_type` 						as cod_detail_type,
 		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
+		cod.`detail_expired`					as cod_detail_expired,
 		cod.`is_post`							as cod_is_post,
 		cod.`hardware_comment`					as cod_hardware_comment,
 		cod.`track_code`						as cod_track_code,
@@ -147,6 +148,7 @@
 		<result property="detail_unit" column="cod_detail_unit" />
 		<result property="detail_type" column="cod_detail_type" />
 		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
+		<result property="detail_expired" column="cod_detail_expired" />
 		<result property="is_post" column="cod_is_post" />
 		<result property="hardware_comment" column="cod_hardware_comment" />
 		<result property="track_code" column="cod_track_code" />

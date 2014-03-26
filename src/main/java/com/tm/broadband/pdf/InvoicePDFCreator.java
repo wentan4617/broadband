@@ -312,7 +312,11 @@ public class InvoicePDFCreator {
         		// price * 1
         		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*1);
         	}
-        	currentInvoiceDetailTotalPrice+=subTotal;
+        	if(customerInvoiceDetail.getInvoice_detail_discount() == null){
+            	currentInvoiceDetailTotalPrice+=subTotal;
+        	} else {
+        		currentInvoiceDetailTotalPrice-=customerInvoiceDetail.getInvoice_detail_discount()*customerInvoiceDetail.getInvoice_detail_unit();
+        	}
         }
         // current invoice
         // this invoice amount is consist of (current invoice total amount + last invoice balance - current customer invoice paid fees)
@@ -735,17 +739,30 @@ public class InvoicePDFCreator {
         	// if both empty
         	Double subTotal = 0.0;
         	Double price = 0.0;
+        	Double discount = 0.0;
         	Integer unit = 0;
         	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() != null){
         		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*customerInvoiceDetail.getInvoice_detail_unit());
         		price = customerInvoiceDetail.getInvoice_detail_price();
         		unit = customerInvoiceDetail.getInvoice_detail_unit();
         	}
+        	if(customerInvoiceDetail.getInvoice_detail_discount() != null && customerInvoiceDetail.getInvoice_detail_unit() != null){
+        		subTotal = (customerInvoiceDetail.getInvoice_detail_discount()*customerInvoiceDetail.getInvoice_detail_unit());
+        		discount = customerInvoiceDetail.getInvoice_detail_discount();
+        		unit = customerInvoiceDetail.getInvoice_detail_unit();
+        	}
         	// if price empty
         	if(customerInvoiceDetail.getInvoice_detail_price() == null && customerInvoiceDetail.getInvoice_detail_unit() != null){
         		// price == null then sub total = 0
-        		subTotal = 0.0;
-        		price = 0.0;
+//        		subTotal = 0.0;
+//        		price = 0.0;
+        		unit = customerInvoiceDetail.getInvoice_detail_unit();
+        	}
+        	// if discount empty
+        	if(customerInvoiceDetail.getInvoice_detail_discount() == null && customerInvoiceDetail.getInvoice_detail_unit() != null){
+        		// price == null then sub total = 0
+//        		subTotal = 0.0;
+//        		price = 0.0;
         		unit = customerInvoiceDetail.getInvoice_detail_unit();
         	}
         	// if unit empty
@@ -753,13 +770,13 @@ public class InvoicePDFCreator {
         		// price * 1
         		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*1);
         		price = customerInvoiceDetail.getInvoice_detail_price();
-        		unit = 0;
+//        		unit = 0;
         	}
         	if(customerInvoiceDetail.getInvoice_detail_price() == null && customerInvoiceDetail.getInvoice_detail_unit() == null){
         		// if price & unit both empty
-        		subTotal = 0.0;
-        		price = 0.0;
-        		unit = 0;
+//        		subTotal = 0.0;
+//        		price = 0.0;
+//        		unit = 0;
         	}
 			// plan name
 			invoiceDetailsTitleCell = newCell(customerInvoiceDetail.getInvoice_detail_name(), arial_normal_7, 0);
@@ -770,22 +787,40 @@ public class InvoicePDFCreator {
 			invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
 			invoiceDetailsTitleCell.setColspan(2);
 			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-			// plan unit price
-			invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(price)), arial_normal_7, 0);
-			invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-			invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
-			invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
+				// plan unit price
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(price)), arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+				invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+			} else {
+				// plan unit discount
+				invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(discount)), arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+			}
 			// unit
 			invoiceDetailsTitleCell = newCell(unit.toString(), arial_normal_7, 0);
 			invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-			// sub total
-			invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(subTotal)), arial_normal_7, 0);
-			invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-			totalPrice+=subTotal;
+			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
+				// sub total
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(subTotal)), arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+				totalPrice+=subTotal;
+			} else {
+				// sub total
+				invoiceDetailsTitleCell = newCell("-"+TMUtils.fillDecimal(String.valueOf(subTotal)), arial_normal_7, 0);
+				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
+				totalPrice-=subTotal;
+			}
         }
         // PRODUCT(S) END
         
