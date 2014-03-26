@@ -3,6 +3,9 @@ broadband 1.0.x 2014
 
 Total Mobile Solution Internet Service Web Project
 
+demand version 1.0.4 2014-03-24
+
+* 给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录
 
 demand version 1.0.3 2014-03-24
 
@@ -32,7 +35,7 @@ demand version 1.0.1 2014-03-16
 * [加入最新版本的datepicker for boostrap，让所有时间字段可选](kanny)
 * [添加user权限，每一个模块是一个大的权限区，每一个某块下的功能页面是一个小的功能区。此功能区域用filter控制进入各个功能页面](STEVEN-2)
 * [利用chart.js做出用户注册图标，标注天，周，月，用户注册情况](STEVEN-4)
-* 在customer登入后，可以进行支付，topup
+* [在customer登入后，可以进行支付，topup]
 * 用户可以对自己购买的plan，进行change, cancel, stop等操作
 * 后台开始编写，创建customer, 创建customer的plan, 管理员可帮助customer进行支付操作(STEVEN-1)
 * [完善各类email模版，SMS模版](STEVEN-3)

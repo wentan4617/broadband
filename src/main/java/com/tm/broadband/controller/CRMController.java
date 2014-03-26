@@ -198,6 +198,7 @@ public class CRMController {
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
 			@RequestParam("order_status") String order_status,
 			HttpServletRequest req) {
+		
 		CustomerOrder customerOrder = new CustomerOrder();
 		// customer order begin
 		customerOrder = new CustomerOrder();
@@ -206,17 +207,18 @@ public class CRMController {
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
+		customerOrder.setOrder_status("using");
 		
 		// provision log begin
 		ProvisionLog proLog = new ProvisionLog();
 		// get user from session
-		User user = (User) req.getSession().getAttribute("userSession");
-		proLog.setUser(user);
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		proLog.setUser_id(userSession.getId());
 		proLog.setOrder_id_customer(order_id);
 		proLog.setOrder_sort("customer-order");
-		proLog.setProcess_way("paid to using");
+		
 		// provision log end
-		customerOrder.setOrder_status("using");
+		
 
 		if(order_status.equals("ordering-paid")){
 			
@@ -232,6 +234,7 @@ public class CRMController {
 			customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
 			// customer order end
 
+			proLog.setProcess_way("ordering-paid to using");
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 			
 			// mailer
@@ -255,6 +258,7 @@ public class CRMController {
 		}
 
 		if(order_status.equals("ordering-pending")){
+			proLog.setProcess_way("ordering-pending to using");
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 			
 			Notification notificationEmail = this.systemService.queryNotificationBySort("register-post-pay", "email");
