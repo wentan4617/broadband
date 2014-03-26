@@ -333,6 +333,7 @@ public class CustomerController {
 		gr.setUrlSuccess(req.getRequestURL().toString());
 
 		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+		System.out.println(redirectUrl);
 
 		return "redirect:" + redirectUrl;
 	}
@@ -389,7 +390,7 @@ public class CustomerController {
 					+File.separator+customer.getId()
 					+File.separator+"Invoice-"+customerTransaction.getInvoice_id()+".pdf");
 			
-			Notification notification = this.crmService.queryNotificationBySort("register", "email");
+			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
@@ -403,7 +404,7 @@ public class CustomerController {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 			// get sms register template from db
-			notification = this.crmService.queryNotificationBySort("register", "sms");
+			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);

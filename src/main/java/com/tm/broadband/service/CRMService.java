@@ -128,6 +128,7 @@ public class CRMService {
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
+				System.out.println("customer.getCustomerOrder().getOrder_total_price(): " + customer.getCustomerOrder().getOrder_total_price());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Broadband New Connection");
