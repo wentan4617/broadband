@@ -75,7 +75,11 @@
 	</update>
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	<delete id="deleteCustomerOrderDetailById" parameterType="int">
+		DELETE FROM `tm_customer_order_detail` WHERE id=#{0}
+	</delete>
+	<!-- // END DELETE AREA -->
 
 	
 	

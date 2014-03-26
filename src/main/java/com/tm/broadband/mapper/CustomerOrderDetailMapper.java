@@ -39,7 +39,9 @@ public interface CustomerOrderDetailMapper {
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
-	/* DELETE AREA *//* // END DELETE AREA */
+	/* DELETE AREA */
+	void deleteCustomerOrderDetailById(int id);
+	/* // END DELETE AREA */
 
 	
 }
