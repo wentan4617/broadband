@@ -3,9 +3,9 @@ package com.tm.broadband.controller;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class SystemRestControll {
+public class SystemRestController {
 
-	public SystemRestControll() {
+	public SystemRestController() {
 		// TODO Auto-generated constructor stub
 	}
 

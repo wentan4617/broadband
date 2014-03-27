@@ -24,20 +24,17 @@ public interface CustomerInvoiceMapper {
 	
 	/* SELECT AREA */
 	
-	
 	List<CustomerInvoice> selectCustomerInvoicesByPage(Page<CustomerInvoice> page);
 	int selectCustomerInvoicesSum(Page<CustomerInvoice> page);
 	
 	CustomerInvoice selectCustomerInvoiceById(int id);
-	
 	CustomerInvoice selectCustomerLastInvoiceById(int id);
-	
 	String selectCustomerInvoiceFilePathById(int id);
 	
-	List<CustomerInvoice> selectCustomerInvoiceBySome(CustomerInvoice customerInvoice);
+	CustomerInvoice selectCustomerInvoice(CustomerInvoice customerInvoice);
+	List<CustomerInvoice> selectCustomerInvoices(CustomerInvoice customerInvoice);
 	
 	CustomerInvoice selectInvoiceWithLastInvoiceIdById(int id);
-	
 	Double selectCustomerInvoicesBalanceByCidAndStatus(int cid, String status);
 	
 	/* // END SELECT AREA */

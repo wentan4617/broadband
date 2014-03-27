@@ -200,70 +200,59 @@ public class CRMController {
 			@RequestParam("order_type") String order_type,
 			HttpServletRequest req) {
 
-		// customer order begin
+		// new CustomerOrder to update 
 		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("id", order_id);
+		customerOrder.setOrder_status("using");
+		customerOrder.setId(order_id); // important
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-		customerOrder.setOrder_status("using");
+		customerOrder.getParams().put("id", order_id);
 		
-		// provision log begin
+		// new ProvisionLog to insert
 		ProvisionLog proLog = new ProvisionLog();
-		// get user from session
-		User userSession = (User) req.getSession().getAttribute("userSession");
+		User userSession = (User) req.getSession().getAttribute("userSession"); // get user from userSession
 		proLog.setUser_id(userSession.getId());
 		proLog.setOrder_id_customer(order_id);
 		proLog.setOrder_sort("customer-order");
+		proLog.setProcess_way(order_status + " to using");
 		
-		// provision log end
-		
-
-		if(order_status.equals("ordering-paid")){
-			
-			if(!order_type.equals("order-topup")){
+		// check order status
+		if ("ordering-paid".equals(order_status)) {
+			if (!"order-topup".equals(order_type)) {
 				int nextInvoiceMonth = order_detail_unit;
 				int nextInvoiceDay = -15;
 				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(new Date());
+				calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
 				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
 				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 				// set next invoice date
 				customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 			}
-			// customer order end
 
-			proLog.setProcess_way("ordering-paid to using");
 			this.crmService.editCustomerOrder(customerOrder, proLog);
-			
-			// mailer
+
+			// send mailer
 			Customer customer = this.crmService.queryCustomerById(customer_id);
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-			// get sms register template from db
-			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
+			notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
 			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
-			
+			this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
 		}
 
-		if(order_status.equals("ordering-pending")){
-			proLog.setProcess_way("ordering-pending to using");
+		if ("ordering-pending".equals(order_status)) {
 			this.crmService.editCustomerOrder(customerOrder, proLog);
-			
 			Notification notificationEmail = this.systemService.queryNotificationBySort("register-post-pay", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("register-post-pay", "sms");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-        	this.crmService.createInvoicePDF(customerOrder, applicationEmail, notificationEmail, notificationSMS);
+			this.crmService.createInvoicePDF(customerOrder, applicationEmail, notificationEmail, notificationSMS);
 		}
 
 		return customerOrder;
@@ -336,11 +325,11 @@ public class CRMController {
 		
 		// CustomerOrder begin
 		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("id", order_id);
 		customerOrder.setId(order_id);
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
+		customerOrder.getParams().put("id", order_id);
 		
 		
 		int nextInvoiceDay = order_detail_unit==null ? 30 : 30 * order_detail_unit - 15;
@@ -838,7 +827,7 @@ public class CRMController {
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 
-		String path = req.getScheme()+"://"+req.getLocalName()+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
+		String path = req.getScheme()+"://"+(req.getLocalName().equals("127.0.0.1") ? "localhost" : req.getLocalName())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
 		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
 		
 		gr.setUrlFail(wholePath);

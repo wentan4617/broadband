@@ -70,7 +70,6 @@
 		co.`transition_account_number`			as co_transition_account_number,
 		co.`transition_porting_number`			as co_transition_porting_number,
 		co.`hardware_post`						as co_hardware_post,
-		
 		co.`order_due`							as co_order_due,
 		co.`pstn_count`							as co_pstn_count,
 		co.`pstn_rental_amount`					as co_pstn_rental_amount,
@@ -82,7 +81,7 @@
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
 		<result property="order_serial" column="co_order_serial" />
-		<!-- <result property="customer_id" column="co_customer_id" /> -->
+		<result property="customer_id" column="co_customer_id" /> 
 		<result property="order_total_price" column="co_order_total_price" />
 		<result property="order_create_date" column="co_order_create_date" />
 		<result property="order_status" column="co_order_status" />
