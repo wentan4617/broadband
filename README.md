@@ -10,16 +10,17 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.4 2014-03-27
 
-* 屏蔽下一次自动生成账单的函数，用createInvoicePDF测试，是否可以代替  (steven)
-* 添加删除discount按钮的提示，提示信息为remove (steven)
-* 修改service given 的 edit bug (steven)
+* [屏蔽下一次自动生成账单的函数，用createInvoicePDF测试，是否可以代替](steven)
+* [添加删除discount按钮的提示，提示信息为remove](steven)
+* [修改service given 的 edit bug](steven)
 * 给customer order detial，的order due,添加一个，日历input(steven)
 * 给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录(steven)
+* 修正后台创建用户下单时一些detail没有显示price和unit值的问题，price为null则0d，unit为null则1(steven)
 
 demand version 1.0.3 2014-03-24
 
-* 后台添加hardware删除功能
-* 后天添加plan删除功能，改变状态功能，group,type, sort, status
+* [后台添加hardware删除功能](steven)
+* [后天添加plan删除功能，改变状态功能，group,type, sort, status](steven)
 * [继续下次出账单的时间，改为在月份单位上增加，而不是在天单位上增加](steven)
 * [后台customer inovice部分，给还没有付款的invoice添加支付功能，支付类型为罗列出来的5种](steven)
 * [后台customer order detail部分，添加，一种discount detial类型，可以输入detail_name, detail_price, detail_unit, detail_expired,提交后刷新页面](steven)

@@ -5,7 +5,6 @@ import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.service.CRMService;
 
@@ -16,30 +15,28 @@ import com.tm.broadband.service.CRMService;
 */ 
 public class CustomerCreateInvoicePDFEachMonth {
 	
-		@Autowired
-		private CRMService crmService;
+	private CRMService crmService;
 
-		public void createNextInvoicePDF() throws ParseException {
-			// setting properties and sending mail to customer email address
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-                
-            CustomerOrder customerOrder = new CustomerOrder();
-            // only if the order is in using status
-            customerOrder.getParams().put("order_status", "using");
+	@Autowired
+	public CustomerCreateInvoicePDFEachMonth(CRMService crmService){
+		this.crmService = crmService;
+	}
+
+	public void createNextInvoicePDF() throws ParseException {
             
-            // production mode use new Date() instead SimpleDateFormat().parse()
-            // this is to compare the next_invoice_create_date, if matched then
-            // generate that invoice into PDF form
-            customerOrder.getParams().put("next_invoice_create_date", 
-            		new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-01"));
-            customerOrder.getParams().put("order_type","order-no-term"); 
+        CustomerOrder customerOrder = new CustomerOrder();
+        // only if the order is in using status
+        customerOrder.getParams().put("order_status", "using");
+        
+        // production mode use new Date() instead SimpleDateFormat().parse()
+        // this is to compare the next_invoice_create_date, if matched then
+        // generate that invoice into PDF form
+        customerOrder.getParams().put("next_invoice_create_date", 
+        		new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-16"));
+        customerOrder.getParams().put("order_type","order-no-term"); 
+        
+        // call Service Method
+		crmService.createNextInvoice(customerOrder);
             
-            try {
-                // call Service Method
-            	crmService.createNextInvoice(customerOrder, applicationEmail);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-                
-        } 
+    } 
 } 

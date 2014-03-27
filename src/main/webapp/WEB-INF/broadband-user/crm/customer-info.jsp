@@ -17,7 +17,7 @@
 		<div id="collapseCustomerInfo" class="panel-collapse collapse in">
 			<div class="panel-body">
 				<form:form modelAttribute="customer" method="post"
-					action="${ctx}${action }" class="form-horizontal">
+					action="${ctx}${action }" class="form-horizontal" id="customer_info_form">
 					<form:hidden path="id" />
 					<div class="form-group">
 						<label for="customer_name" class="control-label col-md-2">Customer Name</label>
@@ -113,8 +113,9 @@
 						</p>
 					</div>
 					<div class="form-group">
-						<div class="col-md-offset-6">
-							<button type="submit" class="btn btn-success">Save</button>
+						<label class="col-md-2"></label>
+						<div class="col-md-2 pull-left">
+							<a class="btn btn-success" data-toggle="modal" data-target="#saveCustomerModal">Update Customer Info</a>
 						</div>
 					</div>
 				</form:form>
@@ -122,3 +123,23 @@
 		</div>
 	</div>
 </div>
+
+<!-- Save Customer Modal -->
+<div class="modal fade" id="saveCustomerModal" tabindex="-1" role="dialog" aria-labelledby="saveCustomerModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="saveCustomerModalLabel"><strong>Edit Customer Information</strong></h4>
+      </div>
+      <div class="modal-body">
+		<div class="form-group">
+			<label class="control-label col-md-8">Update customer's info?</label>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:void(0);" class="btn btn-warning" data-name="customer_save" data-dismiss="modal">Update</a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
