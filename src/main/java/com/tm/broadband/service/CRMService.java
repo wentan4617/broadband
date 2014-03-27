@@ -474,7 +474,7 @@ public class CRMService {
 			customerPreviousInvoice.getParams().put("by_max_id", "");
 			// customer previous invoice
 			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
-			if(!customerPreviousInvoicesList.toString().equals("[]")){
+			if(customerPreviousInvoicesList!=null && customerPreviousInvoicesList.size()>0){
 				customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
 				
 				// if status is not paid then update the status to discard
@@ -514,7 +514,7 @@ public class CRMService {
 			customerInvoice.setCreate_date(invoiceCreateDay);
 			customerInvoice.setDue_date(calInvoiceDueDay.getTime());
 			// detail holder begin
-			Double amountPayable = 0.0;
+			Double amountPayable = 0d;
 			List<CustomerInvoiceDetail> customerInvoiceDetailList = new ArrayList<CustomerInvoiceDetail>();
 			// detail holder end
 			List<CustomerOrderDetail> customerOrderDetailList = customerOrder.getCustomerOrderDetails();
@@ -529,7 +529,7 @@ public class CRMService {
 				// if next pay equals to 1 then paste this order detail into a new invoice detail
 				if(customerOrderDetail.getDetail_is_next_pay()!=null && customerOrderDetail.getDetail_is_next_pay().equals(1)){
 					// if type contains plan-
-					if(customerOrderDetail.getDetail_type().indexOf("plan-")!= -1 && customerOrderDetail.getDetail_type().indexOf("plan-topup") == -1){
+					if(customerOrderDetail.getDetail_type().contains("plan-") && !customerOrderDetail.getDetail_type().contains("plan-topup")){
 						/*
 						 * set next invoice date begin
 						 */
@@ -585,6 +585,7 @@ public class CRMService {
 //						
 //					}
 				}
+				// if detail type equals discount and detail expire date greater equal than today's date then go into if statement
 				if(customerOrderDetail.getDetail_type().equals("discount") && customerOrderDetail.getDetail_expired().getTime() >= System.currentTimeMillis()){
 					customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit()==null?1:customerOrderDetail.getDetail_unit());
 					customerInvoiceDetail.setInvoice_detail_discount(customerOrderDetail.getDetail_price());
@@ -735,7 +736,7 @@ public class CRMService {
 		customerPreviousInvoice.getParams().put("by_max_id", "");
 		// customer previous invoice
 		List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
-		if(!customerPreviousInvoicesList.toString().equals("[]")){
+		if(customerPreviousInvoicesList!=null && customerPreviousInvoicesList.size()>0){
 			customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
 			
 			// if status is not paid then update the status to discard
@@ -785,10 +786,10 @@ public class CRMService {
 		Iterator<CustomerOrderDetail> iterCustomerOrderDetails = customerOrderDetailList.iterator();
 		while(iterCustomerOrderDetails.hasNext()){
 			CustomerOrderDetail customerOrderDetail = iterCustomerOrderDetails.next();
-			if(customerOrderDetail.getDetail_type().indexOf("plan-")!= -1 && customerOrderDetail.getDetail_type().indexOf("plan-topup") == -1){
+			if(customerOrderDetail.getDetail_type().contains("plan-") && !customerOrderDetail.getDetail_type().contains("plan-topup")){
 				
 				// get next invoice date
-				int nextInvoiceMonth = 1 * customerOrderDetail.getDetail_unit();
+				int nextInvoiceMonth = customerOrderDetail.getDetail_unit();
 				int nextInvoiceDay = -15;
 				Calendar calNextInvoiceDay = Calendar.getInstance();
 				calNextInvoiceDay.setTime(new Date());
@@ -810,16 +811,18 @@ public class CRMService {
 			customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
 			customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit()==null?1:customerOrderDetail.getDetail_unit());
 
+			// if detail type equals discount and detail expire date greater equal than today's date then go into if statement
 			if(customerOrderDetail.getDetail_type().equals("discount") && customerOrderDetail.getDetail_expired().getTime() >= System.currentTimeMillis()){
 				customerInvoiceDetail.setInvoice_detail_discount(customerOrderDetail.getDetail_price());
 				// decrease amountPayable
 				amountPayable -= customerInvoiceDetail.getInvoice_detail_discount() * customerInvoiceDetail.getInvoice_detail_unit();
 				// add invoice detail to list
 				customerInvoiceDetailList.add(customerInvoiceDetail);
+			// else if detail type is discount then this discount is expired and will not be add to the invoice detail list
 			} else if(!customerOrderDetail.getDetail_type().equals("discount")) {
 				customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price()==null?0.0:customerOrderDetail.getDetail_price());
 				// increase amountPayable
-				amountPayable += customerInvoiceDetail.getInvoice_detail_price().equals(0.0) ? 0.0 : customerInvoiceDetail.getInvoice_detail_price() * customerInvoiceDetail.getInvoice_detail_unit();
+				amountPayable += customerInvoiceDetail.getInvoice_detail_price()!=null ? customerInvoiceDetail.getInvoice_detail_price() * customerInvoiceDetail.getInvoice_detail_unit() : 0;
 				// add invoice detail to list
 				customerInvoiceDetailList.add(customerInvoiceDetail);
 			}

@@ -53,7 +53,7 @@
 								<div class="form-group">
 									<label for="order_type" class="control-label col-md-6">Order Type</label>
 									<div class="col-md-6">
-										<p class="form-control-static">${customerOrder.order_type}</p>
+										<p id="${customerOrder.id}_order_type" data-val="${customerOrder.order_type}" class="form-control-static">${customerOrder.order_type}</p>
 									</div>
 								</div>
 								<div class="form-group">

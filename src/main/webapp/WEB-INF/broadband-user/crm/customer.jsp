@@ -282,6 +282,7 @@
 		var svlan = $('#'+this.id+'_svlan');
 		var order_using_start = $('#'+this.id+'_order_using_start');
 		var order_status = $('#'+this.id+'_order_status');
+		var order_type = $('#'+this.id+'_order_type');
 		var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 		var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
 		
@@ -298,6 +299,7 @@
 						,'order_total_price':order_total_price
 						,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
 						,'order_status':order_status.attr('data-val')
+						,'order_type':order_type.attr('data-val')
 					};
 				
 				var url = "${ctx}/broadband-user/crm/customer/order/save";
