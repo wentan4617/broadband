@@ -5,7 +5,7 @@ Total Mobile Solution Internet Service Web Project
 
 ###Specification
 
-* 所有表单提交的controller方法，都要redirect.
+* 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
 demand version 1.0.4 2014-03-28
 
