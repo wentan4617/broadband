@@ -601,6 +601,7 @@ public class CRMController {
 		cod_plan.setDetail_plan_group(customerOrder.getPlan().getPlan_group());
 		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
+		cod_plan.setDetail_type(customerOrder.getPlan().getPlan_group());
 		
 		customerOrder.getCustomerOrderDetails().add(cod_plan);
 		
@@ -839,6 +840,7 @@ public class CRMController {
 			,@RequestParam(value = "result", required = true) String result
 			,SessionStatus status
 			) throws Exception {
+		
 		Response responseBean = null;
 		CustomerInvoice customerInvoice = this.crmService.queryCustomerInvoiceById(invoice_id);
 		Customer customer = this.crmService.queryCustomerById(customerInvoice.getCustomer_id());

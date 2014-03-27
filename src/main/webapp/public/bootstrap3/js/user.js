@@ -17,7 +17,6 @@
 		if (i == 0)
 			$(this).closest('div.form-group').find('.form-control').focus();
 		$(this).closest('div.form-group').addClass('has-error');
-		console.log('error');
 	});
 	
 	$.jsonValidation = function(json, placement){
@@ -29,6 +28,7 @@
 			if (key == "alert-error") {
 				$('#alertContainer').html($('#tempAlertContainer').html());
 				$('#text-error').text(json.errorMap[key]);
+				$('#alert-error').show('normal');
 			} else {
 				$('#' + key)
 					.tooltip({
@@ -44,7 +44,12 @@
 		});
 		
 		$('.tooltip-arrow').css('border-' + placement + '-color', '#f2dede');
-		$('.tooltip-inner').css('background-color', '#f2dede').css('width', '200px');
+		$('.tooltip-inner').css('background-color', '#f2dede')
+		
+		if (placement == 'right') {
+			$('.tooltip-arrow').css('margin-top', '5px');
+			$('.tooltip-inner').css('width', '200px');
+		}
 	}
 	
 })($);

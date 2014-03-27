@@ -24,6 +24,7 @@ public class CustomerCreateInvoicePDFEachMonth {
 
 	public void createNextInvoicePDF() throws ParseException {
             
+
         CustomerOrder customerOrder = new CustomerOrder();
         // only if the order is in using status
         customerOrder.getParams().put("order_status", "using");

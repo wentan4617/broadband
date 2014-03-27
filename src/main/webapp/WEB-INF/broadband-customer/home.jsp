@@ -46,7 +46,7 @@
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
 			<ul class="list-unstyled text-center list-menu">
-				<li>
+				<!-- <li>
 					<h4><a href="javascript:void(0)">Bar/cafe/Restaurant</a></h4>
 				</li>
 				<li>
@@ -57,14 +57,14 @@
 				</li>
 				<li>
 					<h4><a href="javascript:void(0)">Public place</a></h4>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/business-plan.png"  alt="business-plan">
 			<ul class="list-unstyled text-center list-menu">
-				<li>
+				<!-- <li>
 					<h4><a href="javascript:void(0)">Cost Saver</a></h4>
 				</li>
 				<li>
@@ -78,14 +78,14 @@
 				</li>
 				<li>
 					<h4><a href="javascript:void(0)">OEM Plans</a></h4>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
 			<ul class="list-unstyled text-center list-menu">
-				<li>
+				<!-- <li>
 					<h4><a href="javascript:void(0)">Chat2U</a></h4>
 				</li>
 				<li>
@@ -96,14 +96,14 @@
 				</li>
 				<li>
 					<h4><a href="javascript:void(0)">Fiber Plans</a></h4>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 
 		<div class="col-lg-3">
 			<img class="img-thumbnail" src="public/bootstrap3/images/it-services.png" alt="it-services">
 			<ul class="list-unstyled text-center list-menu">
-				<li>
+				<!-- <li>
 					<h4><a href="javascript:void(0)">Hosting</a></h4>
 				</li>
 				<li>
@@ -114,7 +114,7 @@
 				</li>
 				<li>
 					<h4><a href="javascript:void(0)">Inventory Mgr</a></h4>
-				</li>
+				</li> -->
 			</ul>
 		</div>
 

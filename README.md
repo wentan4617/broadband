@@ -5,8 +5,16 @@ Total Mobile Solution Internet Service Web Project
 
 ###Specification
 
-* 所有表单提交的controller方法，都要redirect.
+* 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.4 2014-03-28
+
+* user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看
+* [把后台登入换成ajax](kanny)
+* 把plan，hareware功能换成ajax
+* customer支付账单功能，user支付order功能
+* 设定cyberpark的term condition
+* 设计about cyberpark界面
 
 demand version 1.0.4 2014-03-27
 
@@ -20,7 +28,7 @@ demand version 1.0.4 2014-03-27
 demand version 1.0.3 2014-03-24
 
 * [后台添加hardware删除功能](steven)
-* [后天添加plan删除功能，改变状态功能，group,type, sort, status](steven)
+* 后天添加plan删除功能，改变状态功能，group,type, sort, status(steven)
 * [继续下次出账单的时间，改为在月份单位上增加，而不是在天单位上增加](steven)
 * [后台customer inovice部分，给还没有付款的invoice添加支付功能，支付类型为罗列出来的5种](steven)
 * [后台customer order detail部分，添加，一种discount detial类型，可以输入detail_name, detail_price, detail_unit, detail_expired,提交后刷新页面](steven)

@@ -115,10 +115,10 @@ public class CRMService {
 		cod_plan.setDetail_plan_group(plan.getPlan_group());
 		cod_plan.setDetail_plan_memo(plan.getMemo());
 		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
+		cod_plan.setDetail_type(plan.getPlan_group());
 		
 		if ("plan-topup".equals(plan.getPlan_group())) {
 			
-			cod_plan.setDetail_type("plan-topup");
 			cod_plan.setDetail_is_next_pay(0);
 			cod_plan.setDetail_expired(new Date());
 			
@@ -166,7 +166,6 @@ public class CRMService {
 			
 		} else if ("plan-no-term".equals(plan.getPlan_group())) {
 			
-			cod_plan.setDetail_type("plan-no-term");
 			cod_plan.setDetail_is_next_pay(1);
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);

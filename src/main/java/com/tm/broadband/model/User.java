@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
@@ -24,8 +27,10 @@ public class User implements Serializable {
 
 	private Integer id;
 	@NotEmpty(groups = { UserLoginValidatedMark.class })
+	@Size(min = 2, max = 20, groups = { UserLoginValidatedMark.class })
 	private String login_name;
 	@NotEmpty(groups = { UserLoginValidatedMark.class })
+	@Size(min = 2, max = 20, groups = { UserLoginValidatedMark.class })
 	private String password;
 	private String user_name;
 	private String user_role;
@@ -35,13 +40,14 @@ public class User implements Serializable {
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
-	
+
 	/*
 	 * RELATED PROPERTIES
 	 */
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String[] authArray;
+
 	/*
 	 * END RELATED PROPERTIES
 	 */

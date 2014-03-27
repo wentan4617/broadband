@@ -40,13 +40,6 @@
 							</div>
 						</div>
 						
-						
-						<!-- include topup-list.jsp -->
-						<%-- <div id="topupContainer" style="display: ${plan.plan_group == 'plan-topup' ? 'block;' : 'none;'}">
-							<jsp:include page="topup-list.jsp"/>
-						</div> --%>
-						
-						
 						<div id="noTermContainer" style="display: 
 							<c:if test="${plan.plan_group == 'plan-no-term' || plan.plan_group == 'plan-term'}">block</c:if>">
 							<hr/>
