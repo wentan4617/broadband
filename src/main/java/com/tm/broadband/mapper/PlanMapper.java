@@ -59,7 +59,6 @@ public interface PlanMapper {
 	/* DELETE AREA */
 	
 	void deletePlanById(int id);
-	void deletePlanTopupById(int planId);
 	
 	/* // END DELETE AREA */
 	

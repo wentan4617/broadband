@@ -69,6 +69,11 @@ public class PlanService {
 	public void removePlanById(int id) {
 		this.planMapper.deletePlanById(id);
 	}
+	
+	@Transactional
+	public void removeHardwareById(int id){
+		this.hardwareMapper.deleteHardwareById(id);
+	}
 
 	@Transactional
 	public void editPlan(Plan plan) {
@@ -83,8 +88,6 @@ public class PlanService {
 		}
 
 		this.planMapper.updatePlan(plan);
-		
-		this.planMapper.deletePlanTopupById(plan.getId());
 
 	
 		if ("plan-topup".equals(plan.getPlan_group()) &&  plan.getTopupArray() != null) {

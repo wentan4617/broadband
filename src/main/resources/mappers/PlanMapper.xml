@@ -185,8 +185,8 @@
 	
 	<!-- DELETE AREA -->
 	
-	<delete id="deletePlanTopupById">
-		DELETE FROM tm_plan_topup WHERE plan_id=#{0}
+	<delete id="deletePlanById">
+		DELETE FROM tm_plan WHERE id=#{0}
 	</delete>
 	
 	<!-- // END DELETE AREA -->
