@@ -28,6 +28,31 @@
 								</li>
 							</ul>
 						</div>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								Change Group <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" data-role="menu">
+								<li>
+									<a href="javascript:void(0);" id="delete_selected_plan">
+										DELETE:
+										<span class="text-danger">Delete Selected Plan</span>
+									</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);" id="delete_selected_plan">
+										DELETE:
+										<span class="text-danger">Delete Selected Plan</span>
+									</a>
+								</li>
+								<li>
+									<a href="javascript:void(0);" id="delete_selected_plan">
+										DELETE:
+										<span class="text-danger">Delete Selected Plan</span>
+									</a>
+								</li>
+							</ul>
+						</div>
 					</c:if>
 					</h4>
 				</div>

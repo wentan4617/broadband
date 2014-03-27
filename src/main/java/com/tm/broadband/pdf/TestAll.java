@@ -77,10 +77,10 @@ public class TestAll {
 		
 
 		// month * unit
-		int nextInvoiceMonth = 1 * 5;
-		int nextInvoiceDay = -15;
+		int nextInvoiceMonth = 5;
+		int nextInvoiceDay = 0;
 		Calendar calNextInvoiceDay = Calendar.getInstance();
-		calNextInvoiceDay.setTime(new Date(""));
+		calNextInvoiceDay.setTime(new Date());
 		calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
 		calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 		

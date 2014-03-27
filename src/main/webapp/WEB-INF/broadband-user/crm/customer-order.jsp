@@ -296,7 +296,7 @@
 								<td colspan="12">
 									<!-- Button trigger modal -->
 									<a class="btn btn-success btn-xs pull-left" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
-									  <span data-toggle="tooltip" data-placement="bottom" data-original-title="add a discount for this order" class="glyphicon glyphicon-trash"></span>&nbsp;&nbsp;Add Discount
+									  <span data-toggle="tooltip" data-placement="bottom" data-original-title="add a discount for this order" class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Discount
 									</a>
 								</td>
 							</tr>

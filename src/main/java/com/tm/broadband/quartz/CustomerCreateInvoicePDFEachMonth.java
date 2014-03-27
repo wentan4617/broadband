@@ -33,7 +33,7 @@ public class CustomerCreateInvoicePDFEachMonth {
         // this is to compare the next_invoice_create_date, if matched then
         // generate that invoice into PDF form
         customerOrder.getParams().put("next_invoice_create_date", 
-        		new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-16"));
+        		new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13"));
         customerOrder.getParams().put("order_type","order-no-term"); 
         
         // call Service Method
