@@ -52,8 +52,7 @@ public class SmserService implements Smser {
 	/**
 	 * 
 	 */
-	public void sendSMSByAsynchronousMode(final Customer customer,
-			final Notification notification) {
+	public void sendSMSByAsynchronousMode(final Customer customer, final Notification notification) {
 		taskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {

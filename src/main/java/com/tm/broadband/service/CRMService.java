@@ -108,20 +108,20 @@ public class CRMService {
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		cod_plan.setDetail_name(plan.getPlan_name());
 		cod_plan.setDetail_desc(plan.getPlan_desc());
-		cod_plan.setDetail_price(plan.getPlan_price());
+		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
 		cod_plan.setDetail_plan_status(plan.getPlan_status());
 		cod_plan.setDetail_plan_type(plan.getPlan_type());
 		cod_plan.setDetail_plan_sort(plan.getPlan_sort());
 		cod_plan.setDetail_plan_group(plan.getPlan_group());
 		cod_plan.setDetail_plan_memo(plan.getMemo());
-		cod_plan.setDetail_unit(plan.getPlan_prepay_months());
-		
+		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
 		
 		if ("plan-topup".equals(plan.getPlan_group())) {
 			
 			cod_plan.setDetail_type("plan-topup");
 			cod_plan.setDetail_is_next_pay(0);
+			cod_plan.setDetail_expired(new Date());
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
 			
@@ -134,6 +134,7 @@ public class CRMService {
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_expired(new Date());
 				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
@@ -144,7 +145,9 @@ public class CRMService {
 				customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_expired(new Date());
 				cod_trans.setDetail_is_next_pay(0);
 				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
@@ -157,6 +160,7 @@ public class CRMService {
 			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
 			cod_topup.setDetail_type("plan-topup");
 			cod_topup.setDetail_is_next_pay(0);
+			cod_topup.setDetail_expired(new Date());
 			cod_topup.setDetail_unit(1);
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
@@ -176,6 +180,7 @@ public class CRMService {
 				cod_conn.setDetail_name("Broadband New Connection");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_expired(new Date());
 				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
@@ -187,7 +192,9 @@ public class CRMService {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_expired(new Date());
 				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
@@ -211,6 +218,7 @@ public class CRMService {
 					cod_hd.setDetail_name(hd.getHardware_name());
 					cod_hd.setDetail_price(hd.getHardware_price());
 					cod_hd.setDetail_is_next_pay(0);
+					cod_hd.setDetail_expired(new Date());
 					cod_hd.setDetail_type("hardware-router");
 					cod_hd.setIs_post(0);
 					cod_hd.setDetail_unit(1);
@@ -473,7 +481,7 @@ public class CRMService {
 			customerPreviousInvoice.getParams().put("order_id", customerOrder.getId());
 			customerPreviousInvoice.getParams().put("by_max_id", "");
 			// customer previous invoice
-			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
+			List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoices(customerPreviousInvoice);
 			if(customerPreviousInvoicesList!=null && customerPreviousInvoicesList.size()>0){
 				customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
 				
@@ -502,7 +510,7 @@ public class CRMService {
 			 */
 			Date invoiceCreateDay = new Date();
 			// set invoice due date begin
-			int invoiceDueDay = 15;
+			int invoiceDueDay = 10;
 			Calendar calInvoiceDueDay = Calendar.getInstance();
 			calInvoiceDueDay.setTime(invoiceCreateDay);
 			calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
@@ -712,18 +720,21 @@ public class CRMService {
 	 * */
 	
 	@Transactional
-	public void createInvoicePDF(CustomerOrder customerOrderParam, ApplicationEmail applicationEmail, Notification notificationEmail, Notification notificationSMS){
-	
+	public void createInvoicePDF(CustomerOrder customerOrder,
+			ApplicationEmail applicationEmail, Notification notificationEmail,
+			Notification notificationSMS) {
+
 		// store company detail begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
-		
+
 		/*
 		 * get specific models begin
 		 */
 		// initiate models begin
 		// current customer order model
-		CustomerOrder customerOrder = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam).get(0);
+		customerOrder = this.customerOrderMapper.selectCustomerOrderById(customerOrder.getId());
+		//CustomerOrder customerOrder = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam).get(0);
 
 		// customer model
 		Customer customer = customerOrder.getCustomer();
@@ -731,18 +742,17 @@ public class CRMService {
 		CustomerInvoice customerInvoice = new CustomerInvoice();
 		// previous invoice model
 		CustomerInvoice customerPreviousInvoice = new CustomerInvoice();
+		customerPreviousInvoice.getParams().put("where", "by_max_id");
 		customerPreviousInvoice.getParams().put("customer_id", customer.getId());
 		customerPreviousInvoice.getParams().put("order_id", customerOrder.getId());
-		customerPreviousInvoice.getParams().put("by_max_id", "");
+		
 		// customer previous invoice
-		List<CustomerInvoice> customerPreviousInvoicesList = this.customerInvoiceMapper.selectCustomerInvoiceBySome(customerPreviousInvoice);
-		if(customerPreviousInvoicesList!=null && customerPreviousInvoicesList.size()>0){
-			customerPreviousInvoice = customerPreviousInvoicesList.iterator().next();
-			
+		customerPreviousInvoice = this.customerInvoiceMapper.selectCustomerInvoice(customerPreviousInvoice);
+		if (customerPreviousInvoice != null ) {	
 			// if status is not paid then update the status to discard
-			if(!customerPreviousInvoice.getStatus().equals("paid")){
-				customerPreviousInvoice.getParams().put("id", customerPreviousInvoice.getId());
+			if (!"paid".equals(customerPreviousInvoice.getStatus())) {
 				customerPreviousInvoice.setStatus("discard");
+				customerPreviousInvoice.getParams().put("id", customerPreviousInvoice.getId());
 				this.customerInvoiceMapper.updateCustomerInvoice(customerPreviousInvoice);
 			}
 			customerInvoice.setLast_invoice_id(customerPreviousInvoice.getId());
@@ -752,19 +762,18 @@ public class CRMService {
 		/*
 		 * get specific models end
 		 */
-		
+
 		// set customer's new invoice details begin
 
 		// set invoice create date begin
-		
+
 		/*
 		 * 
-		 * 		invoiceCreateDay HAVE TO ASSIGN TO new Date() BEFORE PRODUCT MODE
-		 * 
+		 * invoiceCreateDay HAVE TO ASSIGN TO new Date() BEFORE PRODUCT MODE
 		 */
 		Date invoiceCreateDay = new Date();
 		// set invoice due date begin
-		int invoiceDueDay = 15;
+		int invoiceDueDay = 10;
 		Calendar calInvoiceDueDay = Calendar.getInstance();
 		calInvoiceDueDay.setTime(invoiceCreateDay);
 		calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
@@ -772,114 +781,130 @@ public class CRMService {
 		/*
 		 * set next invoice date begin
 		 */
-		
-		
+
 		customerInvoice.setCustomer_id(customer.getId());
 		customerInvoice.setOrder_id(customerOrder.getId());
 		customerInvoice.setCreate_date(invoiceCreateDay);
 		customerInvoice.setDue_date(calInvoiceDueDay.getTime());
 		// detail holder begin
-		Double amountPayable = 0.0;
+		Double amountPayable = 0d;
 		List<CustomerInvoiceDetail> customerInvoiceDetailList = new ArrayList<CustomerInvoiceDetail>();
 		// detail holder end
-		List<CustomerOrderDetail> customerOrderDetailList = customerOrder.getCustomerOrderDetails();
-		Iterator<CustomerOrderDetail> iterCustomerOrderDetails = customerOrderDetailList.iterator();
-		while(iterCustomerOrderDetails.hasNext()){
-			CustomerOrderDetail customerOrderDetail = iterCustomerOrderDetails.next();
-			if(customerOrderDetail.getDetail_type().contains("plan-") && !customerOrderDetail.getDetail_type().contains("plan-topup")){
+		List<CustomerOrderDetail> customerOrderDetails = customerOrder.getCustomerOrderDetails();
+		
+		if (customerOrderDetails != null) {
+			for (CustomerOrderDetail cod: customerOrderDetails) {
 				
-				// get next invoice date
-				int nextInvoiceMonth = customerOrderDetail.getDetail_unit();
-				int nextInvoiceDay = -15;
-				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(new Date());
-				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+				CustomerInvoiceDetail customerInvoiceDetail = new CustomerInvoiceDetail();
+				customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
+				customerInvoiceDetail.setInvoice_detail_name(cod.getDetail_name());
+				customerInvoiceDetail.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 
-				// update customer order's next invoice create day begin
-				customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-				customerOrder.getParams().put("id", customerOrder.getId());
-				customerOrderParam.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-				this.customerOrderMapper.updateCustomerOrder(customerOrder);
-				// update customer order's next invoice create day end
-				/*
-				 * set next invoice date end
-				 */
-			}
-			CustomerInvoiceDetail customerInvoiceDetail = new CustomerInvoiceDetail();
-			customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
-			customerInvoiceDetail.setInvoice_detail_name(customerOrderDetail.getDetail_name());
-			customerInvoiceDetail.setInvoice_detail_unit(customerOrderDetail.getDetail_unit()==null?1:customerOrderDetail.getDetail_unit());
+				// if detail type equals discount and detail expire date greater
+				// equal than today's date then go into if statement
+				if ("discount".equals(cod.getDetail_type())
+						&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+					
+					customerInvoiceDetail.setInvoice_detail_discount(cod.getDetail_price());
+					// decrease amountPayable
+					amountPayable -= customerInvoiceDetail.getInvoice_detail_discount() * customerInvoiceDetail.getInvoice_detail_unit();
+					// add invoice detail to list
+					customerInvoiceDetailList.add(customerInvoiceDetail);
+					// else if detail type is discount then this discount is expired
+					// and will not be add to the invoice detail list
+				} 
+				// **************************
+				else if (!"discount".equals(cod.getDetail_type())) {
+					if (cod.getDetail_expired()==null) {
+						customerInvoiceDetail.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+						// increase amountPayable
+						amountPayable += customerInvoiceDetail.getInvoice_detail_price() != null 
+								? customerInvoiceDetail.getInvoice_detail_price() * customerInvoiceDetail.getInvoice_detail_unit() : 0;
+						// add invoice detail to list
+						customerInvoiceDetailList.add(customerInvoiceDetail);
+					}
+					if (cod.getDetail_type().contains("plan-") 
+							&& !"plan-topup".equals(cod.getDetail_type())) {
+						
+						// get next invoice date
+						int nextInvoiceMonth = cod.getDetail_unit();
+						int nextInvoiceDay = -15;
+						Calendar calNextInvoiceDay = Calendar.getInstance();
+						calNextInvoiceDay.setTime(new Date());
+						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 
-			// if detail type equals discount and detail expire date greater equal than today's date then go into if statement
-			if(customerOrderDetail.getDetail_type().equals("discount") && customerOrderDetail.getDetail_expired().getTime() >= System.currentTimeMillis()){
-				customerInvoiceDetail.setInvoice_detail_discount(customerOrderDetail.getDetail_price());
-				// decrease amountPayable
-				amountPayable -= customerInvoiceDetail.getInvoice_detail_discount() * customerInvoiceDetail.getInvoice_detail_unit();
-				// add invoice detail to list
-				customerInvoiceDetailList.add(customerInvoiceDetail);
-			// else if detail type is discount then this discount is expired and will not be add to the invoice detail list
-			} else if(!customerOrderDetail.getDetail_type().equals("discount")) {
-				customerInvoiceDetail.setInvoice_detail_price(customerOrderDetail.getDetail_price()==null?0.0:customerOrderDetail.getDetail_price());
-				// increase amountPayable
-				amountPayable += customerInvoiceDetail.getInvoice_detail_price()!=null ? customerInvoiceDetail.getInvoice_detail_price() * customerInvoiceDetail.getInvoice_detail_unit() : 0;
-				// add invoice detail to list
-				customerInvoiceDetailList.add(customerInvoiceDetail);
+						// update customer order's next invoice create day begin
+						customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+						customerOrder.getParams().put("id", customerOrder.getId());
+						
+						this.customerOrderMapper.updateCustomerOrder(customerOrder);
+						// update customer order's next invoice create day end
+						/*
+						 * set next invoice date end
+						 */
+					} else {
+						CustomerOrderDetail codTemp = new CustomerOrderDetail();
+						codTemp.setDetail_expired(new Date());
+						codTemp.getParams().put("id", cod.getId());
+						this.customerOrderDetailMapper.updateCustomerOrderDetail(codTemp);
+					}
+					
+					
+				}
+				// ****************************
 			}
 		}
 		
-		customerInvoice.setAmount_payable(amountPayable + (customerPreviousInvoice.getBalance()==null?0:customerPreviousInvoice.getBalance()));
+		
+		customerInvoice.setAmount_payable(amountPayable + (customerPreviousInvoice != null && customerPreviousInvoice.getBalance() == null ? 0 : customerPreviousInvoice.getBalance()));
 		customerInvoice.setStatus("unpaid");
-		customerInvoice.setAmount_paid(0.0);
-		BigDecimal currentTotalPayable = new BigDecimal(String.valueOf((amountPayable + (customerPreviousInvoice.getBalance()==null?0:customerPreviousInvoice.getBalance()))));
+		customerInvoice.setAmount_paid(0d);
+		
+		BigDecimal currentTotalPayable = new BigDecimal(String.valueOf((amountPayable + (customerPreviousInvoice != null && customerPreviousInvoice.getBalance() == null ? 0 : customerPreviousInvoice.getBalance()))));
 		BigDecimal currentAmountPaid = new BigDecimal(String.valueOf(customerInvoice.getAmount_paid()));
 		// balance = payable - paid
 		customerInvoice.setBalance(currentTotalPayable.subtract(currentAmountPaid).doubleValue());
 		// set customer's new invoice details end
-		
+
 		// get generated key while performing insertion
 		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
 
 		// reset customer invoice from customer invoice got by invoice_id
-		customerInvoice = this.customerInvoiceMapper.selectCustomerInvoiceById(customerInvoice.getId());
-		
+		//customerInvoice = this.customerInvoiceMapper.selectCustomerInvoiceById(customerInvoice.getId());
+
 		// inserting customer invoice detail iteratively
-		Iterator<CustomerInvoiceDetail> iterCustomerInvoiceDetails = customerInvoiceDetailList.iterator();
-		while(iterCustomerInvoiceDetails.hasNext()){
-			CustomerInvoiceDetail customerInvoiceDetail = iterCustomerInvoiceDetails.next();
-			// mark up invoice id
-			customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
-			this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(customerInvoiceDetail);
+		for (CustomerInvoiceDetail cid : customerInvoiceDetailList) {
+			cid.setInvoice_id(customerInvoice.getId());
+			this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
-		
+
 		// relatively setting invoice details into invoice
-		customerInvoice.setCustomerInvoiceDetails(this.customerInvoiceDetailMapper.selectCustomerInvoiceDetailsByCustomerInvoiceId(customerInvoice.getId()));
+		customerInvoice.setCustomerInvoiceDetails(customerInvoiceDetailList);
 
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCustomerInvoice(customerInvoice);
-		
+
 		// create specific directories and generate invoice PDF
-		String filePath = TMUtils.createPath(
-				"broadband"
-				+File.separator+"customers"
-				+File.separator+customer.getId()
-				+File.separator+"Invoice-"+customerInvoice.getId()+".pdf");
+		String filePath = TMUtils.createPath("broadband" + File.separator
+				+ "customers" + File.separator + customer.getId()
+				+ File.separator + "Invoice-" + customerInvoice.getId()
+				+ ".pdf");
 		// set file path
 		customerInvoice.setInvoice_pdf_path(filePath);
 		// add sql condition: id
 		customerInvoice.getParams().put("id", customerInvoice.getId());
 		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
-		
+
 		try {
 			// generate invoice PDF
 			invoicePDF.create(filePath);
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
 		// call mail at value retriever
 		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
 		applicationEmail.setAddressee(customer.getEmail());

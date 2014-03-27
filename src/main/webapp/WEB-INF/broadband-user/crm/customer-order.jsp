@@ -263,7 +263,6 @@
 								<th>Unit</th>
 								<th>Detail Expired</th>
 								<th>&nbsp;</th>
-								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -277,17 +276,15 @@
 									<td>${customerOrderDetail.detail_data_flow}</td>
 									<td><strong><fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,#00.00" /></strong></td>
 									<td 
-										<c:if test="${fn:indexOf(customerOrderDetail.detail_type,'plan-term') > -1 || fn:indexOf(customerOrderDetail.detail_type,'plan-no-term') > -1}">
-											id="${customerOrder.id}_order_detail_unit"
-											data-val="${customerOrderDetail.detail_unit}"
+										<c:if test="${fn:contains(customerOrderDetail.detail_type, 'plan-')}">
+										id="${customerOrder.id}_order_detail_unit" data-val="${customerOrderDetail.detail_unit}"
 										</c:if>
 									>${customerOrderDetail.detail_unit}</td>
 									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
-									<td>&nbsp;</td>
 									<td>&nbsp;
 										<c:if test="${customerOrderDetail.detail_type=='discount'}">
 											<a class="btn btn-danger btn-xs" href="javascript:void(0);" data-name="remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
-											  <span class="glyphicon glyphicon-trash"></span> Remove
+											  	<span class="glyphicon glyphicon-trash"></span> 
 											</a>
 										</c:if>
 									</td>

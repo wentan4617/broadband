@@ -226,8 +226,8 @@ public class CustomerController {
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		cod_plan.setDetail_name(plan.getPlan_name());
-		cod_plan.setDetail_price(plan.getPlan_price());
-		cod_plan.setDetail_unit(plan.getPlan_prepay_months());
+		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
+		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
 		
 		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
 		
@@ -250,6 +250,7 @@ public class CustomerController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
@@ -281,6 +282,7 @@ public class CustomerController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);

@@ -3,9 +3,18 @@ broadband 1.0.x 2014
 
 Total Mobile Solution Internet Service Web Project
 
-demand version 1.0.4 2014-03-24
+***Specification
 
-* 给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录
+* 所有表单提交的controller方法，都要redirect.
+
+
+demand version 1.0.4 2014-03-27
+
+* 屏蔽下一次自动生成账单的函数，用createInvoicePDF测试，是否可以代替  (steven)
+* 添加删除discount按钮的提示，提示信息为remove (steven)
+* 修改service given 的 edit bug (steven)
+* 给customer order detial，的order due,添加一个，日历input(steven)
+* 给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录(steven)
 
 demand version 1.0.3 2014-03-24
 
