@@ -159,7 +159,7 @@
 				for (var o = 0, len = orderIds.length; o < len; o++){
 					html += '<thead>';
 					html += '<tr>';
-					html += '<th colspan="8"><h1>Order Serial: ' + orderIds[o] + '</h1></th>';
+					html += '<th colspan="8"><h3 class="text-success" style="margin:2px;"><strong>Order Serial:&nbsp;<small>' + orderIds[o] + '</small></strong></h3></th>';
 					html += '</tr>';
 					html += '<tr>';
 					html += '<th>Reference</th>';
@@ -348,6 +348,7 @@
 			// rewrite innerHTML
 			cvlan.html(cvlan_input);
 			svlan.html(svlan_input);
+			order_status.html(order.order_status);
 			order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
 			order_next_invoice_create_date.html('<strong>' + order.next_invoice_create_date_str + '<\/strong>');
 			

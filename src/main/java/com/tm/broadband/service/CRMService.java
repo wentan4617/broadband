@@ -567,7 +567,12 @@ public class CRMService {
 		 * 
 		 * invoiceCreateDay HAVE TO ASSIGN TO new Date() BEFORE PRODUCT MODE
 		 */
-		Date invoiceCreateDay = !is_Next_Invoice ? new Date() : customerOrder.getNext_invoice_create_date();
+		// if first time then judge if using start not null then using start else new Date(), else next create date.
+		Date invoiceCreateDay = !is_Next_Invoice 
+				? (customerOrder.getOrder_using_start() != null 
+						? customerOrder.getOrder_using_start() 
+						: new Date()) 
+				: customerOrder.getNext_invoice_create_date();
 		// set invoice due date begin
 		int invoiceDueDay = 10;
 		Calendar calInvoiceDueDay = Calendar.getInstance();
@@ -624,9 +629,13 @@ public class CRMService {
 						// get next invoice date
 						// if is next invoice then plus one month else plus unit month(s)
 						int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-						int nextInvoiceDay = -15;
+						int nextInvoiceDay = is_Next_Invoice ? 0 : -15;
 						Calendar calNextInvoiceDay = Calendar.getInstance();
-						calNextInvoiceDay.setTime(customerOrder.getNext_invoice_create_date());
+						calNextInvoiceDay.setTime(!is_Next_Invoice 
+									? (customerOrder.getOrder_using_start() != null 
+									? customerOrder.getOrder_using_start() 
+									: new Date()) 
+							: customerOrder.getNext_invoice_create_date());
 						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
 						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 
