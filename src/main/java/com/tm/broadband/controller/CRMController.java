@@ -607,6 +607,7 @@ public class CRMController {
 		cod_plan.setDetail_plan_group(customerOrder.getPlan().getPlan_group());
 		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
+		cod_plan.setDetail_type(customerOrder.getPlan().getPlan_group());
 		
 		customerOrder.getCustomerOrderDetails().add(cod_plan);
 		
