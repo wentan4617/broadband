@@ -3,7 +3,7 @@ broadband 1.0.x 2014
 
 Total Mobile Solution Internet Service Web Project
 
-***Specification
+###Specification
 
 * 所有表单提交的controller方法，都要redirect.
 
