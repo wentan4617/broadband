@@ -197,13 +197,12 @@ public class CRMController {
 			@RequestParam("order_using_start_input") String order_using_start_input,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
 			@RequestParam("order_status") String order_status,
+			@RequestParam("order_type") String order_type,
 			HttpServletRequest req) {
-		
-		CustomerOrder customerOrder = new CustomerOrder();
+
 		// customer order begin
-		customerOrder = new CustomerOrder();
+		CustomerOrder customerOrder = new CustomerOrder();
 		customerOrder.getParams().put("id", order_id);
-		customerOrder.setId(order_id);
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
@@ -222,16 +221,16 @@ public class CRMController {
 
 		if(order_status.equals("ordering-paid")){
 			
-			// next invoice date
-			if(order_detail_unit==null){
-				order_detail_unit = 1;
+			if(!order_type.equals("order-topup")){
+				int nextInvoiceMonth = order_detail_unit;
+				int nextInvoiceDay = -15;
+				Calendar calNextInvoiceDay = Calendar.getInstance();
+				calNextInvoiceDay.setTime(new Date());
+				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+				// set next invoice date
+				customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 			}
-			int nextInvoiceDay = 30 * order_detail_unit - 15;
-			Calendar calnextInvoiceDay = Calendar.getInstance();
-			calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-			calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-			// set next invoice date
-			customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
 			// customer order end
 
 			proLog.setProcess_way("ordering-paid to using");
@@ -240,7 +239,7 @@ public class CRMController {
 			// mailer
 			Customer customer = this.crmService.queryCustomerById(customer_id);
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-			Notification notification = this.systemService.queryNotificationBySort("register-pre-pay", "email");
+			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
 			TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
@@ -250,7 +249,7 @@ public class CRMController {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			notification = this.systemService.queryNotificationBySort("register-pre-pay", "sms");
+			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);
