@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.HardwareMapper;
 import com.tm.broadband.mapper.PlanMapper;
-import com.tm.broadband.mapper.TopupMapper;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
@@ -24,14 +23,12 @@ import com.tm.broadband.model.Topup;
 public class PlanService {
 
 	private PlanMapper planMapper;
-	private TopupMapper topupMapper;
 	private HardwareMapper hardwareMapper;
 
 	@Autowired
-	public PlanService(PlanMapper planMapper, TopupMapper topupMapper,
+	public PlanService(PlanMapper planMapper, 
 			HardwareMapper hardwareMapper) {
 		this.planMapper = planMapper;
-		this.topupMapper = topupMapper;
 		this.hardwareMapper = hardwareMapper;
 	}
 
@@ -155,30 +152,8 @@ public class PlanService {
 	 */
 
 	@Transactional
-	public void saveTopup(Topup topup) {
-		this.topupMapper.insertTopup(topup);
-	}
-
-	@Transactional
-	public void editTopup(Topup topup) {
-		this.topupMapper.updateTopup(topup);
-	}
-
-	@Transactional
-	public Topup queryTopupById(int id) {
-		return this.topupMapper.selectTopupById(id);
-	}
-
-	@Transactional
 	public List<Topup> queryTopups() {
 		return null; //this.topupMapper.selectTopups();
-	}
-
-	@Transactional
-	public Page<Topup> queryTopupsByPage(Page<Topup> page) {
-		page.setTotalRecord(this.topupMapper.selectTopupsSum(page));
-		page.setResults(this.topupMapper.selectTopupsByPage(page));
-		return page;
 	}
 
 	/*
