@@ -204,6 +204,7 @@ public class CRMController {
 		CustomerOrder customerOrder = new CustomerOrder();
 		customerOrder.setOrder_status("using");
 		customerOrder.setId(order_id); // important
+		customerOrder.setOrder_type(order_type); // important too, for createInvoicPDF checking, if order_type!=null
 		customerOrder.setSvlan(svlan_input);
 		customerOrder.setCvlan(cvlan_input);
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
@@ -216,19 +217,20 @@ public class CRMController {
 		proLog.setOrder_id_customer(order_id);
 		proLog.setOrder_sort("customer-order");
 		proLog.setProcess_way(order_status + " to using");
+
+		if (!"order-topup".equals(order_type)) {
+			int nextInvoiceMonth = order_detail_unit;
+			int nextInvoiceDay = -15;
+			Calendar calNextInvoiceDay = Calendar.getInstance();
+			calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
+			calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+			// set next invoice date
+			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+		}
 		
 		// check order status
 		if ("ordering-paid".equals(order_status)) {
-			if (!"order-topup".equals(order_type)) {
-				int nextInvoiceMonth = order_detail_unit;
-				int nextInvoiceDay = -15;
-				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-				// set next invoice date
-				customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-			}
 
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 
@@ -251,8 +253,7 @@ public class CRMController {
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 			Notification notificationEmail = this.systemService.queryNotificationBySort("register-post-pay", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("register-post-pay", "sms");
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			this.crmService.createInvoicePDF(customerOrder, applicationEmail, notificationEmail, notificationSMS);
+			this.crmService.createInvoicePDF(customerOrder, notificationEmail, notificationSMS);
 		}
 
 		return customerOrder;
@@ -267,10 +268,8 @@ public class CRMController {
 			,@RequestParam("detail_price") Double detail_price
 			,@RequestParam("detail_unit") Integer detail_unit
 			,@RequestParam("detail_expired") String detail_expired
-			,@RequestParam("detail_type") String detail_type) {
-		
-		model.addAttribute("panelheading", "Customer Edit");
-		model.addAttribute("action", "/broadband-user/crm/customer/edit");
+			,@RequestParam("detail_type") String detail_type
+			,RedirectAttributes attr) {
 		
 		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 		customerOrderDetail.setOrder_id(order_id);
@@ -281,32 +280,22 @@ public class CRMController {
 		customerOrderDetail.setDetail_type(detail_type);
 		this.crmService.createCustomerOrderDetail(customerOrderDetail);
 		
-		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer_id);
-		
-		model.addAttribute("customer", customer);
-		
-		model.addAttribute("success", "Create Customer Order Detail Discount is successful.");
+		attr.addFlashAttribute("success", "Create Customer Order Detail Discount is successful.");
 
-		return "broadband-user/crm/customer";
+		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/remove")
 	public String doCustomerOrderDetailDiscountRemove(Model model
 			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id) {
-		
-		model.addAttribute("panelheading", "Customer Edit");
-		model.addAttribute("action", "/broadband-user/crm/customer/edit");
+			,@RequestParam("customer_id") int customer_id
+			,RedirectAttributes attr) {
 		
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
 		
-		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer_id);
-		
-		model.addAttribute("customer", customer);
-		
-		model.addAttribute("success", "Remove Customer Order Detail Discount is successful.");
+		attr.addFlashAttribute("success", "Remove Customer Order Detail Discount is successful.");
 
-		return "broadband-user/crm/customer";
+		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/edit")
@@ -318,6 +307,7 @@ public class CRMController {
 			@RequestParam("svlan_input") String svlan_input,
 			@RequestParam("order_using_start_input") String order_using_start_input,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
+			@RequestParam("order_type") String order_type,
 			HttpServletRequest req) {
 		
 		// get user from session
@@ -331,20 +321,24 @@ public class CRMController {
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
 		customerOrder.getParams().put("id", order_id);
 		
-		
-		int nextInvoiceDay = order_detail_unit==null ? 30 : 30 * order_detail_unit - 15;
-		Calendar calnextInvoiceDay = Calendar.getInstance();
-		calnextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-		calnextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-		
-		customerOrder.setNext_invoice_create_date(calnextInvoiceDay.getTime());
+
+		if (!"order-topup".equals(order_type)) {
+			int nextInvoiceMonth = order_detail_unit;
+			int nextInvoiceDay = -15;
+			Calendar calNextInvoiceDay = Calendar.getInstance();
+			calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
+			calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+			// set next invoice date
+			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+		}
 		
 		// ProvisionLog begin
 		ProvisionLog proLog = new ProvisionLog();
 		proLog.setUser(user);
 		//proLog.setOrder_id_customer(customerOrder);
 		proLog.setOrder_sort("customer-order");
-		proLog.setProcess_way("paid to using");
+		proLog.setProcess_way("editing service giving");
 		// ProvisionLog end
 		
 		this.crmService.editCustomerOrderAndCreateProvision(customerOrder, proLog);
