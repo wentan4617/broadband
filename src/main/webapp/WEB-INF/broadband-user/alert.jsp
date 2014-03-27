@@ -2,23 +2,21 @@
 
 <div class="container" id="alertContainer">
 	<c:if test="${success != null }">
-		<div class="alert alert-success alert-dismissable">
+		<div class="alert alert-success alert-dismissable fade in">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			${success }
 		</div>
 	</c:if>
 	<c:if test="${error != null }">
-		<div class="alert alert-danger alert-dismissable">
+		<div class="alert alert-danger alert-dismissable fade in">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
 			${error}
 		</div>
 	</c:if>
-	
-	<!--style="display:none;" alert-dismissable data-dismiss="alert" aria-hidden="true"-->
 </div>
 
 <div id="tempAlertContainer" style="display:none;">
-	<div id="alert-error" class="alert alert-danger alert-dismissable" >
+	<div id="alert-error" class="alert alert-danger alert-dismissable fade in" style="display:none;">
 		<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
 		<span id="text-error"></span>
 	</div>

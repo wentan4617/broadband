@@ -32,8 +32,7 @@ public class UserAuthFilter implements Filter {
 		HttpServletRequest req = (HttpServletRequest) request;
 		HttpServletResponse res = (HttpServletResponse) response;
 		User user = (User) req.getSession().getAttribute("userSession");
-		String path = req.getRequestURL().toString()
-				.substring(req.getRequestURL().indexOf(req.getRequestURI()));
+		String path = req.getRequestURL().toString().substring(req.getRequestURL().indexOf(req.getRequestURI()));
 		String[] authArray = user.getAuth().split(",");
 		boolean flag = false;
 		for (int i = 0; i < authArray.length; i++) {

@@ -845,6 +845,7 @@ public class CRMController {
 			,@RequestParam(value = "result", required = true) String result
 			,SessionStatus status
 			) throws Exception {
+		
 		Response responseBean = null;
 		CustomerInvoice customerInvoice = this.crmService.queryCustomerInvoiceById(invoice_id);
 		Customer customer = this.crmService.queryCustomerById(customerInvoice.getCustomer_id());

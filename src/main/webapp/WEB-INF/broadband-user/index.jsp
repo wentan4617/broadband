@@ -7,6 +7,11 @@
 <jsp:include page="header.jsp" />
 <jsp:include page="alert.jsp" />
 
+<style>
+.panel-success {
+	min-height: 251px;
+}
+</style>
 <div class="container">
     <div class="row">
         <div class="col-md-3">

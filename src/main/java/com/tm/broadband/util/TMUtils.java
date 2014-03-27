@@ -8,10 +8,14 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.RegisterCustomer;
 
@@ -60,6 +64,13 @@ public class TMUtils {
 				e.printStackTrace();
 			}
 		return null;
+	}
+	
+	public static void setJSONErrorMap(JSONBean<?> json, BindingResult result) {
+		List<FieldError> fields = result.getFieldErrors();
+		for (FieldError field: fields) {
+			json.getErrorMap().put(field.getField(), field.getDefaultMessage());
+		}
 	}
 	
 	public static String createPath(String path){

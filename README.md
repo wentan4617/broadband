@@ -7,6 +7,14 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，都要redirect.
 
+demand version 1.0.4 2014-03-28
+
+* user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看
+* [把后台登入换成ajax](kanny)
+* 把plan，hareware功能换成ajax
+* customer支付账单功能，user支付order功能
+* 设定cyberpark的term condition
+* 设计about cyberpark界面
 
 demand version 1.0.4 2014-03-27
 

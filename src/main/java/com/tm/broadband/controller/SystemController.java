@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.RegisterCustomer;
@@ -37,6 +39,7 @@ import com.tm.broadband.validator.mark.UserValidatedMark;
  * @author Cook1fan
  * 
  */
+
 @Controller
 public class SystemController {
 
@@ -54,11 +57,11 @@ public class SystemController {
 	@RequestMapping(value = { "/broadband-user", "/broadband-user/login" })
 	public String userHome(Model model) {
 
-		model.addAttribute("user", new User());
+		//model.addAttribute("user", new User());
 		return "broadband-user/login";
 	}
 
-	@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
+	/*@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
 	public String userLogin(
 			Model model,
 			@ModelAttribute("user") @Validated(UserLoginValidatedMark.class) User user,
@@ -79,6 +82,39 @@ public class SystemController {
 		req.getSession().setAttribute("userSession", userSession);
 		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
 
+		return "redirect:/broadband-user/index";
+	}*/
+	
+	@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
+	@ResponseBody
+	public JSONBean<User> userLogin(
+			@Validated(UserLoginValidatedMark.class) User user, BindingResult result,
+			HttpServletRequest req) {
+		
+		JSONBean<User> json = new JSONBean<User>();
+		json.setModel(user);
+
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+
+		User userSession = this.systemService.queryUserLogin(user);
+
+		if (userSession == null) {
+			json.getErrorMap().put("alert-error", "Incorrect account or password");
+			return json;
+		}
+		
+		req.getSession().setAttribute("userSession", userSession);
+		json.setUrl("/broadband-user/index/redirect");
+
+		return json;
+	}
+	
+	@RequestMapping("/broadband-user/index/redirect")
+	public String redirectIndex(RedirectAttributes attr) {
+		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
 		return "redirect:/broadband-user/index";
 	}
 
