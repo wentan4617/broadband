@@ -13,8 +13,26 @@
 		<div class="col-md-12">
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4 class="panel-title">Plan View</h4></div>
+					<h4 class="panel-title">Plan View&nbsp;
+					<c:if test="${true}">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								Operations <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" data-role="menu">
+								<li>
+									<a href="javascript:void(0);" id="delete_selected_plan">
+										DELETE:
+										<span class="text-danger">Delete Selected Plan</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</c:if>
+					</h4>
+				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
+					<form id="planForm" action="${ctx }/broadband-user/plan/delete" method="post">
 					<table class="table" style="font-size:12px;">
 						<thead >
 							<tr>
@@ -81,6 +99,7 @@
 						</tr>
 					</tfoot>
 					</table>
+					</form>
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<div class="panel-body">
@@ -102,6 +121,10 @@
 		} else {
 			$('input[name="checkbox_plans"]').prop("checked", false);
 		}
+	});
+	
+	$('#delete_selected_plan').click(function(){
+		$('#planForm').submit();
 	});
 })(jQuery);
 </script>

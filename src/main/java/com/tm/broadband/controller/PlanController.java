@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.Hardware;
@@ -24,7 +25,6 @@ import com.tm.broadband.model.User;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.HardwareValidatedMark;
 import com.tm.broadband.validator.mark.PlanValidatedMark;
-import com.tm.broadband.validator.mark.TopupValidatedMark;
 
 /**
  * plan controller
@@ -171,6 +171,24 @@ public class PlanController {
 
 		return "redirect:/broadband-user/plan/view/1";
 	}
+
+	@RequestMapping(value = "/broadband-user/plan/delete", method = RequestMethod.POST)
+	public String deletePlansById(Model model
+			,@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids
+			,HttpServletRequest req, RedirectAttributes attr){
+
+		if (plan_ids == null) {
+			attr.addFlashAttribute("error", "Please choose one plan at least.");
+			return "redirect:/broadband-user/plan/view/1";
+		} else {
+			for (int i = 0; i < plan_ids.length; i++) {
+				this.planService.removePlanById(Integer.parseInt(plan_ids[i]));
+			}
+		}
+		
+		attr.addFlashAttribute("success", "Delete selected plan(s) successfully!");
+		return "redirect:/broadband-user/plan/view/1";
+	}
 	
 	/*
 	 * END PLAN AREA
@@ -261,6 +279,24 @@ public class PlanController {
 		
 		attr.addFlashAttribute("success", "Edit Hardware " + hardware.getHardware_name() + " is successful.");
 	
+		return "redirect:/broadband-user/plan/hardware/view/1";
+	}
+
+	@RequestMapping(value = "/broadband-user/plan/hardware/delete", method = RequestMethod.POST)
+	public String deleteHardwaresById(Model model
+			,@RequestParam(value = "checkbox_hardwares", required = false) String[] hardware_ids
+			,HttpServletRequest req, RedirectAttributes attr){
+
+		if (hardware_ids == null) {
+			attr.addFlashAttribute("error", "Please choose one hardware at least.");
+			return "redirect:/broadband-user/plan/hardware/view/1";
+		} else {
+			for (int i = 0; i < hardware_ids.length; i++) {
+				this.planService.removeHardwareById(Integer.parseInt(hardware_ids[i]));
+			}
+		}
+		
+		attr.addFlashAttribute("success", "Delete selected hardware(s) successfully!");
 		return "redirect:/broadband-user/plan/hardware/view/1";
 	}
 

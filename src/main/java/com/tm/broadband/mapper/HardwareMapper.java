@@ -48,6 +48,10 @@ public interface HardwareMapper {
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
-	/* DELETE AREA *//* // END DELETE AREA */
+	/* DELETE AREA */
+	
+	void deleteHardwareById(int id);
+	
+	/* // END DELETE AREA */
 
 }
