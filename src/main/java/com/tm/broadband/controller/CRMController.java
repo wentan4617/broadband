@@ -593,14 +593,14 @@ public class CRMController {
 		
 		cod_plan.setDetail_name(customerOrder.getPlan().getPlan_name());
 		cod_plan.setDetail_desc(customerOrder.getPlan().getPlan_desc());
-		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price());
+		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price() == null ? 0d : customerOrder.getPlan().getPlan_price());
 		cod_plan.setDetail_data_flow(customerOrder.getPlan().getData_flow());
 		cod_plan.setDetail_plan_status(customerOrder.getPlan().getPlan_status());
 		cod_plan.setDetail_plan_type(customerOrder.getPlan().getPlan_type());
 		cod_plan.setDetail_plan_sort(customerOrder.getPlan().getPlan_sort());
 		cod_plan.setDetail_plan_group(customerOrder.getPlan().getPlan_group());
 		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
-		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months());
+		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months() == null ? 1 : customerOrder.getPlan().getPlan_prepay_months());
 		cod_plan.setDetail_type(customerOrder.getPlan().getPlan_group());
 		
 		customerOrder.getCustomerOrderDetails().add(cod_plan);
@@ -630,6 +630,7 @@ public class CRMController {
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_unit(1);
@@ -641,7 +642,7 @@ public class CRMController {
 			
 			cod_topup.setDetail_name("Broadband Top-Up");
 			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
-			cod_topup.setDetail_type("plan-topup");
+			cod_topup.setDetail_type("topup");
 			cod_topup.setDetail_is_next_pay(0);
 			cod_topup.setDetail_unit(1);
 			
@@ -671,6 +672,7 @@ public class CRMController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_is_next_pay(0);
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");
@@ -700,6 +702,7 @@ public class CRMController {
 				
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_is_next_pay(0);
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");

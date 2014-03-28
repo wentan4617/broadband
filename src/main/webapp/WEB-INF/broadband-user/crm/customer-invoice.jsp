@@ -6,7 +6,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<div class="panel-group" id="customerInvoiceAccordion">
+<div id="customerInvoiceAccordion">
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h4 class="panel-title">
