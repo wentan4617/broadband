@@ -2,6 +2,7 @@ package com.tm.broadband.quartz;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,9 +33,8 @@ public class CustomerCreateInvoicePDFEachMonth {
         // production mode use new Date() instead SimpleDateFormat().parse()
         // this is to compare the next_invoice_create_date, if matched then
         // generate that invoice into PDF form
-        customerOrder.getParams().put("next_invoice_create_date", 
-
-        new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13"));
+        //  new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13")
+        customerOrder.getParams().put("next_invoice_create_date", new Date());
         customerOrder.getParams().put("order_type", "order-no-term"); 
         
         // call Service Method

@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -823,8 +824,10 @@ public class CRMController {
 			,@PathVariable("invoice_id") Integer invoice_id) {
 
 		GenerateRequest gr = new GenerateRequest();
-
-		gr.setAmountInput("1.00");
+		
+		CustomerInvoice customerInvoice = this.crmService.queryCustomerInvoiceById(invoice_id);
+		gr.setAmountInput(new DecimalFormat("#.00").format(customerInvoice.getBalance()));
+		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 

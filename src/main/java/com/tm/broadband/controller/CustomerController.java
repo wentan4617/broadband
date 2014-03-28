@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -322,11 +323,17 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/order/checkout", method = RequestMethod.POST)
-	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
+	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result) {
+		
+		if (result.hasErrors()) {
+			return "broadband-customer/customer-order";
+		}
 
 		GenerateRequest gr = new GenerateRequest();
 
-		gr.setAmountInput("1.00");
+		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerOrder().getOrder_total_price()));
+		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 		
@@ -536,7 +543,8 @@ public class CustomerController {
 
 		GenerateRequest gr = new GenerateRequest();
 
-		gr.setAmountInput("1.00");
+		gr.setAmountInput(new DecimalFormat("#.00").format(topup));
+		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 		
