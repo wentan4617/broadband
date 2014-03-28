@@ -59,41 +59,42 @@ public class InvoicePDFCreator {
 	private Font tahoma_bold_white_10;
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
+	private String path = System.getProperty("user.dir")+File.separator;
 	
 	
 	public InvoicePDFCreator(){
 		try {
-			BaseFont bf_arial_normal_6 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_6 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_6 = new Font(bf_arial_normal_6, 6, Font.NORMAL);
-			BaseFont bf_arial_normal_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_7 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_7 = new Font(bf_arial_normal_7, 7, Font.NORMAL);
-			BaseFont bf_arial = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_8 = new Font(bf_arial, 8, Font.NORMAL);
-			BaseFont bf_arial_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_white_8 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_white_8 = new Font(bf_arial_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_arial_normal_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_arial_normal_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_10 = new Font(bf_arial_normal_10, 10, Font.NORMAL);
-			BaseFont bf_lucida_sans_unicode_9 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Lucida Sans Unicode.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_lucida_sans_unicode_9 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Lucida Sans Unicode.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.lucida_sans_unicode_9 = new Font(bf_lucida_sans_unicode_9, 9, Font.NORMAL);
-			BaseFont bf_verdana_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_8 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_8 = new Font(bf_verdana_normal_8, 8, Font.NORMAL);
-			BaseFont bf_verdana_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_7 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_7 = new Font(bf_verdana_7, 7, Font.BOLD);
-			BaseFont bf_verdana_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_8 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_8 = new Font(bf_verdana_8, 8, Font.BOLD);
-			BaseFont bf_verdana_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_white_8 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_white_8 = new Font(bf_verdana_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_verdana_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_bold_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_10 = new Font(bf_verdana_bold_10, 10, Font.BOLD);
-			BaseFont bf_verdana_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_bold_white_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_bold_white_10 = new Font(bf_verdana_bold_white_10, 10, Font.BOLD, BaseColor.WHITE);
-			BaseFont bf_verdana_normal_14 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_verdana_normal_14 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.verdana_normal_14 = new Font(bf_verdana_normal_14, 14, Font.NORMAL);
-			BaseFont bf_tahoma_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahoma.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"tahoma.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_normal_10 = new Font(bf_tahoma_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_bold_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_bold_10 = new Font(bf_tahoma_bold_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			BaseFont bf_tahoma_bold_white_10 = BaseFont.createFont(path+"pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.tahoma_bold_white_10 = new Font(bf_tahoma_bold_white_10, 10, Font.NORMAL, BaseColor.WHITE);
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
@@ -394,13 +395,13 @@ public class InvoicePDFCreator {
         paymentSlipTable.setTotalWidth(535);
         PdfPCell paymentSlipCell = newCell(" ", arial_normal_10, 0);
         paymentSlipCell.setColspan(5);
-        Image img = Image.getInstance("pdf"+File.separator+"img"+File.separator+"scissor_separator.png");
+        Image img = Image.getInstance(path+"pdf"+File.separator+"img"+File.separator+"scissor_separator.png");
         img.setWidthPercentage(100);
         paymentSlipCell.setImage(img);
         paymentSlipTable.addCell(paymentSlipCell);
         
         // cartoon img
-		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"cartoon_done.png");
+		Image cartoon = Image.getInstance(path+"pdf"+File.separator+"img"+File.separator+"cartoon_done.png");
 		cartoon.scaleAbsolute(80f, 40.5f);
 		cartoon.setAbsolutePosition(50, 165);
 		writer.getDirectContent().addImage(cartoon);
@@ -591,7 +592,7 @@ public class InvoicePDFCreator {
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
 		// boxes begin
-		Image sBox = Image.getInstance("pdf"+File.separator+"img"+File.separator+"box_large_white.png");
+		Image sBox = Image.getInstance(path+"pdf"+File.separator+"img"+File.separator+"box_large_white.png");
 		sBox.scaleAbsolute(155.25f, 35.25f);
 		sBox.setAbsolutePosition(0, 0);
 		writer.getDirectContent().addImage(sBox);
@@ -987,7 +988,7 @@ public class InvoicePDFCreator {
 	private void pageHeader(PdfWriter writer, PdfPTable headerTable, PdfPCell cell) throws MalformedURLException, IOException, DocumentException{
 		headerTable.setTotalWidth(510);
         // logo & start
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+		Image logo = Image.getInstance(path+"pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
 		logo.scaleAbsolute(171f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);

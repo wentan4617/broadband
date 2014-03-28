@@ -76,15 +76,16 @@ public class TestAll {
 //		smserService.sendSMSByAsynchronousMode(customer, notification);
 		
 
-		// month * unit
-		int nextInvoiceMonth = 5;
-		int nextInvoiceDay = 0;
-		Calendar calNextInvoiceDay = Calendar.getInstance();
-		calNextInvoiceDay.setTime(new Date());
-		calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-		calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-		
-		System.out.println(TMUtils.dateFormatYYYYMMDD(calNextInvoiceDay.getTime()));
+//		// month * unit
+//		int nextInvoiceMonth = 5;
+//		int nextInvoiceDay = 0;
+//		Calendar calNextInvoiceDay = Calendar.getInstance();
+//		calNextInvoiceDay.setTime(new Date());
+//		calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+//		calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+//		
+//		System.out.println(TMUtils.dateFormatYYYYMMDD(calNextInvoiceDay.getTime()));
+		System.out.println(System.getProperty("user.dir"));
 	}
 	
 
