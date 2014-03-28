@@ -9,7 +9,8 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.4 2014-03-28
 
-* user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看
+* 修改provision的order层显示，压缩customer信息，order信息排版和customer里的一致，order detail显示字段和customer里一致但多一个操作列(steven)
+* [user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看](steven)
 * [把后台登入换成ajax](kanny)
 * 把plan，hareware功能换成ajax
 * customer支付账单功能，user支付order功能
@@ -28,7 +29,7 @@ demand version 1.0.4 2014-03-27
 demand version 1.0.3 2014-03-24
 
 * [后台添加hardware删除功能](steven)
-* 后天添加plan删除功能，改变状态功能，group,type, sort, status(steven)
+* [后天添加plan删除功能，改变状态功能，group,type, sort, status](steven)
 * [继续下次出账单的时间，改为在月份单位上增加，而不是在天单位上增加](steven)
 * [后台customer inovice部分，给还没有付款的invoice添加支付功能，支付类型为罗列出来的5种](steven)
 * [后台customer order detail部分，添加，一种discount detial类型，可以输入detail_name, detail_price, detail_unit, detail_expired,提交后刷新页面](steven)

@@ -189,7 +189,40 @@ public class PlanController {
 		attr.addFlashAttribute("success", "Delete selected plan(s) successfully!");
 		return "redirect:/broadband-user/plan/view/1";
 	}
-	
+
+	@RequestMapping(value = "/broadband-user/plan/options/edit", method = RequestMethod.POST)
+	public String changePlanOptionsById(Model model
+			,@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids
+			,HttpServletRequest req, RedirectAttributes attr
+			,@RequestParam("value") String value
+			,@RequestParam("type") String type){
+
+		Plan plan = new Plan();
+		if("plan-group".equals(type)){
+			plan.setPlan_group(value);
+		}
+		if("plan-sort".equals(type)){
+			plan.setPlan_sort(value);
+		}
+		if("plan-type".equals(type)){
+			plan.setPlan_type(value);
+		}
+		if("plan-status".equals(type)){
+			plan.setPlan_status(value);
+		}
+		if (plan_ids == null) {
+			attr.addFlashAttribute("error", "Please choose one plan at least.");
+			return "redirect:/broadband-user/plan/view/1";
+		} else {
+			for (int i = 0; i < plan_ids.length; i++) {
+				plan.getParams().put("id", Integer.parseInt(plan_ids[i]));
+				this.planService.editPlan(plan);
+			}
+		}
+		
+		attr.addFlashAttribute("success", "Change selected plan(s)'s group successfully!");
+		return "redirect:/broadband-user/plan/view/1";
+	}
 	/*
 	 * END PLAN AREA
 	 */

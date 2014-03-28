@@ -28,7 +28,7 @@
 				<form class="form-horizontal">
 					<div class="panel-body">
 						<div class="page-header" style="margin:0">
-							<h3><strong>Order Information</strong></h3>
+							<h3 class="text-success"><strong>Order Information</strong></h3>
 						</div>
 						<div class="row">
 							<div class="col-md-6">
@@ -122,7 +122,7 @@
 						</div>
 						<hr />
 						<div class="page-header" style="margin:0">
-							<h3><strong>PPPoE Information</strong></h3>
+							<h3 class="text-success"><strong>PPPoE Information</strong></h3>
 						</div>
 						<div class="row">
 							<div class="col-md-6">
@@ -174,7 +174,7 @@
 						</div>
 						<hr />
 						<div class="page-header" style="margin:0">
-							<h3><strong>SV/CVLan Information</strong></h3>
+							<h3 class="text-success"><strong>SV/CVLan Information</strong></h3>
 						</div>
 						<div class="row">
 							<div class="col-md-6">
@@ -211,7 +211,7 @@
 									<label class="control-label col-md-6">Service Giving Date</label>
 									<div class="col-md-6">
 										<div class="input-group date">
-											<input id="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Start Date" value="2014-03-16"/>
+											<input id="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Start Date"/>
 											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										</div>
 									</div>
@@ -295,7 +295,7 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-success btn-xs pull-left" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
+									<a class="btn btn-success btn-xs pull-right" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
 									  <span data-toggle="tooltip" data-placement="bottom" data-original-title="add a discount for this order" class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Discount
 									</a>
 								</td>
