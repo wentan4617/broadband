@@ -632,6 +632,7 @@ public class CRMController {
 				cod_trans.setDetail_is_next_pay(0);
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_unit(1);
 				
 				customerOrder.getCustomerOrderDetails().add(cod_trans);
@@ -673,6 +674,7 @@ public class CRMController {
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
@@ -702,6 +704,7 @@ public class CRMController {
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_price(0d);
 				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				

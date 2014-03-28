@@ -80,7 +80,7 @@
 	    format: "yyyy-mm-dd",
 	    autoclose: true,
 	    todayHighlight: true
-	});
+	}).datepicker('setDate', new Date());
 	
 	var orderIds = new Array();
 	

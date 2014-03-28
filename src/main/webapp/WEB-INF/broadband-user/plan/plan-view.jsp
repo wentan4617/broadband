@@ -14,50 +14,37 @@
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">Plan View&nbsp;
-					<c:if test="${true}">
-						<div class="btn-group">
-							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-								Operations <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" data-role="menu">
-								<li>
-									<a href="javascript:void(0);" id="delete_selected_plan">
-										DELETE:
-										<span class="text-danger">Delete Selected Plan</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-						<div class="btn-group">
-							<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
-								Change Group <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" data-role="menu">
-								<li>
-									<a href="javascript:void(0);" id="delete_selected_plan">
-										DELETE:
-										<span class="text-danger">Delete Selected Plan</span>
-									</a>
-								</li>
-								<li>
-									<a href="javascript:void(0);" id="delete_selected_plan">
-										DELETE:
-										<span class="text-danger">Delete Selected Plan</span>
-									</a>
-								</li>
-								<li>
-									<a href="javascript:void(0);" id="delete_selected_plan">
-										DELETE:
-										<span class="text-danger">Delete Selected Plan</span>
-									</a>
-								</li>
-							</ul>
-						</div>
-					</c:if>
+						<select id="select_operations" class="selectpicker">
+						    <option>Operations</option>
+						    <optgroup label="DELETE">
+						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
+						    </optgroup>
+						    <optgroup label="Change Plan Group">
+						    	<option value="plan-topup" data-type="plan-group">Plan Topup</option>
+						      	<option value="plan-no-term" data-type="plan-group">Plan No Term</option>
+						      	<option value="plan-term" data-type="plan-group">Plan Term</option>
+						    </optgroup>
+						    <optgroup label="Change Plan Type">
+						    	<option value="ADSL" data-type="plan-type">ADSL</option>
+						      	<option value="VDSL" data-type="plan-type">VDSL</option>
+						      	<option value="UFB" data-type="plan-type">UFB</option>
+						    </optgroup>
+						    <optgroup label="Change Plan Sort">
+						    	<option value="NAKED" data-type="plan-sort">NAKED</option>
+						      	<option value="NON-NAKED" data-type="plan-sort">NON NAKED</option>
+						    </optgroup>
+						    <optgroup label="Change Plan Status">
+						    	<option value="active" data-type="plan-status">Active</option>
+						      	<option value="selling" data-type="plan-status">Selling</option>
+						      	<option value="disable" data-type="plan-status">Disable</option>
+						    </optgroup>
+						</select>
 					</h4>
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					<form id="planForm" action="${ctx }/broadband-user/plan/delete" method="post">
+					<form id="planForm" action="" method="post">
+					<input type="hidden" name="value"/>
+					<input type="hidden" name="type"/>
 					<table class="table" style="font-size:12px;">
 						<thead >
 							<tr>
@@ -137,8 +124,10 @@
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
+	$('.selectpicker').selectpicker();
 	$('#checkbox_plans_top').click(function(){
 		var b = $(this).prop("checked");
 		if (b) {
@@ -148,9 +137,28 @@
 		}
 	});
 	
-	$('#delete_selected_plan').click(function(){
-		$('#planForm').submit();
+	$('#select_operations').change(function(){
+		var $this = $(this);
+		var val = this.value;
+		var type = $this.find('option:selected').attr('data-type');
+		if(type=='plan-delete'){
+			$('#planForm').attr('action', '${ctx }/broadband-user/plan/delete');
+			$('#planForm').submit();
+		} else {
+			$('input[name="value"]').val(val);
+			$('input[name="type"]').val(type);
+			$('#planForm').attr('action', '${ctx}/broadband-user/plan/options/edit');
+			$('#planForm').submit();
+		}
 	});
+	
+
+/* 	change_plan_group
+	change_plan_sort
+	change_plan_type
+	change_plan_status */
+	
+	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
