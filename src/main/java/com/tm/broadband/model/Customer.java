@@ -30,10 +30,10 @@ public class Customer implements Serializable {
 
 	private Integer id;
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
 	private String login_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
 	private String password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })

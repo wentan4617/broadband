@@ -159,7 +159,7 @@
 				for (var o = 0, len = orderIds.length; o < len; o++){
 					html += '<thead>';
 					html += '<tr>';
-					html += '<th colspan="8"><h3 class="text-success" style="margin:2px;"><strong>Order Serial:&nbsp;<small>' + orderIds[o] + '</small></strong></h3></th>';
+					html += '<th colspan="11"><h3 class="text-success" style="margin:2px;"><strong>Order Serial:&nbsp;<small>' + orderIds[o] + '</small></strong></h3></th>';
 					html += '</tr>';
 					html += '<tr>';
 					html += '<th>Reference</th>';

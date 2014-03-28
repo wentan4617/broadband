@@ -157,7 +157,7 @@ public class CRMService {
 			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
 			cod_topup.setDetail_name("Broadband Top-Up");
 			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
-			cod_topup.setDetail_type("plan-topup");
+			cod_topup.setDetail_type("topup");
 			cod_topup.setDetail_is_next_pay(0);
 			cod_topup.setDetail_expired(new Date());
 			cod_topup.setDetail_unit(1);
