@@ -831,7 +831,7 @@ public class CRMController {
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 
-		String path = req.getScheme()+"://"+(req.getLocalName().equals("127.0.0.1") ? "localhost" : req.getLocalName())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
+		String path = req.getScheme()+"://"+(req.getLocalAddr().equals("127.0.0.1") ? "localhost" : req.getLocalAddr())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
 		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
 		
 		gr.setUrlFail(wholePath);
