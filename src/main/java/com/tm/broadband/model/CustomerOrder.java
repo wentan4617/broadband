@@ -58,6 +58,7 @@ public class CustomerOrder implements Serializable {
 	private String order_create_date_str;
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
+	private String order_due_str;
 	private Customer customer;
 	@Valid
 	private Plan plan;
@@ -341,6 +342,15 @@ public class CustomerOrder implements Serializable {
 
 	public void setPppoe_password(String pppoe_password) {
 		this.pppoe_password = pppoe_password;
+	}
+
+	public String getOrder_due_str() {
+		this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_due()));
+		return order_due_str;
+	}
+
+	public void setOrder_due_str(String order_due_str) {
+		this.order_due_str = order_due_str;
 	}
 
 	

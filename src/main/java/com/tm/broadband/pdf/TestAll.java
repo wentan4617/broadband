@@ -1,19 +1,24 @@
 package com.tm.broadband.pdf;
 
-import java.util.Calendar;
-import java.util.Date;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.service.SmserService;
-import com.tm.broadband.util.TMUtils;
 
 public class TestAll {
+	
 
 	@Autowired
 	private static SmserService smserService;
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws FileNotFoundException, DocumentException {
 
 		/*
 		 * Test TMUtil.mailAtValueRetriever() method begin
@@ -85,7 +90,12 @@ public class TestAll {
 //		calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 //		
 //		System.out.println(TMUtils.dateFormatYYYYMMDD(calNextInvoiceDay.getTime()));
-		System.out.println(System.getProperty("user.dir"));
+//		System.out.println(System.getProperty("user.dir")+File.separator);
+		
+		String filePath = "";
+		
+		Document document = new Document(PageSize.A4);
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(filePath)));
 	}
 	
 

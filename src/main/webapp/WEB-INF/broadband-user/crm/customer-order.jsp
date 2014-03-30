@@ -71,7 +71,7 @@
 								<div class="form-group">
 									<label for="order_due" class="control-label col-md-6">Order Due</label>
 									<div class="col-md-6">
-										<p id="${customerOrder.id}_order_due" data-val="${customerOrder.order_due}" class="form-control-static "><strong>${customerOrder.order_due}</strong></p>
+										<p id="${customerOrder.id}_order_due" data-val="${customerOrder.order_due_str}" class="form-control-static "><strong>${customerOrder.order_due_str}</strong></p>
 									</div>
 								</div>
 								<div class="form-group">
@@ -116,9 +116,86 @@
 										<p id="${customerOrder.id}_transition_porting_number" class="form-control-static">${customerOrder.transition_porting_number}</p>
 									</div>
 								</div>
-							
 							</div>
-							<div class="col-md-6"></div>
+							<div class="col-md-6">
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-6">
+										<select data-name="${customerOrder.id}_order_status_selector" data-val="${customerOrder.order_status}" class="form-control input-sm">
+											<c:forEach var="status" items="paid,pending,ordering-paid,ordering-pending,using,cancel,discard">
+												<option value="${status}"
+													<c:if test="${customerOrder.order_status == status}">
+														selected="selected"
+													</c:if>
+												>${status}</option>
+											</c:forEach>
+										</select>
+									</div>
+									<label class="control-label col-md-6">&nbsp;</label>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<div class="col-md-6">
+										<div class="input-group date" id="${customerOrder.id}_order_due_datepicker">
+											<strong><input data-val="${customerOrder.order_due_str}" data-name="${customerOrder.id}_order_due_input" class="form-control input-sm" placeholder="Order Due Date"/></strong>
+											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+										</div>
+									</div>
+									<label class="control-label col-md-6">&nbsp;</label>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">&nbsp;</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
+									<div class="col-md-6">
+										<a id="${customerOrder.id}" class="btn btn-success pull-right" data-name="${customerOrder.id}_order_info_edit" style="width:140px;">Update Order</a>
+									</div>
+								</div>
+							</div>
 						</div>
 						<hr />
 						<div class="page-header" style="margin:0">
@@ -160,14 +237,14 @@
 									<div class="col-md-6">
 										<c:if test="${customerOrder.pppoe_loginname!=null}">
 											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="pppoe_edit">Update PPPoE</a>
+												class="btn btn-danger pull-right" data-name="${customerOrder.id}_pppoe_edit" style="width:140px;">Update PPPoE</a>
 										</c:if>
 										<c:if test="${customerOrder.pppoe_loginname==null}">
 											<a data-val="${customerOrder.id}"
-												class="btn btn-success pull-right" data-name="pppoe_save">Save PPPoE</a>
+												class="btn btn-success pull-right" data-name="${customerOrder.id}_pppoe_save" style="width:140px;">Save PPPoE</a>
 										</c:if>
 											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="pppoe_edit" style="display:none;">Update PPPoE</a>
+												class="btn btn-danger pull-right" data-name="${customerOrder.id}_pppoe_edit" style="display:none;" style="width:140px;">Update PPPoE</a>
 									</div>
 								</div>
 							</div>
@@ -210,8 +287,8 @@
 								<div class="form-group">
 									<label class="control-label col-md-6">Service Giving Date</label>
 									<div class="col-md-6">
-										<div class="input-group date">
-											<input id="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Start Date"/>
+										<div class="input-group date" id="${customerOrder.id}_order_using_start_datepicker">
+											<strong><input id="${customerOrder.id}" data-val="${customerOrder.order_using_start_str}" data-name="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Order Using Start Date"/></strong>
 											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										</div>
 									</div>
@@ -235,14 +312,14 @@
 									<div class="col-md-6">
 										<c:if test="${customerOrder.order_using_start!=null}">
 											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="edit">Update Order</a>
+												class="btn btn-danger pull-right" data-name="${customerOrder.id}_svcvlan_edit">Update SV/CVLan</a>
 										</c:if>
 										<c:if test="${customerOrder.order_using_start==null}">
 											<a data-val="${customerOrder.id}"
-												class="btn btn-success pull-right" data-name="save">Save Order</a>
+												class="btn btn-success pull-right" data-name="${customerOrder.id}_svcvlan_save">Save SV/CVLan</a>
 										</c:if>
 											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="edit" style="display:none;">Update Order</a>
+												class="btn btn-danger pull-right" data-name="${customerOrder.id}_svcvlan_edit" style="display:none;">Update SV/CVLan</a>
 									</div>
 								</div>
 							</div>
@@ -283,7 +360,7 @@
 									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 									<td>&nbsp;
 										<c:if test="${customerOrderDetail.detail_type=='discount'}">
-											<a class="btn btn-danger btn-xs" href="javascript:void(0);" data-name="remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
+											<a class="btn btn-danger btn-xs" href="javascript:void(0);" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
 											  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
 											</a>
 										</c:if>
@@ -295,7 +372,7 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-success btn-xs pull-right" data-name="add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
+									<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
 									  <span data-toggle="tooltip" data-placement="bottom" data-original-title="add a discount for this order" class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Discount
 									</a>
 								</td>
@@ -308,6 +385,26 @@
 	</div>
 </div>
 
+<!-- Edit Order Info Modal -->
+<div class="modal fade" id="editOrderInfoModal" tabindex="-1" role="dialog" aria-labelledby="editOrderInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3 class="modal-title text-danger" id="editOrderInfoModalLabel"><strong>Update Order Info</strong></h3>
+      </div>
+      <div class="modal-body">
+		<div class="form-group">
+			<label class="control-label col-md-8 text-warning">Update order's info?</label>
+		</div>
+      </div>
+      <div class="modal-footer">
+        <a href="javascript:void(0);" class="btn btn-success" data-name="editOrderInfoModalBtn" data-dismiss="modal">Update Order</a>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 <!-- Save PPPoE Modal -->
 <div class="modal fade" id="savePPPoEModal" tabindex="-1" role="dialog" aria-labelledby="savePPPoEModalLabel" aria-hidden="true">
   <div class="modal-dialog">
@@ -318,11 +415,11 @@
       </div>
       <div class="modal-body">
 		<div class="form-group">
-			<label class="control-label col-md-8">Are you sure want to save these changes?</label>
+			<label class="control-label col-md-8">Save PPPoE Info?</label>
 		</div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:void(0);" class="btn btn-warning" data-name="pppoe_save_modal_btn" data-dismiss="modal">Save PPPoE</a>
+        <a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_save_modal_btn" data-dismiss="modal">Save PPPoE</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -338,11 +435,11 @@
       </div>
       <div class="modal-body">
 		<div class="form-group">
-			<label class="control-label col-md-8">Are you sure want to save these changes?</label>
+			<label class="control-label col-md-8">Update PPPoE Info?</label>
 		</div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:void(0);" class="btn btn-warning" data-name="pppoe_edit_modal_btn" data-dismiss="modal">Update PPPoE</a>
+        <a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_edit_modal_btn" data-dismiss="modal">Update PPPoE</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -378,11 +475,11 @@
       </div>
       <div class="modal-body">
 		<div class="form-group">
-			<label class="control-label col-md-8">Are you sure want to save these changes?</label>
+			<label class="control-label col-md-8">Save SV/CVLan Info?</label>
 		</div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:void(0);" class="btn btn-warning" data-name="order_save" data-dismiss="modal">Save Order</a>
+        <a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_save" data-dismiss="modal">Save SV/CVLan</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -398,11 +495,11 @@
       </div>
       <div class="modal-body">
 		<div class="form-group">
-			<label class="control-label col-md-8">Are you sure want to edit these changes?</label>
+			<label class="control-label col-md-8">Update SV/CVLan Info?</label>
 		</div>
       </div>
       <div class="modal-footer">
-        <a href="javascript:void(0);" class="btn btn-warning" data-name="order_edit" data-dismiss="modal">Update Order</a>
+        <a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_edit" data-dismiss="modal">Update SV/CVLan</a>
       </div>
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
@@ -425,7 +522,7 @@
 			</div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="submit" class="btn btn-warning" id="discount_save">Remove Discount</button>
+	        <button type="submit" class="btn btn-success" id="discount_save">Remove Discount</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->
@@ -482,7 +579,7 @@
 			</div>
 	      </div>
 	      <div class="modal-footer">
-	        <button type="submit" class="btn btn-success" id="discount_save">Save Discount</button>
+	        <button type="submit" class="btn btn-success" id="discount_save">Add Discount</button>
 	      </div>
 	    </div><!-- /.modal-content -->
 	  </div><!-- /.modal-dialog -->

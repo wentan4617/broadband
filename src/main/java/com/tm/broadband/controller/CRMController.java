@@ -791,7 +791,7 @@ public class CRMController {
 		
 		return customerOrder;
 	}
-	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit")
 	@ResponseBody
 	public CustomerOrder toCustomerPPPoEEdit(Model model,
@@ -917,6 +917,43 @@ public class CRMController {
 
 	/**
 	 * END Payment
+	 */
+	
+	/**
+	 * BEGIN order info
+	 */
+	@RequestMapping(value = "/broadband-user/crm/customer/order/info/edit")
+	@ResponseBody
+	public CustomerOrder doCustomerOrderInfoEdit(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("order_status") String order_status,
+			@RequestParam("due_date") String due_date,
+			HttpServletRequest req) {
+
+		CustomerOrder customerOrder = new CustomerOrder();
+		// set order to current status
+		customerOrder.getParams().put("id", order_id);
+		customerOrder.setOrder_status(order_status);
+		customerOrder.setOrder_due(TMUtils.parseDateYYYYMMDD(due_date));
+		// get order to get previous status
+		CustomerOrder customerOrderPrevious = this.crmService.queryCustomerOrder(customerOrder);
+		
+		// new ProvisionLog to insert
+		ProvisionLog proLog = new ProvisionLog();
+		User userSession = (User) req.getSession().getAttribute("userSession"); // get user from userSession
+		proLog.setUser_id(userSession.getId());
+		proLog.setOrder_id_customer(order_id);
+		proLog.setOrder_sort("customer-order");
+		// get both previous status and current status
+		proLog.setProcess_way(customerOrderPrevious.getOrder_status() + " to " + order_status);
+
+
+		this.crmService.editCustomerOrder(customerOrder, proLog);
+		
+		return customerOrder;
+	}
+	/**
+	 * END order info
 	 */
 
 }

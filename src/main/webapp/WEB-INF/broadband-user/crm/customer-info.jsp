@@ -78,7 +78,7 @@
 						</p>
 						<label for="register_date" class="control-label col-md-2">Register Date</label>
 						<div class="col-md-3">
-							<p class="form-control-static"><fmt:formatDate value="${customer.register_date}" type="both"/></p>
+							<p class="form-control-static"><strong><fmt:formatDate value="${customer.register_date}" type="both"/></strong></p>
 						</div>
 					</div>
 					<div class="form-group">
@@ -91,15 +91,15 @@
 						</p>
 						<label for="active_date" class="control-label col-md-2">Active Date</label>
 						<div class="col-md-3">
-							<p class="form-control-static"><fmt:formatDate value="${customer.active_date}" type="both"/></p>
+							<p class="form-control-static"><strong><fmt:formatDate value="${customer.active_date}" type="both"/></strong></p>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="balance" class="control-label col-md-2">Balance</label>
 						<div class="col-md-3">
 							<div class="input-group">
-								<span class="input-group-addon">$</span>
-								<form:input path="balance" class="form-control" placeholder="" />
+								<span class="input-group-addon"><strong>$</strong></span>
+								<strong><form:input path="balance" class="form-control" placeholder="" /></strong>
 							</div>
 						</div>
 					</div>

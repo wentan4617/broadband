@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tm.broadband.util.TMUtils;
+
 public class CustomerOrderDetail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -47,6 +49,7 @@ public class CustomerOrderDetail implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private CustomerOrder customerOrder;
+	private String detail_expired_str;
 	
 	
 	/*
@@ -252,6 +255,15 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_expired(Date detail_expired) {
 		this.detail_expired = detail_expired;
+	}
+
+	public String getDetail_expired_str() {
+		detail_expired_str = TMUtils.dateFormatYYYYMMDD(this.getDetail_expired());
+		return detail_expired_str;
+	}
+
+	public void setDetail_expired_str(String detail_expired_str) {
+		this.detail_expired_str = detail_expired_str;
 	}
 	
 }

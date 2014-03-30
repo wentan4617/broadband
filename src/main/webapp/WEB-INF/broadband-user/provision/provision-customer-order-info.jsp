@@ -2,6 +2,14 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
+<style>
+<!--
+	#provision-customer-order-info-modal .form-group {
+		margin-bottom:6px;
+	}
+-->
+</style>
+
 <div class="modal fade" id="provision-customer-order-info-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" style="width:1200px;">
 		<div class="modal-content">
@@ -67,13 +75,13 @@
 								  	<div class="form-group">
 								    	<label class="col-sm-4 control-label">Status:</label>
 								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_status"></p>
+								      		<p class="form-control-static"><strong id="c_status"></strong></p>
 								    	</div>
 								  	</div>
 								  	<div class="form-group">
 								    	<label class="col-sm-4 control-label">Register Date:</label>
 								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_register_date"></p>
+								      		<p class="form-control-static"><strong id="c_register_date"></strong></p>
 								    	</div>
 								  	</div>
 								</form>
@@ -125,88 +133,100 @@
 					var html = "";
 					
 					html += '<div class="panel panel-default">';
-					html += '<div class="panel-heading">';
-					html += '<h3 class="panel-title">';
-					html += 'Order Serial: <span class="text-danger">' + customerOrder.id + '</span>';
-					html += '<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-					html += '</h3>';
+					html += '	<div class="panel-heading">';
+					html += '	<h3 class="panel-title">';
+					html += '		Order Serial: <span class="text-success"><strong>' + customerOrder.id + '</strong></span>';
+					html += '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
+					html += '	</h3>';
 					html += '</div>';
 					html += '<div class="panel-body">';
 					html += '<form class="form-horizontal" role="form">';
-					html += '<h4>Order Basic Information</h4>';
-					html += '<hr/>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-2 control-label">Price:</label>';
-					html += '<div class="col-sm-2">';
-					html += '<p class="form-control-static">$ ' + (customerOrder.order_total_price||"") + '</p>';
-					html += '</div>';
-					html += '<label class="col-sm-4 control-label">Create Date:</label>';
-					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static">' + customerOrder.order_create_date_str + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-2 control-label">Status:</label>';
-					html += '<div class="col-sm-2">';
-					html += '<p class="form-control-static text-danger">' + customerOrder.order_status + '</p>';
-					html += '</div>';
-					html += '<label class="col-sm-4 control-label">Service Givening Date:</label>';
-					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static">' + customerOrder.order_using_start_str + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-8 control-label">Next Invoice Create Date:</label>';
-					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static">' + customerOrder.next_invoice_create_date_str + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-8 control-label">Order Broadband Type:</label>';
-					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static">' + customerOrder.order_broadband_type + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-8 control-label">Hardware needs to be sent:</label>';
-					html += '<div class="col-sm-3">';
-					html += '<p class="form-control-static" id="hardware_post_' + customerOrder.id + '">' + (customerOrder.hardware_post||0) + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-2 control-label">SVLan:</label>';
-					html += '<div class="col-sm-4">';
-					html += '<p class="form-control-static">' + (customerOrder.svlan||"") + '</p>';
-					html += '</div>';
-					html += '<label class="col-sm-1 control-label">CVLan:</label>';
-					html += '<div class="col-sm-4">';
-					html += '<p class="form-control-static">' + (customerOrder.cvlan||"") + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-5 control-label">Transition Provider Name:</label>';
-					html += '<div class="col-sm-6">';
-					html += '<p class="form-control-static">' + customerOrder.transition_provider_name + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-5 control-label">Transition Account Holder Name:</label>';
-					html += '<div class="col-sm-6">';
-					html += '<p class="form-control-static">' + customerOrder.transition_account_holder_name + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-5 control-label">Transition Account Number:</label>';
-					html += '<div class="col-sm-6">';
-					html += '<p class="form-control-static">' + customerOrder.transition_account_number + '</p>';
-					html += '</div>';
-					html += '</div>';
-					html += '<div class="form-group">';
-					html += '<label class="col-sm-5 control-label">Transition Porting Number :</label>';
-					html += '<div class="col-sm-6">';
-					html += '<p class="form-control-static">' + customerOrder.transition_porting_number  + '</p>';
-					html += '</div>';
-					html += '</div>';
+					html += '	<h4 class="text-success"><strong>Order Information</strong></h4>';
+					html += '	<hr/>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Hardware needs to be sent:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static" id="hardware_post_' + customerOrder.id + '">' + (customerOrder.hardware_post||0) + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Create Date:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>' + customerOrder.order_create_date_str + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Status:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static text-danger"><strong>' + customerOrder.order_status + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Type:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.order_type + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Broadband Type:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.order_broadband_type + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Total Price:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>$ ' + (customerOrder.order_total_price||"") + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Due:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_due||"") + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order PSTN Amount:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_pstn_count||"") + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order PSTN Rental Amount:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_pstn_rental_amount||"") + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Order Term Period:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_term_period||"") + '</strong></p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Transition Provider Name:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.transition_provider_name + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Transition Account Holder Name:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.transition_account_holder_name + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Transition Account Number:</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.transition_account_number + '</p>';
+					html += '		</div>';
+					html += '	</div>';
+					html += '	<div class="form-group">';
+					html += '		<label class="col-sm-6 control-label">Transition Porting Number :</label>';
+					html += '		<div class="col-sm-6">';
+					html += '			<p class="form-control-static">' + customerOrder.transition_porting_number  + '</p>';
+					html += '		</div>';
+					html += '	</div>';
 					html += '</form>';
 					
 					var detailHtml = "";
@@ -221,12 +241,13 @@
 					detailHtml += '<tr>';
 					detailHtml += '<th>Detail name</th>';
 					detailHtml += '<th>Detail type</th>';
+					detailHtml += '<th>Plan Type</th>';
+					detailHtml += '<th>Plan Sort</th>';
+					detailHtml += '<th>Plan Status</th>';
 					detailHtml += '<th>Data flow</th>';
-					detailHtml += '<th>Status</th>';
-					detailHtml += '<th>Type</th>';
-					detailHtml += '<th>Sort</th>';
+					detailHtml += '<th>Detail Price</th>';
 					detailHtml += '<th>Unit</th>';
-					detailHtml += '<th>Price</th>';
+					detailHtml += '<th>Expired</th>';
 					detailHtml += '<th>&nbsp;</th>';
 					detailHtml += '</tr>';
 					detailHtml += '</thead>';
@@ -246,12 +267,13 @@
 						detailHtml += '>';
 						detailHtml += '<td>' + customerOrderDetail.detail_name + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_type || ' ') + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow || ' ') + '</td>';
-						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status || ' ') + '</strong></td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_plan_type || ' ') + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort || ' ') + '</td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_unit || ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status || ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow || ' ') + '</td>';
 						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price || ' ') + '</strong></td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_unit || ' ') + '</td>';
+						detailHtml += '<td><strong>' + (customerOrderDetail.detail_expired_str || ' ') + '</strong></td>';
 						detailHtml += '<td>';
 						if (customerOrderDetail.detail_type.indexOf('hardware-') > -1) {
 							detailHtml += '<a href="javascript:void(0);" data-name="show_comment_trackcode" data-id="' + customerOrderDetail.id + '"';
