@@ -7,9 +7,13 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.4 2014-03-31
+
+* VoIP信息
+
 demand version 1.0.4 2014-03-28
 
-* 修改provision的order层显示，压缩customer信息，order信息排版和customer里的一致，order detail显示字段和customer里一致但多一个操作列(steven)
+* [修改provision的order层显示，压缩customer信息，order信息排版和customer里的一致，order detail显示字段和customer里一致但多一个操作列](steven)
 * [user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看](steven)
 * [把后台登入换成ajax](kanny)
 * 把plan，hareware功能换成ajax
@@ -22,9 +26,9 @@ demand version 1.0.4 2014-03-27
 * [屏蔽下一次自动生成账单的函数，用createInvoicePDF测试，是否可以代替](steven)
 * [添加删除discount按钮的提示，提示信息为remove](steven)
 * [修改service given 的 edit bug](steven)
-* 给customer order detial，的order due,添加一个，日历input(steven)
-* 给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录(steven)
-* 修正后台创建用户下单时一些detail没有显示price和unit值的问题，price为null则0d，unit为null则1(steven)
+* [给customer order detial，的order due,添加一个，日历input，不要忘了插入provision记录](steven)
+* [给customer order detial，的order status，添加一个，下拉选择框，这样管理员就可以某一张订单的状态，不要忘了插入provision记录](steven)
+* [修正后台创建用户下单时一些detail没有显示price和unit值的问题，price为null则0d，unit为null则1](steven)
 
 demand version 1.0.3 2014-03-24
 

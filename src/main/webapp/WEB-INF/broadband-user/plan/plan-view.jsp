@@ -15,28 +15,28 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Plan View&nbsp;
 						<select id="select_operations" class="selectpicker">
-						    <option>Operations</option>
-						    <optgroup label="DELETE">
+							<option style="font-size:16px;">Multiple Operations</option>
+						    <optgroup label="Essential Operations">
 						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Group">
-						    	<option value="plan-topup" data-type="plan-group">Plan Topup</option>
-						      	<option value="plan-no-term" data-type="plan-group">Plan No Term</option>
-						      	<option value="plan-term" data-type="plan-group">Plan Term</option>
+						    	<option value="plan-topup" data-type="plan-group">To Plan Topup</option>
+						      	<option value="plan-no-term" data-type="plan-group">To Plan No Term</option>
+						      	<option value="plan-term" data-type="plan-group">To Plan Term</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Type">
-						    	<option value="ADSL" data-type="plan-type">ADSL</option>
-						      	<option value="VDSL" data-type="plan-type">VDSL</option>
-						      	<option value="UFB" data-type="plan-type">UFB</option>
+						    	<option value="ADSL" data-type="plan-type">To ADSL</option>
+						      	<option value="VDSL" data-type="plan-type">To VDSL</option>
+						      	<option value="UFB" data-type="plan-type">To UFB</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Sort">
-						    	<option value="NAKED" data-type="plan-sort">NAKED</option>
-						      	<option value="NON-NAKED" data-type="plan-sort">NON NAKED</option>
+						    	<option value="NAKED" data-type="plan-sort">To NAKED</option>
+						      	<option value="NON-NAKED" data-type="plan-sort">To NON NAKED</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Status">
-						    	<option value="active" data-type="plan-status">Active</option>
-						      	<option value="selling" data-type="plan-status">Selling</option>
-						      	<option value="disable" data-type="plan-status">Disable</option>
+						    	<option value="active" data-type="plan-status">To Active</option>
+						      	<option value="selling" data-type="plan-status">To Selling</option>
+						      	<option value="disable" data-type="plan-status">To Disable</option>
 						    </optgroup>
 						</select>
 					</h4>
@@ -151,13 +151,6 @@
 			$('#planForm').submit();
 		}
 	});
-	
-
-/* 	change_plan_group
-	change_plan_sort
-	change_plan_type
-	change_plan_status */
-	
 	
 })(jQuery);
 </script>
