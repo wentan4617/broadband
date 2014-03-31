@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tm.broadband.model.JSONBean;
@@ -30,6 +31,30 @@ public class SystemRestController {
 		this.systemService = systemService;
 	}
 	
-	
+	@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
+	public JSONBean<User> userLogin(
+			@Validated(UserLoginValidatedMark.class) User user, BindingResult result,
+			HttpServletRequest req) {
+		
+		JSONBean<User> json = new JSONBean<User>();
+		json.setModel(user);
+
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+
+		User userSession = this.systemService.queryUserLogin(user);
+
+		if (userSession == null) {
+			json.getErrorMap().put("alert-error", "Incorrect account or password");
+			return json;
+		}
+		
+		req.getSession().setAttribute("userSession", userSession);
+		json.setUrl("/broadband-user/index/redirect");
+
+		return json;
+	}
 
 }

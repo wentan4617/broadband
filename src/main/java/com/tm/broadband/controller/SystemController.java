@@ -85,32 +85,7 @@ public class SystemController {
 		return "redirect:/broadband-user/index";
 	}*/
 	
-	@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
-	@ResponseBody
-	public JSONBean<User> userLogin(
-			@Validated(UserLoginValidatedMark.class) User user, BindingResult result,
-			HttpServletRequest req) {
-		
-		JSONBean<User> json = new JSONBean<User>();
-		json.setModel(user);
-
-		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
-			return json;
-		}
-
-		User userSession = this.systemService.queryUserLogin(user);
-
-		if (userSession == null) {
-			json.getErrorMap().put("alert-error", "Incorrect account or password");
-			return json;
-		}
-		
-		req.getSession().setAttribute("userSession", userSession);
-		json.setUrl("/broadband-user/index/redirect");
-
-		return json;
-	}
+	
 	
 	@RequestMapping("/broadband-user/index/redirect")
 	public String redirectIndex(RedirectAttributes attr) {
