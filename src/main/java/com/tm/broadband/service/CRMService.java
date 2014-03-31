@@ -511,7 +511,7 @@ public class CRMService {
 		List<CustomerOrder> customerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
 
 		for (CustomerOrder customerOrder : customerOrders) {
-			
+			//System.out.println(customerOrder.getId() + ":" + customerOrder.getNext_invoice_create_date());
 			createInvoicePDFBoth(customerOrder,notificationEmail,notificationSMS, true);	// true : next invoice
 		}
 	}
@@ -573,6 +573,7 @@ public class CRMService {
 						? customerOrder.getOrder_using_start() 
 						: new Date()) 
 				: customerOrder.getNext_invoice_create_date();
+		
 		// set invoice due date begin
 		int invoiceDueDay = 10;
 		Calendar calInvoiceDueDay = Calendar.getInstance();
