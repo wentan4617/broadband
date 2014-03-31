@@ -127,6 +127,7 @@
 									<div class="col-md-6">&nbsp;</div>
 								</div>
 								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
 									<div class="col-md-6">
 										<select data-name="${customerOrder.id}_order_status_selector" data-val="${customerOrder.order_status}" class="form-control input-sm">
 											<c:forEach var="status" items="paid,pending,ordering-paid,ordering-pending,using,cancel,discard">
@@ -138,7 +139,6 @@
 											</c:forEach>
 										</select>
 									</div>
-									<label class="control-label col-md-6">&nbsp;</label>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-6">&nbsp;</label>
@@ -153,13 +153,13 @@
 									<div class="col-md-6">&nbsp;</div>
 								</div>
 								<div class="form-group">
+									<label class="control-label col-md-6">&nbsp;</label>
 									<div class="col-md-6">
 										<div class="input-group date" id="${customerOrder.id}_order_due_datepicker">
 											<strong><input data-val="${customerOrder.order_due_str}" data-name="${customerOrder.id}_order_due_input" class="form-control input-sm" placeholder="Order Due Date"/></strong>
 											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 										</div>
 									</div>
-									<label class="control-label col-md-6">&nbsp;</label>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-6">&nbsp;</label>
@@ -221,13 +221,13 @@
 									<div class="col-md-6"></div>
 								</div>
 								<div class="form-group">
-									<label for="pppoe_loginname" class="control-label col-md-6">PPPoE Login Name</label>
+									<label for="pppoe_loginname" class="control-label col-md-6"><!-- PPPoE Login Name --></label>
 									<div class="col-md-6">
 										<input id="${customerOrder.id}_pppoe_loginname_input" class="form-control input-sm" placeholder="PPPoE Login Name"/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="pppoe_password" class="control-label col-md-6">PPPoE Password</label>
+									<label for="pppoe_password" class="control-label col-md-6"><!-- PPPoE Password --></label>
 									<div class="col-md-6">
 										<input id="${customerOrder.id}_pppoe_password_input" class="form-control input-sm" placeholder="PPPoE Password"/>
 									</div>
@@ -285,26 +285,26 @@
 									<div class="col-md-6"></div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-6">Service Giving Date</label>
-									<div class="col-md-6">
-										<div class="input-group date" id="${customerOrder.id}_order_using_start_datepicker">
-											<strong><input id="${customerOrder.id}" data-val="${customerOrder.order_using_start_str}" data-name="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Order Using Start Date"/></strong>
-											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="control-label col-md-6">SVLan</label>
+									<label class="control-label col-md-6"><!-- SVLan --></label>
 									<div class="col-md-6">
 										<input id="${customerOrder.id}_svlan_input" class="form-control input-sm"
 											placeholder="SVLan" value="1"/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-6">CVLan</label>
+									<label class="control-label col-md-6"><!-- CVLan --></label>
 									<div class="col-md-6">
 										<input id="${customerOrder.id}_cvlan_input" class="form-control input-sm"
 											placeholder="CVLan" value="1"/>
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6"><!-- Service Giving Date --></label>
+									<div class="col-md-6">
+										<div class="input-group date" id="${customerOrder.id}_order_using_start_datepicker">
+											<strong><input id="${customerOrder.id}" data-val="${customerOrder.order_using_start_str}" data-name="${customerOrder.id}_order_using_start_input" class="form-control input-sm" placeholder="Order Using Start Date"/></strong>
+											<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+										</div>
 									</div>
 								</div>
 								<div class="form-group">
