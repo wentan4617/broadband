@@ -35,7 +35,9 @@ public class CustomerCreateInvoicePDFEachMonth {
         // generate that invoice into PDF form
         //  new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13")
         customerOrder.getParams().put("next_invoice_create_date", new Date());
-        customerOrder.getParams().put("order_type", "order-no-term"); 
+        customerOrder.getParams().put("order_type_no_term", "order-no-term"); 
+        customerOrder.getParams().put("order_type_term", "order-term"); 
+        customerOrder.getParams().put("where", "query_term_or_no_term"); 
         
         // call Service Method
 		crmService.createNextInvoice(customerOrder);
