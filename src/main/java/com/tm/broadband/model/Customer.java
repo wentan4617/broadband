@@ -59,6 +59,11 @@ public class Customer implements Serializable {
 	private Date register_date;
 	private Date active_date;
 	private Double balance;
+	private String title;
+	private Date birth;
+	private String driver_licence;
+	private String passport;
+	private String country;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -340,6 +345,46 @@ public class Customer implements Serializable {
 
 	public void setCustomerInvoice(CustomerInvoice customerInvoice) {
 		this.customerInvoice = customerInvoice;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public Date getBirth() {
+		return birth;
+	}
+
+	public void setBirth(Date birth) {
+		this.birth = birth;
+	}
+
+	public String getDriver_licence() {
+		return driver_licence;
+	}
+
+	public void setDriver_licence(String driver_licence) {
+		this.driver_licence = driver_licence;
+	}
+
+	public String getPassport() {
+		return passport;
+	}
+
+	public void setPassport(String passport) {
+		this.passport = passport;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 	
 	

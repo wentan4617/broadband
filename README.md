@@ -9,9 +9,9 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.4 2014-04-02
 
-* customer 加字段
-* customerOrder 加字段
-* 
+* [customer 加字段](kanny)
+* [customerOrder 加字段](kanny)
+* [添加customer credit表](kanny)
 
 demand version 1.0.4 2014-03-31
 
