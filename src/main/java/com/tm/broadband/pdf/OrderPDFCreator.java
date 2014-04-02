@@ -5,13 +5,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -20,61 +20,81 @@ import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
-public class OrderPDFCreator {
+public class OrderPDFCreator extends ITextUtils {
 	private Customer customer;
 	private CustomerOrder customerOrder;
-	private Font arial_normal_8;
 	private Font arial_normal_10;
-	private Font arial_normal_20;
-	private Font arial_lightblue_8;
-	private Font arial_darkblue_8;
-	private Font arial_white_bold_12;
+	private Font arial_colored_normal_11;
+	private Font arial_colored_bold_11;
+	private Font arial_bold_10;
+	private Font arial_bold_12;
+	private Font arial_bold_23;
 	private Font arial_brown_bold_10;
-	private Font verdana_bold_8;
-	private Font verdana_bold_9;
-	private BaseColor titleBGColor = new BaseColor(92,184,92);
-	
+	private BaseColor titleBGColor = new BaseColor(220,221,221);
+	private BaseColor titleBorderColor = new BaseColor(159,159,159);
+
+	// BEGIN Temporary Variables
+	// BEGIN Currency Related Variables
 	private Double totalPrice = 0d;
 	private Double beforeGSTPrice = 0d;
 	private Double gst15 = 0d;
-	
-	// 15% as default
+	// 15% GST as default
 	private String gstRate = "1.15";
+	// END Currency Related Variables
+	
+	// BEGIN Order Detail Differentiations Variables
+	List<CustomerOrderDetail> codPlans = new ArrayList<CustomerOrderDetail>();
+	List<CustomerOrderDetail> codAddOns = new ArrayList<CustomerOrderDetail>();
+	// END Order Detail Differentiations Variables
+	// END Temporary Variables
+	
 	
 	public OrderPDFCreator(){
 		try {
-			BaseFont bf_arial_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_8 = new Font(bf_arial_normal_8, 8, Font.NORMAL);
 			BaseFont bf_arial_normal_10 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_10 = new Font(bf_arial_normal_10, 10, Font.NORMAL);
-			BaseFont bf_arial_normal_20 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_20 = new Font(bf_arial_normal_20, 20, Font.NORMAL);
-			BaseFont bf_arial_darkblue_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_darkblue_8 = new Font(bf_arial_darkblue_8, 8, Font.NORMAL, new BaseColor(49,112,143));
-			BaseFont bf_arial_lightblue_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_lightblue_8 = new Font(bf_arial_lightblue_8, 8, Font.NORMAL, new BaseColor(66,139,205));
-			BaseFont bf_arial_white_bold_12 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_white_bold_12 = new Font(bf_arial_white_bold_12, 12, Font.BOLD, BaseColor.WHITE);
+			BaseFont bf_arial_colored_normal_11 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			this.arial_colored_normal_11 = new Font(bf_arial_colored_normal_11, 11, Font.NORMAL, new BaseColor(61,184,185));
+			BaseFont bf_arial_colored_bold_11 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			this.arial_colored_bold_11 = new Font(bf_arial_colored_bold_11, 11, Font.NORMAL, new BaseColor(61,184,185));
+			BaseFont bf_arial_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			this.arial_bold_10 = new Font(bf_arial_bold_10, 10, Font.NORMAL);
+			BaseFont bf_arial_bold_12 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			this.arial_bold_12 = new Font(bf_arial_bold_12, 12);
+			BaseFont bf_arial_bold_23 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
+			this.arial_bold_23 = new Font(bf_arial_bold_23, 23, Font.NORMAL, new BaseColor(61,184,185));
 			BaseFont bf_arial_brown__bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_brown_bold_10 = new Font(bf_arial_brown__bold_10, 10, Font.BOLD, new BaseColor(60,118,61));
-			BaseFont bf_verdana_bold_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_8 = new Font(bf_verdana_bold_8, 8, Font.BOLD);
-			BaseFont bf_verdana_bold_9 = BaseFont.createFont("pdf"+File.separator+"font-family/Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_9 = new Font(bf_verdana_bold_9, 9, Font.BOLD);
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+
 	}
 	
 	public OrderPDFCreator(Customer customer, CustomerOrder customerOrder){
 		this();
-		this.customer = customer;
-		this.customerOrder = customerOrder;
+		this.setCustomer(customer);
+		this.setCustomerOrder(customerOrder);
 	}
 	
 	public void create() throws DocumentException, IOException{
+		
+		// DIFFERENTIATES ORDER DETAILS
+		if(this.getCustomerOrder().getCustomerOrderDetails().size()>0){
+			List<CustomerOrderDetail> cods = this.getCustomerOrder().getCustomerOrderDetails();
+			for (CustomerOrderDetail  cod: cods) {
+				if(cod.getDetail_type().contains("plan-term")){
+					// SAVE PLAN
+					codPlans.add(cod);
+				} else {
+					// SAVE ADD ON
+					codAddOns.add(cod);
+				}
+			}
+		}
 		
         Document document = new Document();
 		
@@ -99,31 +119,44 @@ public class OrderPDFCreator {
 //      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(inputFile));
         // END If Merge PDF First Part
         
-		// final PDF
+		// Output PDF Path
 		String outputFile = TMUtils.createPath("broadband" + File.separator
 				+ "customers" + File.separator + customer.getId()
 				+ File.separator + "Order-" + customerOrder.getId()
 				+ ".pdf");
         
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+        
+        // OPEN DOCUMENT
         document.open();
-        // set personal info table
-        try {
-			document.add(createPersonalInfoTable(writer));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+        
+    	// company_logo
+    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 108.75F, 51.00000000000001F, 32F, 762F);
+    	
+    	// two-dimensional_code
+    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"two-dimensional_code.png", 52.50000000000001F, 52.50000000000001F, 506F, 24F);
+
+        // set order PDF title table
+		document.add(createOrderPDFTitleTable());
+    	
+        // set customer(personal or business) basic info table
+		document.add(createCustomerOrderBasicInfoTable());
+		
+        // set customer(personal or business) info table
+		document.add(createCustomerInfoTable(writer));
+        
         // set order detail table
 		document.add(createOrderDetailTable());
 		
+		// second page
         document.newPage();
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"term_and_condition.jpg");
-		logo.scaleAbsolute(596f, 840f);
-		logo.setAbsolutePosition(0, 0);
-		writer.getDirectContent().addImage(logo);
+        
+        // term_condition
+        addImage(writer, "pdf"+File.separator+"img"+File.separator+"term_and_condition.jpg", 596F, 840F, 0F, 0F);
         
 		// CLOSE DOCUMENT
         document.close();
+		// CLOSE WRITER
         writer.close();
 
         // BEGIN If Merge PDF Second Part
@@ -131,87 +164,181 @@ public class OrderPDFCreator {
         // END If Merge PDF Second Part
 	}
 	
-    public PdfPTable createPersonalInfoTable(PdfWriter writer) throws MalformedURLException, IOException, DocumentException {
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
-		logo.scaleAbsolute(171f, 45f);
-		logo.setAbsolutePosition(41, 760);
-		writer.getDirectContent().addImage(logo);
+	public PdfPTable createOrderPDFTitleTable(){
 		
-        PdfPTable personalInfoTable = new PdfPTable(8);
-        personalInfoTable.setWidthPercentage(98);
-        // set cells
-        PdfPCell personalInfoTitleCell = new PdfPCell(new Phrase(""));
-        personalInfoTitleCell.setColspan(8);
-        personalInfoTitleCell.setBorder(0);
-        personalInfoTitleCell.setFixedHeight(20F);
-        personalInfoTable.addCell(personalInfoTitleCell);
-        personalInfoTitleCell = new PdfPCell(new Phrase("Broadband Application Confirmation", arial_normal_20));
-        personalInfoTitleCell.setColspan(8);
-        personalInfoTitleCell.setBorder(PdfPCell.BOTTOM);
-        personalInfoTitleCell.setPaddingBottom(6F);
-        personalInfoTitleCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
-        personalInfoTable.addCell(personalInfoTitleCell);
-        // BEGIN title seperator
-        personalInfoTitleCell = new PdfPCell(new Phrase(" "));
-        personalInfoTitleCell.setColspan(10);
-        personalInfoTitleCell.setBorder(0);
-        personalInfoTitleCell.setFixedHeight(40F);
-        personalInfoTable.addCell(personalInfoTitleCell);
-        // END title seperator
-        // BEGIN title bar
-        personalInfoTitleCell = new PdfPCell(new Phrase("Personal Information", arial_white_bold_12));
-        personalInfoTitleCell.setColspan(10);
-        personalInfoTitleCell.setBorder(0);
-        personalInfoTitleCell.setFixedHeight(18F);
-        personalInfoTitleCell.setIndent(10F);
-        personalInfoTitleCell.setBackgroundColor(titleBGColor);
-        personalInfoTable.addCell(personalInfoTitleCell);
-        // END title bar
-        /**
-         * BEGIN First Row
-         */
-        // BEGIN Login Name
-        PdfPCell personalInfoContentCell = new PdfPCell(new Phrase(this.customer.getLogin_name(), arial_darkblue_8));
-        personalInfoContentCell.setColspan(4);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setIndent(20F);
-        personalInfoContentCell.setPaddingTop(20F);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Login Name
-        // BEGIN Order Date
-        personalInfoContentCell = new PdfPCell(new Phrase("Order Date : ", verdana_bold_8));
-        personalInfoContentCell.setColspan(2);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setPaddingTop(20F);
-        personalInfoContentCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
-        personalInfoTable.addCell(personalInfoContentCell);
-        personalInfoContentCell = new PdfPCell(new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerOrder.getOrder_create_date()), arial_darkblue_8));
-        personalInfoContentCell.setColspan(2);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setPaddingTop(20F);
-        personalInfoContentCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Order Date
-        /**
-         * END First Row
-         */
-        /**
-         * BEGIN Second Row
-         */
-        // BEGIN First&Last Name
-        personalInfoContentCell = new PdfPCell(new Phrase(this.customer.getFirst_name()+" "+this.customer.getLast_name(), arial_darkblue_8));
-        personalInfoContentCell.setColspan(4);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setIndent(20F);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END First&Last Name
+        PdfPTable orderPDFTitleTable = new PdfPTable(14);
+        orderPDFTitleTable.setWidthPercentage(102);
+    	
+    	// BEGIN ORDER CONFIRMATION AREA START PADDING TOP
+        addEmptyRow(orderPDFTitleTable, 1F, 14);
+    	// END ORDER CONFIRMATION AREA START PADDING TOP
+
+        // BEGIN ORDER CONFIRMATION TITLE
+        addPDFTitle(orderPDFTitleTable, "BROADBAND APPLICATION", arial_bold_23, 4F, 0, PdfPCell.ALIGN_RIGHT, 14);
+        addPDFTitle(orderPDFTitleTable, "CONFIRMATION", arial_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
+        // END ORDER CONFIRMATION TITLE
         
-        // Increase totalPrice
-        List<CustomerOrderDetail> cods = this.customerOrder.getCustomerOrderDetails();
-        for (CustomerOrderDetail cod : cods) {
-            BigDecimal price = new BigDecimal(cod.getDetail_price());
-            BigDecimal unit = new BigDecimal(cod.getDetail_unit());
-            totalPrice += price.multiply(unit).doubleValue();
+		return orderPDFTitleTable;
+	}
+	
+	public PdfPTable createCustomerOrderBasicInfoTable(){
+		
+        PdfPTable customerBasicInfoTable = new PdfPTable(14);
+        customerBasicInfoTable.setWidthPercentage(102);
+    	
+    	// BEGIN ORDER CONFIRMATION AREA START PADDING TOP
+        addEmptyRow(customerBasicInfoTable, 10F, 14);
+    	// END ORDER CONFIRMATION AREA START PADDING TOP
+        
+        // BEGIN CUSTOMER BASIC INFORMATION
+        PdfPCell customerBasicInfoCell = new PdfPCell(new Phrase(this.getCustomer().getTitle()+" "+this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), arial_colored_normal_11));
+        customerBasicInfoCell.setColspan(10);
+        customerBasicInfoCell.setBorder(0);
+        customerBasicInfoCell.setIndent(10F);
+        customerBasicInfoTable.addCell(customerBasicInfoCell);
+        customerBasicInfoCell = new PdfPCell(new Phrase("No.", arial_colored_bold_11));
+        customerBasicInfoCell.setColspan(2);
+        customerBasicInfoCell.setBorder(0);
+        customerBasicInfoTable.addCell(customerBasicInfoCell);
+        customerBasicInfoCell = new PdfPCell(new Phrase(String.valueOf(this.getCustomerOrder().getId()), arial_colored_normal_11));
+        customerBasicInfoCell.setColspan(2);
+        customerBasicInfoCell.setBorder(0);
+        customerBasicInfoTable.addCell(customerBasicInfoCell);
+        // END CUSTOMER BASIC INFORMATION
+        
+        return customerBasicInfoTable;
+	}
+	
+    public PdfPTable createCustomerInfoTable(PdfWriter writer) throws MalformedURLException, IOException, DocumentException {
+        
+        PdfPTable customerInfoTable = new PdfPTable(10);
+        customerInfoTable.setWidthPercentage(102);
+    	
+    	// BEGIN CUSTOMER INFO AREA START PADDING TOP
+        addEmptyRow(customerInfoTable, 0F, 10);
+    	// END CUSTOMER INFO AREA START PADDING TOP
+
+        if(this.getCustomer().getCustomer_type().equals("personal")){
+            // BEGIN TITLE BAR
+        	addTitleBar(customerInfoTable, "PERSONAL INFORMATION", arial_bold_12, titleBGColor, titleBorderColor, 10);
+            // END TITLE BAR
+        } else if(this.getCustomer().getCustomer_type().equals("business")){
+            // BEGIN TITLE BAR
+        	addTitleBar(customerInfoTable, "BUSINESS INFORMATION", arial_bold_12, titleBGColor, titleBorderColor, 10);
+            // END TITLE BAR
+        }
+
+    	// BEGIN DISTANCE BETWEEN CUSTOMER TABLE TITLE AND ROW
+        addEmptyRow(customerInfoTable, 16F, 10);
+    	// END DISTANCE BETWEEN CUSTOMER TABLE TITLE AND ROW
+        
+        // BEGIN PARAMETERS
+        Float infoRowPaddingTop = 2F;
+        // END PARAMETERS
+        
+        // BEGIN CUSTOMER(PERSONAL OR BUSINESS) INFO ROWS
+        if(this.getCustomer().getCustomer_type().equals("personal")){
+        	
+            // BEGIN PERSONAL INFO ROWS
+            addCustomerRow(customerInfoTable, "Phone", this.getCustomer().getPhone(), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Mobile", this.getCustomer().getCellphone(), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Email", this.getCustomer().getEmail(), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Date of Birth", TMUtils.dateFormatYYYYMMDD(this.getCustomer().getBirth()), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Driver License No.", this.getCustomer().getDriver_licence(), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Passport No.", this.getCustomer().getPassport(), infoRowPaddingTop);
+            addCustomerRow(customerInfoTable, "Passport Country or Origin", this.getCustomer().getCountry(), infoRowPaddingTop);
+            // END PERSONAL INFO ROWS
+            
+        } else if(this.getCustomer().getCustomer_type().equals("business")){
+            // BEGIN BUSINESS CUSTOMER
+        	
+        	
+
+            // END BUSINESS CUSTOMER
+        }
+        // END CUSTOMER(PERSONAL OR BUSINESS) INFO ROWS
+
+    	// BEGIN CUSTOMER INFO AREA ENDING PADDING BOTTOM
+        addEmptyRow(customerInfoTable, 26F, 10);
+    	// END CUSTOMER INFO AREA ENDING PADDING BOTTOM
+        
+        return customerInfoTable;
+    }
+    
+    public PdfPTable createOrderDetailTable(){
+        PdfPTable orderDetailTable = new PdfPTable(10);
+        orderDetailTable.setWidthPercentage(102);
+        
+        // BEGIN TITLE BAR
+        addTitleBar(orderDetailTable, "ORDER DETAIL LIST", arial_bold_12, titleBGColor, titleBorderColor, 10);
+        // END TITLE BAR
+        
+    	// BEGIN DISTANCE TO TOP
+        addEmptyRow(orderDetailTable, 16F, 10);
+    	// END DISTANCE TO TOP
+        
+        // BEGIN INITIAL PARAMETERS
+        Float titelIndent = 8F;
+        // END INITIAL PARAMETERS
+
+        // BEGIN DETAIL TABLE TITLE
+        addCell(orderDetailTable, "Service / Product", 6, titelIndent, arial_bold_10);
+        addCell(orderDetailTable, "Unit Price", 2, titelIndent, arial_bold_10);
+        addCell(orderDetailTable, "Qty", 1, titelIndent, arial_bold_10);
+        addCell(orderDetailTable, "Subtotal", 1, titelIndent, arial_bold_10);
+        // END DETAIL TABLE TITLE
+        
+        // BEGIN DETAIL CONTENT
+        Float contentPaddingTop = 4F;
+        if(this.getCodPlans().size()>0){
+            for (CustomerOrderDetail cod : this.getCodPlans()) {
+            	// BEGIN First col 4
+                PdfPCell orderDetailContentCell = new PdfPCell(new Phrase(cod.getDetail_name(),arial_normal_10));
+                orderDetailContentCell.setColspan(6);
+                orderDetailContentCell.setBorder(0);
+                orderDetailContentCell.setIndent(titelIndent);
+                orderDetailContentCell.setPaddingTop(contentPaddingTop);
+                orderDetailTable.addCell(orderDetailContentCell);
+            	// END First col 4
+            	// BEGIN Second col 2
+                orderDetailContentCell = new PdfPCell(new Phrase(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price())),arial_normal_10));
+                orderDetailContentCell.setColspan(2);
+                orderDetailContentCell.setBorder(0);
+                orderDetailContentCell.setIndent(titelIndent);
+                orderDetailContentCell.setPaddingTop(contentPaddingTop);
+                orderDetailTable.addCell(orderDetailContentCell);
+            	// END Second col 2
+            	// BEGIN Third col 2
+//                orderDetailContentCell = new PdfPCell(new Phrase(""),arial_normal_10));
+//                orderDetailTitleCell.setColspan(2);
+//                orderDetailTitleCell.setBorder(0);
+//                orderDetailTitleCell.setIndent(titelIndent);
+//                orderDetailTitleCell.setPaddingTop(contentPaddingTop);
+//                orderDetailTable.addCell(orderDetailTitleCell);
+            	// END Third col 2
+            	// BEGIN Fourth col 2
+                orderDetailContentCell = new PdfPCell(new Phrase(String.valueOf(cod.getDetail_unit()==null?0:cod.getDetail_unit()),arial_normal_10));
+                orderDetailContentCell.setColspan(1);
+                orderDetailContentCell.setBorder(0);
+                orderDetailContentCell.setIndent(titelIndent);
+                orderDetailContentCell.setPaddingTop(contentPaddingTop);
+                orderDetailTable.addCell(orderDetailContentCell);
+            	// END Fourth col 2
+            	// BEGIN Fifth col 2
+                BigDecimal price = new BigDecimal(cod.getDetail_price());
+                BigDecimal unit = new BigDecimal(cod.getDetail_unit()==null?0:cod.getDetail_unit());
+                
+                // Increase totalPrice
+                totalPrice += price.multiply(unit).doubleValue();
+                orderDetailContentCell = new PdfPCell(new Phrase(TMUtils.fillDecimal(String.valueOf(price.multiply(unit))),arial_normal_10));
+                orderDetailContentCell.setColspan(1);
+                orderDetailContentCell.setBorder(0);
+                orderDetailContentCell.setIndent(titelIndent);
+                orderDetailContentCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
+                orderDetailContentCell.setPaddingTop(contentPaddingTop);
+                orderDetailTable.addCell(orderDetailContentCell);
+            	// END Fifth col 2
+    		}
         }
         this.customerOrder.setOrder_total_price(totalPrice);
         // BEGIN transform before tax price and tax
@@ -229,192 +356,8 @@ public class OrderPDFCreator {
         beforeGSTPrice += bdBeforeGSTPrice.doubleValue();
         gst15 += bdGST15.doubleValue();
         // END assigning Area
+        // End DETAIL CONTENT
         
-        // BEGIN Total Price
-        personalInfoContentCell = new PdfPCell(new Phrase("Total Price : ", verdana_bold_8));
-        personalInfoContentCell.setColspan(2);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setPaddingTop(4F);
-        personalInfoContentCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
-        personalInfoTable.addCell(personalInfoContentCell);
-        personalInfoContentCell = new PdfPCell(new Phrase("NZD$ "+TMUtils.fillDecimal(String.valueOf(this.customerOrder.getOrder_total_price())), arial_darkblue_8));
-        personalInfoContentCell.setColspan(2);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setPaddingTop(4F);
-        personalInfoContentCell.setHorizontalAlignment(PdfPCell.ALIGN_LEFT);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Total Price
-        /**
-         * END Second Row
-         */
-        /**
-         * BEGIN Third Row
-         */
-        // BEGIN Address Name
-        personalInfoContentCell = new PdfPCell(new Phrase(this.customer.getEmail(), arial_lightblue_8));
-        personalInfoContentCell.setColspan(8);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setIndent(20F);
-        personalInfoContentCell.setPaddingTop(4F);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Address Name
-        /**
-         * END Third Row
-         */
-        /**
-         * BEGIN Fourth Row
-         */
-        // BEGIN Cellphone Name
-        personalInfoContentCell = new PdfPCell(new Phrase(this.customer.getCellphone(), arial_darkblue_8));
-        personalInfoContentCell.setColspan(8);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setIndent(20F);
-        personalInfoContentCell.setPaddingTop(4F);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Cellphone Name
-        /**
-         * END Fourth Row
-         */
-        /**
-         * BEGIN Fifth Row
-         */
-        // BEGIN Address Name
-        personalInfoContentCell = new PdfPCell(new Phrase(this.customer.getAddress(), arial_darkblue_8));
-        personalInfoContentCell.setColspan(8);
-        personalInfoContentCell.setBorder(0);
-        personalInfoContentCell.setIndent(20F);
-        personalInfoContentCell.setPaddingTop(4F);
-        personalInfoContentCell.setPaddingBottom(50F);
-        personalInfoTable.addCell(personalInfoContentCell);
-        // END Address Name
-        /**
-         * END Fifth Row
-         */
-        // END title seperator
-        // add cell to table
-        return personalInfoTable;
-    }
-    
-    public PdfPTable createOrderDetailTable(){
-        PdfPTable orderDetailTable = new PdfPTable(10);
-        orderDetailTable.setWidthPercentage(98);
-        // set cells
-        // BEGIN title seperator
-        PdfPCell orderDetailTitleCell = new PdfPCell(new Phrase("Order Detail List", arial_white_bold_12));
-        orderDetailTitleCell.setColspan(10);
-        orderDetailTitleCell.setBorder(0);
-        orderDetailTitleCell.setFixedHeight(18);
-        orderDetailTitleCell.setIndent(10F);
-        orderDetailTitleCell.setBackgroundColor(titleBGColor);
-        orderDetailTable.addCell(orderDetailTitleCell);
-        // END title seperator
-        /**
-         * BEGIN detail title
-         */
-        // BEGIN params
-        Float titelPaddingTop = 20F;
-        Float titelPaddingBottom = 10F;
-        Float titelIndent = 10F;
-        // END params
-        // BEGIN First col 4
-        orderDetailTitleCell = new PdfPCell(new Phrase("Service / Product", verdana_bold_8));
-        orderDetailTitleCell.setColspan(6);
-        orderDetailTitleCell.setBorder(0);
-        orderDetailTitleCell.setIndent(titelIndent);
-        orderDetailTitleCell.setPaddingTop(titelPaddingTop);
-        orderDetailTitleCell.setPaddingBottom(titelPaddingBottom);
-        orderDetailTable.addCell(orderDetailTitleCell);
-        // END First col 4
-        // BEGIN Second col 2
-        orderDetailTitleCell = new PdfPCell(new Phrase("Unit Price", verdana_bold_8));
-        orderDetailTitleCell.setColspan(2);
-        orderDetailTitleCell.setBorder(0);
-        orderDetailTitleCell.setIndent(titelIndent);
-        orderDetailTitleCell.setPaddingTop(titelPaddingTop);
-        orderDetailTitleCell.setPaddingBottom(titelPaddingBottom);
-        orderDetailTable.addCell(orderDetailTitleCell);
-        // END Second col 2
-        // BEGIN Third col 2
-//        orderDetailTitleCell = new PdfPCell(new Phrase("Discount", arial_51_51_51_bold_10));
-//        orderDetailTitleCell.setColspan(2);
-//        orderDetailTitleCell.setBorder(0);
-//        orderDetailTitleCell.setIndent(titelIndent);
-//        orderDetailTitleCell.setPaddingTop(titelPaddingTop);
-//        orderDetailTable.addCell(orderDetailTitleCell);
-        // END Third col 2
-        // BEGIN Fourth col 2
-        orderDetailTitleCell = new PdfPCell(new Phrase("Qty", verdana_bold_8));
-        orderDetailTitleCell.setColspan(1);
-        orderDetailTitleCell.setBorder(0);
-        orderDetailTitleCell.setPaddingTop(titelPaddingTop);
-        orderDetailTitleCell.setPaddingBottom(titelPaddingBottom);
-        orderDetailTable.addCell(orderDetailTitleCell);
-        // END Fourth col 2
-        // BEGIN Fifth col 2
-        orderDetailTitleCell = new PdfPCell(new Phrase("Subtotal", verdana_bold_8));
-        orderDetailTitleCell.setColspan(1);
-        orderDetailTitleCell.setBorder(0);
-        orderDetailTitleCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
-        orderDetailTitleCell.setPaddingTop(titelPaddingTop);
-        orderDetailTitleCell.setPaddingBottom(titelPaddingBottom);
-        orderDetailTable.addCell(orderDetailTitleCell);
-        // END Fifth col 2
-        /**
-         * END detail title
-         */
-        /**
-         * BEGIN Detail Content
-         */
-        Float contentPaddingTop = 4F;
-        List<CustomerOrderDetail> cods = this.customerOrder.getCustomerOrderDetails();
-        for (CustomerOrderDetail cod : cods) {
-        	// BEGIN First col 4
-            PdfPCell orderDetailContentCell = new PdfPCell(new Phrase(cod.getDetail_name(),arial_normal_8));
-            orderDetailContentCell.setColspan(6);
-            orderDetailContentCell.setBorder(0);
-            orderDetailContentCell.setIndent(titelIndent);
-            orderDetailContentCell.setPaddingTop(contentPaddingTop);
-            orderDetailTable.addCell(orderDetailContentCell);
-        	// END First col 4
-        	// BEGIN Second col 2
-            orderDetailContentCell = new PdfPCell(new Phrase(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price())),arial_normal_8));
-            orderDetailContentCell.setColspan(2);
-            orderDetailContentCell.setBorder(0);
-            orderDetailContentCell.setIndent(titelIndent);
-            orderDetailContentCell.setPaddingTop(contentPaddingTop);
-            orderDetailTable.addCell(orderDetailContentCell);
-        	// END Second col 2
-        	// BEGIN Third col 2
-//            orderDetailContentCell = new PdfPCell(new Phrase(""),arial_normal_10));
-//            orderDetailTitleCell.setColspan(2);
-//            orderDetailTitleCell.setBorder(0);
-//            orderDetailTitleCell.setIndent(titelIndent);
-//            orderDetailTitleCell.setPaddingTop(contentPaddingTop);
-//            orderDetailTable.addCell(orderDetailTitleCell);
-        	// END Third col 2
-        	// BEGIN Fourth col 2
-            orderDetailContentCell = new PdfPCell(new Phrase(String.valueOf(cod.getDetail_unit()),arial_normal_8));
-            orderDetailContentCell.setColspan(1);
-            orderDetailContentCell.setBorder(0);
-            orderDetailContentCell.setIndent(titelIndent);
-            orderDetailContentCell.setPaddingTop(contentPaddingTop);
-            orderDetailTable.addCell(orderDetailContentCell);
-        	// END Fourth col 2
-        	// BEGIN Fifth col 2
-            BigDecimal price = new BigDecimal(cod.getDetail_price());
-            BigDecimal unit = new BigDecimal(cod.getDetail_unit());
-            orderDetailContentCell = new PdfPCell(new Phrase(TMUtils.fillDecimal(String.valueOf(price.multiply(unit))),arial_normal_8));
-            orderDetailContentCell.setColspan(1);
-            orderDetailContentCell.setBorder(0);
-            orderDetailContentCell.setIndent(titelIndent);
-            orderDetailContentCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
-            orderDetailContentCell.setPaddingTop(contentPaddingTop);
-            orderDetailTable.addCell(orderDetailContentCell);
-        	// END Fifth col 2
-		}
-        /**
-         * End Detail Content
-         */
         /**
          * BEGIN Detail Total Price
          */
@@ -446,7 +389,7 @@ public class OrderPDFCreator {
         orderDetailTable.addCell(orderDetailTotalCell);
         // END First Col 7
         // BEGIN Second Col 2
-        orderDetailTotalCell = new PdfPCell(new Phrase("Total before GST", verdana_bold_9));
+        orderDetailTotalCell = new PdfPCell(new Phrase("Total before GST", arial_bold_12));
         orderDetailTotalCell.setColspan(2);
         orderDetailTotalCell.setBorder(0);
         orderDetailTotalCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
@@ -475,7 +418,7 @@ public class OrderPDFCreator {
         orderDetailTable.addCell(orderDetailTotalCell);
         // END First Col 7
         // BEGIN Second Col 2
-        orderDetailTotalCell = new PdfPCell(new Phrase("GST at 15%", verdana_bold_9));
+        orderDetailTotalCell = new PdfPCell(new Phrase("GST at 15%", arial_bold_12));
         orderDetailTotalCell.setColspan(2);
         orderDetailTotalCell.setBorder(0);
         orderDetailTotalCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
@@ -504,7 +447,7 @@ public class OrderPDFCreator {
         orderDetailTable.addCell(orderDetailTotalCell);
         // END First Col 7
         // BEGIN Second Col 2
-        orderDetailTotalCell = new PdfPCell(new Phrase("Order Total", verdana_bold_9));
+        orderDetailTotalCell = new PdfPCell(new Phrase("Order Total", arial_bold_12));
         orderDetailTotalCell.setColspan(2);
         orderDetailTotalCell.setBorder(0);
         orderDetailTotalCell.setHorizontalAlignment(PdfPCell.ALIGN_RIGHT);
@@ -573,6 +516,65 @@ public class OrderPDFCreator {
 		this.customerOrder = customerOrder;
 	}
 
+	public List<CustomerOrderDetail> getCodPlans() {
+		return codPlans;
+	}
+
+	public void setCodPlans(List<CustomerOrderDetail> codPlans) {
+		this.codPlans = codPlans;
+	}
+
+	public List<CustomerOrderDetail> getCodAddOns() {
+		return codAddOns;
+	}
+
+	public void setCodAddOns(List<CustomerOrderDetail> codAddOns) {
+		this.codAddOns = codAddOns;
+	}
+	
+	/**
+	 * 
+	 * @param table					PdfPTable object
+	 * @param label					row label
+	 * @param content				row content
+	 * @param rowPaddingTop			distance to top
+	 */
+	// ENCAPSULATE CUSTOMER INFO ROW
+	public void addCustomerRow(PdfPTable table, String label, String content, Float rowPaddingTop){
+        // BEGIN Row
+        PdfPCell cell = new PdfPCell(new Phrase(label, arial_bold_10));
+        cell.setColspan(3);
+        cell.setBorder(0);
+        cell.setIndent(8F);
+        cell.setPaddingTop(rowPaddingTop);
+        table.addCell(cell);
+        
+        // CONTENT
+        cell = new PdfPCell(new Phrase(content, arial_normal_10));
+        cell.setColspan(7);
+        cell.setBorder(0);
+        cell.setIndent(8F);
+        cell.setPaddingTop(rowPaddingTop);
+        table.addCell(cell);
+        // END Row
+	}
+
+	/**
+	 * 
+	 * @param table
+	 * @param title
+	 * @param colspan
+	 * @param indent
+	 * @param font
+	 */
+	// ENCAPSULATE DETAIL CELL TITLE
+	public void addCell(PdfPTable table, String title, Integer colspan, Float indent, Font font){
+        PdfPCell cell = new PdfPCell(new Phrase(title, font));
+        cell.setColspan(colspan);
+        cell.setBorder(0);
+        cell.setIndent(indent);
+        table.addCell(cell);
+	}
 	
 	
 }
