@@ -32,8 +32,12 @@
 		c.`register_date` 	as c_register_date, 
 		c.`active_date` 	as c_active_date, 
 		c.`balance` 		as c_balance
+		c.`title`			as c_title
+		c.`birth`			as c_birth
+		c.`driver_licence`	as c_driver_licence
+		c.`passport`		as c_passport
+		c.`country`			as c_country
 	</sql>
-	
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
@@ -50,6 +54,11 @@
 		<result property="register_date" column="c_register_date" />
 		<result property="active_date" column="c_active_date" />
 		<result property="balance" column="c_balance" />
+		<result property="title" column="c_title" />
+		<result property="birth" column="c_birth" />
+		<result property="driver_licence" column="c_driver_licence" />
+		<result property="passport" column="c_passport" />
+		<result property="country" column="c_country" />
 	</resultMap>
 
 	<sql id="customerOrderColumns">
@@ -75,9 +84,10 @@
 		co.`pstn_rental_amount`					as co_pstn_rental_amount,
 		co.`term_period`						as co_term_period,
 		co.`pppoe_loginname`					as co_pppoe_loginname,
-		co.`pppoe_password`						as co_pppoe_password
+		co.`pppoe_password`						as co_pppoe_password,
+		co.`sale_id`							as co_sale_id,
+		co.`order_pdf_path`						as co_order_pdf_path
 	</sql>
-	
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
 		<result property="order_serial" column="co_order_serial" />
@@ -102,6 +112,8 @@
 		<result property="term_period" column="co_term_period" />
 		<result property="pppoe_loginname" column="co_pppoe_loginname" />
 		<result property="pppoe_password" column="co_pppoe_password" />
+		<result property="sale_id" column="co_sale_id" />
+		<result property="order_pdf_path" column="co_order_pdf_path" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
