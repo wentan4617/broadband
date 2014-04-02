@@ -600,7 +600,8 @@ public class CRMController {
 		if (customerOrder.getCustomerOrderDetails() != null) {
 			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
 				if ("hardware-router".equals(cod.getDetail_type()) 
-						|| "pstn".equals(cod.getDetail_type())) {
+						|| "pstn".equals(cod.getDetail_type())
+						|| "voip".equals(cod.getDetail_type())) {
 					retains.add(cod);
 				}
 			}
@@ -631,8 +632,9 @@ public class CRMController {
 		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months() == null ? 1 : customerOrder.getPlan().getPlan_prepay_months());
 		cod_plan.setDetail_type(customerOrder.getPlan().getPlan_group());
+		cod_plan.setDetail_term_period(customerOrder.getPlan().getTerm_period());
 		
-		customerOrder.getCustomerOrderDetails().add(cod_plan);
+		customerOrder.getCustomerOrderDetails().add(0, cod_plan);
 		
 		if ("plan-topup".equals(customerOrder.getPlan().getPlan_group())) {
 			
@@ -644,7 +646,7 @@ public class CRMController {
 				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getTopup().getTopup_fee());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
 				cod_conn.setDetail_type("new-connection");
@@ -687,7 +689,7 @@ public class CRMController {
 				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 			
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
 				cod_conn.setDetail_type("new-connection");
@@ -717,7 +719,7 @@ public class CRMController {
 				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
 				cod_conn.setDetail_type("new-connection");
@@ -748,7 +750,8 @@ public class CRMController {
 					cod.setIs_post(0);
 					customerOrder.setHardware_post(customerOrder.getHardware_post() == null ? 1 : customerOrder.getHardware_post() + 1);
 					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());
-				} else if ("pstn".equals(cod.getDetail_type())){
+				} else if ("pstn".equals(cod.getDetail_type()) 
+						|| "voip".equals(cod.getDetail_type())){
 					cod.setDetail_unit(1);
 					cod.setDetail_is_next_pay(1);
 					customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + cod.getDetail_price());

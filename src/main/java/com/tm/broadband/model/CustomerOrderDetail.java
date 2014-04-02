@@ -26,6 +26,7 @@ public class CustomerOrderDetail implements Serializable {
 	private String detail_plan_sort;
 	private String detail_plan_group;
 	private Double detail_plan_new_connection_fee;
+	private Integer detail_term_period;
 	private Long detail_topup_data_flow;
 	private Double detail_topup_fee;
 	private String detail_plan_memo;
@@ -265,5 +266,15 @@ public class CustomerOrderDetail implements Serializable {
 	public void setDetail_expired_str(String detail_expired_str) {
 		this.detail_expired_str = detail_expired_str;
 	}
+
+	public Integer getDetail_term_period() {
+		return detail_term_period;
+	}
+
+	public void setDetail_term_period(Integer detail_term_period) {
+		this.detail_term_period = detail_term_period;
+	}
+	
+	
 	
 }

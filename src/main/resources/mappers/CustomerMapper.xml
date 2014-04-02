@@ -133,6 +133,7 @@
 		cod.`detail_plan_sort` 					as cod_detail_plan_sort,
 		cod.`detail_plan_group` 				as cod_detail_plan_group,
 		cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee,
+		cod.`detail_term_period` 				as cod_detail_term_period,
 		cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow,
 		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
 		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
@@ -145,7 +146,6 @@
 		cod.`track_code`						as cod_track_code,
 		cod.`pstn_number` 						as cod_pstn_number
 	</sql>
-	
 	<resultMap type="CustomerOrderDetail" id="CustomerOrderDetailResultMap">
 		<id property="id" column="cod_id" />
 		<id property="order_id" column="cod_order_id" />
@@ -158,6 +158,7 @@
 		<result property="detail_plan_sort" column="cod_detail_plan_sort" />
 		<result property="detail_plan_group" column="cod_detail_plan_group" />
 		<result property="detail_plan_new_connection_fee" column="cod_detail_plan_new_connection_fee" />
+		<result property="detail_term_period" column="cod_detail_term_period" />
 		<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow" />
 		<result property="detail_topup_fee" column="cod_detail_topup_fee" />
 		<result property="detail_plan_memo" column="cod_detail_plan_memo" />
@@ -312,11 +313,13 @@
 		INSERT INTO `tm_customer`(
 		`login_name`, `password`, `user_name`, `first_name`, `last_name`,
 		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`,
-		`register_date`, `active_date`, `balance`)
+		`register_date`, `active_date`, `balance`, 
+		`title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`)
 		VALUES (
 		#{login_name}, #{password}, #{user_name}, #{first_name}, #{last_name}, 
 		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post},
-		#{register_date}, #{active_date}, #{balance})
+		#{register_date}, #{active_date}, #{balance},
+		#{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type})
 	</insert>
 
 	<!-- // END INSERT AREA -->
@@ -351,7 +354,15 @@
 			<if test="invoice_post != null">invoice_post = #{invoice_post},</if>
 			<if test="register_date != null">register_date = #{register_date},</if>
 			<if test="active_date != null">active_date = #{active_date},</if>
-			<if test="balance != null">balance = #{balance}</if>
+			<if test="balance != null">balance = #{balance},</if>
+			
+			<if test="title != null">title = #{title},</if>
+			<if test="birth != null">birth = #{birth},</if>
+			<if test="driver_licence != null">driver_licence = #{driver_licence},</if>
+			<if test="passport != null">passport = #{passport},</if>
+			<if test="country != null">country = #{country},</if>
+			<if test="company_name != null">company_name = #{company_name},</if>
+			<if test="customer_type != null">customer_type = #{customer_type}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

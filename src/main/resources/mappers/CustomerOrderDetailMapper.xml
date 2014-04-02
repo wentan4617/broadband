@@ -29,13 +29,13 @@
 		INSERT INTO `tm_customer_order_detail`(
 			`order_id`, `detail_name`, `detail_desc`, `detail_price`, 
 			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
-			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_topup_data_flow`, 
+			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
 			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_type`, `detail_expired`,
 			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`) 
 		VALUES (
 			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
-			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_topup_data_flow},
+			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow},
 			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_type}, #{detail_expired},
 			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number})
 	</insert>
@@ -57,6 +57,7 @@
 			<if test="detail_plan_sort != null">detail_plan_sort=#{detail_plan_sort},</if>
 			<if test="detail_plan_group != null">detail_plan_group=#{detail_plan_group},</if>
 			<if test="detail_plan_new_connection_fee != null">detail_plan_new_connection_fee=#{detail_plan_new_connection_fee},</if>
+			<if test="detail_term_period != null">detail_term_period=#{detail_term_period},</if>
 			<if test="detail_topup_data_flow != null">detail_topup_data_flow=#{detail_topup_data_flow},</if>
 			<if test="detail_topup_fee != null">detail_topup_fee=#{detail_topup_fee},</if>
 			<if test="detail_plan_memo != null">detail_plan_memo=#{detail_plan_memo},</if>
