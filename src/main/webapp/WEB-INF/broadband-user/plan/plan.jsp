@@ -87,7 +87,7 @@
 							<div class="col-md-3">
 								<form:select path="plan_sort" class="form-control">
 									<form:option value="">None</form:option>
-									<form:option value="NON-NAKED">NON-NAKED</form:option>
+									<form:option value="CLOTHING">CLOTHING</form:option>
 									<form:option value="NAKED">NAKED</form:option>
 								</form:select>
 							</div>

@@ -1,15 +1,16 @@
 package com.tm.broadband.pdf;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.service.SmserService;
 
 public class TestAll {
@@ -18,7 +19,7 @@ public class TestAll {
 	@Autowired
 	private static SmserService smserService;
 
-	public static void main(String[] args) throws FileNotFoundException, DocumentException {
+	public static void main(String[] args) throws DocumentException, IOException {
 
 		/*
 		 * Test TMUtil.mailAtValueRetriever() method begin
@@ -91,11 +92,45 @@ public class TestAll {
 //		
 //		System.out.println(TMUtils.dateFormatYYYYMMDD(calNextInvoiceDay.getTime()));
 //		System.out.println(System.getProperty("user.dir")+File.separator);
+
+		Customer c = new Customer();
+		CustomerOrder co = new CustomerOrder();
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		
-		String filePath = "";
+		// set customer
+		c.setId(60089);
+		c.setLogin_name("steven1989930");
+		c.setFirst_name("Dong");
+		c.setLast_name("Chen");
+		c.setEmail("stevenchen1989930@gmail.com");
+		c.setCellphone("02102387392");
+		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+
+		// set order detail
+		cod.setDetail_name("ADSL Naked 150 GB Plan");
+		cod.setDetail_price(89.0d);
+		cod.setDetail_unit(3);
+		cods.add(cod);
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("Broadband New Connection");
+		cod.setDetail_price(99.0d);
+		cod.setDetail_unit(1);
+		cods.add(cod);
 		
-		Document document = new Document(PageSize.A4);
-		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(new File(filePath)));
+		// set order
+		co.setId(60005);
+		co.setOrder_create_date(new Date());
+		co.setCustomerOrderDetails(cods);
+		
+		// call OrderPDFCreator
+		OrderPDFCreator oPDFCreator = new OrderPDFCreator();
+		oPDFCreator.setCustomer(c);
+		oPDFCreator.setCustomerOrder(co);
+		
+		// create order PDF
+		oPDFCreator.create();
+		
 	}
 	
 

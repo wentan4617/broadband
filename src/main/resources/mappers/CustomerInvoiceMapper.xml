@@ -275,7 +275,11 @@
 	
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	<delete id="deleteCustomerInvoiceByCustomerId" parameterType="int">
+		DELETE FROM tm_customer_invoice WHERE customer_id = #{0}
+	</delete>
+	<!-- // END DELETE AREA -->
 
 	
 </mapper>

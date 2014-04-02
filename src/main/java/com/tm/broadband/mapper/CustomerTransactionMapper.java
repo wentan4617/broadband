@@ -48,6 +48,8 @@ public interface CustomerTransactionMapper {
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
-	/* DELETE AREA *//* // END DELETE AREA */
+	/* DELETE AREA */
+	void deleteCustomerTransactionByCustomerId(int id);
+	/* // END DELETE AREA */
 	
 }

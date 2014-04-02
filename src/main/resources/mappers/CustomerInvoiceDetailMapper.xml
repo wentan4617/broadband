@@ -50,7 +50,11 @@
 	
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	<delete id="deleteCustomerInvoiceDetailByInvoiceId" parameterType="int">
+		DELETE FROM tm_customer_invoice_detail WHERE invoice_id = #{0}
+	</delete>
+	<!-- // END DELETE AREA -->
 
 	
 </mapper>

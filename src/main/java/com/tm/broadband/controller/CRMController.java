@@ -151,7 +151,17 @@ public class CRMController {
 		attr.addFlashAttribute("success", "Edit Customer " + customer.getLogin_name() + " is successful.");
 		
 		return "redirect:/broadband-user/crm/customer/query/1";
-	}	
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/delete")
+	public String doCustomerRemove(Model model
+			,@ModelAttribute("customer") Customer customer
+			,RedirectAttributes attr
+			){
+		this.crmService.removeCustomer(customer.getId());
+		attr.addFlashAttribute("success", "Delete Customer is successful.");
+		return "redirect:/broadband-user/crm/customer/query/1";
+	}
 	
 	@RequestMapping(value = "/broadband-user/crm/transaction/view/{pageNo}/{customerId}")
 	@ResponseBody
@@ -282,6 +292,24 @@ public class CRMController {
 		this.crmService.createCustomerOrderDetail(customerOrderDetail);
 		
 		attr.addFlashAttribute("success", "Create Customer Order Detail Discount is successful.");
+
+		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/pstn/edit")
+	public String doCustomerOrderDetailPSTNEdit(Model model
+			,@RequestParam("order_detail_id") int order_detail_id
+			,@RequestParam("customer_id") int customer_id
+			,@RequestParam("pstn_number") String pstn_number
+			,RedirectAttributes attr) {
+		
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		cod.getParams().put("id", order_detail_id);
+		cod.setPstn_number(pstn_number);
+		
+		this.crmService.editCustomerOrderDetail(cod);
+		
+		attr.addFlashAttribute("success", "Update Customer Order Detail PSTN is successful.");
 
 		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
 	}

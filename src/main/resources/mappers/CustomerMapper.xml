@@ -329,6 +329,10 @@
 
 	<!-- DELETE AREA -->
 	
+	<delete id="deleteCustomerById" parameterType="int">
+		DELETE FROM tm_customer WHERE id = #{0}
+	</delete>
+	
 	<!-- // END DELETE AREA -->
 
 </mapper>

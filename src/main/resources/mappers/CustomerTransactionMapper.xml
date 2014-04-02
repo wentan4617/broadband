@@ -111,6 +111,10 @@
 	
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	<delete id="deleteCustomerTransactionByCustomerId" parameterType="int">
+		DELETE FROM tm_customer_transaction WHERE customer_id = #{0}
+	</delete>
+	<!-- // END DELETE AREA -->
 	
 </mapper>

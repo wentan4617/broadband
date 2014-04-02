@@ -84,6 +84,9 @@
 		});
 		// END SV/CVLan Area Modal
 		// BEGIN Order Detail Area Modal
+		$('a[data-name="${co.id}_update_pstn"]').click(function(){
+			$('input[name="order_detail_id"]').val($(this).attr('data-val'));
+		});
 		$('a[data-name="${co.id}_add_discount"]').click(function(){
 			$('input[name="order_id"]').val($(this).attr('data-val'));
 		});
@@ -121,7 +124,7 @@
 		/*
 		 *	END order datepicker area
 		 */
-		
+		 
 		
 		/*
 		 *	BEGIN order info area

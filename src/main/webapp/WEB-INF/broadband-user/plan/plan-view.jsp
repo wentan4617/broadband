@@ -31,7 +31,7 @@
 						    </optgroup>
 						    <optgroup label="Change Plan Sort">
 						    	<option value="NAKED" data-type="plan-sort">To NAKED</option>
-						      	<option value="NON-NAKED" data-type="plan-sort">To NON NAKED</option>
+						      	<option value="CLOTHING" data-type="plan-sort">To CLOTHING</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Status">
 						    	<option value="active" data-type="plan-status">To Active</option>

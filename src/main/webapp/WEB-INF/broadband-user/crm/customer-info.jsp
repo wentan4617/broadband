@@ -117,12 +117,46 @@
 						<div class="col-md-2 pull-left">
 							<a class="btn btn-success" data-toggle="modal" data-target="#saveCustomerModal">Update Customer Info</a>
 						</div>
+						<div class="col-md-2">
+							<a class="btn btn-danger" data-toggle="modal" data-target="#deleteCustomerModal">Delete customer and related information</a>
+						</div>
 					</div>
 				</form:form>
 			</div>
 		</div>
 	</div>
 </div>
+
+
+<!-- Delete Customer Modal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="deleteCustomerModal" tabindex="-1" role="dialog" aria-labelledby="deleteCustomerModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h3 class="modal-title" id="deleteCustomerModalLabel"><strong class="text-danger">Delete Customer Permanently!</strong></h3>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-md-11">
+					<strong class="text-danger">This operation is irreversible, be careful!<br/>
+					Info listed below will be disappear permanently!:<br/></strong>
+					personal informations&nbsp;(1)<br/>
+					related orders with details&nbsp;(2)<br/>
+					related invoices with details&nbsp;(3)<br/>
+					related transaction's records&nbsp;(4)<br/>
+				</label>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <a href="${ctx}/broadband-user/crm/customer/delete" class="btn btn-warning">Delete</a>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
 
 <!-- Save Customer Modal -->
 <div class="modal fade" id="saveCustomerModal" tabindex="-1" role="dialog" aria-labelledby="saveCustomerModalLabel" aria-hidden="true">
