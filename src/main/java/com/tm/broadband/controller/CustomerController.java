@@ -239,7 +239,7 @@ public class CustomerController {
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				cod_conn.setDetail_unit(1);
 				
@@ -271,7 +271,7 @@ public class CustomerController {
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
 			
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				cod_conn.setDetail_unit(1);
 				

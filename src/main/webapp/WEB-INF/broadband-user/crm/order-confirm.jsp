@@ -2,6 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -83,27 +84,56 @@
 							<thead>
 								<tr>
 									<th>Service / Product</th>
-									<th>Unit Price</th>
-									<th>Discount</th>
+									<th>Data</th>
+									<th>Term(mth)</th>
+									<th>Monthly Charge</th>
 									<th>Qty</th>
 									<th>Subtotal</th>
 								</tr>
 							</thead>
 							<tbody>
 								<c:forEach var="detail" items="${customer.customerOrder.customerOrderDetails }">
-									<tr>
-										<td>${detail.detail_name }</td>
-										<td>
-											<fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" />
-											
-										</td>
-										<td></td>
-										<td>${detail.detail_unit }</td>
-										<td>
-											<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-											
-										</td>
-									</tr>
+									<c:choose>
+										<c:when test="${fn:contains(detail.detail_type, 'plan-') }">
+											<tr>
+												<td>
+													${detail.detail_name }
+												</td>
+												<td>
+													${detail.detail_data_flow } GB
+													
+												</td>
+												<td>${detail.detail_term_period }</td>
+												<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+												<td>${detail.detail_unit }</td>
+												<td>
+													<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+													
+												</td>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td>
+													${detail.detail_name }&nbsp;
+													<c:if test="${detail.detail_type == 'pstn' || detail.detail_type == 'voip'}">
+														<c:if test="${detail.pstn_number != null && detail.pstn_number != '' }">
+															<strong class="text-danger">(${detail.pstn_number })</strong>
+														</c:if>
+													</c:if>
+												</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+												<td>${detail.detail_unit }</td>
+												<td>
+													<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+													
+												</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+									
 								</c:forEach>
 							</tbody>
 						</table>

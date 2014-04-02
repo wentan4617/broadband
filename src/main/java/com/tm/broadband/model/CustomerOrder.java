@@ -46,6 +46,8 @@ public class CustomerOrder implements Serializable {
 	private Integer term_period;
 	private String pppoe_loginname;
 	private String pppoe_password;
+	private Integer sale_id;
+	private String order_pdf_path;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -349,6 +351,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_due_str(String order_due_str) {
 		this.order_due_str = order_due_str;
+	}
+
+	public Integer getSale_id() {
+		return sale_id;
+	}
+
+	public void setSale_id(Integer sale_id) {
+		this.sale_id = sale_id;
+	}
+
+	public String getOrder_pdf_path() {
+		return order_pdf_path;
+	}
+
+	public void setOrder_pdf_path(String order_pdf_path) {
+		this.order_pdf_path = order_pdf_path;
 	}
 
 	

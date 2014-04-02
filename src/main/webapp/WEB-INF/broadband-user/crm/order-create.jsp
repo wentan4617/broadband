@@ -126,6 +126,7 @@
 									  	<ul class="dropdown-menu" role="menu">
 									    	<li><a href="javascript:void(0);" id="addHardware">Add Hardware</a></li>
 									    	<li><a href="javascript:void(0);" id="addPSTN">Add PSTN</a></li>
+									    	<li><a href="javascript:void(0);" id="addVoip">Add Voip</a></li>
 									  	</ul>
 									</div>
 								</div>
@@ -134,12 +135,16 @@
 							<!-- declare -->
 							<c:set var="hasHardware" value="0"></c:set>
 							<c:set var="hasPstn" value="0"></c:set>
+							<c:set var="hasVoip" value="0"></c:set>
 							<c:forEach var="cod" items="${customerOrder.customerOrderDetails }">
 								<c:if test="${fn:contains(cod.detail_type, 'hardware') }">
 									<c:set var="hasHardware" value="1"></c:set>
 								</c:if>
 								<c:if test="${fn:contains(cod.detail_type, 'pstn') }">
 									<c:set var="hasPstn" value="1"></c:set>
+								</c:if>
+								<c:if test="${fn:contains(cod.detail_type, 'voip') }">
+									<c:set var="hasVoip" value="1"></c:set>
 								</c:if>
 							</c:forEach>
 							
@@ -205,6 +210,41 @@
 											</div>
 											<div class="col-md-1">
 												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="pstn_remove">
+													<span class="glyphicon glyphicon-remove"></span>
+												</a>
+											</div>
+										</div>
+									</c:if>
+								</c:forEach>
+							</div>
+							
+							
+							<!-- Voip -->
+							<div id="voipContainer" style="display:${hasVoip == '1' ? 'block': 'none'}">
+								<hr/>
+								<h4 class="text-success">
+									Add-ons Voip
+								</h4>
+								<hr/>
+								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
+									<c:if test="${fn:contains(cod.detail_type, 'voip') }">
+										<div class="form-group" id="voip_${item.index }" data-enable data-voip-enable="1" >
+											<label for="" class="control-label col-md-3">Voip</label>
+											<div class="col-md-4">
+												<form:input path="customerOrderDetails[${item.index }].detail_name" class="form-control" placeholder="Voip"/>
+												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }"/>
+											</div>
+											<div class="col-md-2">
+												<form:input path="customerOrderDetails[${item.index }].pstn_number" class="form-control" placeholder="e.g.:5789941"/>
+											</div>
+											<div class="col-md-2">
+												<div class="input-group">
+													<span class="input-group-addon">$</span>
+													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
+												</div>
+											</div>
+											<div class="col-md-1">
+												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="voip_remove">
 													<span class="glyphicon glyphicon-remove"></span>
 												</a>
 											</div>
@@ -418,6 +458,45 @@
 		var len = $('div[data-pstn-enable="1"]').length;
 		if (len == 0) {
 			$('#pstnContainer').css('display', 'none');
+		}
+	});
+	
+	$('#addVoip').click(function(){
+		$('#voipContainer').css('display', 'block');
+		var index = $('div[data-enable]').length;
+		var html = '';
+		html += '<div class="form-group" id="voip_' + index+ '" data-enable data-voip-enable="1" >';
+		html += '	<label for="" class="control-label col-md-3">Voip</label>';
+		html += '	<div class="col-md-4">';
+		html += '		<input type="text" name="customerOrderDetails[' + index+ '].detail_name" class="form-control" value="Voip" placeholder="Voip"/>';
+		html += '		<input type="hidden" name="customerOrderDetails[' + index+ '].detail_type" value="voip" id="dtype_' + index+ '"/>';
+		html += '	</div>';
+		html += '	<div class="col-md-2">';
+		html += '		<input type="text" name="customerOrderDetails[' + index+ '].pstn_number" class="form-control" placeholder="e.g.:5789941"/>';
+		html += '	</div>';
+		html += '	<div class="col-md-2">';
+		html += '		<div class="input-group">';
+		html += '			<span class="input-group-addon">$</span>';
+		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" value="0.00"/>';
+		html += '		</div>';
+		html += '	</div>';
+		html += '	<div class="col-md-1">';
+		html += '		<a href="javascript:void(0);" class="btn btn-default" data-index="' + index+ '" data-name="voip_remove">';
+		html += '			<span class="glyphicon glyphicon-remove"></span>';
+		html += '		</a>';
+		html += '	</div>';
+		html += '</div>';
+		$('#voipContainer').append(html);
+		$('.selectpicker').selectpicker('refresh');
+	});
+	
+	$('#voipContainer').delegate('a[data-name="voip_remove"]', 'click', function(){
+		var index = $(this).attr('data-index');
+		$('#voip_' + index).attr('data-voip-enable', '0').css("display", "none");
+		$('#dtype_' + index).val('');
+		var len = $('div[data-voip-enable="1"]').length;
+		if (len == 0) {
+			$('#voipContainer').css('display', 'none');
 		}
 	});
 	
