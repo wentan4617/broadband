@@ -64,6 +64,7 @@ public class Customer implements Serializable {
 	private String driver_licence;
 	private String passport;
 	private String country;
+	private String company_name;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
