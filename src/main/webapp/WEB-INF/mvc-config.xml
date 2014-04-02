@@ -35,6 +35,8 @@
 	<!-- when spring mvc upload file, need set MultipartResolver handler -->
 	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<property name="maxUploadSize" value="5120000" />
+		<property name="defaultEncoding" value="UTF-8"/>
+		<property name="uploadTempDir" value="upload/temp"/>
 	</bean>
 
 	<!-- when spring mvc upload file have over limit, it will throw org.springframework.web.multipart.MaxUploadSizeExceededException -->

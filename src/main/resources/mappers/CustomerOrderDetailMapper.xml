@@ -67,7 +67,7 @@
 			<if test="is_post != null">is_post=#{is_post},</if>
 			<if test="hardware_comment != null">hardware_comment=#{hardware_comment},</if>
 			<if test="track_code != null">track_code=#{track_code},</if>
-			<if test="track_code != null">pstn_number=#{pstn_number}</if>
+			<if test="pstn_number != null">pstn_number=#{pstn_number}</if>
 		</set>
 		<where>
 			<if test="params.id !=null">id=#{params.id}</if>
@@ -78,6 +78,10 @@
 	<!-- DELETE AREA -->
 	<delete id="deleteCustomerOrderDetailById" parameterType="int">
 		DELETE FROM `tm_customer_order_detail` WHERE id=#{0}
+	</delete>
+	
+	<delete id="deleteCustomerOrderDetailByOrderId" parameterType="int">
+		DELETE FROM tm_customer_order_detail WHERE order_id = #{0};
 	</delete>
 	<!-- // END DELETE AREA -->
 

@@ -361,6 +361,41 @@ public class CRMService {
 	}
 
 	@Transactional
+	public void removeCustomer(int id) {
+		this.customerMapper.deleteCustomerById(id);
+		
+		// BEGIN delete order area
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("customer_id", id);
+		// get order id
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(co);
+		for (CustomerOrder customerOrder : cos) {
+			// delete order related details
+			this.customerOrderDetailMapper.deleteCustomerOrderDetailByOrderId(customerOrder.getId());
+		}
+		// delete order
+		this.customerOrderMapper.deleteCustomerOrderByCustomerId(id);
+		// END delete order area
+		
+		// BEGIN delete invoice area
+		CustomerInvoice ci = new CustomerInvoice();
+		ci.getParams().put("customer_id", id);
+		// get invoice id
+		List<CustomerInvoice> cis = this.customerInvoiceMapper.selectCustomerInvoices(ci);
+		for (CustomerInvoice customerInvoice : cis) {
+			// delete invoice related details
+			this.customerInvoiceDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(customerInvoice.getId());
+		}
+		// delete invoice
+		this.customerInvoiceMapper.deleteCustomerInvoiceByCustomerId(id);
+		// END delete invoice area
+		
+		// delete transaction
+		this.customerTransactionMapper.deleteCustomerTransactionByCustomerId(id);
+		
+	}
+
+	@Transactional
 	public void createCustomer(Customer customer) {
 		this.customerMapper.insertCustomer(customer);
 	}
@@ -397,6 +432,14 @@ public class CRMService {
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 		// insert provision
 		this.provisionLogMapper.insertProvisionLog(proLog);
+		
+	}
+	
+	@Transactional
+	public void editCustomerOrderDetail(
+			CustomerOrderDetail cod) {
+		// edit order detail
+		this.customerOrderDetailMapper.updateCustomerOrderDetail(cod);
 		
 	}
 

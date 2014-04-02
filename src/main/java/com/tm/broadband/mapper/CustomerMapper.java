@@ -54,6 +54,8 @@ public interface CustomerMapper {
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
-	/* DELETE AREA *//* // END DELETE AREA */
+	/* DELETE AREA */
+	void deleteCustomerById(int id);
+	/* // END DELETE AREA */
 	
 }

@@ -345,7 +345,19 @@
 						<tbody>
 							<c:forEach var="customerOrderDetail" items="${customerOrder.customerOrderDetails}">
 								<tr class="${customerOrderDetail.detail_type=='discount' ? 'alert alert-warning':'' }">
-									<td>${customerOrderDetail.detail_name}</td>
+									<td>
+									${customerOrderDetail.detail_name}
+										<c:if test="${customerOrderDetail.detail_type=='pstn'}">
+											(
+											<c:if test="${customerOrderDetail.pstn_number==''}">
+												<strong class='text-warning'>Number is Empty</strong>
+											</c:if>
+											<c:if test="${customerOrderDetail.pstn_number!=''}">
+												<strong class='text-success'>${customerOrderDetail.pstn_number}</strong>
+											</c:if>
+											)
+										</c:if>
+									</td>
 									<td>${customerOrderDetail.detail_type}</td>
 									<td>${customerOrderDetail.detail_plan_type}</td>
 									<td>${customerOrderDetail.detail_plan_sort}</td>
@@ -360,8 +372,13 @@
 									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 									<td>&nbsp;
 										<c:if test="${customerOrderDetail.detail_type=='discount'}">
-											<a class="btn btn-danger btn-xs" href="javascript:void(0);" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
+											<a class="btn btn-danger btn-xs" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
 											  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
+											</a>
+										</c:if>
+										<c:if test="${customerOrderDetail.detail_type=='pstn'}">
+											<a class="btn btn-success btn-xs" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:150px;">
+											  	<span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;&nbsp;&nbsp;Update PSTN
 											</a>
 										</c:if>
 									</td>
@@ -372,8 +389,8 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal">
-									  <span data-toggle="tooltip" data-placement="bottom" data-original-title="add a discount for this order" class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;Add Discount
+									<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal" style="width:150px;">
+									  <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;&nbsp;Add Discount
 									</a>
 								</td>
 							</tr>
@@ -384,6 +401,33 @@
 		</div>
 	</div>
 </div>
+
+<!-- Edit PSTN Modal -->
+<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/pstn/edit" method="post">
+	<input type="hidden" name="order_detail_id"/>
+	<input type="hidden" name="customer_id" value="${customer.id}"/>
+	<div class="modal fade" id="updatePSTNModal" tabindex="-1" role="dialog" aria-labelledby="updatePSTNModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h3 class="modal-title text-danger" id="updatePSTNModalLabel"><strong>Update PSTN Info</strong></h3>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-md-4">PSTN Number</label>
+				<div class="col-md-6">
+					<input name="pstn_number" class="form-control input-sm" placeholder="PSTN Number"/>
+				</div>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-success">Update PSTN</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
 
 <!-- Edit Order Info Modal -->
 <div class="modal fade" id="editOrderInfoModal" tabindex="-1" role="dialog" aria-labelledby="editOrderInfoModalLabel" aria-hidden="true">
