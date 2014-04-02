@@ -64,6 +64,8 @@ public class Customer implements Serializable {
 	private String driver_licence;
 	private String passport;
 	private String country;
+	private String company_name;
+	private String customer_type;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -385,6 +387,22 @@ public class Customer implements Serializable {
 
 	public void setCountry(String country) {
 		this.country = country;
+	}
+
+	public String getCompany_name() {
+		return company_name;
+	}
+
+	public void setCompany_name(String company_name) {
+		this.company_name = company_name;
+	}
+
+	public String getCustomer_type() {
+		return customer_type;
+	}
+
+	public void setCustomer_type(String customer_type) {
+		this.customer_type = customer_type;
 	}
 	
 	

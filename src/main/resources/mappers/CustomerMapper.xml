@@ -37,7 +37,9 @@
 		c.`birth`			as c_birth,
 		c.`driver_licence`	as c_driver_licence,
 		c.`passport`		as c_passport,
-		c.`country`			as c_country
+		c.`country`			as c_country,
+		c.`company_name`	as c_company_name,
+		c.`customer_type`	as c_customer_type
 	</sql>
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
@@ -60,6 +62,8 @@
 		<result property="driver_licence" column="c_driver_licence" />
 		<result property="passport" column="c_passport" />
 		<result property="country" column="c_country" />
+		<result property="company_name" column="c_company_name" />
+		<result property="customer_type" column="c_customer_type" />
 	</resultMap>
 	
 	<sql id="customerOrderColumns">
