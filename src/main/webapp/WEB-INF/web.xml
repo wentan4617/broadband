@@ -121,6 +121,7 @@
 		<url-pattern>/broadband-user/provision/*</url-pattern>
 		<url-pattern>/broadband-user/data/*</url-pattern>
 		<url-pattern>/broadband-user/system/*</url-pattern>
+		<url-pattern>/broadband-user/sale/*</url-pattern>
 	</filter-mapping>
 	
 	<!-- user auth filter -->

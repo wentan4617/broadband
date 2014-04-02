@@ -20,7 +20,7 @@
 	});
 	
 	$.jsonValidation = function(json, placement){
-		//console.log(json);
+		console.log(json);
 		placement = placement || 'top';
 		$('#alertContainer').find('#alert-error').remove();
 		$('input[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');

@@ -199,7 +199,7 @@ public class CustomerController {
 		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
 
 		if (count > 0) {
-			result.rejectValue("login_name", "duplicate", "");
+			result.rejectValue("login_name", "duplicate", "is already in use");
 			return "broadband-customer/customer-order";
 		}
 
