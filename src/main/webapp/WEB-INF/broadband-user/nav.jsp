@@ -179,6 +179,19 @@
 	                    	</li>
 						</ul>
 					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Sale <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="${ctx}/broadband-user/sale/online/ordering/plans">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									Online Ordering (PAD) 
+								</a>
+							</li>
+						</ul>
+					</li>
 				</ul>
 				<p class="navbar-text pull-right">
 					<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>

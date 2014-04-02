@@ -271,6 +271,7 @@
 		    		<hr/>
 					<a href="${ctx }/plans/${fn:toLowerCase(orderPlan.plan_group=='plan-topup'?'t':'p')}" style="width:100px;" class="btn btn-success">Back</a>&nbsp;
 					<button type="submit" class="btn btn-success" style="width:100px;">Confirm</button>
+					
 		  		</div>
 			</div>
 			

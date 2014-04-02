@@ -7,6 +7,12 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.4 2014-04-02
+
+* customer 加字段
+* customerOrder 加字段
+* 
+
 demand version 1.0.4 2014-03-31
 
 * VoIP信息

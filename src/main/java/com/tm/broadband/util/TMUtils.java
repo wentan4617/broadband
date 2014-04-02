@@ -69,6 +69,7 @@ public class TMUtils {
 	public static void setJSONErrorMap(JSONBean<?> json, BindingResult result) {
 		List<FieldError> fields = result.getFieldErrors();
 		for (FieldError field: fields) {
+			System.out.println(field.getField() + ": " + field.getDefaultMessage());
 			json.getErrorMap().put(field.getField(), field.getDefaultMessage());
 		}
 	}

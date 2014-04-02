@@ -172,8 +172,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this
-				.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -182,8 +181,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this
-				.getOrder_using_start());
+		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start());
 		return order_using_start_str;
 	}
 
