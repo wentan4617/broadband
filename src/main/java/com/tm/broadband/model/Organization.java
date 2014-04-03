@@ -12,6 +12,7 @@ public class Organization implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Integer customer_id;
+	private String org_name;
 	private String org_type;
 	private String org_trading_name;
 	private String org_register_no;
@@ -32,16 +33,24 @@ public class Organization implements Serializable {
 	 * END RELATED PROPERTIES
 	 */
 
-	public String getOrg_type() {
-		return org_type;
-	}
-
 	public Integer getCustomer_id() {
 		return customer_id;
 	}
 
 	public void setCustomer_id(Integer customer_id) {
 		this.customer_id = customer_id;
+	}
+
+	public String getOrg_name() {
+		return org_name;
+	}
+
+	public void setOrg_name(String org_name) {
+		this.org_name = org_name;
+	}
+
+	public String getOrg_type() {
+		return org_type;
 	}
 
 	public void setOrg_type(String org_type) {

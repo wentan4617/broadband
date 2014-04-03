@@ -25,7 +25,7 @@
 	
 	<!-- select organization by customer_id -->
 	<select id="selectOrganizationByCustomerId" parameterType="int" resultType="Organization">
-		select * from tm_organization where id = #{0}
+		select * from tm_organization where customer_id = #{0}
 	</select>
 	
 	<!-- select organization page -->
@@ -49,10 +49,10 @@
 	<!-- when customer register or administrator create customer, insert customer  information -->
 	<insert id="insertOrganization" parameterType="Organization">
 		INSERT INTO `tm_organization`(
-		`customer_id`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
+		`customer_id`, `org_name`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
 		`org_trading_months`, `holder_name`, `holder_job_title`, `holder_phone`, `holder_email`)
 		VALUES (
-		#{customer_id}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
+		#{customer_id}, #{org_name}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
 		#{org_trading_months}, #{holder_name}, #{holder_job_title}, #{holder_phone}, #{holder_email})
 	</insert>
 
@@ -67,6 +67,7 @@
 		update tm_organization
 		<set>
 			<if test="org_type != null">org_type = #{org_type},</if>
+			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
 			<if test="org_register_no != null">org_register_no = #{org_register_no},</if>
 			<if test="org_incoporate_date != null">org_incoporate_date = #{org_incoporate_date},</if>

@@ -5,9 +5,12 @@ import java.net.MalformedURLException;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -30,7 +33,9 @@ public class ITextUtils {
         cell.setColspan(colspan);
         cell.setBorder(border);
         cell.setPaddingBottom(paddingBottom);
-        cell.setHorizontalAlignment(align);
+        if(align!=null){
+            cell.setHorizontalAlignment(align);
+        }
         table.addCell(cell);
 	}
 
@@ -64,15 +69,15 @@ public class ITextUtils {
 	 * @param colspan
 	 */
 	// ENCAPSULATE TITLE BAR
-	public static void addTitleBar(PdfPTable table, String title, Font font, BaseColor bgColor, BaseColor borderColor, Integer colspan){
+	public static void addTitleBar(PdfPTable table, String title, Font font, BaseColor bgColor, BaseColor borderColor, Integer colspan, Float zoom){
         // BEGIN TITLE BAR
         PdfPCell cell = new PdfPCell(new Phrase(title, font));
         cell.setColspan(colspan);
         cell.setBorder(PdfPCell.TOP);
         cell.setBorderColor(borderColor);
         cell.setIndent(10F);
-        cell.setPaddingTop(4F);
-        cell.setPaddingBottom(6F);
+        cell.setPaddingTop(zoom);
+        cell.setPaddingBottom(zoom+2F);
         cell.setBackgroundColor(bgColor);
         table.addCell(cell);
         // BOTTOM BORDER
@@ -95,7 +100,9 @@ public class ITextUtils {
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
         cell.setBorder(0);
-        cell.setFixedHeight(height);
+        if(height!=null){
+            cell.setFixedHeight(height);
+        }
         table.addCell(cell);
 	}
 
@@ -189,5 +196,35 @@ public class ITextUtils {
             cell.setHorizontalAlignment(align);
         }
         table.addCell(cell);
+	}
+	
+	/**
+	 * 
+	 * @param writer
+	 * @param text
+	 * @param font
+	 * @param x
+	 * @param y
+	 */
+	// ENCAPSULATE TEXT
+	public void addText(PdfWriter writer, String text, Font font, Float x, Float y){
+		PdfContentByte canvas = writer.getDirectContentUnder();
+		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, new Phrase(text, font), x, y, 0);
+	}
+	
+	/**
+	 * 
+	 * @param outerTable
+	 * @param innerTable
+	 * @param colspan
+	 * @param borderColor
+	 */
+	// ENCAPSULATE TABLE IN CELL
+	public void addTableInCol(PdfPTable outerTable, PdfPTable innerTable, Integer colspan, BaseColor borderColor){
+        PdfPCell cell = new PdfPCell();
+        cell.setColspan(colspan);
+        cell.setBorderColor(borderColor);
+        cell.addElement(innerTable);
+        outerTable.addCell(cell);
 	}
 }
