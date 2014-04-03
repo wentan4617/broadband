@@ -129,6 +129,9 @@ public class TestAll {
 		cod.setDetail_name("ADSL Naked 150 GB Plan");
 		cod.setDetail_type("plan-term");
 		cod.setDetail_price(89.0d);
+		cod.setDetail_data_flow(100L);
+		cod.setDetail_term_period(24);
+		cod.setDetail_unit(3);
 		cods.add(cod);
 		// SET ADD ON DETAIL
 		cod = new CustomerOrderDetail();
@@ -136,6 +139,12 @@ public class TestAll {
 		cod.setDetail_type("new-connection");
 		cod.setDetail_price(99.0d);
 		cod.setDetail_unit(1);
+		cods.add(cod);
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+		cod.setDetail_type("hardware-router");
+		cod.setDetail_price(49.0d);
+		cod.setDetail_unit(2);
 		cods.add(cod);
 		
 		// set order

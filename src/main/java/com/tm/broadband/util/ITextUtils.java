@@ -16,6 +16,26 @@ public class ITextUtils {
 
 	/**
 	 * 
+	 * @param table
+	 * @param title
+	 * @param font
+	 * @param paddingBottom
+	 * @param border
+	 * @param align
+	 * @param colspan
+	 */
+	// ENCAPSULATE PDF TITLE
+	public static void addPDFTitle(PdfPTable table, String title, Font font, Float paddingBottom, Integer border, Integer align, Integer colspan){
+        PdfPCell cell = new PdfPCell(new Phrase(title, font));
+        cell.setColspan(colspan);
+        cell.setBorder(border);
+        cell.setPaddingBottom(paddingBottom);
+        cell.setHorizontalAlignment(align);
+        table.addCell(cell);
+	}
+
+	/**
+	 * 
 	 * @param writer
 	 * @param resource
 	 * @param width
@@ -32,35 +52,6 @@ public class ITextUtils {
 		logo.scaleAbsolute(width, height);
 		logo.setAbsolutePosition(positionX, positionY);
 		writer.getDirectContent().addImage(logo);
-	}
-	
-	/**
-	 * 
-	 * @param table
-	 * @param height
-	 * @param colspan
-	 */
-	// ENCAPSULATE EMPTY ROW
-	public static void addEmptyRow(PdfPTable table, Float height, Integer colspan){
-		PdfPCell cell = new PdfPCell(new Phrase(" "));
-        cell.setColspan(colspan);
-        cell.setBorder(0);
-        cell.setFixedHeight(height);
-        table.addCell(cell);
-	}
-
-	/**
-	 * 
-	 * @param table
-	 * @param colspan
-	 */
-	// ENCAPSULATE LINE ROW
-	public static void addLineRow(PdfPTable table, Integer colspan){
-		PdfPCell cell = new PdfPCell(new Phrase(" "));
-        cell.setColspan(colspan);
-        cell.setBorder(1);
-        cell.setFixedHeight(1);
-        table.addCell(cell);
 	}
 
 	/**
@@ -92,24 +83,111 @@ public class ITextUtils {
         table.addCell(cell);
         // END TITLE BAR
 	}
+	
+	/**
+	 * 
+	 * @param table
+	 * @param height
+	 * @param colspan
+	 */
+	// ENCAPSULATE EMPTY ROW
+	public static void addEmptyRow(PdfPTable table, Float height, Integer colspan){
+		PdfPCell cell = new PdfPCell(new Phrase(" "));
+        cell.setColspan(colspan);
+        cell.setBorder(0);
+        cell.setFixedHeight(height);
+        table.addCell(cell);
+	}
 
 	/**
 	 * 
 	 * @param table
-	 * @param title
-	 * @param font
-	 * @param paddingBottom
-	 * @param border
-	 * @param align
 	 * @param colspan
 	 */
-	// ENCAPSULATE PDF TITLE
-	public static void addPDFTitle(PdfPTable table, String title, Font font, Float paddingBottom, Integer border, Integer align, Integer colspan){
-        PdfPCell cell = new PdfPCell(new Phrase(title, font));
+	// ENCAPSULATE EMPTY ROW
+	public static void addEmptyRow(PdfPTable table, Integer colspan){
+		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
-        cell.setBorder(border);
+        cell.setBorder(0);
+        table.addCell(cell);
+	}
+
+	/**
+	 * 
+	 * @param table
+	 * @param colspan
+	 * @param color
+	 * @param height
+	 */
+	// ENCAPSULATE LINE ROW
+	public static void addLineRow(PdfPTable table, Integer colspan, BaseColor color, Float height){
+		PdfPCell cell = new PdfPCell(new Phrase(" "));
+        cell.setColspan(colspan);
+        cell.setBorder(0);
+        cell.setBackgroundColor(color);
+        cell.setFixedHeight(height);
+        table.addCell(cell);
+	}
+
+	/**
+	 * 
+	 * @param table
+	 * @param phrase
+	 * @param colspan
+	 * @param indent
+	 * @param font
+	 * @param paddingTop
+	 * @param paddingBottom
+	 * @param align
+	 */
+	// ENCAPSULATE COLUMN
+	public void addCol(PdfPTable table, String phrase, Integer colspan, Float indent, Font font, Float paddingTop, Float paddingBottom, Integer align){
+		PdfPCell cell = null;
+		if(font != null){
+			cell = new PdfPCell(new Phrase(phrase, font));
+		} else {
+			cell = new PdfPCell(new Phrase(phrase));
+		}
+        cell.setColspan(colspan);
+        cell.setBorder(0);
+        cell.setIndent(indent);
+        cell.setPaddingTop(paddingTop);
         cell.setPaddingBottom(paddingBottom);
-        cell.setHorizontalAlignment(align);
+        if(align!=null){
+            cell.setHorizontalAlignment(align);
+        }
+        table.addCell(cell);
+	}
+
+	/**
+	 * 
+	 * @param table
+	 * @param phrase
+	 * @param colspan
+	 * @param indent
+	 * @param font
+	 * @param paddingTop
+	 * @param paddingBottom
+	 * @param align
+	 * @param color
+	 */
+	// ENCAPSULATE COLUMN WITH BORDER
+	public void addColBottomBorder(PdfPTable table, String phrase, Integer colspan, Float indent, Font font, Float paddingTop, Float paddingBottom, Integer align, BaseColor color){
+		PdfPCell cell = null;
+		if(font != null){
+			cell = new PdfPCell(new Phrase(phrase, font));
+		} else {
+			cell = new PdfPCell(new Phrase(phrase));
+		}
+        cell.setColspan(colspan);
+        cell.setBorder(PdfPCell.BOTTOM);
+        cell.setBorderColor(color);
+        cell.setIndent(indent);
+        cell.setPaddingTop(paddingTop);
+        cell.setPaddingBottom(paddingBottom);
+        if(align!=null){
+            cell.setHorizontalAlignment(align);
+        }
         table.addCell(cell);
 	}
 }

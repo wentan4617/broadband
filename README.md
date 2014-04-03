@@ -7,6 +7,12 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.4 2014-04-03
+
+* 添加organization表，字段：org_type、org_trading_name、org_register_no、org_incoporate_date、org_trading_months
+* organization表再加holder相关字段：holder_name、holder_job_title、holder_phone、holder_email
+* organization表添加一个customer_id字段，和customer表关联，如果customer是business类型则可以通过id到organization表里查出相应数据
+
 demand version 1.0.4 2014-04-02
 
 * 界面上补全customer以及customer order新添的字段
