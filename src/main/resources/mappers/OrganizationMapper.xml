@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.CustomerMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<!-- select organization by customer_id -->
+	<select id="selectOrganizationByCustomerId" parameterType="int" resultType="Organization">
+		select * from tm_organization where id = #{0}
+	</select>
+	
+	<!-- select organization page -->
+	<select id="selectOrganizationsByPage" parameterType="Page" resultType="Organization">
+		select * from tm_organization
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select organization amount -->
+	<select id="selectOrganizationsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_organization
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<!-- when customer register or administrator create customer, insert customer  information -->
+	<insert id="insertOrganization" parameterType="Organization">
+		INSERT INTO `tm_organization`(
+		`customer_id`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
+		`org_trading_months`, `holder_name`, `holder_job_title`, `holder_phone`, `holder_email`)
+		VALUES (
+		#{customer_id}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
+		#{org_trading_months}, #{holder_name}, #{holder_job_title}, #{holder_phone}, #{holder_email})
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update customer -->
+	<update id="updateOrganization" parameterType="Organization">
+		update tm_organization
+		<set>
+			<if test="org_type != null">org_type = #{org_type},</if>
+			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
+			<if test="org_register_no != null">org_register_no = #{org_register_no},</if>
+			<if test="org_incoporate_date != null">org_incoporate_date = #{org_incoporate_date},</if>
+			<if test="org_trading_months != null">org_trading_months = #{org_trading_months},</if>
+			<if test="holder_name != null">holder_name = #{holder_name},</if>
+			<if test="holder_job_title != null">holder_job_title = #{holder_job_title},</if>
+			<if test="holder_phone != null">holder_phone = #{holder_phone},</if>
+			<if test="holder_email != null">holder_email = #{holder_email}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id=#{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>
