@@ -25,7 +25,7 @@
 	
 	<!-- select organization by customer_id -->
 	<select id="selectOrganizationByCustomerId" parameterType="int" resultType="Organization">
-		select * from tm_organization where id = #{0}
+		select * from tm_organization where customer_id = #{0}
 	</select>
 	
 	<!-- select organization page -->
@@ -68,6 +68,7 @@
 		<set>
 			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_type != null">org_type = #{org_type},</if>
+			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
 			<if test="org_register_no != null">org_register_no = #{org_register_no},</if>
 			<if test="org_incoporate_date != null">org_incoporate_date = #{org_incoporate_date},</if>
