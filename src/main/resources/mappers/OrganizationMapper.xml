@@ -13,7 +13,7 @@
 <!-- DELETE AREA --><!-- // END DELETE AREA -->
 
 
-<mapper namespace="com.tm.broadband.mapper.CustomerMapper">
+<mapper namespace="com.tm.broadband.mapper.OrganizationMapper">
 
 	<!-- DEFINITION AREA -->
 	
@@ -66,6 +66,7 @@
 	<update id="updateOrganization" parameterType="Organization">
 		update tm_organization
 		<set>
+			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_type != null">org_type = #{org_type},</if>
 			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>

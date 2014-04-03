@@ -41,7 +41,7 @@
 								<div class="form-group">
 									<label for="order_create_date" class="control-label col-md-6">Order Create Date</label>
 									<div class="col-md-6">
-										<p class="form-control-static"><strong><fmt:formatDate  value="${customerOrder.order_create_date}" type="date" /></strong></p>
+										<p class="form-control-static"><strong><fmt:formatDate  value="${customerOrder.order_create_date}" type="date" pattern="yyyy-MM-dd"/></strong></p>
 									</div>
 								</div>
 								<div class="form-group">

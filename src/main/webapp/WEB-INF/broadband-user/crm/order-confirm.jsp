@@ -180,13 +180,13 @@
 						<hr/>
 						<div class="row">
 							<div class="col-md-8">
-								<a href="${ctx}/broadband-user/crm/customer/order/create/back" class="btn btn-success btn-lg pull-left" id="back">Back</a>
+								<a href="${ctx}/broadband-user/crm/customer/order/create/back" class="btn btn-success btn-lg pull-left" >Back</a>
 							</div>
 							<div class="col-md-4">
-								<a href="${ctx}/broadband-user/crm/customer/order/confirm/save" class="btn btn-success btn-lg pull-left" id="back">Save Order</a>
-								<form class="form-horizontal" action="${ctx }/order/submit" method="post">
+								<a href="${ctx}/broadband-user/crm/customer/order/confirm/save" class="btn btn-success btn-lg pull-right" >Save Order</a>
+								<%-- <form class="form-horizontal" action="${ctx }/order/submit" method="post">
 									<button type="submit" class="btn btn-success btn-lg pull-right">Checkout</button>
-								</form>
+								</form> --%>
 							</div>
 						</div>
 						

@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 /**
@@ -29,11 +32,11 @@ public class Customer implements Serializable {
 	 */
 
 	private Integer id;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String login_name;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })
@@ -42,11 +45,11 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerValidatedMark.class })
 	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String last_name;
-	@NotEmpty(groups = { CustomerValidatedMark.class })
-	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String address;
-	@NotEmpty(groups = { CustomerValidatedMark.class })
-	@Email(groups = { CustomerValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class})
+	@Email(groups = { CustomerValidatedMark.class})
 	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class })
 	private String email;
 	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
@@ -83,6 +86,8 @@ public class Customer implements Serializable {
 	private String active_date_str;
 
 	// one customer may be get more orders
+	@Valid
+	private Organization organization = new Organization();
 	private CustomerOrder customerOrder = new CustomerOrder();
 	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;
@@ -403,6 +408,14 @@ public class Customer implements Serializable {
 
 	public void setCustomer_type(String customer_type) {
 		this.customer_type = customer_type;
+	}
+
+	public Organization getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
 	}
 	
 	

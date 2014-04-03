@@ -32,7 +32,7 @@
 				$('#text-error').text(json.errorMap[key]);
 				$('#alert-error').show('normal');
 			} else {
-				$('#' + key)
+				$('#' + key.replace('.','\\.'))
 					.tooltip({
 						html: true
 						, placement: placement
