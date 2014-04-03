@@ -111,6 +111,14 @@
 													
 												</td>
 											</tr>
+											<tr>
+												<th>&nbsp;</th>
+												<th>&nbsp;</th>
+												<th>&nbsp;</th>
+												<th>Unit Price</th>
+												<th>Qty</th>
+												<th>Subtotal</th>
+											</tr>
 										</c:when>
 										<c:otherwise>
 											<tr>
