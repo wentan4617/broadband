@@ -51,6 +51,11 @@ public class SaleController {
 		
 		model.addAttribute("plans", plans);
 		
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		model.addAttribute("hardwares", hardwares);
+		
 		return "broadband-user/sale/online-ordering";
 	}
 	
@@ -60,10 +65,7 @@ public class SaleController {
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
 		
-		Hardware hardware = new Hardware();
-		hardware.getParams().put("hardware_status", "selling");
-		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
-		model.addAttribute("hardwares", hardwares);
+		
 		
 		return "broadband-user/sale/online-ordering-customer-info";
 	}
