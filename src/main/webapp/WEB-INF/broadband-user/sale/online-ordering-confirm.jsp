@@ -2,6 +2,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
@@ -16,7 +17,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
@@ -42,19 +43,19 @@
 									<div class="col-md-6">
 										<p class="text-success"><strong>Personal Information:</strong></p>
 										<ul class="list-unstyled personal-info">
-											<li><strong class="text-info">${customer.login_name }</strong></li>
-											<li><strong class="text-info">${customer.first_name }&nbsp;${customer.last_name }</strong></li>
-											<li><strong class="text-info"><a href="mailto:#">${customer.email }</a></strong></li>
-											<li><strong class="text-info">${customer.cellphone }</strong></li>
-											<li><strong class="text-info">${customer.address }</strong></li>
+											<li><strong class="text-info">${orderCustomer.login_name }</strong></li>
+											<li><strong class="text-info">${orderCustomer.first_name }&nbsp;${orderCustomer.last_name }</strong></li>
+											<li><strong class="text-info"><a href="mailto:#">${orderCustomer.email }</a></strong></li>
+											<li><strong class="text-info">${orderCustomer.cellphone }</strong></li>
+											<li><strong class="text-info">${orderCustomer.address }</strong></li>
 										</ul>
-										<c:if test="${customer.customerOrder.order_broadband_type == 'transition' }">
+										<c:if test="${orderCustomer.customerOrder.order_broadband_type == 'transition' }">
 											<p class="text-success"><strong>Provider Information:</strong></p>
 											<ul class="list-unstyled personal-info">
-												<li><strong class="text-info">${customer.customerOrder.transition_provider_name }</strong></li>
-												<li><strong class="text-info">${customer.customerOrder.transition_account_holder_name }</strong></li>
-												<li><strong class="text-info">${customer.customerOrder.transition_account_number }</strong></li>
-												<li><strong class="text-info">${customer.customerOrder.transition_porting_number }</strong></li>
+												<li><strong class="text-info">${orderCustomer.customerOrder.transition_provider_name }</strong></li>
+												<li><strong class="text-info">${orderCustomer.customerOrder.transition_account_holder_name }</strong></li>
+												<li><strong class="text-info">${orderCustomer.customerOrder.transition_account_number }</strong></li>
+												<li><strong class="text-info">${orderCustomer.customerOrder.transition_porting_number }</strong></li>
 											</ul>
 										</c:if>
 									</div>
@@ -64,13 +65,13 @@
 											<li>
 												Order Date: 
 												<strong class="text-info">
-													<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
+													<fmt:formatDate  value="${orderCustomer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
 												</strong>
 											</li>
 											<li>
 												Total Price: 
 												<strong class="text-info">
-													NZ$ <fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+													NZ$ <fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
 												</strong>
 											</li>
 										</ul>
@@ -83,27 +84,64 @@
 							<thead>
 								<tr>
 									<th>Service / Product</th>
-									<th>Unit Price</th>
-									<th>Discount</th>
+									<th>Data</th>
+									<th>Term(mth)</th>
+									<th>Monthly Charge</th>
 									<th>Qty</th>
 									<th>Subtotal</th>
 								</tr>
 							</thead>
 							<tbody>
-								<c:forEach var="detail" items="${customer.customerOrder.customerOrderDetails }">
-									<tr>
-										<td>${detail.detail_name }</td>
-										<td>
-											<fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" />
-											
-										</td>
-										<td></td>
-										<td>${detail.detail_unit }</td>
-										<td>
-											<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-											
-										</td>
-									</tr>
+								<c:forEach var="detail" items="${orderCustomer.customerOrder.customerOrderDetails }">
+									<c:choose>
+										<c:when test="${fn:contains(detail.detail_type, 'plan-') }">
+											<tr>
+												<td>
+													${detail.detail_name }
+												</td>
+												<td>
+													${detail.detail_data_flow } GB
+													
+												</td>
+												<td>${detail.detail_term_period }</td>
+												<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+												<td>${detail.detail_unit }</td>
+												<td>
+													<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+													
+												</td>
+											</tr>
+											<tr>
+												<th>&nbsp;</th>
+												<th>&nbsp;</th>
+												<th>&nbsp;</th>
+												<th>Unit Price</th>
+												<th>Qty</th>
+												<th>Subtotal</th>
+											</tr>
+										</c:when>
+										<c:otherwise>
+											<tr>
+												<td>
+													${detail.detail_name }&nbsp;
+													<c:if test="${detail.detail_type == 'pstn' || detail.detail_type == 'voip'}">
+														<c:if test="${detail.pstn_number != null && detail.pstn_number != '' }">
+															<strong class="text-danger">(${detail.pstn_number })</strong>
+														</c:if>
+													</c:if>
+												</td>
+												<td>&nbsp;</td>
+												<td>&nbsp;</td>
+												<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+												<td>${detail.detail_unit }</td>
+												<td>
+													<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+													
+												</td>
+											</tr>
+										</c:otherwise>
+									</c:choose>
+									
 								</c:forEach>
 							</tbody>
 						</table>
@@ -116,14 +154,14 @@
 											<td>Total before GST</td>
 											<td>
 												NZ$ 
-												<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
+												<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
 											</td>
 										</tr>
 										<tr>
 											<td>GST at 15% </td>
 											<td>
 												NZ$ 
-												<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+												<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
 											</td>
 										</tr>
 										<tr>
@@ -131,7 +169,7 @@
 											<td>
 												<strong class="text-success">
 													NZ$ 
-													<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+													<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
 												</strong>
 											</td>
 										</tr>
@@ -145,6 +183,7 @@
 								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left" id="back">Back</a>
 							</div>
 							<div class="col-md-4">
+								<a href="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" class="btn btn-success btn-lg pull-right" id="back">Save Order</a>
 							</div>
 						</div>
 						

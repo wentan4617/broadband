@@ -5,13 +5,22 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
+
 public class Organization implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
 	private Integer customer_id;
+	@NotEmpty(groups = { CustomerOrganizationValidatedMark.class })
+	@Length(min = 1, max = 49, groups = { CustomerOrganizationValidatedMark.class })
+	private String org_name;
 	private String org_type;
 	private String org_trading_name;
 	private String org_register_no;
@@ -20,6 +29,9 @@ public class Organization implements Serializable {
 	private String holder_name;
 	private String holder_job_title;
 	private String holder_phone;
+	@NotEmpty(groups = { CustomerOrganizationValidatedMark.class})
+	@Email(groups = { CustomerOrganizationValidatedMark.class})
+	@Length(min = 1, max = 40, groups = { CustomerOrganizationValidatedMark.class })
 	private String holder_email;
 
 	/*
@@ -119,4 +131,18 @@ public class Organization implements Serializable {
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
+
+	public String getOrg_name() {
+		return org_name;
+	}
+
+	public void setOrg_name(String org_name) {
+		this.org_name = org_name;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+	
 }

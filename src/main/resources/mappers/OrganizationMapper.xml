@@ -13,7 +13,7 @@
 <!-- DELETE AREA --><!-- // END DELETE AREA -->
 
 
-<mapper namespace="com.tm.broadband.mapper.CustomerMapper">
+<mapper namespace="com.tm.broadband.mapper.OrganizationMapper">
 
 	<!-- DEFINITION AREA -->
 	
@@ -49,10 +49,10 @@
 	<!-- when customer register or administrator create customer, insert customer  information -->
 	<insert id="insertOrganization" parameterType="Organization">
 		INSERT INTO `tm_organization`(
-		`customer_id`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
+		`customer_id`, `org_name`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
 		`org_trading_months`, `holder_name`, `holder_job_title`, `holder_phone`, `holder_email`)
 		VALUES (
-		#{customer_id}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
+		#{customer_id}, #{org_name}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
 		#{org_trading_months}, #{holder_name}, #{holder_job_title}, #{holder_phone}, #{holder_email})
 	</insert>
 
@@ -66,6 +66,7 @@
 	<update id="updateOrganization" parameterType="Organization">
 		update tm_organization
 		<set>
+			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_type != null">org_type = #{org_type},</if>
 			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
 			<if test="org_register_no != null">org_register_no = #{org_register_no},</if>

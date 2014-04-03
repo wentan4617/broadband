@@ -24,6 +24,7 @@ import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.NotificationMapper;
+import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
@@ -58,6 +59,7 @@ public class CRMService {
 	private ProvisionLogMapper provisionLogMapper;
 	private CompanyDetailMapper companyDetailMapper;
 	private NotificationMapper notificationMapper;
+	private OrganizationMapper organizationMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -76,7 +78,8 @@ public class CRMService {
 			CompanyDetailMapper companyDetailMapper,
 			MailerService mailerService,
 			NotificationMapper notificationMapper,
-			SmserService smserService) {
+			SmserService smserService,
+			OrganizationMapper organizationMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -88,6 +91,7 @@ public class CRMService {
 		this.mailerService = mailerService;
 		this.notificationMapper = notificationMapper;
 		this.smserService = smserService;
+		this.organizationMapper = organizationMapper;
 	}
 	
 	@Transactional
@@ -272,6 +276,11 @@ public class CRMService {
 		customer.setActive_date(new Date(System.currentTimeMillis()));
 		
 		this.customerMapper.insertCustomer(customer);
+		
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getOrganization().setCustomer_id(customer.getId());
+			this.organizationMapper.insertOrganization(customer.getOrganization());
+		}
 		//System.out.println("customer id: " + customer.getId());
 		customerOrder.setCustomer_id(customer.getId());
 		

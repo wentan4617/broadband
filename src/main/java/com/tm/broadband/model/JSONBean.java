@@ -2,6 +2,7 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class JSONBean<T> implements Serializable {
@@ -10,6 +11,7 @@ public class JSONBean<T> implements Serializable {
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
 	private T model;
+	private List<T> models;
 	private boolean hasErrors;
 	private String url;
 	
@@ -52,6 +54,14 @@ public class JSONBean<T> implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public List<T> getModels() {
+		return models;
+	}
+
+	public void setModels(List<T> models) {
+		this.models = models;
 	}
 	
 	

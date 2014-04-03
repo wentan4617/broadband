@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,14 +17,18 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
@@ -30,10 +36,12 @@ import com.tm.broadband.validator.mark.CustomerValidatedMark;
 public class SaleController {
 	
 	private PlanService planService;
+	private CRMService crmService;
 
 	@Autowired
-	public SaleController(PlanService planService) {
+	public SaleController(PlanService planService, CRMService crmService) {
 		this.planService = planService;
+		this.crmService = crmService;
 	}
 	
 	@RequestMapping("/broadband-user/sale/online/ordering/plans")
@@ -44,7 +52,7 @@ public class SaleController {
 		Plan plan = new Plan();
 		plan.getParams().put("plan_group", "plan-term");
 		plan.getParams().put("plan_status", "selling");
-		plan.getParams().put("plan_sort", "non-naked");
+		plan.getParams().put("plan_sort", "CLOTHING");
 		plan.getParams().put("orderby", "order by data_flow");
 		
 		plans = this.planService.queryPlansBySome(plan);
@@ -65,23 +73,20 @@ public class SaleController {
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
 		
-		
-		
 		return "broadband-user/sale/online-ordering-customer-info";
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/confirm")
 	public String orderConfirm(Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result,
 			@ModelAttribute("orderPlan") Plan plan, 
-			//@ModelAttribute("hardwares") List<Hardware> hardwares, 
+			HttpServletRequest req,
 			RedirectAttributes attr) {
 		
-		if (result.hasErrors()) {
-			return "broadband-user/sale/online-ordering-customer-info";
-		}
+		Customer customer = (Customer)req.getSession().getAttribute("orderCustomer");
+		List<CustomerOrderDetail> cods = (List<CustomerOrderDetail>)req.getSession().getAttribute("orderCustomerOrderDetails");
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
+		customer.getCustomerOrder().getCustomerOrderDetails().addAll(cods);
 		customer.getCustomerOrder().setOrder_create_date(new Date());
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
@@ -97,8 +102,9 @@ public class SaleController {
 		cod_plan.setDetail_plan_memo(plan.getMemo());
 		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
 		cod_plan.setDetail_type(plan.getPlan_group());
+		cod_plan.setDetail_term_period(plan.getTerm_period());
 		
-		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
+		customer.getCustomerOrder().getCustomerOrderDetails().add(0, cod_plan);
 		
 		if ("plan-term".equals(plan.getPlan_group())) {
 			
@@ -107,7 +113,7 @@ public class SaleController {
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
+				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				cod_conn.setDetail_is_next_pay(0);
 				cod_conn.setDetail_type("new-connection");
@@ -131,27 +137,52 @@ public class SaleController {
 			}
 		}
 		
-		CustomerOrderDetail cod_hardware = new CustomerOrderDetail();
-		cod_hardware.setDetail_name("TP Link Router/Modem");
-		cod_hardware.setDetail_price(0d);
-		cod_hardware.setDetail_is_next_pay(0);
-		cod_hardware.setDetail_price(0d);
-		cod_hardware.setDetail_type("hardware-router");
-		cod_hardware.setDetail_unit(1);
+		if (cods != null) {
+			for (CustomerOrderDetail cod : cods) {
+				if ("hardware-router".equals(cod.getDetail_type())) {
+					cod.setDetail_is_next_pay(0);
+					cod.setIs_post(0);
+					customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
+					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + cod.getDetail_price());
+				} else if ("pstn".equals(cod.getDetail_type()) 
+						|| "voip".equals(cod.getDetail_type())){
+					cod.setDetail_unit(1);
+					cod.setDetail_is_next_pay(1);
+					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + cod.getDetail_price());
+				}
+			}
+		}
 		
-		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hardware);
-		
-		CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-		cod_pstn.setDetail_name("Landline");
-		cod_pstn.setDetail_price(0d);
-		cod_pstn.setDetail_is_next_pay(1);
-		cod_pstn.setDetail_price(0d);
-		cod_pstn.setDetail_type("pstn");
-		cod_pstn.setDetail_unit(1);
-		
-		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
 		
 		return "broadband-user/sale/online-ordering-confirm";
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/confirm/save")
+	public String orderSave(Model model, @ModelAttribute("orderPlan") Plan plan, 
+			RedirectAttributes attr, SessionStatus status, HttpServletRequest req) {
+		
+		Customer customer = (Customer)req.getSession().getAttribute("orderCustomer");
+		
+		customer.setUser_name(customer.getLogin_name());
+		customer.getCustomerOrder().setOrder_status("pending");
+		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
+		customer.getCustomerOrder().setSale_id(customer.getId());
+		
+		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
+		
+		
+		status.setComplete();
+		req.getSession().removeAttribute("orderCustomer");
+		
+		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId();
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{id}")
+	public String toCredit(Model model, @PathVariable("id") Integer id) {
+		
+		model.addAttribute("customer_id", id);
+		return "broadband-user/sale/online-ordering-credit";
 	}
 
 }
