@@ -174,7 +174,7 @@
 		<div class="col-md-3">
 			<div class="panel panel-success">
 		  		<div class="panel-heading">
-		  			<h3 class="panel-title"><strong class="text-success">System</strong></h3>
+		  			<h3 class="panel-title"><strong class="text-success">Sale</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
 			  		<p>Sale Online Ordering.</p>

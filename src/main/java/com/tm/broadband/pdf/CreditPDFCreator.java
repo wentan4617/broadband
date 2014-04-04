@@ -33,8 +33,8 @@ public class CreditPDFCreator extends ITextUtils {
 	private BaseColor titleBorderColor = new BaseColor(200,200,200);
 	private BaseColor tableBorderColor = new BaseColor(159,159,159);
 	private BaseColor tableRowLineColor = new BaseColor(237,237,237);
-
-	public CreditPDFCreator() {
+	
+	public void loadFont(){
 		try {
 			BaseFont bf_arial_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_8 = new Font(bf_arial_normal_8, 8, Font.NORMAL);
@@ -51,8 +51,12 @@ public class CreditPDFCreator extends ITextUtils {
 		}
 	}
 
+	public CreditPDFCreator() {
+		loadFont();
+	}
+
 	public CreditPDFCreator(Customer customer, CustomerCredit cc, CustomerOrder co) {
-		this();
+		loadFont();
 		this.setCustomer(customer);
 		this.setCc(cc);
 		this.setCo(co);
