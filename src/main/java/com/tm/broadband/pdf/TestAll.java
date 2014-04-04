@@ -106,7 +106,7 @@ public class TestAll {
 		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		
 		// CUSTOMER type
-		c.setCustomer_type("business");
+		c.setCustomer_type("personal");
 		// ORDER Broadband Type
 		// Necessary if broadband type is transition
 		co.setOrder_broadband_type("transition");

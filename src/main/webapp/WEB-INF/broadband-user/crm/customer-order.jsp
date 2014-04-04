@@ -327,7 +327,7 @@
 					</div>
 					<hr />
 					<!-- order details -->
-					<table class="table">
+					<table class="table" style="font-size:12px;">
 						<thead>
 							<tr>
 								<th>Detail Name</th>
@@ -372,13 +372,13 @@
 									<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 									<td>&nbsp;
 										<c:if test="${customerOrderDetail.detail_type=='discount'}">
-											<a class="btn btn-danger btn-xs" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
+											<a class="btn btn-danger btn-xs pull-right" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
 											  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
 											</a>
 										</c:if>
 										<c:if test="${customerOrderDetail.detail_type=='pstn'}">
-											<a class="btn btn-success btn-xs" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:150px;">
-											  	<span class="glyphicon glyphicon-edit"></span>&nbsp;&nbsp;&nbsp;&nbsp;Update PSTN
+											<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:100px;">
+											  	<span class="glyphicon glyphicon-edit"></span> PSTN
 											</a>
 										</c:if>
 									</td>
@@ -389,8 +389,8 @@
 							<tr>
 								<td colspan="12">
 									<!-- Button trigger modal -->
-									<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal" style="width:150px;">
-									  <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;&nbsp;&nbsp;Add Discount
+									<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal" style="width:100px;">
+									  <span class="glyphicon glyphicon-plus"></span> Discount
 									</a>
 								</td>
 							</tr>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerCreditMapper">
+	
+	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
+	<!-- select customer credit page -->
+	<select id="selectCustomerCreditsByPage" parameterType="Page" resultType="CustomerCredit">
+		select * from tm_customer_credit
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customer credit amount -->
+	<select id="selectCustomerCreditsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_credit
+	</select>
+	<!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	<insert id="insertCustomerCredit" parameterType="CustomerCredit">
+		INSERT INTO `tm_cutomer_credit`(
+			`customer_id`, `card_type`, `holder_name`, `card_number`, `security_code`, `expiry_date`) 
+		VALUES (
+			#{customer_id},#{card_type},#{holder_name},#{card_number},#{security_code},#{expiry_date})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA -->
+	<update id="updateCustomerCredit" parameterType="CustomerCredit">
+		UPDATE `tm_cutomer_credit` 
+			<set>
+				<if test="customer_id != null">customer_id=#{customer_id},</if>
+				<if test="card_type != null">card_type=#{card_type},</if>
+				<if test="holder_name != null">holder_name=#{holder_name},</if>
+				<if test="card_number != null">card_number=#{card_number},</if>
+				<if test="security_code != null">security_code=#{security_code},</if>
+				<if test="expiry_date != null">expiry_date=#{expiry_date}</if>
+			</set>
+			<where>
+				<if test="params.id != null">id=#{params.id}</if>
+			</where>
+	</update>
+	<!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	
+	
+</mapper>
