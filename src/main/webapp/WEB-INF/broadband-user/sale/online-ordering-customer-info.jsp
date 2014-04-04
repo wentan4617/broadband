@@ -343,10 +343,10 @@
 		}
 		
 		if (customer.customerOrder.order_broadband_type == 'transition') {
-			customer.customerOrder.transition_provider_name = $('#transition_provider_name').val();
-			customer.customerOrder.transition_account_holder_name = $('#transition_account_holder_name').val();
-			customer.customerOrder.transition_account_number = $('#transition_account_number').val();
-			customer.customerOrder.transition_porting_number = $('#transition_porting_number').val();
+			customer.customerOrder.transition_provider_name = $('#customerOrder\\.transition_provider_name').val();
+			customer.customerOrder.transition_account_holder_name = $('#customerOrder\\.transition_account_holder_name').val();
+			customer.customerOrder.transition_account_number = $('#customerOrder\\.transition_account_number').val();
+			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
 		}
 		
 		

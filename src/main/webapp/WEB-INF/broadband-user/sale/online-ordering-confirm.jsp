@@ -29,56 +29,118 @@
 				<div id="collapseOrderInfo" class="panel-collapse collapse in">
 					<div class="panel-body">
 						<div class="row">
-							<div class="col-md-8">
-								<div class="row">
-									<div class="col-md-3">
-										<h1>Order</h1>
-									</div>
-									<div class="col-md-8 text-right">
-										<span class="logo_ct"></span>
-									</div>
-								</div>
-								<hr style="margin-top:0;"/>
-								<div class="row">
-									<div class="col-md-6">
-										<p class="text-success"><strong>Personal Information:</strong></p>
-										<ul class="list-unstyled personal-info">
-											<li><strong class="text-info">${orderCustomer.login_name }</strong></li>
-											<li><strong class="text-info">${orderCustomer.first_name }&nbsp;${orderCustomer.last_name }</strong></li>
-											<li><strong class="text-info"><a href="mailto:#">${orderCustomer.email }</a></strong></li>
-											<li><strong class="text-info">${orderCustomer.cellphone }</strong></li>
-											<li><strong class="text-info">${orderCustomer.address }</strong></li>
-										</ul>
-										<c:if test="${orderCustomer.customerOrder.order_broadband_type == 'transition' }">
-											<p class="text-success"><strong>Provider Information:</strong></p>
-											<ul class="list-unstyled personal-info">
-												<li><strong class="text-info">${orderCustomer.customerOrder.transition_provider_name }</strong></li>
-												<li><strong class="text-info">${orderCustomer.customerOrder.transition_account_holder_name }</strong></li>
-												<li><strong class="text-info">${orderCustomer.customerOrder.transition_account_number }</strong></li>
-												<li><strong class="text-info">${orderCustomer.customerOrder.transition_porting_number }</strong></li>
-											</ul>
-										</c:if>
-									</div>
-									<div class="col-md-6 ">
-										<p class="text-success"><strong>&nbsp;</strong></p>
-										<ul class="list-unstyled personal-info pull-right">
-											<li>
-												Order Date: 
-												<strong class="text-info">
-													<fmt:formatDate  value="${orderCustomer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
-												</strong>
-											</li>
-											<li>
-												Total Price: 
-												<strong class="text-info">
-													NZ$ <fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
-												</strong>
-											</li>
-										</ul>
-									</div>
-								</div>
+							<div class="col-sm-6">
+								<h4 class="text-success">
+									<c:if test="${orderCustomer.customer_type == 'personal' }">
+										${orderCustomer.title } ${orderCustomer.first_name } ${orderCustomer.last_name }
+									</c:if>
+									<c:if test="${orderCustomer.customer_type == 'business' }">
+										${orderCustomer.organization.org_name }
+									</c:if>
+								</h4>
+							</div>
+							<div class="col-sm-6"></div>
+						</div>
+						<div class="row">
+							<div class="col-sm-6">
+								<h4 class="text-success">
+									${orderCustomer.address }
+								</h4>
+							</div>
+							<div class="col-sm-6">
+								<h4 class="text-success pull-right" >
+									Order Date: 
+									<strong class="text-info">
+										<fmt:formatDate  value="${orderCustomer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
+									</strong>
+								</h4>
 							</div>
 						</div>
+						
+						<c:if test="${orderCustomer.customer_type == 'business' }">
+							<hr style="margin-top:0;"/>
+							<h2>Business Information</h2>
+							<hr style="margin-top:0;"/>
+							<div class="row">
+								<div class="col-sm-4"><strong>Organization Type</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.org_type }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Trading Name</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.org_trading_name }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Registration No.</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.org_register_no }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Date Incoporated</strong></div>
+								<div class="col-sm-6">
+									<strong class="text-info">
+										<fmt:formatDate  value="${orderCustomer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
+									</strong>
+								</div>
+							</div>
+							<hr /><!-- style="margin-top:0;" -->
+							<h2>Account Holder Information</h2>
+							<hr style="margin-top:0;"/>
+							<div class="row" >
+								<div class="col-sm-4"><strong>Full name</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.holder_name }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Job Title</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.holder_job_title }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Phone</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.holder_phone }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Email</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.holder_email }</strong></div>
+							</div>
+						</c:if>
+						<c:if test="${orderCustomer.customer_type == 'personal' }">
+							<hr /><!-- style="margin-top:0;" -->
+							<h2>Personal Information</h2>
+							<hr style="margin-top:0;"/>
+							<div class="row" >
+								<div class="col-sm-4"><strong>Phone</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.cellphone }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Mobile</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.cellphone }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Email</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.email }</strong></div>
+							</div>
+						</c:if>
+						
+						<c:if test="${orderCustomer.customerOrder.order_broadband_type == 'transition' }">
+							<hr /><!-- style="margin-top:0;" -->
+							<h2>Transition</h2>
+							<hr style="margin-top:0;"/>
+							<div class="row" >
+								<div class="col-sm-4"><strong>Your Current Provider Name</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_provider_name }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Account Holder Name</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_account_holder_name }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Your Current Account Number</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_account_number }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Your Porting Number</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_porting_number }</strong></div>
+							</div>
+						</c:if>
+						
 						<hr/>
 						<table class="table">
 							<thead>
@@ -180,10 +242,10 @@
 						<hr/>
 						<div class="row">
 							<div class="col-md-8">
-								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left" id="back">Back</a>
+								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left" >Back</a>
 							</div>
 							<div class="col-md-4">
-								<a href="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" class="btn btn-success btn-lg pull-right" id="back">Save Order</a>
+								<a  class="btn btn-success btn-lg pull-right" data-toggle="modal" data-target="#save_order_model" >Save Order</a>
 							</div>
 						</div>
 						
@@ -193,14 +255,37 @@
 		</div>
 	</div>
 </div>
-	
+
+<!-- Modal -->
+<div class="modal fade" id="save_order_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Save Order & Generate PDF</h4>
+			</div>
+			<div class="modal-body">
+				<p class="text-danger">
+					Click the button to save the order, generated broadband application form pdf.
+				</p>
+			</div>
+			<div class="modal-footer">
+				<a href="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" class="btn btn-success btn-lg" id="save_order">Save Order & Generate PDF</a>
+			</div>
+		</div>
+	</div>
+</div>
+
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
 	
-
+	/*$('#save_order').click(function(e){
+		e.preventDefault();
+	});*/
+	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
