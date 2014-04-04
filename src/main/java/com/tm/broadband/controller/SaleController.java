@@ -19,23 +19,32 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.pdf.CreditPDFCreator;
 import com.tm.broadband.pdf.OrderPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SaleService;
+import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
 @Controller
 @SessionAttributes("orderPlan")
@@ -202,16 +211,18 @@ public class SaleController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{customer_id}/{order_id}")
-	public String toCredit(Model model, @PathVariable("customer_id") Integer customer_id, @PathVariable("order_id") Integer order_id) {
+	public String toCredit(Model model, @PathVariable("customer_id") Integer customer_id
+			, @PathVariable("order_id") Integer order_id) {
 		
 		model.addAttribute("customer_id", customer_id);
 		model.addAttribute("order_id", order_id);
+		model.addAttribute("customerCredit", new CustomerCredit());
 		return "broadband-user/sale/online-ordering-credit";
 	}
 	
 	// DOWNLOAD ORDER PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/order/pdf/download/{order_id}")
-    public ResponseEntity<byte[]> downloadInvoicePDF(Model model
+    public ResponseEntity<byte[]> downloadOrderPDF(Model model
     		,@PathVariable(value = "order_id") int order_id) throws IOException {
 		String filePath = this.saleService.queryCustomerOrderFilePathById(order_id);
 		
@@ -230,5 +241,109 @@ public class SaleController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;
     }
+	
+	// DOWNLOAD ORDER PDF
+	@RequestMapping(value = "/broadband-user/crm/customer/order/credit/pdf/download/{order_id}")
+    public ResponseEntity<byte[]> downloadCreditPDF(Model model
+    		,@PathVariable(value = "order_id") int order_id) throws IOException {
+		String filePath = this.saleService.queryCustomerCreditFilePathById(order_id);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/create", method = RequestMethod.POST)
+	public String doCredit(Model model,
+			@ModelAttribute("customerCredit") @Validated(CustomerCreditValidatedMark.class) CustomerCredit customerCredit
+			,@RequestParam("customer_id") Integer customer_id
+			,@RequestParam("order_id") Integer order_id
+			,BindingResult result
+			,RedirectAttributes attr) {
+		model.addAttribute("panelheading", "Customer Credit Card Information");
+		model.addAttribute("action", "/broadband-user/sale/online/ordering/order/credit/create");
+
+		if (result.hasErrors()) {
+			return "broadband-user/sale/online-ordering-credit";
+		}
+		
+		CustomerOrder co = new CustomerOrder();
+		co.setId(order_id);
+		this.saleService.createCustomerCredit(customerCredit);
+
+		// BEGIN CREDIT PDF
+		CreditPDFCreator cPDFCreator = new CreditPDFCreator();
+		customerCredit.setCustomer(this.crmService.queryCustomerById(customer_id));
+		cPDFCreator.setCc(customerCredit);
+		cPDFCreator.setCo(co);
+		cPDFCreator.setOrg(this.saleService.queryOrganizationByCustomerId(customer_id));
+		String creditPDFPath = null;
+		try {
+			creditPDFPath = cPDFCreator.create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		co.getParams().put("id", order_id);
+		co.setCredit_pdf_path(creditPDFPath);
+		this.crmService.editCustomerOrder(co);
+		// END CREDIT PDF
+		
+		return "redirect:/broadband-user/sale/online-ordering-result/" + order_id + "/" + customer_id;
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online-ordering-result/{order_id}/{customer_id}")
+	public String toCreditResult(Model model
+			, @PathVariable("order_id") Integer order_id
+			, @PathVariable("customer_id") Integer customer_id) {
+		
+		CustomerOrder co = new CustomerOrder();
+		co.setId(order_id);
+		model.addAttribute("customerOrder", co);
+		return "broadband-user/sale/online-ordering-result";
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload")
+	public String uploadSignedPDF(Model model
+			, @RequestParam("order_id") Integer order_id
+			, @RequestParam("customer_id") Integer customer_id
+			, @RequestParam("order_pdf_path") MultipartFile order_pdf_path
+			, @RequestParam("credit_pdf_path") MultipartFile credit_pdf_path) {
+		
+		if(!order_pdf_path.isEmpty() && !credit_pdf_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "application_" + order_id
+					+ ".pdf");
+			String credit_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "credit_" + order_id
+					+ ".pdf");
+			try {
+				order_pdf_path.transferTo(new File(order_path));
+				credit_pdf_path.transferTo(new File(credit_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return "redirect:/broadband-user/sale/online-ordering-upload-result";
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result")
+	public String toUploadResult(Model model) {
+		
+		return "broadband-user/sale/online-ordering-upload-result";
+	}
 
 }

@@ -1,5 +1,9 @@
 package com.tm.broadband.model;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
+import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
+
 public class CustomerCredit {
 
 	/*
@@ -8,9 +12,13 @@ public class CustomerCredit {
 	private Integer id;
 	private Integer customer_id;
 	private String card_type;
+	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String holder_name;
+	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String card_number;
+	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String security_code;
+	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String expiry_date;
 	/*
 	 * END TABLE MAPPING PROPERTIES

@@ -14,9 +14,35 @@
 
 <mapper namespace="com.tm.broadband.mapper.CustomerCreditMapper">
 	
-	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- DEFINITION AREA -->
+	
+	<sql id="customerCreditWhere">
+		<where>
+			<if test="param.customer_id != null">customer_id=#{param.customer_id},</if>
+			<if test="param.card_type != null">card_type=#{param.card_type},</if>
+			<if test="param.holder_name != null">holder_name=#{param.holder_name},</if>
+			<if test="param.card_number != null">card_number=#{param.card_number},</if>
+			<if test="param.security_code != null">security_code=#{param.security_code},</if>
+			<if test="param.expiry_date != null">expiry_date=#{param.expiry_date}</if>
+		</where>
+	</sql>
+	
+	<!-- // DEFINITION AREA -->
 	<!-- =================================================================================== -->
 	<!-- SELECT AREA -->
+	
+	<!-- select customer credit -->
+	<select id="selectCustomerCredit" parameterType="CustomerCredit" resultType="CustomerCredit">
+		select * from tm_customer_credit
+		<include refid="customerCreditWhere"/>
+	</select>
+	
+	<!-- select customer credits -->
+	<select id="selectCustomerCredits" parameterType="CustomerCredit" resultType="CustomerCredit">
+		select * from tm_customer_credit
+		<include refid="customerCreditWhere"/>
+	</select>
+	
 	<!-- select customer credit page -->
 	<select id="selectCustomerCreditsByPage" parameterType="Page" resultType="CustomerCredit">
 		select * from tm_customer_credit
@@ -28,6 +54,7 @@
 	<select id="selectCustomerCreditsSum" parameterType="Page" resultType="int">
 		select count(*) from tm_customer_credit
 	</select>
+	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
