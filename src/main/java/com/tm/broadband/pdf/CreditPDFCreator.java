@@ -1,3 +1,4 @@
+
 package com.tm.broadband.pdf;
 
 import java.io.File;
@@ -14,16 +15,16 @@ import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
 public class CreditPDFCreator extends ITextUtils {
-	private Customer customer;
 	private CustomerCredit cc;
 	private CustomerOrder co;
+	private Organization org;
 	private Font arial_normal_8;
 	private Font arial_normal_9;
 	private Font arial_normal_10;
@@ -55,18 +56,18 @@ public class CreditPDFCreator extends ITextUtils {
 		loadFont();
 	}
 
-	public CreditPDFCreator(Customer customer, CustomerCredit cc, CustomerOrder co) {
+	public CreditPDFCreator(CustomerCredit cc, CustomerOrder co, Organization org) {
 		loadFont();
-		this.setCustomer(customer);
 		this.setCc(cc);
 		this.setCo(co);
+		this.setOrg(org);
 	}
 	
-	public void create() throws DocumentException, MalformedURLException, IOException{
+	public String create() throws DocumentException, MalformedURLException, IOException{
 		
         Document document = new Document(PageSize.A4);
 		String outputFile = TMUtils.createPath("broadband" + File.separator
-				+ "customers" + File.separator + this.customer.getId()
+				+ "customers" + File.separator + this.cc.getCustomer_id()
 				+ File.separator + "credit_" + this.co.getId()
 				+ ".pdf");
         
@@ -106,6 +107,8 @@ public class CreditPDFCreator extends ITextUtils {
         document.close();
 		// CLOSE WRITER
         writer.close();
+        
+        return outputFile;
 	}
 	
 	public PdfPTable createCreditPDFTitleTable(){
@@ -148,7 +151,7 @@ public class CreditPDFCreator extends ITextUtils {
         // END PARAMETERS
         
         // BEGIN OFFICIAL USE ONLY ROWS
-        addCol(officialUseOnlyInnerTable, "Office use only", 14, labelIndent, arial_normal_10, 0F, rowPaddingBottom, null);
+        addCol(officialUseOnlyInnerTable, "Official use only", 14, labelIndent, arial_normal_10, 0F, rowPaddingBottom, null);
         addCol(officialUseOnlyInnerTable, "Customer Ref", 2, labelIndent, arial_normal_10, 0F, 0F, null);
         addColBottomBorder(officialUseOnlyInnerTable, " ", 5, 0F, null, 0F, 0F, null, null);
         addEmptyRow(officialUseOnlyInnerTable, 6F, 1);
@@ -200,32 +203,37 @@ public class CreditPDFCreator extends ITextUtils {
     	// END CONTACT DETAILS INNER TABLE PADDING TOP
 
         // BEGIN CONTACT DETAILS ROWS
-        addCol(contactDetailsInnerTable, "First Name", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getFirst_name(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
-        addEmptyRow(contactDetailsInnerTable, 6F, 1);
-        addCol(contactDetailsInnerTable, "Last Name", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getLast_name(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        if(this.cc.getCustomer().getCustomer_type().equals("business")){
+            addCol(contactDetailsInnerTable, "Organisation Name", 3, labelIndent, arial_normal_10, 0F, 0F, null);
+            addColBottomBorder(contactDetailsInnerTable, this.getOrg().getOrg_name(), 10, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        } else if(this.cc.getCustomer().getCustomer_type().equals("personal")){
+            addCol(contactDetailsInnerTable, "First Name", 2, labelIndent, arial_normal_10, 0F, 0F, null);
+            addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getFirst_name(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
+            addEmptyRow(contactDetailsInnerTable, 6F, 1);
+            addCol(contactDetailsInnerTable, "Last Name", 2, labelIndent, arial_normal_10, 0F, 0F, null);
+            addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getLast_name(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        }
         addEmptyRow(contactDetailsInnerTable, 6F, 1);
     	// BEGIN CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addEmptyRow(contactDetailsInnerTable, rowPadding, colspan);
     	// END CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addCol(contactDetailsInnerTable, "Full Address", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getAddress(), 11, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getAddress(), 11, labelIndent, arial_normal_10, 0F, 1F, null, null);
         addEmptyRow(contactDetailsInnerTable, 6F, 1);
     	// BEGIN CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addEmptyRow(contactDetailsInnerTable, rowPadding, colspan);
     	// END CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addCol(contactDetailsInnerTable, "Phone", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getPhone(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getPhone(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
         addEmptyRow(contactDetailsInnerTable, 6F, 1);
         addCol(contactDetailsInnerTable, "Mobile", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getCellphone(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getCellphone(), 4, labelIndent, arial_normal_10, 0F, 1F, null, null);
         addEmptyRow(contactDetailsInnerTable, 6F, 1);
     	// BEGIN CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addEmptyRow(contactDetailsInnerTable, rowPadding, colspan);
     	// END CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addCol(contactDetailsInnerTable, "E-mail", 2, labelIndent, arial_normal_10, 0F, 0F, null);
-        addColBottomBorder(contactDetailsInnerTable, this.getCustomer().getEmail(), 11, labelIndent, arial_normal_10, 0F, 1F, null, null);
+        addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getEmail(), 11, labelIndent, arial_normal_10, 0F, 1F, null, null);
         addEmptyRow(contactDetailsInnerTable, 6F, 1);
     	// BEGIN CONTACT DETAILS INNER TABLE PADDING BETWEEN ROWS
         addEmptyRow(contactDetailsInnerTable, rowPadding, colspan);
@@ -512,14 +520,6 @@ public class CreditPDFCreator extends ITextUtils {
 		return termAndConditionTable;
 	}
 
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
 	public CustomerCredit getCc() {
 		return cc;
 	}
@@ -534,6 +534,14 @@ public class CreditPDFCreator extends ITextUtils {
 
 	public void setCo(CustomerOrder co) {
 		this.co = co;
+	}
+
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
 	}
 
 }
