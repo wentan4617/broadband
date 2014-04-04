@@ -54,8 +54,7 @@ public class OrderPDFCreator extends ITextUtils {
 	// END Order Detail Differentiations Variables
 	// END Temporary Variables
 	
-	
-	public OrderPDFCreator(){
+	public void loadFont(){
 		try {
 			BaseFont bf_arial_normal_7 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
 			this.arial_normal_7 = new Font(bf_arial_normal_7, 7, Font.NORMAL);
@@ -74,17 +73,21 @@ public class OrderPDFCreator extends ITextUtils {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public OrderPDFCreator(){
+		loadFont();
 
 	}
 	
 	public OrderPDFCreator(Customer customer, CustomerOrder customerOrder, Organization org){
-		this();
+		loadFont();
 		this.setCustomer(customer);
 		this.setCustomerOrder(customerOrder);
 		this.setOrg(org);
 	}
 	
-	public void create() throws DocumentException, IOException{
+	public String create() throws DocumentException, IOException{
 		
 		// DIFFERENTIATES ORDER DETAILS
 		if(this.getCustomerOrder().getCustomerOrderDetails().size()>0){
@@ -178,6 +181,8 @@ public class OrderPDFCreator extends ITextUtils {
         // BEGIN If Merge PDF Second Part
 //        mergePDF(outputFile, inputFile, term);
         // END If Merge PDF Second Part
+        
+        return outputFile;
 	}
 	
 	public PdfPTable createOrderPDFTitleTable(){

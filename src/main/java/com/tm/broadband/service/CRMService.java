@@ -42,7 +42,7 @@ import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.util.TMUtils;
 
 /**
- * RMC Module service
+ * CRM Module service
  * 
  * @author Cook1fan
  * 

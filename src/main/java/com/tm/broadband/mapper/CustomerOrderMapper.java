@@ -34,6 +34,9 @@ public interface CustomerOrderMapper {
 	CustomerOrder selectCustomerOrderById(int id);
 	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
 	
+	String selectCustomerOrderFilePathById(int id);
+	String selectCustomerCreditFilePathById(int id);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

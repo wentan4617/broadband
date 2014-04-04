@@ -1,18 +1,24 @@
 package com.tm.broadband.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,16 +26,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.tm.broadband.model.CompanyDetail;
+import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.pdf.OrderPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
-import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
-import com.tm.broadband.validator.mark.CustomerValidatedMark;
+import com.tm.broadband.service.SaleService;
 
 @Controller
 @SessionAttributes("orderPlan")
@@ -37,11 +43,14 @@ public class SaleController {
 	
 	private PlanService planService;
 	private CRMService crmService;
+	private SaleService saleService;
 
 	@Autowired
-	public SaleController(PlanService planService, CRMService crmService) {
+	public SaleController(PlanService planService, CRMService crmService
+			, SaleService saleService) {
 		this.planService = planService;
 		this.crmService = crmService;
+		this.saleService = saleService;
 	}
 	
 	@RequestMapping("/broadband-user/sale/online/ordering/plans")
@@ -169,20 +178,57 @@ public class SaleController {
 		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 		customer.getCustomerOrder().setSale_id(customer.getId());
 		
+		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
+		
+		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
+		String orderPDFPath = null;
+		try {
+			orderPDFPath = new OrderPDFCreator(customer, customer.getCustomerOrder(), customer.getOrganization()).create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customer.getCustomerOrder().getId());
+		co.setOrder_pdf_path(orderPDFPath);
+		this.crmService.editCustomerOrder(co);
+		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		
 		
 		status.setComplete();
 		req.getSession().removeAttribute("orderCustomer");
 		
-		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId();
+		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId() + "/" + customer.getCustomerOrder().getId();
 	}
 	
-	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{id}")
-	public String toCredit(Model model, @PathVariable("id") Integer id) {
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{customer_id}/{order_id}")
+	public String toCredit(Model model, @PathVariable("customer_id") Integer customer_id, @PathVariable("order_id") Integer order_id) {
 		
-		model.addAttribute("customer_id", id);
+		model.addAttribute("customer_id", customer_id);
+		model.addAttribute("order_id", order_id);
 		return "broadband-user/sale/online-ordering-credit";
 	}
+	
+	// DOWNLOAD ORDER PDF
+	@RequestMapping(value = "/broadband-user/crm/customer/order/pdf/download/{order_id}")
+    public ResponseEntity<byte[]> downloadInvoicePDF(Model model
+    		,@PathVariable(value = "order_id") int order_id) throws IOException {
+		String filePath = this.saleService.queryCustomerOrderFilePathById(order_id);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
 
 }

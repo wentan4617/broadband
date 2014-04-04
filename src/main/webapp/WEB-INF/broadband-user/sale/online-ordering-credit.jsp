@@ -28,6 +28,9 @@
 				</div>
 				<div id="collapseOrderInfo" class="panel-collapse collapse in">
 					<div class="panel-body">
+						<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order_id}" class="btn btn-success btn-lg">
+							<span class="glyphicon glyphicon-save"></span> ORDER PDF
+						</a>
 					</div>
 				</div>
 			</div>
@@ -40,7 +43,6 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
-	
 
 })(jQuery);
 </script>

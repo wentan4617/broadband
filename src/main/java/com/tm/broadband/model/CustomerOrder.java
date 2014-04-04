@@ -48,6 +48,7 @@ public class CustomerOrder implements Serializable {
 	private String pppoe_password;
 	private Integer sale_id;
 	private String order_pdf_path;
+	private String credit_pdf_path;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -367,6 +368,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_pdf_path(String order_pdf_path) {
 		this.order_pdf_path = order_pdf_path;
+	}
+
+	public String getCredit_pdf_path() {
+		return credit_pdf_path;
+	}
+
+	public void setCredit_pdf_path(String credit_pdf_path) {
+		this.credit_pdf_path = credit_pdf_path;
 	}
 
 	
