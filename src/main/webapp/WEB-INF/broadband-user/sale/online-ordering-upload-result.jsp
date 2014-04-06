@@ -46,7 +46,7 @@
 							</div>
 						  </div>
 							<hr/>
-						  <!-- <div class="form-group">
+						  <div class="form-group">
 							    <label for="order_pdf_path" class="col-sm-4 control-label">Order PDF File Path</label>
 							    <div class="col-sm-4">
 									<input type="file" name="order_pdf_path" class="form-control" placeholder="File Path" />
@@ -66,7 +66,7 @@
 						    <div class="col-sm-12">
 						      <button type="submit" class="btn btn-success btn-lg pull-right">Confirm</button>
 						    </div>
-						  </div> -->
+						  </div>
 						 </form>
 					</div>
 				</div>

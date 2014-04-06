@@ -28,6 +28,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
 /** 
@@ -35,11 +36,12 @@ import com.tm.broadband.util.TMUtils;
 * 
 * @author DON CHEN
 */ 
-public class InvoicePDFCreator {
-	
-	private CustomerInvoice customerInvoice;
+public class InvoicePDFCreator extends ITextUtils {
+
 	private CompanyDetail companyDetail;
-	private Customer customer;
+	private CustomerInvoice currentCustomerInvoice;
+    private CustomerInvoice lastCustomerInvoice;
+    private Customer customer;
 
 	private Font arial_normal_6;
 	private Font arial_normal_7;
@@ -60,8 +62,7 @@ public class InvoicePDFCreator {
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
-	
-	public InvoicePDFCreator(){
+	public void loadFont(){
 		try {
 			// pdf directory is in the tomcat root path
 			BaseFont bf_arial_normal_6 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
@@ -101,16 +102,21 @@ public class InvoicePDFCreator {
 		}
 	}
 	
-	public void create(String outputFile) throws DocumentException, MalformedURLException, IOException{
-        Document document = new Document(PageSize.A4);
-        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
-        document.open();
-        
-        /*
-         *
-         *  FIRST PAGE CONTENTS BEGIN
-         * 
-         */
+	public InvoicePDFCreator(){
+		loadFont();
+	}
+	
+	public InvoicePDFCreator(CompanyDetail companyDetail
+			,CustomerInvoice currentCustomerInvoice
+			,Customer customer) {
+		loadFont();
+		this.companyDetail = companyDetail;
+		this.currentCustomerInvoice = currentCustomerInvoice;
+		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
+		this.customer = customer;
+	}
+	
+	public PdfPTable createCustomerBasicInfo(){
         PdfPTable headerTable = new PdfPTable(1);
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
 		// add common header
@@ -126,25 +132,35 @@ public class InvoicePDFCreator {
         headerTable.addCell(cell);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        Customer customer = this.getCustomer();
-        cell.setPhrase(new Phrase(customer.getFirst_name()+" "+customer.getLast_name(), tahoma_normal_10));
+        cell.setPhrase(new Phrase(this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), tahoma_normal_10));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(customer.getAddress(), tahoma_normal_10));
+        cell.setPhrase(new Phrase(this.getCustomer().getAddress(), tahoma_normal_10));
         headerTable.addCell(cell);
         cell.setPhrase(new Phrase(" "));
         headerTable.addCell(cell);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        document.add(headerTable);
+		return headerTable;
+	}
+
+	public void create(String outputFile) throws DocumentException, MalformedURLException, IOException{
+        Document document = new Document(PageSize.A4);
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+        document.open();
+        
+        /*
+         *
+         *  FIRST PAGE CONTENTS BEGIN
+         * 
+         */
+        document.add(createCustomerBasicInfo());
         
         /*
          * Recent Transactions Table begin
          */
         // non empty table start with 4 columns
-        PdfPTable transactionTable = new PdfPTable(4);
-        // page's width percentage
-        transactionTable.setWidthPercentage(98);
+        PdfPTable transactionTable = newTable(4, 98);
         PdfPCell transactionTitleCell = newCell("Recent transactions", tahoma_bold_white_10, 0);
         transactionTitleCell.setPaddingBottom(4);
         transactionTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
@@ -165,13 +181,11 @@ public class InvoicePDFCreator {
         transactionColumnsCell.setPaddingTop(6);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
-        
+
         // account filtering of last invoice begin
-        CustomerInvoice currentCustomerInvoice = this.getCustomerInvoice();
-        CustomerInvoice lastCustomerInvoice = this.getCustomerInvoice().getLastCustomerInvoice();
-        Double lastAmountPayable = lastCustomerInvoice!=null && lastCustomerInvoice.getAmount_payable()!=null ? lastCustomerInvoice.getAmount_payable() : 0.0;
-        Double lastAmountPaid = lastCustomerInvoice!=null && lastCustomerInvoice.getAmount_paid()!=null ? lastCustomerInvoice.getAmount_paid() : 0.0;
-        Double lastBalance = lastCustomerInvoice!=null && lastCustomerInvoice.getBalance()!=null ? lastCustomerInvoice.getBalance() : 0.0;
+        Double lastAmountPayable = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getAmount_payable()!=null ? this.getLastCustomerInvoice().getAmount_payable() : 0.0;
+        Double lastAmountPaid = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getAmount_paid()!=null ? this.getLastCustomerInvoice().getAmount_paid() : 0.0;
+        Double lastBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()!=null ? this.getLastCustomerInvoice().getBalance() : 0.0;
 //        if(lastAmountPayable==null){
 //        	lastAmountPayable = 0.0;
 //        }
@@ -184,9 +198,9 @@ public class InvoicePDFCreator {
         // account filtering of last invoice end
         
         // if last invoice isn't null then go into <if statement>, otherwise only Opening Balance appears
-        if(lastCustomerInvoice!=null){
+        if(this.getLastCustomerInvoice()!=null){
             // LAST INVOICE'S SITUATION
-            transactionColumnsCell = newCell(lastCustomerInvoice.getCreate_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getCreate_date_str(), verdana_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
             transactionColumnsCell = newCell("Previous Invoice Total", verdana_normal_8, 0);
@@ -197,16 +211,16 @@ public class InvoicePDFCreator {
             transactionTable.addCell(transactionColumnsCell);
             
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(lastCustomerInvoice.getPaid_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_date_str(), verdana_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell(lastCustomerInvoice.getPaid_type(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
             transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(lastAmountPaid)), verdana_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
-            
+
             // SEPARATOR ROW
             transactionColumnsCell = newCell("________________", verdana_normal_8, 0);
             transactionColumnsCell.setColspan(4);
@@ -228,24 +242,24 @@ public class InvoicePDFCreator {
             document.add(transactionTable);
         } else {
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(currentCustomerInvoice.getCreate_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getCreate_date_str(), verdana_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
             transactionColumnsCell = newCell("Current Invoice Total", verdana_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(currentCustomerInvoice.getAmount_payable())), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable())), verdana_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(currentCustomerInvoice.getPaid_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_date_str(), verdana_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell(currentCustomerInvoice.getPaid_type(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(currentCustomerInvoice.getAmount_paid())), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid())), verdana_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             
@@ -260,7 +274,7 @@ public class InvoicePDFCreator {
             transactionColumnsCell.setColspan(3);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(currentCustomerInvoice.getBalance())), verdana_bold_10, 0);
+            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getBalance())), verdana_bold_10, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             PdfPCell lastCell = new PdfPCell(new Phrase(" "));
@@ -291,7 +305,7 @@ public class InvoicePDFCreator {
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         // this invoice detail
         Double currentInvoiceDetailTotalPrice = 0.0;
-        List<CustomerInvoiceDetail> listInvoiceDetails = currentCustomerInvoice.getCustomerInvoiceDetails();
+        List<CustomerInvoiceDetail> listInvoiceDetails = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
         Iterator<CustomerInvoiceDetail> iterInvoiceDetails = listInvoiceDetails.iterator();
     	// get invoice detail(s) from invoice
         while(iterInvoiceDetails.hasNext()){
@@ -323,7 +337,7 @@ public class InvoicePDFCreator {
         // this invoice amount is consist of (current invoice total amount + last invoice balance - current customer invoice paid fees)
         // preventing subtraction inaccuracy
         BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
-        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(currentCustomerInvoice.getAmount_paid()));
+        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()));
         Double thisInvoicetotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
         Double afterTaxAmount = 0.0;
         Double taxAmount = 0.0;
@@ -377,7 +391,7 @@ public class InvoicePDFCreator {
         invoiceSummaryColumnsCell.setColspan(2);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell(currentCustomerInvoice.getDue_date_str(), verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), verdana_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoicetotalAmount)), verdana_bold_10, 0);
@@ -448,13 +462,13 @@ public class InvoicePDFCreator {
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(currentCustomerInvoice.getId().toString(), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getId().toString(), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(currentCustomerInvoice.getDue_date_str(), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -499,7 +513,7 @@ public class InvoicePDFCreator {
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(currentCustomerInvoice.getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
@@ -529,7 +543,7 @@ public class InvoicePDFCreator {
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(currentCustomerInvoice.getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
@@ -640,8 +654,8 @@ public class InvoicePDFCreator {
          */
 
         // FIRST PAGE'S HEADER
-        headerTable = new PdfPTable(1);
-		cell = new PdfPCell(new Phrase(" "));
+        PdfPTable headerTable = new PdfPTable(1);
+        PdfPCell cell = new PdfPCell(new Phrase(" "));
 		pageHeader(writer, headerTable, cell);
         /*
          *
@@ -732,7 +746,7 @@ public class InvoicePDFCreator {
         // PRODUCT ITEM(S) BEGIN
         Double totalPrice = 0.0;
 
-        listInvoiceDetails = currentCustomerInvoice.getCustomerInvoiceDetails();
+        listInvoiceDetails = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
         iterInvoiceDetails = listInvoiceDetails.iterator();
     	// get invoice detail(s) from invoice
         while(iterInvoiceDetails.hasNext()){
@@ -1034,8 +1048,8 @@ public class InvoicePDFCreator {
         Phrase date = new Phrase("Date: ", verdana_bold_8);
         Phrase invoiceNo = new Phrase(" | Invoice No: ", verdana_bold_8);
         Phrase loginName = new Phrase(" | Customer Id: ", verdana_bold_8);
-        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.customerInvoice.getCreate_date()), arial_normal_8);
-        Phrase invoiceNoField = new Phrase(this.customerInvoice.getId().toString(), arial_normal_8);
+        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.getCurrentCustomerInvoice().getCreate_date()), arial_normal_8);
+        Phrase invoiceNoField = new Phrase(this.getCurrentCustomerInvoice().getId().toString(), arial_normal_8);
         Phrase loginNameField = new Phrase(this.getCustomer().getId().toString(), arial_normal_8);
         // put paragraph into table cell
         basicsP.add(date);
@@ -1080,14 +1094,6 @@ public class InvoicePDFCreator {
 		return pcell;
 	}
 
-	public CustomerInvoice getCustomerInvoice() {
-		return customerInvoice;
-	}
-
-	public void setCustomerInvoice(CustomerInvoice customerInvoice) {
-		this.customerInvoice = customerInvoice;
-	}
-
 	public CompanyDetail getCompanyDetail() {
 		return companyDetail;
 	}
@@ -1102,6 +1108,23 @@ public class InvoicePDFCreator {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public CustomerInvoice getCurrentCustomerInvoice() {
+		return currentCustomerInvoice;
+	}
+
+	public void setCurrentCustomerInvoice(CustomerInvoice currentCustomerInvoice) {
+		this.setLastCustomerInvoice(currentCustomerInvoice.getLastCustomerInvoice());
+		this.currentCustomerInvoice = currentCustomerInvoice;
+	}
+
+	public CustomerInvoice getLastCustomerInvoice() {
+		return lastCustomerInvoice;
+	}
+
+	public void setLastCustomerInvoice(CustomerInvoice lastCustomerInvoice) {
+		this.lastCustomerInvoice = lastCustomerInvoice;
 	}
 
 	
