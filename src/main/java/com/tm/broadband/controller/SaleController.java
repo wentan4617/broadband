@@ -200,6 +200,7 @@ public class SaleController {
 		CustomerOrder co = new CustomerOrder();
 		co.getParams().put("id", customer.getCustomerOrder().getId());
 		co.setOrder_pdf_path(orderPDFPath);
+		
 		this.crmService.editCustomerOrder(co);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		
