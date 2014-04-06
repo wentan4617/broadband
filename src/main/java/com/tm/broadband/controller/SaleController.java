@@ -243,7 +243,7 @@ public class SaleController {
         return response;
     }
 	
-	// DOWNLOAD ORDER PDF
+	// DOWNLOAD CREDIT PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/order/credit/pdf/download/{order_id}")
     public ResponseEntity<byte[]> downloadCreditPDF(Model model
     		,@PathVariable(value = "order_id") int order_id) throws IOException {

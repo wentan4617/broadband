@@ -16,6 +16,25 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class ITextUtils {
+	
+	// BEGIN MEMBER VARIABLE
+	private SimplePDFCell simplePDFCell;
+	// END MEMBER VARIABLE
+
+	// BEGIN INITIALIZATION
+	public ITextUtils() {
+		this.simplePDFCell=new SimplePDFCell();
+	}
+	// END INITIALIZATION
+	
+	// BEGIN GETTER AND SETTER
+	public SimplePDFCell getSimplePDFCell() {
+		return simplePDFCell;
+	}
+	public void setSimplePDFCell(SimplePDFCell simplePDFCell) {
+		this.simplePDFCell = simplePDFCell;
+	}
+	// END GETTER AND SETTER
 
 	/**
 	 * 
@@ -28,7 +47,7 @@ public class ITextUtils {
 	 * @param colspan
 	 */
 	// ENCAPSULATE PDF TITLE
-	public static void addPDFTitle(PdfPTable table, String title, Font font, Float paddingBottom, Integer border, Integer align, Integer colspan){
+	public void addPDFTitle(PdfPTable table, String title, Font font, Float paddingBottom, Integer border, Integer align, Integer colspan){
         PdfPCell cell = new PdfPCell(new Phrase(title, font));
         cell.setColspan(colspan);
         cell.setBorder(border);
@@ -38,7 +57,7 @@ public class ITextUtils {
         }
         table.addCell(cell);
 	}
-
+	
 	/**
 	 * 
 	 * @param writer
@@ -52,7 +71,7 @@ public class ITextUtils {
 	 * @throws IOException
 	 */
 	// ENCAPSULATE IMAGE
-	public static void addImage(PdfWriter writer, String resource, Float width, Float height, Float positionX, Float positionY) throws DocumentException, MalformedURLException, IOException{
+	public void addImage(PdfWriter writer, String resource, Float width, Float height, Float positionX, Float positionY) throws DocumentException, MalformedURLException, IOException{
 		Image logo = Image.getInstance(resource);
 		logo.scaleAbsolute(width, height);
 		logo.setAbsolutePosition(positionX, positionY);
@@ -69,7 +88,7 @@ public class ITextUtils {
 	 * @param colspan
 	 */
 	// ENCAPSULATE TITLE BAR
-	public static void addTitleBar(PdfPTable table, String title, Font font, BaseColor bgColor, BaseColor borderColor, Integer colspan, Float zoom){
+	public void addTitleBar(PdfPTable table, String title, Font font, BaseColor bgColor, BaseColor borderColor, Integer colspan, Float zoom){
         // BEGIN TITLE BAR
         PdfPCell cell = new PdfPCell(new Phrase(title, font));
         cell.setColspan(colspan);
@@ -95,8 +114,8 @@ public class ITextUtils {
 	 * @param height
 	 * @param colspan
 	 */
-	// ENCAPSULATE EMPTY ROW
-	public static void addEmptyRow(PdfPTable table, Float height, Integer colspan){
+	// ENCAPSULATE EMPTY COLUMN(S)
+	public void addEmptyCol(PdfPTable table, Float height, Integer colspan){
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
         cell.setBorder(0);
@@ -111,8 +130,8 @@ public class ITextUtils {
 	 * @param table
 	 * @param colspan
 	 */
-	// ENCAPSULATE EMPTY ROW
-	public static void addEmptyRow(PdfPTable table, Integer colspan){
+	// ENCAPSULATE EMPTY COLUMN(S)
+	public void addEmptyCol(PdfPTable table, Integer colspan){
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
         cell.setBorder(0);
@@ -126,8 +145,8 @@ public class ITextUtils {
 	 * @param color
 	 * @param height
 	 */
-	// ENCAPSULATE LINE ROW
-	public static void addLineRow(PdfPTable table, Integer colspan, BaseColor color, Float height){
+	// ENCAPSULATE LINE COLUMN(S)
+	public void addLineCol(PdfPTable table, Integer colspan, BaseColor color, Float height){
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
         cell.setBorder(0);
@@ -220,11 +239,75 @@ public class ITextUtils {
 	 * @param borderColor
 	 */
 	// ENCAPSULATE TABLE IN CELL
-	public void addTableInCol(PdfPTable outerTable, PdfPTable innerTable, Integer colspan, BaseColor borderColor){
+	public void addTableInCol(PdfPTable outerTable, PdfPTable innerTable, Integer colspan, BaseColor borderColor, Float borderWidth){
         PdfPCell cell = new PdfPCell();
         cell.setColspan(colspan);
+        cell.setBorderWidth(borderWidth);
         cell.setBorderColor(borderColor);
         cell.addElement(innerTable);
         outerTable.addCell(cell);
 	}
+	
+	/**
+	 * 
+	 * @param colspan
+	 * @param percentage
+	 * @return
+	 */
+	public PdfPTable newTable(Integer colspan, Integer percentage){
+        PdfPTable table = new PdfPTable(colspan);
+        table.setWidthPercentage(percentage);
+		return table;
+	}
+	
+	/*******************************************************
+	 * 		BEGIN SimplePDFCell METHODS
+	 */
+	
+	/**
+	 * 
+	 * @param table
+	 * @param title
+	 * @return
+	 */
+	// ENCAPSULATE PDF TITLE
+	public SimplePDFCell addPDFTitle(PdfPTable table, String title){
+        this.getSimplePDFCell().setPhrase(title);
+        this.getSimplePDFCell().setTable(table);
+        this.getSimplePDFCell().getCell().setPhrase(new Phrase());
+        return this.getSimplePDFCell();
+	}
+
+
+	/**
+	 * 
+	 * @param table
+	 * @param phrase
+	 * @return
+	 */
+	// ENCAPSULATE COLUMN
+	public SimplePDFCell addCol(PdfPTable table, String phrase){
+        this.getSimplePDFCell().setPhrase(phrase);
+        this.getSimplePDFCell().setTable(table);
+        this.getSimplePDFCell().getCell().setPhrase(new Phrase());
+        return this.getSimplePDFCell();
+	}
+	
+	/**
+	 * 
+	 * @param outerTable
+	 * @param innerTable
+	 * @return
+	 */
+	// ENCAPSULATE TABLE IN CELL
+	public SimplePDFCell addTableInCol(PdfPTable outerTable, PdfPTable innerTable){
+        this.getSimplePDFCell().getCell().addElement(innerTable);
+        this.getSimplePDFCell().setTable(outerTable);
+        return this.getSimplePDFCell();
+	}
+	
+	/*******************************************************
+	 * 		BEGIN SimplePDFCell METHODS
+	 */
+
 }

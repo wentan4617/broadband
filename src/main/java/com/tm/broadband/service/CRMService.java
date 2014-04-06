@@ -536,7 +536,7 @@ public class CRMService {
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
-		invoicePDF.setCustomerInvoice(customerInvoice);
+		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
 		
 		try {
 			// generate invoice PDF
@@ -738,7 +738,7 @@ public class CRMService {
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
-		invoicePDF.setCustomerInvoice(customerInvoice);
+		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
 
 		// create specific directories and generate invoice PDF
 		String filePath = TMUtils.createPath("broadband" + File.separator
@@ -758,21 +758,21 @@ public class CRMService {
 			e.printStackTrace();
 		}
 
-		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notificationEmail.getTitle());
-		applicationEmail.setContent(notificationEmail.getContent());
-		// binding attachment name & path to email
-		applicationEmail.setAttachName("Invoice-" + customerInvoice.getId() + ".pdf");
-		applicationEmail.setAttachPath(filePath);
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-		// get sms register template from db
-		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
-		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
+//		// call mail at value retriever
+//		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
+//		ApplicationEmail applicationEmail = new ApplicationEmail();
+//		applicationEmail.setAddressee(customer.getEmail());
+//		applicationEmail.setSubject(notificationEmail.getTitle());
+//		applicationEmail.setContent(notificationEmail.getContent());
+//		// binding attachment name & path to email
+//		applicationEmail.setAttachName("Invoice-" + customerInvoice.getId() + ".pdf");
+//		applicationEmail.setAttachPath(filePath);
+//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//
+//		// get sms register template from db
+//		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
+//		// send sms to customer's mobile phone
+//		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
 	}
 	
 	/**
