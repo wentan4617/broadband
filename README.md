@@ -7,14 +7,22 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.5 2014-04-04
+
+* 修改前端，注册购买页面，用mobile and email代替登入
+* 给购买流添加导航
+* 更换dps支付页面
+* 修改用户登入后所看到的界面
+* order information界面，添加属性，可以下载签约的PDF (steven)
+
 demand version 1.0.4 2014-04-04
 
-* customer order表添加一个客户签字的字段signature，已签字=signed、未签字=unsigned
+* [customer order表添加一个客户签字的字段signature，已签字=signed、未签字=unsigned](kanny)
 
 demand version 1.0.4 2014-04-03
 
 * customer order detail里voip加和pstn一样的修改号码的按钮和功能
-* 界面上在customer order detail在table处用style将字体设为12px
+* [界面上在customer order detail在table处用style将字体设为12px](kanny)
 * [添加organization表，字段：org_type、org_trading_name、org_register_no、org_incoporate_date、org_trading_months](kanny)
 * [organization表再加holder相关字段：holder_name、holder_job_title、holder_phone、holder_email](kanny)
 * [organization表添加一个customer_id字段，和customer表关联，如果customer是business类型则可以通过id到organization表里查出相应数据](kanny)

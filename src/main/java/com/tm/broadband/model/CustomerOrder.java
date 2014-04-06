@@ -49,6 +49,7 @@ public class CustomerOrder implements Serializable {
 	private Integer sale_id;
 	private String order_pdf_path;
 	private String credit_pdf_path;
+	private String signature;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -376,6 +377,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setCredit_pdf_path(String credit_pdf_path) {
 		this.credit_pdf_path = credit_pdf_path;
+	}
+
+	public String getSignature() {
+		return signature;
+	}
+
+	public void setSignature(String signature) {
+		this.signature = signature;
 	}
 
 	

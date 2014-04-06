@@ -1,3 +1,4 @@
+
 package com.tm.broadband.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +44,6 @@ public class SaleService {
 	
 	public Organization queryOrganizationByCustomerId(int id){
 		return this.organizationMapper.selectOrganizationByCustomerId(id);
-		
 	}
 
 }

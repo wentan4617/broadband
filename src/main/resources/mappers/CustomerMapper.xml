@@ -91,7 +91,9 @@
 		co.`pppoe_loginname`					as co_pppoe_loginname,
 		co.`pppoe_password`						as co_pppoe_password,
 		co.`sale_id`							as co_sale_id,
-		co.`order_pdf_path`						as co_order_pdf_path
+		co.`order_pdf_path`						as co_order_pdf_path,
+		co.`credit_pdf_path`					as co_credit_pdf_path,
+		co.`signature`							as co_signature,
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -119,6 +121,8 @@
 		<result property="pppoe_password" column="co_pppoe_password" />
 		<result property="sale_id" column="co_sale_id" />
 		<result property="order_pdf_path" column="co_order_pdf_path" />
+		<result property="credit_pdf_path" column="co_credit_pdf_path" />
+		<result property="signature" column="co_signature" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
