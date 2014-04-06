@@ -13,6 +13,7 @@ demand version 1.0.5 2014-04-04
 * 给购买流添加导航
 * 更换dps支付页面
 * 修改用户登入后所看到的界面
+* order information界面，添加属性，可以下载签约的PDF (steven)
 
 demand version 1.0.4 2014-04-04
 
