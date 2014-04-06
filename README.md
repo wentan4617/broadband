@@ -7,6 +7,13 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.5 2014-04-04
+
+* 修改前端，注册购买页面，用mobile and email代替登入
+* 给购买流添加导航
+* 更换dps支付页面
+* 修改用户登入后所看到的界面
+
 demand version 1.0.4 2014-04-04
 
 * [customer order表添加一个客户签字的字段signature，已签字=signed、未签字=unsigned](kanny)
