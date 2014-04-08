@@ -87,6 +87,7 @@ public class Customer implements Serializable {
 
 	private String register_date_str;
 	private String active_date_str;
+	private String birth_str;
 
 	// one customer may be get more orders
 	@Valid
@@ -370,6 +371,7 @@ public class Customer implements Serializable {
 	}
 
 	public void setBirth(Date birth) {
+		this.setBirth_str(TMUtils.dateFormatYYYYMMDD(birth));
 		this.birth = birth;
 	}
 
@@ -419,6 +421,14 @@ public class Customer implements Serializable {
 
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
+	}
+
+	public String getBirth_str() {
+		return birth_str;
+	}
+
+	public void setBirth_str(String birth_str) {
+		this.birth_str = birth_str;
 	}
 	
 	

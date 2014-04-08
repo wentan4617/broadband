@@ -185,6 +185,7 @@ public class SaleController {
 		Customer customer = (Customer)req.getSession().getAttribute("orderCustomer");
 		
 		customer.setUser_name(customer.getLogin_name());
+		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
 		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 		customer.getCustomerOrder().setSale_id(customer.getId());
@@ -325,9 +326,10 @@ public class SaleController {
 			, @RequestParam("order_id") Integer order_id
 			, @RequestParam("customer_id") Integer customer_id
 			, @RequestParam("order_pdf_path") MultipartFile order_pdf_path
-			, @RequestParam("credit_pdf_path") MultipartFile credit_pdf_path) {
+			, @RequestParam("credit_pdf_path") MultipartFile credit_pdf_path
+			,HttpServletRequest req) {
 
-		
+		User user = (User) req.getSession().getAttribute("userSession");
 		if(!order_pdf_path.isEmpty() && !credit_pdf_path.isEmpty()){
 			String order_path = TMUtils.createPath("broadband" + File.separator
 					+ "customers" + File.separator + customer_id
@@ -350,7 +352,7 @@ public class SaleController {
 			this.crmService.editCustomerOrder(co);
 		}
 		
-		return "redirect:/broadband-user/sale/online-ordering-upload-result";
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + user.getId();
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload-single")
@@ -397,12 +399,6 @@ public class SaleController {
 		}
 		
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
-	}
-	
-	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result")
-	public String toUploadResult(Model model) {
-		
-		return "broadband-user/sale/online-order-view";
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/{pageNo}/{sale_id}")

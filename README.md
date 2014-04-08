@@ -9,12 +9,13 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.5 2014-04-04
 
-* sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF
+* [customer下添加organization表单从customer.organization里取出数据，如果为business则显示该表单，personal则不显示] (steven)
+* [sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF] (steven)
 * [修改前端，注册购买页面，用mobile and email代替登入](kanny)
 * [给购买流添加导航](kanny)
 * 更换dps支付页面
 * 修改用户登入后所看到的界面
-* order information界面，添加属性，可以下载签约的PDF (steven)
+* [order information界面，添加属性，可以下载签约的PDF] (steven)
 
 demand version 1.0.4 2014-04-04
 
@@ -22,7 +23,7 @@ demand version 1.0.4 2014-04-04
 
 demand version 1.0.4 2014-04-03
 
-* customer order detail里voip加和pstn一样的修改号码的按钮和功能
+* [customer order detail里voip加和pstn一样的修改号码的按钮和功能] (steven)
 * [界面上在customer order detail在table处用style将字体设为12px](kanny)
 * [添加organization表，字段：org_type、org_trading_name、org_register_no、org_incoporate_date、org_trading_months](kanny)
 * [organization表再加holder相关字段：holder_name、holder_job_title、holder_phone、holder_email](kanny)
@@ -30,7 +31,7 @@ demand version 1.0.4 2014-04-03
 
 demand version 1.0.4 2014-04-02
 
-* 界面上补全customer以及customer order新添的字段
+* [界面上补全customer以及customer order新添的字段] (steven)
 * [customer 加字段](kanny)
 * [customerOrder 加字段](kanny)
 * [添加customer credit表](kanny)
@@ -45,8 +46,8 @@ demand version 1.0.4 2014-03-31
 * 填写好支付信息后点Next生成PDF，供客户签字，之后通过一个上传的界面上传至系统，跟相关order关联。
 * 选择支付方式后跳转到填写支付信息界面
 * online-ordering界面：界面1（填写基本信息），界面2（选plan），界面3（confirm界面，列出order的信息，显示选择Credit Card付款）
-* 添加sale模块
-* 给User添加sale权限
+* [添加sale模块] (steven)
+* [给User添加sale权限] (steven)
 * order_status字段添加两个状态：stop，close
 * VoIP信息
 * [plan的NON-NAKED改用CLOTHING](STEVEN)

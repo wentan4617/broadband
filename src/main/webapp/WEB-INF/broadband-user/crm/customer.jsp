@@ -30,6 +30,26 @@
 <script type="text/javascript">
 (function($){
 	
+	// BEGIN CUSTOMER BIRTH DATEPICKER
+	var birth_input = $('input[data-name="customer_birth_input"]').attr('data-val');
+	$('#customer_birth_datepicker').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose: true,
+	    todayHighlight: true
+	    // if customer birth is null then assign new Date(), else assign customer birth
+	}).datepicker('setDate', birth_input || new Date());
+	// END CUSTOMER BIRTH DATEPICKER
+	
+	// BEGIN ORG INCOPORATE DATE DATEPICKER
+	var birth_input = $('input[data-name="incoporate_date_input"]').attr('data-val');
+	$('#incoporate_date_datepicker').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose: true,
+	    todayHighlight: true
+	    // if customer birth is null then assign new Date(), else assign customer birth
+	}).datepicker('setDate', birth_input || new Date());
+	// END ORG INCOPORATE DATE DATEPICKER
+	
 	
 	$('span[data-toggle="tooltip"]').tooltip();
 	
