@@ -12,15 +12,39 @@
 .topup-list li {
 	padding: 10px 20px;
 }
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+color: #fff;
+background-color: #5cb85c;
+}
 </style>
 
 <div class="container">
 
 	<!-- topup plans -->
-	<div class="page-header">
+	<!-- <div class="page-header">
 		<h1>1. Choose your broadband</h1>
 	</div>
-
+ -->
+ 
+ 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+		<li class="active">
+			<a class="btn-lg">
+				1. Choose Plans And Pricing
+				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				2. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				3. Review and Checkout 
+			</a>
+		</li>
+	</ul>
 	<!-- plan content -->
 	<div class="panel panel-default">
 		<div class="panel-body">

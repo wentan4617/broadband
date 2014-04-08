@@ -25,13 +25,16 @@ public interface CustomerMapper {
 	
 	/* SELECT AREA */
 	
-	int selectExistCustomerByLoginName(String login_name);
-	Customer selectCustomerByIdWithCustomerOrder(int id);
-	Customer selectCustomerWhenLogin(Customer customer);
+	Customer selectCustomer(Customer customer);
+	List<Customer> selectCustomers(Customer customer);
 	List<Customer> selectCustomersByPage(Page<Customer> page);
 	int selectCustomersSum(Page<Customer> page);
-	Customer selectCustomerById(int id);
 	
+	int selectExistCustomerByLoginName(String login_name);
+	int selectExistCustomer(Customer customer);
+	Customer selectCustomerByIdWithCustomerOrder(int id);
+	Customer selectCustomerById(int id);
+	Customer selectCustomerWhenLogin(Customer customer);
 	List<Customer> selectCustomersByRegisterDate(Date start, Date end);
 	
 	/* // END SELECT AREA */

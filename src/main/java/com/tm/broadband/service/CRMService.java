@@ -302,6 +302,11 @@ public class CRMService {
 	public int queryExistCustomerByLoginName(String login_name) {
 		return this.customerMapper.selectExistCustomerByLoginName(login_name);
 	}
+	
+	@Transactional
+	public int queryExistCustomer(Customer customer) {
+		return this.customerMapper.selectExistCustomer(customer);
+	}
 
 	@Transactional
 	public Customer queryCustomerById(int id) {
@@ -327,7 +332,7 @@ public class CRMService {
 	
 	@Transactional
 	public Customer queryCustomerWhenLogin(Customer customer) {
-		return this.customerMapper.selectCustomerWhenLogin(customer);
+		return this.customerMapper.selectCustomer(customer);
 	}
 	
 	@Transactional

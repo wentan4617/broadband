@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -26,6 +27,21 @@ public class TMUtils {
 	private static SimpleDateFormat date2Format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	
 	public TMUtils() {
+	}
+	
+	public static String generateRandomString(int range) {
+		String str = "";
+		String[] pwds = new String[] { "1", "5", "9", "8", "7", "6", "4", "3",
+				"2", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a",
+				"s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v",
+				"b", "n", "m", "0" };
+		Random random = new Random();
+		int i = 0;
+		while (i < range) {
+			str += pwds[random.nextInt(36)];
+			i++;
+		}
+		return str;
 	}
 	
 	public static String getCustomerOrderSerial(String login_name) {

@@ -20,4 +20,38 @@
 		console.log('error');
 	});
 	
+	$.jsonValidation = function(json, placement){
+		console.log(json);
+		placement = placement || 'top';
+		$('#alertContainer').find('#alert-error').remove();
+		$('input[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');
+		$.each(json.errorMap, function(key){
+			if (key == "alert-error") {
+				$('#alertContainer').html($('#tempAlertContainer').html());
+				$('#text-error').text(json.errorMap[key]);
+				$('#alert-error').show('normal');
+			} else {
+				$('#' + key.replace('.','\\.'))
+					.focus()
+					.tooltip({
+						html: true
+						, placement: placement
+						, title: '<h6 class="text-danger">' + json.errorMap[key] + '</h6>'
+						, trigger: 'manual'
+					})
+					.tooltip('show')
+					.closest('div.form-group')
+					.addClass('has-error');
+			}
+		});
+		
+		$('.tooltip-arrow').css('border-' + placement + '-color', '#f2dede');
+		$('.tooltip-inner').css('background-color', '#f2dede')
+		
+		if (placement == 'right') {
+			$('.tooltip-arrow').css('margin-top', '5px');
+			$('.tooltip-inner').css('width', '200px');
+		}
+	}
+	
 })(jQuery);

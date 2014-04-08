@@ -8,15 +8,43 @@
 
 <jsp:include page="header.jsp" />
 
+<style>
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+color: #fff;
+background-color: #5cb85c;
+}
+</style>
+
 
 <div class="container">
 
+	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+		<li class="active">
+			<a class="btn-lg">
+				1. Choose Plans And Pricing
+				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				2. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				3. Review and Checkout 
+			</a>
+		</li>
+	</ul>
+	
+	
 	<!-- naked plans -->
-	<div class="page-header">
+	<!-- <div class="page-header">
 		<h1>
 			1. Internet | Plans and pricing <small>Please choose what you need</small>
 		</h1>
-	</div>
+	</div> -->
 	<div class="row">
 		<div class="col-md-4">
 			<div class="thumbnail">

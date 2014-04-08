@@ -16,14 +16,38 @@
 	width: 261px;
 	top:30px;
 }
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+color: #fff;
+background-color: #5cb85c;
+}
 </style>
 
 <div class="container">
-	<div class="page-header">
+	<!-- <div class="page-header">
 		<h1>
 			2. Customer Information <small>Please fill in your personal information, we will contact you</small>
 		</h1>
-	</div>
+	</div> -->
+	
+	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+		<li >
+			<a class="btn-lg">
+				1. Choose Plans And Pricing
+				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="active">
+			<a class="btn-lg">
+				2. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				3. Review and Checkout 
+			</a>
+		</li>
+	</ul>
 	
 	<form:form modelAttribute="customer" method="post" action="${ctx}/order" class="form-horizontal">
 	<div class="row">
@@ -32,22 +56,53 @@
 			
 			<!-- application form -->
 			
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h3 class="panel-title">
+					<h2 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#application">
 							Your application form <span class="text-danger">(All fields Required)</span>
 						</a>
-					</h3>
+					</h2>
 				</div>
 				
 				<div id="application" class="panel-collapse collapse in">
 					<div class="panel-body">
-						
+							<!-- customer address -->
+							<h4 class="text-success">Your Address</h4>
+							<hr/>
+							<div class="form-group">
+								<label for="address" class="control-label col-md-4">Your Address</label>
+								<div class="col-md-5">
+									<form:input path="address" class="form-control" placeholder="enter your address" />
+								</div>
+								<p class="help-block col-md-3" >
+									<form:errors path="address" cssErrorClass="error"/>
+								</p>
+							</div>
+							
 							<!-- customer account -->
+							<hr/>
 							<h4 class="text-success">Create your account</h4>
 							<hr/>
 							<div class="form-group">
+								<label for="cellphone" class="control-label col-md-4">Your Mobile</label>
+								<div class="col-md-4">
+									<form:input path="cellphone" class="form-control" placeholder="e.g.: 0210800123" />
+								</div>
+								<p class="help-block">
+									<form:errors path="cellphone" cssErrorClass="error"/>
+								</p>
+							</div>
+							<div class="form-group">
+								<label for="email" class="control-label col-md-4">Your Email</label>
+								<div class="col-md-4">
+									<form:input path="email" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" />
+								</div>
+								<p class="help-block">
+									<form:errors path="email" cssErrorClass="error"/>
+								</p>
+							</div>
+							<%-- <div class="form-group">
 								<label for="login_name" class="control-label col-md-4">Your login name </label>
 								<div class="col-md-4">
 									<form:input path="login_name" class="form-control" placeholder="e.g.: cyberpark" />
@@ -73,7 +128,7 @@
 								<p class="help-block">
 									<form:errors path="ck_password" cssErrorClass="error"/>
 								</p>
-							</div>
+							</div> --%>
 							
 							<!-- Broadband Options -->
 							<hr/>
@@ -166,34 +221,8 @@
 									<form:errors path="last_name" cssErrorClass="error"/>
 								</p>
 							</div>
-							<div class="form-group">
-								<label for="email" class="control-label col-md-4">Your Email</label>
-								<div class="col-md-4">
-									<form:input path="email" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="email" cssErrorClass="error"/>
-								</p>
-							</div>
 							
-							<div class="form-group">
-								<label for="cellphone" class="control-label col-md-4">Your Phone</label>
-								<div class="col-md-4">
-									<form:input path="cellphone" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="cellphone" cssErrorClass="error"/>
-								</p>
-							</div>
-							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Your Address</label>
-								<div class="col-md-5">
-									<form:input path="address" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block col-md-3" >
-									<form:errors path="address" cssErrorClass="error"/>
-								</p>
-							</div>
+							
 							
 						
 					</div>
@@ -203,13 +232,13 @@
 			
 			<!-- hardware -->
 			<c:if test="${fn:length(hardwares) > 0}">
-				<div class="panel panel-default">
+				<div class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title">
+						<h2 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
 								Hardware
 							</a>
-						</h3>
+						</h2>
 					</div>
 					
 					<div id="hardware" class="panel-collapse collapse in">
@@ -244,7 +273,7 @@
 		<div class="col-md-3" >
 			<div data-spy="affix" data-offset-top="150" class="panel panel-success">
 				<div class="panel-heading">
-					<h3 class="panel-title">Your current purchase of plan</h3>
+					<h3 class="panel-title">Your current plan</h3>
 				</div>
 		  		<div  class="panel-body">
 		  			<h4 class="text-success">${orderPlan.plan_name }</h4>
@@ -280,6 +309,7 @@
 	</form:form>
 </div>
 
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
@@ -386,4 +416,6 @@
 
 })(jQuery);
 </script>
+<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />
