@@ -28,7 +28,7 @@
 				</div>
 				<div id="collapseOrderInfo" class="panel-collapse collapse in">
 					<div class="panel-body">
-						<form method="post" action="${ctx}${action }" class="form-horizontal" enctype="multipart/form-data">
+						<form method="post" action="${ctx}/broadband-user/sale/online/ordering/order/upload" class="form-horizontal" enctype="multipart/form-data">
 						  <div class="form-group">
 							<div class="col-sm-12">
 								<input type="hidden" name="order_id" value="${order_id}"/>

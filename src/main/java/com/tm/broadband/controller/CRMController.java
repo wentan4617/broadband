@@ -136,6 +136,10 @@ public class CRMController {
 			,RedirectAttributes attr
 			,SessionStatus status) {
 		
+		customer.getOrganization().setOrg_incoporate_date(TMUtils.parseDateYYYYMMDD(customer.getOrganization().getOrg_incoporate_date_str()));
+		customer.setBirth(TMUtils.parseDateYYYYMMDD(customer.getBirth_str()));
+		
+		
 		model.addAttribute("panelheading", "Essential Information");
 		model.addAttribute("action", "/broadband-user/crm/customer/edit");
 
@@ -145,6 +149,13 @@ public class CRMController {
 		}
 		customer.getParams().put("id", customer.getId());
 		this.crmService.editCustomer(customer);
+		if(this.crmService.queryOrganizationByCustomerId(customer.getId())!=null){
+			customer.getOrganization().getParams().put("customer_id", customer.getId());
+			this.crmService.editOrganization(customer.getOrganization());
+		} else {
+			customer.getOrganization().setCustomer_id(customer.getId());
+			this.crmService.createOrganization(customer.getOrganization());
+		}
 		
 		status.setComplete();
 		

@@ -10,9 +10,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
-import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 public class Organization implements Serializable {
 
@@ -38,6 +37,8 @@ public class Organization implements Serializable {
 	/*
 	 * BEGIN RELATED PROPERTIES
 	 */
+	
+	private String org_incoporate_date_str;
 	
 	private Map<String, Object> params = new HashMap<String, Object>();
 	
@@ -82,6 +83,7 @@ public class Organization implements Serializable {
 	}
 
 	public void setOrg_incoporate_date(Date org_incoporate_date) {
+		this.org_incoporate_date_str = TMUtils.dateFormatYYYYMMDD(org_incoporate_date);
 		this.org_incoporate_date = org_incoporate_date;
 	}
 
@@ -143,6 +145,14 @@ public class Organization implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getOrg_incoporate_date_str() {
+		return org_incoporate_date_str;
+	}
+
+	public void setOrg_incoporate_date_str(String org_incoporate_date_str) {
+		this.org_incoporate_date_str = org_incoporate_date_str;
 	}
 	
 	

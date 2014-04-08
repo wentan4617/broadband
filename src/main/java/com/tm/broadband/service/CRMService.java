@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
-import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
@@ -35,6 +34,7 @@ import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -456,6 +456,11 @@ public class CRMService {
 		this.customerOrderDetailMapper.updateCustomerOrderDetail(cod);
 		
 	}
+	
+	@Transactional
+	public void editOrganization(Organization org){
+		this.organizationMapper.updateOrganization(org);
+	}
 
 	@Transactional 
 	public String queryCustomerInvoiceFilePathById(int id){
@@ -810,5 +815,24 @@ public class CRMService {
 	
 	/**
 	 * END CustomerTransaction
+	 */
+	
+	
+	/**
+	 * BEGIN Organization
+	 */
+	
+	@Transactional
+	public Organization queryOrganizationByCustomerId(int customer_id){
+		return this.organizationMapper.selectOrganizationByCustomerId(customer_id);
+	}
+	
+	@Transactional
+	public void createOrganization(Organization org){
+		this.organizationMapper.insertOrganization(org);
+	}
+	
+	/**
+	 * END Organization
 	 */
 }

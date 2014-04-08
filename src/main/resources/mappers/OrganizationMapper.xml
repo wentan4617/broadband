@@ -17,6 +17,33 @@
 
 	<!-- DEFINITION AREA -->
 	
+	<sql id="organizationColumns">
+		o.`customer_id`				as o_customer_id
+		, o.`org_name`				as o_org_name
+		, o.`org_type`				as o_org_type
+		, o.`org_trading_name`		as o_org_trading_name
+		, o.`org_register_no`		as o_org_register_no
+		, o.`org_incoporate_date`	as o_incoporate_date
+		, o.`org_trading_months`	as o_trading_months
+		, o.`holder_name`			as o_holder_name
+		, o.`holder_job_title`		as o_holder_job_title
+		, o.`holder_phone`			as o_holder_phone
+		, o.`holder_email`			as o_holder_email
+	</sql>
+	<resultMap type="Organization" id="organizationResultMap">
+		<id property="customer_id" column="o_customer_id"/>
+		<result property="org_name" column="o_org_name"/>
+		<result property="org_type" column="o_org_type"/>
+		<result property="org_trading_name" column="o_org_trading_name"/>
+		<result property="org_register_no" column="o_org_register_no"/>
+		<result property="org_incoporate_date" column="o_incoporate_date"/>
+		<result property="org_trading_months" column="o_trading_months"/>
+		<result property="holder_name" column="o_holder_name"/>
+		<result property="holder_job_title" column="o_holder_job_title"/>
+		<result property="holder_phone" column="o_holder_phone"/>
+		<result property="holder_email" column="o_holder_email"/>
+	</resultMap>
+	
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
@@ -79,7 +106,7 @@
 			<if test="holder_email != null">holder_email = #{holder_email}</if>
 		</set>
 		<where>
-			<if test="params.id != null">id=#{params.id}</if>
+			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
 		</where>
 	</update>
 

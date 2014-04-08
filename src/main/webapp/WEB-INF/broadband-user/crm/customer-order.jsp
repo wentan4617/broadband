@@ -401,6 +401,11 @@
 											  	<span class="glyphicon glyphicon-edit"></span> PSTN
 											</a>
 										</c:if>
+										<c:if test="${customerOrderDetail.detail_type=='voip'}">
+											<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:100px;">
+											  	<span class="glyphicon glyphicon-edit"></span> VoIP
+											</a>
+										</c:if>
 									</td>
 								</tr>
 							</c:forEach>

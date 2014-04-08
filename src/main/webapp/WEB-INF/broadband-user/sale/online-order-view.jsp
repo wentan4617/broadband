@@ -83,9 +83,7 @@
 										<input type="checkbox" name="checkbox_orders" value="${order.id}"/>
 									</td>
 									<td>
-										<a href="${ctx }/broadband-user/order/edit/${order.id}">
-											${order.id }
-										</a>
+										${order.id }
 									</td>
 									<td>
 										${order.order_status }
