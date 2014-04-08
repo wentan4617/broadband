@@ -13,6 +13,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -35,8 +36,8 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerLoginValidatedMark.class})
 	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class})
 	private String login_name;
-	@NotEmpty(groups = { CustomerLoginValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class})
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
+	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
 	private String password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })
@@ -80,6 +81,8 @@ public class Customer implements Serializable {
 	
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String ck_password;
+	@NotEmpty(groups = { ChangePasswordValidatedMark.class})
+	@Length(min = 6, max = 20, groups = { ChangePasswordValidatedMark.class})
 	private String old_password;
 
 	private String register_date_str;

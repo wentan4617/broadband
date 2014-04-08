@@ -518,9 +518,24 @@ public class CustomerController {
 		invoicePage.getParams().put("status", "discard");
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 		
-		model.addAttribute("page",invoicePage);
+		model.addAttribute("page", invoicePage);
 		return "broadband-customer/customer-discard-billing";
 	}
+	
+	@RequestMapping(value = "/customer/change-password")
+	public String changePassword(Model model, HttpServletRequest request) {
+		
+		model.addAttribute("change_password", "active");
+		return "broadband-customer/customer-change-password";
+	}
+	
+	@RequestMapping(value = "/customer/change-password/redirect")
+	public String changePasswordRedirect(Model model, RedirectAttributes attr) {
+		attr.addFlashAttribute("success", "Update passowrd is successful.");
+		return "redirect:/customer/change-password";
+	}
+	
+	
 	
 	@RequestMapping("/customer/topup")
 	public String customerTopup(Model model) {
