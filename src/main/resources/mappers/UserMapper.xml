@@ -49,6 +49,11 @@
 		select count(*) from tm_user where login_name = #{0} and id != #{1}
 	</select>
 	
+	<!-- select users whose id exist in order's sale_id -->
+	<select id="selectUsersWhoseIdExistInOrder" resultType="User">
+		select * from tm_user where id in(select distinct sale_id from tm_customer_order where sale_id is not null)
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	
 	<!-- =================================================================================== -->

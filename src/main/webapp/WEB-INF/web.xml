@@ -171,6 +171,11 @@
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
 		<!-- System Module END -->
 		
+		<!-- Sales Module BEGIN -->
+		<url-pattern>/broadband-user/sale/online/ordering/view/*</url-pattern>
+		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
+		<!-- Sales Module END -->
+		
 	</filter-mapping>
 
 	<error-page>

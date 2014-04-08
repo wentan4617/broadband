@@ -181,13 +181,19 @@
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Sale <b class="caret"></b>
+							Sales <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/sale/online/ordering/plans">
+								<a href="${ctx}/broadband-user/sale/online/ordering/view/1/${userSession.user_role == 'sales' ? userSession.id : 0 }">
 									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-									Online Ordering (PAD) 
+									View Online Orders (PAD | PC)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/sale/online/ordering/plans">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Ordering Online (PAD)
 								</a>
 							</li>
 						</ul>

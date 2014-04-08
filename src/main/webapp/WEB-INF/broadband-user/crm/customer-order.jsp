@@ -116,6 +116,26 @@
 										<p id="${customerOrder.id}_transition_porting_number" class="form-control-static">${customerOrder.transition_porting_number}</p>
 									</div>
 								</div>
+								<div class="form-group">
+									<label class="control-label col-md-6">Download Application Form</label>
+									<div class="col-md-6">
+										<c:if test="${customerOrder.order_pdf_path!=null}">
+											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save btn-lg"></a>
+										</c:if>
+										<c:if test="${customerOrder.order_pdf_path==null}">
+      										<p class="form-control-static">Empty</p>
+										</c:if>
+									</div>
+									<label class="control-label col-md-6">Download Credit Card Rquest</label>
+									<div class="col-md-6">
+										<c:if test="${customerOrder.credit_pdf_path!=null}">
+											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save btn-lg"></a>
+										</c:if>
+										<c:if test="${customerOrder.credit_pdf_path==null}">
+      										<p class="form-control-static">Empty</p>
+										</c:if>
+									</div>
+								</div>
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
@@ -347,8 +367,8 @@
 								<tr class="${customerOrderDetail.detail_type=='discount' ? 'alert alert-warning':'' }">
 									<td>
 									${customerOrderDetail.detail_name}
-										<c:if test="${customerOrderDetail.detail_type=='pstn'}">
-											(
+										<c:if test="${customerOrderDetail.detail_type=='pstn' || customerOrderDetail.detail_type=='voip'}">
+											<br/>(
 											<c:if test="${customerOrderDetail.pstn_number==''}">
 												<strong class='text-warning'>Number is Empty</strong>
 											</c:if>

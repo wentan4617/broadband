@@ -181,7 +181,11 @@
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Online Ordering (PAD)</a>
+                    		<a href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }'>View Online Orders (PAD | PC)</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Ordering Online (PAD)</a>
                     	</li>
                     </ul>
 			  	</div>
