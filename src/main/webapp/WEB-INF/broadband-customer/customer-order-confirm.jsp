@@ -10,14 +10,51 @@
 .personal-info li{
 	padding:5px 40px;
 }
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+color: #fff;
+background-color: #5cb85c;
+}
 </style>
 <div class="container">
-	<div class="page-header">
+	<!-- <div class="page-header">
 		<h1>
 			3. Customer Information Review and Checkout 
 		</h1>
-	</div>
-	<div class="panel panel-default">
+	</div> -->
+	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+		<li >
+			<a  class="btn-lg">
+				1. Choose Plans And Pricing
+				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="">
+			<%-- <c:choose>
+				<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
+					<a href="${ctx }/order/${orderPlan.id}" class="btn-lg">
+						2. Fill Application Form
+						<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+					</a>
+				</c:when>
+				<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+					<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn-lg">
+						2. Fill Application Form
+						<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+					</a>
+				</c:when>
+			</c:choose> --%>
+			<a class="btn-lg">
+				2. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="active">
+			<a  class="btn-lg">
+				3. Review and Checkout 
+			</a>
+		</li>
+	</ul>
+	<div class="panel panel-success">
 		<div class="panel-heading">Please review your application information to checkout</div>
 		<div class="panel-body">
 			<div class="row">

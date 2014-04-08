@@ -90,7 +90,7 @@
 		<filter-name>CustomerOrderSessionFilter</filter-name>
 		<url-pattern>/order</url-pattern>
 		<url-pattern>/order/confirm</url-pattern>
-		<url-pattern>/order/submit</url-pattern>
+		<url-pattern>/order/checkout</url-pattern>
 	</filter-mapping>
 
 	<!-- customer session filter -->

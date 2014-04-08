@@ -33,6 +33,7 @@
 				$('#alert-error').show('normal');
 			} else {
 				$('#' + key.replace('.','\\.'))
+					.focus()
 					.tooltip({
 						html: true
 						, placement: placement

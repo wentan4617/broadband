@@ -196,15 +196,22 @@ public class CustomerController {
 			return "broadband-customer/customer-order";
 		}
 
-		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
+		Customer cValid = new Customer();
+		cValid.getParams().put("where", "query_exist_customer_by_mobile");
+		cValid.getParams().put("cellphone", customer.getCellphone());
+		int count = this.crmService.queryExistCustomer(cValid);
 
 		if (count > 0) {
-			result.rejectValue("login_name", "duplicate", "is already in use");
+			result.rejectValue("cellphone", "duplicate", "is already in use");
 			return "broadband-customer/customer-order";
 		}
+		
+		cValid.getParams().put("where", "query_exist_customer_by_email");
+		cValid.getParams().put("email", customer.getEmail());
+		count = this.crmService.queryExistCustomer(cValid);
 
-		if (!customer.getPassword().equals(customer.getCk_password())) {
-			result.rejectValue("ck_password", "incorrectConfirmPassowrd", "");
+		if (count > 0) {
+			result.rejectValue("email", "duplicate", "is already in use");
 			return "broadband-customer/customer-order";
 		}
 
@@ -368,7 +375,9 @@ public class CustomerController {
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
 			customer.setStatus("active");
+			customer.setCustomer_type("personal");
 			customer.setUser_name(customer.getLogin_name());
+			customer.setPassword(TMUtils.generateRandomString(6));
 			customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
@@ -435,32 +444,14 @@ public class CustomerController {
 
 	@RequestMapping(value = "/login")
 	public String toLogin(Model model) {
-
-		model.addAttribute("customer", new Customer());
 		return "broadband-customer/login";
 	}
 
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public String login(Model model,
-			@ModelAttribute("customer") @Validated(CustomerLoginValidatedMark.class) Customer customer,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
 
-		if (result.hasErrors()) {
-			return "broadband-customer/login";
-		}
-
-		customer.setStatus("active");
-		Customer customerSession = this.crmService.queryCustomerWhenLogin(customer);
-
-		if (customerSession == null) {
-			model.addAttribute("error", "Incorrect login name or password");
-			return "broadband-customer/login";
-		}
-
-		req.getSession().setAttribute("customerSession", customerSession);
+	
+	@RequestMapping("/customer/home/redirect")
+	public String redirectCustomerHome(RedirectAttributes attr) {
 		attr.addFlashAttribute("success", "Welcome to CyberTech Customer Home.");
-
 		return "redirect:/customer/home";
 	}
 

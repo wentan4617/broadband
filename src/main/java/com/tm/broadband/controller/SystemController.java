@@ -61,29 +61,7 @@ public class SystemController {
 		return "broadband-user/login";
 	}
 
-	/*@RequestMapping(value = "/broadband-user/login", method = RequestMethod.POST)
-	public String userLogin(
-			Model model,
-			@ModelAttribute("user") @Validated(UserLoginValidatedMark.class) User user,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-
-		if (result.hasErrors()) {
-			return "broadband-user/login";
-		}
-
-		User userSession = this.systemService.queryUserLogin(user);
-
-		if (userSession == null) {
-			model.addAttribute("error", "Incorrect account or password");
-			return "broadband-user/login";
-		}
-
-		req.getSession().setAttribute("userSession", userSession);
-		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
-
-		return "redirect:/broadband-user/index";
-	}*/
+	
 	
 	
 	

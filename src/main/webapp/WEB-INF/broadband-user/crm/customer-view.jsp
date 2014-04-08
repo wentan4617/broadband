@@ -20,17 +20,17 @@
 					<h4 class="panel-title">Customer View</h4>
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					<table class="table">
+					<table class="table" style="font-size:12px;">
 						<thead>
 							<tr>
 								<th><input type="checkbox" id="checkbox_customer_top" /></th>
 								<th>Customer</th>
+								<th>Type</th>
 								<th>Address</th>
 								<th>Email</th>
 								<th>Mobile</th>
 								<th>Status</th>
-								<th>Registered On</th>
-								<th>&nbsp;</th>
+								<th>Reg On</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -41,15 +41,22 @@
 									</td>
 									<td>
 										<a href="${ctx }/broadband-user/crm/customer/edit/${customer.id}">
-											${customer.login_name }
+											<c:choose>
+												<c:when test="${customer.customer_type == 'personal' }">
+													${customer.first_name } ${customer.last_name }
+												</c:when>
+												<c:when test="${customer.customer_type == 'business' }">
+													${customer.company_name }
+												</c:when>
+											</c:choose>
 										</a>
 									</td>
+									<td>${customer.customer_type }</td>
 									<td>${customer.address }</td>
 									<td>${customer.email }</td>
 									<td>${customer.cellphone }</td>
 									<td>${customer.status}</td>
 									<td>${customer.register_date_str }</td>
-									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
 						</tbody>

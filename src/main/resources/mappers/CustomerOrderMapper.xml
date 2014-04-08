@@ -92,7 +92,7 @@
 		co.`sale_id`							as co_sale_id,
 		co.`order_pdf_path`						as co_order_pdf_path,
 		co.`credit_pdf_path`					as co_credit_pdf_path,
-		co.`signature`							as co_signature,
+		co.`signature`							as co_signature
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />

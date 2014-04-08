@@ -12,23 +12,18 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">CyberPark Customer Sign in</div>
 				<div class="panel-body">
-					<form:form modelAttribute="customer" method="post" action="${ctx}/login">
+					
+					<form id="loginForm">
 						<div class="form-group">
-							<label for="login_name">Login Name</label>
-							<form:input path="login_name" class="form-control" placeholder="Login Name" />
-							<p class="help-block">
-								<form:errors path="login_name" cssErrorClass="error"/>
-							</p>
+							<label for="login_name">Your Mobile or Email</label>
+							<input type="text" id="login_name" class="form-control" placeholder="" data-error-field/>
 						</div>
 						<div class="form-group">
 							<label for="password">Password</label>
-							<form:password path="password" class="form-control" placeholder="" />
-							<p class="help-block">
-								<form:errors path="password" cssErrorClass="error"/>
-							</p>
+							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
 						</div>
-						<button type="submit" class="btn btn-success">Sign in</button>
-					</form:form>
+						<button type="button" data-loading-text="loading..." class="btn btn-success" id="signin-btn">Sign in</button>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -38,4 +33,32 @@
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script type="text/javascript">
+(function($){
+	$(document).keypress(function(e){
+		if ($('#loginForm input:focus').length > 0 && event.keyCode == 13) {
+			$('#signin-btn').trigger('click');
+		}
+	});
+	
+	$('#signin-btn').on("click", function(){
+		
+		var $btn = $(this);
+		$btn.button('loading');
+		var data = {
+			login_name: $('#login_name').val()
+			, password: $('#password').val()
+		};
+		$.post('${ctx}/login', data, function(json){
+			if (json.hasErrors) {
+				$.jsonValidation(json, 'right');
+			} else {
+				window.location.href='${ctx}' + json.url;
+			}
+		}, 'json').always(function () {
+			$btn.button('reset');
+	    });
+	});
+})(jQuery);
+</script>
 <jsp:include page="footer-end.jsp" />

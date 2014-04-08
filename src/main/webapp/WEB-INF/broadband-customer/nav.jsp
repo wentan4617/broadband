@@ -35,7 +35,14 @@
 					
 					<a href="${ctx }/customer/home" class="navbar-link" style="margin-right:10px;">
 						<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
-						${customerSession.user_name}
+						<c:choose>
+							<c:when test="${customerSession.customer_type == 'personal' }">
+								${customerSession.first_name } ${customerSession.last_name }
+							</c:when>
+							<c:when test="${customerSession.customer_type == 'business' }">
+								${customerSession.company_name }
+							</c:when>
+						</c:choose>
 					</a>
 					<a href="${ctx}/signout" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>

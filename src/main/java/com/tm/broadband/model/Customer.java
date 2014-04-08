@@ -32,11 +32,11 @@ public class Customer implements Serializable {
 	 */
 
 	private Integer id;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class})
+	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class})
 	private String login_name;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 6, max = 20, groups = { CustomerValidatedMark.class, CustomerLoginValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class})
 	private String password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })
@@ -50,12 +50,12 @@ public class Customer implements Serializable {
 	private String address;
 	@NotEmpty(groups = { CustomerValidatedMark.class})
 	@Email(groups = { CustomerValidatedMark.class})
-	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class})
 	private String email;
-	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
+	//@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String phone;
-	@NotEmpty(groups = { CustomerValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class})
+	@Length(min = 1, max = 11, groups = { CustomerValidatedMark.class})
 	private String cellphone;
 	private String status;
 	private String invoice_post;

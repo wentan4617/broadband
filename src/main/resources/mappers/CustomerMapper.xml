@@ -93,7 +93,7 @@
 		co.`sale_id`							as co_sale_id,
 		co.`order_pdf_path`						as co_order_pdf_path,
 		co.`credit_pdf_path`					as co_credit_pdf_path,
-		co.`signature`							as co_signature,
+		co.`signature`							as co_signature
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -176,12 +176,23 @@
 		<result property="pstn_number" column="cod_pstn_number" />
 	</resultMap>
 	
-	<sql id="customerPageWhere">
+	<sql id="customerWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'when_login'">
+					(c.cellphone = #{params.cellphone} or c.email = #{params.email})
+					and c.password = #{params.password}
+					and c.status = #{params.status}
+				</when>
 				<when test="params.where =='query_order_status'">
 					<if test="params.status != null">c.status = #{params.status}</if>
 					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
+				</when>
+				<when test="params.where == 'query_exist_customer_by_mobile'">
+					<if test="params.cellphone != null">c.cellphone = #{params.cellphone}</if>
+				</when>
+				<when test="params.where == 'query_exist_customer_by_email'">
+					<if test="params.email != null">c.email = #{params.email}</if>
 				</when>
 				<otherwise>
 					<if test="params.status != null">c.status LIKE CONCAT('%', '${params.status}', '%')</if>
@@ -203,10 +214,36 @@
 	<!-- =================================================================================== -->
 
 	<!-- SELECT AREA -->
+	
+	<select id="selectCustomer" parameterType="Customer" resultType="Customer">
+		select * from tm_customer as c
+		<include refid="customerWhere"/>
+	</select>
+	
+	<!-- select customer page -->
+	<select id="selectCustomersByPage" parameterType="Page" resultType="Customer">
+		select * from tm_customer as c
+		left join tm_customer_order as co on co.customer_id = c.id
+		<include refid="customerWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customer amount -->
+	<select id="selectCustomersSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer as c
+		left join tm_customer_order as co on co.customer_id = c.id
+		<include refid="customerWhere"/>
+	</select>
 
 	<!-- when customer register or administrator create customer, check whether exist same login name -->
 	<select id="selectExistCustomerByLoginName" resultType="int">
 		select count(*) from tm_customer where login_name = #{0}
+	</select>
+	
+	<select id="selectExistCustomer" resultType="int">
+		select count(*) from tm_customer as c
+		<include refid="customerWhere"/>
 	</select>
 
 	<!-- select customers by id -->
@@ -273,21 +310,7 @@
 		</collection>
 	</resultMap>
 
-	<!-- select customer page -->
-	<select id="selectCustomersByPage" parameterType="Page" resultType="Customer">
-		select * from tm_customer as c
-		left join tm_customer_order as co on co.customer_id = c.id
-		<include refid="customerPageWhere"/>
-		<if test="params.orderby != null">${params.orderby}</if>
-		limit #{pageOffset}, #{pageSize}
-	</select>
-
-	<!-- select customer amount -->
-	<select id="selectCustomersSum" parameterType="Page" resultType="int">
-		select count(*) from tm_customer as c
-		left join tm_customer_order as co on co.customer_id = c.id
-		<include refid="customerPageWhere"/>
-	</select>
+	
 	
 	<!-- customer login -->
 	<select id="selectCustomerWhenLogin" parameterType="Customer" resultType="Customer">
