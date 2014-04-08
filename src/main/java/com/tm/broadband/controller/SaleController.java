@@ -37,7 +37,9 @@ import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.User;
 import com.tm.broadband.pdf.CreditPDFCreator;
 import com.tm.broadband.pdf.OrderPDFCreator;
 import com.tm.broadband.service.CRMService;
@@ -186,6 +188,9 @@ public class SaleController {
 		customer.getCustomerOrder().setOrder_status("pending");
 		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 		customer.getCustomerOrder().setSale_id(customer.getId());
+		customer.getCustomerOrder().setSignature("unsigned");
+		User user = (User) req.getSession().getAttribute("userSession");
+		customer.getCustomerOrder().setSale_id(user.getId());
 		
 		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
@@ -311,6 +316,7 @@ public class SaleController {
 		CustomerOrder co = new CustomerOrder();
 		co.setId(order_id);
 		model.addAttribute("customerOrder", co);
+		
 		return "broadband-user/sale/online-ordering-result";
 	}
 	
@@ -320,6 +326,7 @@ public class SaleController {
 			, @RequestParam("customer_id") Integer customer_id
 			, @RequestParam("order_pdf_path") MultipartFile order_pdf_path
 			, @RequestParam("credit_pdf_path") MultipartFile credit_pdf_path) {
+
 		
 		if(!order_pdf_path.isEmpty() && !credit_pdf_path.isEmpty()){
 			String order_path = TMUtils.createPath("broadband" + File.separator
@@ -336,15 +343,193 @@ public class SaleController {
 			} catch (IllegalStateException | IOException e) {
 				e.printStackTrace();
 			}
+			
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", order_id);
+			co.setSignature("signed");
+			this.crmService.editCustomerOrder(co);
 		}
 		
 		return "redirect:/broadband-user/sale/online-ordering-upload-result";
 	}
 	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload-single")
+	public String uploadSinglePDF(Model model
+			, @RequestParam("sale_id") Integer sale_id
+			, @RequestParam("order_id") Integer order_id
+			, @RequestParam("customer_id") Integer customer_id
+			, @RequestParam("order_pdf_path") MultipartFile order_pdf_path
+			, @RequestParam("credit_pdf_path") MultipartFile credit_pdf_path
+			,HttpServletRequest req) {
+
+		
+		if(!order_pdf_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "application_" + order_id
+					+ ".pdf");
+			try {
+				order_pdf_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", order_id);
+			co.setSignature("signed");
+			this.crmService.editCustomerOrder(co);
+		}
+		if(!credit_pdf_path.isEmpty()){
+			String credit_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "credit_" + order_id
+					+ ".pdf");
+			try {
+				credit_pdf_path.transferTo(new File(credit_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", order_id);
+			co.setSignature("signed");
+			this.crmService.editCustomerOrder(co);
+		}
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
+	}
+	
 	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result")
 	public String toUploadResult(Model model) {
 		
-		return "broadband-user/sale/online-ordering-upload-result";
+		return "broadband-user/sale/online-order-view";
 	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/{pageNo}/{sale_id}")
+	public String onlineOrderView(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("sale_id") int sale_id
+			,HttpServletRequest req) {
 
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by order_create_date desc");
+		page.getParams().put("where", "query_sale_id_not_null");
+		User user = (User) req.getSession().getAttribute("userSession");
+
+		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		
+		if(user.getUser_role().equals("sales")){
+			page.getParams().put("sale_id", user.getId());
+			sale_id = user.getId();
+			pageSignatureSum.getParams().put("sale_id", user.getId());
+		} else if(sale_id!=0){
+			page.getParams().put("sale_id", sale_id);
+			pageSignatureSum.getParams().put("sale_id", sale_id);
+		}
+		
+		this.saleService.queryOrdersByPage(page);
+		List<User> users = this.saleService.queryUsersWhoseIdExistInOrder();
+		
+		model.addAttribute("page", page);
+		model.addAttribute("users", users);
+		model.addAttribute("sale_id", sale_id);
+
+		// BEGIN QUERY SUM BY SIGNATURE
+		pageSignatureSum.getParams().put("signature", "signed");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());
+		pageSignatureSum.getParams().put("signature", "unsigned");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
+		// END QUERY SUM BY SIGNATURE
+		
+		return "broadband-user/sale/online-order-view";
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/by_sales_id")
+	public String onlineOrderViewBySalesId(Model model
+			,HttpServletRequest req
+			,@RequestParam("sale_id") Integer sale_id) {
+
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
+		page.setPageNo(1);
+		page.getParams().put("orderby", "order by order_create_date desc");
+		User user = (User) req.getSession().getAttribute("userSession");
+
+
+		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		
+		if(user.getUser_role().equals("sales")){
+			page.getParams().put("sale_id", user.getId());
+			sale_id = user.getId();
+			pageSignatureSum.getParams().put("sale_id", user.getId());
+		} else if(sale_id!=0){
+			page.getParams().put("sale_id", sale_id);
+			pageSignatureSum.getParams().put("sale_id", sale_id);
+		}
+		
+		this.saleService.queryOrdersByPage(page);
+		model.addAttribute("page", page);
+		model.addAttribute("users", this.saleService.queryUsersWhoseIdExistInOrder());
+		model.addAttribute("sale_id", sale_id);
+
+		// BEGIN QUERY SUM BY SIGNATURE
+		pageSignatureSum.getParams().put("signature", "signed");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());
+		pageSignatureSum.getParams().put("signature", "unsigned");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
+		// END QUERY SUM BY SIGNATURE
+		
+		return "broadband-user/sale/online-order-view";
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/by/{sale_id}/{signature}")
+	public String onlineOrderViewBySignature(Model model
+			,HttpServletRequest req
+			, @PathVariable("signature") String signature
+			, @PathVariable("sale_id") int sale_id) {
+		
+		if(signature.equals("signed")){
+			model.addAttribute("signedActive", "active");
+		} else if(signature.equals("unsigned")){
+			model.addAttribute("unsignedActive", "active");
+		}
+
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
+		page.setPageNo(1);
+		page.getParams().put("signature", signature);
+		page.getParams().put("orderby", "order by order_create_date desc");
+		User user = (User) req.getSession().getAttribute("userSession");
+
+
+		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		
+		if(user.getUser_role().equals("sales")){
+			page.getParams().put("sale_id", user.getId());
+			sale_id = user.getId();
+			pageSignatureSum.getParams().put("sale_id", user.getId());
+		} else if(sale_id!=0){
+			page.getParams().put("sale_id", sale_id);
+			pageSignatureSum.getParams().put("sale_id", sale_id);
+		}
+		
+		this.saleService.queryOrdersByPage(page);
+		model.addAttribute("page", page);
+		model.addAttribute("users", this.saleService.queryUsersWhoseIdExistInOrder());
+		model.addAttribute("sale_id", sale_id);
+
+		// BEGIN QUERY SUM BY SIGNATURE
+		pageSignatureSum.getParams().put("signature", "signed");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());
+		pageSignatureSum.getParams().put("signature", "unsigned");
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
+		// END QUERY SUM BY SIGNATURE
+		
+		return "broadband-user/sale/online-order-view";
+	}
 }

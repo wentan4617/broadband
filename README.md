@@ -9,6 +9,7 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.5 2014-04-04
 
+* sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF
 * 修改前端，注册购买页面，用mobile and email代替登入
 * 给购买流添加导航
 * 更换dps支付页面

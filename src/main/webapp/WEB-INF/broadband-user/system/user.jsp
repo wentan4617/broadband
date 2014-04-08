@@ -47,6 +47,7 @@
 								<form:select path="user_role" class="form-control">
 									<form:option value="administrator">Administrator</form:option>
 									<form:option value="operator">Operator</form:option>
+									<form:option value="sales">Sales</form:option>
 								</form:select>
 							</div>
 						</div>
@@ -202,10 +203,28 @@
 									</li>
 								</ul>
 							</div>
+						<hr/>
+							<div class="col-md-2">
+								<ul class="list-unstyled">
+									<li>
+										<h3>Sales</h3>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="sale/online/ordering/view" /> View Online Orders (PAD | PC)
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="sale/online/ordering/plans" /> Ordering Online (PAD)
+										</label>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
-							<div class="col-md-3 col-md-offset-4">
+							<div class="col-md-offset-5">
 								<button type="submit" class="btn btn-success">Save</button>
 							</div>
 						</div>

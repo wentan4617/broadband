@@ -235,7 +235,7 @@
 						<div class="form-group">
 							<label for="address" class="control-label col-sm-4">Your Address</label>
 							<div class="col-sm-8">
-								<input type="text" name="address" id="address" class="form-control" placeholder="" data-error-field/>
+								<input id="address" type="text" name="address" id="address" class="form-control" placeholder="" data-error-field/>
 							</div>
 						</div>
 						<hr>
@@ -254,6 +254,7 @@
 		
 	</div>
 </div>
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 
 <jsp:include page="footer.jsp" />
@@ -374,4 +375,6 @@
 	
 })(jQuery);
 </script>
+<script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="../footer-end.jsp" />
