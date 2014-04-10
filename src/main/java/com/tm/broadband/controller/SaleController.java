@@ -224,6 +224,31 @@ public class SaleController {
 		model.addAttribute("customer_id", customer_id);
 		model.addAttribute("order_id", order_id);
 		model.addAttribute("customerCredit", new CustomerCredit());
+		
+		// BEGIN CREDIT CARD MONTH
+		List<String> years = new ArrayList<String>();
+		for (int i = 14; i <= 99; i++) {
+			if(i<10){
+				years.add(String.format("%02d",i));
+			} else {
+				years.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD MONTH
+
+		// BEGIN CREDIT CARD YEAR
+		List<String> months = new ArrayList<String>();
+		for (int i = 1; i <= 12; i++) {
+			if(i<10){
+				months.add(String.format("%02d",i));
+			} else {
+				months.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD YEAR
+
+		model.addAttribute("months", months);
+		model.addAttribute("years", years);
 		return "broadband-user/sale/online-ordering-credit";
 	}
 	
@@ -278,6 +303,15 @@ public class SaleController {
 			,@RequestParam("order_id") Integer order_id
 			,BindingResult result
 			,RedirectAttributes attr) {
+		
+		
+		
+		customerCredit.setExpiry_date(
+				"20"+customerCredit.getExpiry_year()
+				+"-"+customerCredit.getExpiry_month());
+		
+		
+		
 		model.addAttribute("panelheading", "Customer Credit Card Information");
 		model.addAttribute("action", "/broadband-user/sale/online/ordering/order/credit/create");
 
@@ -306,19 +340,25 @@ public class SaleController {
 		this.crmService.editCustomerOrder(co);
 		// END CREDIT PDF
 		
-		return "redirect:/broadband-user/sale/online-ordering-result/" + order_id + "/" + customer_id;
+		model.addAttribute("customer_id",customer_id);
+		model.addAttribute("order_id",order_id);
+		
+		return "/broadband-user/sale/online-ordering-upload-result";
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online-ordering-result/{order_id}/{customer_id}")
 	public String toCreditResult(Model model
 			, @PathVariable("order_id") Integer order_id
-			, @PathVariable("customer_id") Integer customer_id) {
+			, @PathVariable("customer_id") Integer customer_id
+			,HttpServletRequest req) {
 		
 		CustomerOrder co = new CustomerOrder();
 		co.setId(order_id);
 		model.addAttribute("customerOrder", co);
+
+		User user = (User) req.getSession().getAttribute("userSession");
 		
-		return "broadband-user/sale/online-ordering-result";
+		return "redirect:/broadband-user/sale/online/ordering/view/"+1+"/"+user.getId();
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload")
@@ -411,10 +451,10 @@ public class SaleController {
 		page.setPageNo(pageNo);
 		page.getParams().put("orderby", "order by order_create_date desc");
 		page.getParams().put("where", "query_sale_id_not_null");
-		User user = (User) req.getSession().getAttribute("userSession");
 
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
-		
+
+		User user = (User) req.getSession().getAttribute("userSession");
 		if(user.getUser_role().equals("sales")){
 			page.getParams().put("sale_id", user.getId());
 			sale_id = user.getId();
@@ -451,11 +491,11 @@ public class SaleController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(1);
 		page.getParams().put("orderby", "order by order_create_date desc");
-		User user = (User) req.getSession().getAttribute("userSession");
 
 
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
-		
+
+		User user = (User) req.getSession().getAttribute("userSession");
 		if(user.getUser_role().equals("sales")){
 			page.getParams().put("sale_id", user.getId());
 			sale_id = user.getId();

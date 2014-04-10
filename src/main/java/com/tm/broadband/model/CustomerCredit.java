@@ -1,8 +1,10 @@
 package com.tm.broadband.model;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 public class CustomerCredit {
 
@@ -15,10 +17,10 @@ public class CustomerCredit {
 	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String holder_name;
 	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
+	@Length(min = 16, max = 16, groups = { CustomerValidatedMark.class})
 	private String card_number;
 	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String security_code;
-	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String expiry_date;
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -27,6 +29,11 @@ public class CustomerCredit {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String expiry_month;
+	private String expiry_year;
+	
+	
 	private Customer customer = new Customer();
 
 	/*
@@ -99,6 +106,22 @@ public class CustomerCredit {
 
 	public void setCustomer(Customer customer) {
 		this.customer = customer;
+	}
+
+	public String getExpiry_month() {
+		return expiry_month;
+	}
+
+	public void setExpiry_month(String expiry_month) {
+		this.expiry_month = expiry_month;
+	}
+
+	public String getExpiry_year() {
+		return expiry_year;
+	}
+
+	public void setExpiry_year(String expiry_year) {
+		this.expiry_year = expiry_year;
 	}
 
 }

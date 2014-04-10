@@ -40,7 +40,7 @@
 						  </div>
 							<hr/>
 						  <div class="form-group">
-							<label for="" class="control-label col-sm-4">Card Type</label>
+							<label class="control-label col-sm-4">Card Type</label>
 							<div class="col-sm-8">
 								<ul class="list-inline topup-list" style="margin:5px 0 0 0;">
 									<li>
@@ -60,18 +60,18 @@
 						  <div class="form-group">
 							    <label for="card_number" class="col-sm-4 control-label">Holder Name</label>
 							    <div class="col-sm-4">
-									<form:input path="holder_name" class="form-control" placeholder="Holder Name" />
+									<form:input path="holder_name" maxlength="50" class="form-control" placeholder="Holder Name" />
 							    </div>
 							    <div class="col-sm-4">
 									<p class="help-block">
 										<form:errors path="holder_name" cssErrorClass="error"/>
 									</p>
 							    </div>
-							  </div>
+						  </div>
 						  <div class="form-group">
 							    <label for="card_number" class="col-sm-4 control-label">Card Number</label>
 							    <div class="col-sm-4">
-									<form:input path="card_number" class="form-control" placeholder="Card Number" />
+									<form:input path="card_number" maxlength="16" class="form-control" placeholder="Card Number" />
 							    </div>
 							    <div class="col-sm-4">
 									<p class="help-block">
@@ -82,25 +82,29 @@
 						  <div class="form-group">
 							    <label for="card_number" class="col-sm-4 control-label">Security Code</label>
 							    <div class="col-sm-4">
-									<form:input path="security_code" class="form-control" placeholder="Security Code" />
+									<form:input path="security_code" maxlength="10" class="form-control" placeholder="Security Code" />
 							    </div>
 							    <div class="col-sm-4">
 									<p class="help-block">
 										<form:errors path="security_code" cssErrorClass="error"/>
 									</p>
 							    </div>
-							  </div>
+						  </div>
 						  <div class="form-group">
-							    <label for="card_number" class="col-sm-4 control-label">Expiry Date</label>
-							    <div class="col-sm-4 input-group date" id="expiry_date_datepicker">
-									<form:input path="expiry_date" class="form-control input-sm" placeholder="Expiry Date" />
-									<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-							    </div>
-							    <div class="col-sm-4">
-									<p class="help-block">
-										<form:errors path="expiry_date" cssErrorClass="error"/>
-									</p>
-							    </div>
+						    <label for="card_number" class="col-sm-4 control-label">Expiry Date</label>
+						    <div class="col-sm-3 input-group">
+						    	<form:select style="width:34px; text-indent:0px;" class="form-control input-sm col-sm-1" path="expiry_month">
+						    		<c:forEach var="month" items="${months}">
+						    			<form:option value="${month}">${month}</form:option>
+						    		</c:forEach>
+						    	</form:select>
+						    	<p class="form-control-static col-sm-1">/</p>
+						    	<form:select style="width:34px; text-indent:0px;" class="form-control input-sm col-sm-1" path="expiry_year">
+						    		<c:forEach var="year" items="${years}">
+						    			<form:option value="${year}">${year}</form:option>
+						    		</c:forEach>
+						    	</form:select>
+						    </div>
 						  </div>
 						  <div class="form-group">
 						    <div class="col-sm-12">
@@ -125,14 +129,6 @@
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
 	});
-	// BEGIN Expiry Date Datapicker
-	$('#expiry_date_datepicker').datepicker({
-	    format: "yyyy-mm",
-	    autoclose: true,
-	    todayHighlight: true,
-	    minViewMode: 1
-	}).datepicker('setDate', new Date());
-	// END Expiry Date Datapicker
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
