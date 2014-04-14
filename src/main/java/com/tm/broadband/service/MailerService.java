@@ -22,6 +22,11 @@ import com.tm.broadband.email.Mailer;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.model.CompanyDetail;
 
+/** 
+* Mailer Service
+* 
+* @author DONG CHEN & YIFAN XIONG
+*/ 
 @Service
 public class MailerService implements Mailer {
 

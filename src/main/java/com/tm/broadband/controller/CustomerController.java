@@ -656,4 +656,10 @@ public class CustomerController {
 		return "broadband-customer/about-us";
 	}
 
+	@RequestMapping(value = "/chorus-googlemap")
+	public String toChorusGoogleMap(Model model) {
+		
+		return "broadband-customer/chorus-googlemap";
+	}
+
 }

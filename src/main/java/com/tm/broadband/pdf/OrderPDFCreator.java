@@ -25,6 +25,11 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
+/** 
+* Generates Order PDF
+* 
+* @author DONG CHEN
+*/ 
 public class OrderPDFCreator extends ITextUtils {
 	private Customer customer;
 	private Organization org;
@@ -232,31 +237,26 @@ public class OrderPDFCreator extends ITextUtils {
     	// BEGIN CUSTOMER BASIC INFO PADDING TOP
         addEmptyCol(customerBasicInfoTable, 6F, 14);
     	// END CUSTOMER BASIC INFO PADDING TOP
-
+        
         // BEGIN CUSTOMER BASIC INFORMATION
         if(this.getCustomer().getCustomer_type().equals("personal")){
         	
         	// BEGIN PERSONAL BASIC INFORMATION
             addCol(customerBasicInfoTable, (this.getCustomer().getTitle()!=null?this.getCustomer().getTitle()+" ":"")+this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), 10, 10F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, "No.", 2, 0F, arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, "Order Date", 2, 0F, arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
             // END PERSONAL BASIC INFORMATION
             
         } else if(this.getCustomer().getCustomer_type().equals("business")){
         	
         	// BEGIN BUSINESS BASIC INFORMATION
             addCol(customerBasicInfoTable, this.getOrg().getOrg_name(), 10, 10F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, "No.", 2, 0F, arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, "Order Date", 2, 0F, arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-            addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         	// END BUSINESS BASIC INFORMATION
             
         }
+        addCol(customerBasicInfoTable, "No.", 2, 0F, arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, "Order Date", 2, 0F, arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         // END CUSTOMER BASIC INFORMATION
     	
     	// BEGIN CUSTOMER BASIC INFO PADDING BOTTOM
@@ -322,6 +322,8 @@ public class OrderPDFCreator extends ITextUtils {
         } else if(this.getCustomer().getCustomer_type().equals("business")){
         	
             // BEGIN BUSINESS INFO ROWS
+        	addCol(customerInfoTable, "Organization Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getOrg_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Organization Type", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, this.getOrg().getOrg_type(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Trading Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
