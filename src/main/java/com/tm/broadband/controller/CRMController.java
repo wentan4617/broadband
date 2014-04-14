@@ -540,7 +540,7 @@ public class CRMController {
 		Plan plan = new Plan();
 		plan.getParams().put("plan_status", "selling");
 		plan.getParams().put("orderby", "order by plan_type");
-		List<Plan> plans = this.planService.queryPlansBySome(plan);
+		List<Plan> plans = this.planService.queryPlans(plan);
 		model.addAttribute("plans", plans);
 
 		

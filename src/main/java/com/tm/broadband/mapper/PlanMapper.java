@@ -24,14 +24,15 @@ public interface PlanMapper {
 	
 	/* SELECT AREA */
 	
-	List<Plan> selectPlansBySome(Plan plan);
-	List<Plan> selectPlansWithTopups(Plan plan);
+	Plan selectPlan(Plan plan);
+	List<Plan> selectPlans(Plan plan);
+	List<Plan> selectPlansByPage(Page<Plan> page);
+	int selectPlansSum(Page<Plan> page);
+
 	Plan selectPlanById(int id);
 	int selectExistPlanByName(String plan_name);
 	int selectExistNotSelfPlanfByName(String plan_name, int id);
-	List<Plan> selectPlansByPage(Page<Plan> page);
-	int selectPlansSum(Page<Plan> page);
-	
+
 	List<String> selectDistinctPlanGroup();
 	
 	/* // END SELECT AREA */

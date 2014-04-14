@@ -75,7 +75,7 @@ public class SaleController {
 		plan.getParams().put("plan_sort", "CLOTHING");
 		plan.getParams().put("orderby", "order by data_flow");
 		
-		plans = this.planService.queryPlansBySome(plan);
+		plans = this.planService.queryPlans(plan);
 		
 		model.addAttribute("plans", plans);
 		

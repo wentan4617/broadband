@@ -5,8 +5,17 @@
 
 <jsp:include page="header.jsp" />
 
-<%-- <jsp:include page="carousel.jsp" /> --%>
-
+<style>
+#imgContainer .thumbnail {
+	margin-bottom: 0;
+}
+#imgContainer img {
+	height:70px;
+}
+#imgContainer hr {
+	margin: 5px 0;
+}
+</style>
 
 <div class="container marketing" >
 	<div class="row">
@@ -28,104 +37,87 @@
 	</div>
 	<hr/>
 	<div class="row">
-		<div class="col-lg-8">
+		<div class="col-lg-9">
 			<jsp:include page="carousel.jsp" />
 		</div>
-		<div class="col-lg-4">
+		<div class="col-lg-3">
 			<div class="panel panel-default">
-		  		<div class="panel-body" style="height:330px;">
-			    	<a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">Join Our Plan Top-Up</a>
-			    	<hr/>
-			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">Join Our Plan No-Term</a>
+		  		<div id="imgContainer" class="panel-body" style="height:377px;">
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
+		  			</a>
+		  			<hr/>
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png"  alt="business-plan">
+		  			</a>
+		  			<hr/>
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
+		  			</a>
+		  			<hr/>
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
+			    	</a>
+			    	<%-- <a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">Join Our Plan Top-Up</a>
+			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">Join Our Plan No-Term</a> --%>
 			  	</div>
 			</div>
 		</div>
 	</div>
 	<hr/>
 	<div class="row">
-		<div class="col-lg-3">
-			<img class="img-thumbnail" src="public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
-			<ul class="list-unstyled text-center list-menu">
-				<!-- <li>
-					<h4><a href="javascript:void(0)">Bar/cafe/Restaurant</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Entertainment place</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Hospitality</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Public place</a></h4>
-				</li> -->
-			</ul>
+		<div class="col-lg-2"></div>
+		<div class="col-lg-2">
+			<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
+				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+			</a>
 		</div>
-
-		<div class="col-lg-3">
-			<img class="img-thumbnail" src="public/bootstrap3/images/business-plan.png"  alt="business-plan">
-			<ul class="list-unstyled text-center list-menu">
-				<!-- <li>
-					<h4><a href="javascript:void(0)">Cost Saver</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Office Advisor</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Best-Spot WiFi Zone</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Grand Slam</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">OEM Plans</a></h4>
-				</li> -->
-			</ul>
+		<div class="col-lg-1"></div>
+		<div class="col-lg-2">
+			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
+				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+			</a>
 		</div>
-
-		<div class="col-lg-3">
-			<img class="img-thumbnail" src="public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
-			<ul class="list-unstyled text-center list-menu">
-				<!-- <li>
-					<h4><a href="javascript:void(0)">Chat2U</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">ADSL Plans</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">VDSL Plans</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Fiber Plans</a></h4>
-				</li> -->
-			</ul>
+		<div class="col-lg-1"></div>
+		<div class="col-lg-2">
+			<a href="javascript:void(0);" id="plan-term-option">
+				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+			</a>
 		</div>
-
-		<div class="col-lg-3">
-			<img class="img-thumbnail" src="public/bootstrap3/images/it-services.png" alt="it-services">
-			<ul class="list-unstyled text-center list-menu">
-				<!-- <li>
-					<h4><a href="javascript:void(0)">Hosting</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">B2C web design</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Web Advertising</a></h4>
-				</li>
-				<li>
-					<h4><a href="javascript:void(0)">Inventory Mgr</a></h4>
-				</li> -->
-			</ul>
-		</div>
-
+		<div class="col-lg-2"></div>
 	</div>
+	<hr/>
 </div>
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <%-- <jsp:include page="chorus-map.jsp" /> --%>
+ 
+<div id="popContainer" style="display:none;">
+	<a href="${ctx }/plans/plan-term/personal" class="btn btn-success" target="_blank">
+		<span class="glyphicon glyphicon-hand-up"></span> Personal Plan
+	</a>
+	<hr/>
+	<a href="${ctx }/plans/plan-term/business" class="btn btn-success" target="_blank">
+		<span class="glyphicon glyphicon-hand-up"></span> Business Plan
+	</a>
+</div>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script type="text/javascript">
+(function($){
+	
+	var opt = {
+		html: true
+		, trigger: 'click'
+		, placement: 'right'
+		, content: $('#popContainer').html()
+		, container: 'body'
+	};
+	
+	$('#plan-term-option').popover(opt);
+})(jQuery);
+</script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>

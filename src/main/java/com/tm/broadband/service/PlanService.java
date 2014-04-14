@@ -41,28 +41,7 @@ public class PlanService {
 	
 	@Transactional
 	public void savePlan(Plan plan) {
-		
-		
-		if ("plan-topup".equals(plan.getPlan_group()) && plan.getTopupArray() != null) {
-			String idArray = "";
-			for (int i = 0, len = plan.getTopupArray().length; i < len; i++) {
-				idArray += plan.getTopupArray()[i];
-				if (i < len - 1) idArray += ",";
-			}
-			plan.setPlan_topupid_array(idArray);
-			
-		}
-		
-		System.out.println(plan.getPlan_topupid_array());
 		this.planMapper.insertPlan(plan);
-
-		
-		if ("plan-topup".equals(plan.getPlan_group()) &&  plan.getTopupArray() != null) {
-			for (String topupId : plan.getTopupArray()) {
-				this.planMapper.insertPlanTopup(plan.getId(),
-						Integer.parseInt(topupId));
-			}
-		}
 	}
 
 	@Transactional
@@ -77,25 +56,7 @@ public class PlanService {
 
 	@Transactional
 	public void editPlan(Plan plan) {
-		if ("plan-topup".equals(plan.getPlan_group()) && plan.getTopupArray() != null) {
-			String idArray = "";
-			for (int i = 0, len = plan.getTopupArray().length; i < len; i++) {
-				idArray += plan.getTopupArray()[i];
-				if (i < len - 1) idArray += ",";
-			}
-			plan.setPlan_topupid_array(idArray);
-			
-		}
-
 		this.planMapper.updatePlan(plan);
-
-	
-		if ("plan-topup".equals(plan.getPlan_group()) &&  plan.getTopupArray() != null) {
-			for (String topupId : plan.getTopupArray()) {
-				this.planMapper.insertPlanTopup(plan.getId(),
-						Integer.parseInt(topupId));
-			}
-		}
 	}
 
 	@Transactional
@@ -132,18 +93,13 @@ public class PlanService {
 	}
 	
 	@Transactional
-	public List<Plan> queryPlansBySome(Plan plan) {
-		return this.planMapper.selectPlansBySome(plan);
+	public List<Plan> queryPlans(Plan plan) {
+		return this.planMapper.selectPlans(plan);
 	}
 	
 	@Transactional
 	public List<String> queryDistinctPlanGroup() {
 		return this.planMapper.selectDistinctPlanGroup();
-	}
-	
-	@Transactional
-	public List<Plan> queryPlansWithTopups(Plan plan) {
-		return this.planMapper.selectPlansWithTopups(plan);
 	}
 	
 	/*

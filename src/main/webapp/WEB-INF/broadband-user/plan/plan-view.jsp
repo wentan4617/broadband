@@ -20,23 +20,27 @@
 						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Group">
-						    	<option value="plan-topup" data-type="plan-group">To Plan Topup</option>
-						      	<option value="plan-no-term" data-type="plan-group">To Plan No Term</option>
-						      	<option value="plan-term" data-type="plan-group">To Plan Term</option>
+						    	<option value="plan-topup" data-type="plan-group">to Plan Topup</option>
+						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
+						      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
+						    </optgroup>
+						     <optgroup label="Change Plan Class">
+						    	<option value="personal" data-type="plan-class">to Personal</option>
+						      	<option value="business" data-type="plan-class">to Business</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Type">
 						    	<option value="ADSL" data-type="plan-type">To ADSL</option>
 						      	<option value="VDSL" data-type="plan-type">To VDSL</option>
-						      	<option value="UFB" data-type="plan-type">To UFB</option>
+						      	<option value="UFB" data-type="plan-type">to UFB</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Sort">
-						    	<option value="NAKED" data-type="plan-sort">To NAKED</option>
-						      	<option value="CLOTHING" data-type="plan-sort">To CLOTHING</option>
+						    	<option value="NAKED" data-type="plan-sort">to NAKED</option>
+						      	<option value="CLOTHING" data-type="plan-sort">to CLOTHING</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Status">
-						    	<option value="active" data-type="plan-status">To Active</option>
-						      	<option value="selling" data-type="plan-status">To Selling</option>
-						      	<option value="disable" data-type="plan-status">To Disable</option>
+						    	<option value="active" data-type="plan-status">to Active</option>
+						      	<option value="selling" data-type="plan-status">to Selling</option>
+						      	<option value="disable" data-type="plan-status">to Disable</option>
 						    </optgroup>
 						</select>
 					</h4>
@@ -51,6 +55,7 @@
 								<th><input type="checkbox" id="checkbox_plans_top" /></th>
 								<th>Plan Name</th>
 								<th>Group</th>
+								<th>Class</th>
 								<th>Type</th>
 								<th>Sort</th>
 								<th>Monthly fee (Inc GST)($)</th>
@@ -75,8 +80,10 @@
 										<c:when test="${plan.plan_group=='plan-no-term'}">text-info</c:when>
 										<c:when test="${plan.plan_group=='plan-term'}">text-warning</c:when>
 									</c:choose>">
-									
 										${plan.plan_group }
+									</td>
+									<td>
+										${plan.plan_class }
 									</td>
 									<td>
 										${plan.plan_type }
