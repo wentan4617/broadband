@@ -16,12 +16,76 @@
 
 	<!-- DEFINITION AREA -->
 	
+	<sql id="planColumns">
+		p.`id`							as p_id, 
+		p.`plan_name`					as p_plan_name, 		
+		p.`plan_desc`					as p_plan_desc,
+		p.`plan_price`					as p_plan_price,
+		p.`data_flow`					as p_data_flow,
+		p.`data_flow_k`					as p_data_flow_k,
+		p.`plan_status`					as p_plan_status,
+		p.`plan_type`					as p_plan_type,
+		p.`plan_sort`					as p_plan_sort,
+		p.`plan_group`					as p_plan_group, 
+		p.`plan_class`					as p_plan_class,
+		p.`plan_new_connection_fee`		as p_plan_new_connection_fee,
+		p.`memo`						as p_memo,
+		p.`plan_prepay_months`			as p_plan_prepay_months,
+		p.`pstn_count`					as p_pstn_count,
+		p.`pstn_rental_amount`			as p_pstn_rental_amount,
+		p.`term_period`					as p_term_period,
+		p.`img1`						as p_img1, 
+		p.`img2`						as p_img2,
+		p.`img3` 						as p_img3
+	</sql>
+	<resultMap type="Plan" id="planResultMap">
+		<id property="id" column="p_id" />
+		<result property="plan_name" column="p_plan_name" />
+		<result property="plan_desc" column="p_plan_desc" />
+		<result property="plan_price" column="p_plan_price" />
+		<result property="data_flow" column="p_data_flow" />
+		<result property="data_flow_k" column="p_data_flow_k" />
+		<result property="plan_status" column="p_plan_status" />
+		<result property="plan_type" column="p_plan_type" />
+		<result property="plan_sort" column="p_plan_sort" />
+		<result property="plan_group" column="p_plan_group" />
+		<result property="plan_class" column="p_plan_class" />
+		<result property="plan_new_connection_fee" column="p_plan_new_connection_fee" />
+		<result property="memo" column="p_memo" />
+		<result property="plan_prepay_months" column="p_plan_prepay_months" />
+		<result property="pstn_count" column="p_pstn_count" />
+		<result property="pstn_rental_amount" column="p_pstn_rental_amount" />
+		<result property="term_period" column="p_term_period" />
+		<result property="img1" column="p_img1" />
+		<result property="img2" column="p_img2" />
+		<result property="img3" column="p_img3" />
+	</resultMap>
+	
+	<sql id="planWhere">
+		<where>
+			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
+			<if test="params.plan_class != null">and plan_class = #{params.plan_class}</if>
+			<if test="params.plan_type != null">and plan_type = #{params.plan_type}</if>
+			<if test="params.plan_sort != null">and plan_sort = #{params.plan_sort}</if>
+			<if test="params.plan_status != null">and plan_status = #{params.plan_status}</if>
+		</where>
+	</sql>
 	
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
 	
 	<!-- SELECT AREA -->
+	 
+	<select id="selectPlan" parameterType="Plan" resultType="Plan">
+		select * from tm_plan as p
+		<include refid="planWhere"/>
+	</select>
+	
+	<select id="selectPlans" parameterType="Plan" resultType="Plan">
+		select * from tm_plan as p
+		<include refid="planWhere"/>
+	</select>
 	
 	<!-- select plan page -->
 	<select id="selectPlansByPage" parameterType="Page" resultType="Plan">
@@ -53,19 +117,6 @@
 	<!-- select distinct plan_group -->
 	<select id="selectDistinctPlanGroup" resultType="String">
 		SELECT DISTINCT plan_group FROM `tm_plan`
-	</select>
-	
-	<!-- selectPlansBySome --> 
-	<select id="selectPlansBySome" parameterType="Plan" resultType="Plan">
-		select * from `tm_plan` 
-		<where>
-			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
-			<if test="params.plan_sort != null">and plan_sort = #{params.plan_sort}</if>
-			<if test="params.plan_status != null">and plan_status = #{params.plan_status}</if>
-			<if test="params.plan_type != null">and plan_type = #{params.plan_type}</if>
-			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
-		</where>
-		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
 	
 	<!-- select plan with topup -->
@@ -131,14 +182,14 @@
 	<insert id="insertPlan" parameterType="Plan" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_plan`(
 			`plan_name`, `plan_desc`, `plan_price`, `data_flow`, `data_flow_k`,
-			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_new_connection_fee`, 
-			`memo`, `create_date`, `create_by`, `plan_topupid_array`, `plan_prepay_months`, 
-			`pstn_count`, `pstn_rental_amount`, `term_period`) 
+			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_class`, 
+			`plan_new_connection_fee`, `memo`, `plan_prepay_months`, `pstn_count`, `pstn_rental_amount`, 
+			`term_period`, `img1`, `img2`, `img3`) 
 		VALUES (
 			#{plan_name}, #{plan_desc}, #{plan_price}, #{data_flow}, #{data_flow_k},
-			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_new_connection_fee}, 
-			#{memo}, #{create_date}, #{create_by}, #{plan_topupid_array}, #{plan_prepay_months}, 
-			#{pstn_count}, #{pstn_rental_amount}, #{term_period})
+			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_class}, 
+			#{plan_new_connection_fee}, #{memo}, #{plan_prepay_months}, #{pstn_count}, #{pstn_rental_amount}, 
+			#{term_period}, #{img1}, #{img2}, #{img3})
 	</insert>
 	
 	<insert id="insertPlanTopup">
@@ -164,15 +215,16 @@
 			<if test="plan_type != null">`plan_type`=#{plan_type},</if>
 			<if test="plan_sort != null">`plan_sort`=#{plan_sort},</if>
 			<if test="plan_group != null">`plan_group`=#{plan_group},</if>
+			<if test="plan_class != null">`plan_class`=#{plan_class},</if>
 			<if test="plan_new_connection_fee != null">`plan_new_connection_fee`=#{plan_new_connection_fee},</if>
 			<if test="memo != null">`memo`=#{memo},</if>
-			<if test="last_update_date != null">`last_update_date`=#{last_update_date},</if>
-			<if test="last_update_by != null">`last_update_by`=#{last_update_by},</if>
-			<if test="plan_topupid_array != null">`plan_topupid_array`=#{plan_topupid_array},</if>
 			<if test="plan_prepay_months != null">`plan_prepay_months`=#{plan_prepay_months},</if>
-			<if test="plan_prepay_months != null">`pstn_count`=#{pstn_count},</if>
-			<if test="plan_prepay_months != null">`pstn_rental_amount`=#{pstn_rental_amount},</if>
-			<if test="plan_prepay_months != null">`term_period`=#{term_period}</if>
+			<if test="pstn_count != null">`pstn_count`=#{pstn_count},</if>
+			<if test="pstn_rental_amount != null">`pstn_rental_amount`=#{pstn_rental_amount},</if>
+			<if test="term_period != null">`term_period`=#{term_period},</if>
+			<if test="img1 != null">`img1`=#{img1},</if>
+			<if test="img2 != null">`img2`=#{img2},</if>
+			<if test="img3 != null">`img3`=#{img3}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>

@@ -10,7 +10,9 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading"><h4 class="panel-title">${panelheading }</h4></div>
+				<div class="panel-heading">
+					<h4 class="panel-title">${panelheading }</h4>
+				</div>
 				<div class="panel-body">
 					<form:form modelAttribute="plan" method="post" action="${ctx}${action }" class="form-horizontal">
 						<form:hidden path="id"/>
@@ -70,7 +72,16 @@
 							<hr/>
 						</div>
 						
-						
+						<div class="form-group">
+							<label for="plan_class" class="control-label col-md-4">Plan Class</label>
+							<div class="col-md-3">
+								<form:select path="plan_class" class="form-control">
+									<form:option value="">None</form:option>
+									<form:option value="personal">Personal</form:option>
+									<form:option value="business">Business</form:option>
+								</form:select>
+							</div>
+						</div>
 						<div class="form-group">
 							<label for="plan_type" class="control-label col-md-4">Plan Type</label>
 							<div class="col-md-3">

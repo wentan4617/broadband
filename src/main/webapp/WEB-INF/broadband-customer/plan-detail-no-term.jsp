@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
@@ -39,18 +38,13 @@ background-color: #5cb85c;
 	</ul>
 	
 	
-	<!-- naked plans -->
-	<!-- <div class="page-header">
-		<h1>
-			1. Internet | Plans and pricing <small>Please choose what you need</small>
-		</h1>
-	</div> -->
 	<div class="row">
-		<div class="col-md-4">
+		<div class="col-md-1"></div>
+		<div class="col-md-5">
 			<div class="thumbnail">
 				<div class="caption">
 					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="...">
-					<h3><strong class="text-success">ADSL BROADBAND</strong></h3>
+					<h3 style="height:54px;"><strong class="text-success">ADSL BROADBAND</strong></h3>
 					<hr/>
 					<div class="well">
 						The broadband standard in NZ. 
@@ -86,7 +80,7 @@ background-color: #5cb85c;
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-5">
 			<div class="thumbnail">
 				<div class="caption">
 					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_super-fast.png" alt="...">
@@ -122,7 +116,8 @@ background-color: #5cb85c;
 				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
+		<div class="col-md-1"></div>
+		<%-- <div class="col-md-4">
 			<div class="thumbnail">
 				<div class="caption">
 					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_fastest.png" alt="..." >
@@ -160,7 +155,7 @@ background-color: #5cb85c;
 					</p>
 				</div>
 			</div>
-		</div>
+		</div> --%>
 	</div>
 	
 	

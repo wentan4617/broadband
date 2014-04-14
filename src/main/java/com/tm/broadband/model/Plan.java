@@ -43,16 +43,15 @@ public class Plan implements Serializable {
 	private String memo;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	private String plan_group;
+	private String plan_class;
 	private Double plan_new_connection_fee;
-	private Date create_date;
-	private Integer create_by;
-	private Date last_update_date;
-	private Integer last_update_by;
-	private String plan_topupid_array;
 	private Integer plan_prepay_months;
 	private Integer pstn_count;
 	private Double pstn_rental_amount;
 	private Integer term_period;
+	private String img1;
+	private String img2;
+	private String img3;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -170,29 +169,7 @@ public class Plan implements Serializable {
 		this.plan_new_connection_fee = plan_new_connection_fee;
 	}
 
-	public Date getCreate_date() {
-		return create_date;
-	}
-
-	public void setCreate_date(Date create_date) {
-		this.create_date = create_date;
-	}
-
-	public Date getLast_update_date() {
-		return last_update_date;
-	}
-
-	public void setLast_update_date(Date last_update_date) {
-		this.last_update_date = last_update_date;
-	}
-
-	public String getPlan_topupid_array() {
-		return plan_topupid_array;
-	}
-
-	public void setPlan_topupid_array(String plan_topupid_array) {
-		this.plan_topupid_array = plan_topupid_array;
-	}
+	
 
 	public Map<String, Object> getParams() {
 		return params;
@@ -238,21 +215,7 @@ public class Plan implements Serializable {
 		this.plan_prepay_months = plan_prepay_months;
 	}
 
-	public Integer getCreate_by() {
-		return create_by;
-	}
-
-	public void setCreate_by(Integer create_by) {
-		this.create_by = create_by;
-	}
-
-	public Integer getLast_update_by() {
-		return last_update_by;
-	}
-
-	public void setLast_update_by(Integer last_update_by) {
-		this.last_update_by = last_update_by;
-	}
+	
 
 	public Integer getPstn_count() {
 		return pstn_count;
@@ -277,5 +240,39 @@ public class Plan implements Serializable {
 	public void setTerm_period(Integer term_period) {
 		this.term_period = term_period;
 	}
+
+	public String getImg1() {
+		return img1;
+	}
+
+	public void setImg1(String img1) {
+		this.img1 = img1;
+	}
+
+	public String getImg2() {
+		return img2;
+	}
+
+	public void setImg2(String img2) {
+		this.img2 = img2;
+	}
+
+	public String getImg3() {
+		return img3;
+	}
+
+	public void setImg3(String img3) {
+		this.img3 = img3;
+	}
+
+	public String getPlan_class() {
+		return plan_class;
+	}
+
+	public void setPlan_class(String plan_class) {
+		this.plan_class = plan_class;
+	}
+	
+	
 
 }

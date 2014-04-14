@@ -10,7 +10,6 @@
     <title>CyberPark</title>
     <link rel="shortcut icon" type="image/ico"  href="${ctx}/public/bootstrap3/images/icon.png"/>
     <link href="${ctx}/public/bootstrap3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
-    <%-- <link href="${ctx}/public/bootstrap3/css/carousel.css" rel="stylesheet" type="text/css" media="screen" /> --%>
     <link href="${ctx}/public/bootstrap3/css/customer.css" rel="stylesheet" type="text/css"  />
     <link href="${ctx}/public/bootstrap3/css/datepicker.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />

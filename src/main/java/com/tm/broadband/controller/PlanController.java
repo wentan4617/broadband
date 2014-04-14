@@ -87,8 +87,6 @@ public class PlanController {
 		}
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");
-		plan.setCreate_by(userSession.getId());
-		plan.setCreate_date(new Date());
 		
 		this.planService.savePlan(plan);
 		attr.addFlashAttribute("success", "Create Plan " + plan.getPlan_name() + " is successful.");
@@ -119,15 +117,7 @@ public class PlanController {
 		
 		Plan plan = this.planService.queryPlanById(id);
 		
-		if (plan.getPlan_topupid_array() != null && !"".equals(plan.getPlan_topupid_array())) {
-			plan.setTopupArray(plan.getPlan_topupid_array().split(","));
-		}
-		
 		model.addAttribute("plan", plan);
-		
-		// topup
-		List<Topup> topups = this.planService.queryTopups();
-		model.addAttribute("topups",topups);
 		
 		return "broadband-user/plan/plan";
 	}
@@ -144,9 +134,6 @@ public class PlanController {
 		model.addAttribute("action", "/broadband-user/plan/edit");
 		
 		if (result.hasErrors()) {
-			// topup
-			List<Topup> topups = this.planService.queryTopups();
-			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		
@@ -154,15 +141,9 @@ public class PlanController {
 		
 		if (count > 0) {
 			result.rejectValue("plan_name", "duplicate", "");
-			// topup
-			List<Topup> topups = this.planService.queryTopups();
-			model.addAttribute("topups",topups);
 			return "broadband-user/plan/plan";
 		}
 		
-		User userSession = (User)req.getSession().getAttribute("userSession");
-		plan.setLast_update_by(userSession.getId());
-		plan.setLast_update_date(new Date(System.currentTimeMillis()));
 		plan.getParams().put("id", plan.getId());
 		
 		this.planService.editPlan(plan);
@@ -191,23 +172,27 @@ public class PlanController {
 	}
 
 	@RequestMapping(value = "/broadband-user/plan/options/edit", method = RequestMethod.POST)
-	public String changePlanOptionsById(Model model
-			,@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids
-			,HttpServletRequest req, RedirectAttributes attr
-			,@RequestParam("value") String value
-			,@RequestParam("type") String type){
+	public String changePlanOptionsById(
+			Model model,
+			@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids,
+			HttpServletRequest req, RedirectAttributes attr,
+			@RequestParam("value") String value,
+			@RequestParam("type") String type) {
 
 		Plan plan = new Plan();
-		if("plan-group".equals(type)){
+		if ("plan-group".equals(type)) {
 			plan.setPlan_group(value);
 		}
-		if("plan-sort".equals(type)){
+		if ("plan-class".equals(type)) {
+			plan.setPlan_class(value);
+		}
+		if ("plan-sort".equals(type)) {
 			plan.setPlan_sort(value);
 		}
-		if("plan-type".equals(type)){
+		if ("plan-type".equals(type)) {
 			plan.setPlan_type(value);
 		}
-		if("plan-status".equals(type)){
+		if ("plan-status".equals(type)) {
 			plan.setPlan_status(value);
 		}
 		if (plan_ids == null) {
@@ -219,7 +204,7 @@ public class PlanController {
 				this.planService.editPlan(plan);
 			}
 		}
-		
+
 		attr.addFlashAttribute("success", "Change selected plan(s)'s group successfully!");
 		return "redirect:/broadband-user/plan/view/1";
 	}

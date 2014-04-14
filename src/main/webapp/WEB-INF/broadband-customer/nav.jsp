@@ -50,9 +50,12 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-				<p class="navbar-text navbar-right" >
-	     			<a href="${ctx }/login" class="navbar-link" >Sign in</a>
-	 			</p>
+				<!-- <p class="navbar-text navbar-right" >
+	     			<a href="${ctx }/login" class="btn btn-default navbar-btn" >Sign in</a>
+	 			</p> -->
+	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
+	 				<span class="glyphicon glyphicon-log-in"></span> login
+	 			</a>
 			</c:if>
 		</div>
 		

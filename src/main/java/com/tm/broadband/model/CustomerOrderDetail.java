@@ -25,6 +25,7 @@ public class CustomerOrderDetail implements Serializable {
 	private String detail_plan_type;
 	private String detail_plan_sort;
 	private String detail_plan_group;
+	private String detail_plan_class;
 	private Double detail_plan_new_connection_fee;
 	private Integer detail_term_period;
 	private Long detail_topup_data_flow;
@@ -273,6 +274,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_term_period(Integer detail_term_period) {
 		this.detail_term_period = detail_term_period;
+	}
+
+	public String getDetail_plan_class() {
+		return detail_plan_class;
+	}
+
+	public void setDetail_plan_class(String detail_plan_class) {
+		this.detail_plan_class = detail_plan_class;
 	}
 	
 	

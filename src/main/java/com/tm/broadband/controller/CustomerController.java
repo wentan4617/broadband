@@ -84,62 +84,46 @@ public class CustomerController {
 		return "broadband-customer/home";
 	}
 
-	@RequestMapping("/plans/{group}")
-	public String plans(Model model, @PathVariable("group") String group) {
+	@RequestMapping("/plans/{group}/{class}")
+	public String plans(Model model, 
+			@PathVariable("group") String group,
+			@PathVariable("class") String classz) {
 		
 		List<Plan> plans = null;
+		Map<String, List<Plan>> planMaps = new HashMap<String, List<Plan>>(); // key = plan_type
 		String url = "";
 		
-		if ("t".equals(group)) {
-			
-			Plan plan = new Plan();
-			plan.getParams().put("plan_group", "plan-topup");
-			plan.getParams().put("plan_status", "selling");
-			plan.getParams().put("plan_sort", "naked");
-			
-			plans = this.planService.queryPlansBySome(plan);
-			
-			// key = plan_type
-			Map<String, Plan> planMaps = new HashMap<String, Plan>();
-			
-			if (plans != null) {
-				for (Plan p: plans) {
-					planMaps.put(p.getPlan_type(), p);
+		Plan plan = new Plan();
+		plan.getParams().put("plan_group", group);
+		plan.getParams().put("plan_class", classz);
+		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("orderby", "order by data_flow");
+		
+		plans = this.planService.queryPlans(plan);
+		
+		if (plans != null) {
+			for (Plan p: plans) {
+				List<Plan> list = planMaps.get(p.getPlan_type());
+				if (list == null) {
+					list = new ArrayList<Plan>();
+					list.add(p);
+					planMaps.put(p.getPlan_type(), list);
+				} else {
+					list.add(p);
 				}
 			}
-			
-			model.addAttribute("planMaps", planMaps);
-						
+		}
+		
+		model.addAttribute("planMaps", planMaps);
+		
+		if ("plan-topup".equals(group)) {	
 			url = "broadband-customer/plan-detail-topup";
-			
-		} else if ("p".equals(group)) {
-			
-			Plan plan = new Plan();
-			plan.getParams().put("plan_group", "plan-no-term");
-			plan.getParams().put("plan_status", "selling");
-			plan.getParams().put("plan_sort", "naked");
-			plan.getParams().put("orderby", "order by data_flow");
-			plans = this.planService.queryPlansBySome(plan);
-			
-			// key = plan_type
-			Map<String, List<Plan>> planMaps = new HashMap<String, List<Plan>>();
-			
-			if (plans != null) {
-				for (Plan p: plans) {
-					List<Plan> list = planMaps.get(p.getPlan_type());
-					if (list == null) {
-						list = new ArrayList<Plan>();
-						list.add(p);
-						planMaps.put(p.getPlan_type(), list);
-					} else {
-						list.add(p);
-					}
-				}
-			}
-			
-			model.addAttribute("planMaps", planMaps);
-			
+		} else if ("plan-no-term".equals(group) && "personal".equals(classz)) {
 			url = "broadband-customer/plan-detail-no-term";
+		} else if ("plan-term".equals(group) && "personal".equals(classz)) {
+			url = "broadband-customer/plan-detail-term-personal";
+		} else if ("plan-term".equals(group) && "business".equals(classz)) {
+			url = "broadband-customer/plan-detail-term-business";
 		}
 
 		return url;
