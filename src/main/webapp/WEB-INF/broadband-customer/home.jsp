@@ -91,7 +91,7 @@
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <%-- <jsp:include page="chorus-map.jsp" /> --%>
-
+ 
 <div id="popContainer" style="display:none;">
 	<a href="${ctx }/plans/plan-term/personal" class="btn btn-success" target="_blank">
 		<span class="glyphicon glyphicon-hand-up"></span> Personal Plan
