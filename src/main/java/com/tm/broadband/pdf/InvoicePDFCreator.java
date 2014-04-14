@@ -32,9 +32,9 @@ import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
 /** 
-* Generating Invoice PDF By Incoming Details
+* Generates Invoice PDF
 * 
-* @author DON CHEN
+* @author DONG CHEN
 */ 
 public class InvoicePDFCreator extends ITextUtils {
 

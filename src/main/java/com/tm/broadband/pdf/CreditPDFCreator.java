@@ -21,6 +21,11 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
 
+/** 
+* Generates Credit PDF
+* 
+* @author DONG CHEN
+*/ 
 public class CreditPDFCreator extends ITextUtils {
 	private CustomerCredit cc;
 	private CustomerOrder co;
