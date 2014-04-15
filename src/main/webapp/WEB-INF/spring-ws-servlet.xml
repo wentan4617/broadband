@@ -18,7 +18,6 @@
 		
 	</sws:dynamic-wsdl>
 
-
 	<bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
 		<property name="defaultUri"
 			value="http://localhost:8080/broadband/services" />

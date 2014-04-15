@@ -168,6 +168,11 @@ public class SimplePDFCell {
 		return this;
 	}
 	
+	/**
+	 * 
+	 * @param borderWidth
+	 * @return this
+	 */
 	public SimplePDFCell borderWidth(Float borderWidth){
 		this.getCell().setBorderWidth(borderWidth);
 		return this;

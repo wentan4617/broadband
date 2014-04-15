@@ -45,6 +45,7 @@ public interface HardwareMapper {
 	/* UPDATE AREA */
 
 	void updateHardware(Hardware hardware);
+	void updateHardwarePicById(Hardware hardware);
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */

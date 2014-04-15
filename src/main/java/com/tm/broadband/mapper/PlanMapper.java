@@ -52,6 +52,7 @@ public interface PlanMapper {
 	
 	void updatePlan(Plan plan);
 	void updatePlanStatusById(String status, int id);
+	void updatePlanPicById(Plan plan);
 	
 	/* // END UPDATE AREA */
 	
