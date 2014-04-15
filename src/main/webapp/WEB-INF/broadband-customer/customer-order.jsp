@@ -67,164 +67,160 @@ background-color: #5cb85c;
 				
 				<div id="application" class="panel-collapse collapse in">
 					<div class="panel-body">
-							<!-- customer address -->
-							<h4 class="text-success">Your Address</h4>
-							<hr/>
-							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Your Address</label>
-								<div class="col-md-5">
-									<form:input path="address" class="form-control" placeholder="enter your address" />
-								</div>
-								<p class="help-block col-md-3" >
-									<form:errors path="address" cssErrorClass="error"/>
-								</p>
+						<!-- customer address -->
+						<h4 class="text-success">Your Address</h4>
+						<hr/>
+						<div class="form-group">
+							<label for="address" class="control-label col-md-4">Your Address</label>
+							<div class="col-md-5">
+								<form:input path="address" class="form-control" placeholder="enter your address" />
 							</div>
-							
-							<!-- customer account -->
-							<hr/>
-							<h4 class="text-success">Create your account</h4>
-							<hr/>
-							<div class="form-group">
-								<label for="cellphone" class="control-label col-md-4">Your Mobile</label>
-								<div class="col-md-4">
-									<form:input path="cellphone" class="form-control" placeholder="e.g.: 0210800123" />
-								</div>
-								<p class="help-block">
-									<form:errors path="cellphone" cssErrorClass="error"/>
-								</p>
-							</div>
-							<div class="form-group">
-								<label for="email" class="control-label col-md-4">Your Email</label>
-								<div class="col-md-4">
-									<form:input path="email" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" />
-								</div>
-								<p class="help-block">
-									<form:errors path="email" cssErrorClass="error"/>
-								</p>
-							</div>
-							<%-- <div class="form-group">
-								<label for="login_name" class="control-label col-md-4">Your login name </label>
-								<div class="col-md-4">
-									<form:input path="login_name" class="form-control" placeholder="e.g.: cyberpark" />
-								</div>
-								<p class="help-block">
-									<form:errors path="login_name" cssErrorClass="error"/>
-								</p>
-							</div>
-							<div class="form-group">
-								<label for="password" class="control-label col-md-4">Password</label>
-								<div class="col-md-4">
-									<form:password path="password" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="password" cssErrorClass="error"/>
-								</p>
-							</div>
-							<div class="form-group">
-								<label for="ck_password" class="control-label col-md-4">Confirm your password</label>
-								<div class="col-md-4">
-									<form:password path="ck_password" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="ck_password" cssErrorClass="error"/>
-								</p>
-							</div> --%>
-							
-							<!-- Broadband Options -->
-							<hr/>
-							<h4 class="text-success">Broadband Options</h4>
-							<hr/>
-							<div class="form-group">
-								<label for="" class="control-label col-md-4">Broadband Type</label>
-								<div class="col-md-4">
-									<ul class="list-unstyled topup-list" >
-										<li>
-											<form:radiobutton path="customerOrder.order_broadband_type" value="new-connection" /> &nbsp;
-											<strong>New Connection Only</strong>
-										</li>
-										<li>
-											<form:radiobutton path="customerOrder.order_broadband_type" value="transition" /> &nbsp;
-											<strong>Transition</strong>
-										</li>
-									</ul>
-								</div>
-								<div class="col-md-4">
-									<div class="well">
-										<p>If you choose a new connection</p>
-										<p> we will charge you </p>
-										<p>$ 99 broadband opening costs</p>
-									</div>
-								</div>
-							</div>
-							
-							
-							<!-- Transition Information -->
-							<div id="transitionContainer" >
-								<hr/>
-								<h4 class="text-success">Transition Information</h4>
-								<hr/>
-								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Current Provider Name</label>
-									<div class="col-md-4">
-										<form:input path="customerOrder.transition_provider_name" class="form-control" placeholder="" />
-									</div>
-									<div class="col-md-4">
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="" class="control-label col-md-4">Account Holder Name</label>
-									<div class="col-md-4">
-										<form:input path="customerOrder.transition_account_holder_name" class="form-control" placeholder="" />
-									</div>
-									<div class="col-md-4">
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Current Account Number</label>
-									<div class="col-md-4">
-										<form:input path="customerOrder.transition_account_number" class="form-control" placeholder="" />
-									</div>
-									<div class="col-md-4">
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Telecom Number</label>
-									<div class="col-md-4">
-										<form:input path="customerOrder.transition_porting_number" class="form-control" placeholder="" />
-									</div>
-									<div class="col-md-4">
-									</div>
-								</div>
-							
-							</div>
-							
-							
-							<!-- Personal Information -->
-							<hr/>
-							<h4 class="text-success">Personal Information</h4>
-							<hr/>
-							<div class="form-group">
-								<label for="first_name" class="control-label col-md-4">First name</label>
-								<div class="col-md-4">
-									<form:input path="first_name" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="first_name" cssErrorClass="error"/>
-								</p>
-							</div>
-							<div class="form-group">
-								<label for="last_name" class="control-label col-md-4">Last name</label>
-								<div class="col-md-4">
-									<form:input path="last_name" class="form-control" placeholder="" />
-								</div>
-								<p class="help-block">
-									<form:errors path="last_name" cssErrorClass="error"/>
-								</p>
-							</div>
-							
-							
-							
+							<p class="help-block col-md-3" >
+								<form:errors path="address" cssErrorClass="error"/>
+							</p>
+						</div>
 						
+						<!-- customer account -->
+						<hr/>
+						<h4 class="text-success">Create your account</h4>
+						<hr/>
+						<div class="form-group">
+							<label for="cellphone" class="control-label col-md-4">Your Mobile</label>
+							<div class="col-md-4">
+								<form:input path="cellphone" class="form-control" placeholder="e.g.: 0210800123" />
+							</div>
+							<p class="help-block">
+								<form:errors path="cellphone" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="email" class="control-label col-md-4">Your Email</label>
+							<div class="col-md-4">
+								<form:input path="email" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" />
+							</div>
+							<p class="help-block">
+								<form:errors path="email" cssErrorClass="error"/>
+							</p>
+						</div>
+						<%-- <div class="form-group">
+							<label for="login_name" class="control-label col-md-4">Your login name </label>
+							<div class="col-md-4">
+								<form:input path="login_name" class="form-control" placeholder="e.g.: cyberpark" />
+							</div>
+							<p class="help-block">
+								<form:errors path="login_name" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="password" class="control-label col-md-4">Password</label>
+							<div class="col-md-4">
+								<form:password path="password" class="form-control" placeholder="" />
+							</div>
+							<p class="help-block">
+								<form:errors path="password" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="ck_password" class="control-label col-md-4">Confirm your password</label>
+							<div class="col-md-4">
+								<form:password path="ck_password" class="form-control" placeholder="" />
+							</div>
+							<p class="help-block">
+								<form:errors path="ck_password" cssErrorClass="error"/>
+							</p>
+						</div> --%>
+						
+						<!-- Broadband Options -->
+						<hr/>
+						<h4 class="text-success">Broadband Options</h4>
+						<hr/>
+						<div class="form-group">
+							<label for="" class="control-label col-md-4">Broadband Type</label>
+							<div class="col-md-4">
+								<ul class="list-unstyled topup-list" >
+									<li>
+										<form:radiobutton path="customerOrder.order_broadband_type" value="new-connection" /> &nbsp;
+										<strong>New Connection Only</strong>
+									</li>
+									<li>
+										<form:radiobutton path="customerOrder.order_broadband_type" value="transition" /> &nbsp;
+										<strong>Transition</strong>
+									</li>
+								</ul>
+							</div>
+							<div class="col-md-4">
+								<div class="well">
+									<p>If you choose a new connection</p>
+									<p> we will charge you </p>
+									<p>$ 99 broadband opening costs</p>
+								</div>
+							</div>
+						</div>
+						
+						
+						<!-- Transition Information -->
+						<div id="transitionContainer" >
+							<hr/>
+							<h4 class="text-success">Transition Information</h4>
+							<hr/>
+							<div class="form-group">
+								<label for="" class="control-label col-md-4">Your Current Provider Name</label>
+								<div class="col-md-4">
+									<form:input path="customerOrder.transition_provider_name" class="form-control" placeholder="" />
+								</div>
+								<div class="col-md-4">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="control-label col-md-4">Account Holder Name</label>
+								<div class="col-md-4">
+									<form:input path="customerOrder.transition_account_holder_name" class="form-control" placeholder="" />
+								</div>
+								<div class="col-md-4">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="control-label col-md-4">Your Current Account Number</label>
+								<div class="col-md-4">
+									<form:input path="customerOrder.transition_account_number" class="form-control" placeholder="" />
+								</div>
+								<div class="col-md-4">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="" class="control-label col-md-4">Your Telephone Number</label>
+								<div class="col-md-4">
+									<form:input path="customerOrder.transition_porting_number" class="form-control" placeholder="" />
+								</div>
+								<div class="col-md-4">
+								</div>
+							</div>
+						
+						</div>
+						
+						
+						<!-- Personal Information -->
+						<hr/>
+						<h4 class="text-success">Personal Information</h4>
+						<hr/>
+						<div class="form-group">
+							<label for="first_name" class="control-label col-md-4">First name</label>
+							<div class="col-md-4">
+								<form:input path="first_name" class="form-control" placeholder="" />
+							</div>
+							<p class="help-block">
+								<form:errors path="first_name" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="last_name" class="control-label col-md-4">Last name</label>
+							<div class="col-md-4">
+								<form:input path="last_name" class="form-control" placeholder="" />
+							</div>
+							<p class="help-block">
+								<form:errors path="last_name" cssErrorClass="error"/>
+							</p>
+						</div>
 					</div>
 				
 				</div>
@@ -236,7 +232,7 @@ background-color: #5cb85c;
 					<div class="panel-heading">
 						<h2 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
-								Hardware
+								Additional Hardware
 							</a>
 						</h2>
 					</div>

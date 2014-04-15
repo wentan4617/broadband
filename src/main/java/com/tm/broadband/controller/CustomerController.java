@@ -134,7 +134,7 @@ public class CustomerController {
 			@PathVariable("id") int id) {
 		
 		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
+		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
 		model.addAttribute("customer", customer);
 
 		Plan plan = this.planService.queryPlanById(id);
