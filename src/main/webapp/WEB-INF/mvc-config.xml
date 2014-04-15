@@ -18,7 +18,7 @@
 	
 	<!-- mvc annotation -->
 	<mvc:annotation-driven />
-	
+	 
 	<!-- visit home page -->
 	<mvc:view-controller path="/" view-name="redirect:/home" />
 

@@ -1,10 +1,12 @@
 package com.tm.broadband.controller;
 
-import java.util.Date;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.Hardware;
@@ -132,6 +135,7 @@ public class PlanController {
 		
 		model.addAttribute("panelheading", "Plan Edit");
 		model.addAttribute("action", "/broadband-user/plan/edit");
+		model.addAttribute("picAction", "/broadband-user/plan/pic/edit");
 		
 		if (result.hasErrors()) {
 			return "broadband-user/plan/plan";
@@ -151,6 +155,92 @@ public class PlanController {
 		attr.addFlashAttribute("success", "Edit Plan " + plan.getPlan_name() + " is successful.");
 
 		return "redirect:/broadband-user/plan/view/1";
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/plan/pic/edit", method = RequestMethod.POST)
+	public String doPlanPicEdit(
+			Model model
+			,@ModelAttribute("plan") Plan plan
+			,BindingResult result
+			, HttpServletRequest req
+			, @RequestParam("imgs") MultipartFile[] imgs
+			,RedirectAttributes attr) {
+
+		String fileName = String.valueOf(plan.getId());
+		String plan_pic_path = req.getSession().getServletContext().getRealPath("/public/upload");
+		
+		for (int i = 0; i < imgs.length; i++) {
+            if(!imgs[i].isEmpty()){
+            	fileName += i + imgs[i].getOriginalFilename();
+    			try {
+					FileUtils.copyInputStreamToFile(imgs[i].getInputStream(), new File(plan_pic_path, fileName));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    			if(i==0){
+    				plan.setImg1(fileName);
+    			}
+    			if(i==1){
+    				plan.setImg2(fileName);
+    			}
+    			if(i==2){
+    				plan.setImg3(fileName);
+    			}
+            }
+            fileName = String.valueOf(plan.getId());
+		}
+		
+		plan.getParams().put("id", plan.getId());
+		
+		this.planService.editPlanPic(plan);
+		
+		attr.addFlashAttribute("success", "Edit Plan Pic " + plan.getPlan_name() + " is successful.");
+
+		return "redirect:/broadband-user/plan/view/1";
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/plan/hardware/pic/edit", method = RequestMethod.POST)
+	public String doHardwarePicEdit(
+			Model model
+			,@ModelAttribute("hardware") Hardware hardware
+			,BindingResult result
+			, HttpServletRequest req
+			, @RequestParam("imgs") MultipartFile[] imgs
+			,RedirectAttributes attr) {
+
+		String fileName = String.valueOf(hardware.getId());
+		String plan_pic_path = req.getSession().getServletContext().getRealPath("/public/upload");
+		
+		for (int i = 0; i < imgs.length; i++) {
+            if(!imgs[i].isEmpty()){
+            	fileName += i + imgs[i].getOriginalFilename();
+    			try {
+					FileUtils.copyInputStreamToFile(imgs[i].getInputStream(), new File(plan_pic_path, fileName));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+    			if(i==0){
+    				hardware.setImg1(fileName);
+    			}
+    			if(i==1){
+    				hardware.setImg2(fileName);
+    			}
+    			if(i==2){
+    				hardware.setImg3(fileName);
+    			}
+            }
+            fileName = String.valueOf(hardware.getId());
+		}
+		
+		hardware.getParams().put("id", hardware.getId());
+		
+		this.planService.editHardwarePic(hardware);
+		
+		attr.addFlashAttribute("success", "Edit Hardware Pic " + hardware.getHardware_name() + " is successful.");
+
+		return "redirect:/broadband-user/plan/hardware/view/1";
 	}
 
 	@RequestMapping(value = "/broadband-user/plan/delete", method = RequestMethod.POST)

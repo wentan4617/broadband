@@ -60,6 +60,16 @@ public class PlanService {
 	}
 
 	@Transactional
+	public void editPlanPic(Plan plan) {
+		this.planMapper.updatePlanPicById(plan);
+	}
+
+	@Transactional
+	public void editHardwarePic(Hardware hardware) {
+		this.hardwareMapper.updateHardwarePicById(hardware);
+	}
+
+	@Transactional
 	public Plan queryPlanById(int id) {
 		return this.planMapper.selectPlanById(id);
 	}
