@@ -1,6 +1,6 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-	xmlns:hr="http://mycompany.com/hr/schemas" elementFormDefault="qualified"
-	targetNamespace="http://mycompany.com/hr/schemas">
+	xmlns:hr="http://www.cyberpark.co.nz/hr/schemas" elementFormDefault="qualified"
+	targetNamespace="http://www.cyberpark.co.nz/hr/schemas">
 	<xs:element name="HolidayRequest">
 		<xs:complexType>
 			<xs:all>

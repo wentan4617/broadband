@@ -15,7 +15,7 @@ import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 @Endpoint
 public class HolidayEndpoint {
 
-	private static final String NAMESPACE_URI = "http://mycompany.com/hr/schemas";
+	private static final String NAMESPACE_URI = "http://www.cyberpark.co.nz/hr/schemas";
 
 	private XPath startDateExpression;
 	private XPath endDateExpression;
