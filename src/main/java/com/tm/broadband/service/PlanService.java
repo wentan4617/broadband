@@ -11,7 +11,6 @@ import com.tm.broadband.mapper.PlanMapper;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.Topup;
 
 /**
  * plan service
@@ -114,19 +113,6 @@ public class PlanService {
 	
 	/*
 	 * END PLAN AREA
-	 */
-	
-	/*
-	 * TOPUP AREA
-	 */
-
-	@Transactional
-	public List<Topup> queryTopups() {
-		return null; //this.topupMapper.selectTopups();
-	}
-
-	/*
-	 * END TOPUP AREA
 	 */
 	
 	/*

@@ -2,7 +2,6 @@ package com.tm.broadband.controller;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +21,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.Topup;
-import com.tm.broadband.model.User;
 import com.tm.broadband.service.PlanService;
-import com.tm.broadband.validator.mark.HardwareValidatedMark;
-import com.tm.broadband.validator.mark.PlanValidatedMark;
 
 /**
  * plan controller
@@ -55,45 +49,13 @@ public class PlanController {
 		model.addAttribute("panelheading", "Plan Create");
 		model.addAttribute("action", "/broadband-user/plan/create");
 		
-		// topup
-		List<Topup> topups = this.planService.queryTopups();
-		model.addAttribute("topups",topups);
 		
 		return "broadband-user/plan/plan";
 	}
 	
-	@RequestMapping(value = "/broadband-user/plan/create", method = RequestMethod.POST)
-	public String doPlanCreate(
-			Model model,
-			@ModelAttribute("plan") @Validated(PlanValidatedMark.class) Plan plan,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-
-		model.addAttribute("panelheading", "Plan Create");
-		model.addAttribute("action", "/broadband-user/plan/create");
-
-		if (result.hasErrors()) {
-			// topup
-			List<Topup> topups = this.planService.queryTopups();
-			model.addAttribute("topups",topups);
-			return "broadband-user/plan/plan";
-		}
-		
-		int count = this.planService.queryExistPlanByName(plan.getPlan_name());
-		
-		if (count > 0) {
-			result.rejectValue("plan_name", "duplicate", "");
-			// topup
-			List<Topup> topups = this.planService.queryTopups();
-			model.addAttribute("topups",topups);
-			return "broadband-user/plan/plan";
-		}
-		
-		User userSession = (User) req.getSession().getAttribute("userSession");
-		
-		this.planService.savePlan(plan);
-		attr.addFlashAttribute("success", "Create Plan " + plan.getPlan_name() + " is successful.");
-
+	@RequestMapping("/broadband-user/plan/view/redirect")
+	public String redirectPlanView(RedirectAttributes attr) {
+		attr.addFlashAttribute("success", "Plan Operation is successful.");
 		return "redirect:/broadband-user/plan/view/1";
 	}
 	
@@ -123,38 +85,6 @@ public class PlanController {
 		model.addAttribute("plan", plan);
 		
 		return "broadband-user/plan/plan";
-	}
-	
-	
-	@RequestMapping(value = "/broadband-user/plan/edit", method = RequestMethod.POST)
-	public String doPlanEdit(
-			Model model,
-			@ModelAttribute("plan") @Validated(PlanValidatedMark.class) Plan plan,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-		
-		model.addAttribute("panelheading", "Plan Edit");
-		model.addAttribute("action", "/broadband-user/plan/edit");
-		model.addAttribute("picAction", "/broadband-user/plan/pic/edit");
-		
-		if (result.hasErrors()) {
-			return "broadband-user/plan/plan";
-		}
-		
-		int count = this.planService.queryExistNotSelfPlanfByName(plan.getPlan_name(), plan.getId());
-		
-		if (count > 0) {
-			result.rejectValue("plan_name", "duplicate", "");
-			return "broadband-user/plan/plan";
-		}
-		
-		plan.getParams().put("id", plan.getId());
-		
-		this.planService.editPlan(plan);
-		
-		attr.addFlashAttribute("success", "Edit Plan " + plan.getPlan_name() + " is successful.");
-
-		return "redirect:/broadband-user/plan/view/1";
 	}
 	
 	
@@ -331,25 +261,10 @@ public class PlanController {
 		
 		return "broadband-user/plan/hardware";
 	}
-
-	@RequestMapping(value = "/broadband-user/plan/hardware/create", method = RequestMethod.POST)
-	public String doHardwareCreate(
-			Model model,
-			@ModelAttribute("hardware") @Validated(HardwareValidatedMark.class) Hardware hardware,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-		
-		model.addAttribute("panelheading", "Hardware Create");
-		model.addAttribute("action", "/broadband-user/plan/hardware/create");
-
-		if (result.hasErrors()) {
-			return "broadband-user/plan/hardware";
-		}
-		
-		
-		this.planService.saveHardware(hardware);
-		attr.addFlashAttribute("success", "Create Hardware " + hardware.getHardware_name() + " is successful.");
-
+	
+	@RequestMapping("/broadband-user/plan/hardware/view/redirect")
+	public String redirectHardwareView(RedirectAttributes attr) {
+		attr.addFlashAttribute("success", "Hardware Operation is successful.");
 		return "redirect:/broadband-user/plan/hardware/view/1";
 	}
 
@@ -365,29 +280,6 @@ public class PlanController {
 		model.addAttribute("hardware", hardware);
 		
 		return "broadband-user/plan/hardware";
-	}
-
-	@RequestMapping(value = "/broadband-user/plan/hardware/edit", method = RequestMethod.POST)
-	public String doHardwareEdit(
-			Model model,
-			@ModelAttribute("hardware") @Validated(HardwareValidatedMark.class) Hardware hardware,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-		
-		model.addAttribute("panelheading", "Hardware Edit");
-		model.addAttribute("action", "/broadband-user/plan/hardware/edit");
-		
-		if (result.hasErrors()) {
-			return "broadband-user/plan/hardware";
-		}
-		
-		hardware.getParams().put("id", hardware.getId());
-		
-		this.planService.editHardware(hardware);
-		
-		attr.addFlashAttribute("success", "Edit Hardware " + hardware.getHardware_name() + " is successful.");
-	
-		return "redirect:/broadband-user/plan/hardware/view/1";
 	}
 
 	@RequestMapping(value = "/broadband-user/plan/hardware/delete", method = RequestMethod.POST)

@@ -14,26 +14,30 @@
 					<h4 class="panel-title">${panelheading }</h4>
 				</div>
 				<div class="panel-body">
-					<form:form modelAttribute="plan" method="post" action="${ctx}${action }" class="form-horizontal">
-						<form:hidden path="id"/>
+					<form class="form-horizontal">
 						<div class="form-group">
 							<label for="plan_name" class="control-label col-md-4">Plan Name</label>
 							<div class="col-md-3">
-								<form:input path="plan_name" class="form-control" placeholder="Plan Name" />
+								<input value="${plan.plan_name}" type="text" id="plan_name" class="form-control" placeholder="Plan Name" data-error-field/>
 							</div>
-							<p class="help-block">
-								<form:errors path="plan_name" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="plan_group" class="control-label col-md-4">Plan Group</label>
 							<div class="col-md-3">
-								<form:select path="plan_group" class="form-control">
-									<form:option value="">None</form:option>
-									<form:option value="plan-no-term">Plan No Term</form:option>
-									<form:option value="plan-term">Plan Term</form:option>
-									<form:option value="plan-topup">Plan Topup</form:option>
-								</form:select>
+								<select id="plan_group" class="form-control">
+									<option
+										<c:if test="${plan.plan_group == ''}">
+											selected="selected"
+										</c:if>
+									>none</option>
+									<c:forEach var="p" items="plan-no-term,plan-term,plan-topup">
+										<option value="${p}"
+											<c:if test="${p == plan.plan_group}">
+												selected="selected"
+											</c:if>
+										>${p}</option>
+									</c:forEach>
+								</select>
 							</div>
 							<div class="col-md-5">
 								<div class="well">
@@ -49,25 +53,19 @@
 								<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
 								<div class="col-md-3">
 									<div class="input-group">
-										<form:input path="plan_prepay_months" class="form-control" placeholder="" />
+										<input type="text" value="${plan.plan_prepay_months}" id="plan_prepay_months" class="form-control" placeholder="" data-error-field/>
 										<span class="input-group-addon">Months</span>
 									</div>
 								</div>
-								<p class="help-block">
-									<form:errors path="plan_prepay_months" cssErrorClass="error"/>
-								</p>
 							</div>
 							<div class="form-group">
 								<label for="term_period" class="control-label col-md-4">Term Period</label>
 								<div class="col-md-3">
 									<div class="input-group">
-										<form:input path="term_period" class="form-control" placeholder="" />
+										<input type="text" value="${plan.term_period}" id="term_period" class="form-control" placeholder="" data-error-field/>
 										<span class="input-group-addon">Months</span>
 									</div>
 								</div>
-								<p class="help-block">
-									<form:errors path="term_period" cssErrorClass="error"/>
-								</p>
 							</div>
 							<hr/>
 						</div>
@@ -75,32 +73,58 @@
 						<div class="form-group">
 							<label for="plan_class" class="control-label col-md-4">Plan Class</label>
 							<div class="col-md-3">
-								<form:select path="plan_class" class="form-control">
-									<form:option value="">None</form:option>
-									<form:option value="personal">Personal</form:option>
-									<form:option value="business">Business</form:option>
-								</form:select>
+								<select id="plan_class" class="form-control">
+									<option
+										<c:if test="${plan.plan_class == ''}">
+											selected="selected"
+										</c:if>
+									>none</option>
+									<c:forEach var="p" items="personal,business">
+										<option value="${p}"
+											<c:if test="${p == plan.plan_class}">
+												selected="selected"
+											</c:if>
+										>${p}</option>
+									</c:forEach>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="plan_type" class="control-label col-md-4">Plan Type</label>
 							<div class="col-md-3">
-								<form:select path="plan_type" class="form-control">
-									<form:option value="">None</form:option>
-									<form:option value="ADSL">ADSL</form:option>
-									<form:option value="VDSL">VDSL</form:option>
-									<form:option value="UFB">UFB</form:option>
-								</form:select>
+								<select id="plan_type" class="form-control">
+									<option
+										<c:if test="${plan.plan_type == ''}">
+											selected="selected"
+										</c:if>
+									>None</option>
+									<c:forEach var="p" items="ADSL,VDSL,UFB">
+										<option value="${p}"
+											<c:if test="${p == plan.plan_type}">
+												selected="selected"
+											</c:if>
+										>${p}</option>
+									</c:forEach>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
 							<label for="plan_sort" class="control-label col-md-4">Plan Sort</label>
 							<div class="col-md-3">
-								<form:select path="plan_sort" class="form-control">
-									<form:option value="">None</form:option>
-									<form:option value="CLOTHING">CLOTHING</form:option>
-									<form:option value="NAKED">NAKED</form:option>
-								</form:select>
+								<select id="plan_sort" class="form-control">
+									<option
+										<c:if test="${plan.plan_sort == ''}">
+											selected="selected"
+										</c:if>
+									>None</option>
+									<c:forEach var="p" items="CLOTHING,NAKED">
+										<option value="${p}"
+											<c:if test="${p == plan.plan_sort}">
+												selected="selected"
+											</c:if>
+										>${p}</option>
+									</c:forEach>
+								</select>
 							</div>
 						</div>
 						<div class="form-group">
@@ -108,89 +132,83 @@
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="plan_price" class="form-control" placeholder="" />
+									<input type="text" value="${plan.plan_price}" id="plan_price" class="form-control" placeholder="" data-error-field/>
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="plan_price" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="plan_new_connection_fee" class="control-label col-md-4">New Connection fee (Inc GST)</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="plan_new_connection_fee" class="form-control" placeholder="" />
+									<input type="text" value="${plan.plan_new_connection_fee}" id="plan_new_connection_fee" class="form-control" placeholder="" data-error-field/>
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="plan_new_connection_fee" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="data_flow" class="control-label col-md-4">Data Flow</label>
 							<div class="col-md-3">
 								<div class="input-group">
-									<form:input path="data_flow" class="form-control" placeholder="" />
+									<input type="text" value="${plan.data_flow}" id="data_flow" class="form-control" placeholder="" data-error-field/>
 									<span class="input-group-addon">GB</span>
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="data_flow" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="pstn_count" class="control-label col-md-4">PSTN Amount</label>
 							<div class="col-md-3">
-								<form:input path="pstn_count" class="form-control" placeholder="" />
+								<input type="text" value="${plan.pstn_count}" id="pstn_count" class="form-control" placeholder="" data-error-field/>
 							</div>
-							<p class="help-block">
-								<form:errors path="pstn_count" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="pstn_rental_amount" class="control-label col-md-4">PSTN Rental Amount</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="pstn_rental_amount" class="form-control" placeholder="" />
+									<input type="text" value="${plan.pstn_rental_amount}" id="pstn_rental_amount" class="form-control" placeholder=""  data-error-field/>
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="pstn_rental_amount" cssErrorClass="error"/>
-							</p>
 						</div>
 						
 						<div class="form-group">
 							<label for="plan_status" class="control-label col-md-4">Status</label>
 							<div class="col-md-3">
-								<form:select path="plan_status" class="form-control">
-									<form:option value="active">Active</form:option>
-									<form:option value="selling">Selling</form:option>
-									<form:option value="disable">Disable</form:option>
-								</form:select>
+								<select id="plan_status" class="form-control">
+									<option
+										<c:if test="${plan.plan_status == ''}">
+											selected="selected"
+										</c:if>
+									>None</option>
+									<c:forEach var="p" items="active,selling,disable">
+										<option value="${p}"
+											<c:if test="${p == plan.plan_status}">
+												selected="selected"
+											</c:if>
+										>${p}</option>
+									</c:forEach>
+								</select>
 							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save</button>
+								<button type="button" class="btn btn-success" id="save-btn">Save</button>
 							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
-							<label for="plan_desc" class="control-label col-md-4">Description</label>
+							<label for="plan_desc" class="control-label col-md-4" data-error-field>Description</label>
 							<div class="col-md-8">
-								<form:textarea path="plan_desc" class="form-control" rows="12"/>
+								<textarea id="plan_desc" class="form-control" rows="12">${plan.plan_desc}</textarea>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="memo" class="control-label col-md-4">Memo</label>
+							<label for="memo" class="control-label col-md-4" data-error-field>Memo</label>
 							<div class="col-md-8">
-								<form:textarea path="memo" class="form-control" rows="6"/>
+								<textarea id="memo" class="form-control" rows="6">${plan.memo}</textarea>
 							</div>
 						</div>
-					</form:form>
+					</form>
 					
 					<form:form modelAttribute="plan" method="post" action="${ctx}/broadband-user/plan/pic/edit" class="form-horizontal" enctype="multipart/form-data">
 						<form:hidden path="id"/>
@@ -294,6 +312,40 @@
 			//$('#termContainer').hide('fast');
 		}
 	});
+	
+	$('#save-btn').on("click", function(){
+		
+		var $btn = $(this);
+		$btn.button('loading');
+		var plan = {
+			id: '${plan.id}'
+			, plan_name: $('#plan_name').val()
+			, plan_group: $('#plan_group option:selected').val()
+			, plan_prepay_months: $('#plan_prepay_months').val()
+			, term_period: $('#term_period').val()
+			, plan_class: $('#plan_class').val()
+			, plan_type: $('#plan_type').val()
+			, plan_sort: $('#plan_sort').val()
+			, plan_price: $('#plan_price').val()
+			, plan_new_connection_fee: $('#plan_new_connection_fee').val()
+			, data_flow: $('#data_flow').val()
+			, pstn_count: $('#pstn_count').val()
+			, pstn_rental_amount: $('#pstn_rental_amount').val()
+			, plan_status: $('#plan_status').val()
+			, plan_desc: $('#plan_desc').val()
+			, memo: $('#memo').val()
+		};
+		$.post('${ctx}${action}', plan, function(json){
+			if (json.hasErrors) {
+				$.jsonValidation(json, 'right');
+			} else {
+				window.location.href='${ctx}' + json.url;
+			}
+		}, 'json').always(function () {
+			$btn.button('reset');
+	    });
+	});
+	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
