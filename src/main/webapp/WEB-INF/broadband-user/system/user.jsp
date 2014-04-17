@@ -61,17 +61,22 @@
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/view" /> View Plan
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_plan" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/create" /> Create Plan
+											<form:checkbox path="authArray" value="plan/view" data-type="checkbox_plan" /> View Plan
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/edit" /> Edit Plan
+											<form:checkbox path="authArray" value="plan/create" data-type="checkbox_plan" /> Create Plan
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="plan/edit" data-type="checkbox_plan" /> Edit Plan
 										</label>
 									</li>
 								</ul>
@@ -79,17 +84,17 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/view" /> View Hardware
+											<form:checkbox path="authArray" value="plan/hardware/view" data-type="checkbox_plan" /> View Hardware
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/create" /> Create Hardware
+											<form:checkbox path="authArray" value="plan/hardware/create" data-type="checkbox_plan" /> Create Hardware
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/edit" /> Edit Hardware
+											<form:checkbox path="authArray" value="plan/hardware/edit" data-type="checkbox_plan" /> Edit Hardware
 										</label>
 									</li>
 								</ul>
@@ -101,17 +106,22 @@
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/view" /> View Customer
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/create" /> Create Customer
+											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" /> View Customer
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/edit" /> Edit Customer
+											<form:checkbox path="authArray" value="crm/customer/create" data-type="checkbox_customer" /> Create Customer
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" /> Edit Customer
 										</label>
 									</li>
 								</ul>
@@ -120,6 +130,11 @@
 								<ul class="list-unstyled">
 									<li>
 											<h3>Billing</h3>
+									</li>
+									<li>
+										<label> 
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_billing" /> All
+										</label>
 									</li>
 								</ul>
 							</div>
@@ -130,12 +145,17 @@
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="provision/view" /> View Provision
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_provision" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="provision/customer/view" /> Provision Customer Order
+											<form:checkbox path="authArray" value="provision/view" data-type="checkbox_provision" /> View Provision
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" /> Provision Customer Order
 										</label>
 									</li>
 								</ul>
@@ -144,6 +164,11 @@
 								<ul class="list-unstyled">
 									<li>
 											<h3>Data</h3>
+									</li>
+									<li>
+										<label> 
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
+										</label>
 									</li>
 								</ul>
 							</div>
@@ -154,35 +179,22 @@
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/view" /> View User
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/create" /> Create User
+											<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/edit" /> Edit User
-										</label>
-									</li>
-								</ul>
-									<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/view" /> View Notification
+											<form:checkbox path="authArray" value="system/user/create" data-type="checkbox_system" /> Create User
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/notification/create" /> Create Notification
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/edit" /> Edit Notification
+											<form:checkbox path="authArray" value="system/user/edit" data-type="checkbox_system" /> Edit User
 										</label>
 									</li>
 								</ul>
@@ -190,7 +202,17 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/company-detail/edit" /> Edit Company Detail
+											<form:checkbox path="authArray" value="system/notification/view" data-type="checkbox_system" /> View Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/create" data-type="checkbox_system" /> Create Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
 										</label>
 									</li>
 								</ul>
@@ -198,7 +220,15 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/chart/customer-register" /> Chart(Register Customer)
+											<form:checkbox path="authArray" value="system/company-detail/edit" data-type="checkbox_system" /> Edit Company Detail
+										</label>
+									</li>
+								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
 										</label>
 									</li>
 								</ul>
@@ -210,13 +240,18 @@
 										<h3>Sales</h3>
 									</li>
 									<li>
-										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/view" /> View Online Orders (PAD | PC)
+										<label> 
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_sales" /> All
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/plans" /> Ordering Online (PAD)
+											<form:checkbox path="authArray" value="sale/online/ordering/view" data-type="checkbox_sales" /> View Online Orders (PAD | PC)
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD)
 										</label>
 									</li>
 								</ul>
@@ -243,4 +278,17 @@
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript">
+(function($){
+	$('input[data-name="checkbox_all"]').click(function(){
+		var b = $(this).prop("checked");
+		var type = $(this).attr("data-type");
+		if (b) {
+			$('input[data-type='+type+']').prop("checked", true);
+		} else {
+			$('input[data-type='+type+']').prop("checked", false);
+		}
+	});
+})(jQuery);
+</script>
 <jsp:include page="../footer-end.jsp" />

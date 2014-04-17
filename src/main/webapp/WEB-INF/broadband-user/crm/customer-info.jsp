@@ -331,17 +331,17 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h3 class="modal-title" id="deleteCustomerModalLabel"><strong class="text-danger">Delete Customer Permanently!</strong></h3>
+	        <h3 class="modal-title" id="deleteCustomerModalLabel"><strong class="text-danger">Delete Customer ( Permanent!!! )</strong></h3>
 	      </div>
 	      <div class="modal-body">
 			<div class="form-group">
 				<label class="control-label col-md-11">
-					<strong class="text-danger">This operation is irreversible, be careful!<br/>
-					Info listed below will be disappear permanently!:<br/></strong>
-					personal informations&nbsp;(1)<br/>
-					related orders with details&nbsp;(2)<br/>
-					related invoices with details&nbsp;(3)<br/>
-					related transaction's records&nbsp;(4)<br/>
+					<strong class="text-danger">This operation is irreversible, be seriously careful!<br/>
+					Info related with this customer will be disappeared!<br/><br/></strong>
+					personal informations<br/>
+					related orders with details<br/>
+					related invoices with details<br/>
+					related transaction's records<br/>
 				</label>
 			</div>
 	      </div>
