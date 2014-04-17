@@ -50,14 +50,14 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String address;
-	@NotEmpty(groups = { CustomerValidatedMark.class})
-	@Email(groups = { CustomerValidatedMark.class})
-	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class})
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
+	@Email(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
+	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
 	private String email;
 	//@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String phone;
-	@NotEmpty(groups = { CustomerValidatedMark.class})
-	@Length(min = 10, max = 11, groups = { CustomerValidatedMark.class})
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
+	@Length(min = 10, max = 11, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
 	private String cellphone;
 	private String status;
 	private String invoice_post;

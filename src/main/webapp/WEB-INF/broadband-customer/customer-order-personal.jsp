@@ -439,9 +439,9 @@ background-color: #5cb85c;
 	$('#btnConfirm').click(function(){
 		var $btn = $(this);
 		$btn.button('loading');
-		console.log($('input[name="order_broadband_type"]:checked').val());
+		//console.log($('input[name="order_broadband_type"]:checked').val());
 		
-		var url = '${ctx}/order';
+		var url = '${ctx}/order/personal';
 		var customer = {
 			address: $('#address').val()
 			, cellphone: $('#cellphone').val()

@@ -20,8 +20,7 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a data-toggle="collapse" data-toggle="collapse"
-							data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
+						<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
 							Order Confirm
 						</a>
 					</h4>
@@ -124,7 +123,7 @@
 							<h2>Transition</h2>
 							<hr style="margin-top:0;"/>
 							<div class="row" >
-								<div class="col-sm-4"><strong>Your Current Provider Name</strong></div>
+								<div class="col-sm-4"><strong>Current Provider Name</strong></div>
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_provider_name }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
@@ -132,11 +131,11 @@
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_account_holder_name }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
-								<div class="col-sm-4"><strong>Your Current Account Number</strong></div>
+								<div class="col-sm-4"><strong>Current Account Number</strong></div>
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_account_number }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
-								<div class="col-sm-4"><strong>Your Porting Number</strong></div>
+								<div class="col-sm-4"><strong>Telephone Number</strong></div>
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_porting_number }</strong></div>
 							</div>
 						</c:if>

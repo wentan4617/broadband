@@ -9,6 +9,7 @@ import java.util.Map;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
@@ -24,14 +25,14 @@ public class Organization implements Serializable {
 	private String org_type;
 	private String org_trading_name;
 	private String org_register_no;
+	@DateTimeFormat
 	private Date org_incoporate_date;
 	private Integer org_trading_months;
 	private String holder_name;
 	private String holder_job_title;
 	private String holder_phone;
-	@NotEmpty(groups = { CustomerOrganizationValidatedMark.class})
 	@Email(groups = { CustomerOrganizationValidatedMark.class})
-	@Length(min = 1, max = 40, groups = { CustomerOrganizationValidatedMark.class })
+	@Length(max = 40, groups = { CustomerOrganizationValidatedMark.class })
 	private String holder_email;
 
 	/*

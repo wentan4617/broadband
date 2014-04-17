@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
@@ -16,11 +17,7 @@ background-color: #5cb85c;
 }
 </style>
 <div class="container">
-	<!-- <div class="page-header">
-		<h1>
-			3. Customer Information Review and Checkout 
-		</h1>
-	</div> -->
+
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li >
 			<a  class="btn-lg">
@@ -29,20 +26,6 @@ background-color: #5cb85c;
 			</a>
 		</li>
 		<li class="">
-			<%-- <c:choose>
-				<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-					<a href="${ctx }/order/${orderPlan.id}" class="btn-lg">
-						2. Fill Application Form
-						<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-					</a>
-				</c:when>
-				<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-					<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn-lg">
-						2. Fill Application Form
-						<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-					</a>
-				</c:when>
-			</c:choose> --%>
 			<a class="btn-lg">
 				2. Fill Application Form
 				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
@@ -55,146 +38,250 @@ background-color: #5cb85c;
 		</li>
 	</ul>
 	<div class="panel panel-success">
-		<div class="panel-heading">Please review your application information to checkout</div>
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-md-8">
-					<div class="row">
-						<div class="col-md-3">
-							<h1>Order</h1>
-						</div>
-						<div class="col-md-8 text-right">
-							<span class="logo_ct"></span>
-						</div>
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
+					Please Review Application Information
+				</a>
+			</h4>
+		</div>
+		<div id="collapseOrderInfo" class="panel-collapse collapse in">
+			<div class="panel-body">
+			
+				<div class="row">
+					<div class="col-md-6">
+						<h4 class="text-success">
+							<c:if test="${customer.customer_type == 'personal' }">
+								${customer.title } ${customer.first_name } ${customer.last_name }
+							</c:if>
+							<c:if test="${customer.customer_type == 'business' }">
+								${customer.organization.org_name }
+							</c:if>
+						</h4>
 					</div>
+					<div class="col-md-6"></div>
+				</div>
+				<div class="row">
+					<div class="col-sm-6">
+						<h4 class="text-success">
+							${customer.address }
+						</h4>
+					</div>
+					<div class="col-sm-6">
+						<h4 class="text-success pull-right" >
+							Order Date: 
+							<strong class="text-info">
+								<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
+							</strong>
+						</h4>
+					</div>
+				</div>
+				
+				<c:if test="${customer.customer_type == 'business' }">
+					<hr style="margin-top:0;"/>
+					<h2>Business Information</h2>
 					<hr style="margin-top:0;"/>
 					<div class="row">
-						<div class="col-md-6">
-							<p class="text-success"><strong>Personal Information:</strong></p>
-							<ul class="list-unstyled personal-info">
-								<li><strong class="text-info">${customer.login_name }</strong></li>
-								<li><strong class="text-info">${customer.first_name }&nbsp;${customer.last_name }</strong></li>
-								<li><strong class="text-info"><a href="mailto:#">${customer.email }</a></strong></li>
-								<li><strong class="text-info">${customer.cellphone }</strong></li>
-								<li><strong class="text-info">${customer.address }</strong></li>
-							</ul>
-							<c:if test="${customer.customerOrder.order_broadband_type == 'transition' }">
-								<p class="text-success"><strong>Provider Information:</strong></p>
-								<ul class="list-unstyled personal-info">
-									<li><strong class="text-info">${customer.customerOrder.transition_provider_name }</strong></li>
-									<li><strong class="text-info">${customer.customerOrder.transition_account_holder_name }</strong></li>
-									<li><strong class="text-info">${customer.customerOrder.transition_account_number }</strong></li>
-									<li><strong class="text-info">${customer.customerOrder.transition_porting_number }</strong></li>
-								</ul>
-							</c:if>
-						</div>
-						<div class="col-md-6 ">
-							<p class="text-success"><strong>&nbsp;</strong></p>
-							<ul class="list-unstyled personal-info pull-right">
-								<li>
-									Order Date: 
-									<strong class="text-info">
-										<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
-									</strong>
-								</li>
-								<li>
-									Total Price: 
-									<strong class="text-info">
-										NZ$ <fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
-									</strong>
-								</li>
-							</ul>
+						<div class="col-sm-4"><strong>Organization Type</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.org_type }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Trading Name</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.org_trading_name }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Registration No.</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.org_register_no }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Date Incoporated</strong></div>
+						<div class="col-sm-6">
+							<strong class="text-info">
+								<fmt:formatDate  value="${customer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
+							</strong>
 						</div>
 					</div>
-				</div>
-			</div>
-			<hr/>
-			<table class="table">
-				<thead>
-					<tr>
-						<th>Service / Product</th>
-						<th>Unit Price</th>
-						<th>Discount</th>
-						<th>Qty</th>
-						<th>Subtotal</th>
-					</tr>
-				</thead>
-				<tbody>
-					<c:forEach var="detail" items="${customer.customerOrder.customerOrderDetails }">
-						<tr>
-							<td>${detail.detail_name }</td>
-							<td>
-								<fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" />
-								
-							</td>
-							<td></td>
-							<td>${detail.detail_unit }</td>
-							<td>
-								<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-								
-							</td>
-						</tr>
-					</c:forEach>
-				</tbody>
-			</table>
-			<div class="row">
-				<div class="col-md-4 col-md-offset-8">
+					<hr /><!-- style="margin-top:0;" -->
+					<h2>Account Holder Information</h2>
+					<hr style="margin-top:0;"/>
+					<div class="row" >
+						<div class="col-sm-4"><strong>Full name</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.holder_name }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Job Title</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.holder_job_title }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Phone</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.holder_phone }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Email</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.organization.holder_email }</strong></div>
+					</div>
+				</c:if>
 				
-					<table class="table">
-						<tbody>
-							<tr>
-								<td>Total before GST</td>
-								<td>
-									NZ$ 
-									<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
-								</td>
-							</tr>
-							<tr>
-								<td>GST at 15% </td>
-								<td>
-									NZ$ 
-									<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
-								</td>
-							</tr>
-							<tr>
-								<td><strong>Order Total</strong></td>
-								<td>
-									<strong class="text-success">
+				<c:if test="${customer.customer_type == 'personal' }">
+					<hr /><!-- style="margin-top:0;" -->
+					<h2>Personal Information</h2>
+					<hr style="margin-top:0;"/>
+					<div class="row" >
+						<div class="col-sm-4"><strong>Phone</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.cellphone }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Mobile</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.cellphone }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Email</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.email }</strong></div>
+					</div>
+				</c:if>
+				
+				<c:if test="${customer.customerOrder.order_broadband_type == 'transition' }">
+					<hr /><!-- style="margin-top:0;" -->
+					<h2>Transition</h2>
+					<hr style="margin-top:0;"/>
+					<div class="row" >
+						<div class="col-sm-4"><strong>Current Provider Name</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_provider_name }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Account Holder Name</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_account_holder_name }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Current Account Number</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_account_number }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Telephone Number</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_porting_number }</strong></div>
+					</div>
+				</c:if>
+							
+							
+				<hr/>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Service / Product</th>
+							<th>Data</th>
+							<th>Term(mth)</th>
+							<th>Monthly Charge</th>
+							<th>Qty</th>
+							<th>Subtotal</th>
+						</tr>
+					</thead>
+					<tbody>
+						<c:forEach var="detail" items="${customer.customerOrder.customerOrderDetails }">
+							<c:choose>
+								<c:when test="${fn:contains(detail.detail_type, 'plan-') }">
+									<tr>
+										<td>
+											${detail.detail_name }
+										</td>
+										<td>
+											${detail.detail_data_flow } GB
+											
+										</td>
+										<td>${detail.detail_term_period }</td>
+										<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+										<td>${detail.detail_unit }</td>
+										<td>
+											<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+											
+										</td>
+									</tr>
+									<tr>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
+										<th>&nbsp;</th>
+										<th>Unit Price</th>
+										<th>Qty</th>
+										<th>Subtotal</th>
+									</tr>
+								</c:when>
+								<c:otherwise>
+									<tr>
+										<td>
+											${detail.detail_name }&nbsp;
+											<c:if test="${detail.detail_type == 'pstn' || detail.detail_type == 'voip'}">
+												<c:if test="${detail.pstn_number != null && detail.pstn_number != '' }">
+													<strong class="text-danger">(${detail.pstn_number })</strong>
+												</c:if>
+											</c:if>
+										</td>
+										<td>&nbsp;</td>
+										<td>&nbsp;</td>
+										<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+										<td>${detail.detail_unit }</td>
+										<td>
+											<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+											
+										</td>
+									</tr>
+								</c:otherwise>
+							</c:choose>
+							
+						</c:forEach>
+					</tbody>
+				</table>
+				<div class="row">
+					<div class="col-md-4 col-md-offset-8">
+					
+						<table class="table">
+							<tbody>
+								<tr>
+									<td>Total before GST</td>
+									<td>
 										NZ$ 
-										<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
-									</strong>
-								</td>
-							</tr>
-						</tbody>
-					</table>
+										<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
+									</td>
+								</tr>
+								<tr>
+									<td>GST at 15% </td>
+									<td>
+										NZ$ 
+										<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+									</td>
+								</tr>
+								<tr>
+									<td><strong>Order Total</strong></td>
+									<td>
+										<strong class="text-success">
+											NZ$ 
+											<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+										</strong>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
 				</div>
-			</div>
-			<hr>
-			<div class="row">
-				<div class="col-md-12">
-					<label class="well checkbox-inline pull-right">
-						<input type="checkbox" id="termckb" value="1" checked="checked"/>
-						<a class="btn btn-link btn-lg"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
-					</label>
-				</div>
-			</div>
-			<hr/>
-			<div class="row">
-				<div class="col-md-12">
-					<c:choose>
-						<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-							<a href="${ctx }/order/${orderPlan.id}" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
-						</c:when>
-						<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-							<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
-						</c:when>
-					</c:choose>
-					<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
-						<button type="submit" style="width:120px;" class="btn btn-success btn-lg pull-right">Checkout</button>
-					</form>
-				</div>
+				<hr/>
+				<div class="row">
+					<div class="col-md-12">
+						<c:choose>
+							<c:when test="${orderPlan.plan_group == 'plan-no-term' || orderPlan.plan_group == 'plan-term' }">
+								<a href="${ctx }/order/${orderPlan.id}" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
+							</c:when>
+							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+								<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
+							</c:when>
+						</c:choose>
+						<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
+							<button type="submit" style="width:120px;" class="btn btn-success btn-lg pull-right">Checkout</button>
+						</form>
+					</div>
+					
+				</div>		
+				
 			</div>
 		</div>
+		
 	</div>
 	
 </div>
