@@ -21,6 +21,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 
@@ -103,8 +104,8 @@ public class CustomerRestController {
 		return json;
 	}
 
-	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	public JSONBean<Customer> doOrder(Model model,
+	@RequestMapping(value = "/order/personal", method = RequestMethod.POST)
+	public JSONBean<Customer> doOrderPersonal(Model model,
 			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
 			HttpServletRequest req) {
 
@@ -136,7 +137,46 @@ public class CustomerRestController {
 		}
 		
 		model.addAttribute("customer", customer);
-		json.setUrl("/order/confirm");
+		json.setUrl("/order/personal/confirm");
+		
+		return json;
+	}
+	
+	
+	@RequestMapping(value = "/order/business", method = RequestMethod.POST)
+	public JSONBean<Customer> doOrderBusiness(Model model,
+			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
+			HttpServletRequest req) {
+
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		json.setModel(customer);
+		
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+
+		Customer cValid = new Customer();
+		cValid.getParams().put("where", "query_exist_customer_by_mobile");
+		cValid.getParams().put("cellphone", customer.getCellphone());
+		int count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("cellphone", "is already in use");
+			return json;
+		}
+		
+		cValid.getParams().put("where", "query_exist_customer_by_email");
+		cValid.getParams().put("email", customer.getEmail());
+		count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("email", "is already in use");
+			return json;
+		}
+		
+		model.addAttribute("customer", customer);
+		json.setUrl("/order/business/confirm");
 		
 		return json;
 	}
