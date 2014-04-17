@@ -69,19 +69,19 @@
 		<div class="col-lg-2"></div>
 		<div class="col-lg-2">
 			<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
-				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+				<img src="${ctx }/public/bootstrap3/images/c_noterm.jpg" alt="..." class="img-circle">
 			</a>
 		</div>
 		<div class="col-lg-1"></div>
 		<div class="col-lg-2">
 			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
-				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+				<img src="${ctx }/public/bootstrap3/images/c_topup.jpg" alt="..." class="img-circle">
 			</a>
 		</div>
 		<div class="col-lg-1"></div>
 		<div class="col-lg-2">
 			<a href="javascript:void(0);" id="plan-term-option">
-				<img data-src="holder.js/185x185" alt="..." class="img-circle">
+				<img src="${ctx }/public/bootstrap3/images/c_term.jpg" alt="..." class="img-circle">
 			</a>
 		</div>
 		<div class="col-lg-2"></div>

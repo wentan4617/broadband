@@ -80,11 +80,13 @@
 	<select id="selectPlan" parameterType="Plan" resultType="Plan">
 		select * from tm_plan as p
 		<include refid="planWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
 	
 	<select id="selectPlans" parameterType="Plan" resultType="Plan">
 		select * from tm_plan as p
 		<include refid="planWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
 	
 	<!-- select plan page -->

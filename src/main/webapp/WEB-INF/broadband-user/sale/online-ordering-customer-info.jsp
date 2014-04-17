@@ -87,7 +87,6 @@
 								<label for="" class="control-label col-sm-4">Account Holder Name</label>
 								<div class="col-sm-6">
 									<input type="text" name="customerOrder.transition_account_holder_name" id="customerOrder.transition_account_holder_name" class="form-control" placeholder="" />
-								
 								</div>
 							</div>
 							<div class="form-group">
@@ -98,7 +97,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="" class="control-label col-sm-4">Port Number</label>
+								<label for="" class="control-label col-sm-4">Telephone Number</label>
 								<div class="col-sm-6">
 									<input type="text" name="customerOrder.transition_porting_number" id="customerOrder.transition_porting_number" class="form-control" placeholder="" />
 							
@@ -263,6 +262,7 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
 	$(':radio').iCheck({
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
@@ -349,7 +349,6 @@
 			customer.customerOrder.transition_account_number = $('#customerOrder\\.transition_account_number').val();
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
 		}
-		
 		
 		console.log(customer);
 		console.log(JSON.stringify(customer));

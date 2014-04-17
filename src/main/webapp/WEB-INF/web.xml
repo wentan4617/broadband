@@ -4,7 +4,7 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-	<login-config>
+	<!-- <login-config>
 		<auth-method>CLIENT-CERT</auth-method>
 		<realm-name>Client Cert Users-only Area</realm-name>
 	</login-config>
@@ -17,7 +17,7 @@
 		<user-data-constraint>
 			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
 		</user-data-constraint>
-	</security-constraint>
+	</security-constraint> -->
 	
 	<welcome-file-list>
 		<welcome-file></welcome-file>
@@ -103,7 +103,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>CustomerOrderSessionFilter</filter-name>
-		<url-pattern>/order</url-pattern>
+		<!-- <url-pattern>/order</url-pattern> -->
 		<url-pattern>/order/confirm</url-pattern>
 		<url-pattern>/order/checkout</url-pattern>
 	</filter-mapping>

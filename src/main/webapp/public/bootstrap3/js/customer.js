@@ -20,8 +20,7 @@
 		console.log('error');
 	});
 	
-	$.jsonValidation = function(json, placement){
-		console.log(json);
+	$.jsonValidation = function(json, placement) { // console.log(json);
 		placement = placement || 'top';
 		$('#alertContainer').find('#alert-error').remove();
 		$('input[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');
@@ -31,27 +30,31 @@
 				$('#text-error').text(json.errorMap[key]);
 				$('#alert-error').show('normal');
 			} else {
-				$('#' + key.replace('.','\\.'))
+				var $input = $('#' + key.replace('.','\\.'));
+				var input_placement = $input.attr('data-placement'); // console.log(input_placement);
+				$input
 					.focus()
 					.tooltip({
 						html: true
-						, placement: placement
+						, placement: (input_placement || placement)
 						, title: '<h6 class="text-danger">' + json.errorMap[key] + '</h6>'
 						, trigger: 'manual'
 					})
 					.tooltip('show')
 					.closest('div.form-group')
 					.addClass('has-error');
+				
+				var nextDiv = $input.next('div');
+				var ele_arrow = nextDiv.find('.tooltip-arrow');
+				var ele_inner = nextDiv.find('.tooltip-inner');
+				ele_arrow.css('border-' + (input_placement || placement) + '-color', '#f2dede');
+				ele_inner.css('background-color', '#f2dede');
+				if ((input_placement || placement) == 'right') {
+					ele_arrow.css('margin-top', '5px');
+					ele_inner.css('width', '200px');
+				}
 			}
 		});
-		
-		$('.tooltip-arrow').css('border-' + placement + '-color', '#f2dede');
-		$('.tooltip-inner').css('background-color', '#f2dede')
-		
-		if (placement == 'right') {
-			$('.tooltip-arrow').css('margin-top', '5px');
-			$('.tooltip-inner').css('width', '200px');
-		}
 	}
 	
 })(jQuery);

@@ -7,9 +7,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.Customer;
@@ -19,9 +21,11 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 
 @RestController
+@SessionAttributes(value = { "customer", "orderPlan"})
 public class CustomerRestController {
 	
 	private CRMService crmService;
@@ -30,7 +34,6 @@ public class CustomerRestController {
 	public CustomerRestController(CRMService crmService) {
 		this.crmService = crmService;
 	}
-	
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public JSONBean<Customer> login(
@@ -100,5 +103,41 @@ public class CustomerRestController {
 		return json;
 	}
 
+	@RequestMapping(value = "/order", method = RequestMethod.POST)
+	public JSONBean<Customer> doOrder(Model model,
+			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
+			HttpServletRequest req) {
 
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		json.setModel(customer);
+		
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+
+		Customer cValid = new Customer();
+		cValid.getParams().put("where", "query_exist_customer_by_mobile");
+		cValid.getParams().put("cellphone", customer.getCellphone());
+		int count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("cellphone", "is already in use");
+			return json;
+		}
+		
+		cValid.getParams().put("where", "query_exist_customer_by_email");
+		cValid.getParams().put("email", customer.getEmail());
+		count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("email", "is already in use");
+			return json;
+		}
+		
+		model.addAttribute("customer", customer);
+		json.setUrl("/order/confirm");
+		
+		return json;
+	}
 }
