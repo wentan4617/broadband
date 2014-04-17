@@ -40,7 +40,7 @@ background-color: #5cb85c;
 		</li>
 		<li>
 			<a class="btn-lg">
-				3. Review and Order 
+				3. Review and Checkout 
 			</a>
 		</li>
 	</ul>
@@ -57,7 +57,7 @@ background-color: #5cb85c;
 					<div class="panel-heading">
 						<h2 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#application">
-								Business Application Form <span class="text-danger"></span>
+								Your Application Form <span class="text-danger">(All Fields Required)</span>
 							</a>
 						</h2>
 					</div>
@@ -66,11 +66,11 @@ background-color: #5cb85c;
 						<div class="panel-body">
 						
 							<!-- customer address -->
-							<h4 class="text-success">Group/Organization</h4>
+							<h4 class="text-success">Your Address</h4>
 							<hr/>
 							
 							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Address</label>
+								<label for="address" class="control-label col-md-4">Your Address</label>
 								<div class="col-md-8">
 									<input type="text" id="address" name="address" value="${customer.address }" class="form-control" data-error-field data-placement="top"/>
 								</div>
@@ -78,17 +78,17 @@ background-color: #5cb85c;
 							
 							<!-- customer account -->
 							<hr/>
-							<h4 class="text-success">Create Group/Organization Account</h4>
+							<h4 class="text-success">Create Your Account</h4>
 							<hr/>
 							
 							<div class="form-group">
-								<label for="cellphone" class="control-label col-md-4">Business Mobile</label>
+								<label for="cellphone" class="control-label col-md-4">Your Mobile</label>
 								<div class="col-md-4">
 									<input type="text" id="cellphone" name="cellphone" value="${customer.cellphone }"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="email" class="control-label col-md-4">Business Email</label>
+								<label for="email" class="control-label col-md-4">Your Email</label>
 								<div class="col-md-4">
 									<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 								</div>
@@ -140,7 +140,7 @@ background-color: #5cb85c;
 								<hr/>
 								
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Current Provider Name</label>
+									<label for="" class="control-label col-md-4">Your Current Provider Name</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
 									</div>
@@ -152,13 +152,13 @@ background-color: #5cb85c;
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Current Account Number</label>
+									<label for="" class="control-label col-md-4">Your Current Account Number</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Telephone Number</label>
+									<label for="" class="control-label col-md-4">Your Telephone Number</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
 									</div>

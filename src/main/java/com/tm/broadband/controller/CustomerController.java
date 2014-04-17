@@ -58,7 +58,7 @@ import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
-@SessionAttributes(value = { "customer", "orderPlan", "hardwares" })
+@SessionAttributes(value = { "customer", "orderPlan"})
 public class CustomerController {
 
 	private PlanService planService;
@@ -88,6 +88,10 @@ public class CustomerController {
 	public String plans(Model model, 
 			@PathVariable("group") String group,
 			@PathVariable("class") String classz) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+		model.addAttribute("customer", customer);
 		
 		List<Plan> plans = null;
 		Map<String, List<Plan>> planMaps = new HashMap<String, List<Plan>>(); // key = plan_type
@@ -131,11 +135,8 @@ public class CustomerController {
 
 	@RequestMapping("/order/{id}")
 	public String orderPlanNoTerm(Model model, 
-			@PathVariable("id") int id) {
-		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-		model.addAttribute("customer", customer);
+			@PathVariable("id") int id,
+			HttpServletRequest req) {
 
 		Plan plan = this.planService.queryPlanById(id);
 		model.addAttribute("orderPlan", plan);
@@ -145,7 +146,14 @@ public class CustomerController {
 		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
 		model.addAttribute("hardwares", hardwares);
 		
-		return "broadband-customer/customer-order";
+		String url = "";
+		if ("personal".equals(plan.getPlan_class())) {
+			url = "broadband-customer/customer-order-personal";
+		} else if ("business".equals(plan.getPlan_class())) {
+			url = "broadband-customer/customer-order-business";
+		}
+		
+		return url;
 	}
 	
 	@RequestMapping("/order/{id}/topup/{amount}")
@@ -169,44 +177,10 @@ public class CustomerController {
 		return "broadband-customer/customer-order";
 	}
 
-	@RequestMapping(value = "/order", method = RequestMethod.POST)
-	public String doOrder(
-			Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-
-		if (result.hasErrors()) {
-			return "broadband-customer/customer-order";
-		}
-
-		Customer cValid = new Customer();
-		cValid.getParams().put("where", "query_exist_customer_by_mobile");
-		cValid.getParams().put("cellphone", customer.getCellphone());
-		int count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			result.rejectValue("cellphone", "duplicate", "is already in use");
-			return "broadband-customer/customer-order";
-		}
-		
-		cValid.getParams().put("where", "query_exist_customer_by_email");
-		cValid.getParams().put("email", customer.getEmail());
-		count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			result.rejectValue("email", "duplicate", "is already in use");
-			return "broadband-customer/customer-order";
-		}
-
-		return "redirect:order/confirm";
-	}
-
 	@RequestMapping(value = "/order/confirm")
 	public String orderConfirm(Model model,
 			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result,
 			@ModelAttribute("orderPlan") Plan plan, 
-			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			RedirectAttributes attr) {
 		
 		if (result.hasErrors()) {
@@ -215,23 +189,43 @@ public class CustomerController {
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setOrder_create_date(new Date());
+		customer.getCustomerOrder().setOrder_status("paid");
+		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		cod_plan.setDetail_name(plan.getPlan_name());
+		cod_plan.setDetail_desc(plan.getPlan_desc());
 		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
+		cod_plan.setDetail_data_flow(plan.getData_flow());
+		cod_plan.setDetail_plan_status(plan.getPlan_status());
+		cod_plan.setDetail_plan_type(plan.getPlan_type());
+		cod_plan.setDetail_plan_sort(plan.getPlan_sort());
+		cod_plan.setDetail_plan_group(plan.getPlan_group());
+		cod_plan.setDetail_plan_class(plan.getPlan_class());
+		cod_plan.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
+		cod_plan.setDetail_term_period(plan.getTerm_period());
+		cod_plan.setDetail_plan_memo(plan.getMemo());
 		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
+		cod_plan.setDetail_type(plan.getPlan_group());
 		
 		customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
 		
 		if ("plan-topup".equals(plan.getPlan_group())) {
 			
+			cod_plan.setDetail_is_next_pay(0);
+			cod_plan.setDetail_expired(new Date());
+			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
 				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
+				System.out.println("customer.getCustomerOrder().getOrder_total_price(): " + customer.getCustomerOrder().getOrder_total_price());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_expired(new Date());
+				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
@@ -243,6 +237,9 @@ public class CustomerController {
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_price(0d);
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_expired(new Date());
+				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
@@ -251,11 +248,16 @@ public class CustomerController {
 			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
 			cod_topup.setDetail_name("Broadband Top-Up");
 			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
+			cod_topup.setDetail_type("topup");
+			cod_topup.setDetail_is_next_pay(0);
+			cod_topup.setDetail_expired(new Date());
 			cod_topup.setDetail_unit(1);
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(plan.getPlan_group())) {
+			
+			cod_plan.setDetail_is_next_pay(1);
 			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
@@ -264,6 +266,9 @@ public class CustomerController {
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Installation");
 				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+				cod_conn.setDetail_is_next_pay(0);
+				cod_conn.setDetail_expired(new Date());
+				cod_conn.setDetail_type("new-connection");
 				cod_conn.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
@@ -275,6 +280,9 @@ public class CustomerController {
 				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
 				cod_trans.setDetail_name("Broadband Transition");
 				cod_trans.setDetail_price(0d);
+				cod_trans.setDetail_is_next_pay(0);
+				cod_trans.setDetail_expired(new Date());
+				cod_trans.setDetail_type("transition");
 				cod_trans.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
@@ -290,21 +298,20 @@ public class CustomerController {
 		}
 		
 		
-		if (hardwares != null) {
-			for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
-				//System.out.println(chd.getId());
-				for (Hardware hd : hardwares) {
-					if (chd.getId() == hd.getId()) {
-						CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-						cod_hd.setDetail_name(hd.getHardware_name());
-						cod_hd.setDetail_price(hd.getHardware_price());
-						cod_hd.setDetail_unit(1);
-						customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
-						customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
-						break;
-					}
-				}
-			}
+		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
+		
+			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+			cod_hd.setDetail_name(chd.getHardware_name());
+			cod_hd.setDetail_price(chd.getHardware_price());
+			cod_hd.setDetail_is_next_pay(0);
+			cod_hd.setDetail_expired(new Date());
+			cod_hd.setDetail_type("hardware-router");
+			cod_hd.setIs_post(0);
+			cod_hd.setDetail_unit(1);
+			customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + chd.getHardware_price());
+		
 		}
 		
 		CompanyDetail cd = this.systemService.queryCompanyDetail();
@@ -342,7 +349,6 @@ public class CustomerController {
 	public String toSignupPayment(Model model,
 			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult error,
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
-			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			@RequestParam(value = "result", required = true) String result,
 			SessionStatus status
 			) throws Exception {
@@ -382,7 +388,7 @@ public class CustomerController {
 			customerTransaction.setTransaction_type(responseBean.getTxnType());
 			customerTransaction.setTransaction_sort(plan.getPlan_group());
 
-			this.crmService.registerCustomer(customer, plan, hardwares, customerTransaction);
+			this.crmService.registerCustomer(customer, customerTransaction);
 			
 			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id());
 

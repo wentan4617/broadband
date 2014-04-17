@@ -6,6 +6,8 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
+
+
 <jsp:include page="header.jsp" />
 
 <style>
@@ -23,11 +25,6 @@ background-color: #5cb85c;
 </style>
 
 <div class="container">
-	<!-- <div class="page-header">
-		<h1>
-			2. Customer Information <small>Please fill in your personal information, we will contact you</small>
-		</h1>
-	</div> -->
 	
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li >

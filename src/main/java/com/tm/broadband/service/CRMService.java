@@ -95,142 +95,15 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public void registerCustomer(Customer customer, Plan plan, List<Hardware> hardwares, CustomerTransaction customerTransaction) {
+	public void registerCustomer(Customer customer, CustomerTransaction customerTransaction) {
 		
-		customer.setRegister_date(new Date(System.currentTimeMillis()));
-		customer.setActive_date(new Date(System.currentTimeMillis()));
+		customer.setRegister_date(new Date());
+		customer.setActive_date(new Date());
 		
 		this.customerMapper.insertCustomer(customer);
 		//System.out.println("customer id: " + customer.getId());
 		
-		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setCustomer_id(customer.getId());
-		customer.getCustomerOrder().setOrder_status("paid");
-		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
-		
-		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
-		cod_plan.setDetail_name(plan.getPlan_name());
-		cod_plan.setDetail_desc(plan.getPlan_desc());
-		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
-		cod_plan.setDetail_data_flow(plan.getData_flow());
-		cod_plan.setDetail_plan_status(plan.getPlan_status());
-		cod_plan.setDetail_plan_type(plan.getPlan_type());
-		cod_plan.setDetail_plan_sort(plan.getPlan_sort());
-		cod_plan.setDetail_plan_group(plan.getPlan_group());
-		cod_plan.setDetail_plan_memo(plan.getMemo());
-		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
-		cod_plan.setDetail_type(plan.getPlan_group());
-		
-		if ("plan-topup".equals(plan.getPlan_group())) {
-			
-			cod_plan.setDetail_is_next_pay(0);
-			cod_plan.setDetail_expired(new Date());
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
-			
-			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-				
-				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getTopup().getTopup_fee());
-				System.out.println("customer.getCustomerOrder().getOrder_total_price(): " + customer.getCustomerOrder().getOrder_total_price());
-				
-				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
-				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
-				cod_conn.setDetail_is_next_pay(0);
-				cod_conn.setDetail_expired(new Date());
-				cod_conn.setDetail_type("new-connection");
-				cod_conn.setDetail_unit(1);
-				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
-				
-			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-				
-				customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
-				
-				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_name("Broadband Transition");
-				cod_trans.setDetail_expired(new Date());
-				cod_trans.setDetail_is_next_pay(0);
-				cod_trans.setDetail_type("transition");
-				cod_trans.setDetail_unit(1);
-				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
-			}
-			
-			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
-			cod_topup.setDetail_name("Broadband Top-Up");
-			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
-			cod_topup.setDetail_type("topup");
-			cod_topup.setDetail_is_next_pay(0);
-			cod_topup.setDetail_expired(new Date());
-			cod_topup.setDetail_unit(1);
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
-			
-		} else if ("plan-no-term".equals(plan.getPlan_group())) {
-			
-			cod_plan.setDetail_is_next_pay(1);
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_plan);
-			
-			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-				
-				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
-			
-				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Broadband New Connection");
-				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
-				cod_conn.setDetail_is_next_pay(0);
-				cod_conn.setDetail_expired(new Date());
-				cod_conn.setDetail_type("new-connection");
-				cod_conn.setDetail_unit(1);
-				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
-				
-			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-				
-				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
-				
-				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
-				cod_trans.setDetail_name("Broadband Transition");
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_is_next_pay(0);
-				cod_trans.setDetail_expired(new Date());
-				cod_trans.setDetail_type("transition");
-				cod_trans.setDetail_unit(1);
-				
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
-			}
-			
-		} else if ("plan-term".equals(plan.getPlan_group())) {
-			
-			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-
-			} else if ("transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
-
-			}
-		}
-		
-		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
-			//System.out.println(chd.getId());
-			for (Hardware hd : hardwares) {
-				if (chd.getId() == hd.getId()) {
-					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-					cod_hd.setDetail_name(hd.getHardware_name());
-					cod_hd.setDetail_price(hd.getHardware_price());
-					cod_hd.setDetail_is_next_pay(0);
-					cod_hd.setDetail_expired(new Date());
-					cod_hd.setDetail_type("hardware-router");
-					cod_hd.setIs_post(0);
-					cod_hd.setDetail_unit(1);
-					customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
-					customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
-					customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + hd.getHardware_price());
-					break;
-				}
-			}
-		}
 		
 		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
 		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
