@@ -447,6 +447,8 @@ public class SaleController {
 			, @PathVariable("sale_id") int sale_id
 			,HttpServletRequest req) {
 
+		model.addAttribute("bothActive", "active");
+
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.getParams().put("orderby", "order by order_create_date desc");
@@ -472,6 +474,8 @@ public class SaleController {
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("bothSum", pageSignatureSum.getTotalRecord());
 		pageSignatureSum.getParams().put("signature", "signed");
 		this.saleService.queryOrdersSumByPage(pageSignatureSum);
 		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());
@@ -487,6 +491,8 @@ public class SaleController {
 	public String onlineOrderViewBySalesId(Model model
 			,HttpServletRequest req
 			,@RequestParam("sale_id") Integer sale_id) {
+
+		model.addAttribute("bothActive", "active");
 
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(1);
@@ -511,6 +517,8 @@ public class SaleController {
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("bothSum", pageSignatureSum.getTotalRecord());
 		pageSignatureSum.getParams().put("signature", "signed");
 		this.saleService.queryOrdersSumByPage(pageSignatureSum);
 		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());
@@ -532,11 +540,15 @@ public class SaleController {
 			model.addAttribute("signedActive", "active");
 		} else if(signature.equals("unsigned")){
 			model.addAttribute("unsignedActive", "active");
+		} else if(signature.equals("both")){
+			model.addAttribute("bothActive", "active");
 		}
 
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(1);
-		page.getParams().put("signature", signature);
+		if(!signature.equals("both")){
+			page.getParams().put("signature", signature);
+		}
 		page.getParams().put("orderby", "order by order_create_date desc");
 		User user = (User) req.getSession().getAttribute("userSession");
 
@@ -558,6 +570,8 @@ public class SaleController {
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE
+		this.saleService.queryOrdersSumByPage(pageSignatureSum);
+		model.addAttribute("bothSum", pageSignatureSum.getTotalRecord());
 		pageSignatureSum.getParams().put("signature", "signed");
 		this.saleService.queryOrdersSumByPage(pageSignatureSum);
 		model.addAttribute("signedSum", pageSignatureSum.getTotalRecord());

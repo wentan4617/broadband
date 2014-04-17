@@ -23,12 +23,15 @@
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
 							data-parent="#accordion" href="#collapseOne"> 
-							Provision Customer Order Query</a>
+							Online Order Query</a>
 					</h4>
 				</div>
 				<div id="collapseOne" class="panel-collapse collapse in">
 					<div class="panel-body">
 						<div class="btn-group btn-group">
+							<a href="${ctx}/broadband-user/sale/online/ordering/view/by/${sale_id != 0 ? sale_id : 0 }/both" class="btn btn-default ${bothActive }">
+								Both Orders&nbsp;<span class="badge">${bothSum}</span>
+							</a>
 							<a href="${ctx}/broadband-user/sale/online/ordering/view/by/${sale_id != 0 ? sale_id : 0 }/signed" class="btn btn-default ${signedActive }">
 								Signed Orders&nbsp;<span class="badge">${signedSum}</span>
 							</a>
@@ -46,6 +49,7 @@
 							<select id="select_user" class="selectpicker">
 								<option style="font-size:16px;">Choose Sales</option>
 							    <optgroup label="Sales List">
+						    		<option value="0" data-name="selected" selected="selected">All</option>
 							    	<c:forEach var="user" items="${users}">
 							    		<option value="${user.id}"
 							    			<c:if test="${user.id==sale_id}">
@@ -107,6 +111,7 @@
 										<c:if test="${order.credit_pdf_path != null}">
 										<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
 										</c:if>|
+										<a target="_blank" href="${order.order_pdf_path}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
 										<a data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open btn-lg" data-toggle="modal" data-placement="bottom" data-target="#uploadModal" style="cursor:pointer;"></a>
 									</td>
 								</tr>
@@ -129,6 +134,9 @@
 					</form>
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
+					<form id="orderForm" action="" method="post" style="display:none;">
+						<input type="hidden" name="sale_id"/>
+					</form>
 					<div class="panel-body">
 						<div class="alert alert-warning">No records have been found.</div>
 					</div>
@@ -192,7 +200,7 @@
 		var $this = $(this);
 		var val = this.value;
 		$('input[name="sale_id"]').val(val);
-		$('#orderForm').attr('action', '${ctx}/broadband-user/sale/online/ordering/view/by_sales_id');
+		$('#orderForm').prop('action', '${ctx}/broadband-user/sale/online/ordering/view/by_sales_id');
 		$('#orderForm').submit();
 	});
 	

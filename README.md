@@ -7,6 +7,10 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.5 2014-04-16
+
+* [user界面权限区域每个模块前都加上全选框](STEVEN)
+
 demand version 1.0.5 2014-04-04
 
 * [customer下添加organization表单从customer.organization里取出数据，如果为business则显示该表单，personal则不显示] (steven)
@@ -43,7 +47,7 @@ demand version 1.0.4 2014-03-31
 * [在customer order下的detail里detail_type为pstn则在后面加个Update PSTN Number来修改pstn_number字段](STEVEN)
 * 在customer order标题加个Add Order跳转到create customer的第二个界面，选plan然后继续下单(STEVEN)
 * [制作与term里图像一样布局的PDF，用以存放下单后生成的用户信息及订单细目](STEVEN)
-* 填写好支付信息后点Next生成PDF，供客户签字，之后通过一个上传的界面上传至系统，跟相关order关联。
+* [填写好支付信息后点Next生成PDF，供客户签字，之后通过一个上传的界面上传至系统，跟相关order关联](STEVEN)
 * 选择支付方式后跳转到填写支付信息界面
 * online-ordering界面：界面1（填写基本信息），界面2（选plan），界面3（confirm界面，列出order的信息，显示选择Credit Card付款）
 * [添加sale模块] (steven)
