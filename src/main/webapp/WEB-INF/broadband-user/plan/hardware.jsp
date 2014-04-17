@@ -12,83 +12,86 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h4 class="panel-title">${panelheading }</h4></div>
 				<div class="panel-body">
-					<form:form modelAttribute="hardware" method="post" action="${ctx}${action }" class="form-horizontal">
-						<form:hidden path="id"/>
+					<form class="form-horizontal">
 						<div class="form-group">
 							<label for="hardware_name" class="control-label col-md-4">Hardware Name</label>
 							<div class="col-md-3">
-								<form:input path="hardware_name" class="form-control" placeholder="Hardware Name" />
+								<input type="text" value="${hardware.hardware_name}" id="hardware_name" class="form-control" placeholder="Hardware Name" />
 							</div>
-							<p class="help-block">
-								<form:errors path="hardware_name" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="hardware_type" class="control-label col-md-4">Hardware Type</label>
 							<div class="col-md-3">
-								<form:select path="hardware_type" class="form-control">
-									<form:option value="none">None</form:option>
-									<form:option value="router">Router</form:option>
-								</form:select>
+								<select id="hardware_type" class="form-control">
+									<option
+										<c:if test="${hardware.hardware_type == ''}">
+											selected="selected"
+										</c:if>
+									>none</option>
+									<c:forEach var="type" items="router">
+										<option value="${type}"
+											<c:if test="${type == hardware.hardware_type}">
+												selected="selected"
+											</c:if>
+										>${type}</option>
+									</c:forEach>
+								</select>
 							</div>
-							<p class="help-block">
-								<form:errors path="hardware_type" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="hardware_status" class="control-label col-md-4">Hardware Status</label>
 							<div class="col-md-3">
-								<form:select path="hardware_status" class="form-control">
-									<form:option value="active">Active</form:option>
-									<form:option value="selling">Selling</form:option>
-									<form:option value="disable">Disable</form:option>
-								</form:select>
+								<select id="hardware_status" class="form-control">
+									<option
+										<c:if test="${hardware.hardware_status == ''}">
+											selected="selected"
+										</c:if>
+									>none</option>
+									<c:forEach var="status" items="active,selling,disable">
+										<option value="${status}"
+											<c:if test="${status == hardware.hardware_status}">
+												selected="selected"
+											</c:if>
+										>${status}</option>
+									</c:forEach>
+								</select>
 							</div>
-							<p class="help-block">
-								<form:errors path="hardware_status" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="hardware_price" class="control-label col-md-4">Hardware Price</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="hardware_price" class="form-control" />
+									<input type="text" value="${hardware.hardware_price}" id="hardware_price" class="form-control" />
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="hardware_price" cssErrorClass="error"/>
-							</p>
 						</div>
 						<div class="form-group">
 							<label for="hardware_cost" class="control-label col-md-4">Hardware Cost</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<form:input path="hardware_cost" class="form-control" />
+									<input type="text" value="${hardware.hardware_cost}" id="hardware_cost" class="form-control" />
 								</div>
 							</div>
-							<p class="help-block">
-								<form:errors path="hardware_cost" cssErrorClass="error"/>
-							</p>
 						</div>
 						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save</button>
+								<button type="button" class="btn btn-success" id="save-btn">Save</button>
 							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
 							<!-- <label for="hardware_desc" class="control-label col-md-4">Hardware Desc</label> -->
 							<div class="col-md-12">
-								<form:textarea path="hardware_desc" class="form-control" rows="24"/>
+								<textarea id="hardware_desc" class="form-control" rows="24">${hardware.hardware_desc}</textarea>
 							</div>
 							<%-- <p class="help-block">
 								<form:errors path="hardware_desc" cssErrorClass="error"/>
 							</p> --%>
 						</div>
-					</form:form>
+					</form>
 					
 					<form:form modelAttribute="hardware" method="post" action="${ctx}/broadband-user/plan/hardware/pic/edit" class="form-horizontal" enctype="multipart/form-data">
 						<form:hidden path="id"/>
@@ -170,6 +173,28 @@
 <script type="text/javascript">
 (function($){
 	
+	$('#save-btn').on("click", function(){
+		var $btn = $(this);
+		$btn.button('loading');
+		var plan = {
+			id: '${hardware.id}'
+			, hardware_name: $('#hardware_name').val()
+			, hardware_type: $('#hardware_type option:selected').val()
+			, hardware_status: $('#hardware_status option:selected').val()
+			, hardware_price: $('#hardware_price').val()
+			, hardware_cost: $('#hardware_cost').val()
+			, hardware_desc: $('#hardware_desc').val()
+		};
+		$.post('${ctx}${action}', plan, function(json){
+			if (json.hasErrors) {
+				$.jsonValidation(json, 'right');
+			} else {
+				window.location.href='${ctx}' + json.url;
+			}
+		}, 'json').always(function () {
+			$btn.button('reset');
+	    });
+	});
 	
 })(jQuery);
 </script>

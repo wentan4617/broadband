@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+
 public class JSONBean<T> implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -62,6 +65,14 @@ public class JSONBean<T> implements Serializable {
 
 	public void setModels(List<T> models) {
 		this.models = models;
+	}
+	
+	public void setJSONErrorMap(BindingResult result) {
+		List<FieldError> fields = result.getFieldErrors();
+		for (FieldError field: fields) {
+			System.out.println(field.getField() + ": " + field.getDefaultMessage());
+			this.getErrorMap().put(field.getField(), field.getDefaultMessage());
+		}
 	}
 	
 	
