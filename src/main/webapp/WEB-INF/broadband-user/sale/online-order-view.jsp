@@ -47,7 +47,6 @@
 					<h4 class="panel-title">Online Order View&nbsp;
 						<c:if test="${userSession.user_role != 'sales'}">
 							<select id="select_user" class="selectpicker">
-								<option style="font-size:16px;">Choose Sales</option>
 							    <optgroup label="Sales List">
 						    		<option value="0" data-name="selected" selected="selected">All</option>
 							    	<c:forEach var="user" items="${users}">
