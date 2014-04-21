@@ -7,6 +7,16 @@ Total Mobile Solution Internet Service Web Project
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 
+demand version 1.0.6 2014-04-21
+
+* company_detail创建多种类型的T&C字段，至少4个，然后每一个T&C在一个可以折叠的panel里便于修改(steven)
+* 完成personal plan-term的页面(kanny)
+* 重构后台创建customer页面(kanny)
+* 重构sale签约界面(kanny)
+* 完善各种界面的连接(kanny)
+* 完善各种T&C排版和布局(kanny)
+* 完善公司介绍页面(kanny)
+
 demand version 1.0.5 2014-04-16
 
 * [user界面权限区域每个模块前都加上全选框](STEVEN)
