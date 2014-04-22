@@ -110,7 +110,6 @@
 										<c:if test="${order.credit_pdf_path != null}">
 										<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
 										</c:if>|
-										<a target="_blank" href="${order.order_pdf_path}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
 										<a data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open btn-lg" data-toggle="modal" data-placement="bottom" data-target="#uploadModal" style="cursor:pointer;"></a>
 									</td>
 								</tr>

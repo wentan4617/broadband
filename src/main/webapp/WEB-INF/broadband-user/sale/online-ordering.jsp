@@ -572,11 +572,19 @@
 		html += '<div class="form-group" id="' + type + '_pstn_' + index + '" data-' + type + '-enable data-' + type + '-pstn-enable>';
 		html += '	<div class="col-sm-1">PSTN</div>';
 		html += '	<div class="col-sm-5">';
-		html += '		<input type="text" name="detail_name" class="form-control" value="Home Landline or Business Landline"/>';
+		html += '		<label class="control-label">Business Landline</label>';
+		html += '		<input type="hidden" name="detail_name" value="Business Landline" />';
 		html += '		<input type="hidden" name="detail_type" value="pstn" />';
 		html += '	</div>';
 		html += '	<div class="col-sm-3">';
-		html += '		<input type="text" class="form-control" name="pstn_number" placeholder="e.g.:5789941"/>';
+		html += '		<select name="pstn_number1" style="width:70px;" class="form-control col-sm-4">';
+		html += '			<option value="09">09</option>';
+		html += '			<option value="07">07</option>';
+		html += '			<option value="06">06</option>';
+		html += '			<option value="04">04</option>';
+		html += '			<option value="03">03</option>';
+		html += '		</select>';
+		html += '		<input type="text" style="width:180px;" class="form-control col-sm-8" name="pstn_number2" placeholder="e.g.:5789941"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-2">';
 		html += '		<div class="input-group">';
@@ -610,11 +618,19 @@
 		html += '<div class="form-group" id="' + type + '_voip_' + index + '" data-' + type + '-enable data-' + type + '-voip-enable>';
 		html += '	<div class="col-sm-1">Voip</div>';
 		html += '	<div class="col-sm-5">';
-		html += '		<input type="text" name="detail_name" class="form-control" value="Voip"/>';
+		html += '		<label class="control-label">Voip</label>';
+		html += '		<input type="hidden" name="detail_name" value="Voip" />';
 		html += '		<input type="hidden" name="detail_type" value="voip" />';
 		html += '	</div>';
 		html += '	<div class="col-sm-3">';
-		html += '		<input type="text" class="form-control" name="pstn_number" placeholder="e.g.:5789941"/>';
+		html += '		<select name="pstn_number1" style="width:70px;" class="form-control col-sm-4">';
+		html += '			<option value="09">09</option>';
+		html += '			<option value="07">07</option>';
+		html += '			<option value="06">06</option>';
+		html += '			<option value="04">04</option>';
+		html += '			<option value="03">03</option>';
+		html += '		</select>';
+		html += '		<input type="text" style="width:180px;" class="form-control col-sm-8" name="pstn_number2" placeholder="e.g.:5789941"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-2">';
 		html += '		<div class="input-group">';
@@ -668,7 +684,7 @@
 				, detail_type: $this.find('input[name="detail_type"]').val()
 				, detail_price: $this.find('input[name="detail_price"]').val()
 				, detail_unit: $this.find('input[name="detail_unit"]').val()
-				, pstn_number: $this.find('input[name="pstn_number"]').val()
+				, pstn_number: $this.find('select[name="pstn_number1"]').val()+'-'+$this.find('input[name="pstn_number2"]').val()
 			};
 			
 			//customerOrder.customerOrderDetails.push(cod);

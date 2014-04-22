@@ -93,13 +93,13 @@
 						  <div class="form-group">
 						    <label for="card_number" class="col-sm-4 control-label">Expiry Date</label>
 						    <div class="col-sm-3 input-group">
-						    	<form:select style="width:34px; text-indent:0px;" class="form-control input-sm col-sm-1" path="expiry_month">
+						    	<form:select style="width:68px;" class="form-control input-sm col-sm-1" path="expiry_month">
 						    		<c:forEach var="month" items="${months}">
 						    			<form:option value="${month}">${month}</form:option>
 						    		</c:forEach>
 						    	</form:select>
 						    	<p class="form-control-static col-sm-1">/</p>
-						    	<form:select style="width:34px; text-indent:0px;" class="form-control input-sm col-sm-1" path="expiry_year">
+						    	<form:select style="width:68px;" class="form-control input-sm col-sm-1" path="expiry_year">
 						    		<c:forEach var="year" items="${years}">
 						    			<form:option value="${year}">${year}</form:option>
 						    		</c:forEach>

@@ -9,7 +9,13 @@
 					<span class="logo"></span>
 				</a>
 			</div>
-			<div class="col-sm-7">
+			<div class="col-sm-2">
+				<strong>
+					<a class="navbar-brand" href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }' style="color:orange; text-decoration:underline;"> Online Order List
+					</a>
+				</strong>
+			</div>
+			<div class="col-sm-5">
 				<p class="app-form text-center">
 					Broadband Application Form
 				</p>

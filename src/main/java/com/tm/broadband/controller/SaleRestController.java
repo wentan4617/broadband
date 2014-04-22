@@ -90,6 +90,10 @@ public class SaleRestController {
 		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
 		json.setModels(cods);
 		
+		for (CustomerOrderDetail customerOrderDetail : cods) {
+			System.out.println(customerOrderDetail.getPstn_number());
+		}
+		
 		System.out.println(cods.size());
 		
 		req.getSession().setAttribute("orderCustomerOrderDetails", cods);
