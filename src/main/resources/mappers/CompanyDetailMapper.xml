@@ -52,7 +52,11 @@
 			<if test="company_email != null">`company_email`=#{company_email},</if>
 			<if test="company_email_password != null">`company_email_password`=#{company_email_password},</if>
 			<if test="term_contracts != null">`term_contracts`=#{term_contracts},</if>
-			<if test="google_map_address != null">`google_map_address`=#{google_map_address}</if>
+			<if test="google_map_address != null">`google_map_address`=#{google_map_address},</if>
+			<if test="tc_business_retails != null">`tc_business_retails`=#{tc_business_retails},</if>
+			<if test="tc_business_wifi != null">`tc_business_wifi`=#{tc_business_wifi},</if>
+			<if test="tc_personal != null">`tc_personal`=#{tc_personal},</if>
+			<if test="tc_ufb != null">`tc_ufb`=#{tc_ufb}</if>
 		</set>
 	</update>
 	

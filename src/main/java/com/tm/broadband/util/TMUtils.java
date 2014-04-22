@@ -170,6 +170,10 @@ public class TMUtils {
 			noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_name>", preventNull(company.getBank_account_name())));
 			noti.setTitle(noti.getTitle().replaceAll("@<company_bank_account_number>", preventNull(company.getBank_account_number())));
 			noti.setTitle(noti.getTitle().replaceAll("@<company_company_email>", preventNull(company.getCompany_email())));
+			noti.setTitle(noti.getTitle().replaceAll("@<tc_business_retails>", preventNull(company.getTc_business_retails())));
+			noti.setTitle(noti.getTitle().replaceAll("@<tc_business_wifi>", preventNull(company.getTc_business_wifi())));
+			noti.setTitle(noti.getTitle().replaceAll("@<tc_personal>", preventNull(company.getTc_personal())));
+			noti.setTitle(noti.getTitle().replaceAll("@<tc_ufb>", preventNull(company.getTc_ufb())));
 		}
 		// retrieve company details end
 		// title end
@@ -187,6 +191,10 @@ public class TMUtils {
 			noti.setContent(noti.getContent().replaceAll("@<company_bank_account_name>", preventNull(company.getBank_account_name())));
 			noti.setContent(noti.getContent().replaceAll("@<company_bank_account_number>", preventNull(company.getBank_account_number())));
 			noti.setContent(noti.getContent().replaceAll("@<company_company_email>", preventNull(company.getCompany_email())));
+			noti.setContent(noti.getContent().replaceAll("@<tc_business_retails>", preventNull(company.getTc_business_retails())));
+			noti.setContent(noti.getContent().replaceAll("@<tc_business_wifi>", preventNull(company.getTc_business_wifi())));
+			noti.setContent(noti.getContent().replaceAll("@<tc_personal>", preventNull(company.getTc_personal())));
+			noti.setContent(noti.getContent().replaceAll("@<tc_ufb>", preventNull(company.getTc_ufb())));
 		}
 		// retrieve company details end
 		// content end
