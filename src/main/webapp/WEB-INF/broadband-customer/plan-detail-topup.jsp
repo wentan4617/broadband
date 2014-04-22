@@ -19,12 +19,6 @@ background-color: #5cb85c;
 </style>
 
 <div class="container">
-
-	<!-- topup plans -->
-	<!-- <div class="page-header">
-		<h1>1. Choose your broadband</h1>
-	</div>
- -->
  
  	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
@@ -51,6 +45,7 @@ background-color: #5cb85c;
 			<div class="row">
 				<div class="col-md-8 col-md-offset-2">
 					<div class="row">
+						<div class="col-md-2"></div>
 						<div class="col-md-4">
 							<a href="javascript:void(0);" class="thumbnail active" data-name="icon" data-id="adsl"> 
 								<img src="${ctx }/public/bootstrap3/images/icon-adsl.png" alt="...">
@@ -61,11 +56,7 @@ background-color: #5cb85c;
 							 	<img src="${ctx }/public/bootstrap3/images/icon-vdsl.png" alt="...">
 							</a>
 						</div>
-						<div class="col-md-4">
-							<a href="javascript:void(0);" class="thumbnail" data-name="icon" data-id="ufb"> 
-								<img src="${ctx }/public/bootstrap3/images/icon-ufb.png" alt="...">
-							</a>
-						</div>
+						<div class="col-md-2"></div>
 					</div>
 					<div class="row">
 					
@@ -77,13 +68,14 @@ background-color: #5cb85c;
 							<div class="well">
 								<strong>
 									Free initial broadband setup includes a standard connection worth $ 
-									<fmt:formatNumber value="${planMaps['ADSL'].plan_new_connection_fee }" type="number" pattern="##00" />
+									<fmt:formatNumber value="${planMaps['ADSL'][0].plan_new_connection_fee }" type="number" pattern="##00" />
 								</strong>
 							</div>
 							<hr/>
 							<h4>Please choose top-up amount what you needed ? 
 								&nbsp;&nbsp;&nbsp;
 								<select name="adsl-topup-check" class="selectpicker" data-style="btn-success">
+									<option value="20">Top up $ 20</option>
 									<option value="30">Top up $ 30</option>
 									<option value="50">Top up $ 50</option>
 									<option value="80">Top up $ 80</option>
@@ -95,7 +87,7 @@ background-color: #5cb85c;
 							</h4>
 							<hr/>
 							<p class="text-right">
-								<a data-id="${planMaps['ADSL'].id}" class="btn btn-success btn-lg" id="adsl-purchase">Continue</a>
+								<a data-id="${planMaps['ADSL'][0].id}" class="btn btn-success btn-lg" id="adsl-purchase">Continue</a>
 							</p>
 							
 						</div>
@@ -108,7 +100,7 @@ background-color: #5cb85c;
 							<div class="well">
 								<strong>
 									Free initial broadband setup includes a standard connection worth $ 
-									<fmt:formatNumber value="${planMaps['VDSL'].plan_new_connection_fee }" type="number" pattern="##00" />
+									<fmt:formatNumber value="${planMaps['VDSL'][0].plan_new_connection_fee }" type="number" pattern="##00" />
 								</strong>
 							</div>
 							
@@ -116,6 +108,7 @@ background-color: #5cb85c;
 							<h4>Please choose top-up amount what you needed ? 
 								&nbsp;&nbsp;&nbsp;
 								<select name="vdsl-topup-check" class="selectpicker" data-style="btn-success">
+									<option value="20">Top up $ 20</option>
 									<option value="30">Top up $ 30</option>
 									<option value="50">Top up $ 50</option>
 									<option value="80">Top up $ 80</option>
@@ -128,43 +121,8 @@ background-color: #5cb85c;
 							
 							<hr/>
 							<p class="text-right">
-								<a data-id="${planMaps['VDSL'].id}" class="btn btn-success btn-lg" id="vdsl-purchase">Continue</a>
+								<a data-id="${planMaps['VDSL'][0].id}" class="btn btn-success btn-lg" id="vdsl-purchase">Continue</a>
 							</p>
-							
-						</div>
-						
-						
-						<!-- ufb ============================================================ -->
-						<div class="alert alert-success" id="ufb-container" style="display:none;">
-							<h2>Ultra Fast Broadband</h2>
-							<p>Ultra Fast Broadband is available in parts of New Zealand.</p>
-							<hr/>
-							<div class="well">
-								<strong>
-									Free initial broadband setup includes a standard connection worth $ 
-									<fmt:formatNumber value="${planMaps['UFB'].plan_new_connection_fee }" type="number" pattern="##00" />
-								</strong>
-							</div>
-							<hr/>
-							<h4>Please choose top-up amount what you needed ? 
-								&nbsp;&nbsp;&nbsp;
-								<select name="ufb-topup-check" class="selectpicker" data-style="btn-success">
-									<option value="30">Top up $ 30</option>
-									<option value="50">Top up $ 50</option>
-									<option value="80">Top up $ 80</option>
-									<option value="100">Top up $ 100</option>
-									<option value="120">Top up $ 120</option>
-									<option value="150">Top up $ 150</option>
-									<option value="180">Top up $ 180</option>
-								</select>
-							</h4>
-							
-							<hr/>
-							<p class="text-right">
-								<a data-id="${planMaps['UFB'].id}" class="btn btn-success btn-lg" id="ufb-purchase">Continue</a>
-							</p>
-							
-							
 						</div>
 					</div>
 				</div>

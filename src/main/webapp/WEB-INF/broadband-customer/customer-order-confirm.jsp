@@ -261,6 +261,15 @@ background-color: #5cb85c;
 						</table>
 					</div>
 				</div>
+				<hr>
+				<div class="row">
+					<div class="col-md-12">
+						<label class="well checkbox-inline pull-right">
+							<input type="checkbox" id="termckb" value="1" checked="checked"/>
+							<a class="btn btn-link btn-lg"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
+						</label>
+					</div>
+				</div>
 				<hr/>
 				<div class="row">
 					<div class="col-md-12">
@@ -295,7 +304,24 @@ background-color: #5cb85c;
         		<h4 class="modal-title" id="myModalLabel">CyberPark Terms & Conditions</h4>
       		</div>
       		<div class="modal-body">
-        		${company.term_contracts }
+      			<c:choose>
+      				<c:when test="${orderPlan.plan_class=='business' }">
+      					${company.tc_business_retails }
+      				</c:when>
+      				<%-- <c:when test="">
+      					${company.tc_business_wifi }
+      				</c:when> --%>
+      				<c:when test="${orderPlan.plan_class=='personal' }">
+      					${company.tc_personal }
+      				</c:when>
+      				<c:when test="${orderPlan.plan_type=='UFB' }">
+      					${company.tc_ufb }
+      				</c:when>
+      				<c:otherwise>
+      					${company.term_contracts }
+      				</c:otherwise>
+      			</c:choose>
+        		
       		</div>
     	</div><!-- /.modal-content -->
   	</div><!-- /.modal-dialog -->

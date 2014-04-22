@@ -233,7 +233,12 @@ public class CRMService {
 			}
 			
 			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-			cod_pstn.setDetail_name("Business Landline");
+			if ("personal".equals(plan.getPlan_class())) {
+				cod_pstn.setDetail_name("Home Phone Landline");
+			} else if ("business".equals(plan.getPlan_class())) {
+				cod_pstn.setDetail_name("Business Landline");
+			}
+			
 			cod_pstn.setDetail_price(0d);
 			cod_pstn.setDetail_is_next_pay(0);
 			cod_pstn.setDetail_expired(new Date());

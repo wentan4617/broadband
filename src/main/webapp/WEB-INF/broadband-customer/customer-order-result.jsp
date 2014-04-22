@@ -9,16 +9,12 @@
 	<c:if test="${responseBean != null && responseBean.success == '1' }">
 		<div class="alert alert-success alert-dismissable">
 			<h1>Congratulations ! ! !</h1>
-			<p>Your plan application has been sent to our system, our
-				customer service staff will immediately get in touch with you.</p>
+			<p>Your plan application has been sent to our system, our customer service staff will immediately get in touch with you.</p>
 			<p>
-
-				Now you can use your login name and password, log on to CyberPark
-				Customer Home, <a href="${ctx }/login"> please click here. </a>
+				Now you can log on to CyberPark Customer Home, <a href="${ctx }/login"> please click here. </a>
 			</p>
 			<p>
-				Our customer service telephone number is <strong class="text-danger">0800
-					899 880</strong>
+				Our customer service telephone number is <strong class="text-danger">0800 229 237</strong>
 			</p>
 			<p>&nbsp;</p>
 			<p>
@@ -26,14 +22,12 @@
 			</p>
 		</div>
 	</c:if>
-
-
+	
 	<c:if test="${responseBean == null || responseBean.success != '1' }">
 		<div class="alert alert-warning">
 			<h1>Sorry, the payment is failure.</h1>
 			<h2>
-				<a href="${ctx }/order/confirm">Click Here</a> to return to the
-				order confirm page.
+				<a href="${ctx }/order/${orderPlan.plan_class }/confirm">Click Here</a> to return to the order confirm page.
 			</h2>
 			<p>&nbsp;</p>
 			<p>
@@ -46,6 +40,5 @@
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript"
-	src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <jsp:include page="footer-end.jsp" />
