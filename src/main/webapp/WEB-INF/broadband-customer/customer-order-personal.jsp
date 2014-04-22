@@ -314,8 +314,6 @@ background-color: #5cb85c;
 	
 	$('.selectpicker').selectpicker(); 
 	
-	
-	
 	var plan = {
 		plan_group: '${orderPlan.plan_group}'
 		, plan_class: '${orderPlan.plan_class}'

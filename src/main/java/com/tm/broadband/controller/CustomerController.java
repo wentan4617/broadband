@@ -532,17 +532,23 @@ public class CustomerController {
         return response;
     }
     
-
 	@RequestMapping(value = "/about-us")
 	public String toAboutUs(Model model) {
-		
-		model.addAttribute("mapAddress",this.systemService.queryCompanyDetail().getGoogle_map_address());
+		CompanyDetail cd = this.systemService.queryCompanyDetail();
+		model.addAttribute("cyberpark", cd);
 		return "broadband-customer/about-us";
+	}
+
+	@RequestMapping(value = "/term-and-conditions")
+	public String toTermAndConditions(Model model) {
+		
+		CompanyDetail cd = this.systemService.queryCompanyDetail();
+		model.addAttribute("cyberpark", cd);
+		return "broadband-customer/term-and-conditions";
 	}
 
 	@RequestMapping(value = "/chorus-googlemap")
 	public String toChorusGoogleMap(Model model) {
-		
 		return "broadband-customer/chorus-googlemap";
 	}
 

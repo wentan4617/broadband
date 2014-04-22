@@ -43,11 +43,12 @@
 		<div class="col-lg-3">
 			<div class="panel panel-default">
 		  		<div id="imgContainer" class="panel-body" style="height:377px;">
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
-		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
-		  			</a>
+		  			<a href="${ctx }/plans/plan-no-term/personal" class="thumbnail" target="_blank"> 
+		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
+			    	</a>
+		  			
 		  			<hr/>
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank"> 
 		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png"  alt="business-plan">
 		  			</a>
 		  			<hr/>
@@ -56,10 +57,9 @@
 		  			</a>
 		  			<hr/>
 		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
-		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
-			    	</a>
-			    	<%-- <a href="${ctx }/plans/t" class="btn btn-success btn-lg btn-block">Join Our Plan Top-Up</a>
-			    	<a href="${ctx }/plans/p" class="btn btn-success btn-lg btn-block">Join Our Plan No-Term</a> --%>
+		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
+		  			</a>
+			    	
 			  	</div>
 			</div>
 		</div>
@@ -87,6 +87,7 @@
 		<div class="col-lg-2"></div>
 	</div>
 	<hr/>
+	<jsp:include page="welcome.jsp"/>
 </div>
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 

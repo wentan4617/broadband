@@ -60,10 +60,6 @@ public class SystemController {
 		//model.addAttribute("user", new User());
 		return "broadband-user/login";
 	}
-
-	
-	
-	
 	
 	@RequestMapping("/broadband-user/index/redirect")
 	public String redirectIndex(RedirectAttributes attr) {

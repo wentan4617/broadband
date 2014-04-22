@@ -1,152 +1,176 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
 
-<div style="background:#eee;padding-bottom:20px;">
-<div class="container">
+<style>
+.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
+	color: #fff;
+	background-color: #5cb85c;
+}
+.panel-primary>.panel-footer {
+	color: #fff;
+	background-color: #428bca;
+	border-color: #428bca;
+}
+.panel-warning>.panel-footer {
+	color: #8a6d3b;
+	background-color: #fcf8e3;
+	border-color: #faebcc;
+}
+.panel-danger>.panel-footer {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+</style>
 
-	<!-- non-naked plans -->
-	<div class="page-header">
+<div class="container">
+	<div class="page-header" style="margin-top:0;">
 		<h1>
-			UFB Plus <small>Please choose what you need</small>
+			Personal Broadband Plans <small>(PBP)</small>
 		</h1>
 	</div>
-	<div class="row">
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufb_low.png" alt="">
-				<div class="caption">
-					<h3>UFB Low Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<p>Benefits:</p>
-					<ul>
-						<li>1 PSTN Telephone Line</li>
-						<li>Local call free (National wide)</li>
-						<li><strong class="text-danger">80 GB DATA</strong></li>
-						<li>Calling to Telecom mobile $0.12, non-Telecom mobile $0.19 40 special countries 4.5c/mins</li>
-						<li>Free Router</li>
-						<li>12 months plan </li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/16" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufb_mid.png" alt="">
-				<div class="caption">
-					<h3>UFB Middle Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<p>Benefits:</p>
-					<ul >
-						<li>1 PSTN Telephone Line</li>
-						<li>Local call free (National wide)</li>
-						<li><strong class="text-danger">150 GB DATA</strong></li>
-						<li>Calling to Telecom mobile $0.12, non-Telecom mobile $0.19 40 special countries 4.5c/mins</li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/17" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufb_high.png" alt="">
-				<div class="caption">
-					<h3>UFB High Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<p>Benefits:</p>
-					<ul >
-						<li>1 PSTN Telephone Line</li>
-						<li>Local call free (National wide)</li>
-						<li><strong class="text-danger">350 GB DATA</strong></li>
-						<li>Calling to Telecom mobile $0.12, non-Telecom mobile $0.19 40 special countries 4.5c/mins</li>
-						<li>Free Router</li>
-						<li>12 months plan </li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/18" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
+	<div class="alert alert-info">
+		<p>
+			We offer the best value and price personal broadband plans to you. 
+			We can offer more values and better price telecommunication plans to you.
+		</p>
+
 	</div>
-	
-	<!-- naked plans -->
-	<div class="page-header">
-		<h1>
-			UFB Naked <small>Please choose what you need</small>
-		</h1>
+	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+		<li class="active">
+			<a class="btn-lg">
+				1. Choose Plans And Pricing
+				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				2. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				3. Review and Order
+			</a>
+		</li>
+	</ul>
+
+	<!-- adsl -->
+	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+		<h3>
+			<span class="label label-primary">ADSL + Home Phone</span>
+		</h3>
 	</div>
 	<div class="row">
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufbn_low.png" alt="">
-				<div class="caption">
-					<h3>UFB Naked Low Data Plan </h3>
-					<h4>($XX/month)</h4>
-					<h6>Can apply 1 VoIP number for free, VoIP gateway cost $89</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">80 GB DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/19" class="btn btn-success" role="button">Purchase</a> 
-					</p>
+		<c:forEach var="plan" items="${planMaps['ADSL'] }" varStatus="item">
+			<div class="col-lg-4">
+				<div class="panel panel-primary">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+
+					   	<p class="text-center">
+							<a href="${ctx }/order/${plan.id}" class="btn btn-default btn-lg btn-block" id="adsl-purchase" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>${plan.data_flow } GB</strong>	
+						</h2>
+					</div>
 				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufbn_low.png" alt="">
-				<div class="caption">
-					<h3>UFB Naked Middle Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<h6>&nbsp;</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">150 GB DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/20" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-4">
-			<div class="thumbnail">
-				<img src="${ctx }/public/bootstrap3/images/ufbn_low.png" alt="">
-				<div class="caption">
-					<h3>UFB Naked High Data Plan</h3>
-					<h4>($XX/month)</h4>
-					<h6>&nbsp;</h6>
-					<p>Benefits:</p>
-					<ul >
-						<li><strong class="text-danger">350 GB DATA</strong></li>
-						<li>Free Router</li>
-						<li>12 months plan</li>
-					</ul>
-					<p class="text-center">
-						<a href="${ctx }/order/21" class="btn btn-success" role="button">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
+			</div>	
+		</c:forEach>
 	</div>
-</div>
+
+
+	<!-- vdsl -->
+	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+		<h3>
+			<span class="label label-warning">VDSL + Home Phone</span>
+		</h3>
+	</div>
+	<div class="row">
+		<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
+			<div class="col-lg-4">
+				<div class="panel panel-warning">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					   	<p class="text-center">
+							<a href="${ctx }/order/${plan.id}"  class="btn btn-default btn-lg btn-block" id="vdsl-purchase" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>${plan.data_flow } GB</strong>	
+						</h2>
+					</div>
+				</div>
+			</div>	
+		</c:forEach>
+	</div>
+
+
+	<!-- ufb -->
+	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+		<h3>
+			<span class="label label-danger">UFB + Home Phone</span>
+		</h3>
+	</div>
+	<div class="row">
+		<c:forEach var="plan" items="${planMaps['UFB'] }" varStatus="item">
+			<div class="col-lg-4">
+				<div class="panel panel-danger">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					   	<p class="text-center">
+							<a href="${ctx }/order/${plan.id}"  class="btn btn-default btn-lg btn-block" id="ufb-purchase" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>${plan.data_flow } GB</strong>	
+						</h2>
+					</div>
+				</div>
+			</div>	
+		</c:forEach>
+	</div>
+
+
+
 </div>
 
 <jsp:include page="footer.jsp" />

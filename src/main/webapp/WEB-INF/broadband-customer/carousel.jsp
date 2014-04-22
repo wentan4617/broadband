@@ -8,12 +8,12 @@
 	</ol>
 	<div class="carousel-inner">
 		<div class="item active">
-			<a href="#">
+			<a href="${ctx }/plans/plan-term/business" target="_blank">
 				<img src="${ctx }/public/bootstrap3/images/slider_biz.png" class="img-responsive" alt="ADSL">
 			</a>
 		</div>
 		<div class="item">
-			<a href="#">
+			<a href="${ctx }/plans/plan-term/personal" target="_blank">
 				<img src="${ctx }/public/bootstrap3/images/slider_fiber.png"  class="img-responsive" alt="VDSL">
 			</a>
 		</div>

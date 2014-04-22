@@ -58,7 +58,7 @@
 		</li>
 		<li class="">
 			<a class="btn-lg">
-				3. Review and Ordering 
+				3. Review and Order
 			</a>
 		</li>
 	</ul>

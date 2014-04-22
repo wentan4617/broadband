@@ -10,9 +10,7 @@
 		<p>
 			<a href="${ctx }/about-us">About CyberPark</a>
 			&middot;
-			<a href="#">Contact</a>
-			&middot;
-			<a href="#">Terms & Conditions</a>
+			<a href="${ctx }/term-and-conditions">Terms & Conditions</a>
 		</p>
     </footer>
 </div>
