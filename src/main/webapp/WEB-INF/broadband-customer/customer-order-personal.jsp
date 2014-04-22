@@ -275,7 +275,7 @@ background-color: #5cb85c;
 			    		<c:set var="back_url" value=""></c:set>
 			    		<c:choose>
 			    			<c:when test="${orderPlan.plan_group=='plan-topup' }">
-			    				<c:set var="back_url" value="${ctx }/plans/topup"></c:set>
+			    				<c:set var="back_url" value="${ctx }/plans/plan-topup/personal"></c:set>
 			    			</c:when>
 			    			<c:when test="${orderPlan.plan_group == 'plan-no-term' && orderPlan.plan_class == 'personal' }">
 			    				<c:set var="back_url" value="${ctx }/plans/plan-no-term/personal"></c:set>
@@ -320,6 +320,7 @@ background-color: #5cb85c;
 		, plan_prepay_months: ${orderPlan.plan_prepay_months}
 		, plan_new_connection_fee: ${orderPlan.plan_new_connection_fee}
 		, plan_price: ${orderPlan.plan_price}
+		, topup_fee: new Number(${orderPlan.topup.topup_fee})
 	};
 	
 	var price = {
@@ -332,18 +333,22 @@ background-color: #5cb85c;
 		var serviceHtml = "";
 		var addonsHtml = "";
 		if (plan.plan_group == 'plan-topup') {
+			
+			serviceHtml += '<hr/>';
+			serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
+			serviceHtml += '<ul>';
+			serviceHtml += '<li><strong class="text-danger">Broadband Topup Fee ($' +  plan.topup_fee.toFixed(2) + ')</strong></li>';
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');
-				serviceHtml += '<hr/>';
-				serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-				serviceHtml += '<ul>';
 				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-				serviceHtml += '</ul>';
 				price.service_price = plan.plan_new_connection_fee;
 			} else if (order_broadband_type === "transition") {
 				$('#transitionContainer').show('fast');
 				price.service_price = 0;
 			}
+			serviceHtml += '</ul>';
+			price.addons_price = plan.topup_fee;
+			
 		} else if (plan.plan_group == 'plan-no-term') {
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');

@@ -161,21 +161,29 @@ public class CustomerController {
 	public String orderPlanTopup(Model model, 
 			@PathVariable("id") int id,
 			@PathVariable("amount") Double amount) {
-		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("new-connection");
-		model.addAttribute("customer", customer);
 
 		Plan plan = this.planService.queryPlanById(id);
+		if (amount == 20d || amount == 30d || amount == 50d || amount == 100d || amount == 120d || amount == 150d || amount == 180d) {
+			plan.getTopup().setTopup_fee(amount);
+		} else {
+			plan.getTopup().setTopup_fee(20d);
+		}
+		
 		model.addAttribute("orderPlan", plan);
-		plan.getTopup().setTopup_fee(amount);
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
 		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
 		model.addAttribute("hardwares", hardwares);
 		
-		return "broadband-customer/customer-order";
+		String url = "";
+		if ("personal".equals(plan.getPlan_class())) {
+			url = "broadband-customer/customer-order-personal";
+		} else if ("business".equals(plan.getPlan_class())) {
+			url = "broadband-customer/customer-order-business";
+		}
+		
+		return url;
 	}
 
 	@RequestMapping(value = "/order/personal/confirm")

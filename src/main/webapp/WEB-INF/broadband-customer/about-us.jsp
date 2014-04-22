@@ -96,7 +96,7 @@
 		<div class="col-md-3">
 			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
-					<li>
+					<li class="active">
 						<a href="#overview">CyberPark Overview</a>
 					</li>
 					<li>
@@ -110,12 +110,6 @@
 					</li>
 				</ul>
 			</div>
-			<!-- <div class="list-group" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
-				<a href="#overview" class="list-group-item">CyberPark Overview</a>
-				<a href="#service" class="list-group-item">WIFI Services</a>
-				<a href="#contact" class="list-group-item">Contact US</a>
-				<a href="#location" class="list-group-item">Location</a>
-			</div> -->
 		</div>
 	</div>
 </div>

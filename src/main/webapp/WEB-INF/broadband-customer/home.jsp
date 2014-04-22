@@ -87,7 +87,7 @@
 		<div class="col-lg-2"></div>
 	</div>
 	<hr/>
-	<jsp:include page="welcome.jsp"/>
+	<%-- <jsp:include page="welcome.jsp"/> --%>
 </div>
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
