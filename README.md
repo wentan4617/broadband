@@ -9,7 +9,7 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.6 2014-04-21
 
-* company_detail创建多种类型的T&C字段，至少4个，然后每一个T&C在一个可以折叠的panel里便于修改(steven)
+* [company_detail创建多种类型的T&C字段，至少4个，然后每一个T&C在一个可以折叠的panel里便于修改](steven)
 * 完成personal plan-term的页面(kanny)
 * 重构后台创建customer页面(kanny)
 * 重构sale签约界面(kanny)
@@ -71,7 +71,7 @@ demand version 1.0.4 2014-03-28
 * [修改provision的order层显示，压缩customer信息，order信息排版和customer里的一致，order detail显示字段和customer里一致但多一个操作列](steven)
 * [user权限限制有bug, tm的chart没有勾选上，一样有权利进入观看](steven)
 * [把后台登入换成ajax](kanny)
-* 把plan，hareware功能换成ajax
+* [把plan，hareware功能换成ajax](steven)
 * customer支付账单功能，user支付order功能
 * 设定cyberpark的term condition
 * 设计about cyberpark界面

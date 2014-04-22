@@ -39,6 +39,10 @@ public class CompanyDetail implements Serializable {
 	private String company_email_password;
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String google_map_address;
+	private String tc_business_retails;
+	private String tc_business_wifi;
+	private String tc_personal;
+	private String tc_ufb;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -158,6 +162,38 @@ public class CompanyDetail implements Serializable {
 
 	public void setGoogle_map_address(String google_map_address) {
 		this.google_map_address = google_map_address;
+	}
+
+	public String getTc_business_retails() {
+		return tc_business_retails;
+	}
+
+	public void setTc_business_retails(String tc_business_retails) {
+		this.tc_business_retails = tc_business_retails;
+	}
+
+	public String getTc_business_wifi() {
+		return tc_business_wifi;
+	}
+
+	public void setTc_business_wifi(String tc_business_wifi) {
+		this.tc_business_wifi = tc_business_wifi;
+	}
+
+	public String getTc_personal() {
+		return tc_personal;
+	}
+
+	public void setTc_personal(String tc_personal) {
+		this.tc_personal = tc_personal;
+	}
+
+	public String getTc_ufb() {
+		return tc_ufb;
+	}
+
+	public void setTc_ufb(String tc_ufb) {
+		this.tc_ufb = tc_ufb;
 	}
 
 }
