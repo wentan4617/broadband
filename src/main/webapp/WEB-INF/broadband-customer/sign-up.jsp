@@ -8,6 +8,6 @@
 		<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
 	</div>
 	<div class="form-group">
-		<button type="button" data-loading-text="loading..." class="btn btn-success pull-right" id="signin-btn" style="margin-bottom:10px;">Login</button>
+		<button type="button" data-loading-text="loading..." class="btn btn-success btn-block" id="signin-btn" style="margin-bottom:10px;">Login</button>
 	</div>
 </form>
