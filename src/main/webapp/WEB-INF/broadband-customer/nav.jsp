@@ -32,7 +32,6 @@
 			
 			<c:if test="${customerSession != null }">
 				<p class="navbar-text pull-right" >
-					
 					<a href="${ctx }/customer/home" class="navbar-link" style="margin-right:10px;">
 						<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
 						<c:choose>
@@ -50,16 +49,20 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-				<!-- <p class="navbar-text navbar-right" >
-	     			<a href="${ctx }/login" class="btn btn-default navbar-btn" >Sign in</a>
-	 			</p> -->
-	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
-	 				<span class="glyphicon glyphicon-log-in"></span> login
+	 			<a href="javascript:void(0);" class="btn btn-success navbar-btn navbar-right" id="login">
+	 				<span class="glyphicon glyphicon-log-in"></span> Login
 	 			</a>
+	 			<div id="loginContainer" style="display:none;">
+	 				<jsp:include page="sign-up.jsp" />
+	 			</div>
+	 			<%-- ${ctx }/login --%>
 			</c:if>
 		</div>
-		
 	</div>
 </div>
 
-
+<style>
+.popover-content {
+	width:250px;
+}
+</style>

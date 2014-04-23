@@ -144,7 +144,7 @@ public class CustomerController {
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
-		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		model.addAttribute("hardwares", hardwares);
 		
 		String url = "";
@@ -173,7 +173,7 @@ public class CustomerController {
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
-		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		model.addAttribute("hardwares", hardwares);
 		
 		String url = "";

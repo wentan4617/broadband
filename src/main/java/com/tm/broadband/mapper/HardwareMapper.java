@@ -22,12 +22,12 @@ import com.tm.broadband.model.Page;
 public interface HardwareMapper {
 	
 	/* SELECT AREA */
-
+	Hardware selectHardware(Hardware hardware);
+	List<Hardware> selectHardwares(Hardware hardware);
 	List<Hardware> selectHardwaresByPage(Page<Hardware> page);
-	List<Hardware> selectHardwaresBySome(Hardware hardware);
 	int selectHardwaresSum(Page<Hardware> page);
+	
 	Hardware selectHardwareById(int id);
-
 	int selectExistHardwareByName(String hardware_name);
 	
 	/* // END SELECT AREA */

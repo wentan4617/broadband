@@ -94,11 +94,11 @@
 <%-- <jsp:include page="chorus-map.jsp" /> --%>
  
 <div id="popContainer" style="display:none;">
-	<a href="${ctx }/plans/plan-term/personal" class="btn btn-success" target="_blank">
+	<a href="${ctx }/plans/plan-term/personal" class="btn btn-success btn-block" target="_blank">
 		<span class="glyphicon glyphicon-hand-up"></span> Personal Plan
 	</a>
 	<hr/>
-	<a href="${ctx }/plans/plan-term/business" class="btn btn-success" target="_blank">
+	<a href="${ctx }/plans/plan-term/business" class="btn btn-success btn-block" target="_blank">
 		<span class="glyphicon glyphicon-hand-up"></span> Business Plan
 	</a>
 </div>
@@ -117,6 +117,22 @@
 	};
 	
 	$('#plan-term-option').popover(opt);
+	
+	var log_opt = {
+		html: true
+		, trigger: 'click'
+		, placement: 'bottom'
+		, title: 'CyberPark Customer Login'
+		, content: $('#loginContainer').html()
+		, container: 'body'	
+	}
+	
+	$('#login').popover(log_opt).on('shown.bs.popover', function () {
+		/*var popover = $('.popover').has('.loginForm');
+		var popover_content = $('.popover-content').has('.loginForm');
+		popover_content.css('width', '250px');*/
+	});
+	
 })(jQuery);
 </script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>

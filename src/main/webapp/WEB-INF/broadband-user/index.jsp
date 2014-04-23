@@ -190,7 +190,7 @@
                     	</li>
                     	<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Ordering Online (PAD | PC)</a>
+                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans/business">Ordering Online (PAD | PC)</a>
                     	</li>
                     </ul>
 			  	</div>
@@ -201,6 +201,16 @@
 </div>
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<<<<<<< HEAD
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript">
+(function(){
+	if('${userSession.user_role}' == 'sales'){
+		window.location = '${ctx}/broadband-user/sale/online/ordering/plans/business';
+	}
+})();
+=======
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js">
+>>>>>>> 138ae70a6abb4bb56d78d87969b0b0c2959346c0
 </script>
 <jsp:include page="footer-end.jsp" />

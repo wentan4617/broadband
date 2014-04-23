@@ -109,34 +109,8 @@ public class CustomerRestController {
 			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
 			HttpServletRequest req) {
 
-		JSONBean<Customer> json = new JSONBean<Customer>();
-		json.setModel(customer);
-		
-		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
-			return json;
-		}
-
-		Customer cValid = new Customer();
-		cValid.getParams().put("where", "query_exist_customer_by_mobile");
-		cValid.getParams().put("cellphone", customer.getCellphone());
-		int count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			json.getErrorMap().put("cellphone", "is already in use");
-			return json;
-		}
-		
-		cValid.getParams().put("where", "query_exist_customer_by_email");
-		cValid.getParams().put("email", customer.getEmail());
-		count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			json.getErrorMap().put("email", "is already in use");
-			return json;
-		}
-		
 		model.addAttribute("customer", customer);
+		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
 		json.setUrl("/order/personal/confirm");
 		
 		return json;
@@ -148,6 +122,15 @@ public class CustomerRestController {
 			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
 			HttpServletRequest req) {
 
+		model.addAttribute("customer", customer);
+		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
+		json.setUrl("/order/business/confirm");
+		
+		return json;
+	}
+	
+	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
+		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
 		
@@ -174,10 +157,6 @@ public class CustomerRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
-		
-		model.addAttribute("customer", customer);
-		json.setUrl("/order/business/confirm");
-		
 		return json;
 	}
 }
