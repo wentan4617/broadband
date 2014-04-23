@@ -30,13 +30,13 @@
 					<div class="panel-body">
 						<div class="btn-group btn-group">
 							<a href="${ctx}/broadband-user/sale/online/ordering/view/by/${sale_id != 0 ? sale_id : 0 }/both" class="btn btn-default ${bothActive }">
-								Both Orders&nbsp;<span class="badge">${bothSum}</span>
+								All Status&nbsp;<span class="badge">${bothSum}</span>
 							</a>
 							<a href="${ctx}/broadband-user/sale/online/ordering/view/by/${sale_id != 0 ? sale_id : 0 }/signed" class="btn btn-default ${signedActive }">
-								Signed Orders&nbsp;<span class="badge">${signedSum}</span>
+								Signed&nbsp;<span class="badge">${signedSum}</span>
 							</a>
 							<a href="${ctx}/broadband-user/sale/online/ordering/view/by/${sale_id != 0 ? sale_id : 0 }/unsigned" class="btn btn-default ${unsignedActive }">
-								Unsigned Orders&nbsp;<span class="badge">${unsignedSum}</span>
+								Unsigned&nbsp;<span class="badge">${unsignedSum}</span>
 							</a>
 						</div>
 					</div>

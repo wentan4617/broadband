@@ -3,6 +3,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
+<script>
+	if('${userSession.user_role}'=='sales'){
+		window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
+	}
+</script>
 
 <jsp:include page="header.jsp" />
 <jsp:include page="alert.jsp" />
@@ -185,7 +190,7 @@
                     	</li>
                     	<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Ordering Online (PAD)</a>
+                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Ordering Online (PAD | PC)</a>
                     	</li>
                     </ul>
 			  	</div>
@@ -197,10 +202,5 @@
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js">
-</script>
-<script>
-	if('${userSession.user_role}'=='sales'){
-		window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
-	}
 </script>
 <jsp:include page="footer-end.jsp" />

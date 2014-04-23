@@ -44,7 +44,8 @@
 						<div class="form-group">
 							<label for="user_role" class="control-label col-md-4">User Role</label>
 							<div class="col-md-3">
-								<form:select path="user_role" class="form-control">
+								<form:select path="user_role" class="form-control" data-name="user_role_selector">
+									<form:option value="none">define a role for this user</form:option>
 									<form:option value="administrator">Administrator</form:option>
 									<form:option value="operator">Operator</form:option>
 									<form:option value="sales">Sales</form:option>
@@ -61,22 +62,22 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_plan" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/view" data-type="checkbox_plan" /> View Plan
+											<form:checkbox path="authArray" value="plan/view" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> View Plan
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/create" data-type="checkbox_plan" /> Create Plan
+											<form:checkbox path="authArray" value="plan/create" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> Create Plan
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/edit" data-type="checkbox_plan" /> Edit Plan
+											<form:checkbox path="authArray" value="plan/edit" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> Edit Plan
 										</label>
 									</li>
 								</ul>
@@ -84,17 +85,17 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/view" data-type="checkbox_plan" /> View Hardware
+											<form:checkbox path="authArray" value="plan/hardware/view" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> View Hardware
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/create" data-type="checkbox_plan" /> Create Hardware
+											<form:checkbox path="authArray" value="plan/hardware/create" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> Create Hardware
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/edit" data-type="checkbox_plan" /> Edit Hardware
+											<form:checkbox path="authArray" value="plan/hardware/edit" data-type="checkbox_plan" data-admin-role="true" data-operator-role="true" /> Edit Hardware
 										</label>
 									</li>
 								</ul>
@@ -106,22 +107,22 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" /> View Customer
+											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> View Customer
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/create" data-type="checkbox_customer" /> Create Customer
+											<form:checkbox path="authArray" value="crm/customer/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Customer
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" /> Edit Customer
+											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Edit Customer
 										</label>
 									</li>
 								</ul>
@@ -133,7 +134,7 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_billing" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_billing" data-admin-role="true" data-operator-role="true" /> All
 										</label>
 									</li>
 								</ul>
@@ -145,17 +146,17 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_provision" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_provision" data-admin-role="true" data-operator-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="provision/view" data-type="checkbox_provision" /> View Provision
+											<form:checkbox path="authArray" value="provision/view" data-type="checkbox_provision" data-admin-role="true" data-operator-role="true" /> View Provision
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" /> Provision Customer Order
+											<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" data-admin-role="true" data-operator-role="true" /> Provision Customer Order
 										</label>
 									</li>
 								</ul>
@@ -167,7 +168,7 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" data-admin-role="true" data-operator-role="true" /> All
 										</label>
 									</li>
 								</ul>
@@ -179,40 +180,22 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" data-admin-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
+											<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" data-admin-role="true" /> View User
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/create" data-type="checkbox_system" /> Create User
+											<form:checkbox path="authArray" value="system/user/create" data-type="checkbox_system" data-admin-role="true" /> Create User
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/user/edit" data-type="checkbox_system" /> Edit User
-										</label>
-									</li>
-								</ul>
-									<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/view" data-type="checkbox_system" /> View Notification
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/create" data-type="checkbox_system" /> Create Notification
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
+											<form:checkbox path="authArray" value="system/user/edit" data-type="checkbox_system" data-admin-role="true" /> Edit User
 										</label>
 									</li>
 								</ul>
@@ -220,7 +203,17 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/company-detail/edit" data-type="checkbox_system" /> Edit Company Detail
+											<form:checkbox path="authArray" value="system/notification/view" data-type="checkbox_system" data-admin-role="true" /> View Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/create" data-type="checkbox_system" data-admin-role="true" /> Create Notification
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" data-admin-role="true" /> Edit Notification
 										</label>
 									</li>
 								</ul>
@@ -228,7 +221,15 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
+											<form:checkbox path="authArray" value="system/company-detail/edit" data-type="checkbox_system" data-admin-role="true" /> Edit Company Detail
+										</label>
+									</li>
+								</ul>
+									<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" data-admin-role="true" /> Chart(Register Customer)
 										</label>
 									</li>
 								</ul>
@@ -241,17 +242,17 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_sales" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_sales" data-admin-role="true" data-operator-role="true" data-sales-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/view" data-type="checkbox_sales" /> View Online Orders (PAD | PC)
+											<form:checkbox path="authArray" value="sale/online/ordering/view" data-type="checkbox_sales" data-admin-role="true" data-operator-role="true" data-sales-role="true" /> View Online Orders (PAD | PC)
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD)
+											<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" data-admin-role="true" data-operator-role="true" data-sales-role="true" /> Ordering Online (PAD | PC)
 										</label>
 									</li>
 								</ul>
@@ -287,6 +288,21 @@
 			$('input[data-type='+type+']').prop("checked", true);
 		} else {
 			$('input[data-type='+type+']').prop("checked", false);
+		}
+	});
+	
+	$('select[data-name="user_role_selector"]').change(function(){
+		var role = $(this).find('option:selected').val();
+		if("administrator"==role){
+			$('input[data-admin-role=true]').prop("checked", true);
+		} else if("sales"==role){
+			$('input[data-admin-role=true]').prop("checked", false);
+			$('input[data-sales-role=true]').prop("checked", true);
+		} else if("operator"==role){
+			$('input[data-admin-role=true]').prop("checked", false);
+			$('input[data-operator-role=true]').prop("checked", true);
+		} else if("none"==role){
+			$('input[data-admin-role=true]').prop("checked", false);
 		}
 	});
 })(jQuery);

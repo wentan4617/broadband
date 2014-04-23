@@ -12,18 +12,18 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h4 class="panel-title">${panelheading}</h4></div>
 				<div class="panel-body">
-					<h3>Week Statistic</h3>
-					<hr/>
-					<canvas id="canvasWeek" height="450" width="1100"></canvas>
-					<hr/>
-					<h3>Month Statistic</h3>
+					<h3>Monthly Statistic</h3>
 						<div class="input-group date col-md-2">
 							<input id="year_month_input"
-								class="form-control" placeholder="Start Date" value="${yearMonth }"/>
+								class="form-control" placeholder="Start Date" value="${yearMonth}"/>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
 					<hr/>
 					<canvas id="canvasMonth" height="450" width="1100"></canvas>
+					<hr/>
+					<h3>Weekly Statistic</h3>
+					<hr/>
+					<canvas id="canvasWeek" height="450" width="1100"></canvas>
 				</div>
 			</div>
 		</div>
