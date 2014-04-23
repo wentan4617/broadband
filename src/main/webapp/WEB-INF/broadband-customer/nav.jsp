@@ -49,12 +49,9 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-	 			<a href="javascript:void(0);" class="btn btn-success navbar-btn navbar-right" id="login">
+	 			<a href="javascript:void(0);" class="btn btn-success navbar-btn navbar-right" id="login" data-ctx="${ctx }">
 	 				<span class="glyphicon glyphicon-log-in"></span> Login
 	 			</a>
-	 			<div id="loginContainer" style="display:none;">
-	 				<jsp:include page="sign-up.jsp" />
-	 			</div>
 	 			<%-- ${ctx }/login --%>
 			</c:if>
 		</div>

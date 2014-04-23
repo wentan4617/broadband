@@ -4,9 +4,9 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 <script>
-	if('${userSession.user_role}'=='sales'){
-		window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
-	}
+if ('${userSession.user_role}'=='sales') {
+	window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
+}
 </script>
 
 <jsp:include page="header.jsp" />
@@ -201,7 +201,6 @@
 </div>
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<<<<<<< HEAD
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <script type="text/javascript">
 (function(){
@@ -209,8 +208,5 @@
 		window.location = '${ctx}/broadband-user/sale/online/ordering/plans/business';
 	}
 })();
-=======
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js">
->>>>>>> 138ae70a6abb4bb56d78d87969b0b0c2959346c0
 </script>
 <jsp:include page="footer-end.jsp" />
