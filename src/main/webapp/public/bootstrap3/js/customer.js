@@ -57,4 +57,55 @@
 		});
 	}
 	
+	var loginHtml = '';
+	loginHtml += '<form class="loginForm">';
+	loginHtml += '<div class="form-group">';
+	loginHtml += '<label for="login_name">Your Mobile or Email</label>';
+	loginHtml += '<input type="text" id="login_name" class="form-control" placeholder="" data-error-field/>';
+	loginHtml += '</div>';
+	loginHtml += '<div class="form-group">';
+	loginHtml += '<label for="password">Password</label>';
+	loginHtml += '<input type="password" id="password" class="form-control" placeholder="" data-error-field/>';
+	loginHtml += '</div>';
+	loginHtml += '<div class="form-group">';
+	loginHtml += '<button type="button" data-loading-text="loading..." class="btn btn-success btn-block" id="signin-btn" style="margin-bottom:10px;">Login</button>';
+	loginHtml += '</div>';
+	loginHtml += '</form>';
+	
+	var log_opt = {
+		html: true
+		, trigger: 'click'
+		, placement: 'bottom'
+		, title: 'CyberPark Customer Login'
+		, content: loginHtml
+		, container: 'body'	
+	}
+	
+	$('#login').popover(log_opt).on('shown.bs.popover', function () {
+		var ctx = $(this).attr('data-ctx');
+		$(document).keypress(function(e){
+			if ($('#loginForm input:focus').length > 0 && event.keyCode == 13) {
+				$('#signin-btn').trigger('click');
+			}
+		});
+		
+		$('#signin-btn').on("click", function(){
+			var $btn = $(this);
+			var data = {
+				login_name: $('#login_name').val()
+				, password: $('#password').val()
+			};
+			$btn.button('loading');
+			$.post(ctx + '/login', data, function(json){
+				if (json.hasErrors) {
+					$.jsonValidation(json);
+				} else {
+					window.location.href= ctx + json.url;
+				}
+			}, 'json').always(function () {
+				$btn.button('reset');
+		    });
+		});
+	});
+	
 })(jQuery);

@@ -166,7 +166,7 @@
 					<hr>
 					<div class="form-group">
 						<div class="col-sm-2">
-							<a href="${ctx }/broadband-user/sale/online/ordering/plans/${orderPlan.plan_classz}" class="btn btn-success btn-lg btn-block" >Back</a>
+							<a href="${ctx }/broadband-user/sale/online/ordering/plans/${orderPlan.plan_class}" class="btn btn-success btn-lg btn-block" >Back</a>
 						</div>
 						<div class="col-sm-2 col-sm-offset-8">
 							<button type="button" class="btn btn-success btn-lg btn-block" id="confirm">Confirm</button>

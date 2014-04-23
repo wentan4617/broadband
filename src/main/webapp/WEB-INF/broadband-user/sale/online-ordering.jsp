@@ -609,7 +609,7 @@
 		html += '	<div class="col-sm-2">';
 		html += '		<div class="input-group">';
 		html += '			<span class="input-group-addon">$</span>';
-		html += '			<input type="text"  class="form-control" name="detail_price" value="0.00"/>';
+		html += '			<input type="text"  class="form-control" name="detail_price" value="45.00"/>';
 		html += '		</div>';
 		html += '	</div>';
 		html += '	<div class="col-sm-1">';
@@ -679,7 +679,7 @@
 	
 	$('button[data-order]').click(function(){
 		var $btn = $(this);
-		$btn.button('loading');
+		
 		var plan_id = $btn.attr('data-plan-id');
 		//console.log(plan_id);
 		if (!plan_id) {
@@ -724,6 +724,8 @@
 		});
 		
 		//console.log(JSON.stringify(cods));
+		
+		$btn.button('loading');
 		
 		$.ajax({
 			type: 'post'
