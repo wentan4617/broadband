@@ -9,6 +9,10 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.6 2014-04-21
 
+* 客户忘记密码可以点击forgotten password?来选择是通过email或sms来获取随机密码(steven)
+
+demand version 1.0.6 2014-04-21
+
 * [company_detail创建多种类型的T&C字段，至少4个，然后每一个T&C在一个可以折叠的panel里便于修改](steven)
 * 完成personal plan-term的页面(kanny)
 * 重构后台创建customer页面(kanny)

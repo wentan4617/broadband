@@ -5,7 +5,7 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 <script>
 	if('${userSession.user_role}'=='sales'){
-		window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
+		window.location = '${ctx}/broadband-user/sale/online/ordering/plans/business';
 	}
 </script>
 
