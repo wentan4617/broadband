@@ -3,11 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
-<script>
-if ('${userSession.user_role}'=='sales') {
-	window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
-}
-</script>
 
 <jsp:include page="header.jsp" />
 <jsp:include page="alert.jsp" />
