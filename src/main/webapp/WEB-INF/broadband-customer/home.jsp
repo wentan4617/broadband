@@ -118,21 +118,6 @@
 	
 	$('#plan-term-option').popover(opt);
 	
-	var log_opt = {
-		html: true
-		, trigger: 'click'
-		, placement: 'bottom'
-		, title: 'CyberPark Customer Login'
-		, content: $('#loginContainer').html()
-		, container: 'body'	
-	}
-	
-	$('#login').popover(log_opt).on('shown.bs.popover', function () {
-		/*var popover = $('.popover').has('.loginForm');
-		var popover_content = $('.popover-content').has('.loginForm');
-		popover_content.css('width', '250px');*/
-	});
-	
 })(jQuery);
 </script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>

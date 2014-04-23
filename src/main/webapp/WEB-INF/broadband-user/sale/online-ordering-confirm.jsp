@@ -240,11 +240,11 @@
 						</div>
 						<hr/>
 						<div class="row">
-							<div class="col-md-8">
-								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg pull-left" >Back</a>
+							<div class="col-sm-2">
+								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block" >Back</a>
 							</div>
-							<div class="col-md-4">
-								<a  class="btn btn-success btn-lg pull-right" data-toggle="modal" data-target="#save_order_model" >Save Order</a>
+							<div class="col-sm-2 col-sm-offset-8">
+								<a  class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#save_order_model" >Save Order</a>
 							</div>
 						</div>
 						
