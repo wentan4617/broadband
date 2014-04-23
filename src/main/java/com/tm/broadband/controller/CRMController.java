@@ -546,7 +546,7 @@ public class CRMController {
 		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
-		List<Hardware> hardwares = this.planService.queryHardwaresBySome(hardware);
+		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		model.addAttribute("hardwares", hardwares);
 
 		return "broadband-user/crm/order-create";

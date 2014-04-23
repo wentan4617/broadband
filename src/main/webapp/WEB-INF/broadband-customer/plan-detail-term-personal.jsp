@@ -16,10 +16,10 @@
 	background-color: #428bca;
 	border-color: #428bca;
 }
-.panel-warning>.panel-footer {
-	color: #8a6d3b;
-	background-color: #fcf8e3;
-	border-color: #faebcc;
+.panel-info>.panel-footer {
+	color: #31708f;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
 }
 .panel-danger>.panel-footer {
 	color: #a94442;
@@ -64,7 +64,7 @@
 	<!-- adsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-primary">ADSL + Home Phone</span>
+			<span class="label label-primary">ADSL + Home Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -101,13 +101,13 @@
 	<!-- vdsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-warning">VDSL + Home Phone</span>
+			<span class="label label-info">VDSL + Home Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">
 		<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
 			<div class="col-lg-4">
-				<div class="panel panel-warning">
+				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
 							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
@@ -137,7 +137,7 @@
 	<!-- ufb -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-danger">UFB + Home Phone</span>
+			<span class="label label-danger">UFB + Home Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">

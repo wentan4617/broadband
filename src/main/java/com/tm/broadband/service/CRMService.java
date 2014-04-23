@@ -204,7 +204,7 @@ public class CRMService {
 			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_new_connection_fee() + plan.getPlan_price() * plan.getPlan_prepay_months());
+				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Installation");
@@ -234,9 +234,9 @@ public class CRMService {
 			
 			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
 			if ("personal".equals(plan.getPlan_class())) {
-				cod_pstn.setDetail_name("Home Phone Landline");
+				cod_pstn.setDetail_name("Home Phone Line");
 			} else if ("business".equals(plan.getPlan_class())) {
-				cod_pstn.setDetail_name("Business Landline");
+				cod_pstn.setDetail_name("Business Phone Line");
 			}
 			
 			cod_pstn.setDetail_price(0d);

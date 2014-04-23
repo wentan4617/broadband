@@ -185,7 +185,7 @@
                     	</li>
                     	<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans">Ordering Online (PAD)</a>
+                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans/business">Ordering Online (PAD)</a>
                     	</li>
                     </ul>
 			  	</div>
@@ -196,11 +196,12 @@
 </div>
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js">
-</script>
-<script>
-	if('${userSession.user_role}'=='sales'){
-		window.location = '${ctx}/broadband-user/sale/online/ordering/plans';
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript">
+(function(){
+	if('${userSession.user_role}' == 'sales'){
+		window.location = '${ctx}/broadband-user/sale/online/ordering/plans/business';
 	}
+})();
 </script>
 <jsp:include page="footer-end.jsp" />

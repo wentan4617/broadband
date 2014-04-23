@@ -5,8 +5,6 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-
-
 <jsp:include page="header.jsp" />
 
 <style>
@@ -208,7 +206,7 @@ background-color: #5cb85c;
 						<div class="panel-heading">
 							<h2 class="panel-title">
 								<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
-									Additional Hardware
+									Add-ons: Hardware
 								</a>
 							</h2>
 						</div>
@@ -317,10 +315,12 @@ background-color: #5cb85c;
 	var plan = {
 		plan_group: '${orderPlan.plan_group}'
 		, plan_class: '${orderPlan.plan_class}'
-		, plan_prepay_months: ${orderPlan.plan_prepay_months}
-		, plan_new_connection_fee: ${orderPlan.plan_new_connection_fee}
-		, plan_price: ${orderPlan.plan_price}
+		, plan_prepay_months: new Number(${orderPlan.plan_prepay_months})
+		, plan_new_connection_fee: new Number(${orderPlan.plan_new_connection_fee})
+		, plan_price: new Number(${orderPlan.plan_price})
 		, topup_fee: new Number(${orderPlan.topup.topup_fee})
+		, pstn_count: new Number(${orderPlan.pstn_count})
+		, term_period: new Number(${orderPlan.term_period})
 	};
 	
 	var price = {
@@ -369,12 +369,16 @@ background-color: #5cb85c;
 				price.plan_price = plan.plan_price * plan.plan_prepay_months;
 			}
 		} else if (plan.plan_group == 'plan-term') {
+			
+			serviceHtml += '<hr/>';
+			serviceHtml += '<p class="text-success"><strong>Bundles:</strong></p>';
+			serviceHtml += '<ul>';
+			serviceHtml += '<li><strong class="text-danger">' + plan.term_period + ' Months Terms</li>';
+			serviceHtml += '<li><strong class="text-danger">' + plan.pstn_count + ' Home Phone Line</li>';
+			serviceHtml += '<li><strong class="text-danger">Free Router</li>';
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');
-				serviceHtml += '<hr/>';
-				serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-				serviceHtml += '<ul>';
-				serviceHtml += '<li><strong class="text-danger">Free New Connection Fee ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
+				serviceHtml += '<li><strong class="text-danger">Free New Connection Fee</strong></li>';
 			} else if (order_broadband_type === "transition") {
 				$('#transitionContainer').show('fast');
 			}

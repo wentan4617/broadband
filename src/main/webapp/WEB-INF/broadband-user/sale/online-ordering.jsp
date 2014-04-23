@@ -11,7 +11,16 @@
 <div class="container">
 	<div class="page-header">
 		<h1>
-			1. Internet | Plans and pricing 
+			<c:choose>
+				<c:when test="${classz=='business' }">
+					1. Business Plans & Pricing  
+					<a href="${ctx }/broadband-user/sale/online/ordering/plans/personal" ><small>(to Personal Plans)</small></a>
+				</c:when>
+				<c:when test="${classz=='personal' }">
+					1. Personal Plans & Pricing  
+					<a href="${ctx }/broadband-user/sale/online/ordering/plans/business" ><small>(to Business Plans)</small></a>
+				</c:when>
+			</c:choose>
 		</h1>
 	</div>
 	
@@ -28,6 +37,7 @@
 			<div id="collapseADSL" class="panel-collapse collapse in">
 				<c:if test="${fn:length(plans) > 0}">
 					<div class="panel-body">
+						
 						<h3 class="bg-primary text-center" style="width:200px;">
 							<strong>T&C</strong> 
 						</h3>
@@ -417,6 +427,7 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
 	$(':radio').iCheck({
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
@@ -453,17 +464,18 @@
 		hideTypeContainer('adsl', 'voip');
 		
 		showbtns('adsl');
-		addHardware('adsl');
+		//addHardware('adsl');
 		
-		var pstn_count = $(this).attr('data-pstn-count');
+		/*var pstn_count = $(this).attr('data-pstn-count');
 		var i = 0;
 		while (i < pstn_count){
 			addPSTN('adsl');
 			i++;
-		}
+		}*/
 		//addVoip('adsl');
 		$('button[data-order][data-type="adsl"]').attr('data-plan-id', this.value);
 	});
+	
 	$('input[name="vdsl_id"]').on('ifChecked', function(){
 		$('#vdsl-addons-panel').css('display', 'block');
 				
@@ -473,15 +485,16 @@
 		hideTypeContainer('vdsl', 'voip');
 		
 		showbtns('vdsl');
-		addHardware('vdsl');
-		var pstn_count = $(this).attr('data-pstn-count');
+		//addHardware('vdsl');
+		/*var pstn_count = $(this).attr('data-pstn-count');
 		var i = 0;
 		while (i < pstn_count){
 			addPSTN('vdsl');
 			i++;
-		}
+		}*/
 		$('button[data-order][data-type="vdsl"]').attr('data-plan-id', this.value);
 	});
+	
 	$('input[name="ufb_id"]').on('ifChecked', function(){
 		$('#ufb-addons-panel').css('display', 'block');
 		
@@ -491,13 +504,13 @@
 		hideTypeContainer('ufb', 'voip');
 		
 		showbtns('ufb');
-		addHardware('ufb');
+		/*addHardware('ufb');
 		var pstn_count = $(this).attr('data-pstn-count');
 		var i = 0;
 		while (i < pstn_count){
 			addPSTN('ufb');
 			i++;
-		}
+		}*/
 		$('button[data-order][data-type="ufb"]').attr('data-plan-id', this.value);
 	});
 	
@@ -513,7 +526,6 @@
 			addVoip(type);
 		}
 	});
-	
 	
 	function showbtns(type){
 		$('#' + type + '-btnContainer').css('display', 'block');
@@ -562,29 +574,37 @@
 			hideTypeContainer(type, type_sub);
 		});
 	}
-
 	
+	var classz = '${classz}';
+
 	function addPSTN(type) {
-		//alert(type);
 		$('#' + type + '-pstnContainer').css('display', 'block');
 		var index = $('div[data-' + type + '-enable]').length;
 		var html = "";
 		html += '<div class="form-group" id="' + type + '_pstn_' + index + '" data-' + type + '-enable data-' + type + '-pstn-enable>';
-		html += '	<div class="col-sm-1">PSTN</div>';
-		html += '	<div class="col-sm-5">';
-		html += '		<label class="control-label">Business Landline</label>';
-		html += '		<input type="hidden" name="detail_name" value="Business Landline" />';
-		html += '		<input type="hidden" name="detail_type" value="pstn" />';
+		html += '	<div class="col-sm-1"></div>';
+		html += '	<div class="col-sm-4">';
+		if (classz == 'business') {
+			html += '	<label class="control-label">Business Phone Line</label>';
+			html += '	<input type="hidden" name="detail_name" value="Business Phone Line" />';
+		} else if (classz == 'personal') {
+			html += '	<label class="control-label">Home Phone Line</label>';
+			html += '	<input type="hidden" name="detail_name" value="Home Phone Line" />';
+		}
+		html += '	<input type="hidden" name="detail_type" value="pstn" />';
 		html += '	</div>';
-		html += '	<div class="col-sm-3">';
-		html += '		<select name="pstn_number1" style="width:70px;" class="form-control col-sm-4">';
-		html += '			<option value="09">09</option>';
-		html += '			<option value="07">07</option>';
-		html += '			<option value="06">06</option>';
-		html += '			<option value="04">04</option>';
-		html += '			<option value="03">03</option>';
-		html += '		</select>';
-		html += '		<input type="text" style="width:180px;" class="form-control col-sm-8" name="pstn_number2" placeholder="e.g.:5789941"/>';
+		html += '	<div class="col-sm-4">';
+		html += '		<div class="input-group">';
+		html += '			<select name="pstn_number1" class="form-control">';
+		html += '				<option value="09">09</option>';
+		html += '				<option value="07">07</option>';
+		html += '				<option value="06">06</option>';
+		html += '				<option value="04">04</option>';
+		html += '				<option value="03">03</option>';
+		html += '			</select>';
+		html += '			<span class="input-group-addon">-</span>';
+		html += '			<input type="text"  class="form-control col-sm-8" name="pstn_number2" placeholder="e.g.:5789941"/>';
+		html += '		</div>';
 		html += '	</div>';
 		html += '	<div class="col-sm-2">';
 		html += '		<div class="input-group">';
@@ -616,21 +636,14 @@
 		var index = $('div[data-' + type + '-enable]').length;
 		var html = "";
 		html += '<div class="form-group" id="' + type + '_voip_' + index + '" data-' + type + '-enable data-' + type + '-voip-enable>';
-		html += '	<div class="col-sm-1">Voip</div>';
-		html += '	<div class="col-sm-5">';
+		html += '	<div class="col-sm-1"></div>';
+		html += '	<div class="col-sm-4">';
 		html += '		<label class="control-label">Voip</label>';
 		html += '		<input type="hidden" name="detail_name" value="Voip" />';
 		html += '		<input type="hidden" name="detail_type" value="voip" />';
 		html += '	</div>';
-		html += '	<div class="col-sm-3">';
-		html += '		<select name="pstn_number1" style="width:70px;" class="form-control col-sm-4">';
-		html += '			<option value="09">09</option>';
-		html += '			<option value="07">07</option>';
-		html += '			<option value="06">06</option>';
-		html += '			<option value="04">04</option>';
-		html += '			<option value="03">03</option>';
-		html += '		</select>';
-		html += '		<input type="text" style="width:180px;" class="form-control col-sm-8" name="pstn_number2" placeholder="e.g.:5789941"/>';
+		html += '	<div class="col-sm-4">'
+		html += ' 		<input type="text" class="form-control col-sm-8" name="pstn_number" placeholder="e.g.:5789941"/>';
 		html += '	</div>';
 		html += '	<div class="col-sm-2">';
 		html += '		<div class="input-group">';
@@ -666,8 +679,9 @@
 	
 	$('button[data-order]').click(function(){
 		var $btn = $(this);
+		$btn.button('loading');
 		var plan_id = $btn.attr('data-plan-id');
-		console.log(plan_id);
+		//console.log(plan_id);
 		if (!plan_id) {
 			alert('Please choose one plan at least.');
 			return false;
@@ -676,22 +690,40 @@
 		var type = $btn.attr('data-type');
 		var cods = [];
 		
-		$('div[data-' + type + '-enable]').each(function(){
+		$('div[data-' + type + '-hardware-enable]').each(function(){
 			var $this = $(this);
-			
 			var cod = {
-				detail_name: $this.find('input[name="detail_name"]').val() || $this.find('select[name="detail_name"]').val()
+				detail_name: $this.find('select[name="detail_name"]').val()
 				, detail_type: $this.find('input[name="detail_type"]').val()
 				, detail_price: $this.find('input[name="detail_price"]').val()
 				, detail_unit: $this.find('input[name="detail_unit"]').val()
-				, pstn_number: $this.find('select[name="pstn_number1"]').val()+'-'+$this.find('input[name="pstn_number2"]').val()
-			};
-			
-			//customerOrder.customerOrderDetails.push(cod);
+			}; //customerOrder.customerOrderDetails.push(cod);
+			cods.push(cod);
+		});
+		$('div[data-' + type + '-pstn-enable]').each(function(){
+			var $this = $(this);
+			var cod = {
+				detail_name: $this.find('input[name="detail_name"]').val()
+				, detail_type: $this.find('input[name="detail_type"]').val()
+				, detail_price: $this.find('input[name="detail_price"]').val()
+				, detail_unit: 1
+				, pstn_number: $this.find('select[name="pstn_number1"]').val() + '' + $this.find('input[name="pstn_number2"]').val()
+			}; //customerOrder.customerOrderDetails.push(cod);
+			cods.push(cod);
+		});
+		$('div[data-' + type + '-voip-enable]').each(function(){
+			var $this = $(this);
+			var cod = {
+				detail_name: $this.find('input[name="detail_name"]').val()
+				, detail_type: $this.find('input[name="detail_type"]').val()
+				, detail_price: $this.find('input[name="detail_price"]').val()
+				, detail_unit: 1
+				, pstn_number: $this.find('input[name="pstn_number"]').val()
+			}; //customerOrder.customerOrderDetails.push(cod);
 			cods.push(cod);
 		});
 		
-		console.log(JSON.stringify(cods));
+		//console.log(JSON.stringify(cods));
 		
 		$.ajax({
 			type: 'post'

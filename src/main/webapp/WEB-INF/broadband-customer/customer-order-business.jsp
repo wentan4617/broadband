@@ -260,7 +260,7 @@ background-color: #5cb85c;
 						<div class="panel-heading">
 							<h2 class="panel-title">
 								<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
-									Additional Hardware
+									Add-ons: Hardware
 								</a>
 							</h2>
 						</div>
@@ -376,11 +376,11 @@ background-color: #5cb85c;
 	var plan = {
 		plan_group: '${orderPlan.plan_group}'
 		, plan_class: '${orderPlan.plan_class}'
-		, plan_prepay_months: ${orderPlan.plan_prepay_months}
-		, plan_new_connection_fee: ${orderPlan.plan_new_connection_fee}
-		, plan_price: ${orderPlan.plan_price}
-		, term_period: ${orderPlan.term_period}
-		, pstn_count: ${orderPlan.pstn_count}
+		, plan_prepay_months: new Number(${orderPlan.plan_prepay_months})
+		, plan_new_connection_fee: new Number(${orderPlan.plan_new_connection_fee})
+		, plan_price: new Number(${orderPlan.plan_price})
+		, term_period: new Number(${orderPlan.term_period})
+		, pstn_count: new Number(${orderPlan.pstn_count})
 	};
 	
 	var price = {
@@ -426,17 +426,17 @@ background-color: #5cb85c;
 		} else if (plan.plan_group == 'plan-term') {
 			
 			serviceHtml += '<hr/>';
-			serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
+			serviceHtml += '<p class="text-success"><strong>Bundles:</strong></p>';
 			serviceHtml += '<ul>';
-			serviceHtml += '<li><strong class="text-danger">' +  plan.term_period + ' months term</strong></li>';
+			serviceHtml += '<li><strong class="text-danger">' +  plan.term_period + ' Months Term</strong></li>';
+			serviceHtml += '<li><strong class="text-danger">' +  plan.pstn_count + ' Business Phone Line</strong></li>';
+			serviceHtml += '<li><strong class="text-danger">Free Router</strong></li>';
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');
 				serviceHtml += '<li><strong class="text-danger">Free New Connection Fee</strong></li>';
 			} else if (order_broadband_type === "transition") {
 				$('#transitionContainer').show('fast');
 			}
-			serviceHtml += '<li><strong class="text-danger">' +  plan.pstn_count + ' business phone line</strong></li>';
-			serviceHtml += '<li><strong class="text-danger">Free Router</strong></li>';
 		}
 		
 		$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
@@ -560,7 +560,6 @@ background-color: #5cb85c;
 				if (json.hasErrors) {
 					$.jsonValidation(json, 'right');
 				} else {
-						
 					//console.log("customer response:");
 					//console.log(json.model);
 					window.location.href='${ctx}' + json.url;

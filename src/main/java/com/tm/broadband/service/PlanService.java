@@ -147,8 +147,8 @@ public class PlanService {
 	}
 	
 	@Transactional
-	public List<Hardware> queryHardwaresBySome(Hardware hardware) {
-		return this.hardwareMapper.selectHardwaresBySome(hardware);
+	public List<Hardware> queryHardwares(Hardware hardware) {
+		return this.hardwareMapper.selectHardwares(hardware);
 	}
 	
 	/*
