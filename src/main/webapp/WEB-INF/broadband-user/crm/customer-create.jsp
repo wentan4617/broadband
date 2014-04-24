@@ -107,7 +107,7 @@
 							<div class="form-group">
 								<label for="address" class="control-label col-md-3">Address</label>
 								<div class="col-md-6">
-									<form:input path="address" class="form-control" placeholder="Address" />
+									<form:input id="address" path="address" class="form-control" placeholder="Address" />
 								</div>
 								<p class="help-block">
 									<form:errors path="address" cssErrorClass="error" />
@@ -143,6 +143,7 @@
 		</div>
 	</div>
 </div>
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
@@ -160,4 +161,6 @@
 	
 })(jQuery);
 </script>
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="../footer-end.jsp" />
