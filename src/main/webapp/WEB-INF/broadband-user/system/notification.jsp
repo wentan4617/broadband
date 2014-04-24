@@ -41,6 +41,8 @@
 									<form:option value="topup">Topup</form:option>
 									<form:option value="service-giving">Service Giving</form:option>
 									<form:option value="service-terminating">Service Terminating</form:option>
+									<form:option value="online-ordering">Online Ordering</form:option>
+									<form:option value="forgotten-password">Forgotten Password</form:option>
 								</form:select>
 							</div>
 						</div>

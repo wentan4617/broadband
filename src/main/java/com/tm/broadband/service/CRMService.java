@@ -364,6 +364,11 @@ public class CRMService {
 	}
 
 	@Transactional
+	public Customer queryCustomer(Customer customer) {
+		return this.customerMapper.selectCustomer(customer);
+	}
+
+	@Transactional
 	public Customer queryCustomerById(int id) {
 		return this.customerMapper.selectCustomerById(id);
 	}

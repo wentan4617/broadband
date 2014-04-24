@@ -10,7 +10,7 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel panel-default">
-				<div class="panel-heading">CyberPark Broadband Manager System Sign in</div>
+				<div class="panel-heading">CyberPark Broadband Manager System Logon</div>
 				<div class="panel-body">
 					<form id="loginForm">
 						<div class="form-group">
@@ -21,7 +21,7 @@
 							<label for="password">Password</label>
 							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
 						</div>
-						<button type="button" data-loading-text="loading..." class="btn btn-success" id="signin-btn">Sign in</button>
+						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg col-md-6" id="signin-btn">login</button>
 					</form>
 				</div>
 			</div>

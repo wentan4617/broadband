@@ -32,19 +32,25 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itextpdf.text.DocumentException;
+import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
 import com.tm.broadband.pdf.CreditPDFCreator;
 import com.tm.broadband.pdf.OrderPDFCreator;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SaleService;
+import com.tm.broadband.service.SmserService;
+import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
@@ -55,13 +61,19 @@ public class SaleController {
 	private PlanService planService;
 	private CRMService crmService;
 	private SaleService saleService;
+	private MailerService mailerService;
+	private SmserService smserService;
+	private SystemService systemService;
 
 	@Autowired
-	public SaleController(PlanService planService, CRMService crmService
+	public SaleController(PlanService planService, CRMService crmService, MailerService mailerService, SystemService systemService, SmserService smserService
 			, SaleService saleService) {
 		this.planService = planService;
 		this.crmService = crmService;
 		this.saleService = saleService;
+		this.mailerService = mailerService;
+		this.smserService = smserService;
+		this.systemService = systemService;
 	}
 	
 	@RequestMapping("/broadband-user/sale/online/ordering/plans/{class}")
@@ -226,6 +238,7 @@ public class SaleController {
 			@ModelAttribute("orderCustomer") Customer customer, 
 			RedirectAttributes attr, SessionStatus status, HttpServletRequest req) {
 		
+		customer.setPassword(TMUtils.generateRandomString(6));
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
@@ -251,6 +264,18 @@ public class SaleController {
 		
 		this.crmService.editCustomerOrder(co);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
+
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
+		TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
+		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
 		
 		status.setComplete();
 		

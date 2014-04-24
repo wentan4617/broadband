@@ -56,7 +56,7 @@
 			</c:if>
 			<c:if test="${customerSession == null }">
 	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
-	 				<span class="glyphicon glyphicon-log-in"></span> Login
+	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
 	 			</a>
 	 			<%--javascript:void(0);  id="login" data-ctx="${ctx }"--%>
 			</c:if>

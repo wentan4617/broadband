@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
+import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -33,8 +34,8 @@ public class Customer implements Serializable {
 	 */
 
 	private Integer id;
-	@NotEmpty(groups = { CustomerLoginValidatedMark.class})
-	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class})
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class})
+	@Length(min = 6, max = 40, groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class})
 	private String login_name;
 	@NotEmpty(groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
 	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
@@ -104,6 +105,8 @@ public class Customer implements Serializable {
 	private String svlan_ck;
 	private String cvlan_ck;
 	private String email_ck;
+	
+	private String type;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -429,6 +432,14 @@ public class Customer implements Serializable {
 
 	public void setBirth_str(String birth_str) {
 		this.birth_str = birth_str;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 	
 	
