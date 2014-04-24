@@ -25,71 +25,162 @@
 	<div class="row" style="margin-bottom:20px;">
 		
 		<div class="col-md-9">
-			<section id="overview">
+		
+			<section id="introduction">
 				<div class="page-header">
 					<h1>
-						Company Overview
+						Introduction
 					</h1>
 				</div>
-				<p class="lead">
-					CyberPark as Internet Service Provider（ISP） provides professional Telecommunication services to NZ customers. 
+				<p>
+					In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devises which can adopt internet wirelessly radio waves.  
 				</p>
 				<p>
-					We are going to give a new method of broadband services to NZ market. Our main products include: Top-up plans, No Term (Combo) plans, 12 months Term plans, Commercial plans, and Professional Wifi Coverage broadband plans and solutions based on specific environments. 
+					The most popular area include, home, work place, education areas, bar, restaurants, cafe shops, Motels and Hotels, public places, and some other luxury or entertainment places.  
 					 
 				</p>
 				<p>
-					Broadband application, installations, and payment will be easy, fast, and convenience to all NZ consumers. Residential customers’ broadband application will be self-services and apply on line. Installation will be directly solved by Chorus and almost there is no gap connection with our broadband services.
-				</p>
-				<p>
-					Top-up or no term plans’ users can recharge their accounts by Top-up Vouchers, Credit Cards, Direct debts, account to account, or Paypal systems. Other broadband plans’ selectors also can use the electric business payment methods. Professional Wifi Coverage broadband plans provide more convenience to your Wifi users, at the same time, our IT team can help you to produce your advertisement to be your free Wifi’s registration pages. Moreover, these IT services can also assist to build up and keep your royal customers.
+					There are more and more devises start to connect with WiFi radio waves, like Lap-top computers, smartphones, tablets, smart watch, security cameras, printer, video games, and so on. Because of these WiFi devises have been the common tools in people’s works and lives, WiFi has become one of people’s daily resources now.
 				</p>
 			</section>
-			<section id="service">
+			
+			<section id="wifi">
 				<div class="page-header">
 					<h1>
-						Telecommunication services and WiFi coverage <br/><small>start from US!</small>
+						Differences between 3G (or 4G) and WiFi
 					</h1>
 				</div>
 				<p>
-					The best Telecommunication results come from our solutions. We can provide more than what you want. 
+					Both 3G (and 4G) and WiFi provide user can access Internet services by wireless application. The major difference between these two is the method that connect with Internet. 3G (and 4G) obtain the wireless services through mobile phone suppliers.  
 				</p>
 				<p>
-					Our Telecommunication services give you more methods to improve your productivities, cost saving and easy using. For our professional WiFi coverage services, we focus on café shops, bars, restaurants, food court, supermarkets, normal retailers, and office users. Powerful devises can cover almost 95% of your work place.  
+					It means the range of coverage is as big as the mobile phone coverage. However, the costs of 3G (and 4G) will be as high as the mobile bills. Moreover, the radio wave also will be effected by the specific states of mobile antenna stations. WiFi coverage normally based on one of the local access point (or hot spot).   
 				</p>
 				<p>
-					Telecommunication package plans achieve all your specific Telecommunication requirements base on a lowest cost. Qualified and professional services let you feel we are standing beside with you and your business.
+					 It is more private wireless network that is set by private use, like home, work place, or customer use only. The radio wave is only available in a local fixed area, but it is stable and fast speed. At the same time, the cost saving is the most important to the most of users. 
 				</p>
 			</section>
-			<section id="contact">
+			
+			<section id="wifi-coverage">
 				<div class="page-header">
 					<h1>
-						Contact US
+						What Cyber Park does to WiFi coverage?
 					</h1>
 				</div>
-				<address>
-					<p>
-						<strong>CyberPark Limited.</strong> 
-					</p>
-					<p>
-						${cyberpark.address}
-					</p>
-					<p>
-						Give us a call <a href="javascript:void(0);">${cyberpark.telephone}</a>
-					</p>
-					<p>
-						send email to <a href="mailto:#">${cyberpark.company_email }</a>
-					</p>
-				</address>
-
+				<p>
+					For residential customers, CyberPark provides your home based WiFi coverage routers which has 150Mbps Wireless Access point. It normally covers around 120m2 to 150m2 area. It supports wireless using in your daily live. 
+				</p>
+				<p>
+					For commercial customers, CyberPark provides the professional level broadband router plus the access point (hot spot) which can accept big volume usage. It normally can complicate 70-100 customers use WiFi services at the same time, and WiFi can connect with more than 120 devises. This solution is suit with the most of retails’, cafe shops’, restaurants’ and small to medium size supermarkets’ requirements. The coverage area is about 700m2 to 1000m2 ground floor. 
+				</p>
+				<p>
+					Moreover, CyberPark WiFi coverage plans is not only a wireless Internet service provider, but also we can provide you a statistic date about your customers’ usages, vising period, and loyalty customers. 
+				</p>
+				<p>
+					If you require for more information about WiFi coverage solutions, please contact with our sales team, <a href="mailto:#">sales@cyberpark.co.nz</a> or 0800 2 CYBER (29237). We will contact with you and booking an appointment for further discussions. 
+				</p>
 			</section>
-			<section id="location">
+			
+			<section id="zone">
 				<div class="page-header">
 					<h1>
-						Location
+						How does Wifi works in CyberPark WiFi Zone for commercial customers?
 					</h1>
 				</div>
-				<div id="map_canvas" style="height:360px"></div>
+				<p class="lead">
+					After you applied Cyber Park WiFi coverage plans, you will receive one broadband router and Wireless Devise which we call Access Point or Hot Spot.  
+				</p>
+				<ul>
+					<li>Easy installation jobs include plug in and work. </li>
+					<li>Placing the Wireless Devise at a no barriers location in the business area. </li>
+					<li>Using WiFi application is easy as well, customers just need open an Internet page, and they will define your business logo or webpages with application function. Put mobile number and achieve the verify code by messages. </li>
+					<li>Log-in and start.</li>
+					<li>We can help you to set up the WiFi application pages, Free Wifi usages volume or periods, and WiFi roaming which means your customers revisit to your business, they don’t need apply you WiFi again.</li>
+				</ul>
+			</section>
+			
+			<section id="wifi-coverage-plans">
+				<div class="page-header">
+					<h1>
+						CyberPark WiFi coverage plans
+					</h1>
+				</div>
+				<div class="row">
+					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;border-bottom: 1px solid #dfe5d7;">
+						<h3>Naked ADSL</h3>
+						<ul>
+							<li>$99+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + ADSL2+ Router</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<div class="col-lg-6" style="height:250px;border-bottom: 1px solid #dfe5d7;">
+						<h3>Naked VDSL</h3>
+						<ul>
+							<li>$109+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + VDSL Router</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;border-bottom: 1px solid #dfe5d7;">
+						<h3>Naked UFB</h3>
+						<ul>
+							<li>$119+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + UFB ONT</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<div class="col-lg-6" style="height:250px;border-bottom: 1px solid #dfe5d7;">
+						<h3>PSTN (Local phone) + ADSL</h3>
+						<ul>
+							<li>1 PSTN phone line</li>
+							<li>$119+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + ADSL Router</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;">
+					
+						<h3>PSTN (Local phone) + VDSL</h3>
+						<ul>
+							<li>1 PSTN phone line</li>
+							<li>$119+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + VDSL Router</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<div class="col-lg-6" style="height:250px;">
+						<h3>PSTN (Local phone) + UFB</h3>
+						<ul>
+							<li>1 PSTN phone line</li>
+							<li>$129+GST per month</li>
+							<li>300GB Data per month</li>
+							<li>1 VoIP phone line (optional)</li>
+							<li>Free Wifi Coverage Access Point (Professional Level) + UFB ONT</li>
+							<li>Carryover Data</li>
+							<li>36 months term</li>
+						</ul>
+					</div>
+					<p>&nbsp;</p>
+					<p>
+					If you are interested in our CyberPark WiFi coverage plans, please contact with our sales team by email: <a href="mailto:#">sales@cyberpark.co.nz</a>. We can arrange an appointment with you and discussion for your WiFi coverage solutions. Call us now: 0800 2 Cyber (29237), 
+					</p>
+				</div>
 			</section>
 			
 		</div>
@@ -97,16 +188,19 @@
 			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">
-						<a href="#overview">CyberPark Overview</a>
+						<a href="#introduction">Introduction</a>
 					</li>
 					<li>
-						<a href="#service">WIFI Services</a>
+						<a href="#wifi">WIFI</a>
 					</li>
 					<li>
-						<a href="#contact">Contact US</a>
+						<a href="#wifi-coverage">WIFI Coverage</a>
 					</li>
 					<li>
-						<a href="#location">Location</a>
+						<a href="#zone">CyberPark WiFi Zone</a>
+					</li>
+					<li>
+						<a href="#wifi-coverage-plans">WiFi Coverage Plans</a>
 					</li>
 				</ul>
 			</div>

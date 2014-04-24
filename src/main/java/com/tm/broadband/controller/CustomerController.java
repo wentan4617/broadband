@@ -546,6 +546,11 @@ public class CustomerController {
 		model.addAttribute("cyberpark", cd);
 		return "broadband-customer/about-us";
 	}
+	
+	@RequestMapping(value = "/wifi-solution")
+	public String toWifi(Model model) {
+		return "broadband-customer/wifi-solution";
+	}
 
 	@RequestMapping(value = "/term-and-conditions")
 	public String toTermAndConditions(Model model) {
