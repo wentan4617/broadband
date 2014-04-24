@@ -10,7 +10,7 @@
 }
 </style>
 
-<div class="container">
+<div class="container" >
 	<div class="row" style="margin-bottom: 20px;">
 
 		<div class="col-md-12">

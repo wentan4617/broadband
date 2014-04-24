@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<div class="navbar navbar-darkgreen navbar-static-top" >
+<div class="navbar navbar-darkgreen navbar-static-top" id="navhead">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -14,21 +14,27 @@
 			</a>
 		</div>
 		<div class="collapse navbar-collapse">
-			<%-- <ul class="nav navbar-nav">
-				<li class="dropdown">
+			<ul class="nav navbar-nav">
+				<li class="active"><a href="${ctx }/plans/plan-no-term/personal"><strong>Personal Plan</strong></a></li>
+				<li><a href="${ctx }/plans/plan-term/business"><strong>Business Plan</strong></a></li>
+				<li><a href="#"><strong>Wifi Solution</strong></a></li>
+				<li><a href="#"><strong>IT Service</strong></a></li>
+				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
+				<li><a href="${ctx }/term-and-conditions"><strong>Terms & Conditions</strong></a></li>
+				<%-- <li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
-						<strong style="font-size:18px;"> Internet </strong><b class="caret"></b>
+						<strong>About US</strong><b class="caret"></b>
 					</a>
 					<ul class="dropdown-menu">
 						<li>
-							<a href="${ctx }/plans/t">Plan Top-Up</a>
+							<a href="${ctx }/plans/t">About CyberPark</a>
 						</li>
 						<li>
-							<a href="${ctx }/plans/p">Plan Prepay</a>
+							<a href="${ctx }/plans/p">Terms & Conditions</a>
 						</li>
 					</ul>
-				</li> 
-			</ul> --%>
+				</li> --%> 
+			</ul>
 			
 			<c:if test="${customerSession != null }">
 				<p class="navbar-text pull-right" >
@@ -49,17 +55,11 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-	 			<a href="javascript:void(0);" class="btn btn-success navbar-btn navbar-right" id="login" data-ctx="${ctx }">
+	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
 	 				<span class="glyphicon glyphicon-log-in"></span> Login
 	 			</a>
-	 			<%-- ${ctx }/login --%>
+	 			<%--javascript:void(0);  id="login" data-ctx="${ctx }"--%>
 			</c:if>
 		</div>
 	</div>
 </div>
-
-<style>
-.popover-content {
-	width:250px;
-}
-</style>
