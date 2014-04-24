@@ -9,8 +9,11 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.6 2014-04-21
 
+* [create customer, company detail的地址框都加上google map auto complete](steven)
+* customer首页下方添加follow us on(twitter, facebook, email, youtube)
 * 重新完善cyberpark首页设计(kanny)
 * 客户忘记密码可以点击forgotten password?来选择是通过email或sms来获取随机密码(steven)
+* sale模块下单后随机生成密码插入customer属性存入数据库并将该随即密码发送给客户(steven)
 
 demand version 1.0.6 2014-04-21
 
