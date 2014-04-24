@@ -6,34 +6,43 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.JSONBean;
-import com.tm.broadband.model.User;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.MailerService;
+import com.tm.broadband.service.SmserService;
+import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
+import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
-import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 
 @RestController
 @SessionAttributes(value = { "customer", "orderPlan"})
 public class CustomerRestController {
 	
 	private CRMService crmService;
+	private MailerService mailerService;
+	private SmserService smserService;
+	private SystemService systemService;
 
 	@Autowired
-	public CustomerRestController(CRMService crmService) {
+	public CustomerRestController(CRMService crmService, MailerService mailerService, SystemService systemService, SmserService smserService) {
 		this.crmService = crmService;
+		this.mailerService = mailerService;
+		this.smserService = smserService;
+		this.systemService = systemService;
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -63,6 +72,64 @@ public class CustomerRestController {
 		
 		req.getSession().setAttribute("customerSession", customerSession);
 		json.setUrl("/customer/home/redirect");
+
+		return json;
+	}
+	
+	@RequestMapping(value = "/forgotten-password", method = RequestMethod.POST)
+	public JSONBean<Customer> forgottenPassword(
+			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer, BindingResult result, 
+			HttpServletRequest req) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		json.setModel(customer);
+
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+		
+		String msg = "";
+		
+		customer.getParams().put("where", "query_forgotten_password");
+		if("email".equals(customer.getType())){
+			customer.setEmail(customer.getLogin_name());
+			customer.getParams().put("email", customer.getLogin_name());
+		} else if("cellphone".equals(customer.getType())){
+			customer.setCellphone(customer.getLogin_name());
+			customer.getParams().put("cellphone", customer.getLogin_name());
+		}
+		customer.getParams().put("status", "active");
+		Customer customerSession = this.crmService.queryCustomer(customer);
+
+		if (customerSession == null) {
+			json.getErrorMap().put("alert-error", "No such mobile or email existed!");
+			return json;
+		}
+		customer.setPassword(TMUtils.generateRandomString(6));
+		this.crmService.editCustomer(customer);
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
+
+		if("email".equals(customer.getType())){
+			msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
+			TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			customer.getParams().put("email", customer.getLogin_name());
+		} else if("cellphone".equals(customer.getType())){
+			msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
+			notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
+			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+			this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+			customer.getParams().put("cellphone", customer.getLogin_name());
+		}
+		
+		json.getErrorMap().put("alert-error", msg);
 
 		return json;
 	}

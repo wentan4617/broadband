@@ -213,6 +213,11 @@
 					and c.password = #{params.password}
 					and c.status = #{params.status}
 				</when>
+				<when test="params.where =='query_forgotten_password'">
+					<if test="params.cellphone != null">c.cellphone = #{params.cellphone}</if>
+					<if test="params.email != null">or c.email = #{params.email}</if>
+					and c.status = #{params.status}
+				</when>
 				<when test="params.where =='query_order_status'">
 					<if test="params.status != null">c.status = #{params.status}</if>
 					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
@@ -472,6 +477,8 @@
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
+			<if test="params.email != null">or email=#{params.email}</if>
+			<if test="params.cellphone != null">or cellphone=#{params.cellphone}</if>
 		</where>
 	</update>
 

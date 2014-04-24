@@ -10,22 +10,31 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel panel-success">
-				<div class="panel-heading">CyberPark Customer Logon</div>
+				<div class="panel-heading">CyberPark Customer Forgotten Password</div>
 				<div class="panel-body">
 					
-					<form id="loginForm">
+					<form class="form-horizontal">
 						<div class="form-group">
-							<label for="login_name">Your Mobile or Email</label>
+							<div class="col-sm-12">
+								<ul class="list-inline topup-list" style="margin: 5px 0 0 0;">
+									<li>
+										<input type="radio" name="type" value="email" checked="checked" /> &nbsp; 
+										<strong>Email Address</strong>
+									</li>
+									<li>
+										<input type="radio" name="type" value="cellphone" /> &nbsp; 
+										<strong>Mobile Number</strong>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</form>
+					<form>
+						<div class="form-group">
 							<input type="text" id="login_name" class="form-control" placeholder="" data-error-field/>
 						</div>
-						<div class="form-group">
-							<label for="password">Password
-					 			<a href="${ctx }/forgotten-password">&nbsp;forgot password ?
-					 			</a>
-							</label>
-							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
-						</div>
-						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="signin-btn">login</button>
+						
+						<button type="button" data-loading-text="loading..." class="btn btn-success btn-block btn-lg" id="submit-btn">Confirm</button>
 					</form>
 				</div>
 			</div>
@@ -36,23 +45,30 @@
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	$(':radio').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
+	
 	$(document).keypress(function(e){
 		if ($('#loginForm input:focus').length > 0 && event.keyCode == 13) {
-			$('#signin-btn').trigger('click');
+			$('#submit-btn').trigger('click');
 		}
 	});
 	
-	$('#signin-btn').on("click", function(){
+	$('#submit-btn').on("click", function(){
 		
 		var $btn = $(this);
 		$btn.button('loading');
 		var data = {
 			login_name: $('#login_name').val()
-			, password: $('#password').val()
+			, type: $('input[name="type"]:checked').val()
 		};
-		$.post('${ctx}/login', data, function(json){
+		$.post('${ctx}/forgotten-password', data, function(json){
 			if (json.hasErrors) {
 				$.jsonValidation(json, 'right');
 			} else {

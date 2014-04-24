@@ -339,6 +339,11 @@ public class CustomerController {
 		return "broadband-customer/login";
 	}
 
+	@RequestMapping(value = "/forgotten-password")
+	public String toForgottenPassword(Model model) {
+		return "broadband-customer/forgotten-password";
+	}
+
 
 	
 	@RequestMapping("/customer/home/redirect")
