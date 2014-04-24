@@ -17,8 +17,8 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="${ctx }/plans/plan-no-term/personal"><strong>Personal Plan</strong></a></li>
 				<li><a href="${ctx }/plans/plan-term/business"><strong>Business Plan</strong></a></li>
-				<li><a href="#"><strong>Wifi Solution</strong></a></li>
-				<li><a href="#"><strong>IT Service</strong></a></li>
+				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
+				<!-- <li><a href="#"><strong>IT Service</strong></a></li> -->
 				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
 				<li><a href="${ctx }/term-and-conditions"><strong>Terms & Conditions</strong></a></li>
 				<%-- <li class="dropdown">

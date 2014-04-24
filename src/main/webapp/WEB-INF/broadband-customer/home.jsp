@@ -53,10 +53,10 @@
 		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png"  alt="business-plan">
 		  			</a>
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank" style="margin-top:10px;"> 
+		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
 		  			</a>
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank" style="margin-top:10px;"> 
+		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
 		  			</a>
 			    	
@@ -123,6 +123,6 @@
 })(jQuery);
 </script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
-<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
+<%-- <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script> --%>
 <jsp:include page="footer-end.jsp" />
