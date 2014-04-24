@@ -15,80 +15,82 @@
 #imgContainer hr {
 	margin: 5px 0;
 }
+#navhead {
+	margin-bottom:0;
+}
 </style>
 
-<div class="container marketing" >
-	<div class="row">
-		<div class="col-lg-2">
-		</div>
-		<div class="col-lg-8">
-			 <div class="input-group">
-     			<input id="address" type="text" class="form-control input-lg" placeholder="Check your address" />
-      			<span class="input-group-btn">
-        			<button class="btn btn-success btn-lg" type="button">Go</button>
-      			</span>
-    		</div>
-		</div>
-		<div class="col-lg-2">
-			<a href="http://chorus-viewer.ufbmaps.co.nz/" target="_blank" class="btn btn-success btn-lg" >
-  				<span class="glyphicon glyphicon-map-marker"></span> Map
-			</a>
-		</div>
-	</div>
-	<hr/>
-	<div class="row">
-		<div class="col-lg-9">
-			<jsp:include page="carousel.jsp" />
-		</div>
-		<div class="col-lg-3">
-			<div class="panel panel-default">
-		  		<div id="imgContainer" class="panel-body" style="height:377px;">
-		  			<a href="${ctx }/plans/plan-no-term/personal" class="thumbnail" target="_blank"> 
+<div class="homebg">
+	<div class="container marketing" >
+	
+		<!-- <div class="row" style="margin-top:20px;">
+			<div class="col-lg-2">
+			</div>
+			<div class="col-lg-8">
+				 <div class="input-group">
+	     			<input id="address" type="text" class="form-control input-lg" placeholder="Check your address" />
+	      			<span class="input-group-btn">
+	        			<button class="btn btn-success btn-lg" type="button">Go</button>
+	      			</span>
+	    		</div>
+			</div>
+			<div class="col-lg-2">
+				<a href="http://chorus-viewer.ufbmaps.co.nz/" target="_blank" class="btn btn-success btn-lg" >
+	  				<span class="glyphicon glyphicon-map-marker"></span> Map
+				</a>
+			</div>
+		</div> -->
+		
+		<div class="row" style="margin-top:20px;">
+			<div class="col-lg-9">
+				<jsp:include page="carousel.jsp" />
+			</div>
+			<div class="col-lg-3">
+				<div id="imgContainer" class="panel-body" style="height:377px;">
+		  			<a href="${ctx }/plans/plan-no-term/personal" class="thumbnail" target="_blank" > 
 		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
 			    	</a>
-		  			
-		  			<hr/>
-		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank"> 
+		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png"  alt="business-plan">
 		  			</a>
-		  			<hr/>
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
 		  			</a>
-		  			<hr/>
-		  			<a href="javascript:void(0);" class="thumbnail" target="_blank"> 
+		  			<a href="javascript:void(0);" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
 		  			</a>
 			    	
 			  	</div>
 			</div>
 		</div>
+		
+		<div class="row" style="margin-top:20px;">
+			<div class="col-lg-2"></div>
+			<div class="col-lg-2">
+				<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
+					<img src="${ctx }/public/bootstrap3/images/c_noterm.jpg" alt="..." class="img-circle">
+				</a>
+			</div>
+			<div class="col-lg-1"></div>
+			<div class="col-lg-2">
+				<a href="${ctx }/plans/plan-topup/personal" target="_blank">
+					<img src="${ctx }/public/bootstrap3/images/c_topup.jpg" alt="..." class="img-circle">
+				</a>
+			</div>
+			<div class="col-lg-1"></div>
+			<div class="col-lg-2">
+				<a href="javascript:void(0);" id="plan-term-option">
+					<img src="${ctx }/public/bootstrap3/images/c_term.jpg" alt="..." class="img-circle">
+				</a>
+			</div>
+			<div class="col-lg-2"></div>
+		</div>
 	</div>
-	<hr/>
-	<div class="row">
-		<div class="col-lg-2"></div>
-		<div class="col-lg-2">
-			<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/c_noterm.jpg" alt="..." class="img-circle">
-			</a>
-		</div>
-		<div class="col-lg-1"></div>
-		<div class="col-lg-2">
-			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/c_topup.jpg" alt="..." class="img-circle">
-			</a>
-		</div>
-		<div class="col-lg-1"></div>
-		<div class="col-lg-2">
-			<a href="javascript:void(0);" id="plan-term-option">
-				<img src="${ctx }/public/bootstrap3/images/c_term.jpg" alt="..." class="img-circle">
-			</a>
-		</div>
-		<div class="col-lg-2"></div>
-	</div>
-	<hr/>
-	<%-- <jsp:include page="welcome.jsp"/> --%>
 </div>
+
+<jsp:include page="welcome.jsp"/>
+
+
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <%-- <jsp:include page="chorus-map.jsp" /> --%>

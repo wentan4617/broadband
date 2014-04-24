@@ -57,7 +57,7 @@
 		});
 	}
 	
-	var loginHtml = '';
+	/*var loginHtml = '';
 	loginHtml += '<form class="loginForm">';
 	loginHtml += '<div class="form-group">';
 	loginHtml += '<label for="login_name">Your Mobile or Email</label>';
@@ -106,6 +106,6 @@
 				$btn.button('reset');
 		    });
 		});
-	});
+	});*/
 	
 })(jQuery);

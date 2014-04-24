@@ -30,13 +30,12 @@ html {
 	height: 70px;
 	width: 70px;
 	background: url("../images/cartoon.png") no-repeat;
-	
 	background-size: contain;
 }
 
 body {
 	padding-bottom: 0;
-	background:#f7f7f7;
+	//background:#f7f7f7;
 }
 
 .list-menu h4 {
@@ -47,8 +46,25 @@ body {
 .navbar-darkgreen {
 	background-color: #08373a;
 	border-color: #386d71;
+	
 }
 
 .customer-panel-height {
 	min-height:500px;
+}
+
+.popover-content {
+	width:250px;
+}
+
+.homebg {
+	background: #08373a; /* Old browsers */
+background: -moz-linear-gradient(-45deg,  #08373a 0%, #08373a 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right bottom, color-stop(0%,#08373a), color-stop(100%,#08373a)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(-45deg,  #08373a 0%,#08373a 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(-45deg,  #08373a 0%,#08373a 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(-45deg,  #08373a 0%,#08373a 100%); /* IE10+ */
+background: linear-gradient(135deg,  #08373a 0%,#08373a 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#08373a', endColorstr='#08373a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+padding-bottom:20px;
 }
