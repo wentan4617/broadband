@@ -45,8 +45,14 @@ public class SystemRestController {
 			return json;
 		}
 		
+		String url = "/broadband-user/index/redirect";
+		
+		if("sales".equals(userSession.getUser_role())){
+			url = "/broadband-user/sales/online-ordering/redirect";
+		}
+		
 		req.getSession().setAttribute("userSession", userSession);
-		json.setUrl("/broadband-user/index/redirect");
+		json.setUrl(url);
 
 		return json;
 	}
