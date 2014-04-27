@@ -89,48 +89,55 @@ public class CustomerRestController {
 			return json;
 		}
 		
-		String msg = "";
-		
-		customer.getParams().put("where", "query_forgotten_password");
 		if("email".equals(customer.getType())){
+			
+			customer.getParams().put("where", "query_forgotten_password_email");
 			customer.setEmail(customer.getLogin_name());
 			customer.getParams().put("email", customer.getLogin_name());
+			
 		} else if("cellphone".equals(customer.getType())){
+			
+			customer.getParams().put("where", "query_forgotten_password_cellphone");
 			customer.setCellphone(customer.getLogin_name());
 			customer.getParams().put("cellphone", customer.getLogin_name());
+			
 		}
 		customer.getParams().put("status", "active");
 		Customer customerSession = this.crmService.queryCustomer(customer);
 
 		if (customerSession == null) {
-			json.getErrorMap().put("alert-error", "No such mobile or email existed!");
-			return json;
-		}
-		customer.setPassword(TMUtils.generateRandomString(6));
-		this.crmService.editCustomer(customer);
-		
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
+			
+			json.getErrorMap().put("alert-error", "email".equals(customer.getType()) ? "The email address you've just given isn't existed!" : "The mobile number you've just given isn't existed!");
+			
+		} else {
+			customer.setPassword(TMUtils.generateRandomString(6));
+			this.crmService.editCustomer(customer);
+			
+			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+			Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
+			
+			String msg = "";
 
-		if("email".equals(customer.getType())){
-			msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
-			TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			customer.getParams().put("email", customer.getLogin_name());
-		} else if("cellphone".equals(customer.getType())){
-			msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
-			notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
-			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-			this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
-			customer.getParams().put("cellphone", customer.getLogin_name());
+			if("email".equals(customer.getType())){
+				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
+				TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(customer.getEmail());
+				applicationEmail.setSubject(notification.getTitle());
+				applicationEmail.setContent(notification.getContent());
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+				customer.getParams().put("email", customer.getLogin_name());
+			} else if("cellphone".equals(customer.getType())){
+				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
+				notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
+				TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+				this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+				customer.getParams().put("cellphone", customer.getLogin_name());
+			}
+			
+			json.getErrorMap().put("alert-error", msg);
+			
 		}
-		
-		json.getErrorMap().put("alert-error", msg);
-
 		return json;
 	}
 	

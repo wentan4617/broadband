@@ -22,7 +22,7 @@
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
 							data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
-							${panelheading}
+							Online Ordering Final Step
 						</a>
 					</h4>
 				</div>
