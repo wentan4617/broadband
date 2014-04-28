@@ -254,6 +254,7 @@ public class CRMService {
 			cod_hd.setDetail_expired(new Date());
 			cod_hd.setDetail_unit(1);
 			cod_hd.setIs_post(0);
+			customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
 			cod_hd.setDetail_type("hardware-router");
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);

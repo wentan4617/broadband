@@ -13,6 +13,7 @@
     <link href="${ctx}/public/bootstrap3/css/user.css" rel="stylesheet" type="text/css"  />
     <link href="${ctx}/public/bootstrap3/css/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="${ctx}/public/bootstrap3/css/skins/all.css" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]>
 	<script src="${ctx}/public/bootstrap3/js/html5shiv.js"></script>
 	<script src="${ctx}/public/bootstrap3/js/respond.min.js"></script>

@@ -39,7 +39,6 @@
 			We offer the best value and price personal broadband plans to you. 
 			We can offer more values and better price telecommunication plans to you.
 		</p>
-
 	</div>
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">

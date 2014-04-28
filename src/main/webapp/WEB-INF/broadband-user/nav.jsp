@@ -1,7 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div class="navbar navbar-default navbar-static-top" role="navigation">
 	<div class="container">
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -73,9 +73,15 @@
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/crm/customer/create">
+								<a href="${ctx}/broadband-user/crm/customer/personal/create">
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-									Create Customer
+									Create Personal Customer
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/crm/customer/business/create">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									Create Business Customer
 								</a>
 							</li>
 							<!-- <li class="divider"></li> -->

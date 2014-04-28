@@ -331,7 +331,6 @@ background-color: #5cb85c;
 	
 	function toggleTransitionContainer(order_broadband_type) {
 		var serviceHtml = "";
-		var addonsHtml = "";
 		if (plan.plan_group == 'plan-topup') {
 			
 			serviceHtml += '<hr/>';
@@ -347,7 +346,7 @@ background-color: #5cb85c;
 				price.service_price = 0;
 			}
 			serviceHtml += '</ul>';
-			price.addons_price = plan.topup_fee;
+			price.service_price += plan.topup_fee;
 			
 		} else if (plan.plan_group == 'plan-no-term') {
 			if (order_broadband_type === "new-connection") {

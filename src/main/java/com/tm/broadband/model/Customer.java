@@ -34,11 +34,11 @@ public class Customer implements Serializable {
 	 */
 
 	private Integer id;
-	@NotEmpty(groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class})
-	@Length(min = 6, max = 40, groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class})
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class })
+	@Length(min = 6, max = 40, groups = { CustomerLoginValidatedMark.class, CustomerForgottenPasswordValidatedMark.class })
 	private String login_name;
-	@NotEmpty(groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
-	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class})
+	@NotEmpty(groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class })
 	private String password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })
@@ -50,14 +50,14 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String address;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
-	@Email(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
-	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Email(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String email;
-	//@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
+	// @Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String phone;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
-	@Length(min = 10, max = 11, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class})
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 9, max = 11, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String cellphone;
 	private String status;
 	private String invoice_post;
@@ -71,7 +71,7 @@ public class Customer implements Serializable {
 	private String country;
 	private String company_name;
 	private String customer_type;
-	
+
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -79,11 +79,11 @@ public class Customer implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
-	
+
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String ck_password;
-	@NotEmpty(groups = { ChangePasswordValidatedMark.class})
-	@Length(min = 6, max = 20, groups = { ChangePasswordValidatedMark.class})
+	@NotEmpty(groups = { ChangePasswordValidatedMark.class })
+	@Length(min = 6, max = 20, groups = { ChangePasswordValidatedMark.class })
 	private String old_password;
 
 	private String register_date_str;
@@ -96,7 +96,6 @@ public class Customer implements Serializable {
 	private CustomerOrder customerOrder = new CustomerOrder();
 	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;
-	
 
 	private String id_ck;
 	private String login_name_ck;
@@ -105,8 +104,11 @@ public class Customer implements Serializable {
 	private String svlan_ck;
 	private String cvlan_ck;
 	private String email_ck;
-	
+
 	private String type;
+
+	// when create customer action option
+	private String action;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -260,7 +262,8 @@ public class Customer implements Serializable {
 	}
 
 	public String getRegister_date_str() {
-		register_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getRegister_date());
+		register_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
+				.getRegister_date());
 		return register_date_str;
 	}
 
@@ -269,7 +272,8 @@ public class Customer implements Serializable {
 	}
 
 	public String getActive_date_str() {
-		active_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getActive_date());
+		active_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this
+				.getActive_date());
 		return active_date_str;
 	}
 
@@ -441,7 +445,13 @@ public class Customer implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+	}
 
 }

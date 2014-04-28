@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -11,7 +10,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
@@ -21,7 +20,29 @@
 				<div id="collapseCustomerInfo" class="panel-collapse collapse in">
 					<div class="panel-body">
 					
+						<!-- customer type -->
+						<h4 class="text-success">Customer Type</h4>
+						<hr />
+						<div class="form-group">
+							<label class="control-label col-md-3"></label>
+							<div class="col-md-9">
+								<div class="radio">
+									<label> 
+										<input type="radio" name="customer_type" value="personal" />
+										Personal
+									</label>
+								</div>
+								<div class="radio">
+									<label> 
+										<input type="radio" name="customer_type" value="business" />
+										Business
+									</label>
+								</div>
+							</div>
+						</div>
+
 						<!-- customer account -->
+						<hr/>
 						<h4 class="text-success">Create customer account</h4>
 						<hr/>
 						<form:form modelAttribute="customer" action="${ctx}/broadband-user/crm/customer/create" method="post" id="customerFrom" class="form-horizontal">
@@ -146,8 +167,14 @@
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	$(':radio').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
 	
 	$('#save').click(function(){
 		$('#action').val('save');

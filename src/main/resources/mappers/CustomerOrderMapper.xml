@@ -63,6 +63,8 @@
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
 		<result property="customer_type" column="c_customer_type" />
+		
+		<association property="organization" resultMap="organizationResultMap"/>
 	</resultMap>
 
 	<sql id="customerOrderColumns">
@@ -173,6 +175,33 @@
 		<result property="hardware_comment" column="cod_hardware_comment" />
 		<result property="track_code" column="cod_track_code" />
 		<result property="pstn_number" column="cod_pstn_number" />
+	</resultMap>
+	
+	<sql id="organizationColumns">
+		o.`customer_id`				as o_customer_id
+		, o.`org_name`				as o_org_name
+		, o.`org_type`				as o_org_type
+		, o.`org_trading_name`		as o_org_trading_name
+		, o.`org_register_no`		as o_org_register_no
+		, o.`org_incoporate_date`	as o_incoporate_date
+		, o.`org_trading_months`	as o_trading_months
+		, o.`holder_name`			as o_holder_name
+		, o.`holder_job_title`		as o_holder_job_title
+		, o.`holder_phone`			as o_holder_phone
+		, o.`holder_email`			as o_holder_email
+	</sql>
+	<resultMap type="Organization" id="organizationResultMap">
+		<id property="customer_id" column="o_customer_id"/>
+		<result property="org_name" column="o_org_name"/>
+		<result property="org_type" column="o_org_type"/>
+		<result property="org_trading_name" column="o_org_trading_name"/>
+		<result property="org_register_no" column="o_org_register_no"/>
+		<result property="org_incoporate_date" column="o_incoporate_date"/>
+		<result property="org_trading_months" column="o_trading_months"/>
+		<result property="holder_name" column="o_holder_name"/>
+		<result property="holder_job_title" column="o_holder_job_title"/>
+		<result property="holder_phone" column="o_holder_phone"/>
+		<result property="holder_email" column="o_holder_email"/>
 	</resultMap>
 	
 	<sql id="customerOrderPageWhere">
@@ -317,9 +346,11 @@
 	<select id="selectCustomerOrdersByPage" parameterType="Page" resultMap="selectCustomerOrdersWithCustomerResultMap">
 		select 
 			<include refid="customerOrderColumns"/>,
-			<include refid="customerColumns"/>
+			<include refid="customerColumns"/>,
+			<include refid="organizationColumns"/>
 		from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
+		left join tm_organization as o on o.customer_id = c.id
 		<include refid="customerOrderPageWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
@@ -334,7 +365,7 @@
 	<resultMap type="CustomerOrder" id="selectCustomerOrdersWithCustomerResultMap">
 		<id property="id" column="co_id" />
 		<result property="order_serial" column="co_order_serial" />
-		<!-- <result property="customer_id" column="co_customer_id" /> -->
+		<result property="customer_id" column="co_customer_id" />
 		<result property="order_total_price" column="co_order_total_price" />
 		<result property="order_create_date" column="co_order_create_date" />
 		<result property="order_status" column="co_order_status" />

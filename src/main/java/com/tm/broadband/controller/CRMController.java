@@ -478,50 +478,26 @@ public class CRMController {
 	 * BEGIN back-end create customer model
 	 */
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/create")
-	public String toCustomerCreate(Model model) {
-		model.addAttribute(new Customer());
-		return "broadband-user/crm/customer-create";
-	}
-
-	@RequestMapping(value = "/broadband-user/crm/customer/create", method = RequestMethod.POST)
-	public String doCustomerCreate(Model model,
-			@ModelAttribute("customer") 
-			@Validated(CustomerValidatedMark.class) Customer customer,
-			BindingResult result, RedirectAttributes attr, SessionStatus status,
-			@RequestParam("action") String action) {
-
-		if (result.hasErrors()) {
-			return "broadband-user/crm/customer-create";
-		}
+	@RequestMapping(value = "/broadband-user/crm/customer/{type}/create")
+	public String toCustomerCreate(Model model,
+			@PathVariable("type") String type) {
 		
-		int count = this.crmService.queryExistCustomerByLoginName(customer.getLogin_name());
-
-		if (count > 0) {
-			result.rejectValue("login_name", "duplicate", "");
-			return "broadband-user/crm/customer-create";
-		}
-
-		if (!customer.getPassword().equals(customer.getCk_password())) {
-			result.rejectValue("ck_password", "incorrectConfirmPassowrd", "");
-			return "broadband-user/crm/customer-create";
-		}
-		
-		customer.setRegister_date(new Date());
-		customer.setActive_date(new Date());
-		customer.setBalance(0d);
+		model.addAttribute("customer", new Customer());
 		
 		String url = "";
-		if ("save".equals(action)) {
-			url = "redirect:/broadband-user/crm/customer/query/1";
-			this.crmService.createCustomer(customer);
-			attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
-			status.setComplete();
-		} else if ("next".equals(action)) {
-			url = "redirect:/broadband-user/crm/customer/order/create";
+		if ("personal".equals(type)) {
+			url = "broadband-user/crm/customer-create-personal";
+		} else if ("business".equals(type)) {
+			url = "broadband-user/crm/customer-create-business";
 		}
-		
 		return url;
+	}
+
+	@RequestMapping("/broadband-user/crm/customer/query/redirect")
+	public String redirectPlanView(RedirectAttributes attr, SessionStatus status) {
+		attr.addFlashAttribute("success", "Create Customer is successful.");
+		status.setComplete();
+		return "redirect:/broadband-user/crm/customer/query/1";
 	}
 	
 

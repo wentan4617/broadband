@@ -16,9 +16,7 @@
 <mapper namespace="com.tm.broadband.mapper.CustomerMapper">
 
 	<!-- DEFINITION AREA -->
-	
-	
-	
+
 	<sql id="customerColumns">
 		c.`id` 				as c_id, 
 		c.`login_name` 		as c_login_name, 

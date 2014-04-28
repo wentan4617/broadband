@@ -86,7 +86,20 @@
 										<td>
 											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
 										</td>
-										<td><a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> ${order.customer.user_name } </a></td>
+										<td>
+											<a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> 
+											
+											
+												<c:choose>
+													<c:when test="${order.customer.customer_type == 'personal' }">
+														${order.customer.first_name } ${order.customer.last_name }
+													</c:when>
+													<c:when test="${order.customer.customer_type == 'business' }">
+														${order.customer.organization.org_name }
+													</c:when>
+												</c:choose>
+											</a>				
+										</td>
 										<td>
 											<c:if test="${order.order_total_price != null }">
 												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
