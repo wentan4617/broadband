@@ -70,7 +70,11 @@
                     	</li>
 						<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/crm/customer/create">Create Customer</a>
+                    		<a href="${ctx }/broadband-user/crm/customer/personal/create">Create Personal Customer</a>
+						</li>
+						<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/crm/customer/business/create">Create Business Customer</a>
 						</li>
                     </ul>
 			  	</div>

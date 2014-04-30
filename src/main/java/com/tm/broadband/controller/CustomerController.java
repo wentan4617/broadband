@@ -161,11 +161,20 @@ public class CustomerController {
 			@PathVariable("amount") Double amount) {
 
 		Plan plan = this.planService.queryPlanById(id);
-		if (amount == 20d || amount == 30d || amount == 50d || amount == 100d || amount == 120d || amount == 150d || amount == 180d) {
-			plan.getTopup().setTopup_fee(amount);
-		} else {
-			plan.getTopup().setTopup_fee(20d);
+		if ("ADSL".equals(plan.getPlan_type())) {
+			if (amount == 20d || amount == 50d || amount == 100d || amount == 150d || amount == 200d) {
+				plan.getTopup().setTopup_fee(amount);
+			} else {
+				plan.getTopup().setTopup_fee(20d);
+			}
+		} else if ("VDSL".equals(plan.getPlan_type())) {
+			if (amount == 30d || amount == 60d || amount == 110d || amount == 160d || amount == 200d) {
+				plan.getTopup().setTopup_fee(amount);
+			} else {
+				plan.getTopup().setTopup_fee(30d);
+			}
 		}
+		
 		
 		model.addAttribute("orderPlan", plan);
 		
@@ -551,6 +560,11 @@ public class CustomerController {
 	@RequestMapping(value = "/wifi-solution")
 	public String toWifi(Model model) {
 		return "broadband-customer/wifi-solution";
+	}
+	
+	@RequestMapping(value = "/e-commerce")
+	public String toECommerce(Model model) {
+		return "broadband-customer/e-commerce";
 	}
 	
 	@RequestMapping(value = "/contact-us")

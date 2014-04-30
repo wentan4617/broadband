@@ -39,7 +39,6 @@
 			We offer the best value and price personal broadband plans to you. 
 			We can offer more values and better price telecommunication plans to you.
 		</p>
-
 	</div>
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
@@ -75,7 +74,7 @@
 						<h2 class="panel-title text-center">
 							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
 							<strong style="font-size:60px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</strong>
 							/ mth
 						</h2>
@@ -112,7 +111,7 @@
 						<h2 class="panel-title text-center">
 							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
 							<strong style="font-size:60px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</strong>
 							/ mth
 						</h2>
@@ -148,7 +147,7 @@
 						<h2 class="panel-title text-center">
 							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
 							<strong style="font-size:60px;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</strong>
 							/ mth
 						</h2>

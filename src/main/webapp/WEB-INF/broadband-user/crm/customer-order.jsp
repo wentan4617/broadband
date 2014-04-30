@@ -6,20 +6,18 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <style>
-<!--
-	#collapseCustomerOrder .form-group {
-		margin-bottom:4px;
-	}
--->
+#collapseCustomerOrder .form-group {
+	margin-bottom:4px;
+}
 </style>
 
-<div class="panel-group" id="customerOrderAccordion">
-	<div class="panel panel-default">
+<div id="customerOrderAccordion">
+	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-toggle="collapse"
-					data-parent="#customerOrderAccordion" href="#collapseCustomerOrder">Order
-					Detail</a>
+				<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerOrderAccordion" href="#collapseCustomerOrder">
+					Order Detail
+				</a>
 			</h4>
 		</div>
 		<div id="collapseCustomerOrder" class="panel-collapse collapse in">
@@ -27,9 +25,8 @@
 			<c:forEach var="customerOrder" items="${customer.customerOrders }">
 				<form class="form-horizontal">
 					<div class="panel-body">
-						<div class="page-header" style="margin:0">
-							<h3 class="text-success"><strong>Order Information</strong></h3>
-						</div>
+						<h4 class="text-success">Order Information</h4>
+						<hr/>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -211,16 +208,23 @@
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-6">&nbsp;</label>
-									<div class="col-md-6">
-										<a id="${customerOrder.id}" class="btn btn-success pull-right" data-name="${customerOrder.id}_order_info_edit" style="width:140px;">Update Order</a>
-									</div>
+									<div class="col-md-6">&nbsp;</div>
 								</div>
 							</div>
 						</div>
-						<hr />
-						<div class="page-header" style="margin:0">
-							<h3 class="text-success"><strong>PPPoE Information</strong></h3>
+						<hr/>
+						<div class="row">
+							<div class="col-md-10"></div>
+							<div class="col-md-2">
+								<a id="${customerOrder.id}" class="btn btn-success btn-lg btn-block" data-name="${customerOrder.id}_order_info_edit" >Update Order</a>
+							</div>
 						</div>
+						
+						
+						<!-- pppoe -->
+						<hr />
+						<h4 class="text-success">PPPoE Information</h4>
+						<hr />
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -238,9 +242,6 @@
 							</div>
 							<div class="col-md-6">
 								<div class="form-group">
-									<div class="col-md-6"></div>
-								</div>
-								<div class="form-group">
 									<label for="pppoe_loginname" class="control-label col-md-6"><!-- PPPoE Login Name --></label>
 									<div class="col-md-6">
 										<input id="${customerOrder.id}_pppoe_loginname_input" class="form-control input-sm" placeholder="PPPoE Login Name"/>
@@ -252,27 +253,36 @@
 										<input id="${customerOrder.id}_pppoe_password_input" class="form-control input-sm" placeholder="PPPoE Password"/>
 									</div>
 								</div>
-								<div class="form-group">
-									<label class="control-label col-md-6"></label>
-									<div class="col-md-6">
-										<c:if test="${customerOrder.pppoe_loginname!=null}">
-											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="${customerOrder.id}_pppoe_edit" style="width:140px;">Update PPPoE</a>
-										</c:if>
-										<c:if test="${customerOrder.pppoe_loginname==null}">
-											<a data-val="${customerOrder.id}"
-												class="btn btn-success pull-right" data-name="${customerOrder.id}_pppoe_save" style="width:140px;">Save PPPoE</a>
-										</c:if>
-											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="${customerOrder.id}_pppoe_edit" style="display:none;" style="width:140px;">Update PPPoE</a>
-									</div>
-								</div>
+								
 							</div>
 						</div>
 						<hr />
-						<div class="page-header" style="margin:0">
-							<h3 class="text-success"><strong>SV/CVLan Information</strong></h3>
+						<div class="row">
+							<div class="col-md-10"></div>
+							<div class="col-md-2">
+								<c:if test="${customerOrder.pppoe_loginname!=null}">
+									<a data-val="${customerOrder.id}"
+										class="btn btn-danger btn-lg btn-block"
+										data-name="${customerOrder.id}_pppoe_edit"
+										>Update PPPoE</a>
+								</c:if>
+								<c:if test="${customerOrder.pppoe_loginname==null}">
+									<a data-val="${customerOrder.id}"
+										class="btn btn-success btn-lg btn-block"
+										data-name="${customerOrder.id}_pppoe_save"
+										>Save PPPoE</a>
+								</c:if>
+								<a data-val="${customerOrder.id}"
+									class="btn btn-danger btn-lg btn-block"
+									data-name="${customerOrder.id}_pppoe_edit"
+									style="display: none;" >Update PPPoE</a>
+							</div>
 						</div>
+						
+						<!-- SV/CVLan Information -->
+						<hr />
+						<h4 class="text-success">SV/CVLan Information</h4>
+						<hr />
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -301,9 +311,7 @@
 								</div>
 							</div>
 							<div class="col-md-6">
-								<div class="form-group">
-									<div class="col-md-6"></div>
-								</div>
+								
 								<div class="form-group">
 									<label class="control-label col-md-6"><!-- SVLan --></label>
 									<div class="col-md-6">
@@ -328,22 +336,33 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-6"></label>
-									<div class="col-md-6">
-										<c:if test="${customerOrder.order_using_start!=null}">
-											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="${customerOrder.id}_svcvlan_edit">Update SV/CVLan</a>
-										</c:if>
-										<c:if test="${customerOrder.order_using_start==null}">
-											<a data-val="${customerOrder.id}"
-												class="btn btn-success pull-right" data-name="${customerOrder.id}_svcvlan_save">Save SV/CVLan</a>
-										</c:if>
-											<a data-val="${customerOrder.id}"
-												class="btn btn-danger pull-right" data-name="${customerOrder.id}_svcvlan_edit" style="display:none;">Update SV/CVLan</a>
-									</div>
+									<div class="col-md-6">&nbsp;</div>
 								</div>
 							</div>
 						</div>
+						
+						<hr />
+						<div class="row">
+							<div class="col-md-10"></div>
+							<div class="col-md-2">
+								<c:if test="${customerOrder.order_using_start!=null}">
+									<a data-val="${customerOrder.id}"
+										class="btn btn-danger btn-lg btn-block"
+										data-name="${customerOrder.id}_svcvlan_edit">Update
+										SV/CVLan</a>
+								</c:if>
+								<c:if test="${customerOrder.order_using_start==null}">
+									<a data-val="${customerOrder.id}"
+										class="btn btn-success btn-lg btn-block"
+										data-name="${customerOrder.id}_svcvlan_save">Save SV/CVLan</a>
+								</c:if>
+								<a data-val="${customerOrder.id}"
+									class="btn btn-danger btn-lg btn-block"
+									data-name="${customerOrder.id}_svcvlan_edit"
+									style="display: none;">Update SV/CVLan</a>
+							</div>
+						</div>
+
 					</div>
 					<hr />
 					<!-- order details -->
@@ -436,7 +455,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-	        <h3 class="modal-title text-danger" id="updatePSTNModalLabel"><strong>Update PSTN Info</strong></h3>
+	        <h4 class="modal-title text-danger" id="updatePSTNModalLabel"><strong>Update PSTN Info</strong></h4>
 	      </div>
 	      <div class="modal-body">
 			<div class="form-group">
@@ -460,7 +479,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h3 class="modal-title text-danger" id="editOrderInfoModalLabel"><strong>Update Order Info</strong></h3>
+        <h4 class="modal-title text-danger" id="editOrderInfoModalLabel"><strong>Update Order Info</strong></h4>
       </div>
       <div class="modal-body">
 		<div class="form-group">

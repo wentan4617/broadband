@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -18,7 +19,7 @@
 				<li class="active"><a href="${ctx }/plans/plan-no-term/personal"><strong>Personal Plan</strong></a></li>
 				<li><a href="${ctx }/plans/plan-term/business"><strong>Business Plan</strong></a></li>
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
-				<!-- <li><a href="#"><strong>IT Service</strong></a></li> -->
+				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
 				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
 				<li><a href="${ctx }/term-and-conditions"><strong>Terms & Conditions</strong></a></li>
 				<%-- <li class="dropdown">

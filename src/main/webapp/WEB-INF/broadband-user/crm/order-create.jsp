@@ -11,7 +11,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse"
@@ -24,7 +24,7 @@
 					<div class="panel-body">
 					
 						<!-- plan  -->
-						<h4 class="text-success">Create customer order</h4>
+						<h4 class="text-success">Create Customer Order</h4>
 						<hr/>
 						<form:form modelAttribute="customerOrder" id="orderForm" action="${ctx}/broadband-user/crm/customer/order/create" method="post" class="form-horizontal">
 							<div class="form-group">
@@ -89,7 +89,7 @@
 								<h4 class="text-success">Transition Information</h4>
 								<hr/>
 								<div class="form-group">
-									<label for="" class="control-label col-md-3">Your Current Provider Name</label>
+									<label for="" class="control-label col-md-3">Current Provider Name</label>
 									<div class="col-md-4">
 										<form:input path="transition_provider_name" class="form-control" placeholder="" />
 									</div>
@@ -101,13 +101,13 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-3">Your Current Account Number</label>
+									<label for="" class="control-label col-md-3">Current Account Number</label>
 									<div class="col-md-4">
 										<form:input path="transition_account_number" class="form-control" placeholder="" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-3">Your Telecom Number</label>
+									<label for="" class="control-label col-md-3">Telephone Number</label>
 									<div class="col-md-4">
 										<form:input path="transition_porting_number" class="form-control" placeholder="" />
 									</div>
@@ -118,12 +118,12 @@
 							<!-- add-ons btn -->
 							<hr/>
 							<div class="form-group">
-								<div class="col-md-3 col-md-offset-3">
+								<div class="col-md-2 col-md-offset-3">
 									<div class="btn-group">
-									  	<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
+									  	<button type="button" class="btn btn-success btn-lg dropdown-toggle" data-toggle="dropdown">
 									    	Add-ons <span class="caret"></span>
 									 	</button>
-									  	<ul class="dropdown-menu" role="menu">
+									  	<ul class="dropdown-menu">
 									    	<li><a href="javascript:void(0);" id="addHardware">Add Hardware</a></li>
 									    	<li><a href="javascript:void(0);" id="addPSTN">Add PSTN</a></li>
 									    	<li><a href="javascript:void(0);" id="addVoip">Add Voip</a></li>
@@ -132,133 +132,42 @@
 								</div>
 							</div>
 							
-							<!-- declare -->
-							<c:set var="hasHardware" value="0"></c:set>
-							<c:set var="hasPstn" value="0"></c:set>
-							<c:set var="hasVoip" value="0"></c:set>
-							<c:forEach var="cod" items="${customerOrder.customerOrderDetails }">
-								<c:if test="${fn:contains(cod.detail_type, 'hardware') }">
-									<c:set var="hasHardware" value="1"></c:set>
-								</c:if>
-								<c:if test="${fn:contains(cod.detail_type, 'pstn') }">
-									<c:set var="hasPstn" value="1"></c:set>
-								</c:if>
-								<c:if test="${fn:contains(cod.detail_type, 'voip') }">
-									<c:set var="hasVoip" value="1"></c:set>
-								</c:if>
-							</c:forEach>
-							
-								
 							<!-- hardware  -->
-							<div id="hardwareContainer" style="display:${hasHardware == '1' ? 'block': 'none'}">
+							<div id="hardwareContainer" style="display:none;">
 								<hr/>
 								<h4 class="text-success">
 									Add-ons Hardware
 								</h4>
 								<hr/>
-								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
-									<c:if test="${fn:contains(cod.detail_type, 'hardware') }">
-										<div class="form-group" id="hardware_${item.index }" data-enable data-hardware-enable="1" >
-											<div class="col-md-3"></div>
-											<div class="col-md-5">
-												<form:select path="customerOrderDetails[${item.index }].detail_name" class="selectpicker show-tick form-control" items="${hardwares }" itemLabel="hardware_name" itemValue="hardware_name" />
-												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }" />
-											</div>
-											<div class="col-md-2">
-												<div class="input-group">
-													<span class="input-group-addon">$</span>
-													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
-												</div>
-											</div>
-											<div class="col-md-1">
-												<form:input path="customerOrderDetails[${item.index }].detail_unit" class="form-control" />
-											</div>
-											<div class="col-md-1">
-												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="hardware_remove">
-													<span class="glyphicon glyphicon-remove"></span>
-												</a>
-											</div>
-										</div>
-									</c:if>
-								</c:forEach>
-									
 							</div>
 							
 							<!-- PSTN -->
-							<div id="pstnContainer" style="display:${hasPstn == '1' ? 'block': 'none'}">
+							<div id="pstnContainer" style="display:none;">
 								<hr/>
 								<h4 class="text-success">
 									Add-ons PSTN
 								</h4>
 								<hr/>
-								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
-									<c:if test="${fn:contains(cod.detail_type, 'pstn') }">
-										<div class="form-group" id="pstn_${item.index }" data-enable data-pstn-enable="1" >
-											<label for="" class="control-label col-md-3">PSTN</label>
-											<div class="col-md-4">
-												<form:input path="customerOrderDetails[${item.index }].detail_name" class="form-control" placeholder="Personal Landline or Business Landline"/>
-												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }"/>
-											</div>
-											<div class="col-md-2">
-												<form:input path="customerOrderDetails[${item.index }].pstn_number" class="form-control" placeholder="e.g.:5789941"/>
-											</div>
-											<div class="col-md-2">
-												<div class="input-group">
-													<span class="input-group-addon">$</span>
-													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
-												</div>
-											</div>
-											<div class="col-md-1">
-												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="pstn_remove">
-													<span class="glyphicon glyphicon-remove"></span>
-												</a>
-											</div>
-										</div>
-									</c:if>
-								</c:forEach>
 							</div>
 							
-							
 							<!-- Voip -->
-							<div id="voipContainer" style="display:${hasVoip == '1' ? 'block': 'none'}">
+							<div id="voipContainer" style="display:none">
 								<hr/>
 								<h4 class="text-success">
 									Add-ons Voip
 								</h4>
 								<hr/>
-								<c:forEach var="cod" items="${customerOrder.customerOrderDetails }" varStatus="item">
-									<c:if test="${fn:contains(cod.detail_type, 'voip') }">
-										<div class="form-group" id="voip_${item.index }" data-enable data-voip-enable="1" >
-											<label for="" class="control-label col-md-3">Voip</label>
-											<div class="col-md-4">
-												<form:input path="customerOrderDetails[${item.index }].detail_name" class="form-control" placeholder="Voip"/>
-												<form:hidden path="customerOrderDetails[${item.index }].detail_type" id="dtype_${item.index }"/>
-											</div>
-											<div class="col-md-2">
-												<form:input path="customerOrderDetails[${item.index }].pstn_number" class="form-control" placeholder="e.g.:5789941"/>
-											</div>
-											<div class="col-md-2">
-												<div class="input-group">
-													<span class="input-group-addon">$</span>
-													<form:input path="customerOrderDetails[${item.index }].detail_price" class="form-control" />
-												</div>
-											</div>
-											<div class="col-md-1">
-												<a href="javascript:void(0);" class="btn btn-default" data-index="${item.index }" data-name="voip_remove">
-													<span class="glyphicon glyphicon-remove"></span>
-												</a>
-											</div>
-										</div>
-									</c:if>
-								</c:forEach>
 							</div>
 							
 							<hr/>
 							<div class="form-group">
-								<div class="col-md-4 col-md-offset-3">
-									<a href="${ctx}/broadband-user/crm/customer/create/back" class="btn btn-success" id="back">Back</a>
-									<!-- <a href="javascript:void(0);"class="btn btn-success" id="save">Save</a> -->
-									<a href="javascript:void(0);"class="btn btn-success" id="next">Next</a>
+								<div class="col-md-3">
+								</div>
+								<div class="col-md-2">
+									<a href="${ctx}/broadband-user/crm/customer/${customer.customer_type}/create/back" class="btn btn-success btn-lg btn-block" id="back">Back</a>								
+								</div>
+								<div class="col-md-2">
+									<a href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="next">Next</a>
 									<input type="hidden" name="action" id="action"/>
 								</div>
 							</div>
@@ -359,10 +268,6 @@
 		fillTopupSelect(this.value, $('#plan\\.plan_group').val());
 	});
 	
-	$('#save').click(function(){
-		$('#action').val('save');
-		$('#orderForm').submit();
-	});
 	$('#next').click(function(){
 		$('#action').val('next');
 		$('#orderForm').submit();
@@ -421,15 +326,23 @@
 		//alert(price);
 	});
 	
+	var classz = '${customer.customer_type}';
 	
 	$('#addPSTN').click(function(){
 		$('#pstnContainer').css('display', 'block');
 		var index = $('div[data-enable]').length;
 		var html = '';
 		html += '<div class="form-group" id="pstn_' + index+ '" data-enable data-pstn-enable="1" >';
-		html += '	<label for="" class="control-label col-md-3">PSTN</label>';
+		html += '	<label class="control-label col-md-3"></label>';
+		
 		html += '	<div class="col-md-4">';
-		html += '		<input type="text" name="customerOrderDetails[' + index+ '].detail_name" class="form-control" value="Home Landline or Business Landline" placeholder="Home Landline or Business Landline"/>';
+		if (classz == 'business') {
+			html += '	<label class="control-label">Business Phone Line</label>';
+			html += '	<input type="hidden" name="customerOrderDetails[' + index+ '].detail_name" value="Business Phone Line" />';
+		} else if (classz == 'personal') {
+			html += '	<label class="control-label">Home Phone Line</label>';
+			html += '	<input type="hidden" name="customerOrderDetails[' + index+ '].detail_name" value="Home Phone Line" />';
+		}
 		html += '		<input type="hidden" name="customerOrderDetails[' + index+ '].detail_type" value="pstn" id="dtype_' + index+ '"/>';
 		html += '	</div>';
 		html += '	<div class="col-md-2">';
@@ -438,7 +351,7 @@
 		html += '	<div class="col-md-2">';
 		html += '		<div class="input-group">';
 		html += '			<span class="input-group-addon">$</span>';
-		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" value="0.00"/>';
+		html += '			<input type="text" name="customerOrderDetails[' + index+ '].detail_price" class="form-control" value="45.00"/>';
 		html += '		</div>';
 		html += '	</div>';
 		html += '	<div class="col-md-1">';

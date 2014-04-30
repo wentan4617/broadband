@@ -1,6 +1,8 @@
 @CHARSET "UTF-8";
 
-body { padding-top: 70px; }
+body { 
+	//padding-top: 70px; 
+}
 
 #scrollUp {
 	bottom: 20px;

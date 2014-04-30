@@ -56,8 +56,8 @@
 		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
 		  			</a>
-		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" style="margin-top:10px;"> 
-		  				<img src="${ctx }/public/bootstrap3/images/it-services.png" alt="it-services">	
+		  			<a href="${ctx }/e-commerce" class="thumbnail" target="_blank" style="margin-top:10px;"> 
+		  				<img src="${ctx }/public/bootstrap3/images/e-commerce.png" alt="it-services">	
 		  			</a>
 			    	
 			  	</div>

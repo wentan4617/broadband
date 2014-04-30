@@ -21,7 +21,7 @@
 							<label for="password">Password</label>
 							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
 						</div>
-						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg col-md-6" id="signin-btn">login</button>
+						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="signin-btn">Login</button>
 					</form>
 				</div>
 			</div>

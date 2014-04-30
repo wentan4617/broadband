@@ -1,3 +1,4 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
@@ -19,7 +20,21 @@ background-color: #5cb85c;
 </style>
 
 <div class="container">
- 
+
+ 	<div class="page-header" style="margin-top:0;">
+		<h2>
+			Forget your monthly broadband plans, we can offer you a Top Up broadband
+		</h2>
+	</div>
+	<div class="alert alert-info">
+		<p>
+			Free of Charges, Switch from your current broadband suppliers to our Top-Up broadband plans 
+		</p>
+		<p>
+			Easy to apply online or give us call 0800 2 CYBER (29237)
+		</p>
+	</div>
+	
  	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
@@ -39,151 +54,206 @@ background-color: #5cb85c;
 			</a>
 		</li>
 	</ul>
-	<!-- plan content -->
-	<div class="panel panel-default">
-		<div class="panel-body">
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2">
-					<div class="row">
-						<div class="col-md-2"></div>
-						<div class="col-md-4">
-							<a href="javascript:void(0);" class="thumbnail active" data-name="icon" data-id="adsl"> 
-								<img src="${ctx }/public/bootstrap3/images/icon-adsl.png" alt="...">
-							</a>
-						</div>
-						<div class="col-md-4">
-							<a href="javascript:void(0);" class="thumbnail" data-name="icon" data-id="vdsl"> 
-							 	<img src="${ctx }/public/bootstrap3/images/icon-vdsl.png" alt="...">
-							</a>
-						</div>
-						<div class="col-md-2"></div>
-					</div>
-					<div class="row">
-					
-						<!-- adsl ============================================================ -->
-						<div class="alert alert-success" id="adsl-container">
-							<h2>Standard Broadband</h2>
-							<p>Fast reliable broadband available throughout New Zealand.</p>
-							<hr/>
-							<div class="well">
-								<strong>
-									Free initial broadband setup includes a standard connection worth $ 
-									<fmt:formatNumber value="${planMaps['ADSL'][0].plan_new_connection_fee }" type="number" pattern="##00" />
-								</strong>
-							</div>
-							<hr/>
-							<h4>Please choose top-up amount what you needed ? 
-								&nbsp;&nbsp;&nbsp;
-								<select name="adsl-topup-check" class="selectpicker" data-style="btn-success">
-									<option value="20">Top up $ 20</option>
-									<option value="30">Top up $ 30</option>
-									<option value="50">Top up $ 50</option>
-									<option value="80">Top up $ 80</option>
-									<option value="100">Top up $ 100</option>
-									<option value="120">Top up $ 120</option>
-									<option value="150">Top up $ 150</option>
-									<option value="180">Top up $ 180</option>
-								</select>
-							</h4>
-							<hr/>
-							<p class="text-right">
-								<a data-id="${planMaps['ADSL'][0].id}" class="btn btn-success btn-lg" id="adsl-purchase">Continue</a>
-							</p>
-							
-						</div>
-						
-						<!-- vdsl ============================================================ -->
-						<div class="alert alert-success" id="vdsl-container" style="display:none;">
-							<h2>VDSL Broadband</h2>
-							<p>Enjoy broadband that's 3x faster than standard broadband.</p>
-							<hr/>
-							<div class="well">
-								<strong>
-									Free initial broadband setup includes a standard connection worth $ 
-									<fmt:formatNumber value="${planMaps['VDSL'][0].plan_new_connection_fee }" type="number" pattern="##00" />
-								</strong>
-							</div>
-							
-							<hr/>
-							<h4>Please choose top-up amount what you needed ? 
-								&nbsp;&nbsp;&nbsp;
-								<select name="vdsl-topup-check" class="selectpicker" data-style="btn-success">
-									<option value="20">Top up $ 20</option>
-									<option value="30">Top up $ 30</option>
-									<option value="50">Top up $ 50</option>
-									<option value="80">Top up $ 80</option>
-									<option value="100">Top up $ 100</option>
-									<option value="120">Top up $ 120</option>
-									<option value="150">Top up $ 150</option>
-									<option value="180">Top up $ 180</option>
-								</select>
-							</h4>
-							
-							<hr/>
-							<p class="text-right">
-								<a data-id="${planMaps['VDSL'][0].id}" class="btn btn-success btn-lg" id="vdsl-purchase">Continue</a>
-							</p>
-						</div>
-					</div>
+	
+	<div class="row">
+		<div class="col-lg-6">
+			<div class="panel panel-success">
+		  		<div class="panel-heading">
+					<h3 class="panel-title">Naked ADSL Only</h3>
 				</div>
+				<table class="table">
+					<tr>
+						<th>Top-up Price</th>
+						<th>Data</th>
+						<th>Available Days</th>
+						<th>&nbsp;</th>
+					</tr>
+					<tr>
+						<td>$20.00</td>
+						<td>10 GB</td>
+						<td>20 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/20" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$50.00</td>
+						<td>30 GB</td>
+						<td>45 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/50" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$100.00</td>
+						<td>80 GB</td>
+						<td>60 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/100" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$150.00</td>
+						<td>150 GB</td>
+						<td>90 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/150" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$200.00</td>
+						<td>250 GB</td>
+						<td>120 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/200" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-6">
+			<div class="panel panel-success">
+		  		<div class="panel-heading">
+					<h3 class="panel-title">Naked VDSL Only</h3>
+				</div>
+				<table class="table">
+					<tr>
+						<th>Top-up Price</th>
+						<th>Data</th>
+						<th>Available Days</th>
+						<th>&nbsp;</th>
+					</tr>
+					<tr>
+						<td>$30.00</td>
+						<td>10 GB</td>
+						<td>20 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/30" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$60.00</td>
+						<td>30 GB</td>
+						<td>45 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/60" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$110.00</td>
+						<td>80 GB</td>
+						<td>60 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/110" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$160.00</td>
+						<td>150 GB</td>
+						<td>90 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/160" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+					<tr>
+						<td>$200.00</td>
+						<td>250 GB</td>
+						<td>120 days</td>
+						<td>
+							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/200" class="btn btn-success btn-block">Purchase</a>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>
+	
+	<div>
+		<ul>
+			<li>No Terms, No contract </li>
+			<li>Use your own Routers</li>
+			<li>New Connection fee, one off charge $99</li>
+			<li>New Jack-point installation + new connection fee, one off charge $169</li>
+		</ul>
+	</div>
+	
+	<div class="page-header">
+		<h2>
+			Introduction of Top-up broadband plan
+		</h2>
+	</div>
+	<div>
+		<p class="lead">
+			Top-up broadband plan is created by CyberPark Limited in 2014.
+		</p>
+		<p>
+			We broke your traditional understanding to the broadband contract plans and monthly charges method. Convenience services can give you more choices to your broadband plans. You can easily top-up your account and change your monthly data usages. Customers can purchase the top-up voucher from every e-pay system. We also accept credit cards, pay-pal, and account-to-account payment methods. You don’t need change any router when you transit from your current internet service providers to our Top-up broadband plan. Your transition will be automatically change broadband to our service without any gaps. 
+		</p>
+	</div>
+	
+	<div class="page-header">
+		<h2>
+			How can I apply Top-up broadband plan?
+		</h2>
+	</div>
+	<div>
+		<ul>
+			<li>Visit our website www.cyberpark.co.nz and choose “Apply Top-up broadband”</li>
+			<li>Filling your personal details, like name, address, contact phone number</li>
+			<li>If you are transiting from your current internet service providers, please accurately fill the details of your current provider and account number. </li>
+			<li>Submit all your details and select the first top-up value (minimum $20 for 10 GB 20days)</li>
+			<li>New connection has one-off charge $99</li>
+			<li>New Jack-point installation has one-off charge $169</li>
+			<li>If you don’t have ADSL router, we can offer you$50 for TP link ADSL2+ router</li>
+		</ul>
+	</div>
+	
+	<div class="page-header">
+		<h2>
+			What you have in your Top-up broadband plan?
+		</h2>
+	</div>
+	<div>
+		<p>Top-up broadband plan is a Naked ADSL2+ broadband plan. All the data and usage period is based on your Top-up value and your selections. </p>
+	</div>
+	
+	<div class="page-header">
+		<h2>
+			How does Top-up broadband plan works?
+		</h2>
+	</div>
+	<div>
+		<ul>
+			<li>
+				After your application, you will receive a confirmation email and provision confirmation email/message from us. Cyber Park broadband service normally can provide to you in 3 to 5 working days. New connection or New Jack-point installation application may takes longer, and our installation cooperator may contact with you for booking appointment.
+			</li>
+			<li>
+				We will generate your account and passwords. You can log in your account to check your data volume and usage period (expire date). 
+			</li>
+			<li>
+				Payment functions can offer you different methods to Top-up, like credit cards, account-to-account, paypal, or top-up voucher. All these payment methods are security and convenience in NZ market.  	
+			</li>
+			<li>
+				When you overdue your usage period, you broadband service will be automatically suspend in the following 48 hours. After that, your broadband connection will be disconnected and reaction may charges you as a New Connection which costs $99.  
+			</li>
+		</ul>
+	</div>
+	
+	<p>&nbsp;</p>
+	<!-- plan content -->
+
+	<!-- plan content -->
 </div>
 
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript"
-	src="${ctx}/public/bootstrap3/js/holder.js"></script>
-<script type="text/javascript"
-	src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($) {
 	
-	$('.selectpicker').selectpicker();
-
-	$('a[data-name="icon"]').click(function(){
-		var val = $(this).attr('data-id');
-		$('a[data-name="icon"]').removeClass('active');
-		$(this).addClass('active');
-		//alert(val);
-		if (val === 'adsl') {
-			$('#adsl-container').show();
-			$('#vdsl-container').hide();
-			$('#ufb-container').hide();
-		} else if (val === 'vdsl') {
-			$('#vdsl-container').show();
-			$('#adsl-container').hide();
-			$('#ufb-container').hide();
-		} else if (val === 'ufb') {
-			$('#ufb-container').show();
-			$('#adsl-container').hide();
-			$('#vdsl-container').hide();
-		}
-	});
 	
-	$('select[name="adsl-topup-check"]').on('change', function(){
-		var id = $('#adsl-purchase').attr('data-id');
-		var topup_id = this.value;
-		$('#adsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-	});
-	
-	$('select[name="vdsl-topup-check"]').on('change', function(){
-		var id = $('#vdsl-purchase').attr('data-id');
-		var topup_id = this.value;
-		$('#vdsl-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-	});
-	
-	$('select[name="ufb-topup-check"]').on('change', function(){
-		var id = $('#ufb-purchase').attr('data-id');
-		var topup_id = this.value;
-		$('#ufb-purchase').attr('href', '${ctx}/order/' + id + '/topup/' + topup_id);
-	});
-	
-	$('#adsl-purchase').attr('href', '${ctx}/order/' + $('#adsl-purchase').attr('data-id') + '/topup/' + $('select[name="adsl-topup-check"]').val());
-	$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('#vdsl-purchase').attr('data-id') + '/topup/' + $('select[name="vdsl-topup-check"]').val());
-	$('#ufb-purchase').attr('href', '${ctx}/order/' + $('#ufb-purchase').attr('data-id') + '/topup/' + $('select[name="ufb-topup-check"]').val());
 
 })(jQuery);
 </script>

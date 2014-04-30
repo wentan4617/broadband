@@ -86,7 +86,20 @@
 										<td>
 											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
 										</td>
-										<td><a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> ${order.customer.user_name } </a></td>
+										<td>
+											<a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> 
+											
+											
+												<c:choose>
+													<c:when test="${order.customer.customer_type == 'personal' }">
+														${order.customer.first_name } ${order.customer.last_name }
+													</c:when>
+													<c:when test="${order.customer.customer_type == 'business' }">
+														${order.customer.organization.org_name }
+													</c:when>
+												</c:choose>
+											</a>				
+										</td>
 										<td>
 											<c:if test="${order.order_total_price != null }">
 												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
@@ -140,9 +153,7 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($) {
-	
-	
-	
+
 	$('#checkbox_orders_top').click(function() {
 		var b = $(this).prop("checked");
 		if (b) {
@@ -159,18 +170,14 @@
 	});
 
 	$('#paid_to_ordering').click(function() {
-
 		$('#process_way').val('paid to ordering-paid');
 		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});
 	
-	
-
 })(jQuery);
 </script>
 
 <!-- provision customer order information model -->
 <jsp:include page="provision-customer-order-info.jsp" />
-
 <jsp:include page="../footer-end.jsp" />
