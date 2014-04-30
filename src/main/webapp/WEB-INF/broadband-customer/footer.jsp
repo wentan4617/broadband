@@ -11,6 +11,8 @@
 				<a href="${ctx }/about-us">About CyberPark</a>
 				&middot;
 				<a href="${ctx }/term-and-conditions">Terms & Conditions</a>
+				&middot;
+				<a href="${ctx }/contact-us">Contact Us</a>
 			</p>
 	    </footer>
 	</div>

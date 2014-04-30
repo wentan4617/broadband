@@ -6,10 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
@@ -22,16 +24,19 @@ public class ProvisionService {
 	private CustomerOrderMapper customerOrderMapper;
 	private CustomerOrderDetailMapper customerOrderDetailMapper;
 	private ProvisionLogMapper provisionLogMapper;
+	private ContactUsMapper contactUsMapper;
 	
 	@Autowired
 	public ProvisionService(CustomerMapper customerMapper, 
 			CustomerOrderMapper customerOrderMapper,
 			CustomerOrderDetailMapper customerOrderDetailMapper,
-			ProvisionLogMapper provisionLogMapper) {
+			ProvisionLogMapper provisionLogMapper,
+			ContactUsMapper contactUsMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
 		this.provisionLogMapper = provisionLogMapper;
+		this.contactUsMapper = contactUsMapper;
 	}
 
 	public ProvisionService() {}
@@ -84,6 +89,28 @@ public class ProvisionService {
 	@Transactional
 	public void editProvisionLog(ProvisionLog provisionLog){
 		this.provisionLogMapper.updateProvisionLog(provisionLog);
+	}
+	
+	@Transactional
+	public void editContactUs(ContactUs contactUs){
+		this.contactUsMapper.updateContactUs(contactUs);
+	}
+	
+	@Transactional
+	public Page<ContactUs> queryContactUssByPage(Page<ContactUs> page) {
+		page.setTotalRecord(this.contactUsMapper.selectContactUssSum(page));
+		page.setResults(this.contactUsMapper.selectContactUssByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public int queryContactUssSumByPage(Page<ContactUs> page) {
+		return this.contactUsMapper.selectContactUssSum(page);
+	}
+	
+	@Transactional
+	public ContactUs queryContactUsById(int id) {
+		return this.contactUsMapper.selectContactUsById(id);
 	}
 	
 }

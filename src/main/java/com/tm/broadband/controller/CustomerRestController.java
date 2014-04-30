@@ -1,5 +1,7 @@
 package com.tm.broadband.controller;
 
+import java.util.Date;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import com.google.code.kaptcha.Constants;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
@@ -23,6 +27,7 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
+import com.tm.broadband.validator.mark.ContactUsValidatedMark;
 import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
@@ -188,8 +193,7 @@ public class CustomerRestController {
 		json.setUrl("/order/personal/confirm");
 		
 		return json;
-	}
-	
+	}	
 	
 	@RequestMapping(value = "/order/business", method = RequestMethod.POST)
 	public JSONBean<Customer> doOrderBusiness(Model model,
@@ -231,6 +235,32 @@ public class CustomerRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
+		return json;
+	}
+	
+	@RequestMapping(value = "/contact-us", method = RequestMethod.POST)
+	public JSONBean<ContactUs> doContactUs(Model model,
+			@Validated(ContactUsValidatedMark.class) ContactUs contactUs, BindingResult result, 
+			HttpServletRequest req) {
+		
+		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
+		
+		// if verification does not matched!
+		if(!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
+			json.getErrorMap().put("code", "verification code does not matched!");
+			return json;
+		}
+
+		if (result.hasErrors()) {
+			TMUtils.setJSONErrorMap(json, result);
+			return json;
+		}
+		contactUs.setStatus("new");
+		contactUs.setSubmit_date(new Date());
+		this.crmService.createContactUs(contactUs);
+
+		json.getErrorMap().put("alert-error", "Your request has been submited, we will respond you as fast as we can.");
+
 		return json;
 	}
 }

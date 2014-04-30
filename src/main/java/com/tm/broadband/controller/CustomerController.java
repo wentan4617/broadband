@@ -38,7 +38,6 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
@@ -54,7 +53,6 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
@@ -441,8 +439,6 @@ public class CustomerController {
 		return "redirect:/customer/change-password";
 	}
 	
-	
-	
 	@RequestMapping("/customer/topup")
 	public String customerTopup(Model model) {
 		model.addAttribute("home", "active");
@@ -566,9 +562,15 @@ public class CustomerController {
 		return "broadband-customer/wifi-solution";
 	}
 	
+
 	@RequestMapping(value = "/e-commerce")
 	public String toECommerce(Model model) {
 		return "broadband-customer/e-commerce";
+	}
+	
+	@RequestMapping(value = "/contact-us")
+	public String toContactUs(Model model) {
+		return "broadband-customer/contact-us";
 	}
 
 	@RequestMapping(value = "/term-and-conditions")
