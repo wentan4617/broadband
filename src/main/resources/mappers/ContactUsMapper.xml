@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.ContactUsMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	
+	
+	<sql id="contactUsColumns">
+		c.`id` 					as c_id, 
+		c.`first_name` 			as c_first_name, 
+		c.`last_name` 			as c_last_name,
+		c.`email` 				as c_email, 
+		c.`cellphone` 			as c_cellphone, 
+		c.`phone` 				as c_phone, 
+		c.`status` 				as c_status, 
+		c.`content` 			as c_content,
+		c.`submit_date` 		as c_submit_date,
+		c.`respond_date` 		as c_respond_date,
+		c.`respond_content` 	as c_respond_content
+	</sql>
+	
+	<resultMap type="ContactUs" id="contactUsResultMap">
+		<id property="id" column="c_id" />
+		<result property="first_name" column="c_first_name" />
+		<result property="last_name" column="c_last_name" />
+		<result property="email" column="c_email" />
+		<result property="cellphone" column="c_cellphone" />
+		<result property="phone" column="c_phone" />
+		<result property="status" column="c_status" />
+		<result property="content" column="c_content" />
+		<result property="submit_date" column="c_submit_date" />
+		<result property="respond_date" column="c_respond_date" />
+		<result property="respond_content" column="c_respond_content" />
+	</resultMap>
+	
+	<sql id="contactUsWhere">
+		<where>
+			<if test="params.id != null">c.id = #{params.id}</if>
+			<if test="params.first_name != null">and c.first_name = #{params.first_name}</if>
+			<if test="params.last_name != null">and c.last_name = #{params.last_name}</if>
+			<if test="params.email != null">and c.email = #{params.email}</if>
+			<if test="params.cellphone != null">and c.cellphone = #{params.cellphone}</if>
+			<if test="params.phone != null">and c.phone = #{params.phone}</if>
+			<if test="params.status != null">and c.status = #{params.status}</if>
+			<if test="params.contact != null">and c.contact = #{params.contact}</if>
+			<if test="params.submit_date != null">and c.submit_date = #{params.submit_date}</if>
+			<if test="params.respond_date != null">and c.respond_date = #{params.respond_date}</if>
+			<if test="params.respond_content != null">and c.respond_content = #{params.respond_content}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectContactUs" parameterType="ContactUs" resultType="ContactUs">
+		select * from tm_contact_us as c
+		<include refid="contactUsWhere"/>
+	</select>
+	
+	<!-- select contactUs page -->
+	<select id="selectContactUssByPage" parameterType="Page" resultMap="contactUsResultMap">
+		select 
+			<include refid="contactUsColumns"/>
+			from tm_contact_us as c
+			<include refid="contactUsWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select contactUs amount -->
+	<select id="selectContactUssSum" parameterType="Page" resultType="int">
+		select count(*) from tm_contact_us as c
+		<include refid="contactUsWhere"/>
+	</select>
+
+	<!-- select contactUs by id -->
+	<select id="selectContactUsById" parameterType="int" resultType="ContactUs">
+		select * from tm_contact_us where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertContactUs" parameterType="ContactUs" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_contact_us`(`first_name`, `last_name`, `email`, `cellphone`, `phone`, `status`, `content`, `submit_date`, `respond_date`, `respond_content`)
+		VALUES (#{first_name},#{last_name},#{email},#{cellphone},#{phone},#{status},#{content},#{submit_date},#{respond_date},#{respond_content})
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update contactUs -->
+	<update id="updateContactUs" parameterType="ContactUs">
+		update tm_contact_us
+		<set>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="cellphone != null">cellphone = #{cellphone},</if>
+			<if test="phone != null">phone = #{phone},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="content != null">content = #{content},</if>
+			<if test="submit_date != null">submit_date = #{submit_date},</if>
+			<if test="respond_date != null">respond_date = #{respond_date},</if>
+			<if test="respond_content != null">respond_content = #{respond_content}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteContactUsById" parameterType="int">
+		DELETE FROM tm_contact_us WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

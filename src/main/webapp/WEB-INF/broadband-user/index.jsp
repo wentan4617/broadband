@@ -108,6 +108,13 @@
                     		<a href="${ctx }/broadband-user/provision/customer/view/1/paid">Provision Customer Order</a>
                     	</li>
                     </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">View Contact Us</a>
+                    	</li>
+                    </ul>
 			  	</div>
 			</div>
         </div>

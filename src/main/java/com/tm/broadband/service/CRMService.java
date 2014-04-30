@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.mapper.CompanyDetailMapper;
+import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -26,6 +27,7 @@ import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
@@ -60,6 +62,7 @@ public class CRMService {
 	private CompanyDetailMapper companyDetailMapper;
 	private NotificationMapper notificationMapper;
 	private OrganizationMapper organizationMapper;
+	private ContactUsMapper contactUsMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -79,7 +82,8 @@ public class CRMService {
 			MailerService mailerService,
 			NotificationMapper notificationMapper,
 			SmserService smserService,
-			OrganizationMapper organizationMapper) {
+			OrganizationMapper organizationMapper,
+			ContactUsMapper contactUsMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -92,6 +96,7 @@ public class CRMService {
 		this.notificationMapper = notificationMapper;
 		this.smserService = smserService;
 		this.organizationMapper = organizationMapper;
+		this.contactUsMapper = contactUsMapper;
 	}
 	
 	
@@ -472,6 +477,11 @@ public class CRMService {
 	@Transactional
 	public void createCustomer(Customer customer) {
 		this.customerMapper.insertCustomer(customer);
+	}
+
+	@Transactional
+	public void createContactUs(ContactUs contactUs) {
+		this.contactUsMapper.insertContactUs(contactUs);
 	}
 
 	@Transactional

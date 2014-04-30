@@ -4,21 +4,12 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-	<!-- <login-config>
-		<auth-method>CLIENT-CERT</auth-method>
-		<realm-name>Client Cert Users-only Area</realm-name>
-	</login-config>
+	<!-- <login-config> <auth-method>CLIENT-CERT</auth-method> <realm-name>Client 
+		Cert Users-only Area</realm-name> </login-config> <security-constraint> <web-resource-collection> 
+		<web-resource-name>SSL</web-resource-name> <url-pattern>/home</url-pattern> 
+		</web-resource-collection> <user-data-constraint> <transport-guarantee>CONFIDENTIAL</transport-guarantee> 
+		</user-data-constraint> </security-constraint> -->
 
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>SSL</web-resource-name>
-			<url-pattern>/home</url-pattern>
-		</web-resource-collection>
-		<user-data-constraint>
-			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
-	</security-constraint> -->
-	
 	<welcome-file-list>
 		<welcome-file></welcome-file>
 	</welcome-file-list>
@@ -62,6 +53,28 @@
 		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
+	<!-- kaptcha -->
+	<servlet>
+		<servlet-name>Kaptcha</servlet-name>
+		<servlet-class>com.google.code.kaptcha.servlet.KaptchaServlet</servlet-class>
+		<init-param>
+			<param-name>kaptcha.image.width</param-name>
+			<param-value>140</param-value>
+		</init-param>
+		<init-param>
+			<param-name>kaptcha.image.height</param-name>
+			<param-value>54</param-value>
+		</init-param>
+		<init-param>
+			<param-name>kaptcha.textproducer.char.length</param-name>
+			<param-value>4</param-value>
+		</init-param>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Kaptcha</servlet-name>
+		<url-pattern>/kaptcha.jpg</url-pattern>
+	</servlet-mapping>
+
 	<!-- spring ws -->
 	<servlet>
 		<servlet-name>spring-ws</servlet-name>
@@ -95,7 +108,7 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-	
+
 	<!-- customer order session filter -->
 	<filter>
 		<filter-name>CustomerOrderSessionFilter</filter-name>
@@ -117,7 +130,7 @@
 		<filter-name>CustomerSessionFilter</filter-name>
 		<url-pattern>/customer/home</url-pattern>
 		<url-pattern>/customer/data</url-pattern>
-		<url-pattern>/customer/details/*</url-pattern> 
+		<url-pattern>/customer/details/*</url-pattern>
 		<url-pattern>/customer/payment/*</url-pattern>
 		<url-pattern>/customer/billing/*</url-pattern>
 	</filter-mapping>
@@ -138,7 +151,7 @@
 		<url-pattern>/broadband-user/system/*</url-pattern>
 		<url-pattern>/broadband-user/sale/*</url-pattern>
 	</filter-mapping>
-	
+
 	<!-- user auth filter -->
 	<filter>
 		<filter-name>UserAuthFilter</filter-name>
@@ -146,7 +159,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>UserAuthFilter</filter-name>
-		
+
 		<!-- Plan Module BEGIN -->
 		<url-pattern>/broadband-user/plan/view/*</url-pattern>
 		<url-pattern>/broadband-user/plan/create</url-pattern>
@@ -155,26 +168,26 @@
 		<url-pattern>/broadband-user/plan/hardware/create</url-pattern>
 		<url-pattern>/broadband-user/plan/hardware/edit/*</url-pattern>
 		<!-- Plan Module END -->
-		
+
 		<!-- CRM Module BEGIN -->
 		<url-pattern>/broadband-user/crm/customer/view/*</url-pattern>
 		<url-pattern>/broadband-user/crm/customer/create</url-pattern>
 		<url-pattern>/broadband-user/crm/customer/edit/*</url-pattern>
 		<!-- CRM Module END -->
-		
+
 		<!-- Billing Module BEGIN -->
 		<url-pattern>/broadband-user/billing/*</url-pattern>
 		<!-- Billing Module END -->
-		
+
 		<!-- Provision Module BEGIN -->
 		<url-pattern>/broadband-user/provision/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/customer/view/*</url-pattern>
 		<!-- Provision Module END -->
-		
+
 		<!-- Data Module BEGIN -->
 		<url-pattern>/broadband-user/data/*</url-pattern>
 		<!-- Data Module END -->
-		
+
 		<!-- System Module BEGIN -->
 		<url-pattern>/broadband-user/system/user/view/*</url-pattern>
 		<url-pattern>/broadband-user/system/user/create</url-pattern>
@@ -185,12 +198,12 @@
 		<url-pattern>/broadband-user/system/company-detail/edit</url-pattern>
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
 		<!-- System Module END -->
-		
+
 		<!-- Sales Module BEGIN -->
 		<url-pattern>/broadband-user/sale/online/ordering/view/*</url-pattern>
 		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
 		<!-- Sales Module END -->
-		
+
 	</filter-mapping>
 
 	<error-page>

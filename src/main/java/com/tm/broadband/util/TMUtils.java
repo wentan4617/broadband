@@ -13,6 +13,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
@@ -107,6 +108,46 @@ public class TMUtils {
 	public static String fillDecimal(String sum){
 		sum = String.valueOf(Math.round((double)Double.valueOf(sum)*100)/100.00);
 		return sum.length()-sum.indexOf(".")-1 < 2 ? sum += "0" : sum;
+	}
+	
+	/*
+	 * mail at value retriever methods begin
+	 */
+	public static void mailAtValueRetriever(Notification noti, ContactUs contactUs){
+		// title begin
+		// retrieve contact us details begin
+		if(noti.getTitle() != null){
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_id>", String.valueOf(preventNull(contactUs.getId()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_first_name>", preventNull(contactUs.getFirst_name())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_last_name>", preventNull(contactUs.getLast_name())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_email>", preventNull(contactUs.getEmail())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_cellphone>", preventNull(contactUs.getCellphone())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_phone>", preventNull(contactUs.getPhone())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_status>", preventNull(contactUs.getStatus())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_content>", preventNull(contactUs.getContent())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_submit_date>", preventNull(contactUs.getSubmit_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_respond_date>", preventNull(contactUs.getRespond_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<contact_us_respond_content>", preventNull(contactUs.getRespond_content())));
+		}
+		// retrieve contact us details end
+		// title end
+		// content begin
+		// retrieve contact us details begin
+		if(noti.getContent() != null){
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_id>", String.valueOf(preventNull(contactUs.getId()))));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_first_name>", preventNull(contactUs.getFirst_name())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_last_name>", preventNull(contactUs.getLast_name())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_email>", preventNull(contactUs.getEmail())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_cellphone>", preventNull(contactUs.getCellphone())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_phone>", preventNull(contactUs.getPhone())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_status>", preventNull(contactUs.getStatus())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_content>", preventNull(contactUs.getContent())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_submit_date>", preventNull(contactUs.getSubmit_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_respond_date>", preventNull(contactUs.getRespond_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<contact_us_respond_content>", preventNull(contactUs.getRespond_content())));
+		}
+		// retrieve contact us details end
+		// content end
 	}
 	
 	/*
@@ -257,6 +298,15 @@ public class TMUtils {
 		}
 		// retrieve order end
 		// content end
+	}
+	
+	public static void mailAtValueRetriever(Notification noti, ContactUs contactUs, CompanyDetail company){
+		if(contactUs!=null){
+			mailAtValueRetriever(noti,contactUs);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
+		}
 	}
 	
 	public static void mailAtValueRetriever(Notification noti, Customer cus, CompanyDetail company){

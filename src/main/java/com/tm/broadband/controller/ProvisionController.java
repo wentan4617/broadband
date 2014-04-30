@@ -17,24 +17,35 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.ProvisionService;
+import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.TMUtils;
 
 @Controller
 public class ProvisionController {
 	
 	private ProvisionService provisionService;
 	private CRMService crmService;
+	private MailerService mailerService;
+	private SystemService systemService;
 
 	@Autowired
-	public ProvisionController(ProvisionService provisionService, CRMService crmService) {
+	public ProvisionController(ProvisionService provisionService, CRMService crmService, MailerService mailerService, SystemService systemService) {
 		this.provisionService = provisionService;
 		this.crmService = crmService;
+		this.mailerService = mailerService;
+		this.systemService = systemService;
 	}
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/view/{pageNo}/{order_status}")
@@ -201,6 +212,64 @@ public class ProvisionController {
 		model.addAttribute("page", page);
 
 		return "broadband-user/provision/provision-log-view";
+	}
+	
+	@RequestMapping(value = "/broadband-user/provision/contact-us/view/{pageNo}/{status}")
+	public String contactUsView(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("status") String status
+			,HttpServletRequest req) {
+
+		Page<ContactUs> page = new Page<ContactUs>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by id desc");
+		page.getParams().put("status", status);
+		page = this.provisionService.queryContactUssByPage(page);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("status", status);
+		model.addAttribute(status + "Active", "active");
+
+		// BEGIN QUERY SUM BY STATUS
+		Page<ContactUs> pageStatusSum = new Page<ContactUs>();
+		pageStatusSum.getParams().put("status", "new");
+		model.addAttribute("newSum", this.provisionService.queryContactUssSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status", "closed");
+		model.addAttribute("closedSum", this.provisionService.queryContactUssSumByPage(pageStatusSum));
+		// END QUERY SUM BY STATUS
+		
+		return "broadband-user/provision/contact-us-view";
+	}
+	
+	@RequestMapping(value = "/broadband-user/provision/contact-us/respond", method = RequestMethod.POST)
+	public String respondContactUs(Model model
+			, @RequestParam("id") Integer id
+			, @RequestParam("email") String email
+			, @RequestParam("content") String content
+			, @RequestParam("respond_content") String respond_content
+			, @RequestParam("pageNo") Integer pageNo
+			,HttpServletRequest req) {
+		
+		ContactUs contactUs = new ContactUs();
+		contactUs.getParams().put("id", id);
+		contactUs.setStatus("closed");
+		contactUs.setRespond_date(new Date());
+		contactUs.setRespond_content(respond_content);
+		
+		this.provisionService.editContactUs(contactUs);
+		
+		contactUs = this.provisionService.queryContactUsById(id);
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("contact-us-response", "email");
+		TMUtils.mailAtValueRetriever(notification, contactUs, companyDetail); // call mail at value retriever
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(email);
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		return "redirect:/broadband-user/provision/contact-us/view/"+pageNo+"/new";
 	}
 
 }

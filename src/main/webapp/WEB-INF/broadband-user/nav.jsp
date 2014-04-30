@@ -113,6 +113,13 @@
                     				Provision Customer Order
                     			</a>
 							</li>
+							<li class="divider"></li>
+							<li>
+                    			<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">
+                    				<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
+                    				View Contact Us
+                    			</a>
+							</li>
 							<!-- <li class="divider"></li>
 							<li>
 								<a href="#">...</a>
