@@ -562,7 +562,6 @@ public class CustomerController {
 		return "broadband-customer/wifi-solution";
 	}
 	
-
 	@RequestMapping(value = "/e-commerce")
 	public String toECommerce(Model model) {
 		return "broadband-customer/e-commerce";
