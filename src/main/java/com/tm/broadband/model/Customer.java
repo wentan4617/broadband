@@ -105,6 +105,7 @@ public class Customer implements Serializable {
 	private String cvlan_ck;
 	private String email_ck;
 
+	// password forget email,phone
 	private String type;
 
 	// when create customer action option

@@ -565,6 +565,11 @@ public class CustomerController {
 	public String toWifi(Model model) {
 		return "broadband-customer/wifi-solution";
 	}
+	
+	@RequestMapping(value = "/e-commerce")
+	public String toECommerce(Model model) {
+		return "broadband-customer/e-commerce";
+	}
 
 	@RequestMapping(value = "/term-and-conditions")
 	public String toTermAndConditions(Model model) {

@@ -17,6 +17,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @RestController
@@ -30,32 +31,21 @@ public class CRMRestController {
 		this.crmService = crmService;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/create", method = RequestMethod.POST)
-	public JSONBean<Customer> doCustomerCreate(Model model, 
+	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
+	public JSONBean<Customer> doCustomerPersonalCreate(Model model, 
 			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result) {
 
-		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
-		
-		if (result.hasErrors()) {
-			return json;
-		}
-		
-		customer.setRegister_date(new Date());
-		customer.setActive_date(new Date());
-		customer.setBalance(0d);
-		
-		if ("save".equals(customer.getAction())) {
-			this.crmService.createCustomer(customer);
-			json.setUrl("/broadband-user/crm/customer/query/redirect");
-		} else if ("next".equals(customer.getAction())) {
-			model.addAttribute("customer", customer);
-			json.setUrl("/broadband-user/crm/customer/order/create");
-		}
-		
-		return json;
+		return this.returnJsonCustomer(model, customer, result);
 	}
 	
-	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
+	@RequestMapping(value = "/broadband-user/crm/customer/business/create", method = RequestMethod.POST)
+	public JSONBean<Customer> doCustomerBusinessCreate(Model model, 
+			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result) {
+
+		return this.returnJsonCustomer(model, customer, result);
+	}
+	
+	private JSONBean<Customer> returnJsonCustomer(Model model, Customer customer, BindingResult result) {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
@@ -83,6 +73,19 @@ public class CRMRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
+		
+		customer.setRegister_date(new Date());
+		customer.setActive_date(new Date());
+		customer.setBalance(0d);
+		
+		if ("save".equals(customer.getAction())) {
+			this.crmService.createCustomer(customer);
+			json.setUrl("/broadband-user/crm/customer/query/redirect");
+		} else if ("next".equals(customer.getAction())) {
+			model.addAttribute("customer", customer);
+			json.setUrl("/broadband-user/crm/customer/order/create");
+		}
+		
 		return json;
 	}
 

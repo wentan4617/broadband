@@ -139,7 +139,6 @@ public class SaleController {
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		
 		cod_plan.setDetail_name(plan.getPlan_name());
-		cod_plan.setDetail_name(plan.getPlan_name());
 		cod_plan.setDetail_desc(plan.getPlan_desc());
 		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
@@ -150,6 +149,7 @@ public class SaleController {
 		cod_plan.setDetail_plan_class(plan.getPlan_class());
 		cod_plan.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
 		cod_plan.setDetail_term_period(plan.getTerm_period());
+		customer.getCustomerOrder().setTerm_period(plan.getTerm_period());
 		cod_plan.setDetail_plan_memo(plan.getMemo());
 		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
 		cod_plan.setDetail_type(plan.getPlan_group());
@@ -197,6 +197,7 @@ public class SaleController {
 			cod_pstn.setDetail_expired(new Date());
 			cod_pstn.setDetail_type("pstn");
 			cod_pstn.setDetail_unit(1);
+			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
 			
@@ -208,13 +209,12 @@ public class SaleController {
 			cod_hd.setDetail_unit(1);
 			cod_hd.setIs_post(0);
 			cod_hd.setDetail_type("hardware-router");
-			customer.getCustomerOrder().setHardware_post(customer.getCustomerOrder().getHardware_post() == null ? 1 : customer.getCustomerOrder().getHardware_post() + 1);
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
 		}
 		
 		if (cods != null) {
-			for (CustomerOrderDetail cod : cods) {
+			for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
 				if ("hardware-router".equals(cod.getDetail_type())) {
 					cod.setDetail_is_next_pay(0);
 					cod.setIs_post(0);
@@ -370,13 +370,9 @@ public class SaleController {
 			,BindingResult result
 			,RedirectAttributes attr) {
 		
-		
-		
 		customerCredit.setExpiry_date(
 				"20"+customerCredit.getExpiry_year()
 				+"-"+customerCredit.getExpiry_month());
-		
-		
 		
 		model.addAttribute("panelheading", "Customer Credit Card Information");
 		model.addAttribute("action", "/broadband-user/sale/online/ordering/order/credit/create");

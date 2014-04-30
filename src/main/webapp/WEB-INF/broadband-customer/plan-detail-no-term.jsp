@@ -64,7 +64,7 @@ background-color: #5cb85c;
 							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
 								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
 								<strong style="font-size:100px;"> 
-									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 								</strong>
 								/ mth
 							</p>
@@ -101,7 +101,7 @@ background-color: #5cb85c;
 							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
 								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
 								<strong style="font-size:100px;"> 
-									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
+									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 								</strong>
 								/ mth
 							</p>

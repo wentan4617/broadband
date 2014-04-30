@@ -114,6 +114,7 @@ public class CRMService {
 		cod_plan.setDetail_plan_class(plan.getPlan_class());
 		cod_plan.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
 		cod_plan.setDetail_term_period(plan.getTerm_period());
+		customer.getCustomerOrder().setTerm_period(plan.getTerm_period());
 		cod_plan.setDetail_plan_memo(plan.getMemo());
 		cod_plan.setDetail_unit(plan.getPlan_prepay_months() == null ? 1 : plan.getPlan_prepay_months());
 		cod_plan.setDetail_type(plan.getPlan_group());
@@ -244,6 +245,7 @@ public class CRMService {
 			cod_pstn.setDetail_expired(new Date());
 			cod_pstn.setDetail_type("pstn");
 			cod_pstn.setDetail_unit(1);
+			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
 			
@@ -285,6 +287,11 @@ public class CRMService {
 		
 		this.customerMapper.insertCustomer(customer);
 		//System.out.println("customer id: " + customer.getId());
+		
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getOrganization().setCustomer_id(customer.getId());
+			this.organizationMapper.insertOrganization(customer.getOrganization());
+		}
 		
 		customer.getCustomerOrder().setCustomer_id(customer.getId());
 		
@@ -337,7 +344,6 @@ public class CRMService {
 			customer.getOrganization().setCustomer_id(customer.getId());
 			this.organizationMapper.insertOrganization(customer.getOrganization());
 		}
-		//System.out.println("customer id: " + customer.getId());
 		customerOrder.setCustomer_id(customer.getId());
 		
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
@@ -473,6 +479,10 @@ public class CRMService {
 	@Transactional
 	public void createCustomer(Customer customer) {
 		this.customerMapper.insertCustomer(customer);
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getOrganization().setCustomer_id(customer.getId());
+			this.organizationMapper.insertOrganization(customer.getOrganization());
+		}
 	}
 
 	@Transactional

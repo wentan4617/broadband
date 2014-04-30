@@ -361,7 +361,6 @@ public class CRMController {
 		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
 		customerOrder.getParams().put("id", order_id);
 		
-
 		if (!"order-topup".equals(order_type)) {
 			int nextInvoiceMonth = order_detail_unit;
 			int nextInvoiceDay = -15;
@@ -503,13 +502,15 @@ public class CRMController {
 
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create")
 	public String toCustomerOrderCreate(Model model,
-			@ModelAttribute("customer") 
-			@Validated(CustomerValidatedMark.class) Customer customer,
+			@ModelAttribute("customer") Customer customer,
 			BindingResult result) {
 
-		
 		if (result.hasErrors()) {
-			return "broadband-user/crm/customer-create";
+			if ("personal".equals(customer.getType())) {
+				return "broadband-user/crm/customer-create-personal";
+			} else if ("business".equals(customer.getType())) {
+				return "broadband-user/crm/customer-create-business";
+			}
 		}
 		model.addAttribute("customerOrder", new CustomerOrder());
 		
@@ -519,7 +520,6 @@ public class CRMController {
 		List<Plan> plans = this.planService.queryPlans(plan);
 		model.addAttribute("plans", plans);
 
-		
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
 		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
@@ -530,70 +530,28 @@ public class CRMController {
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create", method = RequestMethod.POST)
 	public String doCustomerOrderCreate(Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
+			@ModelAttribute("customer") Customer customer,
 			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
 			RedirectAttributes attr, @RequestParam("action") String action, SessionStatus status) {
-
-		if (customerOrder.getCustomerOrderDetails() != null) {
-			List<CustomerOrderDetail> removedCods = new ArrayList<CustomerOrderDetail>();
-			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
-				if ("".equals(cod.getDetail_type())) {
-					removedCods.add(cod);
-				} 
-			}
-			customerOrder.getCustomerOrderDetails().removeAll(removedCods);
-		}
-		 
-		if (c_result.hasErrors()) {
-			return "broadband-user/crm/customer-create";
-		}
+		
 		if (co_result.hasErrors()) {
 			return "broadband-user/crm/order-create";
 		}
 		
-		String url = "";
-		if ("save".equals(action)) {
-			url = "redirect:/broadband-user/crm/customer/query/1";
-			//this.crmService.createCustomer(customer);
-			attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
-			status.setComplete();
-		} else if ("next".equals(action)) {
-			url = "redirect:/broadband-user/crm/customer/order/confirm";
-		}
-		
-		return url;
+		return "redirect:/broadband-user/crm/customer/order/confirm";
 	}
 	
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm")
 	public String orderConfirm(Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
-			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
+			@ModelAttribute("customer") Customer customer,
+			@ModelAttribute("customerOrder") CustomerOrder customerOrder,
 			@ModelAttribute("plans") List<Plan> plans, 
 			@ModelAttribute("hardwares") List<Hardware> hardwares, 
 			RedirectAttributes attr) {
 		
-		if (c_result.hasErrors()) {
-			return "broadband-user/crm/customer-create";
-		}
-		if (co_result.hasErrors()) {
-			return "broadband-user/crm/order-create";
-		}
-		
 		customer.setCustomerOrder(customerOrder);
 		customerOrder.setOrder_create_date(new Date());
-		
-		List<CustomerOrderDetail> retains = new ArrayList<CustomerOrderDetail>();
-		if (customerOrder.getCustomerOrderDetails() != null) {
-			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
-				if ("hardware-router".equals(cod.getDetail_type()) 
-						|| "pstn".equals(cod.getDetail_type())
-						|| "voip".equals(cod.getDetail_type())) {
-					retains.add(cod);
-				}
-			}
-		}
-		customerOrder.getCustomerOrderDetails().retainAll(retains);
 		
 		if (plans != null) {
 			for (Plan plan: plans) {
@@ -605,7 +563,6 @@ public class CRMController {
 			}
 		}
 		
-
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		
 		cod_plan.setDetail_name(customerOrder.getPlan().getPlan_name());
@@ -616,10 +573,13 @@ public class CRMController {
 		cod_plan.setDetail_plan_type(customerOrder.getPlan().getPlan_type());
 		cod_plan.setDetail_plan_sort(customerOrder.getPlan().getPlan_sort());
 		cod_plan.setDetail_plan_group(customerOrder.getPlan().getPlan_group());
+		cod_plan.setDetail_plan_class(customerOrder.getPlan().getPlan_class());
+		cod_plan.setDetail_plan_new_connection_fee(customerOrder.getPlan().getPlan_new_connection_fee());
+		cod_plan.setDetail_term_period(customerOrder.getPlan().getTerm_period());
+		customerOrder.setTerm_period(customerOrder.getPlan().getTerm_period());
 		cod_plan.setDetail_plan_memo(customerOrder.getPlan().getMemo());
 		cod_plan.setDetail_unit(customerOrder.getPlan().getPlan_prepay_months() == null ? 1 : customerOrder.getPlan().getPlan_prepay_months());
 		cod_plan.setDetail_type(customerOrder.getPlan().getPlan_group());
-		cod_plan.setDetail_term_period(customerOrder.getPlan().getTerm_period());
 		
 		customerOrder.getCustomerOrderDetails().add(0, cod_plan);
 		
@@ -728,6 +688,33 @@ public class CRMController {
 				
 				customerOrder.getCustomerOrderDetails().add(cod_trans);
 			}
+			
+			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+			if ("personal".equals(customerOrder.getPlan().getPlan_class())) {
+				cod_pstn.setDetail_name("Home Phone Line");
+			} else if ("business".equals(customerOrder.getPlan().getPlan_class())) {
+				cod_pstn.setDetail_name("Business Phone Line");
+			}
+			
+			cod_pstn.setDetail_price(0d);
+			cod_pstn.setDetail_is_next_pay(0);
+			cod_pstn.setDetail_expired(new Date());
+			cod_pstn.setDetail_type("pstn");
+			cod_pstn.setDetail_unit(1);
+			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
+			
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
+			
+			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+			cod_hd.setDetail_name("Free Router");
+			cod_hd.setDetail_price(0d);
+			cod_hd.setDetail_is_next_pay(0);
+			cod_hd.setDetail_expired(new Date());
+			cod_hd.setDetail_unit(1);
+			cod_hd.setIs_post(0);
+			cod_hd.setDetail_type("hardware-router");
+			
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
 		}
 		
 		if (customerOrder.getCustomerOrderDetails() != null) {
@@ -749,30 +736,33 @@ public class CRMController {
 		return "broadband-user/crm/order-confirm";
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/create/back")
-	public String toBackCustomerCreate(Model model) {
-		return "broadband-user/crm/customer-create";
+	@RequestMapping(value = "/broadband-user/crm/customer/{type}/create/back")
+	public String toBackCustomerCreate(Model model,
+			@PathVariable("type") String type) {
+		String url = "";
+		if ("personal".equals(type)) {
+			url = "broadband-user/crm/customer-create-personal";
+		} else if ("business".equals(type)) {
+			url = "broadband-user/crm/customer-create-business";
+		}
+		return url;
 	}
 
 
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create/back")
-	public String toBackOrderCreate(Model model) {
+	public String toBackOrderCreate(Model model,
+			@ModelAttribute("customerOrder") CustomerOrder customerOrder) {
+		customerOrder.setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
+		customerOrder.setHardware_post(0);
 		return "broadband-user/crm/order-create";
 	}
 	
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
 	public String orderSave(Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult c_result,
-			@ModelAttribute("customerOrder") @Validated(CustomerOrderValidatedMark.class) CustomerOrder customerOrder, BindingResult co_result,
+			@ModelAttribute("customer") Customer customer, 
+			@ModelAttribute("customerOrder") CustomerOrder customerOrder,
 			RedirectAttributes attr, SessionStatus status) {
-		
-		if (c_result.hasErrors()) {
-			return "broadband-user/crm/customer-create";
-		}
-		if (co_result.hasErrors()) {
-			return "broadband-user/crm/order-create";
-		}
 		
 		customer.setUser_name(customer.getLogin_name());
 		customerOrder.setOrder_status("pending");

@@ -3,11 +3,9 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <style>
-<!--
-	#provision-customer-order-info-modal .form-group {
-		margin-bottom:6px;
-	}
--->
+#provision-customer-order-info-modal .form-group {
+	margin-bottom:6px;
+}
 </style>
 
 <div class="modal fade" id="provision-customer-order-info-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

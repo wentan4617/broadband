@@ -157,10 +157,7 @@
 									<a  href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="save">Save</a>
 								</div>
 								<div class="col-md-2">
-									<a  href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="save">Next</a>
-								</div>
-								<div class="col-md-2">
-									<input type="reset" value="Reset" class="btn btn-success btn-lg btn-block" />
+									<a  href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="next">Next</a>
 								</div>
 							</div>
 							
@@ -192,22 +189,32 @@
 		radioClass : 'iradio_square-green'
 	});
 	
+	$('.selectpicker').selectpicker(); 
+	
 	$('#save, #next').click(function(){
 		var $btn = $(this);
 		$btn.button('loading');
-		var url = '${ctx}/broadband-user/crm/customer/create';
+		var url = '${ctx}/broadband-user/crm/customer/business/create';
 		var customer = {
 			address: $('#address').val()
 			, cellphone: $('#cellphone').val()
 			, email: $('#email').val()
-			, title: $('#title').val()
-			, first_name: $('#first_name').val()
-			, last_name: $('#last_name').val()
-			, customer_type: 'personal'
+			, organization: {
+				org_name: $('#organization\\.org_name').val()
+				, org_type: $('#organization\\.org_type').val()
+				, org_trading_name: $('#organization\\.org_trading_name').val()
+				, org_register_no: $('#organization\\.org_register_no').val()
+				, org_incoporate_date: $('#organization\\.org_incoporate_date').val()
+				, org_trading_months: $('#organization\\.org_trading_months').val()
+				, holder_name: $('#organization\\.holder_name').val()
+				, holder_job_title: $('#organization\\.holder_job_title').val()
+				, holder_phone: $('#organization\\.holder_phone').val()
+				, holder_email: $('#organization\\.holder_email').val()
+			}
+			, customer_type: 'business'
 			, status: $('#status').val()
 			, action: $btn.attr('id')
 		};
-		customer.action = 'save';
 		//console.log("customer request:");
 		//console.log(customer);
 		$.ajax({

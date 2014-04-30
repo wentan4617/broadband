@@ -591,7 +591,7 @@
 			html += '	<label class="control-label">Home Phone Line</label>';
 			html += '	<input type="hidden" name="detail_name" value="Home Phone Line" />';
 		}
-		html += '	<input type="hidden" name="detail_type" value="pstn" />';
+		html += '		<input type="hidden" name="detail_type" value="pstn" />';
 		html += '	</div>';
 		html += '	<div class="col-sm-4">';
 		html += '		<div class="input-group">';

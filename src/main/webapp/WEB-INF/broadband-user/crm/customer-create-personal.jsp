@@ -132,24 +132,15 @@
 	$('#save, #next').click(function(){
 		var $btn = $(this);
 		$btn.button('loading');
-		var url = '${ctx}/broadband-user/crm/customer/create';
+		var url = '${ctx}/broadband-user/crm/customer/personal/create';
 		var customer = {
 			address: $('#address').val()
 			, cellphone: $('#cellphone').val()
 			, email: $('#email').val()
-			, organization: {
-				org_name: $('#organization\\.org_name').val()
-				, org_type: $('#organization\\.org_type').val()
-				, org_trading_name: $('#organization\\.org_trading_name').val()
-				, org_register_no: $('#organization\\.org_register_no').val()
-				, org_incoporate_date: $('#organization\\.org_incoporate_date').val()
-				, org_trading_months: $('#organization\\.org_trading_months').val()
-				, holder_name: $('#organization\\.holder_name').val()
-				, holder_job_title: $('#organization\\.holder_job_title').val()
-				, holder_phone: $('#organization\\.holder_phone').val()
-				, holder_email: $('#organization\\.holder_email').val()
-			}
-			, customer_type: 'business'
+			, title: $('#title').val()
+			, first_name: $('#first_name').val()
+			, last_name: $('#last_name').val()
+			, customer_type: 'personal'
 			, status: $('#status').val()
 			, action: $btn.attr('id')
 		};

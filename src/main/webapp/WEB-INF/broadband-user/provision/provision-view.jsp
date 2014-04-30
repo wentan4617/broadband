@@ -153,9 +153,7 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($) {
-	
-	
-	
+
 	$('#checkbox_orders_top').click(function() {
 		var b = $(this).prop("checked");
 		if (b) {
@@ -172,18 +170,14 @@
 	});
 
 	$('#paid_to_ordering').click(function() {
-
 		$('#process_way').val('paid to ordering-paid');
 		$('#change_order_status').val($(this).attr('data-val'));
 		$('#provisionForm').submit();
 	});
 	
-	
-
 })(jQuery);
 </script>
 
 <!-- provision customer order information model -->
 <jsp:include page="provision-customer-order-info.jsp" />
-
 <jsp:include page="../footer-end.jsp" />
