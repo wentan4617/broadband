@@ -211,10 +211,11 @@
 					and c.password = #{params.password}
 					and c.status = #{params.status}
 				</when>
-				<when test="params.where =='query_forgotten_password'">
-					<if test="params.cellphone != null">c.cellphone = #{params.cellphone}</if>
-					<if test="params.email != null">or c.email = #{params.email}</if>
-					and c.status = #{params.status}
+				<when test="params.where =='query_forgotten_password_email'">
+					c.email = #{params.email} and c.status = #{params.status}
+				</when>
+				<when test="params.where =='query_forgotten_password_cellphone'">
+					c.cellphone = #{params.cellphone} and c.status = #{params.status}
 				</when>
 				<when test="params.where =='query_order_status'">
 					<if test="params.status != null">c.status = #{params.status}</if>

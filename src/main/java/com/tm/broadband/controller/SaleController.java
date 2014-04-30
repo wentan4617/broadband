@@ -283,6 +283,11 @@ public class SaleController {
 		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId() + "/" + customer.getCustomerOrder().getId();
 	}
 	
+	@RequestMapping(value = "/broadband-user/sales/online-ordering/redirect")
+	public String toOnlineOrdering(Model model){
+		return "redirect:/broadband-user/sale/online/ordering/plans/business";
+	}
+	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{customer_id}/{order_id}")
 	public String toCredit(Model model, @PathVariable("customer_id") Integer customer_id
 			, @PathVariable("order_id") Integer order_id) {
@@ -405,6 +410,11 @@ public class SaleController {
 		model.addAttribute("customer_id",customer_id);
 		model.addAttribute("order_id",order_id);
 		
+		return "redirect:/broadband-user/sale/online-ordering-upload-result";
+	}
+
+	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result")
+	public String toOnlineOrderingResult(Model model){
 		return "/broadband-user/sale/online-ordering-upload-result";
 	}
 	

@@ -201,11 +201,4 @@
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
-<script type="text/javascript">
-(function(){
-	if('${userSession.user_role}' == 'sales'){
-		window.location = '${ctx}/broadband-user/sale/online/ordering/plans/business';
-	}
-})();
-</script>
 <jsp:include page="footer-end.jsp" />
