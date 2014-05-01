@@ -23,11 +23,13 @@
 	 
 	$.jsonValidation = function(json, placement) { // console.log(json);
 		placement = placement || 'top';
-		$('#alertContainer').find('#alert-error').remove();
-		$('input[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');
+		var $alertContainer = $('#alertContainer');
+		$alertContainer.find('#alert-success').remove();
+		$alertContainer.find('#alert-error').remove();
+		$('[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');
 		$.each(json.errorMap, function(key){
 			if (key == "alert-error") {
-				$('#alertContainer').html($('#tempAlertContainer').html());
+				$('#alertContainer').html($('#tempAlertErrorContainer').html());
 				$('#text-error').text(json.errorMap[key]);
 				$('#alert-error').show('normal');
 			} else {
@@ -56,6 +58,15 @@
 				}
 			}
 		});
+		$.each(json.successMap, function(key){
+			if (key == "alert-success") {
+				$('#alertContainer').html($('#tempAlertSuccessContainer').html());
+				$('#text-success').text(json.successMap[key]);
+				$('#alert-success').show('normal');
+			} 
+		});
+		
+		return json.hasErrors;
 	}
 	
 })($);

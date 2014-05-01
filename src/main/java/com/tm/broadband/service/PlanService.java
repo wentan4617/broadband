@@ -79,8 +79,8 @@ public class PlanService {
 	}
 
 	@Transactional
-	public int queryExistNotSelfPlanfByName(String plan_name, int id) {
-		return this.planMapper.selectExistNotSelfPlanfByName(plan_name, id);
+	public int queryExistNotSelfPlanByName(String plan_name, int id) {
+		return this.planMapper.selectExistNotSelfPlanByName(plan_name, id);
 	}
 
 	@Transactional

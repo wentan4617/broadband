@@ -366,11 +366,6 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public int queryExistCustomerByLoginName(String login_name) {
-		return this.customerMapper.selectExistCustomerByLoginName(login_name);
-	}
-	
-	@Transactional
 	public int queryExistCustomer(Customer customer) {
 		return this.customerMapper.selectExistCustomer(customer);
 	}
@@ -444,6 +439,10 @@ public class CRMService {
 	@Transactional
 	public void editCustomer(Customer customer) {
 		this.customerMapper.updateCustomer(customer);
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getOrganization().getParams().put("customer_id", customer.getId());
+			this.organizationMapper.updateOrganization(customer.getOrganization());
+		}
 	}
 
 	@Transactional

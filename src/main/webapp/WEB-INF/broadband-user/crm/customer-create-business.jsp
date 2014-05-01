@@ -13,8 +13,9 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a data-toggle="collapse" data-toggle="collapse"
-							data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">Business Customer Create</a>
+						<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">
+							Business Customer Create
+						</a>
 					</h4>
 				</div>
 				<div id="collapseCustomerInfo" class="panel-collapse collapse in">
@@ -147,14 +148,15 @@
 									</select>
 								</div>
 							</div>
-							<hr/>
+							
 							
 							<!-- button -->
+							<hr/>
 							<div class="form-group">
 								<div class="col-md-4">
 								</div>
 								<div class="col-md-2">
-									<a  href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="save">Save</a>
+									<a href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="save">Save</a>
 								</div>
 								<div class="col-md-2">
 									<a  href="javascript:void(0);"class="btn btn-success btn-lg btn-block" id="next">Next</a>

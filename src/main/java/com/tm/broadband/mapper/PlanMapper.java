@@ -31,7 +31,7 @@ public interface PlanMapper {
 
 	Plan selectPlanById(int id);
 	int selectExistPlanByName(String plan_name);
-	int selectExistNotSelfPlanfByName(String plan_name, int id);
+	int selectExistNotSelfPlanByName(String plan_name, int id);
 
 	List<String> selectDistinctPlanGroup();
 	

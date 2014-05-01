@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
@@ -10,25 +9,34 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-				<!-- Customer Basic Info Module -->
-				<jsp:include page="customer-info.jsp" />
-				
-				<!-- Customer Order Info Module -->
-				<jsp:include page="customer-order.jsp" />
-				
-				<!-- Customer Invoice Info Module -->
-				<jsp:include page="customer-invoice.jsp" />
-				
-				<!-- Customer Transaction Info Module -->
-				<jsp:include page="customer-transaction.jsp" />
+			<!-- Customer Basic Info Module -->
+			<jsp:include page="customer-info.jsp" />
+			
+			<!-- Customer Order Info Module -->
+			<jsp:include page="customer-order.jsp" />
+			
+			<!-- Customer Invoice Info Module -->
+			<jsp:include page="customer-invoice.jsp" />
+			
+			<!-- Customer Transaction Info Module -->
+			<jsp:include page="customer-transaction.jsp" />
 		</div>
 	</div>
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	$('.input-group.date').datepicker({
+	    format: "yyyy-mm-dd",
+	    autoclose: true,
+	    todayHighlight: true
+	});
+	
+	$('.selectpicker').selectpicker(); 
 	
 	// BEGIN CUSTOMER BIRTH DATEPICKER
 	var birth_input = $('input[data-name="customer_birth_input"]').attr('data-val');
@@ -49,14 +57,54 @@
 	    // if customer birth is null then assign new Date(), else assign customer birth
 	}).datepicker('setDate', birth_input || new Date());
 	// END ORG INCOPORATE DATE DATEPICKER
-	
-	
+
 	$('span[data-toggle="tooltip"]').tooltip();
 	
-	
 	// BEGIN customer info modal area
-	$('a[data-name="customer_save"]').click(function(){
-		$('#customer_info_form').submit();
+	$('#updateCustomer').click(function(){
+		var customer_id = '${customer.id}';
+		var customer_type = '${customer.customer_type}';
+		var $btn = $(this);
+		var url = '${ctx}/broadband-user/crm/customer/' + customer_type + '/edit';
+		var customer = {
+			address: $('#address').val()
+			, cellphone: $('#cellphone').val()
+			, email: $('#email').val()
+			, title: $('#title').val()
+			, first_name: $('#first_name').val()
+			, last_name: $('#last_name').val()
+			, organization: {
+				org_name: $('#organization\\.org_name').val()
+				, org_type: $('#organization\\.org_type').val()
+				, org_trading_name: $('#organization\\.org_trading_name').val()
+				, org_register_no: $('#organization\\.org_register_no').val()
+				, org_incoporate_date: $('#organization\\.org_incoporate_date').val()
+				, org_trading_months: $('#organization\\.org_trading_months').val()
+				, holder_name: $('#organization\\.holder_name').val()
+				, holder_job_title: $('#organization\\.holder_job_title').val()
+				, holder_phone: $('#organization\\.holder_phone').val()
+				, holder_email: $('#organization\\.holder_email').val()
+			}
+			, id: customer_id
+			, customer_type: customer_type
+			, balance: $('#balance').val()
+			, status: $('#status').val()
+		};
+		console.log("customer request:");
+		console.log(customer);
+		$btn.button('loading');
+		$.ajax({
+			type: 'post'
+			, contentType:'application/json;charset=UTF-8'         
+	   		, url: url
+		   	, data: JSON.stringify(customer)
+		   	, dataType: 'json'
+		   	, success: function(json){
+		   		$.jsonValidation(json, 'right');
+		   	}
+		}).always(function () {
+			$btn.button('reset');
+	    });
 	});
 	// END customer info modal area	
 	
@@ -64,9 +112,7 @@
 	
 	<c:forEach var="co" items="${customer.customerOrders }">
 		orderIds.push('${co.id}');
-		
-		
-
+	
 		/*
 		 *	BEGIN order modal area
 		 */

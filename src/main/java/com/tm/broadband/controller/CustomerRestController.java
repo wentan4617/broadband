@@ -255,11 +255,12 @@ public class CustomerRestController {
 			TMUtils.setJSONErrorMap(json, result);
 			return json;
 		}
+		
 		contactUs.setStatus("new");
 		contactUs.setSubmit_date(new Date());
 		this.crmService.createContactUs(contactUs);
-
-		json.getErrorMap().put("alert-error", "Your request has been submited, we will respond you as fast as we can.");
+		
+		json.setUrl("/contact-us/redirect");
 
 		return json;
 	}

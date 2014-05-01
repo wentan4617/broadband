@@ -571,6 +571,12 @@ public class CustomerController {
 	public String toContactUs(Model model) {
 		return "broadband-customer/contact-us";
 	}
+	
+	@RequestMapping(value = "/contact-us/redirect")
+	public String toContactUsRedirect(Model model, RedirectAttributes attr) {
+		attr.addFlashAttribute("success", "Your request has been submited, we will respond you as fast as we can.");
+		return "redirect:/contact-us";
+	}
 
 	@RequestMapping(value = "/term-and-conditions")
 	public String toTermAndConditions(Model model) {

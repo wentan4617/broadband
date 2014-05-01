@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -15,7 +14,7 @@
 
 			<jsp:include page="provision-query.jsp" />
 
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
 
@@ -58,9 +57,7 @@
 				
 				
 				<c:if test="${fn:length(page.results) > 0 }">
-					<form id="provisionForm"
-						action="${ctx }/broadband-user/provision/customer/order/status"
-						method="post">
+					<form id="provisionForm" action="${ctx }/broadband-user/provision/customer/order/status" method="post">
 						<input type="hidden" id="process_way" name="process_way" />
 						<input type="hidden" id="order_status" name="order_status" value="${order_status}"/>
 						<input type="hidden" id="change_order_status" name="change_order_status" />
@@ -89,7 +86,6 @@
 										<td>
 											<a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> 
 											
-											
 												<c:choose>
 													<c:when test="${order.customer.customer_type == 'personal' }">
 														${order.customer.first_name } ${order.customer.last_name }
@@ -102,7 +98,7 @@
 										</td>
 										<td>
 											<c:if test="${order.order_total_price != null }">
-												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
+												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,##0.00" />
 											</c:if>
 										</td>
 										<td><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
@@ -133,9 +129,6 @@
 							</tfoot>
 						</table>
 					</form>
-					<!-- <button id="element" type="button" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="left" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
-					  Popover on left
-					</button> -->
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<div class="panel-body">
@@ -146,8 +139,6 @@
 		</div>
 	</div>
 </div>
-
-
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />

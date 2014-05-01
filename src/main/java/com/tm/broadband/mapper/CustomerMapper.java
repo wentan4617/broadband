@@ -30,11 +30,9 @@ public interface CustomerMapper {
 	List<Customer> selectCustomersByPage(Page<Customer> page);
 	int selectCustomersSum(Page<Customer> page);
 	
-	int selectExistCustomerByLoginName(String login_name);
 	int selectExistCustomer(Customer customer);
 	Customer selectCustomerByIdWithCustomerOrder(int id);
 	Customer selectCustomerById(int id);
-	Customer selectCustomerWhenLogin(Customer customer);
 	List<Customer> selectCustomersByRegisterDate(Date start, Date end);
 	
 	/* // END SELECT AREA */

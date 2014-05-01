@@ -62,7 +62,7 @@
 								<div class="form-group">
 									<label for="order_total_price" class="control-label col-md-6">Order Total Price</label>
 									<div class="col-md-6">
-										<p id="${customerOrder.id}_order_total_price" data-val="${customerOrder.order_total_price}" class="form-control-static "><strong><fmt:formatNumber value="${customerOrder.order_total_price}" type="number" pattern="#,#00.00" /></strong></p>
+										<p id="${customerOrder.id}_order_total_price" data-val="${customerOrder.order_total_price}" class="form-control-static "><strong><fmt:formatNumber value="${customerOrder.order_total_price}" type="number" pattern="#,##0.00" /></strong></p>
 									</div>
 								</div>
 								<div class="form-group">

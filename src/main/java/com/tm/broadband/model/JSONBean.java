@@ -13,13 +13,13 @@ public class JSONBean<T> implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private Map<String, String> errorMap = new HashMap<String, String>();
+	private Map<String, String> successMap = new HashMap<String, String>();
 	private T model;
 	private List<T> models;
 	private boolean hasErrors;
 	private String url;
 	
 	public JSONBean() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public Map<String, String> getErrorMap() {
@@ -67,6 +67,14 @@ public class JSONBean<T> implements Serializable {
 		this.models = models;
 	}
 	
+	public Map<String, String> getSuccessMap() {
+		return successMap;
+	}
+
+	public void setSuccessMap(Map<String, String> successMap) {
+		this.successMap = successMap;
+	}
+	
 	public void setJSONErrorMap(BindingResult result) {
 		List<FieldError> fields = result.getFieldErrors();
 		for (FieldError field: fields) {
@@ -74,7 +82,4 @@ public class JSONBean<T> implements Serializable {
 			this.getErrorMap().put(field.getField(), field.getDefaultMessage());
 		}
 	}
-	
-	
-
 }

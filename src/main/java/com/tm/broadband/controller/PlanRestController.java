@@ -76,7 +76,7 @@ public class PlanRestController {
 			return json;
 		}
 
-		int count = this.planService.queryExistNotSelfPlanfByName(plan.getPlan_name(), plan.getId());
+		int count = this.planService.queryExistNotSelfPlanByName(plan.getPlan_name(), plan.getId());
 
 		if (count > 0) {
 			json.getErrorMap().put("plan_name", "duplicate");

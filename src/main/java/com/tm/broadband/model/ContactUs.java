@@ -14,9 +14,6 @@ import com.tm.broadband.validator.mark.ContactUsValidatedMark;
 
 public class ContactUs implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;

@@ -7,12 +7,12 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <div class="panel-group" id="accordion">
-	<div class="panel panel-default">
+	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h4 class="panel-title">
-				<a data-toggle="collapse" data-toggle="collapse"
-					data-parent="#accordion" href="#collapseOne"> 
-					Provision Customer Order Query</a>
+				<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseOne"> 
+					Provision Customer Order Query
+				</a>
 			</h4>
 		</div>
 		<div id="collapseOne" class="panel-collapse collapse in">
