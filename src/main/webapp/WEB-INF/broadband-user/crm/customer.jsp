@@ -6,20 +6,44 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+.panel-default {
+	border-top-color:transparent;
+}
+</style>
+
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<!-- Customer Basic Info Module -->
-			<jsp:include page="customer-info.jsp" />
-			
-			<!-- Customer Order Info Module -->
-			<jsp:include page="customer-order.jsp" />
-			
-			<!-- Customer Invoice Info Module -->
-			<jsp:include page="customer-invoice.jsp" />
-			
-			<!-- Customer Transaction Info Module -->
-			<jsp:include page="customer-transaction.jsp" />
+		
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#customer_edit" data-toggle="tab"><strong>Customer Edit</strong></a></li>
+				<li><a href="#order_detail" data-toggle="tab"><strong>Order Detail</strong></a></li>
+				<li><a href="#invoice_detail" data-toggle="tab"><strong>Invoice Detail</strong></a></li>
+				<li><a href="#transaction_detail" data-toggle="tab"><strong>Transaction Detail</strong></a></li>
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content panel panel-default">
+				<div class="panel-body tab-pane fade in active" id="customer_edit" >				
+					<!-- Customer Basic Info Module -->
+					<jsp:include page="customer-info.jsp" />
+				</div>
+				<div class="panel-body tab-pane fade" id="order_detail" >
+					<!-- Customer Order Info Module -->
+					<jsp:include page="customer-order.jsp" />
+				</div>
+				<div class="panel-body tab-pane fade" id="invoice_detail">
+					<!-- Customer Invoice Info Module -->
+					<jsp:include page="customer-invoice.jsp" />
+				</div>
+				<div class="panel-body tab-pane fade" id="transaction_detail">
+					<!-- Customer Transaction Info Module -->
+					<jsp:include page="customer-transaction.jsp" />
+				</div>
+			</div>
 		</div>
 	</div>
 </div>

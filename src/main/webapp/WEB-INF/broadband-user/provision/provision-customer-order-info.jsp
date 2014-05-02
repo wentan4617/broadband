@@ -13,81 +13,10 @@
 		<div class="modal-content">
 			<div class="modal-body">
 				<div class="row">
-					<div class="col-md-5">
-						<div class="panel panel-default">
-							<div class="panel-heading">
-								<h3 class="panel-title">Customer Information
-									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-								</h3>
-							</div>
-							<div class="panel-body">
-								<form class="form-horizontal" role="form">
-									<div class="form-group">
-								    	<label class="col-sm-4 control-label">Login Name:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_login_name"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">User Name:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_user_name"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">First Name:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_first_name"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Last Name:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_last_name"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Address:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_address"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Email:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_email">email@example.com</p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Phone:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_phone"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Mobile:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static" id="c_cellphone"></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Status:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static"><strong id="c_status"></strong></p>
-								    	</div>
-								  	</div>
-								  	<div class="form-group">
-								    	<label class="col-sm-4 control-label">Register Date:</label>
-								    	<div class="col-sm-8">
-								      		<p class="form-control-static"><strong id="c_register_date"></strong></p>
-								    	</div>
-								  	</div>
-								</form>
-								
-							</div>
-						</div>
-					</div>
-					<div class="col-md-7" id="customerOrderContainer"></div>
+					<div class="col-md-6" id="customer_information_container"></div>
+					<div class="col-md-6" id="customer_order_container"></div>
+				</div>
+				<div class="row">
 					<div class="col-md-12"  id="customerOrderDetailContainer"></div>
 				</div>
 			</div>
@@ -95,6 +24,13 @@
 	</div>
 </div>
 
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+<script type="text/html" id="customer_information_form">
+<jsp:include page="customer-information-form.html" />
+</script>
+<script type="text/html" id="customer_order_form">
+<jsp:include page="customer-order-form.html" />
+</script>
 <script type="text/javascript">
 (function($){
 	
@@ -111,124 +47,17 @@
 		
 		if (order_id != null) {
 			
-			$.get('${ctx}/broadband-user/provision/customer/order/' + order_id, function(customerOrder){
+			$.get('${ctx}/broadband-user/provision/customer/order/' + order_id, function(customerOrder) {
+				
+				$('#customer_information_container').html(tmpl('customer_information_form', customerOrder.customer));
+				$('#customer_order_container').html(tmpl('customer_order_form', customerOrder));
+				
 				//console.log(customerOrder);
 				var customer = customerOrder.customer;
 				if (customer != null) {
-					$('#c_login_name').text(customer.login_name);
-					$('#c_password').text(customer.password);
-					$('#c_user_name').text(customer.user_name);
-					$('#c_first_name').text(customer.first_name);
-					$('#c_last_name').text(customer.last_name);
-					$('#c_address').text(customer.address);
-					$('#c_email').text(customer.email);
-					$('#c_phone').text(customer.phone||"");
-					$('#c_cellphone').text(customer.cellphone);
-					$('#c_status').text(customer.status);
-					$('#c_register_date').text(customer.register_date_str);
-					$('#c_active_date').text(customer.active_date_str);
-					
-					var html = "";
-					
-					html += '<div class="panel panel-default">';
-					html += '	<div class="panel-heading">';
-					html += '	<h3 class="panel-title">';
-					html += '		Order Serial: <span class="text-success"><strong>' + customerOrder.id + '</strong></span>';
-					html += '		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
-					html += '	</h3>';
-					html += '</div>';
-					html += '<div class="panel-body">';
-					html += '<form class="form-horizontal" role="form">';
-					html += '	<h4 class="text-success"><strong>Order Information</strong></h4>';
-					html += '	<hr/>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Hardware needs to be sent:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static" id="hardware_post_' + customerOrder.id + '">' + (customerOrder.hardware_post||0) + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Create Date:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>' + customerOrder.order_create_date_str + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Status:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static text-danger"><strong>' + customerOrder.order_status + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Type:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.order_type + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Broadband Type:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.order_broadband_type + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Total Price:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>$ ' + (customerOrder.order_total_price||"") + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Due:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_due||"") + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order PSTN Amount:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_pstn_count||"") + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order PSTN Rental Amount:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_pstn_rental_amount||"") + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Order Term Period:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static"><strong>' + (customerOrder.order_term_period||"") + '</strong></p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Transition Provider Name:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.transition_provider_name + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Transition Account Holder Name:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.transition_account_holder_name + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Transition Account Number:</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.transition_account_number + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '	<div class="form-group">';
-					html += '		<label class="col-sm-6 control-label">Transition Porting Number :</label>';
-					html += '		<div class="col-sm-6">';
-					html += '			<p class="form-control-static">' + customerOrder.transition_porting_number  + '</p>';
-					html += '		</div>';
-					html += '	</div>';
-					html += '</form>';
 					
 					var detailHtml = "";
-					detailHtml += '<div class="panel panel-default">';
+					detailHtml += '<div class="panel panel-success">';
 					detailHtml += '<div class="panel-heading">';
 					detailHtml += '<h3 class="panel-title">'
 					detailHtml += 'Order Details<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>';
@@ -251,7 +80,7 @@
 					detailHtml += '</thead>';
 					detailHtml += '<tbody>';
 					
-					var  customerOrderDetails = customerOrder.customerOrderDetails;
+					var customerOrderDetails = customerOrder.customerOrderDetails;
 					for (var j = 0, jlen = customerOrderDetails.length; j < jlen; j++) {
 						var customerOrderDetail = customerOrderDetails[j];
 						detailHtml += '<tr id="htr_' + customerOrderDetail.id + '"';
@@ -290,7 +119,7 @@
 					detailHtml += '</table>';
 					detailHtml += '</div>';
 					
-					$('#customerOrderContainer').html(html);
+					//$('#customerOrderContainer').html(html);
 					$('#customerOrderDetailContainer').html(detailHtml);
 					
 					$('a[data-name="show_comment_trackcode"]').each(function(){

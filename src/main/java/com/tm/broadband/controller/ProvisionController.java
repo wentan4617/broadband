@@ -117,14 +117,6 @@ public class ProvisionController {
 		return "broadband-user/provision/provision-view";
 	}
 	
-	@RequestMapping(value = "/broadband-user/provision/customer/order/{id}")
-	@ResponseBody
-	public CustomerOrder queryCustomerOrderWithCustomer(Model model,
-			@PathVariable(value = "id") int id) {
-
-		CustomerOrder customerOrder = this.provisionService.queryCustomerOrderById(id);
-		return customerOrder;
-	}
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/order/detail/set", method = RequestMethod.POST)
 	@ResponseBody
