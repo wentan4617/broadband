@@ -1,0 +1,97 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Order Serial: <span class="text-success"><strong><.=id.></strong></span>
+		</h4>
+	</div>
+	<div class="panel-body">
+		<form class="form-horizontal" role="form">
+			<h4 class="text-success">Order Information</h4>
+			<hr />
+			<div class="form-group">
+				<label class="col-md-6 control-label">Hardware needs to be sent:</label>
+				<div class="col-md-6">
+					<p class="form-control-static" id="hardware_post_<.=id.>"><.=hardware_post||0.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Create Date:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=order_create_date_str.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Status:</label>
+				<div class="col-md-6">
+					<p class="form-control-static text-danger"><.=order_status.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Type:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=order_type.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Broadband Type:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=order_broadband_type.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Total Price:</label>
+				<div class="col-md-6">
+					<p class="form-control-static">$ <.=Number(order_total_price).toFixed(2)||''.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Due:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=order_due_str||''.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order PSTN Amount:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=pstn_count||''.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order PSTN Rental Amount:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=pstn_rental_amount||''.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Order Term Period:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=term_period||''.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Transition Provider Name:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=transition_provider_name.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Transition Account Holder Name:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=transition_account_holder_name.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Transition Account Number:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=transition_account_number.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Transition Porting Number:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=transition_porting_number.></p>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>

@@ -107,7 +107,7 @@
 	</select>
 	
 	<!-- when update plan, check same name -->
-	<select id="selectExistNotSelfPlanfByName" resultType="int">
+	<select id="selectExistNotSelfPlanByName" resultType="int">
 		select count(*) from tm_plan where plan_name = #{0} and id != #{1}
 	</select>
 	

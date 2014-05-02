@@ -16,7 +16,8 @@
 		<div class="col-md-12">
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs">
-				<li class="active"><a href="#a" data-toggle="tab"><strong>BUSINESS PLAN T&C</strong></a></li>
+				<li class="active"><a href="#website" data-toggle="tab"><strong>CyberPark Limited</strong></a></li>
+				<li><a href="#a" data-toggle="tab"><strong>BUSINESS PLAN T&C</strong></a></li>
 				<li><a href="#b" data-toggle="tab"><strong>Business Line WIFI PLANS T&C</strong></a></li>
 				<li><a href="#c" data-toggle="tab"><strong>PERSONALLINE T&C</strong></a></li>
 				<li><a href="#d" data-toggle="tab"><strong>UFB PLAN T&C</strong></a></li>
@@ -24,7 +25,10 @@
 
 			<!-- Tab panes -->
 			<div class="tab-content panel panel-default">
-				<div class="panel-body tab-pane fade in active" id="a" style="background-color: white;">
+				<div class="panel-body tab-pane fade in active" id="website" >				
+					${cyberpark.term_contracts }
+				</div>
+				<div class="panel-body tab-pane fade" id="a" >
 					${cyberpark.tc_business_retails }
 				</div>
 				<div class="panel-body tab-pane fade" id="b">

@@ -116,61 +116,19 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/edit/{id}")
-	public String toCustomerEdit(Model model,
-			@PathVariable(value = "id") int id) {
+	public String toCustomerEdit(Model model, @PathVariable(value = "id") int id) {
 		
 		model.addAttribute("panelheading", "Customer Edit");
-		model.addAttribute("action", "/broadband-user/crm/customer/edit");
-		
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
-		
 		model.addAttribute("customer", customer);
-
 		return "broadband-user/crm/customer";
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/edit")
-	public String doCustomerEdit(Model model
-			,@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer
-			,BindingResult result
-			,RedirectAttributes attr
-			,SessionStatus status) {
-		
-		customer.getOrganization().setOrg_incoporate_date(TMUtils.parseDateYYYYMMDD(customer.getOrganization().getOrg_incoporate_date_str()));
-		customer.setBirth(TMUtils.parseDateYYYYMMDD(customer.getBirth_str()));
-		
-		
-		model.addAttribute("panelheading", "Essential Information");
-		model.addAttribute("action", "/broadband-user/crm/customer/edit");
-
-		if (result.hasErrors()) {
-			//customer = this.crmService.queryCustomerByIdWithCustomerOrder(customer.getId());
-			return "broadband-user/crm/customer";
-		}
-		customer.getParams().put("id", customer.getId());
-		this.crmService.editCustomer(customer);
-		if(this.crmService.queryOrganizationByCustomerId(customer.getId())!=null){
-			customer.getOrganization().getParams().put("customer_id", customer.getId());
-			this.crmService.editOrganization(customer.getOrganization());
-		} else {
-			customer.getOrganization().setCustomer_id(customer.getId());
-			this.crmService.createOrganization(customer.getOrganization());
-		}
-		
-		status.setComplete();
-		
-		attr.addFlashAttribute("success", "Edit Customer " + customer.getLogin_name() + " is successful.");
-		
-		return "redirect:/broadband-user/crm/customer/query/1";
-	}
-	
-	@RequestMapping(value = "/broadband-user/crm/customer/delete")
-	public String doCustomerRemove(Model model
-			,@ModelAttribute("customer") Customer customer
-			,RedirectAttributes attr
-			){
-		this.crmService.removeCustomer(customer.getId());
-		attr.addFlashAttribute("success", "Delete Customer is successful.");
+	@RequestMapping(value = "/broadband-user/crm/customer/remove/{id}")
+	public String customerRemove(Model model,
+			@PathVariable(value = "id") int id, RedirectAttributes attr) {
+		this.crmService.removeCustomer(id);
+		attr.addFlashAttribute("success", "Remove customer is successful.");
 		return "redirect:/broadband-user/crm/customer/query/1";
 	}
 	

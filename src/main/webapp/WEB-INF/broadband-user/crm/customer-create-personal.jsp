@@ -13,8 +13,9 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a data-toggle="collapse" data-toggle="collapse"
-							data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">Personal Customer Create</a>
+						<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerInfoAccordion" href="#collapseCustomerInfo">
+							Personal Customer Create
+						</a>
 					</h4>
 				</div>
 				<div id="collapseCustomerInfo" class="panel-collapse collapse in">

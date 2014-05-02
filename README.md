@@ -6,6 +6,14 @@ Total Mobile Solution Internet Service Web Project
 ###Specification
 
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
+* Naming Conventions
+ * Controller Function Naming Conventions (Plan)
+ * planView (/plan/view/1)(get)
+ * toPlanCreate (/plan/create)(get)
+ * planCreate (/plan/create)(post)
+ * toPlanEdit (/plan/edit/{id})(get)
+ * planEdit (/plan/edit)(post)
+ * planRemove (/plan/remove/{id})(get)
 
 demand version 1.0.6 2014-04-24
 
