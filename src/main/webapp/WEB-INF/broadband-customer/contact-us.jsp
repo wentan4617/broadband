@@ -66,11 +66,11 @@
 								<div class="form-group">
 									<label for="code" class="control-label col-md-3"></label>
 									<div class="col-md-2">
-										<img id="codeImage" style="cursor:pointer;" alt="Verification Code" onclick="refreshCode();" src="kaptcha.jpg" />
+										<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
 										
 									</div>
 									<div class="col-md-3">
-										<a href="javascript:void(0);" onclick="refreshCode();">Not clear? Change other code.</a>
+										<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
 									</div>
 									
 								</div>
@@ -116,7 +116,7 @@
 			, code: $('#code').val()
 		};
 		$.post('${ctx}/contact-us', data, function(json){
-			refreshCode();
+			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
 			if (json.hasErrors) {
 				$.jsonValidation(json, 'right');
 			} else {
@@ -127,10 +127,9 @@
 	    });
 	});
 	
-	function refreshCode(){
-		// refresh verification code
+	$('#codeImage,#codeLink').click(function(){
 		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
-	}
+	});
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />
