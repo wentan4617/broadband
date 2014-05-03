@@ -16,7 +16,7 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-sm-12">
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
@@ -207,7 +207,7 @@
 							</tbody>
 						</table>
 						<div class="row">
-							<div class="col-md-4 col-md-offset-8">
+							<div class="col-sm-4 col-sm-offset-8">
 							
 								<table class="table">
 									<tbody>
@@ -240,10 +240,10 @@
 						</div>
 						<hr/>
 						<div class="row">
-							<div class="col-sm-2">
+							<div class="col-sm-3 col-md-2">
 								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block" >Back</a>
 							</div>
-							<div class="col-sm-2 col-sm-offset-8">
+							<div class="col-sm-3 col-sm-offset-6 col-md-2 col-md-offset-8">
 								<a  class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#save_order_model" >Save Order</a>
 							</div>
 						</div>
