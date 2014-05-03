@@ -407,14 +407,16 @@ public class SaleController {
 		this.crmService.editCustomerOrder(co);
 		// END CREDIT PDF
 		
-		model.addAttribute("customer_id",customer_id);
-		model.addAttribute("order_id",order_id);
 		
-		return "redirect:/broadband-user/sale/online-ordering-upload-result";
+		return "redirect:/broadband-user/sale/online-ordering-upload-result/"+customer_id+"/"+order_id;
 	}
 
-	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result")
-	public String toOnlineOrderingResult(Model model){
+	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result/{customer_id}/{order_id}")
+	public String toOnlineOrderingResult(Model model,
+			@PathVariable("customer_id") Integer customer_id,
+			@PathVariable("order_id") Integer order_id){
+		model.addAttribute("customer_id",customer_id);
+		model.addAttribute("order_id",order_id);
 		return "/broadband-user/sale/online-ordering-upload-result";
 	}
 	
