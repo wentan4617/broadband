@@ -42,6 +42,20 @@ public class PlanController {
 	 * PLAN AREA
 	 */
 	
+	@RequestMapping(value = "/broadband-user/plan/view/{pageNo}")
+	public String planView(Model model,
+			@PathVariable(value = "pageNo") int pageNo) {
+
+		Page<Plan> page = new Page<Plan>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by plan_status desc, plan_type");
+		this.planService.queryPlansByPage(page);
+		model.addAttribute("page", page);
+
+		return "broadband-user/plan/plan-view";
+	}
+	
 	@RequestMapping(value = "/broadband-user/plan/create")
 	public String toPlanCreate(Model model) {
 
@@ -59,19 +73,7 @@ public class PlanController {
 		return "redirect:/broadband-user/plan/view/1";
 	}
 	
-	@RequestMapping(value = "/broadband-user/plan/view/{pageNo}")
-	public String planView(Model model,
-			@PathVariable(value = "pageNo") int pageNo) {
-
-		Page<Plan> page = new Page<Plan>();
-		page.setPageNo(pageNo);
-		page.setPageSize(30);
-		page.getParams().put("orderby", "order by plan_status desc, plan_type");
-		this.planService.queryPlansByPage(page);
-		model.addAttribute("page", page);
-
-		return "broadband-user/plan/plan-view";
-	}
+	
 	
 	@RequestMapping(value = "/broadband-user/plan/edit/{id}")
 	public String toPlanEdit(Model model,

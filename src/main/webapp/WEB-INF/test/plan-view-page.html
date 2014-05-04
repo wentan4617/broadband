@@ -1,0 +1,35 @@
+<thead>
+	<tr>
+		<th>id</th>
+		<th>plan_name</th>
+		<th>plan_group</th>
+		<th>plan_price</th>
+		<th>data_flow</th>
+	</tr>
+</thead>
+<tbody>
+<. for (var i=0; i < results.length; i++) { 
+	var plan = results[i];
+.>
+	<tr>
+		<td><.=plan.id.></td>
+		<td><.=plan.plan_name.></td>
+		<td><.=plan.plan_group.></td>
+		<td><.=plan.plan_price.></td>
+		<td><.=plan.data_flow.></td>
+	</tr>
+<. }.>
+</tbody>
+<tfoot>
+	<tr>
+		<td colspan="10">
+			<ul class="pagination">
+				<. for (var i=1; i < totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+				<. }.>
+			</ul>
+		</td>
+	</tr>
+</tfoot>
