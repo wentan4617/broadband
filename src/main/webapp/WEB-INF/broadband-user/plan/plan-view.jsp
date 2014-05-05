@@ -8,13 +8,24 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+.btn {
+	padding: 0 12px;
+}
+.bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
+	margin-bottom: 0;
+}
+</style>
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+		
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">Plan View&nbsp;
-						<select id="select_operations" class="selectpicker">
+						
+						<select id="select_operations" class="selectpicker pull-right">
 							<option style="font-size:16px;">Multiple Operations</option>
 						    <optgroup label="Essential Operations">
 						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
@@ -43,6 +54,7 @@
 						      	<option value="disable" data-type="plan-status">to Disable</option>
 						    </optgroup>
 						</select>
+						
 					</h4>
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
