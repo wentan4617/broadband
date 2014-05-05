@@ -94,6 +94,7 @@
 			address: $('#address').val()
 			, cellphone: $('#cellphone').val()
 			, email: $('#email').val()
+			, password: $('#password').val()
 			, title: $('#title').val()
 			, first_name: $('#first_name').val()
 			, last_name: $('#last_name').val()
@@ -114,8 +115,8 @@
 			, balance: $('#balance').val()
 			, status: $('#status').val()
 		};
-		console.log("customer request:");
-		console.log(customer);
+		//console.log("customer request:");
+		//console.log(customer);
 		$btn.button('loading');
 		$.ajax({
 			type: 'post'

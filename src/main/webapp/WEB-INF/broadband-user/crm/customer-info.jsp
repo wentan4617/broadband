@@ -53,6 +53,12 @@
 				<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 			</div>
 		</div>
+		<div class="form-group">
+			<label for="password" class="control-label col-md-4">Customer Password</label>
+			<div class="col-md-4">
+				<input type="text" id="password" name="password" value="${customer.password }" class="form-control" data-error-field/>
+			</div>
+		</div>
 		
 		<!-- Personal Information -->
 			
@@ -115,6 +121,12 @@
 			<label for="email" class="control-label col-md-4">Business Email</label>
 			<div class="col-md-4">
 				<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="password" class="control-label col-md-4">Business Password</label>
+			<div class="col-md-4">
+				<input type="text" id="password" name="password" value="${customer.password }" class="form-control" data-error-field/>
 			</div>
 		</div>
 		

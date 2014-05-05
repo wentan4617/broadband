@@ -331,13 +331,13 @@
 				<div class="form-group">
 					<label class="control-label col-md-6"><!-- SVLan --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_svlan_input" class="form-control input-sm" placeholder="SVLan" value="1"/>
+						<input id="${customerOrder.id}_svlan_input" class="form-control input-sm" placeholder="SVLan" />
 					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-md-6"><!-- CVLan --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_cvlan_input" class="form-control input-sm" placeholder="CVLan" value="1"/>
+						<input id="${customerOrder.id}_cvlan_input" class="form-control input-sm" placeholder="CVLan" />
 					</div>
 				</div>
 				<div class="form-group">
