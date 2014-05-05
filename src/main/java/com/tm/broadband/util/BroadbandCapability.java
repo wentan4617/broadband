@@ -51,7 +51,7 @@ public class BroadbandCapability {
 	}
 	
 	// Retrieves HTTP responded content
-	public String getHttpResult(String urlPath) throws Exception {
+	private String getHttpResult(String urlPath) throws Exception {
 		URL url = new URL(urlPath);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.connect();
