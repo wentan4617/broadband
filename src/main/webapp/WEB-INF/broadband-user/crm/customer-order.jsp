@@ -60,7 +60,7 @@
 					<label for="order_total_price" class="control-label col-md-6">Order Total Price</label>
 					<div class="col-md-6">
 						<p id="${customerOrder.id}_order_total_price" data-val="${customerOrder.order_total_price}" class="form-control-static ">
-							<fmt:formatNumber value="${customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
+							$ <fmt:formatNumber value="${customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
 						</p>
 					</div>
 				</div>

@@ -92,11 +92,11 @@
 										${plan.plan_sort }
 									</td>
 									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
+										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,##0.00" />
 										
 									</td>
 									<td>
-										<fmt:formatNumber value="${plan.plan_new_connection_fee }" type="number" pattern="#,#00.00" />
+										<fmt:formatNumber value="${plan.plan_new_connection_fee }" type="number" pattern="#,##0.00" />
 										
 									</td>
 									<td>${plan.data_flow }</td>
