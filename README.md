@@ -5,6 +5,7 @@ Total Mobile Solution Internet Service Web Project
 
 ###Specification
 
+* 编写测试文档（测试数据填写规范），测试行程表（测试时间段，例如11，1，3，5点各测一轮），上报测试结果
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 * Naming Conventions
  * Controller Function Naming Conventions (Plan)
