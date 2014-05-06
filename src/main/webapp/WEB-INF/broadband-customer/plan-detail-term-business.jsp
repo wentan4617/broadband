@@ -27,6 +27,12 @@
 	background-color: #f2dede;
 	border-color: #ebccd1;
 }
+.modal {
+	z-index: 140;
+}
+.modal-backdrop{
+	z-index: 130;
+}
 </style>
 
 <div class="container">
@@ -67,7 +73,7 @@
 	<!-- adsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-primary">ADSL + Business Phone Line</span>
+			<span class="label label-primary" id="adsl">ADSL + Business Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -87,7 +93,7 @@
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 
 					   	<p class="text-center">
-							<a href="${ctx }/order/${plan.id}" class="btn btn-default btn-lg btn-block" id="adsl-purchase" data-name="purchase">Purchase</a> 
+							<a class="btn btn-default btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -104,7 +110,7 @@
 	<!-- vdsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-info">VDSL + Business Phone Line</span>
+			<span class="label label-info" id="vdsl">VDSL + Business Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -123,7 +129,7 @@
 				 	<div class="panel-body">
 						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a href="${ctx }/order/${plan.id}"  class="btn btn-default btn-lg btn-block" id="vdsl-purchase" data-name="purchase">Purchase</a> 
+							<a class="btn btn-default btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -140,7 +146,7 @@
 	<!-- ufb -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-danger">UFB + Business Phone Line</span>
+			<span class="label label-danger" id="ufb">UFB + Business Phone Line</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -159,7 +165,7 @@
 				 	<div class="panel-body">
 						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a href="${ctx }/order/${plan.id}"  class="btn btn-default btn-lg btn-block" id="ufb-purchase" data-name="purchase">Purchase</a> 
+							<a class="btn btn-default btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -171,12 +177,79 @@
 			</div>	
 		</c:forEach>
 	</div>
-
-
-
 </div>
+
+<!-- Check Address Modal -->
+<div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="margin-top:55px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="checkAddressModalLabel">Check your address whether the service can be installed</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="input-group">
+							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
+							<span class="input-group-btn">
+								<button class="btn btn-success btn-lg" type="button" id="goCheck">Go</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="checkResult"></div>
+			
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
+<script type="text/html" id="result_tmpl">
+<jsp:include page="resultAddressCheck.html" />
+</script>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+<script type="text/javascript">
+(function($){
+	var select_plan_id = "";
+	var select_plan_type = "";
+	
+	$('#goCheck').click(function(){
+		var address = $('#address').val();
+		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
+		if (address != '') {
+			$.get('${ctx}/address/check/' + address, function(broadband){
+				broadband.href = '${ctx}/order/' + select_plan_id;
+				broadband.type = select_plan_type;
+				$('#checkResult').html(tmpl('result_tmpl', broadband));
+				$('a[data-toggle="tooltip"]').tooltip();
+				$('#continue-selected-plan').click(function(){
+					$.get('${ctx}/do/service/', function(){
+						window.location.href = broadband.href;
+					});
+				});
+		   	});
+		} else {
+			alert('Please enter a real address.');
+		}
+	});
+	
+	$('a[data-name="purchase"]').click(function(){
+		select_plan_id = $(this).attr('data-id');
+		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
+		$('#checkResult').empty();
+		$('#checkAddressModal').modal('show');
+	});
+})(jQuery);
+</script>
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />
