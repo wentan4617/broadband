@@ -141,7 +141,7 @@ public class CustomerRestController {
 				customer.getParams().put("cellphone", customer.getLogin_name());
 			}
 			
-			json.getErrorMap().put("alert-error", msg);
+			json.getSuccessMap().put("alert-success", msg);
 			
 		}
 		return json;

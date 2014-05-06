@@ -65,22 +65,29 @@
 			</div>
 		</div>
 	</div>
+	<p><.=scheduled.></p>
 	<. if ( (type=='adsl' && adsl_available) || (type=='vdsl' && vdsl_available) || (type=='ufb' && ufb_available)){.>
 	
 	<div class="alert alert-info">
-		Congratulations!! Your selected broadband type is available on your area, you can click Continue Button to the next step, or you can choose any of the available types above.
+		<p>
+			Congratulations!! Your selected broadband type is available on your area, you can click Continue Button to the next step, or you can choose any of the available types above.
+		</p>
 	</div>
 	
 	<.} else if(!adsl_available && !vdsl_available && !ufb_available) { .>
 	
 	<div class="alert alert-danger">
-		Sorry, your provided address is not in our Network coverage map, please make sure this address is correct and in the range of New Zealand.
+		<p>
+			Sorry, your provided address is not in our Network coverage map, please make sure this address is correct and in the range of New Zealand.
+		</p>
 	</div>
 	
 	<.}else {.>
 	
 	<div class="alert alert-warning">
-		Unfortunately, your selected broadband type is not available on your area, please choose any of the available types above.
+		<p>
+			Unfortunately, your selected broadband type is not available on your area, please choose any of the available types above.
+		</p>
 	</div>
 	
 	<.}.>

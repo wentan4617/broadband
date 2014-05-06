@@ -44,7 +44,7 @@ public class BroadbandRestController {
 			broadband.setUfb_available(true);
 		} 
 		
-		broadband.setScheduled(message.substring(message.lastIndexOf(",")));
+		broadband.setScheduled(message.substring(message.lastIndexOf(",") + 1));
 		
 		customer.setAddress(address);
 		
