@@ -15,6 +15,10 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+ 
+ demand version 1.0.7 2014-05-06
+ 
+ * 比如说，那个忘记密码，发手机短信的，还是要加验证码，不然一个手机可以无限发(steven, 2014-05-06)
 
 demand version 1.0.6 2014-04-24
 
