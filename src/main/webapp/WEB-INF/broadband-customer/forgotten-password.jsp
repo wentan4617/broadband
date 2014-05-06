@@ -69,11 +69,7 @@
 			, type: $('input[name="type"]:checked').val()
 		};
 		$.post('${ctx}/forgotten-password', data, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
-				window.location.href='${ctx}' + json.url;
-			}
+			$.jsonValidation(json, 'right');
 		}, 'json').always(function () {
 			$btn.button('reset');
 	    });
