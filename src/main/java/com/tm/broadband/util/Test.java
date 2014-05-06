@@ -13,7 +13,6 @@ public class Test {
 		// Random random = new Random();
 		// System.out.println(pwds[random.nextInt(36)]);
 		String finalResult = BroadbandCapability.getCapabilityResultByAddress("290 Queen Street, Auckland");
-		System.out.println(finalResult);
 	}
 
 }

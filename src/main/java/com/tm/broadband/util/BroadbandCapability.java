@@ -14,12 +14,21 @@ public class BroadbandCapability {
 		
 		// BEGIN GeocodeGenerator
 		String geoResult = getHttpResult("http://maps.googleapis.com/maps/api/geocode/xml?address="+address.replace(" ", "%20")+"&sensor=true");
-		String lat = geoResult.substring(geoResult.indexOf("<lat>")+5, geoResult.indexOf("</lat>"));
-		String lng = geoResult.substring(geoResult.indexOf("<lng>")+5, geoResult.indexOf("</lng>"));
+		String lat = "";
+		String lng = "";
+		if(geoResult.indexOf("<lat>") > 0){
+			lat = geoResult.substring(geoResult.indexOf("<lat>")+5, geoResult.indexOf("</lat>"));
+			lng = geoResult.substring(geoResult.indexOf("<lng>")+5, geoResult.indexOf("</lng>"));
+		}
 		// END GeocodeGenerator
 		
 		// BEGIN CapabilityGenerator
+		String capTemp = "";
 		String capResult = getHttpResult("http://chorus-viewer.ufbmaps.co.nz/jsonp/point-details?lat="+lat+"&lng="+lng+"&zoom=16&maplayers=1;3&search_type=S&callback=jQuery1110047775714145973325_1399286171375&_=1399286171411");
+		if(capResult.indexOf("scheduled:<\\/h4><ul><li>") > 0){
+			capTemp = capResult.substring(capResult.indexOf("scheduled:<\\/h4><ul><li>"));
+			capTemp = capTemp.substring(capTemp.indexOf("<li>")+4, capTemp.indexOf("<\\/li>"));
+		}
 		String[] broadbandTypes = { "Broadband > 10 Mbps", "Broadband > 20 Mbps", "Business fibre available" };
 		// END CapabilityGenerator
 
@@ -45,6 +54,10 @@ public class BroadbandCapability {
 			if(i+1 < broadbandTypes2.length){
 				finalResult += ",";
 			}
+		}
+		
+		if(!"".equals(capTemp)){
+			finalResult += "," + capTemp;
 		}
 		
 		return finalResult;
