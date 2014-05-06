@@ -110,6 +110,8 @@ public class Customer implements Serializable {
 
 	// when create customer action option
 	private String action;
+	
+	private boolean serviceAvailable;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -455,4 +457,13 @@ public class Customer implements Serializable {
 		this.action = action;
 	}
 
+	public boolean isServiceAvailable() {
+		return serviceAvailable;
+	}
+
+	public void setServiceAvailable(boolean serviceAvailable) {
+		this.serviceAvailable = serviceAvailable;
+	}
+
+	
 }

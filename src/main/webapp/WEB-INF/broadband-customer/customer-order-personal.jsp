@@ -68,9 +68,18 @@ background-color: #5cb85c;
 							<hr/>
 							
 							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Your Address</label>
+								<label for="address" class="control-label col-md-4">Your Address ${customer.serviceAvailable }</label>
 								<div class="col-md-8">
-									<input type="text" id="address" name="address" value="${customer.address }" class="form-control" data-error-field data-placement="top"/>
+									
+									<c:choose>
+										<c:when test="${customer.address!=null&&customer.serviceAvailable}">
+											<p class="form-control-static">${customer.address }</p>
+											<input type="hidden" id="address" name="address" value="${customer.address }" />
+										</c:when>
+										<c:otherwise>
+											<input type="text" id="address" name="address" value="${customer.address }" class="form-control" data-error-field data-placement="top"/>
+										</c:otherwise>
+									</c:choose>
 								</div>
 							</div>
 							
@@ -450,6 +459,7 @@ background-color: #5cb85c;
 		var url = '${ctx}/order/personal';
 		var customer = {
 			address: $('#address').val()
+			, serviceAvailable: ${customer.serviceAvailable}
 			, cellphone: $('#cellphone').val()
 			, email: $('#email').val()
 			, title: $('#title').val()

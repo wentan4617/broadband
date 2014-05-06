@@ -10,7 +10,7 @@ import java.net.URL;
 public class BroadbandCapability {
 
 	// Retrieves compatible broadband types
-	public String getCapabilityResultByAddress(String address) throws Exception {
+	public static String getCapabilityResultByAddress(String address) throws Exception {
 		
 		// BEGIN GeocodeGenerator
 		String geoResult = getHttpResult("http://maps.googleapis.com/maps/api/geocode/xml?address="+address.replace(" ", "%20")+"&sensor=true");
@@ -64,7 +64,7 @@ public class BroadbandCapability {
 	}
 	
 	// Retrieves HTTP responded content
-	private String getHttpResult(String urlPath) throws Exception {
+	private static String getHttpResult(String urlPath) throws Exception {
 		URL url = new URL(urlPath);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 		connection.connect();

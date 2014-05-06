@@ -13,6 +13,12 @@
 color: #fff;
 background-color: #5cb85c;
 }
+.modal {
+	z-index: 140;
+}
+.modal-backdrop{
+	z-index: 130;
+}
 </style>
 
 
@@ -76,7 +82,7 @@ background-color: #5cb85c;
 					</c:forEach>
 					<hr/>
 					<p class="text-center">
-						<a class="btn btn-success" id="adsl-purchase" data-id="" data-name="purchase">Purchase</a> 
+						<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-name="purchase" data-type="adsl">Purchase</a> 
 					</p>
 				</div>
 			</div>
@@ -112,7 +118,7 @@ background-color: #5cb85c;
 					</c:forEach>
 					<hr/>
 					<p class="text-center">
-						<a class="btn btn-success" id="vdsl-purchase" data-id="" data-name="purchase">Purchase</a> 
+						<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-name="purchase" data-type="vdsl">Purchase</a> 
 					</p>
 				</div>
 			</div>
@@ -163,11 +169,69 @@ background-color: #5cb85c;
 </div>
 
 
+<!-- Check Address Modal -->
+<div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="margin-top:55px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="checkAddressModalLabel">Check your address whether the service can be installed</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="input-group">
+							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
+							<span class="input-group-btn">
+								<button class="btn btn-success btn-lg" type="button" id="goCheck">Go</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="checkResult"></div>
+			
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
+<script type="text/html" id="result_tmpl">
+<jsp:include page="resultAddressCheck.html" />
+</script>
+
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	var select_plan_id = "";
+	var select_plan_type = "";
+	
+	$('#goCheck').click(function(){
+		var address = $('#address').val();
+		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
+		if (address != '') {
+			$.get('${ctx}/address/check/' + address, function(broadband){
+				broadband.href = '${ctx}/order/' + select_plan_id;
+				broadband.type = select_plan_type;
+				$('#checkResult').html(tmpl('result_tmpl', broadband));
+				$('a[data-toggle="tooltip"]').tooltip();
+				$('#continue-selected-plan').click(function(){
+					$.get('${ctx}/do/service/', function(){
+						window.location.href = broadband.href;
+					});
+				});
+		   	});
+		} else {
+			alert('Please enter a real address.');
+		}
+	});
 	
 	$('a[data-name="a-adsl"]').click(function(){
 		
@@ -178,7 +242,7 @@ background-color: #5cb85c;
 		var id = $(this).attr('data-id');
 		$('div[data-id="' + id + '"]').show();
 		
-		$('#adsl-purchase').attr('href', '${ctx}/order/' + id);
+		$('#adsl-purchase').attr('data-id', id);
 	});
 	
 	$('a[data-name="a-vdsl"]').click(function(){
@@ -190,10 +254,10 @@ background-color: #5cb85c;
 		var id = $(this).attr('data-id');
 		$('div[data-id="' + id + '"]').show();
 		
-		$('#vdsl-purchase').attr('href', '${ctx}/order/' + id);
+		$('#vdsl-purchase').attr('data-id', id);
 	});
 		
-	$('a[data-name="a-ufb"]').click(function(){
+	/* $('a[data-name="a-ufb"]').click(function(){
 		
 		$('a[data-name="a-ufb"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
@@ -203,14 +267,21 @@ background-color: #5cb85c;
 		$('div[data-id="' + id + '"]').show();
 		
 		$('#ufb-purchase').attr('href', '${ctx}/order/' + id);
+	}); */
+	$('#adsl-purchase,#vdsl-purchase').click(function(){
+		select_plan_id = $(this).attr('data-id');
+		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
+		$('#checkResult').empty();
+		$('#checkAddressModal').modal('show');
 	});
+	// data-target="#checkAddressModal"
 	
-	$('#adsl-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-adsl"][class="btn btn-success active"]').attr('data-id'));
-	$('#vdsl-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-vdsl"][class="btn btn-success active"]').attr('data-id'));
-	$('#ufb-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-ufb"][class="btn btn-success active"]').attr('data-id'));
+	$('#adsl-purchase').attr('data-id', $('a[data-name="a-adsl"][class="btn btn-success active"]').attr('data-id'));
+	$('#vdsl-purchase').attr('data-id', $('a[data-name="a-vdsl"][class="btn btn-success active"]').attr('data-id'));
+	//$('#ufb-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-ufb"][class="btn btn-success active"]').attr('data-id'));
 
-	
-	
 })(jQuery);
 </script>
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />
