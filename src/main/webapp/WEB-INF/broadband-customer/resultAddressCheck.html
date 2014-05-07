@@ -74,7 +74,7 @@
 	
 	<div class="alert alert-info">
 		<p>
-			Congratulations!! Your selected broadband type is available on your area, you can click Continue Button to the next step, or you can choose any of the available types above.
+			Congratulations!! Your selected broadband type is available on your area, you can click Continue Button to the next step, or you can change to one of the available types above. If you have any questions about this function please contact our customer service(0800 229 237).
 		</p>
 	</div>
 	
@@ -82,15 +82,19 @@
 	
 	<div class="alert alert-danger">
 		<p>
-			Sorry, your provided address is not in our Network coverage map, please make sure this address is correct and in the range of New Zealand.
+			Sorry, your provided address is not in our Network coverage area, please make sure this address is correct and it is in the range of New Zealand. If you have any questions about this function please contact our customer service(0800 229 237).
 		</p>
 	</div>
 	
 	<.}else {.>
 	
+	<div class="alert alert-<.=ufb_available?'info':'danger'.>">
+		<p><.=scheduled.></p>
+	</div>
+	
 	<div class="alert alert-warning">
 		<p>
-			Unfortunately, your selected broadband type is not available on your area, please choose any of the available types above.
+			Unfortunately, your selected broadband type is not available on your area, please change to one of the available types above. If you have any questions about this function please contact our customer service(0800 229 237).
 		</p>
 	</div>
 	

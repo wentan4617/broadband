@@ -40,7 +40,7 @@ public class BroadbandCapability {
 				capNote = "";
 			}
 		}
-		String[] broadbandTypes = { "Broadband > 10 Mbps", "Broadband > 20 Mbps", "Business fibre available", "UFB fibre up to 100 Mbps" };
+		String[] broadbandTypes = { "Broadband > 10 Mbps", "Broadband > 20 Mbps", "Business fibre available", "UFB fibre up to 100 Mbps by May-2014" };
 		// END CapabilityGenerator
 
 		// BEGIN necessary variables
