@@ -11,7 +11,7 @@
 <style>
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
 color: #fff;
-background-color: #5cb85c;
+background-color: #7BC3EC;
 }
 .modal {
 	z-index: 140;
@@ -183,7 +183,9 @@ background-color: #5cb85c;
 						<div class="input-group">
 							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
 							<span class="input-group-btn">
-								<button class="btn btn-success btn-lg" type="button" id="goCheck">Go</button>
+								<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
+									<span class="ladda-label">Go</span>
+								</button>
 							</span>
 						</div>
 					</div>
@@ -207,6 +209,8 @@ background-color: #5cb85c;
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
 	
@@ -217,6 +221,8 @@ background-color: #5cb85c;
 		var address = $('#address').val();
 		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
 		if (address != '') {
+			var l = Ladda.create(this);
+		 	l.start();
 			$.get('${ctx}/address/check/' + address, function(broadband){
 				broadband.href = '${ctx}/order/' + select_plan_id;
 				broadband.type = select_plan_type;
@@ -227,58 +233,39 @@ background-color: #5cb85c;
 						window.location.href = broadband.href;
 					});
 				});
-		   	});
+		   	}).always(function(){ l.stop(); });
 		} else {
 			alert('Please enter a real address.');
 		}
 	});
 	
 	$('a[data-name="a-adsl"]').click(function(){
-		
 		$('a[data-name="a-adsl"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
-		
 		$('div[data-name="p-adsl"]').hide();
 		var id = $(this).attr('data-id');
 		$('div[data-id="' + id + '"]').show();
-		
 		$('#adsl-purchase').attr('data-id', id);
 	});
 	
 	$('a[data-name="a-vdsl"]').click(function(){
-			
 		$('a[data-name="a-vdsl"]').removeClass().addClass('btn btn-default');
 		$(this).addClass('btn btn-success active');
-		
 		$('div[data-name="p-vdsl"]').hide();
 		var id = $(this).attr('data-id');
 		$('div[data-id="' + id + '"]').show();
-		
 		$('#vdsl-purchase').attr('data-id', id);
 	});
-		
-	/* $('a[data-name="a-ufb"]').click(function(){
-		
-		$('a[data-name="a-ufb"]').removeClass().addClass('btn btn-default');
-		$(this).addClass('btn btn-success active');
-		
-		$('div[data-name="p-ufb"]').hide();
-		var id = $(this).attr('data-id');
-		$('div[data-id="' + id + '"]').show();
-		
-		$('#ufb-purchase').attr('href', '${ctx}/order/' + id);
-	}); */
+	
 	$('#adsl-purchase,#vdsl-purchase').click(function(){
 		select_plan_id = $(this).attr('data-id');
 		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
 		$('#checkResult').empty();
 		$('#checkAddressModal').modal('show');
 	});
-	// data-target="#checkAddressModal"
 	
 	$('#adsl-purchase').attr('data-id', $('a[data-name="a-adsl"][class="btn btn-success active"]').attr('data-id'));
 	$('#vdsl-purchase').attr('data-id', $('a[data-name="a-vdsl"][class="btn btn-success active"]').attr('data-id'));
-	//$('#ufb-purchase').attr('href', '${ctx}/order/' + $('a[data-name="a-ufb"][class="btn btn-success active"]').attr('data-id'));
 
 })(jQuery);
 </script>

@@ -15,7 +15,7 @@
 }
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
 color: #fff;
-background-color: #5cb85c;
+background-color: #7BC3EC;
 }
 </style>
 

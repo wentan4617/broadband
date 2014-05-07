@@ -98,7 +98,7 @@
 	<a href="${ctx }/plans/plan-term/personal" class="btn btn-success btn-block" target="_blank">
 		<span class="glyphicon glyphicon-hand-up"></span> Personal Plan
 	</a>
-	<hr/>
+	<hr style="margin: 10px 0;"/>
 	<a href="${ctx }/plans/plan-term/business" class="btn btn-success btn-block" target="_blank">
 		<span class="glyphicon glyphicon-hand-up"></span> Business Plan
 	</a>

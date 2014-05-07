@@ -71,9 +71,9 @@
 					<p>
 						<strong>CyberPark Limited.</strong> 
 					</p>
-					<p>
+					<%-- <p>
 						${cyberpark.address}
-					</p>
+					</p> --%>
 					<p>
 						Give us a call <a href="javascript:void(0);">${cyberpark.telephone}</a>
 					</p>
@@ -83,14 +83,14 @@
 				</address>
 
 			</section>
-			<section id="location">
+			<!-- <section id="location">
 				<div class="page-header">
 					<h1>
 						Location
 					</h1>
 				</div>
 				<div id="map_canvas" style="height:360px"></div>
-			</section>
+			</section> -->
 			
 		</div>
 		<div class="col-md-3">
@@ -105,9 +105,9 @@
 					<li>
 						<a href="#contact">Contact US</a>
 					</li>
-					<li>
+					<!-- <li>
 						<a href="#location">Location</a>
-					</li>
+					</li> -->
 				</ul>
 			</div>
 		</div>
@@ -121,7 +121,7 @@
 	$('body').scrollspy({ target: '.navbar-example' })
 })(jQuery);
 </script>
-<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVW1VF22QhBHMntGWSOt1Vqi5l88cPak8&sensor=true&region=NZ"></script>
+<!-- <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVW1VF22QhBHMntGWSOt1Vqi5l88cPak8&sensor=true&region=NZ"></script>
 <script type="text/javascript">
 (function(){
 	var addresses = [ '${cyberpark.google_map_address}' ];
@@ -150,5 +150,5 @@
 	
 	initialize();
 })();
-</script>
+</script> -->
 <jsp:include page="footer-end.jsp" />
