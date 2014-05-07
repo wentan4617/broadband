@@ -1,10 +1,8 @@
 package com.tm.broadband.controller;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -40,7 +38,7 @@ public class BroadbandRestController {
 		if (message.contains("> 20")) {
 			broadband.setVdsl_available(true);
 		} 
-		if (message.contains("fibre")) {
+		if (message.contains("Business fibre available") || message.contains("Network capability:<\\/h4><ul><li>UFB fibre up to 100 Mbps")) {
 			broadband.setUfb_available(true);
 		} 
 		

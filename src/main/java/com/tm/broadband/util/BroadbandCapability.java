@@ -31,16 +31,24 @@ public class BroadbandCapability {
 		// BEGIN CapabilityGenerator
 		String capNote = "";
 		String capResult = getHttpResult("http://chorus-viewer.ufbmaps.co.nz/jsonp/point-details?lat="+lat+"&lng="+lng+"&zoom=16&maplayers=1;3&search_type=S&callback=jQuery1110047775714145973325_1399286171375&_=1399286171411");
-		if(capResult.indexOf("scheduled:<\\/h4><ul><li>") > 0){
+		
+		// If contain scheduled
+		if(capResult.indexOf("scheduled") > 0){
 			capNote = capResult.substring(capResult.indexOf("scheduled:<\\/h4><ul><li>"));
 			capNote = capNote.substring(capNote.indexOf("<li>")+4, capNote.indexOf("<\\/li>"));
 			
-			// Retrieves note if contained
-			if(!"UFB deployment dates for your area are still being developed".equals(capNote) && !"UFB fibre up to 100 Mbps latest forecast date Apr-2014".equals(capNote)){
-				capNote = "";
-			}
+			// If no scheduled then default
+		} else {
+			capNote = "UFB fibre up to 100 Mbps";
 		}
-		String[] broadbandTypes = { "Broadband > 10 Mbps", "Broadband > 20 Mbps", "Business fibre available", "UFB fibre up to 100 Mbps by May-2014" };
+		
+		String[] broadbandTypes = { 
+				"Broadband > 10 Mbps",
+				"Broadband > 20 Mbps",
+				"Business fibre available",
+				"UFB fibre up to 100 Mbps by May-2014",
+				"Network capability:<\\/h4><ul><li>UFB fibre up to 100 Mbps"
+			};
 		// END CapabilityGenerator
 
 		// BEGIN necessary variables
