@@ -40,7 +40,7 @@ public class BroadbandRestController {
 		if (message.contains("> 20")) {
 			broadband.setVdsl_available(true);
 		} 
-		if (message.contains("fibre available")) {
+		if (message.contains("fibre")) {
 			broadband.setUfb_available(true);
 		} 
 		
