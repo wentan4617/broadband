@@ -97,7 +97,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>${plan.data_flow } GB</strong>	
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>	
 						</h2>
 					</div>
 				</div>
@@ -133,7 +138,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>${plan.data_flow } GB</strong>	
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>
 						</h2>
 					</div>
 				</div>
@@ -170,7 +180,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>${plan.data_flow } GB</strong>	
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>
 						</h2>
 					</div>
 				</div>

@@ -184,8 +184,10 @@ background-color: #7BC3EC;
 											${detail.detail_name }
 										</td>
 										<td>
-											${detail.detail_data_flow } GB
-											
+											<c:choose>
+												<c:when test="${detail.detail_data_flow < 0 }">Unlimited</c:when>
+												<c:otherwise>${detail.detail_data_flow } GB</c:otherwise>
+											</c:choose>
 										</td>
 										<td>${detail.detail_term_period }</td>
 										<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
