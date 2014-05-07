@@ -25,13 +25,33 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Plan View&nbsp;
 						
+						<select id="filter_operations" class="selectpicker pull-right" multiple >
+							<option style="font-size:16px;">Filter Operations</option>
+						    <optgroup label="Filter Plan Group">
+						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
+						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
+						      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
+						    </optgroup>
+						     <optgroup label="Filter Plan Class">
+						    	<option value="personal" data-type="plan-class">to Personal</option>
+						      	<option value="business" data-type="plan-class">to Business</option>
+						    </optgroup>
+						    <optgroup label="Filter Plan Type">
+						    	<option value="ADSL" data-type="plan-type">To ADSL</option>
+						      	<option value="VDSL" data-type="plan-type">To VDSL</option>
+						      	<option value="UFB" data-type="plan-type">to UFB</option>
+						    </optgroup>
+						</select>
+						
+						&nbsp;
+						
 						<select id="select_operations" class="selectpicker pull-right">
 							<option style="font-size:16px;">Multiple Operations</option>
 						    <optgroup label="Essential Operations">
 						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Group">
-						    	<option value="plan-topup" data-type="plan-group">to Plan Topup</option>
+						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
 						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
 						      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
 						    </optgroup>
@@ -57,104 +77,46 @@
 						
 					</h4>
 				</div>
-				<c:if test="${fn:length(page.results) > 0 }">
-					<form id="planForm" action="" method="post">
-					<input type="hidden" name="value"/>
-					<input type="hidden" name="type"/>
-					<table class="table" style="font-size:12px;">
-						<thead >
-							<tr>
-								<th><input type="checkbox" id="checkbox_plans_top" /></th>
-								<th>Plan Name</th>
-								<th>Group</th>
-								<th>Class</th>
-								<th>Type</th>
-								<th>Sort</th>
-								<th>Monthly fee (Inc GST)($)</th>
-								<th>New Connection fee (Inc GST)($)</th>
-								<th>Data Flow (GB)</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="plan" items="${page.results }">
-								<tr class="${plan.plan_status == 'selling' ? 'success' : '' }">
-									<td>
-										<input type="checkbox" name="checkbox_plans" value="${plan.id}"/>
-									</td>
-									<td>
-										<a href="${ctx }/broadband-user/plan/edit/${plan.id}">
-											${plan.plan_name }
-										</a>
-									</td>
-									<td  class="<c:choose>
-										<c:when test="${plan.plan_group=='plan-topup'}">text-danger</c:when>
-										<c:when test="${plan.plan_group=='plan-no-term'}">text-info</c:when>
-										<c:when test="${plan.plan_group=='plan-term'}">text-warning</c:when>
-									</c:choose>">
-										${plan.plan_group }
-									</td>
-									<td>
-										${plan.plan_class }
-									</td>
-									<td>
-										${plan.plan_type }
-									</td>
-									<td>
-										${plan.plan_sort }
-									</td>
-									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,##0.00" />
-										
-									</td>
-									<td>
-										<fmt:formatNumber value="${plan.plan_new_connection_fee }" type="number" pattern="#,##0.00" />
-										
-									</td>
-									<td>${plan.data_flow }</td>
-									<td>${plan.plan_status}</td>
-								</tr>
-							</c:forEach>
-						</tbody>
-						<tfoot>
-						<tr>
-							<td colspan="11">
-								<ul class="pagination">
-									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
-										<li class="${page.pageNo == num ? 'active' : ''}">
-											<a href="${ctx}/broadband-user/plan/view/${num}">${num}</a>
-										</li>
-									</c:forEach>
-								</ul>
-							</td>
-						</tr>
-					</tfoot>
-					</table>
-					</form>
-				</c:if>
-				<c:if test="${fn:length(page.results) <= 0 }">
-					<div class="panel-body">
-						<div class="alert alert-warning">No records have been found.</div>
-					</div>
-				</c:if>
+				
+				<!-- plan view of page table for ajax -->
+				<div id="plan-table"></div>
+				
 			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/html" id="plan_table_tmpl">
+<jsp:include page="plan-view-page.html" />
+</script>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+
 <script type="text/javascript">
 (function($){
+	
+	function doPage(pageNo) {
+		$.get('${ctx}/broadband-user/plan/view/' + pageNo, function(page){ //console.log(page);
+			page.ctx = '${ctx}';
+	   		var $table = $('#plan-table');
+			$table.html(tmpl('plan_table_tmpl', page));
+			$table.find('tfoot a').click(function(){
+				doPage($(this).attr('data-pageNo'));
+			});
+			
+			$('#checkbox_plans_top').click(function(){
+				var b = $(this).prop("checked");
+				if (b) $('input[name="checkbox_plans"]').prop("checked", true);
+				else $('input[name="checkbox_plans"]').prop("checked", false);
+			});
+	   	});
+	}
+	doPage(1);
+	
 	$('.selectpicker').selectpicker();
-	$('#checkbox_plans_top').click(function(){
-		var b = $(this).prop("checked");
-		if (b) {
-			$('input[name="checkbox_plans"]').prop("checked", true);
-		} else {
-			$('input[name="checkbox_plans"]').prop("checked", false);
-		}
-	});
 	
 	$('#select_operations').change(function(){
 		var $this = $(this);
@@ -170,7 +132,6 @@
 			$('#planForm').submit();
 		}
 	});
-	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />

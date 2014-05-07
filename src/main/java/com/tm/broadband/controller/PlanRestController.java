@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.JSONBean;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.validator.mark.HardwareValidatedMark;
@@ -31,6 +33,18 @@ public class PlanRestController {
 	/*
 	 * Plan Controller begin
 	 */
+	
+	@RequestMapping(value = "/broadband-user/plan/view/{pageNo}")
+	public Page<Plan> doPlanView(@PathVariable(value = "pageNo") int pageNo) {
+
+		Page<Plan> page = new Page<Plan>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by plan_status desc, plan_type");
+		this.planService.queryPlansByPage(page);
+
+		return page;
+	}
 	
 	@RequestMapping(value = "/broadband-user/plan/create", method = RequestMethod.POST)
 	public JSONBean<Plan> doPlanCreate(

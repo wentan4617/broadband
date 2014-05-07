@@ -42,17 +42,8 @@ public class PlanController {
 	 * PLAN AREA
 	 */
 	
-	@RequestMapping(value = "/broadband-user/plan/view/{pageNo}")
-	public String planView(Model model,
-			@PathVariable(value = "pageNo") int pageNo) {
-
-		Page<Plan> page = new Page<Plan>();
-		page.setPageNo(pageNo);
-		page.setPageSize(30);
-		page.getParams().put("orderby", "order by plan_status desc, plan_type");
-		this.planService.queryPlansByPage(page);
-		model.addAttribute("page", page);
-
+	@RequestMapping(value = "/broadband-user/plan/view")
+	public String toPlanView() {
 		return "broadband-user/plan/plan-view";
 	}
 	
@@ -63,17 +54,14 @@ public class PlanController {
 		model.addAttribute("panelheading", "Plan Create");
 		model.addAttribute("action", "/broadband-user/plan/create");
 		
-		
 		return "broadband-user/plan/plan";
 	}
 	
 	@RequestMapping("/broadband-user/plan/view/redirect")
 	public String redirectPlanView(RedirectAttributes attr) {
 		attr.addFlashAttribute("success", "Plan Operation is successful.");
-		return "redirect:/broadband-user/plan/view/1";
+		return "redirect:/broadband-user/plan/view";
 	}
-	
-	
 	
 	@RequestMapping(value = "/broadband-user/plan/edit/{id}")
 	public String toPlanEdit(Model model,
@@ -226,7 +214,6 @@ public class PlanController {
 				this.planService.editPlan(plan);
 			}
 		}
-
 		attr.addFlashAttribute("success", "Change selected plan(s)'s group successfully!");
 		return "redirect:/broadband-user/plan/view/1";
 	}
