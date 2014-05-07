@@ -73,7 +73,7 @@
 	<!-- adsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-primary" id="adsl">ADSL + Business Phone Line</span>
+			<span class="label label-primary" id="adsl">ADSL + Business Phone Line&nbsp;&nbsp;&nbsp;(FAST&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -115,7 +115,7 @@
 	<!-- vdsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-info" id="vdsl">VDSL + Business Phone Line</span>
+			<span class="label label-info" id="vdsl">VDSL + Business Phone Line&nbsp;&nbsp;&nbsp;(FASTER&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
 		</h3>
 	</div>
 	<div class="row">
@@ -156,7 +156,7 @@
 	<!-- ufb -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-danger" id="ufb">UFB + Business Phone Line</span>
+			<span class="label label-danger" id="ufb">UFB + Business Phone Line&nbsp;&nbsp;&nbsp;(FASTEST&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
 		</h3>
 	</div>
 	<div class="row">
