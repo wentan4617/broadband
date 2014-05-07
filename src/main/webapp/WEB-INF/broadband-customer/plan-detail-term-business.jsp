@@ -10,7 +10,7 @@
 <style>
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
 	color: #fff;
-	background-color: #5cb85c;
+	background-color: #7BC3EC;
 }
 .panel-primary>.panel-footer {
 	color: #fff;
@@ -93,7 +93,7 @@
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 
 					   	<p class="text-center">
-							<a class="btn btn-default btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -129,7 +129,7 @@
 				 	<div class="panel-body">
 						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-default btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -165,7 +165,7 @@
 				 	<div class="panel-body">
 						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-default btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -193,7 +193,9 @@
 						<div class="input-group">
 							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
 							<span class="input-group-btn">
-								<button class="btn btn-success btn-lg" type="button" id="goCheck">Go</button>
+								<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
+									<span class="ladda-label">Go</span>
+								</button>
 							</span>
 						</div>
 					</div>
@@ -217,6 +219,8 @@
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
 	var select_plan_id = "";
@@ -226,6 +230,8 @@
 		var address = $('#address').val();
 		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
 		if (address != '') {
+			var l = Ladda.create(this);
+		 	l.start();
 			$.get('${ctx}/address/check/' + address, function(broadband){
 				broadband.href = '${ctx}/order/' + select_plan_id;
 				broadband.type = select_plan_type;
@@ -236,7 +242,7 @@
 						window.location.href = broadband.href;
 					});
 				});
-		   	});
+		   	}).always(function(){ l.stop(); });
 		} else {
 			alert('Please enter a real address.');
 		}

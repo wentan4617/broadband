@@ -17,7 +17,7 @@
 					<. if (type=='adsl'){.>
 						<p class="text-center">
 							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:24px;"></span>
+								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
 							</a>
 						</p>
 					<.}.>
@@ -37,7 +37,7 @@
 					<. if (type=='vdsl'){.>
 						<p class="text-center">
 							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:24px;"></span>
+								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
 							</a>
 						</p>
 					<.}.>
@@ -57,7 +57,7 @@
 					<. if (type=='ufb'){.>
 						<p class="text-center">
 							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:24px;"></span>
+								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
 							</a>
 						</p>
 					<.}.>
@@ -65,8 +65,12 @@
 			</div>
 		</div>
 	</div>
-	<p><.=scheduled.></p>
+	
 	<. if ( (type=='adsl' && adsl_available) || (type=='vdsl' && vdsl_available) || (type=='ufb' && ufb_available)){.>
+	
+	<div class="alert alert-<.=ufb_available?'info':'danger'.>">
+		<p><.=scheduled.></p>
+	</div>
 	
 	<div class="alert alert-info">
 		<p>
