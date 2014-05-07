@@ -18,7 +18,7 @@
 			</p>
 			<p>&nbsp;</p>
 			<p>
-				<a href="${ctx }" class="btn btn-success">Go to Home Page</a>
+				<a href="${ctx }/home" class="btn btn-success">Go to Home Page</a>
 			</p>
 		</div>
 	</c:if>

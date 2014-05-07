@@ -10,7 +10,7 @@
 				<span class="icon-bar"></span> 
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx }">
+			<a class="navbar-brand" href="${ctx }/home">
 				<span class="logo"></span> 
 			</a>
 		</div>
