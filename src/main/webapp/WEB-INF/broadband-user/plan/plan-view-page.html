@@ -1,0 +1,77 @@
+<. if(results.length > 0) { .>
+<table class="table" >
+	<thead >
+		<tr>
+			<th><input type="checkbox" id="checkbox_plans_top" /></th>
+			<th>Plan</th>
+			<th>Group</th>
+			<th>Class</th>
+			<th>Type</th>
+			<th>Sort</th>
+			<th>Monthly fee (Inc GST)</th>
+			<th>New Connection fee (Inc GST)</th>
+			<th>Data Flow</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for (var i=0; i < results.length; i++) { 
+		var plan = results[i];
+	.>
+		<tr class="<.=plan.plan_status=='selling'?'success':'' .>">
+			<td>
+				<input type="checkbox" name="checkbox_plans" value="<.=plan.id.>"/>
+			</td>
+			<td>
+				<a href="<.=ctx.>/broadband-user/plan/edit/<.=plan.id.>">
+					<.=plan.plan_name.>
+				</a>
+			</td>
+			<td class="<.=plan.plan_group=='plan-topup'?'text-danger':''.><.=plan.plan_group=='plan-no-term'?'text-info':''.><.=plan.plan_group=='plan-term'?'text-warning':''.>">
+				<.=plan.plan_group.>
+			</td>
+			<td>
+				<.=plan.plan_class .>
+			</td>
+			<td>
+				<.=plan.plan_type .>
+			</td>
+			<td>
+				<.=plan.plan_sort .>
+			</td>
+			<td>
+				$ <.=Number(plan.plan_price).toFixed(2).>
+			</td>
+			<td>
+				$ <.=Number(plan.plan_new_connection_fee).toFixed(2).>
+			</td>
+			<td>
+				<.=plan.data_flow < 0 ? 'Unlimited': plan.data_flow + 'GB'.> 
+			</td>
+			<td>
+				<.=plan.plan_status.>
+			</td>
+		</tr>
+	<. }.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="10">
+				<ul class="pagination">
+					<. for (var i=1; i <= totalPage; i++) { .>
+						<li class="<.=pageNo == i ? 'active' : ''.>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+						</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<. } .>
+

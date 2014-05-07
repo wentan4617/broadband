@@ -20,7 +20,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/plan/view/1">
+								<a href="${ctx}/broadband-user/plan/view">
 									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
 									View Plan
 								</a>

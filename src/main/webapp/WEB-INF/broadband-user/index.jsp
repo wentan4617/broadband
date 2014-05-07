@@ -24,7 +24,7 @@
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/plan/view/1">View Plan</a>
+                    		<a href="${ctx }/broadband-user/plan/view">View Plan</a>
                     	</li>
                     	<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
