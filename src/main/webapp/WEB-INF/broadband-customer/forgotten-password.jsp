@@ -33,6 +33,15 @@
 						<div class="form-group">
 							<input type="text" id="login_name" class="form-control" placeholder="" data-error-field/>
 						</div>
+						<div class="form-group">
+							<input id="code" class="form-control" placeholder="Verification Code" data-error-field/>
+						</div>
+						<div class="form-group">
+							<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
+						</div>
+						<div class="form-group">
+							<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
+						</div>
 						
 						<button type="button" data-loading-text="loading..." class="btn btn-success btn-block btn-lg" id="submit-btn">Confirm</button>
 					</form>
@@ -67,12 +76,18 @@
 		var data = {
 			login_name: $('#login_name').val()
 			, type: $('input[name="type"]:checked').val()
+			, code: $('#code').val()
 		};
 		$.post('${ctx}/forgotten-password', data, function(json){
+			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
 			$.jsonValidation(json, 'right');
 		}, 'json').always(function () {
 			$btn.button('reset');
 	    });
+	});
+	
+	$('#codeImage,#codeLink').click(function(){
+		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
 	});
 })(jQuery);
 </script>

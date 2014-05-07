@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -84,11 +85,19 @@ public class CustomerRestController {
 	
 	@RequestMapping(value = "/forgotten-password", method = RequestMethod.POST)
 	public JSONBean<Customer> forgottenPassword(
-			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer, BindingResult result, 
+			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer,
+			BindingResult result,
+			@RequestParam("code") String code,
 			HttpServletRequest req) {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
+		
+		// if verification does not matched!
+		if(!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
+			json.getErrorMap().put("code", "verification code does not matched!");
+			return json;
+		}
 
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
