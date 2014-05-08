@@ -136,8 +136,10 @@ public class CustomerController {
 	public String orderPlanNoTerm(Model model, 
 			@PathVariable("id") int id,
 			HttpServletRequest req) {
-
-		Plan plan = this.planService.queryPlanById(id);
+		
+		Plan plan = new Plan();
+		plan.getParams().put("id", id);
+		plan = this.planService.queryPlan(plan);
 		model.addAttribute("orderPlan", plan);
 		
 		Hardware hardware = new Hardware();
@@ -160,7 +162,9 @@ public class CustomerController {
 			@PathVariable("id") int id,
 			@PathVariable("amount") Double amount) {
 
-		Plan plan = this.planService.queryPlanById(id);
+		Plan plan = new Plan();
+		plan.getParams().put("id", id);
+		plan = this.planService.queryPlan(plan);
 		if ("ADSL".equals(plan.getPlan_type())) {
 			if (amount == 20d || amount == 50d || amount == 100d || amount == 150d || amount == 200d) {
 				plan.getTopup().setTopup_fee(amount);
@@ -174,7 +178,6 @@ public class CustomerController {
 				plan.getTopup().setTopup_fee(30d);
 			}
 		}
-		
 		
 		model.addAttribute("orderPlan", plan);
 		

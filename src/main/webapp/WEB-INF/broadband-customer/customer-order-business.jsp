@@ -146,13 +146,13 @@ background-color: #7BC3EC;
 								<hr/>
 								
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Current Provider Name</label>
+									<label for="" class="control-label col-md-4">Current Provider</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Account Holder Name</label>
+									<label for="" class="control-label col-md-4">Account Holder</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" />
 									</div>
@@ -169,7 +169,6 @@ background-color: #7BC3EC;
 										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
 									</div>
 								</div>
-							
 							</div>
 							
 							

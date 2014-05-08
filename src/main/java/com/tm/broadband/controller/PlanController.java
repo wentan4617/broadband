@@ -2,6 +2,8 @@ package com.tm.broadband.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -47,36 +49,34 @@ public class PlanController {
 		return "broadband-user/plan/plan-view";
 	}
 	
-	@RequestMapping(value = "/broadband-user/plan/create")
-	public String toPlanCreate(Model model) {
-
-		model.addAttribute("plan", new Plan());
-		model.addAttribute("panelheading", "Plan Create");
-		model.addAttribute("action", "/broadband-user/plan/create");
-		
-		return "broadband-user/plan/plan";
-	}
-	
 	@RequestMapping("/broadband-user/plan/view/redirect")
 	public String redirectPlanView(RedirectAttributes attr) {
 		attr.addFlashAttribute("success", "Plan Operation is successful.");
 		return "redirect:/broadband-user/plan/view";
 	}
 	
+	@RequestMapping(value = "/broadband-user/plan/create")
+	public String toPlanCreate(Model model) {
+		model.addAttribute("plan", new Plan());
+		model.addAttribute("panelheading", "Plan Create");
+		model.addAttribute("action", "/broadband-user/plan/create");
+		return "broadband-user/plan/plan";
+	}
+	
 	@RequestMapping(value = "/broadband-user/plan/edit/{id}")
-	public String toPlanEdit(Model model,
-			@PathVariable(value = "id") int id) {
+	public String toPlanEdit(Model model, @PathVariable(value = "id") int id) {
 		
 		model.addAttribute("panelheading", "Plan Edit");
 		model.addAttribute("action", "/broadband-user/plan/edit");
 		
-		Plan plan = this.planService.queryPlanById(id);
+		Plan plan = new Plan();
+		plan.getParams().put("id", id);
+		plan = this.planService.queryPlan(plan);
 		
 		model.addAttribute("plan", plan);
 		
 		return "broadband-user/plan/plan";
 	}
-	
 	
 	@RequestMapping(value = "/broadband-user/plan/pic/edit", method = RequestMethod.POST)
 	public String doPlanPicEdit(Model model, @ModelAttribute("plan") Plan plan,
@@ -85,92 +85,55 @@ public class PlanController {
 
 		String fileName = String.valueOf(plan.getId());
 		String plan_pic_path = req.getSession().getServletContext().getRealPath("/public/upload");
-		
+
 		for (int i = 0; i < imgs.length; i++) {
-            if(!imgs[i].isEmpty()){
-            	fileName += i + imgs[i].getOriginalFilename();
-    			try {
+			if (!imgs[i].isEmpty()) {
+				fileName += i + imgs[i].getOriginalFilename();
+				try {
 					FileUtils.copyInputStreamToFile(imgs[i].getInputStream(), new File(plan_pic_path, fileName));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-    			if(i==0){
-    				plan.setImg1(fileName);
-    			}
-    			if(i==1){
-    				plan.setImg2(fileName);
-    			}
-    			if(i==2){
-    				plan.setImg3(fileName);
-    			}
-            }
-            fileName = String.valueOf(plan.getId());
+				if (i == 0) {
+					plan.setImg1(fileName);
+				}
+				if (i == 1) {
+					plan.setImg2(fileName);
+				}
+				if (i == 2) {
+					plan.setImg3(fileName);
+				}
+			}
+			fileName = String.valueOf(plan.getId());
 		}
 		
 		plan.getParams().put("id", plan.getId());
 		
-		this.planService.editPlanPic(plan);
+		this.planService.editPlan(plan);
 		
 		attr.addFlashAttribute("success", "Edit Plan Pic " + plan.getPlan_name() + " is successful.");
 
 		return "redirect:/broadband-user/plan/view";
 	}
 	
-	
-	@RequestMapping(value = "/broadband-user/plan/hardware/pic/edit", method = RequestMethod.POST)
-	public String doHardwarePicEdit(
-			Model model
-			,@ModelAttribute("hardware") Hardware hardware
-			,BindingResult result
-			, HttpServletRequest req
-			, @RequestParam("imgs") MultipartFile[] imgs
-			,RedirectAttributes attr) {
-
-		String fileName = String.valueOf(hardware.getId());
-		String plan_pic_path = req.getSession().getServletContext().getRealPath("/public/upload");
-		
-		for (int i = 0; i < imgs.length; i++) {
-            if(!imgs[i].isEmpty()){
-            	fileName += i + imgs[i].getOriginalFilename();
-    			try {
-					FileUtils.copyInputStreamToFile(imgs[i].getInputStream(), new File(plan_pic_path, fileName));
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-    			if(i==0){
-    				hardware.setImg1(fileName);
-    			}
-    			if(i==1){
-    				hardware.setImg2(fileName);
-    			}
-    			if(i==2){
-    				hardware.setImg3(fileName);
-    			}
-            }
-            fileName = String.valueOf(hardware.getId());
-		}
-		
-		hardware.getParams().put("id", hardware.getId());
-		
-		this.planService.editHardwarePic(hardware);
-		
-		attr.addFlashAttribute("success", "Edit Hardware Pic " + hardware.getHardware_name() + " is successful.");
-
-		return "redirect:/broadband-user/plan/hardware/view";
-	}
-
 	@RequestMapping(value = "/broadband-user/plan/delete", method = RequestMethod.POST)
-	public String deletePlansById(Model model
-			,@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids
-			,HttpServletRequest req, RedirectAttributes attr){
+	public String deletePlans(
+			Model model,
+			@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids,
+			HttpServletRequest req, RedirectAttributes attr) {
 
 		if (plan_ids == null) {
 			attr.addFlashAttribute("error", "Please choose one plan at least.");
 			return "redirect:/broadband-user/plan/view";
 		} else {
-			for (int i = 0; i < plan_ids.length; i++) {
-				this.planService.removePlanById(Integer.parseInt(plan_ids[i]));
+			List<Plan> plans = new ArrayList<Plan>();
+			for (String id: plan_ids) {
+				Plan plan = new Plan();
+				plan.getParams().put("where", "delete_plan");
+				plan.getParams().put("id", Integer.parseInt(id));
+				plans.add(plan);
 			}
+			this.planService.removePlans(plans);
 		}
 		
 		attr.addFlashAttribute("success", "Delete selected plan(s) successfully!");
@@ -185,30 +148,30 @@ public class PlanController {
 			@RequestParam("value") String value,
 			@RequestParam("type") String type) {
 
-		Plan plan = new Plan();
-		if ("plan-group".equals(type)) {
-			plan.setPlan_group(value);
-		}
-		if ("plan-class".equals(type)) {
-			plan.setPlan_class(value);
-		}
-		if ("plan-sort".equals(type)) {
-			plan.setPlan_sort(value);
-		}
-		if ("plan-type".equals(type)) {
-			plan.setPlan_type(value);
-		}
-		if ("plan-status".equals(type)) {
-			plan.setPlan_status(value);
-		}
 		if (plan_ids == null) {
 			attr.addFlashAttribute("error", "Please choose one plan at least.");
 			return "redirect:/broadband-user/plan/view";
 		} else {
-			for (int i = 0; i < plan_ids.length; i++) {
-				plan.getParams().put("id", Integer.parseInt(plan_ids[i]));
-				this.planService.editPlan(plan);
+			
+			List<Plan> plans = new ArrayList<Plan>();
+			for (String id: plan_ids) {
+				Plan plan = new Plan();
+				if ("plan-group".equals(type)) {
+					plan.setPlan_group(value);
+				} else if ("plan-class".equals(type)) {
+					plan.setPlan_class(value);
+				} else if ("plan-sort".equals(type)) {
+					plan.setPlan_sort(value);
+				} else if ("plan-type".equals(type)) {
+					plan.setPlan_type(value);
+				} else if ("plan-status".equals(type)) {
+					plan.setPlan_status(value);
+				}
+				plan.getParams().put("where", "update_plan");
+				plan.getParams().put("id", Integer.parseInt(id));
+				plans.add(plan);
 			}
+			this.planService.editPlans(plans);
 		}
 		attr.addFlashAttribute("success", "Change selected plan(s) successfully!");
 		return "redirect:/broadband-user/plan/view";
@@ -216,8 +179,6 @@ public class PlanController {
 	/*
 	 * END PLAN AREA
 	 */
-	
-	
 	
 	/*
 	 * Hardware Controller begin
@@ -283,6 +244,49 @@ public class PlanController {
 		
 		attr.addFlashAttribute("success", "Delete selected hardware(s) successfully!");
 		return "redirect:/broadband-user/plan/hardware/view/1";
+	}
+	
+	@RequestMapping(value = "/broadband-user/plan/hardware/pic/edit", method = RequestMethod.POST)
+	public String doHardwarePicEdit(Model model,
+			@ModelAttribute("hardware") Hardware hardware,
+			BindingResult result, HttpServletRequest req,
+			@RequestParam("imgs") MultipartFile[] imgs, RedirectAttributes attr) {
+
+		String fileName = String.valueOf(hardware.getId());
+		String plan_pic_path = req.getSession().getServletContext()
+				.getRealPath("/public/upload");
+
+		for (int i = 0; i < imgs.length; i++) {
+			if (!imgs[i].isEmpty()) {
+				fileName += i + imgs[i].getOriginalFilename();
+				try {
+					FileUtils.copyInputStreamToFile(imgs[i].getInputStream(),
+							new File(plan_pic_path, fileName));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				if (i == 0) {
+					hardware.setImg1(fileName);
+				}
+				if (i == 1) {
+					hardware.setImg2(fileName);
+				}
+				if (i == 2) {
+					hardware.setImg3(fileName);
+				}
+			}
+			fileName = String.valueOf(hardware.getId());
+		}
+
+		hardware.getParams().put("id", hardware.getId());
+
+		this.planService.editHardwarePic(hardware);
+
+		attr.addFlashAttribute("success",
+				"Edit Hardware Pic " + hardware.getHardware_name()
+						+ " is successful.");
+
+		return "redirect:/broadband-user/plan/hardware/view";
 	}
 
 	/*

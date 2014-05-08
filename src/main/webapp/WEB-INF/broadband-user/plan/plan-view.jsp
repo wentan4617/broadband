@@ -143,8 +143,6 @@
 		});
 	});
 	
-	
-	
 	$('#filter_operations').find('option').each(function(){
 		if (this.value == '${planFilter.plan_group}' 
 			|| this.value == '${planFilter.plan_class}' 
@@ -154,8 +152,6 @@
 		}
 		 
 	});
-	
-	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
