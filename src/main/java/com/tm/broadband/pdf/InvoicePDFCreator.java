@@ -338,20 +338,22 @@ public class InvoicePDFCreator extends ITextUtils {
         // preventing subtraction inaccuracy
         BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
         BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()));
-        Double thisInvoicetotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
-        Double afterTaxAmount = 0.0;
+        Double thisInvoiceTotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
+        Double beforeTaxAmount = 0.0;
         Double taxAmount = 0.0;
-        if(thisInvoicetotalAmount > 0){
-        	// plus tax fee
-            afterTaxAmount = thisInvoicetotalAmount/1.15;
+        
+        if(thisInvoiceTotalAmount > 0){
+        	// personal plan include GST
+            beforeTaxAmount = thisInvoiceTotalAmount/1.15;
             
-            // tax fee
-            taxAmount = thisInvoicetotalAmount-thisInvoicetotalAmount/1.15;
+            // include GST
+            taxAmount = thisInvoiceTotalAmount-thisInvoiceTotalAmount/1.15;
         } else {
-        	afterTaxAmount = thisInvoicetotalAmount;
-        	taxAmount = thisInvoicetotalAmount;
+        	beforeTaxAmount = thisInvoiceTotalAmount;
+        	taxAmount = thisInvoiceTotalAmount;
         }
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(afterTaxAmount)), verdana_normal_8, 0);
+        
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(beforeTaxAmount)), verdana_normal_8, 0);
         invoiceSummaryColumnsCell.setPaddingTop(10);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
@@ -371,7 +373,7 @@ public class InvoicePDFCreator extends ITextUtils {
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         // include tax fee
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoicetotalAmount)), verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), verdana_normal_8, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         invoiceSummaryColumnsCell = newCell(" ", arial_normal_8, 0);
@@ -394,7 +396,7 @@ public class InvoicePDFCreator extends ITextUtils {
         invoiceSummaryColumnsCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), verdana_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoicetotalAmount)), verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), verdana_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         document.add(invoiceSummaryTable);
@@ -519,7 +521,7 @@ public class InvoicePDFCreator extends ITextUtils {
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoicetotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
@@ -551,7 +553,7 @@ public class InvoicePDFCreator extends ITextUtils {
         paymentSlipCell.setBorderWidthRight(2f);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoicetotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);

@@ -107,7 +107,7 @@ public class CreditPDFCreator extends ITextUtils {
         document.newPage();
     	
     	// TERM AND CONDITION TABLE
-    	document.add(createTermAndConditionTable(writer));
+    	document.add(createTermsAndConditionsTable(writer));
         
 		// CLOSE DOCUMENT
         document.close();
@@ -439,7 +439,7 @@ public class CreditPDFCreator extends ITextUtils {
 		return creditCardAuthorityTable;
 	}
 	
-	public PdfPTable createTermAndConditionTable(PdfWriter writer) throws MalformedURLException, DocumentException, IOException{
+	public PdfPTable createTermsAndConditionsTable(PdfWriter writer) throws MalformedURLException, DocumentException, IOException{
 		
         PdfPTable termAndConditionTable = new PdfPTable(14);
         termAndConditionTable.setWidthPercentage(102);
@@ -450,7 +450,7 @@ public class CreditPDFCreator extends ITextUtils {
         // END PARAMETERS
 
         // BEGIN TERM AND CONDITION TITLE BAR
-    	addTitleBar(termAndConditionTable, "TERM AND CONDITION", arial_bold_12, titleBGColor, titleBorderColor, colspan, 10F);
+    	addTitleBar(termAndConditionTable, "TERMS AND CONDITIONS", arial_bold_12, titleBGColor, titleBorderColor, colspan, 10F);
         // END TERM AND CONDITION TITLE BAR
 
     	// BEGIN TERM AND CONDITION ROWS
