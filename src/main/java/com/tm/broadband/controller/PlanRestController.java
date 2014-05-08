@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.Hardware;
@@ -21,6 +22,7 @@ import com.tm.broadband.validator.mark.HardwareValidatedMark;
 import com.tm.broadband.validator.mark.PlanValidatedMark;
 
 @RestController
+@SessionAttributes("planFilter")
 public class PlanRestController {
 
 	private PlanService planService;
@@ -35,23 +37,40 @@ public class PlanRestController {
 	 */
 	
 	@RequestMapping(value = "/broadband-user/plan/view/{pageNo}")
-	public Page<Plan> doPlanView(@PathVariable(value = "pageNo") int pageNo) {
+	public Page<Plan> doPlanView(@PathVariable(value = "pageNo") int pageNo, HttpServletRequest req) {
 
 		Page<Plan> page = new Page<Plan>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
 		page.getParams().put("orderby", "order by plan_status desc, plan_type");
+		
+		Plan planFilter = (Plan) req.getSession().getAttribute("planFilter");
+		if (planFilter != null) {
+			if (!"".equals(planFilter.getPlan_group()))
+				page.getParams().put("plan_group", planFilter.getPlan_group());
+			if (!"".equals(planFilter.getPlan_class()))
+				page.getParams().put("plan_class", planFilter.getPlan_class());
+			if (!"".equals(planFilter.getPlan_type()))
+				page.getParams().put("plan_type", planFilter.getPlan_type());
+		}
+		
 		this.planService.queryPlansByPage(page);
+		System.out.println(page.getTotalPage());
 
 		return page;
 	}
 	
+	@RequestMapping(value = "/broadband-user/plan/view/filter")
+	public void doPlanViewFilter(Model model, Plan plan) {
+		model.addAttribute("planFilter", plan);
+		System.out.println("do plan filter");
+	}
+	
 	@RequestMapping(value = "/broadband-user/plan/create", method = RequestMethod.POST)
-	public JSONBean<Plan> doPlanCreate(
-			Model model
-			,@Validated(PlanValidatedMark.class) Plan plan
-			,BindingResult result, HttpServletRequest req
-			,RedirectAttributes attr) {
+	public JSONBean<Plan> doPlanCreate(Model model,
+			@Validated(PlanValidatedMark.class) Plan plan,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
 		
 		JSONBean<Plan> json = new JSONBean<Plan>();
 		json.setModel(plan);
