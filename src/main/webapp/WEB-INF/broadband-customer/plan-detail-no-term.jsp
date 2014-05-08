@@ -87,6 +87,7 @@ background-color: #7BC3EC;
 				</div>
 			</div>
 		</div>
+		
 		<div class="col-md-5">
 			<div class="thumbnail">
 				<div class="caption">

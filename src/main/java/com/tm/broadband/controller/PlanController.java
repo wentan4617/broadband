@@ -79,13 +79,9 @@ public class PlanController {
 	
 	
 	@RequestMapping(value = "/broadband-user/plan/pic/edit", method = RequestMethod.POST)
-	public String doPlanPicEdit(
-			Model model
-			,@ModelAttribute("plan") Plan plan
-			,BindingResult result
-			, HttpServletRequest req
-			, @RequestParam("imgs") MultipartFile[] imgs
-			,RedirectAttributes attr) {
+	public String doPlanPicEdit(Model model, @ModelAttribute("plan") Plan plan,
+			BindingResult result, HttpServletRequest req,
+			@RequestParam("imgs") MultipartFile[] imgs, RedirectAttributes attr) {
 
 		String fileName = String.valueOf(plan.getId());
 		String plan_pic_path = req.getSession().getServletContext().getRealPath("/public/upload");
@@ -117,7 +113,7 @@ public class PlanController {
 		
 		attr.addFlashAttribute("success", "Edit Plan Pic " + plan.getPlan_name() + " is successful.");
 
-		return "redirect:/broadband-user/plan/view/1";
+		return "redirect:/broadband-user/plan/view";
 	}
 	
 	
@@ -160,7 +156,7 @@ public class PlanController {
 		
 		attr.addFlashAttribute("success", "Edit Hardware Pic " + hardware.getHardware_name() + " is successful.");
 
-		return "redirect:/broadband-user/plan/hardware/view/1";
+		return "redirect:/broadband-user/plan/hardware/view";
 	}
 
 	@RequestMapping(value = "/broadband-user/plan/delete", method = RequestMethod.POST)
@@ -170,7 +166,7 @@ public class PlanController {
 
 		if (plan_ids == null) {
 			attr.addFlashAttribute("error", "Please choose one plan at least.");
-			return "redirect:/broadband-user/plan/view/1";
+			return "redirect:/broadband-user/plan/view";
 		} else {
 			for (int i = 0; i < plan_ids.length; i++) {
 				this.planService.removePlanById(Integer.parseInt(plan_ids[i]));
@@ -178,7 +174,7 @@ public class PlanController {
 		}
 		
 		attr.addFlashAttribute("success", "Delete selected plan(s) successfully!");
-		return "redirect:/broadband-user/plan/view/1";
+		return "redirect:/broadband-user/plan/view";
 	}
 
 	@RequestMapping(value = "/broadband-user/plan/options/edit", method = RequestMethod.POST)
@@ -207,15 +203,15 @@ public class PlanController {
 		}
 		if (plan_ids == null) {
 			attr.addFlashAttribute("error", "Please choose one plan at least.");
-			return "redirect:/broadband-user/plan/view/1";
+			return "redirect:/broadband-user/plan/view";
 		} else {
 			for (int i = 0; i < plan_ids.length; i++) {
 				plan.getParams().put("id", Integer.parseInt(plan_ids[i]));
 				this.planService.editPlan(plan);
 			}
 		}
-		attr.addFlashAttribute("success", "Change selected plan(s)'s group successfully!");
-		return "redirect:/broadband-user/plan/view/1";
+		attr.addFlashAttribute("success", "Change selected plan(s) successfully!");
+		return "redirect:/broadband-user/plan/view";
 	}
 	/*
 	 * END PLAN AREA

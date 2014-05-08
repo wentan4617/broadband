@@ -12,8 +12,11 @@ public class Test {
 		// "k", "l", "z", "x", "c", "v", "b", "n", "m", "0"};
 		// Random random = new Random();
 		// System.out.println(pwds[random.nextInt(36)]);
-		String finalResult = BroadbandCapability.getCapabilityResultByAddress("奥克兰New North Road945");
-		System.out.println(finalResult.substring(finalResult.lastIndexOf(",") + 1));
+		/*String finalResult = BroadbandCapability.getCapabilityResultByAddress("奥克兰New North Road945");
+		System.out.println(finalResult.substring(finalResult.lastIndexOf(",") + 1));*/
+		
+		System.out.println(21%30);
+		System.out.println(21/30+1);
 	}
 
 }

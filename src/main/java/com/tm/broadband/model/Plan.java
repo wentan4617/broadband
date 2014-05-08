@@ -35,6 +35,7 @@ public class Plan implements Serializable {
 	private String plan_desc;
 	@NotNull(groups = { PlanValidatedMark.class })
 	private Double plan_price;
+	private Double original_price;
 	private Long data_flow;
 	private Long data_flow_k;
 	private String plan_status;
@@ -271,6 +272,14 @@ public class Plan implements Serializable {
 
 	public void setPlan_class(String plan_class) {
 		this.plan_class = plan_class;
+	}
+
+	public Double getOriginal_price() {
+		return original_price;
+	}
+
+	public void setOriginal_price(Double original_price) {
+		this.original_price = original_price;
 	}
 	
 	
