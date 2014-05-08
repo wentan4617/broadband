@@ -496,7 +496,7 @@ public class OrderPDFCreator extends ITextUtils {
 
                 // BEGIN PLAN ROWS
                 addCol(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT);
-                addCol(orderDetailTable, cod.getDetail_data_flow()+"GB", 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
+                addCol(orderDetailTable, cod.getDetail_data_flow() < 0 ? "Ultimate" : cod.getDetail_data_flow()+"GB", 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
                 addCol(orderDetailTable, cod.getDetail_term_period()+" months", 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
                 addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 addCol(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
