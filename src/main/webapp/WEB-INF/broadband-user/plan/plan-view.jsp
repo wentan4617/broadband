@@ -139,6 +139,7 @@
 			, plan_class: $this.find('option[data-type="plan-class"]:selected').val() || null
 			, plan_type: $this.find('option[data-type="plan-type"]:selected').val() || null
 		}; //console.log(plan);
+		
 		$.get('${ctx}/broadband-user/plan/view/filter', plan, function(){
 			doPage(1);
 		});
