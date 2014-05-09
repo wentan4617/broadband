@@ -180,7 +180,8 @@
 
 		<!-- CRM Module BEGIN -->
 		<url-pattern>/broadband-user/crm/customer/view/*</url-pattern>
-		<url-pattern>/broadband-user/crm/customer/create</url-pattern>
+		<url-pattern>/broadband-user/crm/customer/personal/create</url-pattern>
+		<url-pattern>/broadband-user/crm/customer/business/create</url-pattern>
 		<url-pattern>/broadband-user/crm/customer/edit/*</url-pattern>
 		<!-- CRM Module END -->
 
