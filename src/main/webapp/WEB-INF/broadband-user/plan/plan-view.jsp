@@ -26,7 +26,6 @@
 					<h4 class="panel-title">Plan View&nbsp;
 						
 						<select id="filter_operations" class="selectpicker pull-right" multiple >
-							<option style="font-size:16px;">Filter Operations</option>
 						    <optgroup label="Filter Plan Group">
 						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
 						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
@@ -45,10 +44,9 @@
 						
 						&nbsp;
 						
-						<select id="select_operations" class="selectpicker pull-right">
-							<option style="font-size:16px;">Multiple Operations</option>
+						<select id="select_operations" class="selectpicker pull-right" multiple>
 						    <optgroup label="Essential Operations">
-						      <option value="delete" data-type="plan-delete">Delete Selected Plan</option>
+						      	<option value="delete" data-type="plan-delete">Delete Selected Plan</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Group">
 						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
@@ -132,6 +130,32 @@
 			$('#planForm').submit();
 		}
 	});
+	
+	$('#filter_operations').change(function(){
+		var $this = $(this);
+		var plan = {				
+			plan_group: $this.find('option[data-type="plan-group"]:selected').val() || null
+			, plan_class: $this.find('option[data-type="plan-class"]:selected').val() || null
+			, plan_type: $this.find('option[data-type="plan-type"]:selected').val() || null
+		}; //console.log(plan);
+		$.get('${ctx}/broadband-user/plan/view/filter', plan, function(){
+			doPage(1);
+		});
+	});
+	
+	
+	
+	$('#filter_operations').find('option').each(function(){
+		if (this.value == '${planFilter.plan_group}' 
+			|| this.value == '${planFilter.plan_class}' 
+			|| this.value == '${planFilter.plan_type}' ) {
+			$(this).attr("selected", "selected");
+			$('.selectpicker').selectpicker('refresh');
+		}
+		 
+	});
+	
+	
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />

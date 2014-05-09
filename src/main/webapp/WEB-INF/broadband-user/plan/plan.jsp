@@ -128,11 +128,20 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="plan_price" class="control-label col-md-4">Monthly fee (Inc GST)</label>
+							<label for="plan_price" class="control-label col-md-4">Monthly fee (Inc. GST(P), Excl. GST(B), Current)</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
 									<input type="text" value="${plan.plan_price}" id="plan_price" class="form-control" placeholder="" data-error-field/>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="original_price" class="control-label col-md-4">Original fee (Inc GST)</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" value="${plan.original_price}" id="original_price" class="form-control" placeholder="" data-error-field/>
 								</div>
 							</div>
 						</div>
@@ -327,6 +336,7 @@
 			, plan_type: $('#plan_type').val()
 			, plan_sort: $('#plan_sort').val()
 			, plan_price: $('#plan_price').val()
+			, original_price: $('#original_price').val()
 			, plan_new_connection_fee: $('#plan_new_connection_fee').val()
 			, data_flow: $('#data_flow').val()
 			, pstn_count: $('#pstn_count').val()
