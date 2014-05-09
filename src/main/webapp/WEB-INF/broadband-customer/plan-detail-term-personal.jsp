@@ -67,20 +67,34 @@
 			</a>
 		</li>
 	</ul>
+	
+	<c:set var="adslPlanMap" value="${planTypeMap['ADSL'] }"></c:set>
+	<c:set var="vdslPlanMap" value="${planTypeMap['VDSL'] }"></c:set>
+	<c:set var="ufbPlanMap" value="${planTypeMap['UFB'] }"></c:set>
 
 	<!-- adsl -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-primary" id="adsl">ADSL + Home Phone Line&nbsp;&nbsp;&nbsp;(FAST&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
+			<span class="label label-primary" id="adsl">
+				ADSL + Home Phone Line&nbsp;
+				(FAST&nbsp;
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>)
+			</span>
 		</h3>
 	</div>
 	<div class="row">
-		<c:forEach var="plan" items="${planMaps['ADSL'] }" varStatus="item">
-			<div class="col-lg-4">
+		<c:set var="plansPromotion" value="${adslPlanMap['plansPromotion'] }"></c:set>
+		<c:set var="plans" value="${adslPlanMap['plans'] }"></c:set>
+		
+		<c:forEach var="plan" items="${plansPromotion }">
+			<div class="col-md-4">
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
 							<strong style="font-size:60px;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</strong>
@@ -89,11 +103,9 @@
 					</div>
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-
 					   	<p class="text-center">
 							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
 						</p>
-						
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
@@ -106,21 +118,11 @@
 						</h2>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</c:forEach>
-	</div>
-
-
-	<!-- vdsl -->
-	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
-		<h3>
-			<span class="label label-info" id="vdsl">VDSL + Home Phone Line&nbsp;&nbsp;&nbsp;(FASTER&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
-		</h3>
-	</div>
-	<div class="row">
-		<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
-			<div class="col-lg-4">
-				<div class="panel panel-info">
+		<c:forEach var="plan" items="${plans }">
+			<div class="col-md-4">
+				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
 							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
@@ -131,7 +133,59 @@
 						</h2>
 					</div>
 				 	<div class="panel-body">
-						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					   	<p class="text-center">
+							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>	
+						</h2>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+		
+	</div>
+
+	<!-- vdsl -->
+	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+		<h3>
+			<span class="label label-info" id="vdsl">
+				VDSL + Home Phone Line&nbsp;
+				(FASTER&nbsp;
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>)
+			</span>
+		</h3>
+	</div>
+	<div class="row">
+		<c:set var="plansPromotion" value="${vdslPlanMap['plansPromotion'] }"></c:set>
+		<c:set var="plans" value="${vdslPlanMap['plans'] }"></c:set>
+		
+		<c:forEach var="plan" items="${plansPromotion }">
+			<div class="col-md-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
 							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
 						</p>
@@ -143,24 +197,98 @@
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>
+							</strong>	
 						</h2>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</c:forEach>
+		<c:forEach var="plan" items="${plans }">
+			<div class="col-md-4">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					   	<p class="text-center">
+							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>	
+						</h2>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+		
 	</div>
-
-
+	
 	<!-- ufb -->
 	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 		<h3>
-			<span class="label label-danger" id="ufb">UFB + Home Phone Line&nbsp;&nbsp;&nbsp;(FASTEST&nbsp;<span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>&nbsp;)</span>
+			<span class="label label-danger" id="ufb">
+				UFB + Home Phone Line&nbsp;
+				(FASTEST&nbsp;
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>
+					<span class="glyphicon glyphicon-flash"></span>)
+			</span>
 		</h3>
 	</div>
 	<div class="row">
-		<c:forEach var="plan" items="${planMaps['UFB'] }" varStatus="item">
-			<div class="col-lg-4">
+		<c:set var="plansPromotion" value="${ufbPlanMap['plansPromotion'] }"></c:set>
+		<c:set var="plans" value="${ufbPlanMap['plans'] }"></c:set>
+		
+		<c:forEach var="plan" items="${plansPromotion }">
+			<div class="col-md-4">
+				<div class="panel panel-danger">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
+							<strong style="font-size:60px;"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</strong>
+							/ mth
+						</h2>
+					</div>
+				 	<div class="panel-body">
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					   	<p class="text-center">
+							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
+						</p>
+				  	</div>
+				  	<div class="panel-footer">
+						<h2 class="text-center" style="margin:0;">
+							<strong>
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</strong>	
+						</h2>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
+		<c:forEach var="plan" items="${plans }">
+			<div class="col-md-4">
 				<div class="panel panel-danger">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
@@ -172,10 +300,9 @@
 						</h2>
 					</div>
 				 	<div class="panel-body">
-						<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
 							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
-							<%-- ${ctx }/order/${plan.id} --%>
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -185,12 +312,13 @@
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>
+							</strong>	
 						</h2>
 					</div>
 				</div>
-			</div>	
+			</div>
 		</c:forEach>
+		
 	</div>
 </div>
 

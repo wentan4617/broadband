@@ -19,6 +19,26 @@ background-color: #7BC3EC;
 .modal-backdrop{
 	z-index: 130;
 }
+#adslPanel .col-md-3 {
+	padding: 0;
+}
+#adslPanel .col-md-3:first-child {
+	padding-left: 15px;
+}
+#adslPanel .col-md-3:last-child {
+	padding-right: 15px;
+}
+#adslPanel .thumbnail {
+	border-right: 0;
+	border-radius: 0;
+}
+#adslPanel .col-md-3:fisrt-child .thumbnail{
+	border-radius: 4px 0 0 4px;
+}
+#adslPanel .col-md-3:last-child .thumbnail{
+	border-right: 1px solid #ddd;
+	border-radius: 0 4px 4px 0;
+}
 </style>
 
 
@@ -44,126 +64,49 @@ background-color: #7BC3EC;
 		</li>
 	</ul>
 	
+	<c:set var="adslPlanMap" value="${planTypeMap['ADSL'] }"></c:set>
+	<c:set var="plans" value="${adslPlanMap['plans'] }"></c:set>
 	
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-5">
-			<div class="thumbnail">
-				<div class="caption">
-					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="...">
-					<h3 style="height:54px;"><strong class="text-success">ADSL BROADBAND</strong></h3>
-					<hr/>
-					<div class="well">
-						The broadband standard in NZ. 
-						Fast Internet over your copper 
-						phone line.
-					</div>
-					<h4><strong class="text-success">How much data do you need?</strong></h4>
-					
-					<div class="btn-group btn-group-justified">
-						<c:forEach var="plan" items="${planMaps['ADSL'] }" varStatus="item">
-							<a href="javascript:void(0);" data-name="a-adsl" data-id="${plan.id }" class="btn ${item.first?'btn-success active':'btn-default' }">${plan.data_flow } GB</a>
-						</c:forEach>
-					</div>
-					<c:forEach var="plan" items="${planMaps['ADSL'] }" varStatus="item">
-						<div style="display:${!item.first?'none':'block'}" data-name="p-adsl" data-id="${plan.id }" >
-							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
-								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-								<strong style="font-size:100px;"> 
-									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-								</strong>
-								/ mth
-							</p>
-							<hr style="margin-top:0;"/>
-							<h3 class="text-success">${plan.plan_name }</h3>
-							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+	
+	<div class="panel panel-success" id="adslPanel">
+		<div class="panel-body">
+			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="...">
+			<h1 style="height:54px;"><strong class="text-success">ADSL BROADBAND</strong></h1>
+			<hr/>
+			<div class="well">
+				The broadband standard in NZ. Fast Internet over your copper phone line.
+			</div>
+			<h3><strong class="text-success">How much data do you need?</strong></h3>
+			
+			<div class="row">
+				<c:forEach var="plan" items="${plans}" varStatus="item">
+					<div class="col-md-3">
+						<div class="thumbnail">
+							<div class="caption">
+								<h1 class="text-success text-center"><strong>${plan.data_flow } GB</strong></h1>
+								<hr style="margin-top:0;"/>
+								<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+									<strong style="font-size:40px;float:left;margin-left:20px;margin-top:20px;">$</strong>
+									<strong style="font-size:60px;"> 
+										<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+									</strong>
+									/ mth
+								</p>
+								<p style="font-size:18px;">
+									<strong class="text-success">${plan.plan_name }</strong>
+								</p>
+								
+								<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+								<hr/>
+								<p>
+									<a class="btn btn-success btn-lg btn-block"  data-name="purchase" data-id="${plan.id }" data-type="adsl">Purchase</a> 
+								</p>
+							</div>
 						</div>
-						
-					</c:forEach>
-					<hr/>
-					<p class="text-center">
-						<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-name="purchase" data-type="adsl">Purchase</a> 
-					</p>
-				</div>
+					</div>
+				</c:forEach>
 			</div>
 		</div>
-		
-		<div class="col-md-5">
-			<div class="thumbnail">
-				<div class="caption">
-					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_super-fast.png" alt="...">
-					<h3><strong class="text-success">ULTRA VDSL&trade; BROADBAND</strong></h3>
-					<hr/>
-					<div class="well">
-						Like ADSL Broadband, using the copper phone line only faster.
-					</div>
-					<h4><strong class="text-success">How much data do you need?</strong></h4>
-					<div class="btn-group btn-group-justified">
-						<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
-							<a href="javascript:void(0);" data-name="a-vdsl" data-id="${plan.id }" class="btn ${item.first?'btn-success active':'btn-default' }">${plan.data_flow } GB</a>
-						</c:forEach>
-					</div>
-					<c:forEach var="plan" items="${planMaps['VDSL'] }" varStatus="item">
-						<div style="display:${!item.first?'none':'block'}" data-name="p-vdsl" data-id="${plan.id }" >
-							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
-								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-								<strong style="font-size:100px;"> 
-									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-								</strong>
-								/ mth
-							</p>
-							<hr style="margin-top:0;"/>
-							<h3 class="text-success">${plan.plan_name }</h3>
-							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-						</div>
-					</c:forEach>
-					<hr/>
-					<p class="text-center">
-						<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-name="purchase" data-type="vdsl">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div>
-		<div class="col-md-1"></div>
-		<%-- <div class="col-md-4">
-			<div class="thumbnail">
-				<div class="caption">
-					<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_fastest.png" alt="..." >
-					<h3 class="clearfix"><strong class="text-success">ULTRA FIBRE&copy;</strong></h3>
-					<hr style="margin-top:-2px;"/>
-					<div class="well">
-						The broadband standard in NZ. 
-						Fast Internet over your copper 
-						phone line.
-					</div>
-					<h4><strong class="text-success">How much data do you need?</strong></h4>
-					<div class="btn-group btn-group-justified">
-						<c:forEach var="plan" items="${planMaps['UFB'] }" varStatus="item">
-							<a href="javascript:void(0);" data-name="a-ufb" data-id="${plan.id }" class="btn ${item.first?'btn-success active':'btn-default' }">${plan.data_flow } GB</a>
-						</c:forEach>
-					</div>
-					<c:forEach var="plan" items="${planMaps['UFB'] }" varStatus="item">
-						<div style="display:${!item.first?'none':'block'}" data-name="p-ufb" data-id="${plan.id }" >
-							<p class="text-center text-success" style="position:relative;margin-bottom:0;">
-								<strong style="font-size:60px;float:left;margin-left:70px;margin-right:-20px;margin-top:35px;">$</strong>
-								<strong style="font-size:100px;"> 
-									<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##00" />
-								</strong>
-								/ mth
-							</p>
-							<hr style="margin-top:0;"/>
-							<h3 class="text-success">${plan.plan_name }</h3>
-							<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-						</div>
-					</c:forEach>
-					
-					<hr/>
-					<p class="text-center">
-						<a class="btn btn-success" id="ufb-purchase" data-id="" data-name="purchase">Purchase</a> 
-					</p>
-				</div>
-			</div>
-		</div> --%>
 	</div>
 	
 	
@@ -240,33 +183,12 @@ background-color: #7BC3EC;
 		}
 	});
 	
-	$('a[data-name="a-adsl"]').click(function(){
-		$('a[data-name="a-adsl"]').removeClass().addClass('btn btn-default');
-		$(this).addClass('btn btn-success active');
-		$('div[data-name="p-adsl"]').hide();
-		var id = $(this).attr('data-id');
-		$('div[data-id="' + id + '"]').show();
-		$('#adsl-purchase').attr('data-id', id);
-	});
-	
-	$('a[data-name="a-vdsl"]').click(function(){
-		$('a[data-name="a-vdsl"]').removeClass().addClass('btn btn-default');
-		$(this).addClass('btn btn-success active');
-		$('div[data-name="p-vdsl"]').hide();
-		var id = $(this).attr('data-id');
-		$('div[data-id="' + id + '"]').show();
-		$('#vdsl-purchase').attr('data-id', id);
-	});
-	
-	$('#adsl-purchase,#vdsl-purchase').click(function(){
+	$('a[data-name="purchase"]').click(function(){
 		select_plan_id = $(this).attr('data-id');
 		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
 		$('#checkResult').empty();
 		$('#checkAddressModal').modal('show');
 	});
-	
-	$('#adsl-purchase').attr('data-id', $('a[data-name="a-adsl"][class="btn btn-success active"]').attr('data-id'));
-	$('#vdsl-purchase').attr('data-id', $('a[data-name="a-vdsl"][class="btn btn-success active"]').attr('data-id'));
 
 })(jQuery);
 </script>

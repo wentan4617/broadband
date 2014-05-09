@@ -4,7 +4,7 @@
 <input type="hidden" name="value"/>
 <input type="hidden" name="type"/>
 
-<table class="table" style="font-size:12px;">
+<table class="table table-hover" style="font-size:12px;">
 	<thead >
 		<tr>
 			<th><input type="checkbox" id="checkbox_plans_top" /></th>
@@ -31,6 +31,11 @@
 				<a href="<.=ctx.>/broadband-user/plan/edit/<.=plan.id.>">
 					<.=plan.plan_name.>
 				</a>
+				<. if(plan.promotion) {.>
+				<a data-toggle="tooltip" data-placement="top" data-original-title="Promotion">
+					<span class="glyphicon glyphicon-fire" style="font-size:20px;"></span>
+				</a>
+				<.}.>
 			</td>
 			<td class="<.=plan.plan_group=='plan-topup'?'text-danger':''.><.=plan.plan_group=='plan-no-term'?'text-info':''.><.=plan.plan_group=='plan-term'?'text-warning':''.>">
 				<.=plan.plan_group.>

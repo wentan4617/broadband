@@ -152,7 +152,7 @@
 						<div class="form-group">
 							<label for="plan_status" class="control-label col-md-4">Status</label>
 							<div class="col-md-3">
-								<select id="plan_status" class="form-control">
+								<select id="plan_status" class="form-control selectpicker">
 									<option value="">None</option>
 									<option value="active" ${plan.plan_status=='active'?'selected="selected"':'' }>Active</option>
 									<option value="selling" ${plan.plan_status=='selling'?'selected="selected"':'' }>Selling</option>

@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -10,7 +9,7 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel panel-success">
-				<div class="panel-heading">CyberPark Broadband Manager System Logon</div>
+				<div class="panel-heading">CyberPark Broadband Manager System Login</div>
 				<div class="panel-body">
 					<form id="loginForm">
 						<div class="form-group">
@@ -19,7 +18,7 @@
 						</div>
 						<div class="form-group">
 							<label for="password">Password</label>
-							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
+							<input type="password" id="password" class="form-control" data-error-field/>
 						</div>
 						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="signin-btn">Login</button>
 					</form>

@@ -67,9 +67,8 @@ public class CustomerController {
 	private SmserService smserService;
 
 	@Autowired
-	public CustomerController(PlanService planService, CRMService crmService
-			,MailerService mailerService
-			,SystemService systemService,
+	public CustomerController(PlanService planService, CRMService crmService,
+			MailerService mailerService, SystemService systemService,
 			SmserService smserService) {
 		this.planService = planService;
 		this.crmService = crmService;
@@ -93,31 +92,58 @@ public class CustomerController {
 		model.addAttribute("customer", customer);
 		
 		List<Plan> plans = null;
-		Map<String, List<Plan>> planMaps = new HashMap<String, List<Plan>>(); // key = plan_type
+		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		//Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
 		String url = "";
 		
 		Plan plan = new Plan();
 		plan.getParams().put("plan_group", group);
 		plan.getParams().put("plan_class", classz);
 		plan.getParams().put("plan_status", "selling");
-		plan.getParams().put("orderby", "order by data_flow");
+		plan.getParams().put("orderby", "order by place_sort");
 		
 		plans = this.planService.queryPlans(plan);
 		
 		if (plans != null) {
 			for (Plan p: plans) {
-				List<Plan> list = planMaps.get(p.getPlan_type());
-				if (list == null) {
-					list = new ArrayList<Plan>();
-					list.add(p);
-					planMaps.put(p.getPlan_type(), list);
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
+						List<Plan> plansPromotion = new ArrayList<Plan>();
+						plansPromotion.add(p);
+						planMap.put("plansPromotion", plansPromotion);
+					} else {
+						List<Plan> list = new ArrayList<Plan>();
+						list.add(p);
+						planMap.put("plans", list);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
 				} else {
-					list.add(p);
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
+						List<Plan> plansPromotion = planMap.get("plansPromotion");
+						if (plansPromotion == null) {
+							plansPromotion = new ArrayList<Plan>();
+							plansPromotion.add(p);
+							planMap.put("plansPromotion", plansPromotion);
+						} else {
+							plansPromotion.add(p);
+						}
+					} else {
+						List<Plan> list = planMap.get("plans");
+						if (list == null) {
+							list = new ArrayList<Plan>();
+							list.add(p);
+							planMap.put("plans", list);
+						} else {
+							list.add(p);
+						}
+					}
 				}
 			}
 		}
 		
-		model.addAttribute("planMaps", planMaps);
+		model.addAttribute("planTypeMap", planTypeMap);
 		
 		if ("plan-topup".equals(group)) {	
 			url = "broadband-customer/plan-detail-topup";
