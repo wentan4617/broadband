@@ -17,7 +17,6 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -28,8 +27,9 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
-import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.itext.ITextFont;
+import com.tm.broadband.util.itext.ITextUtils;
 
 /** 
 * Generates Invoice PDF
@@ -43,73 +43,14 @@ public class InvoicePDFCreator extends ITextUtils {
     private CustomerInvoice lastCustomerInvoice;
     private Customer customer;
 
-	private Font arial_normal_6;
-	private Font arial_normal_7;
-	private Font arial_normal_8;
-	private Font arial_normal_white_8;
-	private Font arial_normal_10;
-	private Font lucida_sans_unicode_9;
-	private Font verdana_normal_8;
-	private Font verdana_bold_7;
-	private Font verdana_bold_8;
-	private Font verdana_normal_white_8;
-	private Font verdana_bold_10;
-	private Font verdana_bold_white_10;
-	private Font verdana_normal_14;
-	private Font tahoma_normal_10;
-	private Font tahoma_bold_10;
-	private Font tahoma_bold_white_10;
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
-	public void loadFont(){
-		try {
-			// pdf directory is in the tomcat root path
-			BaseFont bf_arial_normal_6 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_6 = new Font(bf_arial_normal_6, 6, Font.NORMAL);
-			BaseFont bf_arial_normal_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_7 = new Font(bf_arial_normal_7, 7, Font.NORMAL);
-			BaseFont bf_arial = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_8 = new Font(bf_arial, 8, Font.NORMAL);
-			BaseFont bf_arial_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_white_8 = new Font(bf_arial_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_arial_normal_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_10 = new Font(bf_arial_normal_10, 10, Font.NORMAL);
-			BaseFont bf_lucida_sans_unicode_9 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Lucida Sans Unicode.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.lucida_sans_unicode_9 = new Font(bf_lucida_sans_unicode_9, 9, Font.NORMAL);
-			BaseFont bf_verdana_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_normal_8 = new Font(bf_verdana_normal_8, 8, Font.NORMAL);
-			BaseFont bf_verdana_7 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_7 = new Font(bf_verdana_7, 7, Font.BOLD);
-			BaseFont bf_verdana_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_8 = new Font(bf_verdana_8, 8, Font.BOLD);
-			BaseFont bf_verdana_normal_white_8 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_normal_white_8 = new Font(bf_verdana_normal_white_8, 8, Font.NORMAL, BaseColor.WHITE);
-			BaseFont bf_verdana_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_10 = new Font(bf_verdana_bold_10, 10, Font.BOLD);
-			BaseFont bf_verdana_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_bold_white_10 = new Font(bf_verdana_bold_white_10, 10, Font.BOLD, BaseColor.WHITE);
-			BaseFont bf_verdana_normal_14 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"Verdana.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.verdana_normal_14 = new Font(bf_verdana_normal_14, 14, Font.NORMAL);
-			BaseFont bf_tahoma_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahoma.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.tahoma_normal_10 = new Font(bf_tahoma_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.tahoma_bold_10 = new Font(bf_tahoma_bold_10, 10, Font.NORMAL);
-			BaseFont bf_tahoma_bold_white_10 = BaseFont.createFont("pdf"+File.separator+"font-family"+File.separator+"tahomabd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.tahoma_bold_white_10 = new Font(bf_tahoma_bold_white_10, 10, Font.NORMAL, BaseColor.WHITE);
-		} catch (DocumentException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public InvoicePDFCreator(){
-		loadFont();
-	}
+	public InvoicePDFCreator(){}
 	
 	public InvoicePDFCreator(CompanyDetail companyDetail
 			,CustomerInvoice currentCustomerInvoice
 			,Customer customer) {
-		loadFont();
 		this.companyDetail = companyDetail;
 		this.currentCustomerInvoice = currentCustomerInvoice;
 		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
@@ -118,29 +59,12 @@ public class InvoicePDFCreator extends ITextUtils {
 	
 	public PdfPTable createCustomerBasicInfo(){
         PdfPTable headerTable = new PdfPTable(1);
-		PdfPCell cell = new PdfPCell(new Phrase(" "));
+        headerTable.setWidthPercentage(102);
 		// add common header
-        cell.setPaddingLeft(50);
-        cell.setBorder(0);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), tahoma_normal_10));
-        headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(this.getCustomer().getAddress(), tahoma_normal_10));
-        headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(" "));
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
-        headerTable.addCell(cell);
+        addEmptyCol(headerTable, 180F, 1);
+        addCol(headerTable, this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name()).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
+        addCol(headerTable, this.getCustomer().getAddress()).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).o();
+        addEmptyCol(headerTable, 40F, 1);
 		return headerTable;
 	}
 
@@ -160,8 +84,8 @@ public class InvoicePDFCreator extends ITextUtils {
          * Recent Transactions Table begin
          */
         // non empty table start with 4 columns
-        PdfPTable transactionTable = newTable(4, 98);
-        PdfPCell transactionTitleCell = newCell("Recent transactions", tahoma_bold_white_10, 0);
+        PdfPTable transactionTable = newTable(4, 98F);
+        PdfPCell transactionTitleCell = newCell("Recent transactions", ITextFont.arial_bold_white_10, 0);
         transactionTitleCell.setPaddingBottom(4);
         transactionTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         transactionTitleCell.setBackgroundColor(titleBGColor);
@@ -169,15 +93,15 @@ public class InvoicePDFCreator extends ITextUtils {
         transactionTable.addCell(transactionTitleCell);
         
         // transaction columns
-        PdfPCell transactionColumnsCell = newCell("Date", verdana_bold_7, 0);
+        PdfPCell transactionColumnsCell = newCell("Date", ITextFont.arial_bold_8, 0);
         transactionColumnsCell.setPaddingTop(6);
         transactionColumnsCell.setIndent(10);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("Description", verdana_bold_7, 0);
+        transactionColumnsCell = newCell("Description", ITextFont.arial_bold_8, 0);
         transactionColumnsCell.setPaddingTop(6);
         transactionColumnsCell.setColspan(2);
         transactionTable.addCell(transactionColumnsCell);
-        transactionColumnsCell = newCell("Amount", verdana_bold_7, 0);
+        transactionColumnsCell = newCell("Amount", ITextFont.arial_bold_8, 0);
         transactionColumnsCell.setPaddingTop(6);
         transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         transactionTable.addCell(transactionColumnsCell);
@@ -200,39 +124,39 @@ public class InvoicePDFCreator extends ITextUtils {
         // if last invoice isn't null then go into <if statement>, otherwise only Opening Balance appears
         if(this.getLastCustomerInvoice()!=null){
             // LAST INVOICE'S SITUATION
-            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getCreate_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getCreate_date_str(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("Previous Invoice Total", verdana_normal_8, 0);
+            transactionColumnsCell = newCell("Previous Invoice Total", ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(lastAmountPayable)), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(lastAmountPayable)), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_date_str(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getLastCustomerInvoice().getPaid_type(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(lastAmountPaid)), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(lastAmountPaid)), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
 
             // SEPARATOR ROW
-            transactionColumnsCell = newCell("________________", verdana_normal_8, 0);
+            transactionColumnsCell = newCell("________________", ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(4);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
 
             // TOTAL AMOUNT ROW
-            transactionColumnsCell = newCell("Opening Balance", verdana_bold_10, 0);
+            transactionColumnsCell = newCell("Opening Balance", ITextFont.arial_bold_10, 0);
             transactionColumnsCell.setColspan(3);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(lastBalance)), verdana_bold_10, 0);
+            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(lastBalance)), ITextFont.arial_bold_10, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             PdfPCell lastCell = new PdfPCell(new Phrase(" "));
@@ -242,39 +166,39 @@ public class InvoicePDFCreator extends ITextUtils {
             document.add(transactionTable);
         } else {
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getCreate_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getCreate_date_str(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("Current Invoice Total", verdana_normal_8, 0);
+            transactionColumnsCell = newCell("Current Invoice Total", ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable())), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable())), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             
             // CURRENT INVOICE'S SITUATION
-            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_date_str(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_date_str(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setIndent(10);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_type(), verdana_normal_8, 0);
+            transactionColumnsCell = newCell(this.getCurrentCustomerInvoice().getPaid_type(), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(2);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid())), verdana_normal_8, 0);
+            transactionColumnsCell = newCell("$ -" + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid())), ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             
             // SEPARATOR ROW
-            transactionColumnsCell = newCell("________________", verdana_normal_8, 0);
+            transactionColumnsCell = newCell("________________", ITextFont.arial_normal_8, 0);
             transactionColumnsCell.setColspan(4);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
 
             // TOTAL AMOUNT ROW
-            transactionColumnsCell = newCell("Opening Balance", verdana_bold_10, 0);
+            transactionColumnsCell = newCell("Opening Balance", ITextFont.arial_bold_10, 0);
             transactionColumnsCell.setColspan(3);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
-            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getBalance())), verdana_bold_10, 0);
+            transactionColumnsCell = newCell("$ "+ TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getBalance())), ITextFont.arial_bold_10, 0);
             transactionColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             transactionTable.addCell(transactionColumnsCell);
             PdfPCell lastCell = new PdfPCell(new Phrase(" "));
@@ -290,7 +214,7 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfPTable invoiceSummaryTable = new PdfPTable(4);
         // page's width percentage
         invoiceSummaryTable.setWidthPercentage(98);
-        PdfPCell invoiceSummaryTitleCell = newCell("This Invoice Summary", tahoma_bold_white_10, 0);
+        PdfPCell invoiceSummaryTitleCell = newCell("This Invoice Summary", ITextFont.arial_bold_white_10, 0);
         invoiceSummaryTitleCell.setPaddingBottom(4);
         invoiceSummaryTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         invoiceSummaryTitleCell.setBackgroundColor(titleBGColor);
@@ -298,7 +222,7 @@ public class InvoicePDFCreator extends ITextUtils {
         invoiceSummaryTable.addCell(invoiceSummaryTitleCell);
         
         // INVOICE SUMMARY COLUMNS
-        PdfPCell invoiceSummaryColumnsCell = newCell("Net charges", arial_normal_8, 0);
+        PdfPCell invoiceSummaryColumnsCell = newCell("Net charges", ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setPaddingTop(10);
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
@@ -353,50 +277,50 @@ public class InvoicePDFCreator extends ITextUtils {
         	taxAmount = thisInvoiceTotalAmount;
         }
         
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(beforeTaxAmount)), verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(beforeTaxAmount)), ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setPaddingTop(10);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         
         // INVOICE SUMMARY FIRST ROW
-        invoiceSummaryColumnsCell = newCell("GST at 15%", verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("GST at 15%", ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(taxAmount)), verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(taxAmount)), ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         
         // INVOICE SUMMARY SECOND ROW
-        invoiceSummaryColumnsCell = newCell("Total charges (please see Invoice Details page)", verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("Total charges (please see Invoice Details page)", ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setIndent(10);
         invoiceSummaryColumnsCell.setColspan(3);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         // include tax fee
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell(" ", arial_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell(" ", ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setColspan(4);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         
         // INVOICE SUMMARY SEPARATOR ROW
-        invoiceSummaryColumnsCell = newCell("________________", verdana_normal_8, 0);
+        invoiceSummaryColumnsCell = newCell("________________", ITextFont.arial_normal_8, 0);
         invoiceSummaryColumnsCell.setColspan(4);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
 
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
-        invoiceSummaryColumnsCell = newCell("Invoice total due on", arial_normal_10, 0);
+        invoiceSummaryColumnsCell = newCell("Invoice total due on", ITextFont.arial_normal_10, 0);
         invoiceSummaryColumnsCell.setColspan(2);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), ITextFont.arial_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
-        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), verdana_bold_10, 0);
+        invoiceSummaryColumnsCell = newCell("$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), ITextFont.arial_bold_10, 0);
         invoiceSummaryColumnsCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceSummaryTable.addCell(invoiceSummaryColumnsCell);
         document.add(invoiceSummaryTable);
@@ -409,7 +333,7 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         PdfPTable paymentSlipTable = new PdfPTable(5);
         paymentSlipTable.setTotalWidth(535);
-        PdfPCell paymentSlipCell = newCell(" ", arial_normal_10, 0);
+        PdfPCell paymentSlipCell = newCell(" ", ITextFont.arial_normal_10, 0);
         paymentSlipCell.setColspan(5);
         Image img = Image.getInstance("pdf"+File.separator+"img"+File.separator+"scissor_separator.png");
         img.setWidthPercentage(100);
@@ -423,105 +347,105 @@ public class InvoicePDFCreator extends ITextUtils {
 		writer.getDirectContent().addImage(cartoon);
 
         // WHITE TITLE
-        paymentSlipCell = newCell("", verdana_bold_8, 0);
+        paymentSlipCell = newCell("", ITextFont.arial_bold_8, 0);
         paymentSlipCell.setRowspan(4);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Payment Slip", verdana_bold_10, 0);
+        paymentSlipCell = newCell("Payment Slip", ITextFont.arial_bold_10, 0);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipCell.setRowspan(4);
         paymentSlipTable.addCell(paymentSlipCell);
         
         // LIGHT GRAY TITLE
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Customer ID", verdana_bold_8, 0, new BaseColor(234,234,234));
-        paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
-        paymentSlipCell.setBorderWidthRight(1);
-        paymentSlipCell.setIndent(14);
-        paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Invoice Number", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell("Customer ID", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Due Date", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell("Invoice Number", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
+        paymentSlipCell.setBorderWidthRight(1);
+        paymentSlipCell.setIndent(14);
+        paymentSlipTable.addCell(paymentSlipCell);
+        paymentSlipCell = newCell("Due Date", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setIndent(14);
         paymentSlipTable.addCell(paymentSlipCell);
 
         // LIGHT GRAY VALUE
-        paymentSlipCell = newCell(this.getCustomer().getId().toString(), arial_normal_6, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCustomer().getId().toString(), ITextFont.arial_normal_6, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getId().toString(), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getId().toString(), ITextFont.arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_7, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), ITextFont.arial_normal_7, 0, new BaseColor(234,234,234));
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipCell.setBorderColorRight(BaseColor.WHITE);
         paymentSlipCell.setBorderWidthRight(1);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", verdana_bold_8, 0, new BaseColor(234,234,234));
+        paymentSlipCell = newCell(" ", ITextFont.arial_bold_8, 0, new BaseColor(234,234,234));
         paymentSlipTable.addCell(paymentSlipCell);
         paymentSlipCell.setColspan(0);
         
         // SEPARATOR BEGIN
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
         // SEPARATOR END
 
 		
         // SECOND SECTION
-        paymentSlipCell = newCell("Paying By Direct Credit", arial_normal_8, 0);
+        paymentSlipCell = newCell("Paying By Direct Credit", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total amount due before", arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("Total amount due before", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), ITextFont.arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
@@ -532,20 +456,20 @@ public class InvoicePDFCreator extends ITextUtils {
         paymentSlipCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box end
-        paymentSlipCell = newCell("Bank: "+this.getCompanyDetail().getBank_name(), arial_normal_8, 0);
+        paymentSlipCell = newCell("Bank: "+this.getCompanyDetail().getBank_name(), ITextFont.arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Name of Account: "+this.getCompanyDetail().getBank_account_name(), arial_normal_8, 0);
+        paymentSlipCell = newCell("Name of Account: "+this.getCompanyDetail().getBank_account_name(), ITextFont.arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Total amount due after", arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("Total amount due after", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setIndent(14);
         paymentSlipCell.setRowspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCurrentCustomerInvoice().getDue_date_str(), ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(32);
         paymentSlipCell.setPaddingTop(8);
         paymentSlipCell.setRowspan(2);
@@ -553,7 +477,7 @@ public class InvoicePDFCreator extends ITextUtils {
         paymentSlipCell.setBorderWidthRight(2f);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box begin
-        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), arial_normal_8, 0, BaseColor.WHITE);
+        paymentSlipCell = newCell(TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount)), ITextFont.arial_normal_8, 0, BaseColor.WHITE);
         paymentSlipCell.setUseBorderPadding(true);
         paymentSlipCell.setBorderColor(totleChequeAmountBGColor);
         paymentSlipCell.setBorderWidthTop(8f);
@@ -564,46 +488,46 @@ public class InvoicePDFCreator extends ITextUtils {
         paymentSlipCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         paymentSlipTable.addCell(paymentSlipCell);
         // input box end
-        paymentSlipCell = newCell("Account Number: "+this.getCompanyDetail().getBank_account_number(), arial_normal_8, 0);
+        paymentSlipCell = newCell("Account Number: "+this.getCompanyDetail().getBank_account_number(), ITextFont.arial_normal_8, 0);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
         
         // THIRD SECTION
-        paymentSlipCell = newCell(" ", arial_normal_8, 0);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0);
         paymentSlipCell.setColspan(5);
         paymentSlipCell.setFixedHeight(3);
         paymentSlipTable.addCell(paymentSlipCell);
         
         // SEPARATOR BEGIN
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
         // SEPARATOR END
         
         // 
-        paymentSlipCell = newCell("Paying by cheques", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("Paying by cheques", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("ENCLOSED AMOUNT", verdana_bold_white_10, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("ENCLOSED AMOUNT", ITextFont.arial_bold_white_10, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingTop(4);
         paymentSlipCell.setIndent(40);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Please make cheques payable to Total Mobile Solution Services Ltd and", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("Please make cheques payable to Total Mobile Solution Services Ltd and", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -612,37 +536,37 @@ public class InvoicePDFCreator extends ITextUtils {
 		sBox.scaleAbsolute(155.25f, 35.25f);
 		sBox.setAbsolutePosition(0, 0);
 		writer.getDirectContent().addImage(sBox);
-        paymentSlipCell = newCell(sBox, arial_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(sBox, ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setPaddingLeft(42);
         paymentSlipCell.setPaddingTop(6);
         paymentSlipCell.setRowspan(4);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
 		// boxes end
-        paymentSlipCell = newCell("write your Name and Phone Number on the back of your cheque.", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("write your Name and Phone Number on the back of your cheque.", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("Please post it with this payment slip to", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("Please post it with this payment slip to", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(this.getCompanyDetail().getName()+" "+this.getCompanyDetail().getAddress(), verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(this.getCompanyDetail().getName()+" "+this.getCompanyDetail().getAddress(), ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(4);
         paymentSlipCell.setColspan(3);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell("** PLEASE DO NOT SEND CASH", verdana_normal_white_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell("** PLEASE DO NOT SEND CASH", ITextFont.arial_normal_white_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setIndent(40);
         paymentSlipCell.setColspan(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(4);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
-        paymentSlipCell = newCell(" ", arial_normal_8, 0, totleChequeAmountBGColor);
+        paymentSlipCell = newCell(" ", ITextFont.arial_normal_8, 0, totleChequeAmountBGColor);
         paymentSlipCell.setColspan(1);
         paymentSlipCell.setFixedHeight(2);
         paymentSlipTable.addCell(paymentSlipCell);
@@ -689,49 +613,49 @@ public class InvoicePDFCreator extends ITextUtils {
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // page's width percentage
-        invoiceDetailsTitleCell = newCell("Invoice Details", tahoma_bold_white_10, 0);
+        invoiceDetailsTitleCell = newCell("Invoice Details", ITextFont.arial_bold_white_10, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         invoiceDetailsTitleCell.setColspan(10);
         invoiceDetailsTitleCell.setBackgroundColor(this.titleBGColor);
         invoiceDetailsTitleCell.setPaddingBottom(4);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(" ", tahoma_bold_10, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_bold_10, 0);
         invoiceDetailsTitleCell.setFixedHeight(20);
         invoiceDetailsTitleCell.setColspan(10);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         
         // title
-        invoiceDetailsTitleCell = newCell("Service / Product", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Service / Product", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setIndent(14);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
         invoiceDetailsTitleCell.setColspan(4);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Date", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Date", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setIndent(32);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Unit Price", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Unit Price", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
         invoiceDetailsTitleCell.setColspan(1);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Discount", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Discount", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
         invoiceDetailsTitleCell.setColspan(1);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Qty", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Qty", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
         invoiceDetailsTitleCell.setColspan(1);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Subtotal", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell("Subtotal", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setFixedHeight(16);
@@ -739,7 +663,7 @@ public class InvoicePDFCreator extends ITextUtils {
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         
         // PRODUCT(S) BEGIN
-        invoiceDetailsTitleCell = newCell(" ", verdana_bold_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setFixedHeight(14);
         invoiceDetailsTitleCell.setPaddingTop(4);
         invoiceDetailsTitleCell.setIndent(14);
@@ -796,44 +720,44 @@ public class InvoicePDFCreator extends ITextUtils {
 //        		unit = 0;
         	}
 			// plan name
-			invoiceDetailsTitleCell = newCell(customerInvoiceDetail.getInvoice_detail_name(), arial_normal_7, 0);
+			invoiceDetailsTitleCell = newCell(customerInvoiceDetail.getInvoice_detail_name(), ITextFont.arial_normal_7, 0);
 			invoiceDetailsTitleCell.setIndent(22);
 			invoiceDetailsTitleCell.setColspan(4);
 			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 			// term date
-			invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+			invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
 			invoiceDetailsTitleCell.setColspan(2);
 			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
 				// plan unit price
-				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(price)), arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(price)), ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-				invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 			} else {
 				// plan unit discount
-				invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(discount)), arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(discount)), ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 			}
 			// unit
-			invoiceDetailsTitleCell = newCell(unit.toString(), arial_normal_7, 0);
+			invoiceDetailsTitleCell = newCell(unit.toString(), ITextFont.arial_normal_7, 0);
 			invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 			invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
 				// sub total
-				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(subTotal)), arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(subTotal)), ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 				totalPrice+=subTotal;
 			} else {
 				// sub total
-				invoiceDetailsTitleCell = newCell("-"+TMUtils.fillDecimal(String.valueOf(subTotal)), arial_normal_7, 0);
+				invoiceDetailsTitleCell = newCell("-"+TMUtils.fillDecimal(String.valueOf(subTotal)), ITextFont.arial_normal_7, 0);
 				invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 				invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
 				totalPrice-=subTotal;
@@ -842,13 +766,13 @@ public class InvoicePDFCreator extends ITextUtils {
         // PRODUCT(S) END
         
         // #####EMTRY SPACE BEGIN
-//        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setColspan(10);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // #####EMTRY SPACE END
         
         // PRODUCT BEGIN
-//        invoiceDetailsTitleCell = newCell("Kanny@adsl.world-net.co.nz", verdana_bold_7, 0);
+//        invoiceDetailsTitleCell = newCell("Kanny@adsl.world-net.co.nz", ITextFont.arial_bold_8, 0);
 //        invoiceDetailsTitleCell.setFixedHeight(14);
 //        invoiceDetailsTitleCell.setPaddingTop(4);
 //        invoiceDetailsTitleCell.setIndent(14);
@@ -856,23 +780,23 @@ public class InvoicePDFCreator extends ITextUtils {
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEMS BEGIN
         // PRODUCT ITEM BEGIN
-//        invoiceDetailsTitleCell = newCell("FS/FS 100G + 100G Internet Monthly Fee", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell("FS/FS 100G + 100G Internet Monthly Fee", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setIndent(22);
 //        invoiceDetailsTitleCell.setColspan(4);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-//        invoiceDetailsTitleCell = newCell("2014-02-19  -  2014-03-18", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell("2014-02-19  -  2014-03-18", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setColspan(2);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-//        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell("$33.91", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-//        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-//        invoiceDetailsTitleCell = newCell("1", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell("1", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-//        invoiceDetailsTitleCell = newCell("$33.91", arial_normal_7, 0);
+//        invoiceDetailsTitleCell = newCell("$33.91", ITextFont.arial_normal_7, 0);
 //        invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
 //        invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // PRODUCT ITEM END
@@ -885,7 +809,7 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // #####SEPARATOR BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setFixedHeight(8);
         invoiceDetailsTitleCell.setBorderWidthBottom(1);
         invoiceDetailsTitleCell.setColspan(10);
@@ -894,58 +818,58 @@ public class InvoicePDFCreator extends ITextUtils {
         
         // TOTAL BEGIN
         // #####EMTRY SPACE BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setColspan(10);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // #####EMTRY SPACE END
         
         // FIRST ROW BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setFixedHeight(14);
         invoiceDetailsTitleCell.setColspan(7);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Total before GST", arial_normal_8, 0);
+        invoiceDetailsTitleCell = newCell("Total before GST", ITextFont.arial_normal_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         Double totalBeforeGST = totalPrice/1.15;
         // fill decimal, keep 2 decimals
-        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalBeforeGST)), arial_normal_8, 0);
+        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalBeforeGST)), ITextFont.arial_normal_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // FIRST ROW END
         // SECOND ROW BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setFixedHeight(14);
         invoiceDetailsTitleCell.setColspan(7);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("GST at 15%", arial_normal_8, 0);
+        invoiceDetailsTitleCell = newCell("GST at 15%", ITextFont.arial_normal_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         Double totalGST = totalPrice-totalPrice/1.15;
         // fill decimal, keep 2 decimals
-        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalGST)), arial_normal_8, 0);
+        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalGST)), ITextFont.arial_normal_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // SECOND ROW END
         
         // SEPARATOR BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setColspan(6);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setColspan(4);
         invoiceDetailsTitleCell.setBorderWidthTop(1);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // SEPARATOR END
         
         // TOTAL AMOUNT BEGIN
-        invoiceDetailsTitleCell = newCell(" ", arial_normal_7, 0);
+        invoiceDetailsTitleCell = newCell(" ", ITextFont.arial_normal_7, 0);
         invoiceDetailsTitleCell.setColspan(7);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell("Invoice Total", verdana_bold_8, 0);
+        invoiceDetailsTitleCell = newCell("Invoice Total", ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setColspan(2);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
-        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalPrice)), verdana_bold_8, 0);
+        invoiceDetailsTitleCell = newCell(TMUtils.fillDecimal(String.valueOf(totalPrice)), ITextFont.arial_bold_8, 0);
         invoiceDetailsTitleCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         invoiceDetailsTable.addCell(invoiceDetailsTitleCell);
         // TOTAL AMOUNT END
@@ -1009,8 +933,8 @@ public class InvoicePDFCreator extends ITextUtils {
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);
 		
-		Phrase t1 = new Phrase("Statement / Tax Invoice", verdana_normal_14);
-		Phrase t2 = new Phrase("GST Registration Number: "+this.getCompanyDetail().getGst_registration_number(), lucida_sans_unicode_9);
+		Phrase t1 = new Phrase("Statement / Tax Invoice", ITextFont.arial_normal_14);
+		Phrase t2 = new Phrase("GST Registration Number: "+this.getCompanyDetail().getGst_registration_number(), ITextFont.lucida_sans_unicode_9);
 		PdfContentByte canvas = writer.getDirectContentUnder();
 		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, t1, 44, 744, 0);
 		ColumnText.showTextAligned(canvas, Element.ALIGN_LEFT, t2, 44, 730, 0);
@@ -1027,13 +951,13 @@ public class InvoicePDFCreator extends ITextUtils {
 		cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         headerTable.addCell(cell);
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(this.getCompanyDetail().getName(), arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getName(), ITextFont.arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(this.getCompanyDetail().getAddress(), arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getAddress(), ITextFont.arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase("Tel: "+this.getCompanyDetail().getTelephone()+"  /  Fax: "+this.getCompanyDetail().getFax(), arial_normal_8));
+        cell.setPhrase(new Phrase("Tel: "+this.getCompanyDetail().getTelephone()+"  /  Fax: "+this.getCompanyDetail().getFax(), ITextFont.arial_normal_8));
         headerTable.addCell(cell);
-        cell.setPhrase(new Phrase(this.getCompanyDetail().getDomain(), arial_normal_8));
+        cell.setPhrase(new Phrase(this.getCompanyDetail().getDomain(), ITextFont.arial_normal_8));
         headerTable.addCell(cell);
         cell = new PdfPCell(seperator);
 		cell.setBorder(0);
@@ -1047,12 +971,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		cell = new PdfPCell(new Phrase(" "));
         cell.setBorder(0);
         Paragraph basicsP = new Paragraph();
-        Phrase date = new Phrase("Date: ", verdana_bold_8);
-        Phrase invoiceNo = new Phrase(" | Invoice No: ", verdana_bold_8);
-        Phrase loginName = new Phrase(" | Customer Id: ", verdana_bold_8);
-        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.getCurrentCustomerInvoice().getCreate_date()), arial_normal_8);
-        Phrase invoiceNoField = new Phrase(this.getCurrentCustomerInvoice().getId().toString(), arial_normal_8);
-        Phrase loginNameField = new Phrase(this.getCustomer().getId().toString(), arial_normal_8);
+        Phrase date = new Phrase("Date: ", ITextFont.arial_bold_8);
+        Phrase invoiceNo = new Phrase(" | Invoice No: ", ITextFont.arial_bold_8);
+        Phrase loginName = new Phrase(" | Customer Id: ", ITextFont.arial_bold_8);
+        Phrase dateField = new Phrase(TMUtils.dateFormatYYYYMMDD(this.getCurrentCustomerInvoice().getCreate_date()), ITextFont.arial_normal_8);
+        Phrase invoiceNoField = new Phrase(this.getCurrentCustomerInvoice().getId().toString(), ITextFont.arial_normal_8);
+        Phrase loginNameField = new Phrase(this.getCustomer().getId().toString(), ITextFont.arial_normal_8);
         // put paragraph into table cell
         basicsP.add(date);
         basicsP.add(dateField);

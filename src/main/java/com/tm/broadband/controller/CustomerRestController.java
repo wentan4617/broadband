@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -254,6 +253,16 @@ public class CustomerRestController {
 			HttpServletRequest req) {
 		
 		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
+		
+		if(contactUs.getFirst_name().contains("script>")
+				|| contactUs.getLast_name().contains("script>")
+				|| contactUs.getCellphone().contains("script>")
+				|| contactUs.getPhone().contains("script>")
+				|| contactUs.getContent().contains("script>")
+				|| contactUs.getEmail().contains("script>")){
+			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			return json;
+		}
 		
 		// if verification does not matched!
 		if(!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){

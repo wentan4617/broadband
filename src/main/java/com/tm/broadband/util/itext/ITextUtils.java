@@ -1,4 +1,4 @@
-package com.tm.broadband.util;
+package com.tm.broadband.util.itext;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,22 +19,25 @@ public class ITextUtils {
 	
 	// BEGIN MEMBER VARIABLE
 	private SimplePDFCell simplePDFCell;
+	private SimplePDFTable simplePDFTable;
 	// END MEMBER VARIABLE
 
 	// BEGIN INITIALIZATION
 	public ITextUtils() {
 		this.simplePDFCell=new SimplePDFCell();
+		this.simplePDFTable=new SimplePDFTable();
 	}
 	// END INITIALIZATION
 	
 	// BEGIN GETTER AND SETTER
-	public SimplePDFCell getSimplePDFCell() {
+	private SimplePDFCell getSimplePDFCell() {
 		return simplePDFCell;
 	}
-	public void setSimplePDFCell(SimplePDFCell simplePDFCell) {
-		this.simplePDFCell = simplePDFCell;
+	private SimplePDFTable getSimplePDFTable() {
+		return simplePDFTable;
 	}
 	// END GETTER AND SETTER
+	
 
 	/**
 	 * 
@@ -254,7 +257,7 @@ public class ITextUtils {
 	 * @param percentage
 	 * @return
 	 */
-	public PdfPTable newTable(Integer colspan, Integer percentage){
+	public PdfPTable newTable(Integer colspan, Float percentage){
         PdfPTable table = new PdfPTable(colspan);
         table.setWidthPercentage(percentage);
 		return table;
@@ -263,21 +266,6 @@ public class ITextUtils {
 	/*******************************************************
 	 * 		BEGIN SimplePDFCell METHODS
 	 */
-	
-	/**
-	 * 
-	 * @param table
-	 * @param title
-	 * @return
-	 */
-	// ENCAPSULATE PDF TITLE
-	public SimplePDFCell addPDFTitle(PdfPTable table, String title){
-        this.getSimplePDFCell().setPhrase(title);
-        this.getSimplePDFCell().setTable(table);
-        this.getSimplePDFCell().getCell().setPhrase(new Phrase());
-        return this.getSimplePDFCell();
-	}
-
 
 	/**
 	 * 
@@ -307,7 +295,39 @@ public class ITextUtils {
 	}
 	
 	/*******************************************************
-	 * 		BEGIN SimplePDFCell METHODS
+	 * 		END SimplePDFCell METHODS
+	 */
+	
+	
+	// **************************************************************************************************************
+	// BEGIN ANOTHER UTILITY
+	// **************************************************************************************************************
+	
+	
+	/*******************************************************
+	 * 		BEGIN SimplePDFTable METHODS
+	 */
+	
+	/**
+	 * 
+	 * @param colspan
+	 * @return
+	 */
+	public SimplePDFTable newTable(Integer colspan){
+		this.getSimplePDFTable().setColspan(colspan);
+		return this.getSimplePDFTable();
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public SimplePDFTable newTable(){
+		return this.getSimplePDFTable();
+	}
+	
+	/*******************************************************
+	 * 		END SimplePDFTable METHODS
 	 */
 
 }

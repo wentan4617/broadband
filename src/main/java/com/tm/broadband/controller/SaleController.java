@@ -531,6 +531,8 @@ public class SaleController {
 		page.getParams().put("where", "query_sale_id_not_null");
 
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		pageSignatureSum.getParams().put("orderby", "order by order_create_date desc");
+		pageSignatureSum.getParams().put("where", "query_sale_id_not_null");
 
 		User user = (User) req.getSession().getAttribute("userSession");
 		if(user.getUser_role().equals("sales")){
@@ -573,9 +575,11 @@ public class SaleController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(1);
 		page.getParams().put("orderby", "order by order_create_date desc");
+		page.getParams().put("where", "query_sale_id_not_null");
 
 
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		pageSignatureSum.getParams().put("where", "query_sale_id_not_null");
 
 		User user = (User) req.getSession().getAttribute("userSession");
 		if(user.getUser_role().equals("sales")){
@@ -626,10 +630,12 @@ public class SaleController {
 			page.getParams().put("signature", signature);
 		}
 		page.getParams().put("orderby", "order by order_create_date desc");
+		page.getParams().put("where", "query_sale_id_not_null");
 		User user = (User) req.getSession().getAttribute("userSession");
 
 
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
+		pageSignatureSum.getParams().put("where", "query_sale_id_not_null");
 		
 		if(user.getUser_role().equals("sales")){
 			page.getParams().put("sale_id", user.getId());

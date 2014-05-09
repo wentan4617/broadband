@@ -1,4 +1,4 @@
-package com.tm.broadband.util;
+package com.tm.broadband.util.broadband;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

@@ -1,8 +1,9 @@
-package com.tm.broadband.util;
+package com.tm.broadband.util.itext;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
@@ -33,6 +34,10 @@ public class SimplePDFCell {
 	public void o(){
 		this.getTable().addCell(this.getCell());
 	}
+	
+	/*******************************************************
+	 * 		BEGIN Col METHODS
+	 */
 	
 	/**
 	 * 
@@ -92,7 +97,7 @@ public class SimplePDFCell {
 	
 	/**
 	 * 
-	 * @param alignHTo l=left, r=right
+	 * @param alignHTo r=right, l=left, c=right
 	 * @return this
 	 */
 	public SimplePDFCell alignH(String alignHTo){
@@ -102,6 +107,9 @@ public class SimplePDFCell {
 			break;
 		case "l":
 			this.getCell().setHorizontalAlignment(Element.ALIGN_LEFT);
+			break;
+		case "c":
+			this.getCell().setHorizontalAlignment(Element.ALIGN_CENTER);
 			break;
 		}
         return this;
@@ -131,6 +139,20 @@ public class SimplePDFCell {
 	 */
 	public SimplePDFCell border(Integer width){
 		this.getCell().setBorder(width);
+        return this;
+	}
+	
+	/**
+	 * 
+	 * @param width
+	 * @return this
+	 */
+	public SimplePDFCell border(Float width){
+		this.getCell().setUseBorderPadding(true);
+		this.getCell().setBorderWidthTop(width);
+		this.getCell().setBorderWidthRight(width);
+        this.getCell().setBorderWidthBottom(width);
+        this.getCell().setBorderWidthLeft(width);
         return this;
 	}
 	
@@ -170,13 +192,60 @@ public class SimplePDFCell {
 	
 	/**
 	 * 
+	 * @param orientation
+	 * @param borderColor
+	 * @return this
+	 */
+	public SimplePDFCell borderColor(String orientation, BaseColor borderColor){
+		switch (orientation) {
+		case "t":
+			this.getCell().setBorderColorTop(borderColor);
+			break;
+		case "r":
+			this.getCell().setBorderColorRight(borderColor);
+			break;
+		case "b":
+			this.getCell().setBorderColorBottom(borderColor);
+			break;
+		case "l":
+			this.getCell().setBorderColorLeft(borderColor);
+			break;
+		}
+		return this;
+	}
+	
+	/**
+	 * 
 	 * @param borderWidth
 	 * @return this
 	 */
 	public SimplePDFCell borderWidth(Float borderWidth){
 		this.getCell().setBorderWidth(borderWidth);
 		return this;
-		
+	}
+	
+	/**
+	 * 
+	 * @param orientation
+	 * @param borderWidth
+	 * @return this
+	 */
+	public SimplePDFCell borderWidth(String orientation, Float borderWidth){
+		switch (orientation) {
+		case "t":
+			this.getCell().setBorderWidthTop(borderWidth);
+			break;
+		case "r":
+			this.getCell().setBorderWidthRight(borderWidth);
+			break;
+		case "b":
+			this.getCell().setBorderWidthBottom(borderWidth);
+			break;
+		case "l":
+			this.getCell().setBorderWidthLeft(borderWidth);
+			break;
+		}
+		return this;
 	}
 	
 	/**
@@ -196,6 +265,46 @@ public class SimplePDFCell {
 	 */
 	public SimplePDFCell colspan(Integer colspan){
 		this.getCell().setColspan(colspan);
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param rowspan
+	 * @return this
+	 */
+	public SimplePDFCell rowspan(Integer rowspan){
+		this.getCell().setRowspan(rowspan);
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param fixedHeight
+	 * @return this
+	 */
+	public SimplePDFCell fixedHeight(Float fixedHeight){
+		this.getCell().setFixedHeight(fixedHeight);
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param bgColor
+	 * @return this
+	 */
+	public SimplePDFCell bgColor(BaseColor bgColor){
+		this.getCell().setBackgroundColor(bgColor);
+		return this;
+	}
+	
+	/**
+	 * 
+	 * @param image
+	 * @return this
+	 */
+	public SimplePDFCell image(Image image){
+		this.getCell().setImage(image);
 		return this;
 	}
 
