@@ -68,7 +68,7 @@ background-color: #7BC3EC;
 							<hr/>
 							
 							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Your Address ${customer.serviceAvailable }</label>
+								<label for="address" class="control-label col-md-4">Your Address</label>
 								<div class="col-md-8">
 									
 									<c:choose>

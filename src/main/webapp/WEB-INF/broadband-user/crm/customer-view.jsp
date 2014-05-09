@@ -15,7 +15,7 @@
 			<jsp:include page="customer-query.jsp" />
 		
 		
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">Customer View</h4>
 				</div>
