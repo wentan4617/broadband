@@ -9,11 +9,17 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
+			<c:if test="${userSession.user_role == 'sales'}">
+				<a class="navbar-brand" href="${ctx}/broadband-user/sale/online/ordering/view/1/${userSession.id}">CyberPark Manager System</a>
+			</c:if>
+			<c:if test="${userSession.user_role != 'sales'}">
 			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark Manager System</a>
+			</c:if>
 		</div>
 		<c:if test="${userSession != null }">
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
+					<c:if test="${userSession.user_role != 'sales' }">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Plan <b class="caret"></b>
@@ -192,6 +198,7 @@
 	                    	</li>
 						</ul>
 					</li>
+					</c:if>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Sales <b class="caret"></b>

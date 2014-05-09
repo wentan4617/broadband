@@ -116,8 +116,13 @@
 										</label>
 									</li>
 									<li>
-										<label> 
-											<form:checkbox path="authArray" value="crm/customer/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Customer
+										<label>
+											<form:checkbox path="authArray" value="crm/customer/personal/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Personal Customer
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="crm/customer/business/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Business Customer
 										</label>
 									</li>
 									<li>

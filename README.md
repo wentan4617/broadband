@@ -26,7 +26,7 @@ demand version 1.0.6 2014-04-24
 * online ordering list如果该order没有credit，则显示一个添加credit的图标链接到添加credit界面
 * 问keith看local list是否google analyst功能
 * 数据库加一个字段，用来限制客户在没有修改随即密码的情况下频繁使用忘记密码功能(kanny)
-* 制作Contact Us动态加载客户在customer的contact us界面新提交的request的功能，客户提交时需要输入验证码(steven)
+* [制作Contact Us动态加载客户在customer的contact us界面新提交的request的功能，客户提交时需要输入验证码](steven)
 * [create customer, company detail的地址框都加上google map auto complete](steven)
 * customer首页下方添加follow us on(twitter, facebook, email, youtube)
 * [重新完善cyberpark首页设计](kanny)

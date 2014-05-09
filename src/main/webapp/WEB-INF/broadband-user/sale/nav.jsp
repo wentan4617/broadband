@@ -5,9 +5,16 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-2">
-				<a class="navbar-brand" href="${ctx}/broadband-user/index"> 
-					<span class="logo"></span>
-				</a>
+				<c:if test="${userSession.user_role != 'sales' }">
+					<a class="navbar-brand" href="${ctx}/broadband-user/index"> 
+						<span class="logo"></span>
+					</a>
+				</c:if>
+				<c:if test="${userSession.user_role == 'sales' }">
+					<a class="navbar-brand" href="${ctx}/broadband-user/sale/online/ordering/view/1/${userSession.id}"> 
+						<span class="logo"></span>
+					</a>
+				</c:if>
 			</div>
 			<div class="col-sm-2">
 				<strong>
