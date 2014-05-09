@@ -12,9 +12,7 @@ import java.util.List;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
-import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -22,8 +20,9 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Organization;
-import com.tm.broadband.util.ITextUtils;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.itext.ITextFont;
+import com.tm.broadband.util.itext.ITextUtils;
 
 /** 
 * Generates Order PDF
@@ -34,15 +33,7 @@ public class OrderPDFCreator extends ITextUtils {
 	private Customer customer;
 	private Organization org;
 	private CustomerOrder customerOrder;
-	private Font arial_normal_4;
-	private Font arial_normal_7;
-	private Font arial_normal_8;
-	private Font arial_normal_10;
-	private Font arial_colored_normal_11;
-	private Font arial_colored_bold_11;
-	private Font arial_bold_10;
-	private Font arial_bold_12;
-	private Font arial_bold_23;
+	
 	private BaseColor titleBGColor = new BaseColor(220,221,221);
 	private BaseColor titleBorderColor = new BaseColor(159,159,159);
 	private BaseColor tableBorderColor = new BaseColor(188,189,192);
@@ -63,38 +54,9 @@ public class OrderPDFCreator extends ITextUtils {
 	// END Order Detail Differentiations Variables
 	// END Temporary Variables
 	
-	public void loadFont(){
-		try {
-			BaseFont bf_arial_normal_4 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_4 = new Font(bf_arial_normal_4, 5, Font.NORMAL);
-			BaseFont bf_arial_normal_7 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_7 = new Font(bf_arial_normal_7, 7, Font.NORMAL);
-			BaseFont bf_arial_normal_8 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_8 = new Font(bf_arial_normal_8, 8, Font.NORMAL);
-			BaseFont bf_arial_normal_10 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_normal_10 = new Font(bf_arial_normal_10, 10, Font.NORMAL);
-			BaseFont bf_arial_colored_normal_11 = BaseFont.createFont("pdf"+File.separator+"font-family/Arial.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_colored_normal_11 = new Font(bf_arial_colored_normal_11, 11, Font.NORMAL, new BaseColor(61,184,185));
-			BaseFont bf_arial_colored_bold_11 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_colored_bold_11 = new Font(bf_arial_colored_bold_11, 11, Font.NORMAL, new BaseColor(61,184,185));
-			BaseFont bf_arial_bold_10 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_bold_10 = new Font(bf_arial_bold_10, 10, Font.NORMAL);
-			BaseFont bf_arial_bold_12 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_bold_12 = new Font(bf_arial_bold_12, 12);
-			BaseFont bf_arial_bold_23 = BaseFont.createFont("pdf"+File.separator+"font-family/arialbd.ttf",BaseFont.WINANSI, BaseFont.EMBEDDED);
-			this.arial_bold_23 = new Font(bf_arial_bold_23, 23, Font.NORMAL, new BaseColor(61,184,185));
-		} catch (DocumentException | IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
-	public OrderPDFCreator(){
-		loadFont();
-
-	}
+	public OrderPDFCreator(){}
 	
 	public OrderPDFCreator(Customer customer, CustomerOrder customerOrder, Organization org){
-		loadFont();
 		this.setCustomer(customer);
 		this.setCustomerOrder(customerOrder);
 		this.setOrg(org);
@@ -174,8 +136,8 @@ public class OrderPDFCreator extends ITextUtils {
 		document.add(createOrderDetailTable());
 		
 		// set FIRST PAGE bottom texts
-		addText(writer, "Print from www.cyberpark.co.nz", arial_normal_10, 190F, 26F);
-		addText(writer, "0800 2 CYBER (29237)", arial_normal_10, 360F, 26F);
+		addText(writer, "Print from www.cyberpark.co.nz", ITextFont.arial_normal_10, 190F, 26F);
+		addText(writer, "0800 2 CYBER (29237)", ITextFont.arial_normal_10, 360F, 26F);
     	// two-dimensional_code
     	addImage(writer, "pdf"+File.separator+"img"+File.separator+"two-dimensional_code.png", 82.50000000000001F, 82.50000000000001F, 486F, 24F);
 
@@ -193,8 +155,8 @@ public class OrderPDFCreator extends ITextUtils {
 		document.add(createTermAndAuthorisationTable(writer));
 		
 		// set SECOND PAGE bottom texts
-		addText(writer, "*Authorised & Powered by", arial_normal_8, 390F, 54F);
-		addText(writer, "2014", arial_normal_10, 550F, 54F);
+		addText(writer, "*Authorised & Powered by", ITextFont.arial_normal_8, 390F, 54F);
+		addText(writer, "2014", ITextFont.arial_normal_10, 550F, 54F);
         
 		// CLOSE DOCUMENT
         document.close();
@@ -210,16 +172,15 @@ public class OrderPDFCreator extends ITextUtils {
 	
 	public PdfPTable createOrderPDFTitleTable(){
 		
-        PdfPTable orderPDFTitleTable = new PdfPTable(14);
-        orderPDFTitleTable.setWidthPercentage(102);
+        PdfPTable orderPDFTitleTable = newTable().columns(14).widthPercentage(102F).o();
     	
     	// BEGIN ORDER CONFIRMATION AREA PADDING TOP
         addEmptyCol(orderPDFTitleTable, 1F, 14);
     	// END ORDER CONFIRMATION AREA PADDING TOP
 
         // BEGIN ORDER CONFIRMATION TITLE
-        addPDFTitle(orderPDFTitleTable, "BROADBAND APPLICATION", arial_bold_23, 4F, 0, PdfPCell.ALIGN_RIGHT, 14);
-        addPDFTitle(orderPDFTitleTable, "CONFIRMATION", arial_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
+        addPDFTitle(orderPDFTitleTable, "BROADBAND APPLICATION", ITextFont.arial_colored_bold_23, 4F, 0, PdfPCell.ALIGN_RIGHT, 14);
+        addPDFTitle(orderPDFTitleTable, "CONFIRMATION", ITextFont.arial_colored_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
         // END ORDER CONFIRMATION TITLE
         
 		return orderPDFTitleTable;
@@ -231,8 +192,7 @@ public class OrderPDFCreator extends ITextUtils {
 	 */
 	public PdfPTable createCustomerOrderBasicInfoTable(){
 		
-        PdfPTable customerBasicInfoTable = new PdfPTable(14);
-        customerBasicInfoTable.setWidthPercentage(102);
+        PdfPTable customerBasicInfoTable = newTable().columns(14).widthPercentage(102F).o();
     	
     	// BEGIN CUSTOMER BASIC INFO PADDING TOP
         addEmptyCol(customerBasicInfoTable, 6F, 14);
@@ -242,21 +202,21 @@ public class OrderPDFCreator extends ITextUtils {
         if(this.getCustomer().getCustomer_type().equals("personal")){
         	
         	// BEGIN PERSONAL BASIC INFORMATION
-            addCol(customerBasicInfoTable, (this.getCustomer().getTitle()!=null?this.getCustomer().getTitle()+" ":"")+this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), 10, 10F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+            addCol(customerBasicInfoTable, (this.getCustomer().getTitle()!=null?this.getCustomer().getTitle()+" ":"")+this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
             // END PERSONAL BASIC INFORMATION
             
         } else if(this.getCustomer().getCustomer_type().equals("business")){
         	
         	// BEGIN BUSINESS BASIC INFORMATION
-            addCol(customerBasicInfoTable, this.getOrg().getOrg_name(), 10, 10F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+            addCol(customerBasicInfoTable, this.getOrg().getOrg_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
         	// END BUSINESS BASIC INFORMATION
             
         }
-        addCol(customerBasicInfoTable, "No.", 2, 0F, arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, "Order Date", 2, 0F, arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, "No.", 2, 0F, ITextFont.arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, "Order Date", 2, 0F, ITextFont.arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         // END CUSTOMER BASIC INFORMATION
     	
     	// BEGIN CUSTOMER BASIC INFO PADDING BOTTOM
@@ -277,14 +237,13 @@ public class OrderPDFCreator extends ITextUtils {
 	 */
     public PdfPTable createCustomerInfoTable(PdfWriter writer, Document doc) throws MalformedURLException, IOException, DocumentException {
         
-        PdfPTable customerInfoTable = new PdfPTable(10);
-        customerInfoTable.setWidthPercentage(102);
+        PdfPTable customerInfoTable = newTable().columns(10).widthPercentage(102F).o();
         
         // BEGIN CUSTOMER INFO TITLE BAR
         if(this.getCustomer().getCustomer_type()!=null && this.getCustomer().getCustomer_type().equals("personal")){
-        	addTitleBar(customerInfoTable, "PERSONAL INFORMATION", arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
+        	addTitleBar(customerInfoTable, "PERSONAL INFORMATION", ITextFont.arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
         } else if(this.getCustomer().getCustomer_type().equals("business")){
-        	addTitleBar(customerInfoTable, "BUSINESS INFORMATION", arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
+        	addTitleBar(customerInfoTable, "BUSINESS INFORMATION", ITextFont.arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
         }
         // END CUSTOMER INFO TITLE BAR
     	
@@ -303,55 +262,55 @@ public class OrderPDFCreator extends ITextUtils {
         if(this.getCustomer().getCustomer_type().equals("personal")){
         	
             // BEGIN PERSONAL INFO ROWS
-        	addCol(customerInfoTable, "Phone", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getPhone(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Mobile", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getCellphone(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Email", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getEmail(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Date of Birth", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomer().getBirth()), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Driver License No.", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getDriver_licence(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Passport No.", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getPassport(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Passport Country or Origin", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getCountry(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Phone", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getPhone(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Mobile", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getCellphone(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Email", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getEmail(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Date of Birth", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomer().getBirth()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Driver License No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getDriver_licence(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Passport No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getPassport(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Passport Country or Origin", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCustomer().getCountry(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
             // END PERSONAL INFO ROWS
             
         } else if(this.getCustomer().getCustomer_type().equals("business")){
         	
             // BEGIN BUSINESS INFO ROWS
-        	addCol(customerInfoTable, "Organization Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Organization Type", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_type(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Trading Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_trading_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Registration No.", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_register_no(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Date Incoporated", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getOrg().getOrg_incoporate_date()), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Organization Name", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getOrg_name(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Organization Type", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getOrg_type(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Trading Name", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getOrg_trading_name(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Registration No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getOrg_register_no(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Date Incoporated", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getOrg().getOrg_incoporate_date()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
 
         	// BEGIN CUSTOMER INFO AREA ENDING PADDING BOTTOM
             addEmptyCol(customerInfoTable, 8F, 10);
         	// END CUSTOMER INFO AREA ENDING PADDING BOTTOM
             
         	// BEGIN HOLDER INFO ROWS
-        	addTitleBar(customerInfoTable, "ACCOUNT HOLDER INFORMATION", arial_bold_10, titleBGColor, titleBorderColor, 10, 0F);
+        	addTitleBar(customerInfoTable, "ACCOUNT HOLDER INFORMATION", ITextFont.arial_bold_10, titleBGColor, titleBorderColor, 10, 0F);
 
         	// BEGIN CUSTOMER INFO AREA ENDING PADDING BOTTOM
             addEmptyCol(customerInfoTable, 2F, 10);
         	// END CUSTOMER INFO AREA ENDING PADDING BOTTOM
             
-        	addCol(customerInfoTable, "Full name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Job title", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_job_title(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Phone", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_phone(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Email", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_email(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Full name", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getHolder_name(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Job title", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getHolder_job_title(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Phone", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getHolder_phone(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, "Email", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getOrg().getHolder_email(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	// BEGIN HOLDER INFO ROWS
             
             // END BUSINESS INFO ROWS
@@ -372,8 +331,7 @@ public class OrderPDFCreator extends ITextUtils {
      */
 	public PdfPTable createTransitionInfoTable(){
 		
-        PdfPTable orderPDFTitleTable = new PdfPTable(10);
-        orderPDFTitleTable.setWidthPercentage(102);
+        PdfPTable orderPDFTitleTable = newTable().columns(10).widthPercentage(102F).o();
         
         // BEGIN PARAMETERS
         Float labelIndent = 8F;
@@ -383,20 +341,20 @@ public class OrderPDFCreator extends ITextUtils {
         // END PARAMETERS
 
         // BEGIN TRANSITION INFO ROWS
-    	addTitleBar(orderPDFTitleTable, "TRANSITION", arial_bold_10, titleBGColor, titleBorderColor, 10, 0F);
+    	addTitleBar(orderPDFTitleTable, "TRANSITION", ITextFont.arial_bold_10, titleBGColor, titleBorderColor, 10, 0F);
     	
     	// BEGIN TRANSITION PADDING TOP
         addEmptyCol(orderPDFTitleTable, 2F, 10);
     	// END TRANSITION PADDING TOP
         
-    	addCol(orderPDFTitleTable, "Your Current Provider Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_provider_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, "Account Holder Name", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_holder_name(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, "Your Current Account Number", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_number(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, "Your Porting Number", 3, labelIndent, arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_porting_number(), 7, contentIndent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Your Current Provider Name", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_provider_name(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Account Holder Name", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_holder_name(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Your Current Account Number", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_number(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Your Porting Number", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_porting_number(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         // END TRANSITION INFO ROWS
 
     	// BEGIN DISTANCE BETWEEN CUSTOMER AGREEMENT TABLE TITLE AND ROW
@@ -412,8 +370,7 @@ public class OrderPDFCreator extends ITextUtils {
 	 */
 	public PdfPTable createCustomerAgreementTable(){
 		
-        PdfPTable table = new PdfPTable(10);
-        table.setWidthPercentage(102);
+        PdfPTable table = newTable().columns(10).widthPercentage(102F).o();
     	
     	// BEGIN CUSTOMER AGREEMENT PADDING TOP
         addEmptyCol(table, 10F, 10);
@@ -425,8 +382,8 @@ public class OrderPDFCreator extends ITextUtils {
         Float rowPaddingBottom = 0F;
         // END PARAMETERS
         
-        addCol(table, "I’d like to be kept informed, by various means including electronic messages, of our special offers, deals and", 10, indent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
-        addCol(table, "important information on products and services.", 10, indent, arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        addCol(table, "I’d like to be kept informed, by various means including electronic messages, of our special offers, deals and", 10, indent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        addCol(table, "important information on products and services.", 10, indent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
 
     	// BEGIN CUSTOMER AGREEMENT AREA ENDING PADDING BOTTOM
         addEmptyCol(table, 10F, 10);
@@ -436,11 +393,10 @@ public class OrderPDFCreator extends ITextUtils {
 	}
     
     public PdfPTable createOrderDetailTable(){
-        PdfPTable orderDetailTable = new PdfPTable(10);
-        orderDetailTable.setWidthPercentage(102);
+        PdfPTable orderDetailTable = newTable().columns(10).widthPercentage(102F).o();
         
         // BEGIN TITLE BAR
-        addTitleBar(orderDetailTable, "ORDER DETAIL LIST", arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
+        addTitleBar(orderDetailTable, "ORDER DETAIL LIST", ITextFont.arial_bold_12, titleBGColor, titleBorderColor, 10, 4F);
         // END TITLE BAR
         
     	// BEGIN DISTANCE TO TOP
@@ -463,16 +419,16 @@ public class OrderPDFCreator extends ITextUtils {
          * BEGIN PLAN LIST
          */
         // BEGIN PLAN ROW HEADER
-        addCol(orderDetailTable, "PLAN", 5, firstColIndent, arial_bold_10, titlePaddingTop, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(orderDetailTable, "Data", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Term", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Monthly", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, "Qty", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, "Subtotal", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addColBottomBorder(orderDetailTable, " ", 7, 0F, arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
-        addColBottomBorder(orderDetailTable, " ", 1, 0F, arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addCol(orderDetailTable, "PLAN", 5, firstColIndent, ITextFont.arial_bold_10, titlePaddingTop, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(orderDetailTable, "Data", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+        addCol(orderDetailTable, "Term", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+        addCol(orderDetailTable, "Monthly", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+        addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
+        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         // END PLAN ROW HEADER
 
         // BEGIN PLAN ROW COLUMN
@@ -495,12 +451,12 @@ public class OrderPDFCreator extends ITextUtils {
                 totalPrice += price.multiply(unit).doubleValue();
 
                 // BEGIN PLAN ROWS
-                addCol(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT);
-                addCol(orderDetailTable, cod.getDetail_data_flow() < 0 ? "Ultimate" : cod.getDetail_data_flow()+"GB", 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
-                addCol(orderDetailTable, cod.getDetail_term_period()+" months", 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
-                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
-                addCol(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
-                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
+                addCol(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT);
+                addCol(orderDetailTable, cod.getDetail_data_flow() < 0 ? "Ultimate" : cod.getDetail_data_flow()+"GB", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
+                addCol(orderDetailTable, cod.getDetail_term_period()+" months", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
+                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
+                addCol(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
+                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 // END PLAN ROWS
             	
     		}
@@ -528,14 +484,14 @@ public class OrderPDFCreator extends ITextUtils {
         // END INITIAL PARAMETERS
         
         // BEGIN ADD ON ROW HEADER
-        addCol(orderDetailTable, "SERVICE / PRODUCT", 7, firstColIndent, arial_bold_10, titlePaddingTop, titlePaddingBottom, null);
-        addCol(orderDetailTable, "Price", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Qty", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Subtotal", 1, 0F, arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addColBottomBorder(orderDetailTable, " ", 7, 0F, arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 0F, arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
-        addColBottomBorder(orderDetailTable, " ", 1, 0F, arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addCol(orderDetailTable, "SERVICE / PRODUCT", 7, firstColIndent, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, null);
+        addCol(orderDetailTable, "Price", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+        addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+        addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+        addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 0F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+        addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
+        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         // END ADD ON ROW HEADER
         
         if(this.getCodAddOns().size()>0){
@@ -557,11 +513,11 @@ public class OrderPDFCreator extends ITextUtils {
                 totalPrice += price.multiply(unit).doubleValue();
 
                 // BEGIN ADD ON ROWS
-                addColBottomBorder(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+                addColBottomBorder(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
                 addColBottomBorder(orderDetailTable, " ", 2, 0F, null, 0F, 0F, null, borderColor);
-                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
-                addColBottomBorder(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
-                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
+                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+                addColBottomBorder(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
                 // END ADD ON ROWS
             	
     		}
@@ -608,20 +564,20 @@ public class OrderPDFCreator extends ITextUtils {
         
         // BEGIN TOTAL BEFORE GST
         addEmptyCol(orderDetailTable, 7);
-        addCol(orderDetailTable, "Total before GST", 2, 0F, arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(beforeGSTPrice)), 1, 0F, arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, "Total before GST", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END TOTAL BEFORE GST
         
         // BEGIN GST AT 15%
         addEmptyCol(orderDetailTable, 7);
-        addCol(orderDetailTable, "GST at 15%", 2, 0F, arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst15)), 1, 0F, arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, "GST at 15%", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst15)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END GST AT 15%
         
         // BEGIN ORDER TOTAL
         addEmptyCol(orderDetailTable, 7);
-        addCol(orderDetailTable, "Order Total", 2, 0F, arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(totalPrice)), 1, 0F, arial_bold_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, "Order Total", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(totalPrice)), 1, 0F, ITextFont.arial_bold_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END ORDER TOTAL
  
         /**
@@ -636,18 +592,19 @@ public class OrderPDFCreator extends ITextUtils {
         Integer colSize = 61;
         // END INITIAL PARAMETERS
     	
-        PdfPTable termAndAuthorisationTable = new PdfPTable(colSize);
-        termAndAuthorisationTable.setWidthPercentage(108);
+        PdfPTable termAndAuthorisationTable = newTable().columns(colSize).widthPercentage(108F).o();
+//        		new PdfPTable(colSize);
+//        termAndAuthorisationTable.setWidthPercentage(108F);
 
 
         // BEGIN TERM AND AUTHORIZATION ROWS
-        addCol(termAndAuthorisationTable, "", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
-        addEmptyCol(termAndAuthorisationTable, 1);
+		addCol(termAndAuthorisationTable, "").colspan(colSize).border(0).fixedHeight(10F).o();
+		addCol(termAndAuthorisationTable, "").colspan(colSize/2+1).border(0).o();
         addCol(termAndAuthorisationTable, "including the factors that affect your connection speed. Any control we have over data speed is limited to our network and we make no representations in relation to your speed when connecting to servers outside the CyberPark network.\n"
 +"2.2 CyberPark Broadband is not guaranteed to be fault free or continuous.\n"
 +"2.3 CyberPark prioritises certain types of traffic such as web and email. Other types of traffic such as peer to peer (P2P) are deprioritised.\n"
 +"2.4 The quality of the data you send or receive via CyberPark broadband may be affected by various factors including the "
-+"configuration of our network, the use of the internet, or the configuration of the devices used in sending and/or receiving such data.\n", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
++"configuration of our network, the use of the internet, or the configuration of the devices used in sending and/or receiving such data.\n", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         
         
         addCol(termAndAuthorisationTable, "BUSINESSLINE TERMS AND CONDITIONS\n"
@@ -688,7 +645,7 @@ public class OrderPDFCreator extends ITextUtils {
 +"6. 0900 CALLS AND LOCAL CALLS\n"
 +"6.1 0900 calls are blocked by default on your CyberPark Businessline. However, in the event a 0900 call is made from your "
 +"CyberPark Businessline you agree to pay:\n"
-+"• Call charges for 0900 calls made from your telephone through the CyberPark network or charged to you, no matter who makes them\n", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
++"• Call charges for 0900 calls made from your telephone through the CyberPark network or charged to you, no matter who makes them\n", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         addEmptyCol(termAndAuthorisationTable, 1);
         addCol(termAndAuthorisationTable, "3. SUPPORT\n"
 +"3.1 While CyberPark will do everything it can to help you with any problems you experience with your CyberPark broadband, In "
@@ -731,7 +688,7 @@ public class OrderPDFCreator extends ITextUtils {
 +"7. MODEMS\n"
 +"7.1 If in the unlikely event that you decide to leave the CyberPark Work network within twelve months, you will have to return the "
 +"CyberPark Single Port Modem. If the modem is not returned, you will be charged an amount to recover the cost of this device and "
-+"this amount will be advised to you on the CyberPark website from time to time.", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
++"this amount will be advised to you on the CyberPark website from time to time.", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         
         
         addCol(termAndAuthorisationTable, "• Any charitable donations promised during those calls\n"
@@ -745,9 +702,9 @@ public class OrderPDFCreator extends ITextUtils {
 +"relation to directory assistance services our liability is limited to seeking to rectify any error as soon as practicable.\n"
 +"7.2 If you do not want your details to be listed in the White Pages or directory assistance, or you require special types of listings "
 +"please contact CyberPark on 0800 899 892. Any arrangement you make in relation to such listings however, will be an "
-+"agreement between you and the directory services provider.\n", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
++"agreement between you and the directory services provider.\n", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         addEmptyCol(termAndAuthorisationTable, 1);
-        addCol(termAndAuthorisationTable, "", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
+        addCol(termAndAuthorisationTable, "", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         
         
         addCol(termAndAuthorisationTable, "8. WIRING AND MAINTENANCE\n"
@@ -822,7 +779,7 @@ public class OrderPDFCreator extends ITextUtils {
 +"visit your premises in order to get your broadband working.\n"
 +"2. SPEED AND QUALITY OF SERVICE\n"
 +"2.1 Any reference to the data speeds refers to the maximum possible connection speed. Your actual speed depends on a number "
-+"of factors and we cannot guarantee that you will achieve a maximum connection speed. See our website for further details.", colSize/2, 0F, arial_normal_4, 0F, 0F, null);
++"of factors and we cannot guarantee that you will achieve a maximum connection speed. See our website for further details.", colSize/2, 0F, ITextFont.arial_normal_4, 0F, 0F, null);
         addEmptyCol(termAndAuthorisationTable, 1);
 
         // BEGIN INITIAL PARAMETERS
@@ -839,7 +796,7 @@ public class OrderPDFCreator extends ITextUtils {
     	// END TERM AND AUTHORIZATION PADDING TOP
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addCol(termAndAuthorisationInnerTable, "Authorisation", innerColSize, innerColIndent, arial_bold_12, 0F, 0F, null);
+        addCol(termAndAuthorisationInnerTable, "Authorisation", innerColSize, innerColIndent, ITextFont.arial_bold_12, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN TITLE AND CONTENT
@@ -847,7 +804,7 @@ public class OrderPDFCreator extends ITextUtils {
     	// END TERM AND AUTHORIZATION PADDING BETWEEN TITLE AND CONTENT
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addCol(termAndAuthorisationInnerTable, "I understand and agree to the following: ", innerColSize, innerColIndent, arial_normal_10, 0F, 0F, null);
+        addCol(termAndAuthorisationInnerTable, "I understand and agree to the following: ", innerColSize, innerColIndent, ITextFont.arial_normal_10, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -868,7 +825,7 @@ public class OrderPDFCreator extends ITextUtils {
 +"If the Customer terminates this agreement prior to the expiry date of\n"
 +"this agreement, or if the agreement is cancelled by CyberPark Limited\n"
 +"prior to the expiry date due to the default or breach of the Customer,\n"
-+"then the Customer shall pay to CyberPark Limited:\n", innerColSize, innerColIndent, arial_normal_8, 0F, 0F, null);
++"then the Customer shall pay to CyberPark Limited:\n", innerColSize, innerColIndent, ITextFont.arial_normal_8, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -876,7 +833,7 @@ public class OrderPDFCreator extends ITextUtils {
     	// END TERM AND AUTHORIZATION PADDING BETWEEN ROW
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addCol(termAndAuthorisationInnerTable, "(a) the standard early termination fee of $199; and", innerColSize, innerColIndent, arial_normal_8, 0F, 0F, null);
+        addCol(termAndAuthorisationInnerTable, "(a) the standard early termination fee of $199; and", innerColSize, innerColIndent, ITextFont.arial_normal_8, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -885,7 +842,7 @@ public class OrderPDFCreator extends ITextUtils {
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
         addCol(termAndAuthorisationInnerTable, "(b) the standard retail price (as at the date of this agreement) of any\n"
-+"equipment and/or gift received by the Customer under this agreement.", innerColSize, innerColIndent, arial_normal_8, 0F, 0F, null);
++"equipment and/or gift received by the Customer under this agreement.", innerColSize, innerColIndent, ITextFont.arial_normal_8, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -895,7 +852,7 @@ public class OrderPDFCreator extends ITextUtils {
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
         addCol(termAndAuthorisationInnerTable, "I declare that I have read and accept the Terms and Conditions\n"
 +"(www.cyberpark.co.nz) as well as the specific terms relating to this\n"
-+"offer applicable to my connection.", innerColSize, innerColIndent, arial_normal_8, 0F, 0F, null);
++"offer applicable to my connection.", innerColSize, innerColIndent, ITextFont.arial_normal_8, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -909,7 +866,7 @@ public class OrderPDFCreator extends ITextUtils {
 +"out above plus any additional usage costs, plus any amount\n"
 +"outstanding. I will be billed on a monthly basis and the due date for bill\n"
 +"payments will be the date set out in those bills. I may pay those bills by\n"
-+"direct debit. Credit card, or by the methods set out in those bills.", innerColSize, innerColIndent, arial_normal_8, 0F, 0F, null);
++"direct debit. Credit card, or by the methods set out in those bills.", innerColSize, innerColIndent, ITextFont.arial_normal_8, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
 
     	// BEGIN TERM AND AUTHORIZATION PADDING BETWEEN ROW
@@ -917,11 +874,11 @@ public class OrderPDFCreator extends ITextUtils {
     	// END TERM AND AUTHORIZATION PADDING BETWEEN ROW
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addCol(termAndAuthorisationInnerTable, "Signed & agreed by customer ", innerColSize/2+1, innerColIndent, arial_normal_10, 0F, 0F, null);
+        addCol(termAndAuthorisationInnerTable, "Signed & agreed by customer ", innerColSize/2+1, innerColIndent, ITextFont.arial_normal_10, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addColBottomBorder(termAndAuthorisationInnerTable, "", innerColSize/2-1, 0F, arial_normal_8, 0F, 0F, null, tableBorderColor);
+        addColBottomBorder(termAndAuthorisationInnerTable, "", innerColSize/2-1, 0F, ITextFont.arial_normal_8, 0F, 0F, null, tableBorderColor);
         // END TERM AND AUTHORIZATION INNER ROWS
         addEmptyCol(termAndAuthorisationInnerTable, 1);
 
@@ -930,11 +887,11 @@ public class OrderPDFCreator extends ITextUtils {
     	// END TERM AND AUTHORIZATION PADDING BETWEEN ROW
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addCol(termAndAuthorisationInnerTable, "Date ", 2, innerColIndent, arial_normal_10, 0F, 0F, null);
+        addCol(termAndAuthorisationInnerTable, "Date ", 2, innerColIndent, ITextFont.arial_normal_10, 0F, 0F, null);
         // END TERM AND AUTHORIZATION INNER ROWS
         
         // BEGIN TERM AND AUTHORIZATION INNER ROWS
-        addColBottomBorder(termAndAuthorisationInnerTable, TMUtils.dateFormatYYYYMMDD(new Date()), 10, 0F, arial_bold_10, 0F, 0F, null, tableBorderColor);
+        addColBottomBorder(termAndAuthorisationInnerTable, TMUtils.dateFormatYYYYMMDD(new Date()), 10, 0F, ITextFont.arial_bold_10, 0F, 0F, null, tableBorderColor);
         // END TERM AND AUTHORIZATION INNER ROWS
         addEmptyCol(termAndAuthorisationInnerTable, 1);
         
@@ -947,6 +904,34 @@ public class OrderPDFCreator extends ITextUtils {
         
 		return termAndAuthorisationTable;
     }
+
+	public Customer getCustomer() {
+		return customer;
+	}
+	public void setCustomer(Customer customer) {
+		this.customer = customer;
+	}
+	public Organization getOrg() {
+		return org;
+	}
+	public void setOrg(Organization org) {
+		this.org = org;
+	}
+	public CustomerOrder getCustomerOrder() {
+		return customerOrder;
+	}
+	public void setCustomerOrder(CustomerOrder customerOrder) {
+		this.customerOrder = customerOrder;
+	}
+	public String getGstRate() {
+		return gstRate;
+	}
+	public List<CustomerOrderDetail> getCodPlans() {
+		return codPlans;
+	}
+	public List<CustomerOrderDetail> getCodAddOns() {
+		return codAddOns;
+	}
 
     // BEGIN If Merge PDF Third Part
 //    public void mergePDF(String outputFile, String inputFile, String term) throws DocumentException, IOException{
@@ -969,52 +954,5 @@ public class OrderPDFCreator extends ITextUtils {
 //    }
     // END If Merge PDF Third Part
     
-	public String getGstRate() {
-		return gstRate;
-	}
-
-	public void setGstRate(String gstRate) {
-		this.gstRate = gstRate;
-	}
-
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
-	public Organization getOrg() {
-		return org;
-	}
-
-	public void setOrg(Organization org) {
-		this.org = org;
-	}
-
-	public CustomerOrder getCustomerOrder() {
-		return customerOrder;
-	}
-
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		this.customerOrder = customerOrder;
-	}
-
-	public List<CustomerOrderDetail> getCodPlans() {
-		return codPlans;
-	}
-
-	public void setCodPlans(List<CustomerOrderDetail> codPlans) {
-		this.codPlans = codPlans;
-	}
-
-	public List<CustomerOrderDetail> getCodAddOns() {
-		return codAddOns;
-	}
-
-	public void setCodAddOns(List<CustomerOrderDetail> codAddOns) {
-		this.codAddOns = codAddOns;
-	}
 	
 }

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.tm.broadband.model.Broadband;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.util.BroadbandCapability;
+import com.tm.broadband.util.broadband.BroadbandCapability;
 
 @RestController
 @SessionAttributes(value = { "customer"})
