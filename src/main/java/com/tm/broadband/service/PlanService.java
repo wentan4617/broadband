@@ -25,8 +25,7 @@ public class PlanService {
 	private HardwareMapper hardwareMapper;
 
 	@Autowired
-	public PlanService(PlanMapper planMapper, 
-			HardwareMapper hardwareMapper) {
+	public PlanService(PlanMapper planMapper, HardwareMapper hardwareMapper) {
 		this.planMapper = planMapper;
 		this.hardwareMapper = hardwareMapper;
 	}
@@ -39,66 +38,8 @@ public class PlanService {
 	 */
 	
 	@Transactional
-	public void savePlan(Plan plan) {
-		this.planMapper.insertPlan(plan);
-	}
-
-	@Transactional
-	public void removePlanById(int id) {
-		this.planMapper.deletePlanById(id);
-	}
-	
-	@Transactional
-	public void removeHardwareById(int id){
-		this.hardwareMapper.deleteHardwareById(id);
-	}
-
-	@Transactional
-	public void editPlan(Plan plan) {
-		this.planMapper.updatePlan(plan);
-	}
-
-	@Transactional
-	public void editPlanPic(Plan plan) {
-		this.planMapper.updatePlanPicById(plan);
-	}
-
-	@Transactional
-	public void editHardwarePic(Hardware hardware) {
-		this.hardwareMapper.updateHardwarePicById(hardware);
-	}
-
-	@Transactional
-	public Plan queryPlanById(int id) {
-		return this.planMapper.selectPlanById(id);
-	}
-
-	@Transactional
-	public int queryExistPlanByName(String plan_name) {
-		return this.planMapper.selectExistPlanByName(plan_name);
-	}
-
-	@Transactional
-	public int queryExistNotSelfPlanByName(String plan_name, int id) {
-		return this.planMapper.selectExistNotSelfPlanByName(plan_name, id);
-	}
-
-	@Transactional
-	public Page<Plan> queryPlansByPage(Page<Plan> page) {
-		page.setTotalRecord(this.planMapper.selectPlansSum(page));
-		page.setResults(this.planMapper.selectPlansByPage(page));
-	
-		return page;
-	}
-
-	@Transactional
-	public void editPlansStatus(List<Plan> plans) {
-		if (plans != null) {
-			for (Plan plan : plans) {
-				this.planMapper.updatePlanStatusById(plan.getPlan_status(),
-						plan.getId());
-			}
-		}
+	public Plan queryPlan(Plan plan) {
+		return this.planMapper.selectPlan(plan);
 	}
 	
 	@Transactional
@@ -107,8 +48,46 @@ public class PlanService {
 	}
 	
 	@Transactional
-	public List<String> queryDistinctPlanGroup() {
-		return this.planMapper.selectDistinctPlanGroup();
+	public Page<Plan> queryPlansByPage(Page<Plan> page) {
+		page.setTotalRecord(this.planMapper.selectPlansSum(page));
+		page.setResults(this.planMapper.selectPlansByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public int queryExistPlan(Plan plan) {
+		return this.planMapper.selectExistPlan(plan);
+	}
+	
+	@Transactional
+	public void savePlan(Plan plan) {
+		this.planMapper.insertPlan(plan);
+	}
+	
+	@Transactional
+	public void editPlan(Plan plan) {
+		this.planMapper.updatePlan(plan);
+	}
+	
+	@Transactional
+	public void editPlans(List<Plan> plans) {
+		if (plans != null) {
+			for (Plan plan : plans) 
+				this.planMapper.updatePlan(plan);
+		}
+	}
+
+	@Transactional
+	public void removePlan(Plan plan) {
+		this.planMapper.deletePlan(plan);
+	}
+	
+	@Transactional
+	public void removePlans(List<Plan> plans) {
+		if (plans != null) {
+			for (Plan plan : plans) 
+				this.planMapper.deletePlan(plan);
+		}
 	}
 	
 	/*
@@ -120,8 +99,18 @@ public class PlanService {
 	 */
 	
 	@Transactional
+	public void editHardwarePic(Hardware hardware) {
+		this.hardwareMapper.updateHardwarePicById(hardware);
+	}
+	
+	@Transactional
 	public void saveHardware(Hardware hardware) {
 		this.hardwareMapper.insertHardware(hardware);
+	}
+	
+	@Transactional
+	public void removeHardwareById(int id){
+		this.hardwareMapper.deleteHardwareById(id);
 	}
 
 	@Transactional

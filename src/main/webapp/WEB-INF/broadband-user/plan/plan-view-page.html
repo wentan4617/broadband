@@ -4,7 +4,7 @@
 <input type="hidden" name="value"/>
 <input type="hidden" name="type"/>
 
-<table class="table" >
+<table class="table table-hover" style="font-size:12px;">
 	<thead >
 		<tr>
 			<th><input type="checkbox" id="checkbox_plans_top" /></th>
@@ -31,6 +31,11 @@
 				<a href="<.=ctx.>/broadband-user/plan/edit/<.=plan.id.>">
 					<.=plan.plan_name.>
 				</a>
+				<. if(plan.promotion) {.>
+				<a data-toggle="tooltip" data-placement="top" data-original-title="Promotion">
+					<span class="glyphicon glyphicon-fire" style="font-size:20px;"></span>
+				</a>
+				<.}.>
 			</td>
 			<td class="<.=plan.plan_group=='plan-topup'?'text-danger':''.><.=plan.plan_group=='plan-no-term'?'text-info':''.><.=plan.plan_group=='plan-term'?'text-warning':''.>">
 				<.=plan.plan_group.>
@@ -51,7 +56,7 @@
 				$ <.=Number(plan.plan_new_connection_fee).toFixed(2).>
 			</td>
 			<td>
-				<.=plan.data_flow < 0 ? 'Unlimited': plan.data_flow + 'GB'.> 
+				<.=plan.data_flow < 0 ? 'Unlimited': (plan.data_flow || 0) + ' GB'.> 
 			</td>
 			<td>
 				<.=plan.plan_status.>
@@ -62,7 +67,6 @@
 	<tfoot>
 		<tr>
 			<td colspan="10">
-				<.=totalPage.>
 				<ul class="pagination">
 					<. for (var i=1; i <= totalPage; i++) { .>
 						<li class="<.=pageNo == i ? 'active' : ''.>">
@@ -76,6 +80,7 @@
 </table>
 
 </form>
+
 <.} else {.>
 <div class="panel-body">
 	<div class="alert alert-warning">No records have been found.</div>

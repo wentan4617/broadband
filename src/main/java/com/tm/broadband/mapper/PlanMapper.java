@@ -28,12 +28,7 @@ public interface PlanMapper {
 	List<Plan> selectPlans(Plan plan);
 	List<Plan> selectPlansByPage(Page<Plan> page);
 	int selectPlansSum(Page<Plan> page);
-
-	Plan selectPlanById(int id);
-	int selectExistPlanByName(String plan_name);
-	int selectExistNotSelfPlanByName(String plan_name, int id);
-
-	List<String> selectDistinctPlanGroup();
+	int selectExistPlan(Plan plan);
 	
 	/* // END SELECT AREA */
 	
@@ -42,7 +37,6 @@ public interface PlanMapper {
 	/* INSERT AREA */
 	
 	void insertPlan(Plan plan);
-	void insertPlanTopup(int planId, int topupId);
 	
 	/* // END INSERT AREA */
 	
@@ -51,8 +45,6 @@ public interface PlanMapper {
 	/* UPDATE AREA */
 	
 	void updatePlan(Plan plan);
-	void updatePlanStatusById(String status, int id);
-	void updatePlanPicById(Plan plan);
 	
 	/* // END UPDATE AREA */
 	
@@ -60,7 +52,7 @@ public interface PlanMapper {
 	
 	/* DELETE AREA */
 	
-	void deletePlanById(int id);
+	void deletePlan(Plan plan);
 	
 	/* // END DELETE AREA */
 	

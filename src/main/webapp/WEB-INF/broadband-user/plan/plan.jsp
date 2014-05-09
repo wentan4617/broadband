@@ -15,166 +15,136 @@
 				</div>
 				<div class="panel-body">
 					<form class="form-horizontal">
+					
+						<h4 class="text-success">Plan Information</h4>
+						<hr/>
+						
 						<div class="form-group">
 							<label for="plan_name" class="control-label col-md-4">Plan Name</label>
 							<div class="col-md-3">
-								<input value="${plan.plan_name}" type="text" id="plan_name" class="form-control" placeholder="Plan Name" data-error-field/>
+								<input value="${plan.plan_name}" type="text" id="plan_name" class="form-control" data-error-field/>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="plan_group" class="control-label col-md-4">Plan Group</label>
 							<div class="col-md-3">
-								<select id="plan_group" class="form-control">
-									<option
-										<c:if test="${plan.plan_group == ''}">
-											selected="selected"
-										</c:if>
-									>none</option>
-									<c:forEach var="p" items="plan-no-term,plan-term,plan-topup">
-										<option value="${p}"
-											<c:if test="${p == plan.plan_group}">
-												selected="selected"
-											</c:if>
-										>${p}</option>
-									</c:forEach>
+								<select id="plan_group" class="form-control selectpicker">
+									<option value="">None</option>
+									<option value="plan-no-term" ${plan.plan_group=='plan-no-term'?'selected="selected"':'' }>Plan-No-Term</option>
+									<option value="plan-term" ${plan.plan_group=='plan-term'?'selected="selected"':'' }>Plan-Term</option>
+									<option value="plan-topup" ${plan.plan_group=='plan-topup'?'selected="selected"':'' }>Plan-Topup</option>
 								</select>
 							</div>
-							<div class="col-md-5">
-								<div class="well">
-									<span class="text-danger">When choose different options, it will display other input items.</span>
+						</div>
+						
+						<div class="form-group">
+							<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<input type="text" value="${plan.plan_prepay_months}" id="plan_prepay_months" class="form-control" />
+									<span class="input-group-addon">Months</span>
 								</div>
 							</div>
 						</div>
 						
-						<div id="noTermContainer" style="display: 
-							<c:if test="${plan.plan_group == 'plan-no-term' || plan.plan_group == 'plan-term'}">block</c:if>">
-							<hr/>
-							<div class="form-group">
-								<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
-								<div class="col-md-3">
-									<div class="input-group">
-										<input type="text" value="${plan.plan_prepay_months}" id="plan_prepay_months" class="form-control" placeholder="" data-error-field/>
-										<span class="input-group-addon">Months</span>
-									</div>
+						<div class="form-group">
+							<label for="term_period" class="control-label col-md-4">Term Period</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<input type="text" value="${plan.term_period}" id="term_period" class="form-control" />
+									<span class="input-group-addon">Months</span>
 								</div>
 							</div>
-							<div class="form-group">
-								<label for="term_period" class="control-label col-md-4">Term Period</label>
-								<div class="col-md-3">
-									<div class="input-group">
-										<input type="text" value="${plan.term_period}" id="term_period" class="form-control" placeholder="" data-error-field/>
-										<span class="input-group-addon">Months</span>
-									</div>
-								</div>
-							</div>
-							<hr/>
 						</div>
 						
 						<div class="form-group">
 							<label for="plan_class" class="control-label col-md-4">Plan Class</label>
 							<div class="col-md-3">
-								<select id="plan_class" class="form-control">
-									<option
-										<c:if test="${plan.plan_class == ''}">
-											selected="selected"
-										</c:if>
-									>none</option>
-									<c:forEach var="p" items="personal,business">
-										<option value="${p}"
-											<c:if test="${p == plan.plan_class}">
-												selected="selected"
-											</c:if>
-										>${p}</option>
-									</c:forEach>
+								<select id="plan_class" class="form-control selectpicker">
+									<option value="">None</option>
+									<option value="personal" ${plan.plan_class=='personal'?'selected="selected"':'' }>Personal</option>
+									<option value="business" ${plan.plan_class=='business'?'selected="selected"':'' }>Business</option>
 								</select>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="plan_type" class="control-label col-md-4">Plan Type</label>
 							<div class="col-md-3">
-								<select id="plan_type" class="form-control">
-									<option
-										<c:if test="${plan.plan_type == ''}">
-											selected="selected"
-										</c:if>
-									>None</option>
-									<c:forEach var="p" items="ADSL,VDSL,UFB">
-										<option value="${p}"
-											<c:if test="${p == plan.plan_type}">
-												selected="selected"
-											</c:if>
-										>${p}</option>
-									</c:forEach>
+								<select id="plan_type" class="form-control selectpicker">
+									<option value="">None</option>
+									<option value="ADSL" ${plan.plan_type=='ADSL'?'selected="selected"':'' }>ADSL</option>
+									<option value="VDSL" ${plan.plan_type=='VDSL'?'selected="selected"':'' }>VDSL</option>
+									<option value="UFB" ${plan.plan_type=='UFB'?'selected="selected"':'' }>UFB</option>
 								</select>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="plan_sort" class="control-label col-md-4">Plan Sort</label>
 							<div class="col-md-3">
-								<select id="plan_sort" class="form-control">
-									<option
-										<c:if test="${plan.plan_sort == ''}">
-											selected="selected"
-										</c:if>
-									>None</option>
-									<c:forEach var="p" items="CLOTHING,NAKED">
-										<option value="${p}"
-											<c:if test="${p == plan.plan_sort}">
-												selected="selected"
-											</c:if>
-										>${p}</option>
-									</c:forEach>
+								<select id="plan_sort" class="form-control selectpicker">
+									<option value="">None</option>
+									<option value="CLOTHING" ${plan.plan_sort=='CLOTHING'?'selected="selected"':'' }>CLOTHING</option>
+									<option value="NAKED" ${plan.plan_sort=='NAKED'?'selected="selected"':'' }>NAKED</option>
 								</select>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="plan_price" class="control-label col-md-4">Monthly fee (Inc. GST(P), Excl. GST(B), Current)</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" value="${plan.plan_price}" id="plan_price" class="form-control" placeholder="" data-error-field/>
+									<input type="text" value="${plan.plan_price}" id="plan_price" class="form-control" data-error-field/>
 								</div>
 							</div>
 						</div>
+						
 						<div class="form-group">
-							<label for="original_price" class="control-label col-md-4">Original fee (Inc GST)</label>
+							<label for="original_price" class="control-label col-md-4">Original fee (Inc. GST(P), Excl. GST(B))</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" value="${plan.original_price}" id="original_price" class="form-control" placeholder="" data-error-field/>
+									<input type="text" value="${plan.original_price}" id="original_price" class="form-control"/>
 								</div>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="plan_new_connection_fee" class="control-label col-md-4">New Connection fee (Inc GST)</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" value="${plan.plan_new_connection_fee}" id="plan_new_connection_fee" class="form-control" placeholder="" data-error-field/>
+									<input type="text" value="${plan.plan_new_connection_fee}" id="plan_new_connection_fee" class="form-control" />
 								</div>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="data_flow" class="control-label col-md-4">Data Flow</label>
 							<div class="col-md-3">
 								<div class="input-group">
-									<input type="text" value="${plan.data_flow}" id="data_flow" class="form-control" placeholder="" data-error-field/>
+									<input type="text" value="${plan.data_flow}" id="data_flow" class="form-control" />
 									<span class="input-group-addon">GB</span>
 								</div>
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="pstn_count" class="control-label col-md-4">PSTN Amount</label>
 							<div class="col-md-3">
-								<input type="text" value="${plan.pstn_count}" id="pstn_count" class="form-control" placeholder="" data-error-field/>
+								<input type="text" value="${plan.pstn_count}" id="pstn_count" class="form-control" />
 							</div>
 						</div>
+						
 						<div class="form-group">
 							<label for="pstn_rental_amount" class="control-label col-md-4">PSTN Rental Amount</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
-									<input type="text" value="${plan.pstn_rental_amount}" id="pstn_rental_amount" class="form-control" placeholder=""  data-error-field/>
+									<input type="text" value="${plan.pstn_rental_amount}" id="pstn_rental_amount" class="form-control" />
 								</div>
 							</div>
 						</div>
@@ -182,80 +152,103 @@
 						<div class="form-group">
 							<label for="plan_status" class="control-label col-md-4">Status</label>
 							<div class="col-md-3">
-								<select id="plan_status" class="form-control">
-									<option
-										<c:if test="${plan.plan_status == ''}">
-											selected="selected"
-										</c:if>
-									>None</option>
-									<c:forEach var="p" items="active,selling,disable">
-										<option value="${p}"
-											<c:if test="${p == plan.plan_status}">
-												selected="selected"
-											</c:if>
-										>${p}</option>
-									</c:forEach>
+								<select id="plan_status" class="form-control selectpicker">
+									<option value="">None</option>
+									<option value="active" ${plan.plan_status=='active'?'selected="selected"':'' }>Active</option>
+									<option value="selling" ${plan.plan_status=='selling'?'selected="selected"':'' }>Selling</option>
+									<option value="disable" ${plan.plan_status=='disable'?'selected="selected"':'' }>Disable</option>
 								</select>
 							</div>
 						</div>
+						
+						<!-- Other Setting -->
+						<hr/>
+						<h4 class="text-success">Other Setting</h4>
+						<hr/>
+						
+						<div class="form-group">
+							<label class="control-label col-md-4"></label>
+							<div class="col-md-3">
+								<div class="checkbox" style="padding-left: 0px;">
+									<label> 
+										<input type="checkbox" id="promotion" ${plan.promotion?'checked="checked"':'' }/>&nbsp;<strong>Promotion</strong>
+									</label>
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label for="place_sort" class="control-label col-md-4">Place Sort</label>
+							<div class="col-md-2">
+								<input type="text" value="${plan.place_sort}" id="place_sort" class="form-control" />
+							</div>
+						</div>
+						
+						<!-- button  -->
 						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
-								<button type="button" class="btn btn-success" id="save-btn">Save</button>
+								<button type="button" class="btn btn-success btn-lg btn-block" id="save-btn">Save</button>
 							</div>
 						</div>
+						
+						<!-- plan desc -->
 						<hr/>
 						<div class="form-group">
-							<label for="plan_desc" class="control-label col-md-4" data-error-field>Description</label>
-							<div class="col-md-8">
-								<textarea id="plan_desc" class="form-control" rows="12">${plan.plan_desc}</textarea>
+							<label for="plan_desc" class="control-label col-md-1">Description</label>
+							<div class="col-md-11">
+								<textarea id="plan_desc" class="form-control" rows="16">${plan.plan_desc}</textarea>
 							</div>
 						</div>
+						
 						<div class="form-group">
-							<label for="memo" class="control-label col-md-4" data-error-field>Memo</label>
-							<div class="col-md-8">
+							<label for="memo" class="control-label col-md-1" >Memo</label>
+							<div class="col-md-11">
 								<textarea id="memo" class="form-control" rows="6">${plan.memo}</textarea>
 							</div>
 						</div>
+						
 					</form>
 					
 					<form:form modelAttribute="plan" method="post" action="${ctx}/broadband-user/plan/pic/edit" class="form-horizontal" enctype="multipart/form-data">
 						<form:hidden path="id"/>
+						
 						<hr/>
-						<div class="page-header" style="margin:0;">
-							<h3 class="text-success"><strong>Plan Pictures</strong></h3>
-						</div>
-						<div class="form-group" style="margin:15px 0 0 0;">
-						    <label for="img1" class="col-sm-4 control-label">Picture 1:</label>
-						    <div class="col-sm-8">
-								<input type="file" name="imgs" class="form-control" placeholder="Picture 1 Path" />
+						<h4 class="text-success">Plan Pictures</h4>
+						<hr/>
+						
+						<div class="form-group">
+						    <label for="img1" class="col-md-3 control-label">Picture 1:</label>
+						    <div class="col-md-8">
+								<input type="file" name="imgs" class="form-control" />
 						    </div>
 						</div>
-						<div class="form-group" style="margin:15px 0 0 0;">
-						    <label for="img2" class="col-sm-4 control-label">Picture 2:</label>
+						
+						<div class="form-group">
+						    <label for="img2" class="col-md-3 control-label">Picture 2:</label>
 						    <div class="col-sm-8">
-								<input type="file" name="imgs" class="form-control" placeholder="Picture 2 Path" />
+								<input type="file" name="imgs" class="form-control" />
 						    </div>
 						</div>
-						<div class="form-group" style="margin:15px 0 0 0;">
-						    <label for="img3" class="col-sm-4 control-label">Picture 3:</label>
+						
+						<div class="form-group" >
+						    <label for="img3" class="col-md-3 control-label">Picture 3:</label>
 						    <div class="col-sm-8">
-								<input type="file" name="imgs" class="form-control" placeholder="Picture 3 Path" />
+								<input type="file" name="imgs" class="form-control"/>
 						    </div>
 						</div>
+						
 						<hr/>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save Pictures</button>
+								<button type="submit" class="btn btn-success btn-lg btn-block">Save Pictures</button>
 							</div>
 						</div>
-						<div class="form-group" style="margin:15px 0 0 0;">
+						<hr/>
+						
+						<div class="form-group" >
 							<div class="col-md-4">
 							    <a href="#" class="thumbnail">
 							      <img data-src="holder.js/300x200" alt="..."
-								      <c:if test="${plan.img1==null || plan.img1==''}">
-								      	src="data:image/png;base64,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"
-								      </c:if>
 								      <c:if test="${plan.img1!=null && plan.img1!=''}">
 								      	src="${ctx}/public/upload/${plan.img1}"
 								      </c:if>
@@ -265,9 +258,6 @@
 							<div class="col-md-4">
 							    <a href="#" class="thumbnail">
 							      <img data-src="holder.js/300x200" alt="..."
-								      <c:if test="${plan.img2==null || plan.img2==''}">
-								      	src="data:image/png;base64,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"
-								      </c:if>
 								      <c:if test="${plan.img2!=null && plan.img2!=''}">
 								      	src="${ctx}/public/upload/${plan.img2}"
 								      </c:if>
@@ -277,15 +267,13 @@
 							<div class="col-md-4">
 							    <a href="#" class="thumbnail">
 							      <img data-src="holder.js/300x200" alt="..."
-								      <c:if test="${plan.img3==null || plan.img3==''}">
-								      	src="data:image/png;base64,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"
-								      </c:if>
 								      <c:if test="${plan.img3!=null && plan.img3!=''}">
 								      	src="${ctx}/public/upload/${plan.img3}"
 								      </c:if>
 							      >
 							    </a>
 							</div>
+							
 						</div>
 					</form:form>
 						
@@ -294,38 +282,25 @@
 		</div>
 	</div>
 </div>
+
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
-	$('.selectpicker').selectpicker();
 	
-	$('#plan_group').change(function(){
-		var val = this.value;
-		if (val === 'plan-topup') {
-			$('#topupContainer').show('fast');
-			$('#noTermContainer').hide('fast');
-			//$('#termContainer').hide('fast');
-		} else if (val === 'plan-no-term') {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').show('fast');
-			//$('#termContainer').hide('fast');
-		} else if (val === 'plan-term') {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').show('fast');
-			//$('#termContainer').show('fast');
-		} else {
-			$('#topupContainer').hide('fast');
-			$('#noTermContainer').hide('fast');
-			//$('#termContainer').hide('fast');
-		}
+	$(':checkbox').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
 	});
 	
+	$('.selectpicker').selectpicker();
+	
 	$('#save-btn').on("click", function(){
-		
 		var $btn = $(this);
-		$btn.button('loading');
 		var plan = {
 			id: '${plan.id}'
 			, plan_name: $('#plan_name').val()
@@ -344,7 +319,10 @@
 			, plan_status: $('#plan_status').val()
 			, plan_desc: $('#plan_desc').val()
 			, memo: $('#memo').val()
+			, promotion: $('#promotion').prop("checked")
+			, place_sort: $('#place_sort').val()
 		};
+		$btn.button('loading');
 		$.post('${ctx}${action}', plan, function(json){
 			if (json.hasErrors) {
 				$.jsonValidation(json, 'right');

@@ -80,7 +80,11 @@ public class PlanRestController {
 			return json;
 		}
 		
-		int count = this.planService.queryExistPlanByName(plan.getPlan_name());
+		Plan pValid = new Plan();
+		pValid.getParams().put("where", "query_exist_plan_by_name");
+		pValid.getParams().put("plan_name", plan.getPlan_name());
+		
+		int count = this.planService.queryExistPlan(pValid);
 
 		if (count > 0) {
 			json.getErrorMap().put("plan_name", "duplicate");
@@ -109,13 +113,19 @@ public class PlanRestController {
 			return json;
 		}
 
-		int count = this.planService.queryExistNotSelfPlanByName(plan.getPlan_name(), plan.getId());
+		Plan pValid = new Plan();
+		pValid.getParams().put("where", "query_exist_not_self_plan_by_name");
+		pValid.getParams().put("plan_name", plan.getPlan_name());
+		pValid.getParams().put("id", plan.getId());
+		
+		int count = this.planService.queryExistPlan(pValid);
 
 		if (count > 0) {
 			json.getErrorMap().put("plan_name", "duplicate");
 			return json;
 		}
 		
+		plan.getParams().put("where", "update_plan");
 		plan.getParams().put("id", plan.getId());
 		this.planService.editPlan(plan);
 		

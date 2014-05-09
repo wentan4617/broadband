@@ -109,7 +109,9 @@ public class SaleController {
 	@RequestMapping("/broadband-user/sale/online/ordering/order/{id}")
 	public String orderPlanTerm(Model model, @PathVariable("id") int id) {
 		
-		Plan plan = this.planService.queryPlanById(id);
+		Plan plan = new Plan();
+		plan.getParams().put("id", id);
+		plan = this.planService.queryPlan(plan);
 		model.addAttribute("orderPlan", plan);
 		
 		String url = "";

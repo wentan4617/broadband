@@ -14,8 +14,7 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<a data-toggle="collapse" data-toggle="collapse"
-							data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
+						<a data-toggle="collapse" data-toggle="collapse" data-parent="#customerOrderAccordion" href="#collapseOrderInfo">
 							Order Create
 						</a>
 					</h4>
@@ -89,27 +88,27 @@
 								<h4 class="text-success">Transition Information</h4>
 								<hr/>
 								<div class="form-group">
-									<label for="" class="control-label col-md-3">Current Provider Name</label>
+									<label for="" class="control-label col-md-3">Current Provider</label>
 									<div class="col-md-4">
-										<form:input path="transition_provider_name" class="form-control" placeholder="" />
+										<form:input path="transition_provider_name" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-3">Account Holder Name</label>
+									<label for="" class="control-label col-md-3">Account Holder</label>
 									<div class="col-md-4">
-										<form:input path="transition_account_holder_name" class="form-control" placeholder="" />
+										<form:input path="transition_account_holder_name" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="" class="control-label col-md-3">Current Account Number</label>
 									<div class="col-md-4">
-										<form:input path="transition_account_number" class="form-control" placeholder="" />
+										<form:input path="transition_account_number" class="form-control"/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label for="" class="control-label col-md-3">Telephone Number</label>
 									<div class="col-md-4">
-										<form:input path="transition_porting_number" class="form-control" placeholder="" />
+										<form:input path="transition_porting_number" class="form-control" />
 									</div>
 								</div>
 							

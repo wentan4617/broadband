@@ -37,7 +37,9 @@
 		p.`term_period`					as p_term_period,
 		p.`img1`						as p_img1, 
 		p.`img2`						as p_img2,
-		p.`img3` 						as p_img3
+		p.`img3` 						as p_img3,
+		p.`promotion`					as p_promotion,
+		p.`place_sort`					as p_place_sort
 	</sql>
 	<resultMap type="Plan" id="planResultMap">
 		<id property="id" column="p_id" />
@@ -61,15 +63,37 @@
 		<result property="img1" column="p_img1" />
 		<result property="img2" column="p_img2" />
 		<result property="img3" column="p_img3" />
+		<result property="promotion" column="p_promotion" />
+		<result property="place_sort" column="p_place_sort" />
 	</resultMap>
 	
 	<sql id="planWhere">
 		<where>
-			<if test="params.plan_group != null">and plan_group = #{params.plan_group}</if>
-			<if test="params.plan_class != null">and plan_class = #{params.plan_class}</if>
-			<if test="params.plan_type != null">and plan_type = #{params.plan_type}</if>
-			<if test="params.plan_sort != null">and plan_sort = #{params.plan_sort}</if>
-			<if test="params.plan_status != null">and plan_status = #{params.plan_status}</if>
+			<choose>
+				<when test="params.where=='query_exist_plan_by_name'">
+					<if test="params.plan_name != null">p.plan_name=#{params.plan_name}</if>
+				</when>
+				<when test="params.where=='query_exist_not_self_plan_by_name'">
+					<if test="params.plan_name != null">p.plan_name=#{params.plan_name}</if>
+					<if test="params.id != null">and p.id != #{params.id}</if>
+				</when>
+				
+				<when test="params.where=='update_plan'">
+					<if test="params.id != null">id = #{params.id}</if>
+				</when>
+				<when test="params.where=='delete_plan'">
+					<if test="params.id != null">id = #{params.id}</if>
+				</when>
+				
+				<otherwise>
+					<if test="params.id != null">and p.id = #{params.id}</if>
+					<if test="params.plan_group != null">and p.plan_group = #{params.plan_group}</if>
+					<if test="params.plan_class != null">and p.plan_class = #{params.plan_class}</if>
+					<if test="params.plan_type != null">and p.plan_type = #{params.plan_type}</if>
+					<if test="params.plan_sort != null">and p.plan_sort = #{params.plan_sort}</if>
+					<if test="params.plan_status != null">and p.plan_status = #{params.plan_status}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	
@@ -93,7 +117,7 @@
 	
 	<!-- select plan page -->
 	<select id="selectPlansByPage" parameterType="Page" resultType="Plan">
-		select * from tm_plan 
+		select * from tm_plan as p 
 		<include refid="planWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
@@ -101,81 +125,14 @@
 	
 	<!-- select plan sum -->
 	<select id="selectPlansSum" parameterType="Page" resultType="int">
-		select count(*) from tm_plan 
+		select count(*) from tm_plan as p
+		<include refid="planWhere"/>
 	</select>
 	
-	<!-- when create plan, check same name -->
-	<select id="selectExistPlanByName" resultType="int">
-		select count(*) from tm_plan where plan_name = #{0} 
+	<select id="selectExistPlan" resultType="int">
+		select count(*) from tm_plan as p
+		<include refid="planWhere"/>
 	</select>
-	
-	<!-- when update plan, check same name -->
-	<select id="selectExistNotSelfPlanByName" resultType="int">
-		select count(*) from tm_plan where plan_name = #{0} and id != #{1}
-	</select>
-	
-	<!-- select one plan by id -->
-	<select id="selectPlanById" resultType="Plan">
-		SELECT * FROM `tm_plan` WHERE  id = #{0}
-	</select>
-	
-	<!-- select distinct plan_group -->
-	<select id="selectDistinctPlanGroup" resultType="String">
-		SELECT DISTINCT plan_group FROM `tm_plan`
-	</select>
-	
-	<!-- select plan with topup -->
-	<select id="selectPlansWithTopups" parameterType="Plan" resultMap="selectPlansWithTopupsResultMap">
-		select 
-			plan.id as p_id, plan.plan_name as p_name, plan.plan_desc as p_desc, plan.plan_price as p_price, 
-			plan.data_flow as p_data_flow, plan.data_flow_k as p_data_flow_k,
-			plan.plan_status as p_status, plan.plan_type as p_type, plan.plan_sort as p_sort, 
-			plan.memo as p_memo, plan.plan_group as p_group, plan.plan_new_connection_fee as p_new_connection_fee,
-			plan.plan_topupid_array as p_topupid_array,
-			
-			topup.id as top_id, topup.topup_name as top_name, topup.topup_fee as top_fee, 
-			topup.topup_data_flow as top_data_flow, topup.topup_status as top_status
-		from tm_plan as plan 
-		left join tm_plan_topup as plantopup on plantopup.plan_id = plan.id
-		left join tm_topup as topup on topup.id = plantopup.topup_id
-		where 1=1
-		<if test="plan_group != null">
-			and plan.plan_group = #{plan_group}
-		</if>
-		<if test="plan_sort != null">
-			and plan.plan_sort = #{plan_sort}
-		</if>
-		<if test="plan_status != null">
-			and plan.plan_status = #{plan_status}
-		</if>
-		<if test="params.orderby != null">
-			${params.orderby}
-		</if>
-	</select>
-	
-	<resultMap type="Plan" id="selectPlansWithTopupsResultMap">
-		<id property="id" column="p_id" />
-  		<result property="plan_name" column="p_name"/>
-  		<result property="plan_desc" column="p_desc"/>
-  		<result property="plan_price" column="p_price"/>
-  		<result property="data_flow" column="p_data_flow"/>
-  		<result property="data_flow_k" column="p_data_flow_k"/>
-  		<result property="plan_status" column="p_status"/>
-  		<result property="plan_type" column="p_type"/>
-  		<result property="plan_sort" column="p_sort"/>
-  		<result property="memo" column="p_memo"/>
-  		<result property="plan_group" column="p_group"/>
-  		<result property="plan_new_connection_fee" column="p_new_connection_fee"/>
-  		<result property="plan_topupid_array" column="p_topupid_array"/>
-  		
-  		<collection property="topups" ofType="Topup">
-  			<id property="id" column="top_id" />
-	  		<result property="topup_name" column="top_name"/>
-	  		<result property="topup_fee" column="top_fee"/>
-	  		<result property="topup_data_flow" column="top_data_flow"/>
-	  		<result property="topup_status" column="top_status"/>
-  		</collection>
-	</resultMap>
 	
 	<!-- // END SELECT AREA -->
 	
@@ -189,16 +146,12 @@
 			`plan_name`, `plan_desc`, `plan_price`, `original_price`, `data_flow`, `data_flow_k`,
 			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_class`, 
 			`plan_new_connection_fee`, `memo`, `plan_prepay_months`, `pstn_count`, `pstn_rental_amount`, 
-			`term_period`, `img1`, `img2`, `img3`) 
+			`term_period`, `img1`, `img2`, `img3`, `promotion`, `place_sort`) 
 		VALUES (
 			#{plan_name}, #{plan_desc}, #{plan_price}, #{original_price}, #{data_flow}, #{data_flow_k},
 			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_class}, 
 			#{plan_new_connection_fee}, #{memo}, #{plan_prepay_months}, #{pstn_count}, #{pstn_rental_amount}, 
-			#{term_period}, #{img1}, #{img2}, #{img3})
-	</insert>
-	
-	<insert id="insertPlanTopup">
-		insert into `tm_plan_topup`(`plan_id`, `topup_id`) VALUES(#{0}, #{1})
+			#{term_period}, #{img1}, #{img2}, #{img3}, #{promotion}, #{place_sort})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -230,23 +183,11 @@
 			<if test="term_period != null">`term_period`=#{term_period},</if>
 			<if test="img1 != null">`img1`=#{img1},</if>
 			<if test="img2 != null">`img2`=#{img2},</if>
-			<if test="img3 != null">`img3`=#{img3}</if>
+			<if test="img3 != null">`img3`=#{img3},</if>
+			<if test="promotion != null">`promotion`=#{promotion},</if>
+			<if test="place_sort != null">`place_sort`=#{place_sort}</if>
 		</set>
-		<where>
-			<if test="params.id != null">`id`=#{params.id}</if>
-		</where>
-	</update>
-	
-	<update id="updatePlanPicById" parameterType="Plan">
-		UPDATE `tm_plan`
-		<set>
-			<if test="img1 != null">`img1`=#{img1},</if>
-			<if test="img2 != null">`img2`=#{img2},</if>
-			<if test="img3 != null">`img3`=#{img3}</if>
-		</set>
-		<where>
-			<if test="params.id != null">`id`=#{params.id}</if>
-		</where>
+		<include refid="planWhere"/>
 	</update>
 	
 	<!-- // END UPDATE AREA -->
@@ -255,8 +196,9 @@
 	
 	<!-- DELETE AREA -->
 	
-	<delete id="deletePlanById">
-		DELETE FROM tm_plan WHERE id=#{0}
+	<delete id="deletePlan" parameterType="Plan">
+		DELETE FROM tm_plan 
+		<include refid="planWhere"/>
 	</delete>
 	
 	<!-- // END DELETE AREA -->

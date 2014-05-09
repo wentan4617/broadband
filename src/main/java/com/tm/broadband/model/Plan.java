@@ -9,6 +9,7 @@ import java.util.Map;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.NumberFormat;
 
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 import com.tm.broadband.validator.mark.PlanValidatedMark;
@@ -33,6 +34,7 @@ public class Plan implements Serializable {
 	@NotEmpty(groups = { PlanValidatedMark.class })
 	private String plan_name;
 	private String plan_desc;
+	@NumberFormat
 	@NotNull(groups = { PlanValidatedMark.class })
 	private Double plan_price;
 	private Double original_price;
@@ -53,6 +55,8 @@ public class Plan implements Serializable {
 	private String img1;
 	private String img2;
 	private String img3;
+	private Boolean promotion;
+	private Integer place_sort;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -170,8 +174,6 @@ public class Plan implements Serializable {
 		this.plan_new_connection_fee = plan_new_connection_fee;
 	}
 
-	
-
 	public Map<String, Object> getParams() {
 		return params;
 	}
@@ -215,8 +217,6 @@ public class Plan implements Serializable {
 	public void setPlan_prepay_months(Integer plan_prepay_months) {
 		this.plan_prepay_months = plan_prepay_months;
 	}
-
-	
 
 	public Integer getPstn_count() {
 		return pstn_count;
@@ -281,7 +281,21 @@ public class Plan implements Serializable {
 	public void setOriginal_price(Double original_price) {
 		this.original_price = original_price;
 	}
-	
-	
+
+	public Boolean getPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(Boolean promotion) {
+		this.promotion = promotion;
+	}
+
+	public Integer getPlace_sort() {
+		return place_sort;
+	}
+
+	public void setPlace_sort(Integer place_sort) {
+		this.place_sort = place_sort;
+	}
 
 }

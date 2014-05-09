@@ -56,8 +56,8 @@ public class SystemController {
 
 	@RequestMapping(value = { "/broadband-user", "/broadband-user/login" })
 	public String userHome(Model model) {
-
-		//model.addAttribute("user", new User());
+		
+		model.addAttribute("title", "CyberPark Broadband Manager System");
 		return "broadband-user/login";
 	}
 	
