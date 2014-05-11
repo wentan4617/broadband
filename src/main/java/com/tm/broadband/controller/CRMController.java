@@ -511,6 +511,18 @@ public class CRMController {
 		customer.setCustomerOrder(customerOrder);
 		customerOrder.setOrder_create_date(new Date());
 		
+		List<CustomerOrderDetail> retains = new ArrayList<CustomerOrderDetail>();
+		if (customerOrder.getCustomerOrderDetails() != null) {
+			for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+				if ("hardware-router".equals(cod.getDetail_type()) 
+						|| "pstn".equals(cod.getDetail_type())
+						|| "voip".equals(cod.getDetail_type())) {
+					retains.add(cod);
+				}
+			}
+		}
+		customerOrder.getCustomerOrderDetails().retainAll(retains);
+		
 		if (plans != null) {
 			for (Plan plan: plans) {
 				if (plan.getId() == customerOrder.getPlan().getId()) {
@@ -695,8 +707,7 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/{type}/create/back")
-	public String toBackCustomerCreate(Model model,
-			@PathVariable("type") String type) {
+	public String toBackCustomerCreate(Model model, @PathVariable("type") String type) {
 		String url = "";
 		if ("personal".equals(type)) {
 			url = "broadband-user/crm/customer-create-personal";

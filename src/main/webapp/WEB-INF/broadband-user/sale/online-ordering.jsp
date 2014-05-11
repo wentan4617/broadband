@@ -4,7 +4,6 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-
 <jsp:include page="header.jsp" />
 <jsp:include page="../alert.jsp" />
 
@@ -26,13 +25,15 @@
 	
 	<!--  -->
 	<div class="panel-group" id="accordion">
+	
+		<!-- adsl -->
 		<div class="panel panel-success">
 			<div class="panel-heading">
-				<h3 class="panel-title">
+				<h4 class="panel-title">
 					<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseADSL">
 						ADSL Plans
 					</a>
-				</h3>
+				</h4>
 			</div>
 			<div id="collapseADSL" class="panel-collapse collapse in">
 				<c:if test="${fn:length(plans) > 0}">
@@ -72,7 +73,7 @@
 									<td>${plan.pstn_count }</td>
 									<td>${plan.term_period }</td>
 									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
+										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,##0.00" />
 									</td>
 								</tr>
 							</c:if>
@@ -142,6 +143,7 @@
 						</div>
 						
 						</form>
+						
 					</div>
 					
 					<div class="panel-body" style="height:100px;">
@@ -158,6 +160,8 @@
 
 			</div>
 		</div>
+		
+		<!-- vdsl -->
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<h3 class="panel-title">
@@ -273,6 +277,7 @@
 						</div>
 						
 						</form>
+						
 					</div>
 					<div class="panel-body" style="height:100px;">
 						<div class="row">
@@ -287,6 +292,8 @@
 				</c:if>
 			</div>
 		</div>
+		
+		<!-- ufb -->
 		<div class="panel panel-success">
 			<div class="panel-heading">
 				<h3 class="panel-title">
