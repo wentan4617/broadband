@@ -345,13 +345,9 @@
 				</div>
 			</div>
 			<div id="checkResult"></div>
-			
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
+		</div> <!-- /.modal-content -->
+	</div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
 
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 <script type="text/html" id="result_tmpl">
