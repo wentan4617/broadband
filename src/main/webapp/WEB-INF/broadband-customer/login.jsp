@@ -20,8 +20,7 @@
 						</div>
 						<div class="form-group">
 							<label for="password">Password
-					 			<a href="${ctx }/forgotten-password">&nbsp;forgot password ?
-					 			</a>
+					 			<a href="${ctx }/forgotten-password">&nbsp;forgot password ?</a>
 							</label>
 							<input type="password" id="password" class="form-control" placeholder="" data-error-field/>
 						</div>

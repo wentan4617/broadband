@@ -132,7 +132,6 @@
 	
 	$('#save, #next').click(function(){
 		var $btn = $(this);
-		$btn.button('loading');
 		var url = '${ctx}/broadband-user/crm/customer/personal/create';
 		var customer = {
 			address: $('#address').val()
@@ -147,6 +146,7 @@
 		};
 		//console.log("customer request:");
 		//console.log(customer);
+		$btn.button('loading');
 		$.ajax({
 			type: 'post'
 			, contentType:'application/json;charset=UTF-8'         

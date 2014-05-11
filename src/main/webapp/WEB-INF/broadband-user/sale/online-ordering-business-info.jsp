@@ -39,7 +39,16 @@
 					<div class="form-group">
 						<label for="address" class="control-label col-sm-4">Business Address</label>
 						<div class="col-sm-8">
-							<input type="text" id="address" name="address" value="${customer.address }" class="form-control" data-error-field data-placement="top"/>
+							<c:choose>
+								<c:when test="${orderCustomer.address!=null}">
+									<p class="form-control-static">${orderCustomer.address }</p>
+									<input type="hidden" id="address" name="address" value="${orderCustomer.address }" />
+								</c:when>
+								<c:otherwise>
+									<input type="text" id="address" name="address" value="${orderCustomer.address }" class="form-control" data-error-field data-placement="top"/>
+								</c:otherwise>
+							</c:choose>
+							
 						</div>
 					</div>
 						

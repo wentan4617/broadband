@@ -4,9 +4,17 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-
 <jsp:include page="header.jsp" />
 <jsp:include page="../alert.jsp" />
+
+<style>
+.modal {
+	z-index: 140;
+}
+.modal-backdrop{
+	z-index: 130;
+}
+</style>
 
 <div class="container">
 	<div class="page-header">
@@ -26,148 +34,18 @@
 	
 	<!--  -->
 	<div class="panel-group" id="accordion">
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseADSL">
-						ADSL Plans
-					</a>
-				</h3>
-			</div>
-			<div id="collapseADSL" class="panel-collapse collapse in">
-				<c:if test="${fn:length(plans) > 0}">
-					<div class="panel-body">
-						
-						<h3 class="bg-primary text-center" style="width:200px;">
-							<strong>T&C</strong> 
-						</h3>
-						<ul class="list-unstyled text-info">
-							<li><strong>Free Connection Fee (Cost $99 - 199)</strong></li>
-							<li><strong>Free TP Link Router/Modem</strong></li>
-							<li><strong>$1.99/GB or $9.99/20GB or $29.99GB or Stop or Slowdown</strong></li>
-							<li class="text-danger">
-								<strong>
-									Earlier Termination Charge (ETC): completed plan pried less than 6 month $199, more than 6 month $99
-								</strong>	
-							</li>
-						</ul>
-					</div>
-					<table class="table">
-						<tr>
-							<th>&nbsp;</th>
-							<th>Plan</th>
-							<th>Data</th>
-							<th>PSTN</th>
-							<th>Term</th>
-							<th>Price</th>
-						</tr>
-						<c:forEach var="plan" items="${plans }">
-							<c:if test="${plan.plan_type == 'ADSL' }">
-								<tr data-name="adsl_tr" data-value="${plan.id }" data-pstn-count="${plan.pstn_count }">
-									<td>
-										<input type="radio" name="adsl_id" value="${plan.id }" data-pstn-count="${plan.pstn_count }" />
-									</td>
-									<td>${plan.plan_name }</td>
-									<td>${plan.data_flow } GB</td>
-									<td>${plan.pstn_count }</td>
-									<td>${plan.term_period }</td>
-									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
-									</td>
-								</tr>
-							</c:if>
-						</c:forEach>
-					</table>
-					
-					<div class="panel-body" id="adsl-addons-panel" style="display:none;">
-					
-						<!-- operator -->
-						<div class="row" id="adsl-btnContainer" style="display:none;">
-							<div class="col-sm-12">
-								
-								<div class="btn-group" style="width:200px;">
-								  	<button type="button" class="btn btn-success dropdown-toggle btn-lg btn-block" data-toggle="dropdown">
-								    	Add-ons <span class="caret"></span>
-								 	</button>
-								  	<ul class="dropdown-menu" role="menu">
-								    	<li><a href="javascript:void(0);" data-type="adsl" data-sub-type="hardware" data-add-btn style="width:200px;font-size:16px;">Add Hardware</a></li>
-								    	<li><a href="javascript:void(0);" data-type="adsl" data-sub-type="pstn" data-add-btn style="width:200px;font-size:16px;">Add PSTN</a></li>
-								    	<li><a href="javascript:void(0);" data-type="adsl" data-sub-type="voip" data-add-btn style="width:200px;font-size:16px;">Add Voip</a></li>
-								  	</ul>
-								</div>
-							</div>
-						</div>
-						
-						
-						<form class="form-horizontal">
-						
-						<!-- hardware  -->
-						<div id="adsl-hardwareContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons Hardware
-									</h4>
-									<hr/>
-								
-								</div>
-							</div>
-						</div>
-						
-						<!-- PSTN -->
-						<div id="adsl-pstnContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons PSTN
-									</h4>
-									<hr/>
-								</div>
-							</div>
-						</div>
-						
-						<!-- Voip -->
-						<div id="adsl-voipContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons Voip
-									</h4>
-									<hr/>
-								</div>
-							</div>
-						</div>
-						
-						</form>
-					</div>
-					
-					<div class="panel-body" style="height:100px;">
-						<div class="row">
-							<div class="col-sm-2 col-sm-offset-10">
-								<button type="button" class="btn btn-success btn-lg btn-block" data-order data-type="adsl">Order</button>
-							</div>
-						</div>
-					</div>
-				</c:if>
-				<c:if test="${fn:length(plans) <= 0}">
-					<div class="panel-body"></div>
-				</c:if>
-
-			</div>
-		</div>
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseVDSL">
-						VDSL Plans
-					</a>
-				</h3>
-			</div>
-			<div id="collapseVDSL" class="panel-collapse collapse">
-				<c:if test="${fn:length(plans) > 0}">
+	
+		<c:forEach var="type" items="adsl,vdsl,ufb" varStatus="item">
+		
+			<div class="panel panel-success">
+				<div class="panel-heading">
+					<h4 class="panel-title">
+						<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapse${fn:toUpperCase(type) }">
+							${fn:toUpperCase(type)} Plans
+						</a>
+					</h4>
+				</div>
+				<div id="collapse${fn:toUpperCase(type)}" class="panel-collapse collapse ${item.first?'in':'' }">
 					<div class="panel-body">
 						<h3 class="bg-primary text-center" style="width:200px;">
 							<strong>T&C</strong> 
@@ -193,47 +71,50 @@
 							<th>Price</th>
 						</tr>
 						<c:forEach var="plan" items="${plans }">
-							<c:if test="${plan.plan_type == 'VDSL' }">
-								<tr data-name="vdsl_tr" data-value="${plan.id }" data-pstn-count="${plan.pstn_count }">
+							<c:if test="${plan.plan_type == fn:toUpperCase(type) }">
+								<tr data-name="${type }_tr" data-value="${plan.id }" data-pstn-count="${plan.pstn_count }">
 									<td>
-										<input type="radio" name="vdsl_id" value="${plan.id }"/>
+										<input type="radio" name="${type }_id" value="${plan.id }" data-pstn-count="${plan.pstn_count }" />
 									</td>
 									<td>${plan.plan_name }</td>
-									<td>${plan.data_flow }  GB</td>
+									<td>
+										<c:choose>
+											<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
+											<c:otherwise>${plan.data_flow } GB</c:otherwise>
+										</c:choose>
+									</td>
 									<td>${plan.pstn_count }</td>
 									<td>${plan.term_period }</td>
 									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
+										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,##0.00" />
 									</td>
 								</tr>
 							</c:if>
 						</c:forEach>
 					</table>
 					
-					<div class="panel-body" id="vdsl-addons-panel" style="display:none;">
+					<div class="panel-body" id="${type }-addons-panel" style="display:none;">
 					
 						<!-- operator -->
-						<div class="row" id="vdsl-btnContainer" style="display:none;">
+						<div class="row" id="${type }-btnContainer" style="display:none;">
 							<div class="col-sm-12">
-								
 								<div class="btn-group" style="width:200px;">
 								  	<button type="button" class="btn btn-success dropdown-toggle btn-lg btn-block" data-toggle="dropdown">
 								    	Add-ons <span class="caret"></span>
 								 	</button>
-								  	<ul class="dropdown-menu" role="menu">
-								    	<li><a href="javascript:void(0);" data-type="vdsl" data-sub-type="hardware" data-add-btn style="width:200px;font-size:16px;">Add Hardware</a></li>
-								    	<li><a href="javascript:void(0);" data-type="vdsl" data-sub-type="pstn" data-add-btn style="width:200px;font-size:16px;">Add PSTN</a></li>
-								    	<li><a href="javascript:void(0);" data-type="vdsl" data-sub-type="voip" data-add-btn style="width:200px;font-size:16px;">Add Voip</a></li>
+								  	<ul class="dropdown-menu" >
+								    	<li><a href="javascript:void(0);" data-type="${type }" data-sub-type="hardware" data-add-btn style="width:200px;font-size:16px;">Add Hardware</a></li>
+								    	<li><a href="javascript:void(0);" data-type="${type }" data-sub-type="pstn" data-add-btn style="width:200px;font-size:16px;">Add PSTN</a></li>
+								    	<li><a href="javascript:void(0);" data-type="${type }" data-sub-type="voip" data-add-btn style="width:200px;font-size:16px;">Add Voip</a></li>
 								  	</ul>
 								</div>
 							</div>
 						</div>
 						
-						
 						<form class="form-horizontal">
 						
 						<!-- hardware  -->
-						<div id="vdsl-hardwareContainer" style="display:none;">
+						<div id="${type }-hardwareContainer" style="display:none;">
 							<div class="row" >
 								<div class="col-sm-12">
 									<hr/>
@@ -241,13 +122,12 @@
 										Add-ons Hardware
 									</h4>
 									<hr/>
-								
 								</div>
 							</div>
 						</div>
 						
 						<!-- PSTN -->
-						<div id="vdsl-pstnContainer" style="display:none;">
+						<div id="${type }-pstnContainer" style="display:none;">
 							<div class="row" >
 								<div class="col-sm-12">
 									<hr/>
@@ -260,7 +140,7 @@
 						</div>
 						
 						<!-- Voip -->
-						<div id="vdsl-voipContainer" style="display:none;">
+						<div id="${type }-voipContainer" style="display:none;">
 							<div class="row" >
 								<div class="col-sm-12">
 									<hr/>
@@ -273,245 +153,93 @@
 						</div>
 						
 						</form>
-					</div>
-					<div class="panel-body" style="height:100px;">
-						<div class="row">
-							<div class="col-sm-2 col-sm-offset-10">
-								<button type="button" class="btn btn-success btn-lg btn-block" data-order data-type="vdsl">Order</button>
-							</div>
-						</div>
-					</div>
-				</c:if>
-				<c:if test="${fn:length(plans) <= 0}">
-					<div class="panel-body"></div>
-				</c:if>
-			</div>
-		</div>
-		<div class="panel panel-success">
-			<div class="panel-heading">
-				<h3 class="panel-title">
-					<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseUFB">
-						UFB Plans
-					</a>
-				</h3>
-			</div>
-			<div id="collapseUFB" class="panel-collapse collapse">
-				<c:if test="${fn:length(plans) > 0}">
-					<div class="panel-body">
-						<h3 class="bg-primary text-center" style="width:200px;">
-							<strong>T&C</strong> 
-						</h3>
-						<ul class="list-unstyled text-info">
-							<li><strong>Free Connection Fee (Cost $99 - 199)</strong></li>
-							<li><strong>Free TP Link Router/Modem</strong></li>
-							<li><strong>$1.99/GB or $9.99/20GB or $29.99GB or Stop or Slowdown</strong></li>
-							<li class="text-danger">
-								<strong>
-									Earlier Termination Charge (ETC): completed plan pried less than 6 month $199, more than 6 month $99
-								</strong>	
-							</li>
-						</ul>
-					</div>
-					<table class="table">
-						<tr>
-							<th>&nbsp;</th>
-							<th>Plan</th>
-							<th>Data</th>
-							<th>PSTN</th>
-							<th>Term</th>
-							<th>Price</th>
-						</tr>
-						<c:forEach var="plan" items="${plans }">
-							<c:if test="${plan.plan_type == 'UFB' }">
-								<tr data-name="ufb_tr" data-value="${plan.id }" data-pstn-count="${plan.pstn_count }">
-									<td>
-										<input type="radio" name="ufb_id" value="${plan.id }"/>
-									</td>
-									<td>${plan.plan_name }</td>
-									<td>${plan.data_flow } GB</td>
-									<td>${plan.pstn_count }</td>
-									<td>${plan.term_period }</td>
-									<td>
-										<fmt:formatNumber value="${plan.plan_price }" type="number" pattern="#,#00.00" />
-									</td>
-								</tr>
-							</c:if>
-						</c:forEach>
-					</table>
-					
-					<div class="panel-body" id="ufb-addons-panel" style="display:none;">
-					
-						<!-- operator -->
-						<div class="row" id="ufb-btnContainer" style="display:none;">
-							<div class="col-sm-12">
-								
-								<div class="btn-group" style="width:200px;">
-								  	<button type="button" class="btn btn-success dropdown-toggle btn-lg btn-block" data-toggle="dropdown">
-								    	Add-ons <span class="caret"></span>
-								 	</button>
-								  	<ul class="dropdown-menu" role="menu">
-								    	<li><a href="javascript:void(0);" data-type="ufb" data-sub-type="hardware" data-add-btn style="width:200px;font-size:16px;">Add Hardware</a></li>
-								    	<li><a href="javascript:void(0);" data-type="ufb" data-sub-type="pstn" data-add-btn style="width:200px;font-size:16px;">Add PSTN</a></li>
-								    	<li><a href="javascript:void(0);" data-type="ufb" data-sub-type="voip" data-add-btn style="width:200px;font-size:16px;">Add Voip</a></li>
-								  	</ul>
-								</div>
-							</div>
-						</div>
 						
-						
-						<form class="form-horizontal">
-						
-						<!-- hardware  -->
-						<div id="ufb-hardwareContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons Hardware
-									</h4>
-									<hr/>
-								
-								</div>
-							</div>
-						</div>
-						
-						<!-- PSTN -->
-						<div id="ufb-pstnContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons PSTN
-									</h4>
-									<hr/>
-								</div>
-							</div>
-						</div>
-						
-						<!-- Voip -->
-						<div id="ufb-voipContainer" style="display:none;">
-							<div class="row" >
-								<div class="col-sm-12">
-									<hr/>
-									<h4 class="text-success">
-										Add-ons Voip
-									</h4>
-									<hr/>
-								</div>
-							</div>
-						</div>
-						
-						</form>
 					</div>
 					
 					<div class="panel-body" style="height:100px;">
 						<div class="row">
 							<div class="col-sm-2 col-sm-offset-10">
-								<button type="button" class="btn btn-success btn-lg btn-block" data-order data-type="ufb">Order</button>
+								<button type="button" class="btn btn-success btn-lg btn-block" data-order data-type="${type }">Order</button>
 							</div>
 						</div>
 					</div>
-				</c:if>
-				<c:if test="${fn:length(plans) <= 0}">
-					<div class="panel-body"></div>
-				</c:if>
+				</div>
 			</div>
-		</div>
+			
+		</c:forEach>
+	
+		
 	</div>
 </div>
 
+<!-- Check Address Modal -->
+<div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="margin-top:55px;">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="checkAddressModalLabel">Check your address whether the service can be installed</h4>
+			</div>
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="input-group">
+							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
+							<span class="input-group-btn">
+								<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
+									<span class="ladda-label">Go</span>
+								</button>
+							</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="checkResult"></div>
+		</div> <!-- /.modal-content -->
+	</div> <!-- /.modal-dialog -->
+</div> <!-- /.modal -->
+
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
+<script type="text/html" id="result_tmpl">
+<jsp:include page="resultAddressCheck.html" />
+</script>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	var classz = '${classz}';
 	
 	$(':radio').iCheck({
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
 	});
 	
-	$('tr[data-name="adsl_tr"]').click(function(){
-		$('tr[data-name="adsl_tr"]').removeClass('success');
-		$('input[name="adsl_id"]').iCheck('uncheck');
+	$('tr[data-name*="_tr"]').click(function(){
+		var data_name = $(this).attr('data-name');
+		$('tr[data-name="' + data_name + '"]').removeClass('success');
+		$('input[name="' + data_name.replace('tr', 'id') + ']"').iCheck('uncheck');
 		$(this).addClass('success');
-		var value = $(this).attr('data-value');
-		$('input[name="adsl_id"][value="' + value + '"]').iCheck('check');
-	});
-	$('tr[data-name="vdsl_tr"]').click(function(){
-		$('tr[data-name="vdsl_tr"]').removeClass('success');
-		$('input[name="vdsl_id"]').iCheck('uncheck');
-		$(this).addClass('success');
-		var value = $(this).attr('data-value');
-		$('input[name="vdsl_id"][value="' + value + '"]').iCheck('check');
-	});
-	$('tr[data-name="ufb_tr"]').click(function(){
-		$('tr[data-name="ufb_tr"]').removeClass('success');
-		$('input[name="ufb_id"]').iCheck('uncheck');
-		$(this).addClass('success');
-		var value = $(this).attr('data-value');
-		$('input[name="ufb_id"][value="' + value + '"]').iCheck('check');
+		var data_value = $(this).attr('data-value');
+		$('input[name="' + data_name.replace('tr', 'id') + '"][value="' + data_value + '"]').iCheck('check');
 	});
 	
-	$('input[name="adsl_id"]').on('ifChecked', function(){
-		$('#adsl-addons-panel').css('display', 'block');
-		
-		$('div[data-adsl-enable]').remove();
-		hideTypeContainer('adsl', 'hardware');
-		hideTypeContainer('adsl', 'pstn');
-		hideTypeContainer('adsl', 'voip');
-		
-		showbtns('adsl');
-		//addHardware('adsl');
-		
-		/*var pstn_count = $(this).attr('data-pstn-count');
-		var i = 0;
-		while (i < pstn_count){
-			addPSTN('adsl');
-			i++;
-		}*/
-		//addVoip('adsl');
-		$('button[data-order][data-type="adsl"]').attr('data-plan-id', this.value);
-	});
-	
-	$('input[name="vdsl_id"]').on('ifChecked', function(){
-		$('#vdsl-addons-panel').css('display', 'block');
-				
-		$('div[data-vdsl-enable]').remove();
-		hideTypeContainer('vdsl', 'hardware');
-		hideTypeContainer('vdsl', 'pstn');
-		hideTypeContainer('vdsl', 'voip');
-		
-		showbtns('vdsl');
-		//addHardware('vdsl');
-		/*var pstn_count = $(this).attr('data-pstn-count');
-		var i = 0;
-		while (i < pstn_count){
-			addPSTN('vdsl');
-			i++;
-		}*/
-		$('button[data-order][data-type="vdsl"]').attr('data-plan-id', this.value);
-	});
-	
-	$('input[name="ufb_id"]').on('ifChecked', function(){
-		$('#ufb-addons-panel').css('display', 'block');
-		
-		$('div[data-ufb-enable]').remove();
-		hideTypeContainer('ufb', 'hardware');
-		hideTypeContainer('ufb', 'pstn');
-		hideTypeContainer('ufb', 'voip');
-		
-		showbtns('ufb');
-		/*addHardware('ufb');
-		var pstn_count = $(this).attr('data-pstn-count');
-		var i = 0;
-		while (i < pstn_count){
-			addPSTN('ufb');
-			i++;
-		}*/
-		$('button[data-order][data-type="ufb"]').attr('data-plan-id', this.value);
+	$('input[name*="_id"]').on('ifChecked', function(){
+		var type = this.name.replace('_id', '');
+		$('#' + type + '-addons-panel').css('display', 'block');
+		hideTypeContainer(type, 'hardware');
+		hideTypeContainer(type, 'pstn');
+		hideTypeContainer(type, 'voip');
+		showbtns(type);
+		$('button[data-order][data-type="' + type + '"]').attr('data-plan-id', this.value);
+		$('tr[data-name="' + type + '_tr"]').removeClass('success');
+		$('tr[data-value="' + this.value + '"]').addClass('success');
 	});
 	
 	$('a[data-add-btn]').click(function(){
@@ -529,6 +257,13 @@
 	
 	function showbtns(type){
 		$('#' + type + '-btnContainer').css('display', 'block');
+	}
+	
+	function hideTypeContainer(type, type_remove) {
+		var len = $('div[data-' + type + '-' + type_remove + '-enable]').length;
+		if (len == 0) {
+			$('#' + type + '-' + type_remove + 'Container').css('display', 'none');
+		}
 	}
 	
 	function addHardware(type) {
@@ -562,8 +297,6 @@
 		html += '</div>';
 		$('#' + type + '-hardwareContainer').append(html);
 		$('.selectpicker').selectpicker('refresh'); 
-		//var price = $('select[name="customerOrderDetails\\[' + index + '\\]\\.detail_name"] option:selected').attr('data-hd-price');
-		//$('input[name="customerOrderDetails\\[' + index + '\\]\\.detail_price"]').val(price);
 		
 		$('#' + type + '-hardwareContainer').delegate('a[data-name="remove"]', 'click', function(){
 			var $this = $(this);
@@ -574,8 +307,6 @@
 			hideTypeContainer(type, type_sub);
 		});
 	}
-	
-	var classz = '${classz}';
 
 	function addPSTN(type) {
 		$('#' + type + '-pstnContainer').css('display', 'block');
@@ -670,18 +401,103 @@
 		});
 	}
 	
-	function hideTypeContainer(type, type_remove) {
-		var len = $('div[data-' + type + '-' + type_remove + '-enable]').length;
-		if (len == 0) {
-			$('#' + type + '-' + type_remove + 'Container').css('display', 'none');
-		}
-	}
+	var select_plan_id = "";
+	var select_plan_type = "";
 	
 	$('button[data-order]').click(function(){
 		var $btn = $(this);
+		select_plan_id = $btn.attr('data-plan-id');
+		if (!select_plan_id) {
+			alert('Please choose one plan at least.');
+			return false;
+		}
+		select_plan_type = $btn.attr('data-type');//console.log(select_plan_id);
+		$('#checkResult').empty();
+		$('#checkAddressModal').modal('show');
+	});
+	
+	$('#goCheck').click(function(){
+		var address = $('#address').val();
+		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
+		if (address != '') {
+			var l = Ladda.create(this);
+		 	l.start();
+			$.get('${ctx}/sale/address/check/' + address, function(broadband){
+				//broadband.href = '${ctx}/order/' + select_plan_id;
+				broadband.type = select_plan_type;
+				$('#checkResult').html(tmpl('result_tmpl', broadband));
+				$('a[data-toggle="tooltip"]').tooltip();
+				$('#continue-selected-plan').click(function(){
+					submitOrder(select_plan_type, $(this));
+				});
+		   	}).always(function(){ l.stop(); });
+		} else {
+			alert('Please enter a real address.');
+		}
+	});
+	
+	function submitOrder(type, $btn){
+		var cods = [];
+		$('div[data-' + type + '-hardware-enable]').each(function(){
+			var $this = $(this);
+			var cod = {
+				detail_name: $this.find('select[name="detail_name"]').val()
+				, detail_type: $this.find('input[name="detail_type"]').val()
+				, detail_price: $this.find('input[name="detail_price"]').val()
+				, detail_unit: $this.find('input[name="detail_unit"]').val()
+			}; //customerOrder.customerOrderDetails.push(cod);
+			cods.push(cod);
+		});
+		$('div[data-' + type + '-pstn-enable]').each(function(){
+			var $this = $(this);
+			var cod = {
+				detail_name: $this.find('input[name="detail_name"]').val()
+				, detail_type: $this.find('input[name="detail_type"]').val()
+				, detail_price: $this.find('input[name="detail_price"]').val()
+				, detail_unit: 1
+				, pstn_number: $this.find('select[name="pstn_number1"]').val() + '' + $this.find('input[name="pstn_number2"]').val()
+			}; //customerOrder.customerOrderDetails.push(cod);
+			cods.push(cod);
+		});
+		$('div[data-' + type + '-voip-enable]').each(function(){
+			var $this = $(this);
+			var cod = {
+				detail_name: $this.find('input[name="detail_name"]').val()
+				, detail_type: $this.find('input[name="detail_type"]').val()
+				, detail_price: $this.find('input[name="detail_price"]').val()
+				, detail_unit: 1
+				, pstn_number: $this.find('input[name="pstn_number"]').val()
+			}; //customerOrder.customerOrderDetails.push(cod);
+			cods.push(cod);
+		});
 		
-		var plan_id = $btn.attr('data-plan-id');
-		//console.log(plan_id);
+		//console.log(JSON.stringify(cods));
+		
+		$btn.button('loading');
+		
+		$.ajax({
+			type: 'post'
+			, contentType:'application/json;charset=UTF-8'         
+	   		, url: '${ctx}/broadband-user/sale/online/ordering/order/details'
+		   	, data: JSON.stringify(cods)
+		   	, dataType: 'json'
+		   	, success: function(json){
+				if (json.hasErrors) {
+					$.jsonValidation(json);
+				} else { //console.log(json);
+					window.location.href='${ctx}' + json.url + select_plan_id;
+				}
+		   	}
+		}).always(function () {
+			$btn.button('reset');
+	    });
+		
+		
+	}
+	
+	/*$('button[data-order]').click(function(){
+		var $btn = $(this);
+		var plan_id = $btn.attr('data-plan-id'); //console.log(plan_id);
 		if (!plan_id) {
 			alert('Please choose one plan at least.');
 			return false;
@@ -736,17 +552,18 @@
 		   	, success: function(json){
 				if (json.hasErrors) {
 					$.jsonValidation(json);
-				} else {
-					//console.log(json);
+				} else { //console.log(json);
 					window.location.href='${ctx}' + json.url + plan_id;
 				}
 		   	}
 		}).always(function () {
 			$btn.button('reset');
 	    });
-	});
+	});*/
 	
 	
 })(jQuery);
 </script>
+<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="../footer-end.jsp" />
