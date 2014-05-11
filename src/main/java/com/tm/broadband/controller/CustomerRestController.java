@@ -26,6 +26,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.CheckScriptInjection;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.ContactUsValidatedMark;
@@ -58,6 +59,7 @@ public class CustomerRestController {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
+		
 
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
@@ -91,6 +93,12 @@ public class CustomerRestController {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
+		
+		// If contains script> value then this is a script injection
+		if(CheckScriptInjection.isScriptInjection(customer)){
+			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			return json;
+		}
 		
 		// if verification does not matched!
 		if(!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
@@ -164,6 +172,12 @@ public class CustomerRestController {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
+		
+		// If contains script> value then this is a script injection
+		if(CheckScriptInjection.isScriptInjection(customer)){
+			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			return json;
+		}
 
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
@@ -221,6 +235,12 @@ public class CustomerRestController {
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
 		
+		// If contains script> value then this is a script injection
+		if(CheckScriptInjection.isScriptInjection(customer)){
+			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			return json;
+		}
+		
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
 			return json;
@@ -254,12 +274,8 @@ public class CustomerRestController {
 		
 		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
 		
-		if(contactUs.getFirst_name().contains("script>")
-				|| contactUs.getLast_name().contains("script>")
-				|| contactUs.getCellphone().contains("script>")
-				|| contactUs.getPhone().contains("script>")
-				|| contactUs.getContent().contains("script>")
-				|| contactUs.getEmail().contains("script>")){
+		// If contains script> value then this is a script injection
+		if(CheckScriptInjection.isScriptInjection(contactUs)){
 			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
 			return json;
 		}
