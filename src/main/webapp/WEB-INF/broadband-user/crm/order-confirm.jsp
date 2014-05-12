@@ -163,7 +163,10 @@
 													${detail.detail_name }
 												</td>
 												<td>
-													${detail.detail_data_flow } GB
+													<c:choose>
+														<c:when test="${detail.detail_data_flow < 0 }">Unlimited Data</c:when>
+														<c:otherwise>${detail.detail_data_flow } GB</c:otherwise>
+													</c:choose>
 													
 												</td>
 												<td>${detail.detail_term_period }</td>

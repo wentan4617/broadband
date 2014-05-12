@@ -261,12 +261,12 @@
 	});
 	
 	$('tr[data-name*="_tr"]').click(function(){
-		var data_name = $(this).attr('data-name');
-		$('tr[data-name="' + data_name + '"]').removeClass('success');
-		$('input[name="' + data_name.replace('tr', 'id') + ']"').iCheck('uncheck');
+		var type = $(this).attr('data-name').replace('_tr', '');
+		$('tr[data-name="' + type + '_tr"]').removeClass('success');
+		$('input[name="' + type + '_id"]').iCheck('uncheck');
 		$(this).addClass('success');
 		var data_value = $(this).attr('data-value');
-		$('input[name="' + data_name.replace('tr', 'id') + '"][value="' + data_value + '"]').iCheck('check');
+		$('input[name="' + type + '_id"][value="' + data_value + '"]').iCheck('check');
 	});
 	
 	$('input[name*="_id"]').on('ifChecked', function(){
