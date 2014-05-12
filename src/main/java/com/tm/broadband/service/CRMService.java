@@ -1,7 +1,6 @@
 package com.tm.broadband.service;
 
 
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -41,7 +40,6 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.pdf.InvoicePDFCreator;
-import com.tm.broadband.util.TMUtils;
 
 /**
  * CRM Module service
@@ -615,31 +613,23 @@ public class CRMService {
 		// get customer details from invoice
 		Customer customer = customerInvoice.getCustomer();
 		// get necessary models end
-
-		// create specific directories and generate invoice PDF
-		String filePath = TMUtils.createPath(
-				"broadband"
-				+File.separator+"customers"
-				+File.separator+customer.getId()
-				+File.separator+"Invoice-"+customerInvoice.getId()+".pdf");
-		// set file path
-		customerInvoice.setInvoice_pdf_path(filePath);
-		// add sql condition: id
-		customerInvoice.getParams().put("id", customerInvoice.getId());
-		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 		
 		// initialize invoice's important informations
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
-		
+
+		// set file path
 		try {
 			// generate invoice PDF
-			invoicePDF.create(filePath);
+			customerInvoice.setInvoice_pdf_path(invoicePDF.create());
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+		// add sql condition: id
+		customerInvoice.getParams().put("id", customerInvoice.getId());
+		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 		// invoice PDF generator manipulation end
 	}
 	
@@ -836,23 +826,17 @@ public class CRMService {
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
 
-		// create specific directories and generate invoice PDF
-		String filePath = TMUtils.createPath("broadband" + File.separator
-				+ "customers" + File.separator + customer.getId()
-				+ File.separator + "Invoice-" + customerInvoice.getId()
-				+ ".pdf");
 		// set file path
-		customerInvoice.setInvoice_pdf_path(filePath);
+		try {
+			// generate invoice PDF
+			customerInvoice.setInvoice_pdf_path(invoicePDF.create());
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
 		// add sql condition: id
 		customerInvoice.getParams().put("id", customerInvoice.getId());
 		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 
-		try {
-			// generate invoice PDF
-			invoicePDF.create(filePath);
-		} catch (DocumentException | IOException e) {
-			e.printStackTrace();
-		}
 
 //		// call mail at value retriever
 //		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
