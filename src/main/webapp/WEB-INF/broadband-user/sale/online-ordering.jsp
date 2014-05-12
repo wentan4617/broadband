@@ -47,19 +47,58 @@
 				</div>
 				<div id="collapse${fn:toUpperCase(type)}" class="panel-collapse collapse ${item.first?'in':'' }">
 					<div class="panel-body">
-						<h3 class="bg-primary text-center" style="width:200px;">
-							<strong>T&C</strong> 
-						</h3>
-						<ul class="list-unstyled text-info">
-							<li><strong>Free Connection Fee (Cost $99 - 199)</strong></li>
-							<li><strong>Free TP Link Router/Modem</strong></li>
-							<li><strong>$1.99/GB or $9.99/20GB or $29.99GB or Stop or Slowdown</strong></li>
-							<li class="text-danger">
-								<strong>
-									Earlier Termination Charge (ETC): completed plan pried less than 6 month $199, more than 6 month $99
-								</strong>	
-							</li>
-						</ul>
+					
+						<c:choose>
+							<c:when test="${classz=='business' }">
+								<h3 class="bg-primary text-center" style="width:200px;">
+									<strong>T&C</strong> 
+								</h3>
+								<ul class=" text-info">
+									<li><strong>Early Termination Fee(ETC): $299 completed less than 12 months; $199 completed more than 12 months</strong></li>
+									<li>
+										<strong>
+											Transition from previous Internet Service Provider for fee. <br/>
+											(processing date: around 3-7 working days, if base on UCLL number transferring takes around 5-10 working days)
+										</strong>
+									</li>
+									<li><strong>New connection fee: $145+GST (processing date: around 5-10 working days)</strong></li>
+									<li><strong>New Installation Fee (Jack port): $199+GST (processing date: around 5-15 working days)</strong></li>
+									<li>
+										<strong>
+											Home number can keep if number under POTS condition, or extra $99+GST for transferring number from UCLL system<br/>
+											(eg, Vodafone, Orcon, Slingshort, woosh may use UCLL)
+										</strong>
+									</li>
+									<li><strong>Application and Direct Debt form are required necessarily</strong></li>
+								</ul>
+							</c:when>
+							<c:when test="${classz=='personal' }">
+								<h3 class="bg-primary text-center" style="width:200px;">
+									<strong>T&C</strong> 
+								</h3>
+								<ul class=" text-info">
+									<li><strong>Early Termination Fee(ETC): $199 completed less than 6 months; $99 completed more than 6 months</strong></li>
+									<li>
+										<strong>
+											Transition from previous Internet Service Provider for fee. <br/>
+											(processing date: around 3-7 working days, if base on UCLL number transferring takes around 5-10 working days)
+										</strong>
+									</li>
+									<li><strong>New connection fee: $145+GST (processing date: around 5-10 working days)</strong></li>
+									<li><strong>New Installation Fee (Jack port): $199+GST (processing date: around 5-15 working days)</strong></li>
+									<li>
+										<strong>
+											Home number can keep if number under POTS condition, or extra $99+GST for transferring number from UCLL system<br/>
+											(eg, Vodafone, Orcon, Slingshort, woosh may use UCLL)
+										</strong>
+									</li>
+									<li><strong>Application and Direct Debt form are required necessarily</strong></li>
+								</ul>
+							</c:when>
+						</c:choose>
+						
+						
+						
 					</div>
 					<table class="table">
 						<tr>

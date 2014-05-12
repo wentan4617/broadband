@@ -440,9 +440,12 @@ background-color: #7BC3EC;
 			serviceHtml += '<li><strong class="text-danger">Free Router</strong></li>';
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">Free New Connection Fee</strong></li>';
+				//serviceHtml += '<li><strong class="text-danger">Free New Connection Fee</strong></li>';
+				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
+				price.service_price = plan.plan_new_connection_fee;
 			} else if (order_broadband_type === "transition") {
 				$('#transitionContainer').show('fast');
+				price.service_price = 0;
 			}
 		}
 		
