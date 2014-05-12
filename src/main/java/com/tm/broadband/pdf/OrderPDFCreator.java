@@ -43,9 +43,12 @@ public class OrderPDFCreator extends ITextUtils {
 	// BEGIN Currency Related Variables
 	private Double totalPrice = 0d;
 	private Double beforeGSTPrice = 0d;
-	private Double gst15 = 0d;
+	private Double gst = 0d;
 	// 15% GST as default
-	private String gstRate = "1.15";
+	private String gstRate = "1.12";
+	private String gstRate2 = "0.12";
+	private String personalGST = "15%";
+	private String businessGST = "12%";
 	// END Currency Related Variables
 	
 	// BEGIN Order Detail Differentiations Variables
@@ -426,9 +429,9 @@ public class OrderPDFCreator extends ITextUtils {
         addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
         addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
         addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         // END PLAN ROW HEADER
 
         // BEGIN PLAN ROW COLUMN
@@ -489,9 +492,9 @@ public class OrderPDFCreator extends ITextUtils {
         addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
         addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
         addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 0F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 0F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
         addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         // END ADD ON ROW HEADER
         
         if(this.getCodAddOns().size()>0){
@@ -529,21 +532,36 @@ public class OrderPDFCreator extends ITextUtils {
         this.customerOrder.setOrder_total_price(totalPrice);
         // BEGIN transform before tax price and tax
         BigDecimal bdGSTRate = new BigDecimal(this.getGstRate());
+        BigDecimal bdGSTRate2 = new BigDecimal(this.gstRate2);
         BigDecimal bdTotalPrice = new BigDecimal(totalPrice.toString());
         BigDecimal bdBeforeGSTPrice = new BigDecimal(beforeGSTPrice.toString());
-        BigDecimal bdGST15 = new BigDecimal(gst15.toString());
+        BigDecimal bdGST = new BigDecimal(gst.toString());
         // BEGIN Calculation Area
         
-        // totalPrice divide GSTRate equals to beforeGSTPrice
-        bdBeforeGSTPrice = new BigDecimal(bdTotalPrice.divide(bdGSTRate,2, BigDecimal.ROUND_DOWN).toString());
-        
-        // totalPrice subtract beforeGSTPrice equals to GST15
-        bdGST15 = new BigDecimal(bdTotalPrice.subtract(bdBeforeGSTPrice).toString());
+        if(this.getCustomer().getCustomer_type().equals("business")){
+            
+            // If business then totalPrice equals to beforeGSTPrice
+            bdBeforeGSTPrice = new BigDecimal(totalPrice.toString());
+            
+            // If business then totalPrice multiply GSTRate equals to totalPrice
+            totalPrice = new BigDecimal(bdTotalPrice.multiply(bdGSTRate).toString()).doubleValue();
+            
+            // If business then totalPrice multiply gstRate2 equals to gst
+            bdGST = new BigDecimal(bdTotalPrice.multiply(bdGSTRate2).toString());
+            
+        } else {
+            
+            // totalPrice divide GSTRate equals to beforeGSTPrice
+            bdBeforeGSTPrice = new BigDecimal(bdTotalPrice.divide(bdGSTRate,2, BigDecimal.ROUND_DOWN).toString());
+            
+            // totalPrice subtract beforeGSTPrice equals to GST15
+            bdGST = new BigDecimal(bdTotalPrice.subtract(bdBeforeGSTPrice).toString());
+        }
         
         // END Calculation Area
         // BEGIN ASSIGNING
         beforeGSTPrice += bdBeforeGSTPrice.doubleValue();
-        gst15 += bdGST15.doubleValue();
+        gst += bdGST.doubleValue();
         // END ASSIGNING
         /**
          * END DETAIL
@@ -568,11 +586,21 @@ public class OrderPDFCreator extends ITextUtils {
         addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END TOTAL BEFORE GST
         
-        // BEGIN GST AT 15%
-        addEmptyCol(orderDetailTable, 7);
-        addCol(orderDetailTable, "GST at 15%", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst15)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        // END GST AT 15%
+        if(this.getCustomer().getCustomer_type().equals("business")){
+            
+            // BEGIN GST
+            addEmptyCol(orderDetailTable, 7);
+            addCol(orderDetailTable, "GST at " + this.businessGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            // END GST
+        } else {
+            
+            // BEGIN GST
+            addEmptyCol(orderDetailTable, 7);
+            addCol(orderDetailTable, "GST at " + this.personalGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            // END GST
+        }
         
         // BEGIN ORDER TOTAL
         addEmptyCol(orderDetailTable, 7);

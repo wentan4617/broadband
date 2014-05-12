@@ -16,6 +16,10 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+ demand version 1.0.8 2014-05-06
+ 
+ * customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额
+ 
  demand version 1.0.7 2014-05-06
  
  * 写plan query，方便查询plan(kanny, 2014-05-07)
