@@ -130,7 +130,7 @@ background-color: #7BC3EC;
 											<div class="well">
 												<p>If you choose a new connection</p>
 												<p> we will charge you </p>
-												<p>$ 99 broadband opening costs</p>
+												<p> broadband opening costs</p>
 											</div>
 										</c:when>
 										<c:when test="${orderPlan.plan_group == 'plan-term' }"></c:when>
