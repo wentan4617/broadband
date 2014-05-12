@@ -260,13 +260,17 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/order/checkout", method = RequestMethod.POST)
 	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result) {
+			@ModelAttribute("customer") Customer customer, BindingResult result) { // @Validated(CustomerValidatedMark.class) 
 		
 		if (result.hasErrors()) {
-			return "broadband-customer/customer-order";
+			TMUtils.printResultErrors(result);
 		}
 
 		GenerateRequest gr = new GenerateRequest();
+		
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.12);
+		}
 
 		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerOrder().getOrder_total_price()));
 		//gr.setAmountInput("1.00");
@@ -285,14 +289,14 @@ public class CustomerController {
 
 	@RequestMapping(value = "/order/checkout")
 	public String toSignupPayment(Model model,
-			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult error,
+			@ModelAttribute("customer") Customer customer, BindingResult error, //@Validated(CustomerValidatedMark.class) 
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
 			@RequestParam(value = "result", required = true) String result,
 			SessionStatus status
 			) throws Exception {
 		
 		if (error.hasErrors()) {
-			return "broadband-customer/customer-order";
+			TMUtils.printResultErrors(error);
 		}
 
 		Response responseBean = null;

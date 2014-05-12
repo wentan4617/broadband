@@ -236,29 +236,59 @@ background-color: #7BC3EC;
 					
 						<table class="table">
 							<tbody>
-								<tr>
-									<td>Total before GST</td>
-									<td>
-										NZ$ 
-										<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
-									</td>
-								</tr>
-								<tr>
-									<td>GST at 15% </td>
-									<td>
-										NZ$ 
-										<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
-									</td>
-								</tr>
-								<tr>
-									<td><strong>Order Total</strong></td>
-									<td>
-										<strong class="text-success">
-											NZ$ 
-											<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
-										</strong>
-									</td>
-								</tr>
+								<c:choose>
+									<c:when test="${customer.customer_type == 'personal' }">
+										<tr>
+											<td>Total before GST</td>
+											<td>
+												NZ$ 
+												<fmt:formatNumber value="${customer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
+											</td>
+										</tr>
+										<tr>
+											<td>GST at 15% </td>
+											<td>
+												NZ$ 
+												<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+											</td>
+										</tr>
+										<tr>
+											<td><strong>Order Total</strong></td>
+											<td>
+												<strong class="text-success">
+													NZ$ 
+													<fmt:formatNumber value="${customer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+												</strong>
+											</td>
+										</tr>
+									</c:when>
+									<c:when test="${customer.customer_type == 'business' }">
+										<tr>
+											<td>Order Price</td>
+											<td>
+												NZ$ 
+												<fmt:formatNumber value="${customer.customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
+											</td>
+										</tr>
+										<tr>
+											<td>Plus GST at 12% </td>
+											<td>
+												NZ$ 
+												<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.12}" type="number" pattern="#,##0.00" />
+											</td>
+										</tr>
+										<tr>
+											<td><strong>Order Total</strong></td>
+											<td>
+												<strong class="text-success">
+													NZ$ 
+													<fmt:formatNumber value="${customer.customerOrder.order_total_price * 1.12 }" type="number" pattern="#,##0.00" />
+												</strong>
+											</td>
+										</tr>
+									</c:when>
+								</c:choose>
+								
 							</tbody>
 						</table>
 					</div>

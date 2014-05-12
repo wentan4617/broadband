@@ -11,6 +11,7 @@ import java.util.Random;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
@@ -439,6 +440,14 @@ public class TMUtils {
 			statistic.setRegisterDate(c.getTime());
 			statistic.setRegisterCount(0);
 			registerCustomers.add(statistic);
+		}
+	}
+	
+	public static void printResultErrors(BindingResult result) {
+		if (result.hasErrors()) {
+			List<ObjectError> errors = result.getAllErrors();
+			for (ObjectError error : errors)
+				System.out.println(error.getObjectName() + ", " + error.getDefaultMessage());
 		}
 	}
 	

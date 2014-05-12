@@ -162,7 +162,7 @@ public class SaleController {
 			
 			if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
-				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
+				customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months() + plan.getPlan_new_connection_fee());
 				
 				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 				cod_conn.setDetail_name("Installation");
@@ -187,21 +187,22 @@ public class SaleController {
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
 			}
 			
-			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-			if ("personal".equals(plan.getPlan_class())) {
-				cod_pstn.setDetail_name("Home Phone Line");
-			} else if ("business".equals(plan.getPlan_class())) {
-				cod_pstn.setDetail_name("Business Phone Line");
+			// add plan free pstn
+			for (int i = 0; i < plan.getPstn_count(); i++) {
+				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+				if ("personal".equals(plan.getPlan_class())) {
+					cod_pstn.setDetail_name("Home Phone Line");
+				} else if ("business".equals(plan.getPlan_class())) {
+					cod_pstn.setDetail_name("Business Phone Line");
+				}
+				cod_pstn.setDetail_price(0d);
+				cod_pstn.setDetail_is_next_pay(0);
+				cod_pstn.setDetail_expired(new Date());
+				cod_pstn.setDetail_type("pstn");
+				cod_pstn.setDetail_unit(1);
+				cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
+				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
 			}
-			
-			cod_pstn.setDetail_price(0d);
-			cod_pstn.setDetail_is_next_pay(0);
-			cod_pstn.setDetail_expired(new Date());
-			cod_pstn.setDetail_type("pstn");
-			cod_pstn.setDetail_unit(1);
-			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
 			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
 			cod_hd.setDetail_name("Free Router");

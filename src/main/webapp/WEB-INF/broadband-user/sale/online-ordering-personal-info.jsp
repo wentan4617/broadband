@@ -76,7 +76,7 @@
 					
 					<div class="form-group">
 						<label class="control-label col-sm-4">Broadband Type</label>
-						<div class="col-sm-4">
+						<div class="col-sm-5">
 							<ul class="list-unstyled topup-list">
 								<li>
 									<input type="radio" name="order_broadband_type" 

@@ -18,13 +18,12 @@
 			</div>
 			<div class="col-sm-2">
 				<strong>
-					<a class="navbar-brand" href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }' style="color:orange; text-decoration:underline;"> Online Order List
-					</a>
+					<a class="navbar-brand" href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }' style="color:orange; text-decoration:underline;"><small>Order List</small></a>
 				</strong>
 			</div>
 			<div class="col-sm-5">
 				<p class="app-form text-center">
-					Broadband Application Form
+					<small>Application Form</small>
 				</p>
 			</div>
 			<div class="col-sm-3">

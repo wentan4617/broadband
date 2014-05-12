@@ -30,12 +30,14 @@
 						<div class="row">
 							<div class="col-sm-6">
 								<h4 class="text-success">
-									<c:if test="${orderCustomer.customer_type == 'personal' }">
-										${orderCustomer.title } ${orderCustomer.first_name } ${orderCustomer.last_name }
-									</c:if>
-									<c:if test="${orderCustomer.customer_type == 'business' }">
-										${orderCustomer.organization.org_name }
-									</c:if>
+									<c:choose>
+										<c:when test="${orderCustomer.customer_type == 'personal' }">
+											${orderCustomer.title } ${orderCustomer.first_name } ${orderCustomer.last_name }
+										</c:when>
+										<c:when test="${orderCustomer.customer_type == 'business' }">
+											${orderCustomer.organization.org_name }
+										</c:when>
+									</c:choose>
 								</h4>
 							</div>
 							<div class="col-sm-6"></div>
@@ -161,7 +163,10 @@
 													${detail.detail_name }
 												</td>
 												<td>
-													${detail.detail_data_flow } GB
+													<c:choose>
+														<c:when test="${detail.detail_data_flow < 0 }">Unlimited Data</c:when>
+														<c:otherwise>${detail.detail_data_flow } GB</c:otherwise>
+													</c:choose>
 													
 												</td>
 												<td>${detail.detail_term_period }</td>
@@ -207,33 +212,64 @@
 							</tbody>
 						</table>
 						<div class="row">
-							<div class="col-sm-4 col-sm-offset-8">
+							<div class="col-sm-5 col-sm-offset-7">
 							
 								<table class="table">
+									
 									<tbody>
-										<tr>
-											<td>Total before GST</td>
-											<td>
-												NZ$ 
-												<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
-											</td>
-										</tr>
-										<tr>
-											<td>GST at 15% </td>
-											<td>
-												NZ$ 
-												<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
-											</td>
-										</tr>
-										<tr>
-											<td><strong>Order Total</strong></td>
-											<td>
-												<strong class="text-success">
-													NZ$ 
-													<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
-												</strong>
-											</td>
-										</tr>
+										<c:choose>
+											<c:when test="${orderCustomer.customer_type == 'personal' }">
+												<tr>
+													<td>Total before GST</td>
+													<td>
+														NZ$ 
+														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * (1 - 0.15)}" type="number" pattern="#,##0.00" />
+													</td>
+												</tr>
+												<tr>
+													<td>GST at 15% </td>
+													<td>
+														NZ$ 
+														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+													</td>
+												</tr>
+												<tr>
+													<td><strong>Order Total</strong></td>
+													<td>
+														<strong class="text-success">
+															NZ$ 
+															<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price }" type="number" pattern="#,##0.00" />
+														</strong>
+													</td>
+												</tr>
+											</c:when>
+											<c:when test="${orderCustomer.customer_type == 'business' }">
+												<tr>
+													<td>Order Price</td>
+													<td>
+														NZ$ 
+														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
+													</td>
+												</tr>
+												<tr>
+													<td>Plus GST at 12% </td>
+													<td>
+														NZ$ 
+														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.12}" type="number" pattern="#,##0.00" />
+													</td>
+												</tr>
+												<tr>
+													<td><strong>Order Total</strong></td>
+													<td>
+														<strong class="text-success">
+															NZ$ 
+															<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 1.12 }" type="number" pattern="#,##0.00" />
+														</strong>
+													</td>
+												</tr>
+											</c:when>
+										</c:choose>
+										
 									</tbody>
 								</table>
 							</div>
