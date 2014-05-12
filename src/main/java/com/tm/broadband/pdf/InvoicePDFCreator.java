@@ -68,8 +68,15 @@ public class InvoicePDFCreator extends ITextUtils {
 		return headerTable;
 	}
 
-	public void create(String outputFile) throws DocumentException, MalformedURLException, IOException{
+	public String create() throws DocumentException, MalformedURLException, IOException{
         Document document = new Document(PageSize.A4);
+        
+		// Output PDF Path, e.g.: application_60089.pdf
+		String outputFile = TMUtils.createPath("broadband" + File.separator
+				+ "customers" + File.separator + this.customer.getId()
+				+ File.separator + "invoice_" + this.getCurrentCustomerInvoice().getId()
+				+ ".pdf");
+		
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
         document.open();
         
@@ -920,6 +927,7 @@ public class InvoicePDFCreator extends ITextUtils {
 //		
 		// CLOSE DOCUMENT
         document.close();
+		return outputFile;
         
 		
         
