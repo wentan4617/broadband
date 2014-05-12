@@ -324,7 +324,7 @@
 
 <!-- Check Address Modal -->
 <div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="margin-top:55px;">
+	<div class="modal-dialog" style="margin-top:55px;width:60%">
 		<div class="modal-content">
 			<div class="modal-header">
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -354,14 +354,44 @@
 <jsp:include page="resultAddressCheck.html" />
 </script>
 
+
+
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	var adslPlans=[], vdslPlans=[], ufbPlans=[];
+	<c:forEach var="type" items="ADSL,VDSL,UFB">
+		<c:set var="plansPromotion" value="${planTypeMap[type]['plansPromotion'] }"></c:set>
+		<c:set var="plans" value="${planTypeMap[type]['plans'] }"></c:set>
+		<c:forEach var="plan" items="${plansPromotion }">
+			var plan = {
+				id: ${plan.id }
+				, plan_name: '${plan.plan_name }'
+				, plan_price: ${plan.plan_price }
+				, data_flow: ${plan.data_flow }
+			};
+			if ('${type }'=='ADSL') { adslPlans.push(plan); } 
+			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
+			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
+		</c:forEach>
+		<c:forEach var="plan" items="${plans }">
+			var plan = {
+				id: ${plan.id }
+				, plan_name: '${plan.plan_name }'
+				, plan_price: ${plan.plan_price }
+				, data_flow: ${plan.data_flow }
+			};
+			if ('${type }'=='ADSL') { adslPlans.push(plan); } 
+			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
+			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
+		</c:forEach>
+	</c:forEach>
 	
 	var select_plan_id = "";
 	var select_plan_type = "";
@@ -373,13 +403,24 @@
 			var l = Ladda.create(this);
 		 	l.start();
 			$.get('${ctx}/address/check/' + address, function(broadband){
-				broadband.href = '${ctx}/order/' + select_plan_id;
 				broadband.type = select_plan_type;
+				broadband.selected_id = select_plan_id;
+				broadband.adslPlans = adslPlans;
+				broadband.vdslPlans = vdslPlans;
+				broadband.ufbPlans = ufbPlans;
 				$('#checkResult').html(tmpl('result_tmpl', broadband));
+				$(':radio').iCheck({
+					checkboxClass : 'icheckbox_square-green',
+					radioClass : 'iradio_square-green'
+				});
 				$('a[data-toggle="tooltip"]').tooltip();
-				$('#continue-selected-plan').click(function(){
+				$('a[data-name="continue-selected-plan"]').click(function(){
+					var type = $(this).attr('data-type');
 					$.get('${ctx}/do/service/', function(){
-						window.location.href = broadband.href;
+						var id = $('input[name="' + type + '_id"]:checked').val();
+						if (id) window.location.href = '${ctx}/order/' + id;
+						else { alert('Please choose one plan at least.'); }
+						
 					});
 				});
 		   	}).always(function(){ l.stop(); });

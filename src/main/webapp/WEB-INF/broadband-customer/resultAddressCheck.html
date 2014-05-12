@@ -1,9 +1,11 @@
 <div class="modal-body">
+
+	<!-- adsl -->
 	<div class="row">
-		<div class="col-md-10 col-md-offset-1">
-			<div class="row">
-				<div class="col-md-4">
-					<div id="adsl-icon" class="alert alert-<.=adsl_available?'success':'danger'.>" style="width:120px;height:120px">
+		<div class="col-md-12">
+			<div id="adsl-icon" class="alert alert-<.=adsl_available?'success':'danger'.>">
+				<div class="row">
+					<div class="col-md-3">
 						<p class="text-center">
 							<span class="glyphicon glyphicon-<.=adsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
 						</p>
@@ -14,16 +16,51 @@
 							<small><.=adsl_available?'Available':'Not Available'.></small>
 						</p>
 					</div>
-					<. if (type=='adsl'){.>
-						<p class="text-center">
-							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
+					
+					<. if (adsl_available){.>
+					
+					<. if (adslPlans.length > 0) {.>
+						<ul class="col-md-7 list-unstyled">
+						<. 
+							for(var i = 0; i < adslPlans.length; i++) { 
+								var plan = adslPlans[i];
+						.>
+							<li style="margin-top:12px;">
+								<. if (selected_id == plan.id) { .>
+								<input type="radio" name="adsl_id" value="<.=plan.id.>" checked /><strong style="margin-left:10px;" ><.=plan.plan_name .></strong>
+								<.} else {.>
+								<input type="radio" name="adsl_id" value="<.=plan.id.>" /><strong style="margin-left:10px;"><.=plan.plan_name .></strong>
+								<.}.>
+							</li>
+						<.}.>
+						</ul>
+					
+						<div class="col-md-2">
+							<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="adsl" data-toggle="tooltip" data-placement="bottom" title data-original-title="Continue Selected Plan">
+								<span class="glyphicon glyphicon-circle-arrow-right" style="font-size:70px;margin-top:22px;"></span>
 							</a>
+						</div>
+					
+					<.} else {.> 
+						<p class="lead">
+							Sorry, there are no plan records haven been found.
 						</p>
 					<.}.>
+					
+					
+					
+					<.}.>
 				</div>
-				<div class="col-md-4">
-					<div id="vdsl-icon" class="alert alert-<.=vdsl_available?'success':'danger'.>" style="width:120px;height:120px">
+			</div>
+		</div>
+	</div>
+	
+	<!-- vdsl -->
+	<div class="row">
+		<div class="col-md-12">
+			<div id="vdsl-icon" class="alert alert-<.=vdsl_available?'success':'danger'.>">
+				<div class="row">
+					<div class="col-md-3">
 						<p class="text-center">
 							<span class="glyphicon glyphicon-<.=vdsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
 						</p>
@@ -34,16 +71,50 @@
 							<small><.=vdsl_available?'Available':'Not Available'.></small>
 						</p>
 					</div>
-					<. if (type=='vdsl'){.>
-						<p class="text-center">
-							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
+					
+					<. if (vdsl_available){.>
+					
+					<. if (vdslPlans.length > 0) {.>
+						<ul class="col-md-7 list-unstyled">
+						<. 
+							for(var i = 0; i < vdslPlans.length; i++) { 
+								var plan = vdslPlans[i];
+						.>
+							<li style="margin-top:12px;">
+								<. if (selected_id == plan.id) { .>
+								<input type="radio" name="vdsl_id" value="<.=plan.id.>" checked /><strong style="margin-left:10px;" ><.=plan.plan_name .></strong>
+								<.} else {.>
+								<input type="radio" name="vdsl_id" value="<.=plan.id.>" /><strong style="margin-left:10px;"><.=plan.plan_name .></strong>
+								<.}.>
+							</li>
+						<.}.>
+						</ul>
+					
+						<div class="col-md-2">
+							<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="vdsl" data-toggle="tooltip" data-placement="bottom" title data-original-title="Continue Selected Plan">
+								<span class="glyphicon glyphicon-circle-arrow-right" style="font-size:70px;margin-top:22px;"></span>
 							</a>
+						</div>
+						
+					<.} else {.> 
+						<p class="lead">
+							Sorry, there are no plan records haven been found.
 						</p>
 					<.}.>
+					
+					
+					<.}.>
 				</div>
-				<div class="col-md-4">
-					<div id="ufb-icon" class="alert alert-<.=ufb_available?'success':'danger'.>" style="width:120px;height:120px">
+			</div>
+		</div>
+	</div>
+	
+	<!-- ufb -->
+	<div class="row">
+		<div class="col-md-12">
+			<div id="ufb-icon" class="alert alert-<.=ufb_available?'success':'danger'.>">
+				<div class="row">
+					<div class="col-md-3">
 						<p class="text-center">
 							<span class="glyphicon glyphicon-<.=ufb_available?'ok':'remove'.>" style="font-size:24px;"></span>
 						</p>
@@ -54,13 +125,39 @@
 							<small><.=ufb_available?'Available':'Not Available'.></small>
 						</p>
 					</div>
-					<. if (type=='ufb'){.>
-						<p class="text-center">
-							<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" title data-original-title="Your Selection">
-								<span class="glyphicon glyphicon-circle-arrow-up" style="font-size:36px;"></span>
+					
+					<. if (ufb_available){.>
+					
+					<. if (ufbPlans.length > 0) {.>
+						<ul class="col-md-7 list-unstyled">
+						<. 
+							for(var i = 0; i < ufbPlans.length; i++) { 
+								var plan = ufbPlans[i];
+						.>
+							<li style="margin-top:12px;">
+								<. if (selected_id == plan.id) { .>
+								<input type="radio" name="ufb_id" value="<.=plan.id.>" checked /><strong style="margin-left:10px;" ><.=plan.plan_name .></strong>
+								<.} else {.>
+								<input type="radio" name="ufb_id" value="<.=plan.id.>" /><strong style="margin-left:10px;"><.=plan.plan_name .></strong>
+								<.}.>
+							</li>
+						<.}.>
+						</ul>
+					
+						<div class="col-md-2">
+							<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="ufb" data-toggle="tooltip" data-placement="bottom" title data-original-title="Continue Selected Plan">
+								<span class="glyphicon glyphicon-circle-arrow-right" style="font-size:70px;margin-top:22px;"></span>
 							</a>
+						</div>
+					<.} else {.> 
+						<p class="lead">
+							Sorry, there are no plan records haven been found.
 						</p>
 					<.}.>
+					
+					
+					<.}.>
+					
 				</div>
 			</div>
 		</div>
@@ -99,12 +196,12 @@
 	</div>
 	
 	<.}.>
+	
 </div>
-<div class="modal-footer">
+<!-- <div class="modal-footer">
 	<div id="buttonResult">
-		<!-- <button type="button" class="btn btn-success btn-lg" data-dismiss="modal">Close</button> -->
 		<. if ( (type=='adsl' && adsl_available) || (type=='vdsl' && vdsl_available) || (type=='ufb' && ufb_available)){.>
 		<a class="btn btn-success btn-lg " id="continue-selected-plan" data-name="purchase" href="javascript:void(0);">Continue Selected Plan</a>
 		<.} .>
 	</div>
-</div>
+</div> -->
