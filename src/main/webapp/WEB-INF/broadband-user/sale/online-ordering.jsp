@@ -54,18 +54,18 @@
 									<strong>T&C</strong> 
 								</h3>
 								<ul class=" text-info">
-									<li><strong>Early Termination Fee(ETC): $299 completed less than 12 months; $199 completed more than 12 months</strong></li>
+									<li><strong>Early Termination Fee(ETC): NZ$299 completed less than 12 months; NZ$199 completed more than 12 months</strong></li>
 									<li>
 										<strong>
 											Transition from previous Internet Service Provider for fee. <br/>
 											(processing date: around 3-7 working days, if base on UCLL number transferring takes around 5-10 working days)
 										</strong>
 									</li>
-									<li><strong>New connection fee: $145+GST (processing date: around 5-10 working days)</strong></li>
-									<li><strong>New Installation Fee (Jack port): $199+GST (processing date: around 5-15 working days)</strong></li>
+									<li><strong>New connection fee: NZ$145+GST (processing date: around 5-10 working days)</strong></li>
+									<li><strong>New Installation Fee (Jack port): NZ$199+GST (processing date: around 5-15 working days)</strong></li>
 									<li>
 										<strong>
-											Home number can keep if number under POTS condition, or extra $99+GST for transferring number from UCLL system<br/>
+											Home number can keep if number under POTS condition, or extra NZ$99+GST for transferring number from UCLL system<br/>
 											(eg, Vodafone, Orcon, Slingshort, woosh may use UCLL)
 										</strong>
 									</li>
@@ -77,18 +77,18 @@
 									<strong>T&C</strong> 
 								</h3>
 								<ul class=" text-info">
-									<li><strong>Early Termination Fee(ETC): $199 completed less than 6 months; $99 completed more than 6 months</strong></li>
+									<li><strong>Early Termination Fee(ETC): NZ$199 completed less than 6 months; NZ$99 completed more than 6 months</strong></li>
 									<li>
 										<strong>
 											Transition from previous Internet Service Provider for fee. <br/>
 											(processing date: around 3-7 working days, if base on UCLL number transferring takes around 5-10 working days)
 										</strong>
 									</li>
-									<li><strong>New connection fee: $145+GST (processing date: around 5-10 working days)</strong></li>
-									<li><strong>New Installation Fee (Jack port): $199+GST (processing date: around 5-15 working days)</strong></li>
+									<li><strong>New connection fee: NZ$145+GST (processing date: around 5-10 working days)</strong></li>
+									<li><strong>New Installation Fee (Jack port): NZ$199+GST (processing date: around 5-15 working days)</strong></li>
 									<li>
 										<strong>
-											Home number can keep if number under POTS condition, or extra $99+GST for transferring number from UCLL system<br/>
+											Home number can keep if number under POTS condition, or extra NZ$99+GST for transferring number from UCLL system<br/>
 											(eg, Vodafone, Orcon, Slingshort, woosh may use UCLL)
 										</strong>
 									</li>
@@ -261,12 +261,12 @@
 	});
 	
 	$('tr[data-name*="_tr"]').click(function(){
-		var data_name = $(this).attr('data-name');
-		$('tr[data-name="' + data_name + '"]').removeClass('success');
-		$('input[name="' + data_name.replace('tr', 'id') + ']"').iCheck('uncheck');
+		var type = $(this).attr('data-name').replace('_tr', '');
+		$('tr[data-name="' + type + '_tr"]').removeClass('success');
+		$('input[name="' + type + '_id"]').iCheck('uncheck');
 		$(this).addClass('success');
 		var data_value = $(this).attr('data-value');
-		$('input[name="' + data_name.replace('tr', 'id') + '"][value="' + data_value + '"]').iCheck('check');
+		$('input[name="' + type + '_id"][value="' + data_value + '"]').iCheck('check');
 	});
 	
 	$('input[name*="_id"]').on('ifChecked', function(){
