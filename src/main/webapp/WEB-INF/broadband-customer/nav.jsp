@@ -16,7 +16,7 @@
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="${ctx }/plans/plan-no-term/personal"><strong>Personal Plan</strong></a></li>
+				<li class="active"><a href="${ctx }/plans/plan-term/personal"><strong>Personal Plan</strong></a></li>
 				<li><a href="${ctx }/plans/plan-term/business"><strong>Business Plan</strong></a></li>
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
 				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
