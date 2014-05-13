@@ -108,9 +108,17 @@
 											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Order PDF"></a>
 										</c:if>
 										<c:if test="${order.credit_pdf_path != null}">
-										<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
+											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
+										</c:if>
+										<c:if test="${order.credit_pdf_path == null}">
+											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>
 										</c:if>|
 										<a data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open btn-lg" data-toggle="modal" data-placement="bottom" data-target="#uploadModal" style="cursor:pointer;"></a>
+										
+										<!-- If got additional requests -->
+										<c:if test="${order.optional_request != null}">
+											<a data-name="optional_request_btn" data-optional-request="${order.optional_request }" class="glyphicon glyphicon-info-sign btn-lg" data-toggle="modal" data-placement="bottom" data-target="#optionalRequestModel" style="cursor:pointer;"></a>
+										</c:if>
 									</td>
 								</tr>
 							</c:forEach>
@@ -178,6 +186,26 @@
 	</div><!-- /.modal -->
 </form>
 
+<!-- Modal -->
+<div class="modal fade" id="optionalRequestModel" tabindex="-1" role="dialog" aria-labelledby="optionalRequestModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="optionalRequestModalLabel">Additional Request: </h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<div class="col-md-12">
+						<p class="form-control-static" data-name="optional_request_p">
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
@@ -206,6 +234,10 @@
 		$('input[name="order_id"]').val($(this).attr('data-order-id'));
 		$('input[name="customer_id"]').val($(this).attr('data-customer-id'));
 		$('input[name="sale_id"]').val($(this).attr('data-sale-id'));
+	});
+	
+	$('a[data-name="optional_request_btn"]').click(function(){
+		$('p[data-name="optional_request_p"]').html($(this).attr('data-optional-request'));
 	});
 	
 })(jQuery);

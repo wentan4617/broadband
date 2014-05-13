@@ -94,7 +94,8 @@
 		co.`sale_id`							as co_sale_id,
 		co.`order_pdf_path`						as co_order_pdf_path,
 		co.`credit_pdf_path`					as co_credit_pdf_path,
-		co.`signature`							as co_signature
+		co.`signature`							as co_signature,
+		co.`optional_request`					as co_optional_request
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -124,6 +125,7 @@
 		<result property="order_pdf_path" column="co_order_pdf_path" />
 		<result property="credit_pdf_path" column="co_credit_pdf_path" />
 		<result property="signature" column="co_signature" />
+		<result property="optional_request" column="co_optional_request" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -300,6 +302,7 @@
 		<result property="order_pdf_path" column="co_order_pdf_path" />
 		<result property="credit_pdf_path" column="co_credit_pdf_path" />
 		<result property="signature" column="co_signature" />
+		<result property="optional_request" column="co_optional_request" />
 		
 		<!-- <association property="customer" resultMap="customerResultMap"/> -->
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -391,6 +394,7 @@
 		<result property="order_pdf_path" column="co_order_pdf_path" />
 		<result property="credit_pdf_path" column="co_credit_pdf_path" />
 		<result property="signature" column="co_signature" />
+		<result property="optional_request" column="co_optional_request" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -447,6 +451,7 @@
 		<result property="order_pdf_path" column="co_order_pdf_path" />
 		<result property="credit_pdf_path" column="co_credit_pdf_path" />
 		<result property="signature" column="co_signature" />
+		<result property="optional_request" column="co_optional_request" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -476,14 +481,14 @@
 			`transition_provider_name`, `transition_account_holder_name`, 
 			`transition_account_number`, `transition_porting_number`, `hardware_post`,
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
-			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`) 
+			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`) 
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
 			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
-			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature})
+			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -522,6 +527,7 @@
 			<if test="order_pdf_path != null">order_pdf_path=#{order_pdf_path},</if>
 			<if test="credit_pdf_path != null">credit_pdf_path=#{credit_pdf_path},</if>
 			<if test="signature != null">signature=#{signature}</if>
+			<if test="optional_request != null">optional_request=#{optional_request}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

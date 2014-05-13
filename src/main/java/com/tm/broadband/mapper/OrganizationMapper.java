@@ -48,6 +48,9 @@ public interface OrganizationMapper {
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA */
+	
+	void deleteOrganizationByCustomerId(Integer id);
+	
 	/* // END DELETE AREA */
 	
 }

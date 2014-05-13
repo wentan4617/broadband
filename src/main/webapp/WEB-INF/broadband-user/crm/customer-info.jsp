@@ -282,8 +282,9 @@
 					<p class="text-right">
 						<strong>
 							personal informations<br /> 
-							related orders with details<br />
-							related invoices with details<br /> 
+							related organization's details<br />
+							related orders with records<br />
+							related invoices with records<br /> 
 							related transaction's records<br />
 						</strong>
 					</p>

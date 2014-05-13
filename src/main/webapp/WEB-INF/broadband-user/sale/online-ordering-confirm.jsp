@@ -292,24 +292,35 @@
 </div>
 
 <!-- Modal -->
-<div class="modal fade" id="save_order_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="myModalLabel">Save Order & Generate PDF</h4>
-			</div>
-			<div class="modal-body">
-				<p class="text-danger">
-					Click the button to save the order, generated broadband application form pdf.
-				</p>
-			</div>
-			<div class="modal-footer">
-				<a href="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" class="btn btn-success btn-lg" id="save_order">Save Order & Generate PDF</a>
+<form class="form-horizontal" action="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" method="post">
+	<div class="modal fade" id="save_order_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">Save Order & Generate PDF</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<span class="col-md-12"><strong>Additional Request: </strong>(If don't have any other requests, please leave it empty)</span>
+					</div>
+					<div class="form-group">
+						<div class="col-md-12">
+							<textarea name="optional_request" class="form-control input-lg" placeholder="Optional Request" rows="10"></textarea>
+						</div>
+					</div>
+					<hr/>
+					<p class="text-danger">
+						Click the button to save the order, generated broadband application form pdf.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-success btn-lg" id="save_order">Save Order & Generate PDF</button>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
+</form>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

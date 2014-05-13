@@ -18,7 +18,9 @@ Total Mobile Solution Internet Service Web Project
  
  demand version 1.0.8 2014-05-06
  
- * customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额
+ * invoice重构代码，so important!(steven)
+ * [sales模块在线下单功能，在确认生成order PDF浮窗里添加一个optional_request输入框，提交sales额外请求。](steven)
+ * customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(待定...)
  
  demand version 1.0.7 2014-05-06
  
