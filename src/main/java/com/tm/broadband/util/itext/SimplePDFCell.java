@@ -11,12 +11,19 @@ import com.itextpdf.text.pdf.PdfPTable;
 public class SimplePDFCell {
 
 	// BEGIN MEMBER VARIABLE
+	
+	// BEGIN PRIVATE VARIABLES
 	private PdfPTable table; private PdfPCell cell; private String phrase;
+	// END PRIVATE VARIABLES
+	
+	// BEGIN GLOBAL VARIABLES
+	private Integer globalBorderWidth;
+	private BaseColor globalBorderColor;
+	// END GLOBAL VARIABLES
+	
 	// END MEMBER VARIABLE
 	// BEGIN INITIALIZATION
-	public SimplePDFCell() {
-		this.setCell(new PdfPCell(new Phrase(phrase)));
-	}
+	public SimplePDFCell() {}
 	public SimplePDFCell(PdfPTable table) {
 		this.setCell(new PdfPCell(new Phrase(phrase)));
 		this.setTable(table);
@@ -147,7 +154,7 @@ public class SimplePDFCell {
 	 * @param width
 	 * @return this
 	 */
-	public SimplePDFCell border(Float width){
+	public SimplePDFCell borderZoom(Float width){
 		this.getCell().setUseBorderPadding(true);
 		this.getCell().setBorderWidthTop(width);
 		this.getCell().setBorderWidthRight(width);
@@ -326,6 +333,8 @@ public class SimplePDFCell {
 	}
 	protected void setCell(PdfPCell cell) {
 		this.cell = cell;
+		if(this.getGlobalBorderWidth() != null){ this.getCell().setBorder(this.getGlobalBorderWidth()); }
+		if(this.getGlobalBorderColor() != null){ this.getCell().setBorderColor(this.getGlobalBorderColor()); }
 	}
 	protected PdfPTable getTable() {
 		return table;
@@ -333,8 +342,19 @@ public class SimplePDFCell {
 	protected void setTable(PdfPTable table) {
 		this.table = table;
 	}
+	protected Integer getGlobalBorderWidth() {
+		return globalBorderWidth;
+	}
+	protected void setGlobalBorderWidth(Integer globalBorderWidth) {
+		this.globalBorderWidth = globalBorderWidth;
+	}
+	protected BaseColor getGlobalBorderColor() {
+		return globalBorderColor;
+	}
+	protected void setGlobalBorderColor(BaseColor globalBorderColor) {
+		this.globalBorderColor = globalBorderColor;
+	}
 	// END GETTER AND SETTER
-	
 	
 
 }

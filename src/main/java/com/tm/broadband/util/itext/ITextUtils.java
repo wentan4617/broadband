@@ -21,6 +21,7 @@ public class ITextUtils {
 	private SimplePDFCell simplePDFCell;
 	private SimplePDFTable simplePDFTable;
 	// END MEMBER VARIABLE
+	
 
 	// BEGIN INITIALIZATION
 	public ITextUtils() {
@@ -36,8 +37,15 @@ public class ITextUtils {
 	private SimplePDFTable getSimplePDFTable() {
 		return simplePDFTable;
 	}
+	protected void setGlobalBorderWidth(Integer globalBorderWidth) {
+		this.getSimplePDFCell().setGlobalBorderWidth(globalBorderWidth);
+	}
+	protected void setGlobalBorderColor(BaseColor globalBorderColor) {
+		this.getSimplePDFCell().setGlobalBorderColor(globalBorderColor);
+	}
 	// END GETTER AND SETTER
 	
+
 
 	/**
 	 * 
@@ -137,6 +145,19 @@ public class ITextUtils {
 	public void addEmptyCol(PdfPTable table, Integer colspan){
 		PdfPCell cell = new PdfPCell(new Phrase(" "));
         cell.setColspan(colspan);
+        cell.setBorder(0);
+        table.addCell(cell);
+	}
+
+	/**
+	 * 
+	 * @param table
+	 * @param rowspan
+	 */
+	// ENCAPSULATE EMPTY COLUMN(S)
+	public void addEmptyRow(PdfPTable table, Integer rowspan){
+		PdfPCell cell = new PdfPCell(new Phrase(" "));
+        cell.setRowspan(rowspan);
         cell.setBorder(0);
         table.addCell(cell);
 	}
@@ -275,9 +296,9 @@ public class ITextUtils {
 	 */
 	// ENCAPSULATE COLUMN
 	public SimplePDFCell addCol(PdfPTable table, String phrase){
-        this.getSimplePDFCell().setPhrase(phrase);
+		this.getSimplePDFCell().setPhrase(phrase);
         this.getSimplePDFCell().setTable(table);
-        this.getSimplePDFCell().getCell().setPhrase(new Phrase());
+        this.getSimplePDFCell().setCell(new PdfPCell(new Phrase(this.getSimplePDFCell().getPhrase())));
         return this.getSimplePDFCell();
 	}
 	
@@ -289,6 +310,7 @@ public class ITextUtils {
 	 */
 	// ENCAPSULATE TABLE IN CELL
 	public SimplePDFCell addTableInCol(PdfPTable outerTable, PdfPTable innerTable){
+        this.getSimplePDFCell().setCell(new PdfPCell(new Phrase()));
         this.getSimplePDFCell().getCell().addElement(innerTable);
         this.getSimplePDFCell().setTable(outerTable);
         return this.getSimplePDFCell();
