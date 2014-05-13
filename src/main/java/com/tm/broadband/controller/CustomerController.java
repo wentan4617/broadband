@@ -158,8 +158,8 @@ public class CustomerController {
 		return url;
 	}
 
-	@RequestMapping("/order/{id}")
-	public String orderPlanNoTerm(Model model, 
+	@RequestMapping("/order/{id}") 
+	public String orderPlanNoTermOrTerm(Model model, 
 			@PathVariable("id") int id,
 			HttpServletRequest req) {
 		
