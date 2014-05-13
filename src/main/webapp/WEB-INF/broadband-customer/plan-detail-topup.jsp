@@ -73,7 +73,7 @@ background-color: #7BC3EC;
 						<td>10 GB</td>
 						<td>20 days</td>
 						<td>
-							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/20" class="btn btn-success btn-block">Purchase</a>
+							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20" class="btn btn-success btn-block">Purchase</a>
 						</td>
 					</tr>
 					<tr>
@@ -81,7 +81,7 @@ background-color: #7BC3EC;
 						<td>30 GB</td>
 						<td>45 days</td>
 						<td>
-							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/50" class="btn btn-success btn-block">Purchase</a>
+							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/50" class="btn btn-success btn-block">Purchase</a>
 						</td>
 					</tr>
 					<tr>
@@ -89,7 +89,7 @@ background-color: #7BC3EC;
 						<td>80 GB</td>
 						<td>60 days</td>
 						<td>
-							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/100" class="btn btn-success btn-block">Purchase</a>
+							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/100" class="btn btn-success btn-block">Purchase</a>
 						</td>
 					</tr>
 					<tr>
@@ -97,7 +97,7 @@ background-color: #7BC3EC;
 						<td>150 GB</td>
 						<td>90 days</td>
 						<td>
-							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/150" class="btn btn-success btn-block">Purchase</a>
+							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/150" class="btn btn-success btn-block">Purchase</a>
 						</td>
 					</tr>
 					<tr>
@@ -105,67 +105,13 @@ background-color: #7BC3EC;
 						<td>250 GB</td>
 						<td>120 days</td>
 						<td>
-							<a href="${ctx }/order/${planMaps['ADSL'][0].id}/topup/200" class="btn btn-success btn-block">Purchase</a>
+							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/200" class="btn btn-success btn-block">Purchase</a>
 						</td>
 					</tr>
 				</table>
 			</div>
 		</div>
-		<div class="col-lg-6">
-			<div class="panel panel-success">
-		  		<div class="panel-heading">
-					<h3 class="panel-title">Naked VDSL Only</h3>
-				</div>
-				<table class="table">
-					<tr>
-						<th>Top-up Price</th>
-						<th>Data</th>
-						<th>Available Days</th>
-						<th>&nbsp;</th>
-					</tr>
-					<tr>
-						<td>$30.00</td>
-						<td>10 GB</td>
-						<td>20 days</td>
-						<td>
-							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/30" class="btn btn-success btn-block">Purchase</a>
-						</td>
-					</tr>
-					<tr>
-						<td>$60.00</td>
-						<td>30 GB</td>
-						<td>45 days</td>
-						<td>
-							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/60" class="btn btn-success btn-block">Purchase</a>
-						</td>
-					</tr>
-					<tr>
-						<td>$110.00</td>
-						<td>80 GB</td>
-						<td>60 days</td>
-						<td>
-							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/110" class="btn btn-success btn-block">Purchase</a>
-						</td>
-					</tr>
-					<tr>
-						<td>$160.00</td>
-						<td>150 GB</td>
-						<td>90 days</td>
-						<td>
-							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/160" class="btn btn-success btn-block">Purchase</a>
-						</td>
-					</tr>
-					<tr>
-						<td>$200.00</td>
-						<td>250 GB</td>
-						<td>120 days</td>
-						<td>
-							<a href="${ctx }/order/${planMaps['VDSL'][0].id}/topup/200" class="btn btn-success btn-block">Purchase</a>
-						</td>
-					</tr>
-				</table>
-			</div>
-		</div>
+		
 	</div>
 	
 	<div>
