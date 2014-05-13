@@ -533,74 +533,7 @@
 		
 		
 	}
-	
-	/*$('button[data-order]').click(function(){
-		var $btn = $(this);
-		var plan_id = $btn.attr('data-plan-id'); //console.log(plan_id);
-		if (!plan_id) {
-			alert('Please choose one plan at least.');
-			return false;
-		}
-		
-		var type = $btn.attr('data-type');
-		var cods = [];
-		
-		$('div[data-' + type + '-hardware-enable]').each(function(){
-			var $this = $(this);
-			var cod = {
-				detail_name: $this.find('select[name="detail_name"]').val()
-				, detail_type: $this.find('input[name="detail_type"]').val()
-				, detail_price: $this.find('input[name="detail_price"]').val()
-				, detail_unit: $this.find('input[name="detail_unit"]').val()
-			}; //customerOrder.customerOrderDetails.push(cod);
-			cods.push(cod);
-		});
-		$('div[data-' + type + '-pstn-enable]').each(function(){
-			var $this = $(this);
-			var cod = {
-				detail_name: $this.find('input[name="detail_name"]').val()
-				, detail_type: $this.find('input[name="detail_type"]').val()
-				, detail_price: $this.find('input[name="detail_price"]').val()
-				, detail_unit: 1
-				, pstn_number: $this.find('select[name="pstn_number1"]').val() + '' + $this.find('input[name="pstn_number2"]').val()
-			}; //customerOrder.customerOrderDetails.push(cod);
-			cods.push(cod);
-		});
-		$('div[data-' + type + '-voip-enable]').each(function(){
-			var $this = $(this);
-			var cod = {
-				detail_name: $this.find('input[name="detail_name"]').val()
-				, detail_type: $this.find('input[name="detail_type"]').val()
-				, detail_price: $this.find('input[name="detail_price"]').val()
-				, detail_unit: 1
-				, pstn_number: $this.find('input[name="pstn_number"]').val()
-			}; //customerOrder.customerOrderDetails.push(cod);
-			cods.push(cod);
-		});
-		
-		//console.log(JSON.stringify(cods));
-		
-		$btn.button('loading');
-		
-		$.ajax({
-			type: 'post'
-			, contentType:'application/json;charset=UTF-8'         
-	   		, url: '${ctx}/broadband-user/sale/online/ordering/order/details'
-		   	, data: JSON.stringify(cods)
-		   	, dataType: 'json'
-		   	, success: function(json){
-				if (json.hasErrors) {
-					$.jsonValidation(json);
-				} else { //console.log(json);
-					window.location.href='${ctx}' + json.url + plan_id;
-				}
-		   	}
-		}).always(function () {
-			$btn.button('reset');
-	    });
-	});*/
-	
-	
+
 })(jQuery);
 </script>
 <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
