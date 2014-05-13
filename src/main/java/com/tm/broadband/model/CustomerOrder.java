@@ -50,6 +50,7 @@ public class CustomerOrder implements Serializable {
 	private String order_pdf_path;
 	private String credit_pdf_path;
 	private String signature;
+	private String optional_request;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -385,6 +386,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setSignature(String signature) {
 		this.signature = signature;
+	}
+
+	public String getOptional_request() {
+		return optional_request;
+	}
+
+	public void setOptional_request(String optional_request) {
+		this.optional_request = optional_request;
 	}
 
 	

@@ -482,6 +482,9 @@ public class CRMService {
 		// delete transaction
 		this.customerTransactionMapper.deleteCustomerTransactionByCustomerId(id);
 		
+		// delete related organization
+		this.organizationMapper.deleteOrganizationByCustomerId(id);
+		
 	}
 
 	@Transactional

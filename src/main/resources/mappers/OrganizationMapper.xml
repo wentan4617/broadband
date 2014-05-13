@@ -116,6 +116,10 @@
 
 	<!-- DELETE AREA -->
 	
+	<delete id="deleteOrganizationByCustomerId" parameterType="int">
+		DELETE FROM `tm_organization` WHERE customer_id = #{0}
+	</delete>
+	
 	<!-- // END DELETE AREA -->
 
 </mapper>

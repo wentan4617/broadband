@@ -236,10 +236,11 @@ public class SaleController {
 	}
 	
 	
-	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/confirm/save")
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/confirm/save", method = RequestMethod.POST)
 	public String orderSave(Model model, 
 			@ModelAttribute("orderPlan") Plan plan, 
 			@ModelAttribute("orderCustomer") Customer customer, 
+			@RequestParam("optional_request") String optional_request,
 			RedirectAttributes attr, SessionStatus status, HttpServletRequest req) {
 		
 		customer.setPassword(TMUtils.generateRandomString(6));
@@ -252,6 +253,7 @@ public class SaleController {
 		
 		User user = (User) req.getSession().getAttribute("userSession");
 		customer.getCustomerOrder().setSale_id(user.getId());
+		customer.getCustomerOrder().setOptional_request(optional_request);
 		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
