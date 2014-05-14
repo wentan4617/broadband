@@ -16,17 +16,21 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+
+demand version 1.0.9 2014-05-15 
+
+* cyberpark home 做seo相关工作(steven)
  
 demand version 1.0.8 2014-05-06
  
- * invoice重构代码，so important!(steven)
- * [sales模块在线下单功能，在确认生成order PDF浮窗里添加一个optional_request输入框，提交sales额外请求。](steven)
- * customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(待定...)
+* [invoice重构代码，so important!](steven)
+* [sales模块在线下单功能，在确认生成order PDF浮窗里添加一个optional_request输入框，提交sales额外请求。](steven)
+* customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(待定...)
  
 demand version 1.0.7 2014-05-06
  
- * 写plan query，方便查询plan(kanny, 2014-05-07)
- * [比如说，那个忘记密码，发手机短信的，还是要加验证码，不然一个手机可以无限发](steven, 2014-05-06)
+* 写plan query，方便查询plan(kanny, 2014-05-07)
+* [比如说，那个忘记密码，发手机短信的，还是要加验证码，不然一个手机可以无限发](steven, 2014-05-06)
 
 demand version 1.0.6 2014-04-24
 

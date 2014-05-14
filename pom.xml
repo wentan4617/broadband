@@ -17,7 +17,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<!-- Spring -->
-		<spring-framework.version>4.0.0.RELEASE</spring-framework.version>
+		<spring-framework.version>4.0.4.RELEASE</spring-framework.version>
 		<spring-batch.version>2.2.1.RELEASE</spring-batch.version>
 		<spring-ws.version>2.1.4.RELEASE</spring-ws.version>
 
@@ -31,6 +31,7 @@
 		<!-- Java EE / Java SE dependencies -->
 		<jsp.version>2.2</jsp.version>
 		<jstl.version>1.2</jstl.version>
+		<standard.version>1.1.2</standard.version>
 		<servlet.version>3.0.1</servlet.version>
 		<j2ee.version>7.0</j2ee.version>
 
@@ -161,6 +162,11 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>${jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>${standard.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

@@ -77,7 +77,7 @@ public class CustomerController {
 		this.smserService = smserService;
 	}
 
-	@RequestMapping("/home")
+	@RequestMapping(value = {"", "/home" })
 	public String home(Model model) {
 		return "broadband-customer/home";
 	}
