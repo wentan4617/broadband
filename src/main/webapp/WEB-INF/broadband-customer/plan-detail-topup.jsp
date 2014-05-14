@@ -108,7 +108,7 @@ background-color: #7BC3EC;
 				</div>
 			</div>
 			
-			<p class="text-danger">
+			<p class="lead">
 				Promotion: NZD$20/week CyberPark Top Up Unlimited Naked ADSL Broadband (UNAB) plan if you apply before the end of August, 2014.
 			</p>
 		</div>
