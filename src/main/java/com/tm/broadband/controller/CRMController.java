@@ -59,7 +59,6 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
-import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
 @SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })
@@ -207,6 +206,11 @@ public class CRMController {
 			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 			// set next invoice date
 			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+		} else {
+			Calendar cal = Calendar.getInstance();
+			cal.add(Calendar.WEEK_OF_MONTH, 1);
+			customerOrder.setOrder_due(cal.getTime());
+			this.crmService.editCustomerOrder(customerOrder, proLog);
 		}
 		
 		// check order status
@@ -417,7 +421,7 @@ public class CRMController {
 		// content
 		applicationEmail.setContent(notification.getContent());
 		// attachment name
-		applicationEmail.setAttachName("Invoice-" + invoiceId + ".pdf");
+		applicationEmail.setAttachName("invoice_" + invoiceId + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		

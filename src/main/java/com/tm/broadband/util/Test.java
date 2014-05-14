@@ -32,11 +32,12 @@ public class Test {
 //		System.out.println(CheckScriptInjection.isScriptInjection(c));;
 //		testGzip();
 		
-		Calendar cal = Calendar.getInstance();
-		cal.add(Calendar.DATE, 1);
-		System.out.println(cal.getTime());
-		cal.add(Calendar.DATE, 1);
-		System.out.println(cal.getTime());
+//		Calendar cal = Calendar.getInstance();
+//		cal.add(Calendar.DATE, 1);
+//		System.out.println(cal.getTime());
+//		cal.add(Calendar.DATE, 1);
+//		System.out.println(cal.getTime());
+
 	}
 
 //    public static void testGzip() {

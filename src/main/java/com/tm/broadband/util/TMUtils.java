@@ -288,6 +288,7 @@ public class TMUtils {
 		// retrieve order begin
 		if(noti.getTitle() != null){
 			noti.setTitle(noti.getTitle().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date>", String.valueOf(preventNull(order.getOrder_due_str()))));
 		}
 		// retrieve order end
 		// title end
@@ -296,6 +297,7 @@ public class TMUtils {
 		// retrieve order begin
 		if(noti.getContent() != null){
 			noti.setContent(noti.getContent().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_due_date>", String.valueOf(preventNull(order.getOrder_due_str()))));
 		}
 		// retrieve order end
 		// content end
