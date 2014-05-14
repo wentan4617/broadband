@@ -668,7 +668,7 @@ public class CRMService {
 
         // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
 		// using new Date() under production environment
-		cal.setTime(new Date());
+		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-19"));
 		cal.add(Calendar.DATE, 1);
 		topupCustomerOrder.getParams().put("before_order_due_one", cal.getTime());
 		cal.add(Calendar.DATE, 1);
