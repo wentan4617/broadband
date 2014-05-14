@@ -4,6 +4,7 @@ package com.tm.broadband.service;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -661,9 +662,10 @@ public class CRMService {
 		// BEGIN TOPUP NOTIFICATION
 		CustomerOrder topupCustomerOrder = new CustomerOrder();
 		topupCustomerOrder.getParams().put("where", "query_topup");
-		topupCustomerOrder.getParams().put("order_status", "using");
+		topupCustomerOrder.getParams().put("order_status", "paid");
 		topupCustomerOrder.getParams().put("order_type_topup", "order-topup");
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-19"));
 		cal.add(Calendar.DATE, 1);
 		topupCustomerOrder.getParams().put("before_order_due_one", cal.getTime());
 		cal.add(Calendar.DATE, 1);
@@ -677,18 +679,18 @@ public class CRMService {
 			Notification topupNotificationSMS = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
 
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(topupNotificationEmail, c, companyDetail);
+			TMUtils.mailAtValueRetriever(topupNotificationEmail, c, customerOrder, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
-			applicationEmail.setSubject(notificationEmail.getTitle());
-			applicationEmail.setContent(notificationEmail.getContent());
+			applicationEmail.setSubject(topupNotificationEmail.getTitle());
+			applicationEmail.setContent(topupNotificationEmail.getContent());
 			// binding attachment name & path to email
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			TMUtils.mailAtValueRetriever(topupNotificationSMS, c, companyDetail);
+			TMUtils.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
+			this.smserService.sendSMSByAsynchronousMode(c, topupNotificationSMS);
 		}
 		// END TOPUP NOTIFICATION
 		

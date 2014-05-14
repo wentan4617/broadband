@@ -241,7 +241,7 @@
 				</when>
 				<when test="params.where == 'query_topup'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
-					<if test="params.before_order_due_one != null and params.before_order_due_two != null">and (co.order_due=#{params.params.before_order_due_one} or co.order_type=#{params.before_order_due_two})</if>
+					<if test="params.before_order_due_one != null and params.before_order_due_two != null">and (date(co.order_due)=date(#{params.before_order_due_one}) or date(co.order_due)=date(#{params.before_order_due_two}))</if>
 					<if test="params.order_type_topup != null">and co.order_type=#{params.order_type_topup}</if>
 				</when>
 				<otherwise>
