@@ -96,7 +96,7 @@ public class CustomerRestController {
 		
 		// If contains script> value then this is a script injection
 		if(CheckScriptInjection.isScriptInjection(customer)){
-			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 		
@@ -175,7 +175,7 @@ public class CustomerRestController {
 		
 		// If contains script> value then this is a script injection
 		if(CheckScriptInjection.isScriptInjection(customer)){
-			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 
@@ -237,7 +237,7 @@ public class CustomerRestController {
 		
 		// If contains script> value then this is a script injection
 		if(CheckScriptInjection.isScriptInjection(customer)){
-			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 		
@@ -276,13 +276,13 @@ public class CustomerRestController {
 		
 		// If contains script> value then this is a script injection
 		if(CheckScriptInjection.isScriptInjection(contactUs)){
-			json.getErrorMap().put("alert-error", "Please don't try anything stupid! Malicious actions are not allowed!");
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 		
 		// if verification does not matched!
 		if(!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
-			json.getErrorMap().put("code", "verification code does not matched!");
+			json.getErrorMap().put("code", "Verification code does not matched!");
 			return json;
 		}
 
