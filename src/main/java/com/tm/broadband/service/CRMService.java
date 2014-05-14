@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
+import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
@@ -40,6 +41,7 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.TMUtils;
 
 /**
  * CRM Module service
@@ -655,6 +657,41 @@ public class CRMService {
 			//System.out.println(customerOrder.getId() + ":" + customerOrder.getNext_invoice_create_date());
 			createInvoicePDFBoth(customerOrder,notificationEmail,notificationSMS, true);	// true : next invoice
 		}
+		
+		// BEGIN TOPUP NOTIFICATION
+		CustomerOrder topupCustomerOrder = new CustomerOrder();
+		topupCustomerOrder.getParams().put("where", "query_topup");
+		topupCustomerOrder.getParams().put("order_status", "using");
+		topupCustomerOrder.getParams().put("order_type_topup", "order-topup");
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		topupCustomerOrder.getParams().put("before_order_due_one", cal.getTime());
+		cal.add(Calendar.DATE, 1);
+		topupCustomerOrder.getParams().put("before_order_due_two", cal.getTime());
+		List<CustomerOrder> topupCustomerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(topupCustomerOrder);
+		
+		for (CustomerOrder customerOrder : topupCustomerOrders) {
+			CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+			Customer c = customerOrder.getCustomer();
+			Notification topupNotificationEmail = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
+			Notification topupNotificationSMS = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
+
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(topupNotificationEmail, c, companyDetail);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
+			// binding attachment name & path to email
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			TMUtils.mailAtValueRetriever(topupNotificationSMS, c, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
+		}
+		// END TOPUP NOTIFICATION
+		
 	}
 	
 	
@@ -829,33 +866,35 @@ public class CRMService {
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
 
+		String filePath = "";
 		// set file path
 		try {
 			// generate invoice PDF
-			customerInvoice.setInvoice_pdf_path(invoicePDF.create());
+			filePath = invoicePDF.create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+		customerInvoice.setInvoice_pdf_path(filePath);
 		// add sql condition: id
 		customerInvoice.getParams().put("id", customerInvoice.getId());
 		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 
 
-//		// call mail at value retriever
-//		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
-//		ApplicationEmail applicationEmail = new ApplicationEmail();
-//		applicationEmail.setAddressee(customer.getEmail());
-//		applicationEmail.setSubject(notificationEmail.getTitle());
-//		applicationEmail.setContent(notificationEmail.getContent());
-//		// binding attachment name & path to email
-//		applicationEmail.setAttachName("Invoice-" + customerInvoice.getId() + ".pdf");
-//		applicationEmail.setAttachPath(filePath);
-//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//
-//		// get sms register template from db
-//		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
-//		// send sms to customer's mobile phone
-//		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
+		// call mail at value retriever
+		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notificationEmail.getTitle());
+		applicationEmail.setContent(notificationEmail.getContent());
+		// binding attachment name & path to email
+		applicationEmail.setAttachName("invoice_" + customerInvoice.getId() + ".pdf");
+		applicationEmail.setAttachPath(filePath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+		// get sms register template from db
+		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
+		// send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
 	}
 	
 	/**

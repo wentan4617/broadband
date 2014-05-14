@@ -38,7 +38,7 @@
 									<form:option value="register-pre-pay">Register Pre Pay</form:option>
 									<form:option value="invoice">Invoice</form:option>
 									<form:option value="payment">Payment</form:option>
-									<form:option value="topup">Topup</form:option>
+									<form:option value="topup-notification">Topup Notification</form:option>
 									<form:option value="service-giving">Service Giving</form:option>
 									<form:option value="service-terminating">Service Terminating</form:option>
 									<form:option value="online-ordering">Online Ordering</form:option>
