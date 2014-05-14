@@ -20,13 +20,19 @@ Total Mobile Solution Internet Service Web Project
 demand version 1.0.9 2014-05-15 
 
 * cyberpark home 做seo相关工作(steven)
+
+demand version 1.0.8 2014-05-14
+
+* topup notification提醒邮件中附上该order的下一次payment支付链接，用户点击后可直接进入支付界面，毋须登录帐号和密码
+* [order里添加order-topup类型判断，如果是order-topup则设置当天日期+7天赋给order_due，quartz里定时判断如果当前+1或+2天后等于order_due，则通过email和sms提醒该用户topup服务即将到期，让客户续费](steven)
+
  
-demand version 1.0.8 2014-05-06
+demand version 1.0.8 2014-05-12
  
 * [invoice重构代码，so important!](steven)
 * [sales模块在线下单功能，在确认生成order PDF浮窗里添加一个optional_request输入框，提交sales额外请求。](steven)
 * customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(待定...)
- 
+
 demand version 1.0.7 2014-05-06
  
 * 写plan query，方便查询plan(kanny, 2014-05-07)
