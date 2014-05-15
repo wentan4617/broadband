@@ -10,18 +10,18 @@
 				<span class="icon-bar"></span> 
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx }/home">
+			<a class="navbar-brand" href="${ctx }/home" rel="nofollow">
 				<span class="logo"></span> 
 			</a>
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="${ctx }/plans/plan-term/personal"><strong>Personal Plan</strong></a></li>
-				<li><a href="${ctx }/plans/plan-term/business"><strong>Business Plan</strong></a></li>
-				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
-				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
-				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
-				<li><a href="${ctx }/term-and-conditions"><strong>Terms & Conditions</strong></a></li>
+				<li class="active"><a href="${ctx }/plans/plan-term/personal" rel="nofollow"><strong>Personal Plan</strong></a></li>
+				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
+				<li><a href="${ctx }/wifi-solution" rel="nofollow"><strong>Wifi Solution</strong></a></li>
+				<li><a href="${ctx }/e-commerce" rel="nofollow"><strong>E-Commerce</strong></a></li>
+				<li><a href="${ctx }/about-us" rel="nofollow"><strong>About CyberPark</strong></a></li>
+				<li><a href="${ctx }/term-and-conditions" rel="nofollow"><strong>Terms & Conditions</strong></a></li>
 				<%-- <li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
 						<strong>About US</strong><b class="caret"></b>
@@ -50,7 +50,7 @@
 							</c:when>
 						</c:choose>
 					</a>
-					<a href="${ctx}/signout" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
+					<a href="${ctx}/signout" rel="nofollow" data-toggle="tooltip" data-placement="bottom" title data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>
 					</a>
 				</p>

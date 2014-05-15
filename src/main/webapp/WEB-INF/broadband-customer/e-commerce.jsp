@@ -19,6 +19,9 @@
 .nav-pills>li:last-child>a {
 	border-radius: 0 0 4px 4px;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 <div class="container">
@@ -29,7 +32,7 @@
 			<section id="e-commerce">
 				<div class="page-header">
 					<h1>
-						E-commerce Is Coming
+						CyberPark E-commerce Solutions Is Coming
 					</h1>
 				</div>
 				<p class="lead">
@@ -43,9 +46,9 @@
 			
 			<section id="solution">
 				<div class="page-header">
-					<h1>
+					<span class="home-title">
 						We Provide Powerful Solution
-					</h1>
+					</span>
 				</div>
 				<div class="media">
 					<a class="pull-left" href="javascript:void(0);"> 
@@ -64,9 +67,9 @@
 			
 			<section id="dip">
 				<div class="page-header">
-					<h1>
+					<span class="home-title">
 						Deeply Integrated Proposal
-					</h1>
+					</span>
 				</div>
 				
 				<ul class="media-list">
@@ -118,9 +121,9 @@
 			
 			<section id="what">
 				<div class="page-header">
-					<h1>
+					<span class="home-title">
 						What is Next?
-					</h1>
+					</span>
 				</div>
 				<p class="lead">
 					When an invoice is created, system instantly update inventory, customer history and accounts receivable, and link directly through to ensure the sales history is updated. Everything is automatically kept up-to-minute.
@@ -150,9 +153,9 @@
 			
 			<section id="more">
 				<div class="page-header">
-					<h1>
+					<span class="home-title">
 						We Offer More Than Expecting
-					</h1>
+					</span>
 				</div>
 				<p class="lead">
 					These days a growing business must have opera-tional information to gain the elusive competi-tive edge in the competitive business arena. Our Intelligence Reporting would provide:

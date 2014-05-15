@@ -18,6 +18,9 @@
 #navhead {
 	margin-bottom:0;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 <div class="homebg">
