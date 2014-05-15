@@ -8,6 +8,9 @@
 .panel-default {
 	border-top-color:transparent;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 <div class="container" >

@@ -39,6 +39,9 @@ background-color: #7BC3EC;
 	border-right: 1px solid #ddd;
 	border-radius: 0 4px 4px 0;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 
@@ -70,8 +73,8 @@ background-color: #7BC3EC;
 	
 	<div class="panel panel-success" id="adslPanel">
 		<div class="panel-body">
-			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="...">
-			<h1 style="height:54px;"><strong class="text-success">ADSL BROADBAND</strong></h1>
+			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="ADSL provides fast bandwidth for home use">
+			<h1 style="height:54px;font-weight:bold;" class="text-success">ADSL BROADBAND</h1>
 			<hr/>
 			<div class="well">
 				The broadband standard in NZ. Fast Internet over your copper phone line.
@@ -83,17 +86,17 @@ background-color: #7BC3EC;
 					<div class="col-md-3">
 						<div class="thumbnail">
 							<div class="caption">
-								<h1 class="text-success text-center"><strong>${plan.data_flow } GB</strong></h1>
+								<div class="text-success text-center home-title" style="font-weight:bold;">${plan.data_flow } GB</div>
 								<hr style="margin-top:0;"/>
 								<p class="text-center text-success" style="position:relative;margin-bottom:0;">
-									<strong style="font-size:40px;float:left;margin-left:20px;margin-top:20px;">$</strong>
-									<strong style="font-size:60px;"> 
+									<span style="font-size:40px;font-weight:bold;float:left;margin-left:20px;margin-top:20px;">$</span>
+									<span style="font-size:60px;font-weight:bold;"> 
 										<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-									</strong>
+									</span>
 									/ mth
 								</p>
 								<p style="font-size:18px;">
-									<strong class="text-success">${plan.plan_name }</strong>
+									<span class="text-success" style="font-weight:bold;">${plan.plan_name }</span>
 								</p>
 								
 								<!-- desc -->${plan.plan_desc }<!-- // end desc -->

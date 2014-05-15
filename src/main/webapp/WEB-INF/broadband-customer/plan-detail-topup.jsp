@@ -15,6 +15,9 @@
 color: #fff;
 background-color: #7BC3EC;
 }
+.home-title-h2 {
+	font-size:30px;
+}
 </style>
 
 <div class="container">
@@ -25,7 +28,7 @@ background-color: #7BC3EC;
 		</h2>
 	</div>
 	<div class="alert alert-info">
-		<p>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</p>
+		<p><strong>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</strong></p>
 		<p>The process and conditions as bellows, it will be more cost efficiency and convenience to all the Top Up users. </p>
 		<p>CyberPark Top Up Plan offer you unlimited data plan by weekly charges,</p>
 		<p>NZD$30/week Top Up payment method include: credit cards, account to account, or call 0800 2 Cyber (29237) for help.</p>
@@ -61,10 +64,10 @@ background-color: #7BC3EC;
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;"> 
 							<p class="bg-success text-center text-success" style="position:relative;margin-bottom:0;height: 140px;">
-								<strong style="font-size:40px;float:left;margin-left: 40px;margin-top: 80px;line-height: 1;">$</strong>
-								<strong style="font-size: 100px;float: left;margin-left: 10px;margin-top: 30px;line-height: 1;"> 
+								<span style="font-size:40px; font-weight:bold; float:left;margin-left: 40px;margin-top: 80px;line-height: 1;">$</span>
+								<span style="font-size: 100px; font-weight:bold; float: left;margin-left: 10px;margin-top: 30px;line-height: 1;"> 
 									<fmt:formatNumber value="20" type="number" pattern="##0" />
-								</strong>
+								</span>
 							</p>
 						</div>
 					</div>
@@ -73,12 +76,12 @@ background-color: #7BC3EC;
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;">
 							<p class="bg-success text-center text-success" style="position:relative;margin-bottom:0;height: 140px;">
-								<strong style="font-size: 100px;float: left;margin-left: 40px;margin-top: 30px;line-height: 1;"> 
+								<span style="font-size: 100px; font-weight:bold; float: left;margin-left: 40px;margin-top: 30px;line-height: 1;"> 
 									7
-								</strong>
-								<strong style="font-size: 50px;float:left;margin-left: 0px;margin-top: 70px;line-height: 1;">
+								</span>
+								<span style="font-size: 50px; font-weight:bold; float:left;margin-left: 0px;margin-top: 70px;line-height: 1;">
 									Days
-								</strong>
+								</span>
 							</p>
 						</div>
 					</div>
@@ -87,8 +90,8 @@ background-color: #7BC3EC;
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;">
 							<p class="bg-success text-center text-success" style="margin-bottom:0;height: 140px;padding: 32px;">
-								<strong style="font-size: 45px; line-height: 1;">Unlimited</strong>
-								<strong style="font-size: 45px; line-height: 1;">Data</strong>
+								<span style="font-size: 45px; font-weight:bold; line-height: 1;">Unlimited</span>
+								<span style="font-size: 45px; font-weight:bold; line-height: 1;">Data</span>
 							</p>
 						</div>
 					</div>
@@ -121,9 +124,9 @@ background-color: #7BC3EC;
 	</div>
 	
 	<div class="page-header">
-		<h2>
+		<span class="home-title-h2">
 			Introduction of Top-up broadband plan
-		</h2>
+		</span>
 	</div>
 	<div>
 		<p class="lead">
@@ -135,9 +138,9 @@ background-color: #7BC3EC;
 	</div>
 	
 	<div class="page-header">
-		<h2>
+		<span class="home-title-h2">
 			How can I apply Top-up broadband plan?
-		</h2>
+		</span>
 	</div>
 	<div>
 		<ul>
@@ -152,18 +155,18 @@ background-color: #7BC3EC;
 	</div>
 	
 	<div class="page-header">
-		<h2>
+		<span class="home-title-h2">
 			What you have in your Top-up broadband plan?
-		</h2>
+		</span>
 	</div>
 	<div>
 		<p>Top-up broadband plan is a Naked ADSL2+ broadband plan. All the data and usage period is based on your Top-up value and your selections. </p>
 	</div>
 	
 	<div class="page-header">
-		<h2>
+		<span class="home-title-h2">
 			How does Top-up broadband plan works?
-		</h2>
+		</span>
 	</div>
 	<div>
 		<ul>
@@ -183,9 +186,9 @@ background-color: #7BC3EC;
 	</div>
 	
 	<div class="page-header">
-		<h2>
+		<span class="home-title-h2">
 			Conditions:
-		</h2>
+		</span>
 	</div>
 	<div>
 		<ul>

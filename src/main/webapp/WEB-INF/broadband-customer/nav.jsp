@@ -10,7 +10,11 @@
 				<span class="icon-bar"></span> 
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx }/home" rel="nofollow">
+			<a class="navbar-brand" href="${ctx }/home"
+				<c:if test="${nofollow=='nofollow'}">
+					rel="${nofollow}"
+				</c:if>
+			>
 				<span class="logo"></span> 
 			</a>
 		</div>
@@ -18,9 +22,9 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="${ctx }/plans/plan-term/personal" rel="nofollow"><strong>Personal Plan</strong></a></li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
-				<li><a href="${ctx }/wifi-solution" rel="nofollow"><strong>Wifi Solution</strong></a></li>
-				<li><a href="${ctx }/e-commerce" rel="nofollow"><strong>E-Commerce</strong></a></li>
-				<li><a href="${ctx }/about-us" rel="nofollow"><strong>About CyberPark</strong></a></li>
+				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
+				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
+				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
 				<li><a href="${ctx }/term-and-conditions" rel="nofollow"><strong>Terms & Conditions</strong></a></li>
 				<%-- <li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
