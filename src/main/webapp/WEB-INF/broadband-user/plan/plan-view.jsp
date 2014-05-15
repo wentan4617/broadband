@@ -35,8 +35,8 @@
 						      	<option value="business" data-type="plan-class">to Business</option>
 						    </optgroup>
 						    <optgroup label="Filter Plan Type">
-						    	<option value="ADSL" data-type="plan-type">To ADSL</option>
-						      	<option value="VDSL" data-type="plan-type">To VDSL</option>
+						    	<option value="ADSL" data-type="plan-type">to ADSL</option>
+						      	<option value="VDSL" data-type="plan-type">to VDSL</option>
 						      	<option value="UFB" data-type="plan-type">to UFB</option>
 						    </optgroup>
 						</select>
@@ -57,8 +57,8 @@
 						      	<option value="business" data-type="plan-class">to Business</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Type">
-						    	<option value="ADSL" data-type="plan-type">To ADSL</option>
-						      	<option value="VDSL" data-type="plan-type">To VDSL</option>
+						    	<option value="ADSL" data-type="plan-type">to ADSL</option>
+						      	<option value="VDSL" data-type="plan-type">to VDSL</option>
 						      	<option value="UFB" data-type="plan-type">to UFB</option>
 						    </optgroup>
 						    <optgroup label="Change Plan Sort">

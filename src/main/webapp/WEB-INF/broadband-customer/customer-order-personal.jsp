@@ -53,11 +53,11 @@ background-color: #7BC3EC;
 				<div class="panel panel-success">
 				
 					<div class="panel-heading">
-						<h2 class="panel-title">
+						<h4 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#application">
 								Your Application Form <span class="text-danger">(All Fields Required)</span>
 							</a>
-						</h2>
+						</h4>
 					</div>
 					
 					<div id="application" class="panel-collapse collapse in">
@@ -205,11 +205,11 @@ background-color: #7BC3EC;
 					<div class="panel panel-success">
 					
 						<div class="panel-heading">
-							<h2 class="panel-title">
+							<h4 class="panel-title">
 								<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#hardware">
 									Add-ons: Hardware
 								</a>
-							</h2>
+							</h4>
 						</div>
 						
 						<div id="hardware" class="panel-collapse collapse in">
@@ -235,7 +235,6 @@ background-color: #7BC3EC;
 											</li>
 										</ul>
 									</div>
-									
 								</c:forEach>
 							</div>
 						</div>
@@ -247,28 +246,31 @@ background-color: #7BC3EC;
 			<div class="col-md-3" >
 				<div data-spy="affix" data-offset-top="150" class="panel panel-success">
 					<div class="panel-heading">
-						<h3 class="panel-title">Your current plan</h3>
+						<h4 class="panel-title">Your current plan</h4>
 					</div>
 			  		<div  class="panel-body">
 			  			<h4 class="text-success">${orderPlan.plan_name }</h4>
 			  			<c:if test="${orderPlan.plan_group != 'plan-term' }">
-			  				<span class="text-danger" style="font-size:36px;">
-				  				NZ$ 
-				  				<strong>
-				  					<span id="totalPrice">
-				  						<c:choose>
-				  							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-				  								<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="#,##0.00" />
-				  							</c:when>
-				  							<c:otherwise>
-				  								<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="#,##0.00" />
-				  							</c:otherwise>
-				  						</c:choose>
-				  					</span>
-				  				</strong>
-				  			</span>
 			  			</c:if>
-			  			
+			  			<span class="text-danger" style="font-size:36px;">
+			  				NZ$ 
+			  				<strong>
+			  					<span id="totalPrice">
+			  						<c:choose>
+			  							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+			  								<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="#,##0.00" />
+			  							</c:when>
+			  							<c:otherwise>
+			  								<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="#,##0.00" />
+			  								
+			  							</c:otherwise>
+			  						</c:choose>
+			  					</span>
+			  				</strong>
+			  				<c:if test="${orderPlan.plan_group == 'plan-term' }">
+								<span style="font-size:12px;">+GST</span>
+							</c:if>
+			  			</span>
 			  			<div id="bundleContainer"></div>
 			  			<div id="serviceContainer"></div>
 			  			<div id="addonContainer"></div>
@@ -301,9 +303,13 @@ background-color: #7BC3EC;
 </div>
 
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
+<script type="text/html" id="result_tmpl">
+<jsp:include page="resultAddressCheck.html" />
+</script>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
@@ -341,38 +347,12 @@ background-color: #7BC3EC;
 		serviceHtml += '<ul>';
 		if (plan.plan_group == 'plan-topup') {
 			serviceHtml += '<li><strong class="text-danger">Broadband Topup Fee ($' +  plan.topup_fee.toFixed(2) + ')</strong></li>';
-			if (order_broadband_type == "new-connection") {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-				price.service_price = plan.plan_new_connection_fee;
-			} else if (order_broadband_type == "transition") {
-				$('#transitionContainer').show('fast');
-				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
-				price.service_price = 0;
-			} else if (order_broadband_type = 'jackpot') {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
-				price.service_price = plan.jackpot_fee;
-			}
-			serviceHtml += '</ul>';
+			commonPart(order_broadband_type, serviceHtml);
 			price.service_price += plan.topup_fee;
 			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
 		} else if (plan.plan_group == 'plan-no-term') {
-			if (order_broadband_type == "new-connection") {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-				price.service_price = plan.plan_new_connection_fee;
-			} else if (order_broadband_type == "transition") {
-				$('#transitionContainer').show('fast');
-				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
-				price.service_price = 0;
-			} else if (order_broadband_type == 'jackpot') {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
-				price.service_price = plan.jackpot_fee;
-			}
+			commonPart(order_broadband_type, serviceHtml);
 			serviceHtml += '<li><strong class="text-danger">Prepay ' + plan.plan_prepay_months + ' months</strong></li>';
-			serviceHtml += '</ul>';
 			price.plan_price = plan.plan_price * plan.plan_prepay_months;
 			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
 		} else if (plan.plan_group == 'plan-term') {
@@ -382,19 +362,29 @@ background-color: #7BC3EC;
 			bundleHTML += '<li><strong class="text-danger">' + plan.term_period + ' Months Terms</li>';
 			bundleHTML += '<li><strong class="text-danger">' + plan.pstn_count + ' Home Phone Line</li>';
 			bundleHTML += '<li><strong class="text-danger">1 Free Router</li>';
-			if (order_broadband_type === "new-connection") {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-			} else if (order_broadband_type === "transition") {
-				$('#transitionContainer').show('fast');
-				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
-			} else if (order_broadband_type == 'jackpot') {
-				$('#transitionContainer').hide('fast');
-				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
-			}
+			commonPart(order_broadband_type, serviceHtml);//serviceHtml = 
+			price.plan_price = plan.plan_price * plan.plan_prepay_months;
+			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
 		}
 		$('#bundleContainer').html(bundleHTML);
 		$('#serviceContainer').html(serviceHtml);
+	}
+	
+	function commonPart(order_broadband_type, serviceHtml) {
+		if (order_broadband_type === "new-connection") {
+			$('#transitionContainer').hide('fast');
+			serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
+			price.service_price = plan.plan_new_connection_fee;
+		} else if (order_broadband_type === "transition") {
+			$('#transitionContainer').show('fast');
+			serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
+			price.service_price = 0;
+		} else if (order_broadband_type == 'jackpot') {
+			$('#transitionContainer').hide('fast');
+			serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
+			price.service_price = plan.jackpot_fee;
+		}
+		return serviceHtml;
 	}
 	
 	function toggleAddonContainer(opt){

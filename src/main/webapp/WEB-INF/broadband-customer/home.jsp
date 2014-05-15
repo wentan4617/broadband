@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -20,6 +19,8 @@
 }
 .home-title {
 	font-size:36px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 </style>
 
@@ -50,7 +51,7 @@
 			</div>
 			<div class="col-lg-3">
 				<div id="imgContainer" class="panel-body" style="height:377px;">
-		  			<a href="${ctx }/plans/plan-no-term/personal" class="thumbnail" target="_blank" rel="nofollow" > 
+		  			<a href="${ctx }/plans/plan-term/personal" class="thumbnail" target="_blank" rel="nofollow" > 
 		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png" alt="Personal Plan provides fast broadband for home users">
 			    	</a>
 		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
