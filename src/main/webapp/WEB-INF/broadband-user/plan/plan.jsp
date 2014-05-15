@@ -113,11 +113,21 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="plan_new_connection_fee" class="control-label col-md-4">New Connection fee (Inc GST)</label>
+							<label for="plan_new_connection_fee" class="control-label col-md-4">New Connection fee</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>
 									<input type="text" value="${plan.plan_new_connection_fee}" id="plan_new_connection_fee" class="form-control" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="jackpot_fee" class="control-label col-md-4">Jackpot Installation Fee</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" value="${plan.jackpot_fee}" id="jackpot_fee" class="form-control" />
 								</div>
 							</div>
 						</div>
@@ -313,6 +323,7 @@
 			, plan_price: $('#plan_price').val()
 			, original_price: $('#original_price').val()
 			, plan_new_connection_fee: $('#plan_new_connection_fee').val()
+			, jackpot_fee: $('#jackpot_fee').val()
 			, data_flow: $('#data_flow').val()
 			, pstn_count: $('#pstn_count').val()
 			, pstn_rental_amount: $('#pstn_rental_amount').val()

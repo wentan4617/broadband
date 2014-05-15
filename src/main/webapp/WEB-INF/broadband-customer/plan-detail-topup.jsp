@@ -98,10 +98,8 @@ background-color: #7BC3EC;
 						<div class="panel-body" style="padding: 0;">
 							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20"
 								class="btn btn-success btn-block" style="height: 140px;">
-								<p
-									style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1;">Join</p>
-								<p
-									style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</p>
+								<span style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1; display:block;">Join</span>
+								<span style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</span>
 							</a>
 						</div>
 					</div>
@@ -149,7 +147,7 @@ background-color: #7BC3EC;
 			<li>Submit all your details and select the first top-up value (minimum $20 for 7 days)</li>
 			<li>New connection has one-off charge $145</li>
 			<li>New Jack-point installation has one-off charge $199</li>
-			<li>If you don’t have ADSL router, we can offer you$50 for TP link ADSL2+ router</li>
+			<li>If you don’t have ADSL router, we can offer you $50 for TP link ADSL2+ router</li>
 		</ul>
 	</div>
 	
