@@ -9,12 +9,12 @@
 	<div class="carousel-inner">
 		<div class="item active">
 			<a href="${ctx }/plans/plan-term/business" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/slider_biz.png" class="img-responsive" alt="ADSL">
+				<img src="${ctx }/public/bootstrap3/images/slider_biz.png" class="img-responsive" alt="ADSL is a fast broadband plan">
 			</a>
 		</div>
 		<div class="item">
 			<a href="${ctx }/plans/plan-term/personal" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/slider_fiber.png"  class="img-responsive" alt="VDSL">
+				<img src="${ctx }/public/bootstrap3/images/slider_fiber.png"  class="img-responsive" alt="VDSL is faster than ADSL">
 			</a>
 		</div>
 	</div>

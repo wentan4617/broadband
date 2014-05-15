@@ -79,6 +79,7 @@ public class CustomerController {
 
 	@RequestMapping(value = {"", "/home" })
 	public String home(Model model) {
+		model.addAttribute("nofollow", "nofollow");
 		return "broadband-customer/home";
 	}
 

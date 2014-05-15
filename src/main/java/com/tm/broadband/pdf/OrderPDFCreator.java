@@ -45,10 +45,10 @@ public class OrderPDFCreator extends ITextUtils {
 	private Double beforeGSTPrice = 0d;
 	private Double gst = 0d;
 	// 15% GST as default
-	private String gstRate = "1.12";
-	private String gstRate2 = "0.12";
+	private String gstRate = "1.15";
+	private String gstRate2 = "0.15";
 	private String personalGST = "15%";
-	private String businessGST = "12%";
+	private String businessGST = "15%";
 	// END Currency Related Variables
 	
 	// BEGIN Order Detail Differentiations Variables

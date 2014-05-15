@@ -32,6 +32,9 @@
 .modal-backdrop{
 	z-index: 130;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 
@@ -94,10 +97,10 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -109,12 +112,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>
@@ -125,11 +128,11 @@
 				<div class="panel panel-primary">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
 							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -141,12 +144,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>
@@ -177,10 +180,10 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -192,12 +195,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>
@@ -208,11 +211,11 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
 							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -224,12 +227,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>
@@ -261,10 +264,10 @@
 				<div class="panel panel-danger">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -276,12 +279,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>
@@ -292,11 +295,11 @@
 				<div class="panel panel-danger">
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
-							<strong style="font-size:30px;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</strong>	
+							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
 							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
-							<strong style="font-size:60px;"> 
+							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</strong>
+							</span>
 							/ mth
 						</h2>
 					</div>
@@ -308,12 +311,12 @@
 				  	</div>
 				  	<div class="panel-footer">
 						<h2 class="text-center" style="margin:0;">
-							<strong>
+							<span style="font-weight:bold;">
 								<c:choose>
 									<c:when test="${plan.data_flow < 0 }">Unlimited Data</c:when>
 									<c:otherwise>${plan.data_flow } GB</c:otherwise>
 								</c:choose>
-							</strong>	
+							</span>	
 						</h2>
 					</div>
 				</div>

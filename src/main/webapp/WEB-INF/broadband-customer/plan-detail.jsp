@@ -6,6 +6,12 @@
 
 <jsp:include page="header.jsp" />
 
+<style>
+.home-title {
+	font-size:36px;
+}
+</style>
+
 <div style="background:#EFEFEF;padding-bottom:20px;">
 <div class="container">
 
@@ -66,7 +72,7 @@
 	</div>
 	
 	<!-- naked plans -->
-	<div class="page-header">
+	<div class="home-title">
 		<h1>
 			${nakedTitle } <small>Please choose what you need</small>
 		</h1>

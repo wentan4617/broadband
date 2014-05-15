@@ -51,17 +51,17 @@
 			</div>
 			<div class="col-lg-3">
 				<div id="imgContainer" class="panel-body" style="height:377px;">
-		  			<a href="${ctx }/plans/plan-term/personal" class="thumbnail" target="_blank" > 
-		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png"  alt="personal-plan">
+		  			<a href="${ctx }/plans/plan-term/personal" class="thumbnail" target="_blank" rel="nofollow" > 
+		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png" alt="Personal Plan provides fast broadband for home users">
 			    	</a>
-		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" style="margin-top:10px;"> 
-		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png"  alt="business-plan">
+		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
+		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png" alt="Business Plan provides faster broadband for commercial users">
 		  			</a>
-		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" style="margin-top:10px;"> 
-		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="wifi-solution">
+		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
+		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="Wifi Solution is for huge enterprise users">
 		  			</a>
-		  			<a href="${ctx }/e-commerce" class="thumbnail" target="_blank" style="margin-top:10px;"> 
-		  				<img src="${ctx }/public/bootstrap3/images/e-commerce.png" alt="it-services">	
+		  			<a href="${ctx }/e-commerce" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
+		  				<img src="${ctx }/public/bootstrap3/images/e-commerce.png" alt="It Service provides E-Commerce Solutions for Growing Enterprise">	
 		  			</a>
 			    	
 			  	</div>
@@ -72,19 +72,19 @@
 			<div class="col-lg-2"></div>
 			<div class="col-lg-2">
 				<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
-					<img src="${ctx }/public/bootstrap3/images/c_noterm.jpg" alt="..." class="img-circle">
+					<img src="${ctx }/public/bootstrap3/images/c_noterm.jpg" alt="personal broadbands without terms and conditions" class="img-circle">
 				</a>
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-2">
 				<a href="${ctx }/plans/plan-topup/personal" target="_blank">
-					<img src="${ctx }/public/bootstrap3/images/c_topup.jpg" alt="..." class="img-circle">
+					<img src="${ctx }/public/bootstrap3/images/c_topup.jpg" alt="new broadband concept, topup your broadband's data, realization of buy less use more" class="img-circle">
 				</a>
 			</div>
 			<div class="col-lg-1"></div>
 			<div class="col-lg-2">
 				<a href="javascript:void(0);" id="plan-term-option">
-					<img src="${ctx }/public/bootstrap3/images/c_term.jpg" alt="..." class="img-circle">
+					<img src="${ctx }/public/bootstrap3/images/c_term.jpg" alt="promotions for broadbands have agreement" class="img-circle">
 				</a>
 			</div>
 			<div class="col-lg-2"></div>

@@ -19,6 +19,9 @@
 .nav-pills>li:last-child>a {
 	border-radius: 0 0 4px 4px;
 }
+.home-title {
+	font-size:36px;
+}
 </style>
 
 <div class="container">
@@ -27,9 +30,9 @@
 		<div class="col-md-9">
 			<section id="overview">
 				<div class="page-header">
-					<h1>
+					<div class="home-title">
 						Company Overview
-					</h1>
+					</div>
 				</div>
 				<p class="lead">
 					CyberPark as Internet Service Provider（ISP） provides professional Telecommunication services to NZ customers. 
@@ -47,9 +50,9 @@
 			</section>
 			<section id="service">
 				<div class="page-header">
-					<h1>
+					<div class="home-title">
 						Telecommunication services and WiFi coverage <br/><small>start from US!</small>
-					</h1>
+					</div>
 				</div>
 				<p>
 					The best Telecommunication results come from our solutions. We can provide more than what you want. 
@@ -63,9 +66,9 @@
 			</section>
 			<section id="contact">
 				<div class="page-header">
-					<h1>
+					<div class="home-title">
 						Contact US
-					</h1>
+					</div>
 				</div>
 				<address>
 					<p>
@@ -85,9 +88,9 @@
 			</section>
 			<section id="location">
 				<div class="page-header">
-					<h1>
+					<div class="home-title">
 						Location
-					</h1>
+					</div>
 				</div>
 				<div id="map_canvas" style="height:360px"></div>
 			</section>
