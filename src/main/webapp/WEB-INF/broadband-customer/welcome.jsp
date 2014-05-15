@@ -1,15 +1,15 @@
 
 <div class="container">
 	<div class="jumbotron text-center" style="background-color: transparent; margin-bottom:0;padding-bottom:0;">
-		<h1>Welcome to CyberPark</h1>
+		<h1><strong>CyberPark provides ISP solutions for business and personal customers</strong></h1>
 		<p class="lead text-muted">A Safe Park</p>
 	</div>
 	
 	<div class="row">
 		<div class="col-lg-6" style="border-right: 1px solid #dfe5d7;border-bottom: 1px solid #dfe5d7;">
-			<h1 class="text-center">
+			<div class="text-center home-title">
 				<span class="glyphicon glyphicon-pencil"></span> Simple
-			</h1>
+			</div>
 			<p class="text-center">
 				Easy application method through on-line system.<br/>
 				Calling to customer services <span class="text-info">0800 229 237</span>.<br/>
@@ -17,18 +17,18 @@
 			</p>
 		</div>
 		<div class="col-lg-6" style="border-bottom: 1px solid #dfe5d7;">
-			<h1 class="text-center">
+			<div class="text-center home-title">
 				<span class="glyphicon glyphicon-usd"></span> Affordable
-			</h1>
+			</div>
 			<p class="text-center">
 				Top-up plan start from $20, 10G, for 15 days; $50, 30G, for 30days.<br/>
 				If you transfer from your current Internet service provider, we free of charge first connection fee.
 			</p>
 		</div>
 		<div class="col-lg-6" style="border-right: 1px solid #dfe5d7;">
-			<h1 class="text-center" >
+			<div class="text-center home-title">
 				<span class="glyphicon glyphicon-tower"></span> Facility
-			</h1>
+			</div>
 			<p class="text-center">
 				Smart application, personal account, and payment system give you more services' supports.<br/>
 				We can accept all the models of modem to register.<br/>
@@ -36,9 +36,9 @@
 			</p>
 		</div>
 		<div class="col-lg-6" >
-			<h1 class="text-center">
+			<div class="text-center home-title">
 				<span class="glyphicon glyphicon-flash"></span> Efficient
-			</h1>
+			</div>
 			<p class="text-center">
 				Place order online and connection in 3-5 working days, and you will receive message and email for activation confirmation.<br/>
 				Re-charge anytime, anywhere base on your personal account by Top-up Vouchers.<br/>

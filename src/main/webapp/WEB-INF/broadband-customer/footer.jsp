@@ -8,11 +8,11 @@
 				&copy; 2014 CyberPark Limited &middot;
 			</p>
 			<p>
-				<a href="${ctx }/about-us">About CyberPark</a>
+				<a href="${ctx }/about-us" rel="nofollow">About CyberPark</a>
 				&middot;
-				<a href="${ctx }/term-and-conditions">Terms & Conditions</a>
+				<a href="${ctx }/term-and-conditions" rel="nofollow">Terms & Conditions</a>
 				&middot;
-				<a href="${ctx }/contact-us">Contact Us</a>
+				<a href="${ctx }/contact-us" rel="nofollow">Contact Us</a>
 			</p>
 	    </footer>
 	</div>

@@ -6,8 +6,11 @@
 <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="description" content="CyberPark provides broadband, phone, and other internet services to savvy New Zealand homes and businesses. The first company in New Zealand to unbundle the local loop, and the first ISP provider which provides broadband topup services in New Zealand, CyberPark offers quality products, backed by outstanding service.">
+    <meta name="keywords" content="cyberpark, broadband, phone, internet, internet service provider, isp, telecommunications, dial-up, domains, email, hosting, ADSL, VDSL, UFB, telephone, unbundled, LLU, optical fiber, fiber optic,">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>CyberPark</title>
+    <title>Extraordinary Broadband and Phone Service</title>
     <link rel="shortcut icon" type="image/ico"  href="${ctx}/public/bootstrap3/images/icon.png"/>
     <link href="${ctx}/public/bootstrap3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
     <link href="${ctx}/public/bootstrap3/css/customer.css" rel="stylesheet" type="text/css"  />
