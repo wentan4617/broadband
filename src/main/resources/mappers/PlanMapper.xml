@@ -39,7 +39,8 @@
 		p.`img2`						as p_img2,
 		p.`img3` 						as p_img3,
 		p.`promotion`					as p_promotion,
-		p.`place_sort`					as p_place_sort
+		p.`place_sort`					as p_place_sort,
+		p.`jackpot_fee`					as p_jackpot_fee
 	</sql>
 	<resultMap type="Plan" id="planResultMap">
 		<id property="id" column="p_id" />
@@ -65,6 +66,7 @@
 		<result property="img3" column="p_img3" />
 		<result property="promotion" column="p_promotion" />
 		<result property="place_sort" column="p_place_sort" />
+		<result property="jackpot_fee" column="jackpot_fee" />
 	</resultMap>
 	
 	<sql id="planWhere">
@@ -146,12 +148,12 @@
 			`plan_name`, `plan_desc`, `plan_price`, `original_price`, `data_flow`, `data_flow_k`,
 			`plan_status`, `plan_type`, `plan_sort`, `plan_group`, `plan_class`, 
 			`plan_new_connection_fee`, `memo`, `plan_prepay_months`, `pstn_count`, `pstn_rental_amount`, 
-			`term_period`, `img1`, `img2`, `img3`, `promotion`, `place_sort`) 
+			`term_period`, `img1`, `img2`, `img3`, `promotion`, `place_sort`, `jackpot_fee`) 
 		VALUES (
 			#{plan_name}, #{plan_desc}, #{plan_price}, #{original_price}, #{data_flow}, #{data_flow_k},
 			#{plan_status}, #{plan_type}, #{plan_sort}, #{plan_group}, #{plan_class}, 
 			#{plan_new_connection_fee}, #{memo}, #{plan_prepay_months}, #{pstn_count}, #{pstn_rental_amount}, 
-			#{term_period}, #{img1}, #{img2}, #{img3}, #{promotion}, #{place_sort})
+			#{term_period}, #{img1}, #{img2}, #{img3}, #{promotion}, #{place_sort}, #{jackpot_fee})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -185,7 +187,8 @@
 			<if test="img2 != null">`img2`=#{img2},</if>
 			<if test="img3 != null">`img3`=#{img3},</if>
 			<if test="promotion != null">`promotion`=#{promotion},</if>
-			<if test="place_sort != null">`place_sort`=#{place_sort}</if>
+			<if test="place_sort != null">`place_sort`=#{place_sort},</if>
+			<if test="jackpot_fee != null">`jackpot_fee`=#{jackpot_fee}</if>
 		</set>
 		<include refid="planWhere"/>
 	</update>

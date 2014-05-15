@@ -107,34 +107,26 @@ background-color: #7BC3EC;
 							<hr/>
 							
 							<div class="form-group">
-								<label class="control-label col-md-4">Broadband Type</label>
-								<div class="col-md-4">
+								<div class="col-md-12">
 									<ul class="list-unstyled topup-list">
-										<li>
-											<input type="radio" name="order_broadband_type" 
-												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-											&nbsp; <strong>New Connection Only</strong>
-										</li>
 										<li>
 											<input type="radio" name="order_broadband_type" value="transition"
 												<c:if test="${customer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
 													checked="checked"
 												</c:if> />
-											&nbsp; <strong>Transition</strong>
+											&nbsp; <strong>Transfer the existing broadband connection to CyberPark is free</strong>
+										</li>
+										<li>
+											<input type="radio" name="order_broadband_type" 
+												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
+											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) jackpot charge NZD$145</strong>
+										</li>
+										<li>
+											<input type="radio" name="order_broadband_type" 
+												${customer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
+											&nbsp; <strong>Get a new broadband connection and an new jackpot installation and activation charge NZD$199</strong>
 										</li>
 									</ul>
-								</div>
-								<div class="col-md-4">
-									<c:choose>
-										<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-											<div class="well">
-												<p>If you choose a new connection</p>
-												<p> we will charge you </p>
-												<p> broadband opening costs</p>
-											</div>
-										</c:when>
-										<c:when test="${orderPlan.plan_group == 'plan-term' }"></c:when>
-									</c:choose>
 								</div>
 							</div>
 							
@@ -182,7 +174,7 @@ background-color: #7BC3EC;
 							
 							<div class="form-group">
 								<label for="title" class="control-label col-md-4">Title</label>
-								<div class="col-sm-2">
+								<div class="col-md-2">
 									<select name="title" id="title" class="selectpicker show-tick form-control">
 										<option value="Mr">Mr</option>
 										<option value="Mrs">Mrs</option>
@@ -259,26 +251,29 @@ background-color: #7BC3EC;
 					</div>
 			  		<div  class="panel-body">
 			  			<h4 class="text-success">${orderPlan.plan_name }</h4>
-			  			<h1 class="text-danger">
-			  				NZ$ 
-			  				<strong>
-			  					<span id="totalPrice">
-			  						<c:choose>
-			  							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-			  								<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="#,##0.00" />
-			  							</c:when>
-			  							<c:otherwise>
-			  								<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="#,##0.00" />
-			  							</c:otherwise>
-			  						</c:choose>
-			  						
-			  					</span>
-			  				</strong>
-			  			</h1>
+			  			<c:if test="${orderPlan.plan_group != 'plan-term' }">
+			  				<span class="text-danger" style="font-size:36px;">
+				  				NZ$ 
+				  				<strong>
+				  					<span id="totalPrice">
+				  						<c:choose>
+				  							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
+				  								<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="#,##0.00" />
+				  							</c:when>
+				  							<c:otherwise>
+				  								<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="#,##0.00" />
+				  							</c:otherwise>
+				  						</c:choose>
+				  					</span>
+				  				</strong>
+				  			</span>
+			  			</c:if>
+			  			
+			  			<div id="bundleContainer"></div>
 			  			<div id="serviceContainer"></div>
 			  			<div id="addonContainer"></div>
-			    		<hr/>
 			    		
+			    		<hr/>
 			    		<c:set var="back_url" value=""></c:set>
 			    		<c:choose>
 			    			<c:when test="${orderPlan.plan_group=='plan-topup' }">
@@ -330,6 +325,7 @@ background-color: #7BC3EC;
 		, topup_fee: new Number(${orderPlan.topup.topup_fee})
 		, pstn_count: new Number(${orderPlan.pstn_count})
 		, term_period: new Number(${orderPlan.term_period})
+		, jackpot_fee: new Number(${orderPlan.jackpot_fee})
 	};
 	
 	var price = {
@@ -339,64 +335,66 @@ background-color: #7BC3EC;
 	};
 	
 	function toggleTransitionContainer(order_broadband_type) {
-		var serviceHtml = "";
+		var bundleHTML = "", serviceHtml = "";
+		serviceHtml += '<hr/>';
+		serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
+		serviceHtml += '<ul>';
 		if (plan.plan_group == 'plan-topup') {
-			
-			serviceHtml += '<hr/>';
-			serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-			serviceHtml += '<ul>';
 			serviceHtml += '<li><strong class="text-danger">Broadband Topup Fee ($' +  plan.topup_fee.toFixed(2) + ')</strong></li>';
-			if (order_broadband_type === "new-connection") {
+			if (order_broadband_type == "new-connection") {
 				$('#transitionContainer').hide('fast');
 				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
 				price.service_price = plan.plan_new_connection_fee;
-			} else if (order_broadband_type === "transition") {
+			} else if (order_broadband_type == "transition") {
 				$('#transitionContainer').show('fast');
+				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
 				price.service_price = 0;
+			} else if (order_broadband_type = 'jackpot') {
+				$('#transitionContainer').hide('fast');
+				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
+				price.service_price = plan.jackpot_fee;
 			}
 			serviceHtml += '</ul>';
 			price.service_price += plan.topup_fee;
-			
+			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
 		} else if (plan.plan_group == 'plan-no-term') {
-			if (order_broadband_type === "new-connection") {
+			if (order_broadband_type == "new-connection") {
 				$('#transitionContainer').hide('fast');
-				serviceHtml += '<hr/>';
-				serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-				serviceHtml += '<ul>';
 				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-				serviceHtml += '<li><strong class="text-danger">Prepay ' + plan.plan_prepay_months + ' months</strong></li>';
 				price.service_price = plan.plan_new_connection_fee;
-				price.plan_price = plan.plan_price * plan.plan_prepay_months;
-			} else if (order_broadband_type === "transition") {
+			} else if (order_broadband_type == "transition") {
 				$('#transitionContainer').show('fast');
-				serviceHtml += '<hr/>';
-				serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-				serviceHtml += '<ul>';
-				serviceHtml += '<li><strong class="text-danger">Prepay ' + plan.plan_prepay_months + ' months</strong></li>';
+				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
 				price.service_price = 0;
-				price.plan_price = plan.plan_price * plan.plan_prepay_months;
+			} else if (order_broadband_type == 'jackpot') {
+				$('#transitionContainer').hide('fast');
+				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
+				price.service_price = plan.jackpot_fee;
 			}
+			serviceHtml += '<li><strong class="text-danger">Prepay ' + plan.plan_prepay_months + ' months</strong></li>';
+			serviceHtml += '</ul>';
+			price.plan_price = plan.plan_price * plan.plan_prepay_months;
+			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
 		} else if (plan.plan_group == 'plan-term') {
-			
-			serviceHtml += '<hr/>';
-			serviceHtml += '<p class="text-success"><strong>Bundles:</strong></p>';
-			serviceHtml += '<ul>';
-			serviceHtml += '<li><strong class="text-danger">' + plan.term_period + ' Months Terms</li>';
-			serviceHtml += '<li><strong class="text-danger">' + plan.pstn_count + ' Home Phone Line</li>';
-			serviceHtml += '<li><strong class="text-danger">Free Router</li>';
+			bundleHTML += '<hr/>';
+			bundleHTML += '<p class="text-success"><strong>Bundles:</strong></p>';
+			bundleHTML += '<ul>';
+			bundleHTML += '<li><strong class="text-danger">' + plan.term_period + ' Months Terms</li>';
+			bundleHTML += '<li><strong class="text-danger">' + plan.pstn_count + ' Home Phone Line</li>';
+			bundleHTML += '<li><strong class="text-danger">1 Free Router</li>';
 			if (order_broadband_type === "new-connection") {
 				$('#transitionContainer').hide('fast');
-				//serviceHtml += '<li><strong class="text-danger">Free New Connection Fee</strong></li>';
 				serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-				price.service_price = plan.plan_new_connection_fee;
 			} else if (order_broadband_type === "transition") {
 				$('#transitionContainer').show('fast');
-				price.service_price = 0;
+				serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
+			} else if (order_broadband_type == 'jackpot') {
+				$('#transitionContainer').hide('fast');
+				serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
 			}
 		}
-		
-		$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		service(serviceHtml);
+		$('#bundleContainer').html(bundleHTML);
+		$('#serviceContainer').html(serviceHtml);
 	}
 	
 	function toggleAddonContainer(opt){
@@ -423,42 +421,24 @@ background-color: #7BC3EC;
 			});
 			addonsHtml += '</ul>';
 		} 
-		
 		$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		addon(addonsHtml);
+		$('#addonContainer').html(addonsHtml);
 	}
 	
 	$('input[data-name="addons"]').on('ifChecked', function(){
 		toggleAddonContainer(this);
 	});
 	
-	
 	var order_broadband_type = '${customer.customerOrder.order_broadband_type}' != '' ? '${customer.customerOrder.order_broadband_type}': 'transition';
 	toggleTransitionContainer(order_broadband_type);
-	
-	/*$('input[data-name="addons"]:checked').each(function(){
-		toggleAddonContainer(this);
-	});*/
-	
 	
 	$('input[name="order_broadband_type"]').on('ifChecked', function(){
 		toggleTransitionContainer(this.value);
 	});
-	
-	function service(html) {
-		$('#serviceContainer').html(html);
-	}
-	
-	function addon(html) {
-		$('#addonContainer').html(html);
-	}
-	
 
 	$('#btnConfirm').click(function(){
 		var $btn = $(this);
 		$btn.button('loading');
-		//console.log($('input[name="order_broadband_type"]:checked').val());
-		
 		var url = '${ctx}/order/personal';
 		var customer = {
 			address: $('#address').val()
@@ -482,7 +462,6 @@ background-color: #7BC3EC;
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
 		}
 		
-		
 		$('input[data-hname]:checked').each(function(){
 			var $elem = $(this);
 			var hardware = {
@@ -490,10 +469,7 @@ background-color: #7BC3EC;
 				, hardware_price: $elem.attr('data-price')
 			};
 			customer.customerOrder.hardwares.push(hardware);
-		});
-		
-		//console.log("customer request:");
-		//console.log(customer);
+		}); //console.log("customer request:"); console.log(customer);
 		
 		$.ajax({
 			type: 'post'
@@ -504,10 +480,7 @@ background-color: #7BC3EC;
 		   	, success: function(json){
 				if (json.hasErrors) {
 					$.jsonValidation(json, 'right');
-				} else {
-						
-					//console.log("customer response:");
-					//console.log(json.model);
+				} else {  //console.log("customer response:"); console.log(json.model);
 					window.location.href='${ctx}' + json.url;
 				}
 		   	}

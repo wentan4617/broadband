@@ -57,6 +57,7 @@ public class Plan implements Serializable {
 	private String img3;
 	private Boolean promotion;
 	private Integer place_sort;
+	private Double jackpot_fee;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -298,4 +299,13 @@ public class Plan implements Serializable {
 		this.place_sort = place_sort;
 	}
 
+	public Double getJackpot_fee() {
+		return jackpot_fee;
+	}
+
+	public void setJackpot_fee(Double jackpot_fee) {
+		this.jackpot_fee = jackpot_fee;
+	}
+
+	
 }

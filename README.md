@@ -19,6 +19,9 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.9 2014-05-15 
 
+* 重构客户购买订购流程(kanny)
+* 重构sale下单流程(kanny)
+* 重构管理员下单流程(kanny)
 * 更新出invoice算法，判断如果是term的order则在Service Giving的时候不出账单，再写一个Quartz的Schedule类，每个月10号获取类型为term的订单并且出账单，判断当前是否是第一张账单，如果是第一张账单判断该customer是business还是personal，如果是business则总价加上15%GST，总价除以当月的天数取得单天价格再乘以Service Giving开通后本月剩余天数再加上该term的包月价格得到该invoice。(steven)
 * invoicePDF和orderPDF里的12%businessGST要改成15%(steven)
 * 管理员有权限将某一张单转变到某个sales名下，改变账单sales id 即可，将此功能添加至customer order界面(steven)
@@ -29,7 +32,6 @@ demand version 1.0.8 2014-05-14
 * topup notification提醒邮件中附上该order的下一次payment支付链接，用户点击后可直接进入支付界面，无需登录帐号和密码(steven)
 * [order里添加order-topup类型判断，如果是order-topup则设置当天日期+7天赋给order_due，quartz里定时判断如果当前+1或+2天后等于order_due，则通过email和sms提醒该用户topup服务即将到期，让客户续费](steven)
 
- 
 demand version 1.0.8 2014-05-12
  
 * [invoice重构代码，so important!](steven)

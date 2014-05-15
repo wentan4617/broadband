@@ -43,8 +43,8 @@
 
 		<!-- http-components -->
 		<http-components.version>4.3.1</http-components.version>
-		
-		
+
+
 	</properties>
 
 	<dependencies>
@@ -162,6 +162,11 @@
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>${jstl.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -287,7 +292,7 @@
 			<artifactId>kaptcha</artifactId>
 			<version>0.0.9</version>
 		</dependency>
-		
+
 	</dependencies>
 
 	<build>
