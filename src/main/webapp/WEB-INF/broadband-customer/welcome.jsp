@@ -1,7 +1,7 @@
 
 <div class="container">
 	<div class="jumbotron text-center" style="background-color: transparent; margin-bottom:0;padding-bottom:0;">
-		<h1><strong>CyberPark provides ISP solutions for business and personal customers</strong></h1>
+		<h1><strong>CyberPark Provides ISP Solutions For Business And Personal Customers</strong></h1>
 		<p class="lead text-muted">A Safe Park</p>
 	</div>
 	
