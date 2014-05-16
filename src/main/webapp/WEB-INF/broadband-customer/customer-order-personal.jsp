@@ -244,67 +244,17 @@ background-color: #7BC3EC;
 					
 			</div>
 			<div class="col-md-3" >
-				<div data-spy="affix" data-offset-top="150" class="panel panel-success">
-					<div class="panel-heading">
-						<h4 class="panel-title">Your current plan</h4>
-					</div>
-			  		<div  class="panel-body">
-			  			<h4 class="text-success">${orderPlan.plan_name }</h4>
-			  			<c:if test="${orderPlan.plan_group != 'plan-term' }">
-			  			</c:if>
-			  			<span class="text-danger" style="font-size:36px;">
-			  				NZ$ 
-			  				<strong>
-			  					<span id="totalPrice">
-			  						<c:choose>
-			  							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-			  								<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="#,##0.00" />
-			  							</c:when>
-			  							<c:otherwise>
-			  								<fmt:formatNumber value="${orderPlan.plan_price * orderPlan.plan_prepay_months}" type="number" pattern="#,##0.00" />
-			  								
-			  							</c:otherwise>
-			  						</c:choose>
-			  					</span>
-			  				</strong>
-			  				<c:if test="${orderPlan.plan_group == 'plan-term' }">
-								<span style="font-size:12px;">+GST</span>
-							</c:if>
-			  			</span>
-			  			<div id="bundleContainer"></div>
-			  			<div id="serviceContainer"></div>
-			  			<div id="addonContainer"></div>
-			    		
-			    		<hr/>
-			    		<c:set var="back_url" value=""></c:set>
-			    		<c:choose>
-			    			<c:when test="${orderPlan.plan_group=='plan-topup' }">
-			    				<c:set var="back_url" value="${ctx }/plans/plan-topup/personal"></c:set>
-			    			</c:when>
-			    			<c:when test="${orderPlan.plan_group == 'plan-no-term' && orderPlan.plan_class == 'personal' }">
-			    				<c:set var="back_url" value="${ctx }/plans/plan-no-term/personal"></c:set>
-			    			</c:when>
-			    			<c:when test="${orderPlan.plan_group == 'plan-term' && orderPlan.plan_class == 'personal' }">
-			    				<c:set var="back_url" value="${ctx }/plans/plan-term/personal"></c:set>
-			    			</c:when>
-			    			<c:when test="${orderPlan.plan_group =='plan-term' && orderPlan.plan_class == 'business' }">
-			    				<c:set var="back_url" value="${ctx }/plans/plan-term/business"></c:set>
-			    			</c:when>
-			    		</c:choose>
-						<a href="${back_url }" style="width:100px;" class="btn btn-success">Back</a>&nbsp;
-						<button type="button" class="btn btn-success" style="width:100px;" id="btnConfirm">Confirm</button>
-						
-			  		</div>
-				</div>
-				
+				<div data-spy="affix" data-offset-top="150" id="order-result"></div>
 			</div>
 		</div>
+		
 	</form>
+	
 </div>
 
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
-<script type="text/html" id="result_tmpl">
-<jsp:include page="resultAddressCheck.html" />
+<script type="text/html" id="order_modeal_tmpl">
+<jsp:include page="order-modal.html" />
 </script>
 
 <jsp:include page="footer.jsp" />
@@ -323,7 +273,8 @@ background-color: #7BC3EC;
 	$('.selectpicker').selectpicker(); 
 	
 	var plan = {
-		plan_group: '${orderPlan.plan_group}'
+		plan_name: '${orderPlan.plan_name}'
+		, plan_group: '${orderPlan.plan_group}'
 		, plan_class: '${orderPlan.plan_class}'
 		, plan_prepay_months: new Number(${orderPlan.plan_prepay_months})
 		, plan_new_connection_fee: new Number(${orderPlan.plan_new_connection_fee})
@@ -340,57 +291,41 @@ background-color: #7BC3EC;
 		, addons_price: 0
 	};
 	
-	function toggleTransitionContainer(order_broadband_type) {
-		var bundleHTML = "", serviceHtml = "";
-		serviceHtml += '<hr/>';
-		serviceHtml += '<p class="text-success"><strong>Services:</strong></p>';
-		serviceHtml += '<ul>';
-		if (plan.plan_group == 'plan-topup') {
-			serviceHtml += '<li><strong class="text-danger">Broadband Topup Fee ($' +  plan.topup_fee.toFixed(2) + ')</strong></li>';
-			commonPart(order_broadband_type, serviceHtml);
-			price.service_price += plan.topup_fee;
-			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		} else if (plan.plan_group == 'plan-no-term') {
-			commonPart(order_broadband_type, serviceHtml);
-			serviceHtml += '<li><strong class="text-danger">Prepay ' + plan.plan_prepay_months + ' months</strong></li>';
-			price.plan_price = plan.plan_price * plan.plan_prepay_months;
-			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		} else if (plan.plan_group == 'plan-term') {
-			bundleHTML += '<hr/>';
-			bundleHTML += '<p class="text-success"><strong>Bundles:</strong></p>';
-			bundleHTML += '<ul>';
-			bundleHTML += '<li><strong class="text-danger">' + plan.term_period + ' Months Terms</li>';
-			bundleHTML += '<li><strong class="text-danger">' + plan.pstn_count + ' Home Phone Line</li>';
-			bundleHTML += '<li><strong class="text-danger">1 Free Router</li>';
-			commonPart(order_broadband_type, serviceHtml);//serviceHtml = 
-			price.plan_price = plan.plan_price * plan.plan_prepay_months;
-			$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		}
-		$('#bundleContainer').html(bundleHTML);
-		$('#serviceContainer').html(serviceHtml);
+	var modal = {
+		plan: plan
+		, price: price
+		, back_url: ''
+		, ctx: '${ctx}'
+		, addons: []
+		, order_broadband_type:'${customer.customerOrder.order_broadband_type}' != '' ? '${customer.customerOrder.order_broadband_type}': 'transition'
+	};
+	
+	function loadOrderModal() {
+		$('#order-result').html(tmpl('order_modeal_tmpl', modal));
 	}
 	
-	function commonPart(order_broadband_type, serviceHtml) {
-		if (order_broadband_type === "new-connection") {
-			$('#transitionContainer').hide('fast');
-			serviceHtml += '<li><strong class="text-danger">New Connection Only ($' +  plan.plan_new_connection_fee.toFixed(2) + ')</strong></li>';
-			price.service_price = plan.plan_new_connection_fee;
-		} else if (order_broadband_type === "transition") {
+	loadOrderModal();
+	
+	$('input[name="order_broadband_type"]').on('ifChecked', function(){
+		modal.order_broadband_type = this.value;
+		if (this.value == "transition") {
 			$('#transitionContainer').show('fast');
-			serviceHtml += '<li><strong class="text-danger">Transfer Broadband Connection</strong></li>';
 			price.service_price = 0;
-		} else if (order_broadband_type == 'jackpot') {
+		} else if (this.value == "new-connection") {
 			$('#transitionContainer').hide('fast');
-			serviceHtml += '<li><strong class="text-danger">New Connection & Jacpot Installation ($' +  plan.jackpot_fee.toFixed(2) + ')</strong></li>';
+			price.service_price = plan.plan_new_connection_fee;
+		} else if (this.value == 'jackpot') {
+			$('#transitionContainer').hide('fast');
 			price.service_price = plan.jackpot_fee;
 		}
-		return serviceHtml;
-	}
+		loadOrderModal();
+	});
 	
-	function toggleAddonContainer(opt){
-		var val = $(opt).val(); //console.log(val);
-		var id = $(opt).attr('data-id');
-		var unit_price = $(opt).attr('data-price');
+	$('input[data-name="addons"]').on('ifChecked', function(){
+		var $ipt = $(this);
+		var val = $ipt.val(); //console.log(val);
+		var id = $ipt.attr('data-id');
+		var unit_price = $ipt.attr('data-price');
 		if (val != 'on') {
 			$('#hp_' + id).text('');
 			$('#none_' + id).text('[Subtract NZ$ ' + unit_price + ']');
@@ -398,34 +333,15 @@ background-color: #7BC3EC;
 			$('#hp_' + id).text('[Add NZ$ ' + unit_price + ']');
 			$('#none_' + id).text('');
 		}
-		var addonsHtml = "";
-		var $addons = $('input[data-name="addons"][data-hname]:checked');
 		price.addons_price = 0;
-		if ($addons.length > 0) {
-			addonsHtml += '<hr/>';
-			addonsHtml += '<p class="text-success"><strong>Add-ons:</strong></p>';
-			addonsHtml += '<ul>';
-			$addons.each(function(){
-				addonsHtml += '<li><strong class="text-danger">' + $(this).attr('data-hname') + '</strong></li>';
-				price.addons_price += Number($(this).attr('data-price'));
-			});
-			addonsHtml += '</ul>';
-		} 
-		$('#totalPrice').text((price.plan_price + price.service_price + price.addons_price).toFixed(2));
-		$('#addonContainer').html(addonsHtml);
-	}
-	
-	$('input[data-name="addons"]').on('ifChecked', function(){
-		toggleAddonContainer(this);
+		modal.addons = [];
+		$('input[data-name="addons"][data-hname]:checked').each(function(){
+			price.addons_price += Number($(this).attr('data-price'));
+			modal.addons.push({ name: $(this).attr('data-hname') });
+		});
+		loadOrderModal();
 	});
 	
-	var order_broadband_type = '${customer.customerOrder.order_broadband_type}' != '' ? '${customer.customerOrder.order_broadband_type}': 'transition';
-	toggleTransitionContainer(order_broadband_type);
-	
-	$('input[name="order_broadband_type"]').on('ifChecked', function(){
-		toggleTransitionContainer(this.value);
-	});
-
 	$('#btnConfirm').click(function(){
 		var $btn = $(this);
 		$btn.button('loading');
