@@ -19,6 +19,10 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.9 2014-05-15 
 
+* 修改customer order, 添加更多的属性，把sv cv和 service giving分开更改
+* 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库
+* customer edit界面的order,如果有sale显示sale, 还可以把当前订单
+* customer edit的order information界面，现实order的note，并且可以修改(steven)
 * 重构客户购买订购流程(kanny)
 * 重构sale下单流程(kanny)
 * 重构管理员下单流程(kanny)
