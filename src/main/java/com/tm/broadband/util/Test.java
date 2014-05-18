@@ -1,17 +1,14 @@
 package com.tm.broadband.util;
 
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.methods.GetMethod;
-
-import com.tm.broadband.model.Customer;
 
 
 public class Test {
-
+	
 	public static void main(String[] args) throws Exception {
 
 		// String[] pwds = new String[] { "1", "5", "9", "8", "7", "6", "4",
@@ -25,41 +22,27 @@ public class Test {
 //		System.out.println(finalResult.substring(finalResult.lastIndexOf(",") + 1));
 //		
 //		System.out.println(ITextFont.arial_normal_6);
+		
+		
 //		Customer c = new Customer();
 //		c.setFirst_name("<script>asdasdasd");
 //		c.setLast_name("<script>asdasdasd");
-//		
-//		System.out.println(CheckScriptInjection.isScriptInjection(c));;
-//		testGzip();
+//		System.out.println(CheckScriptInjection.isScriptInjection(c));
 		
-//		Calendar cal = Calendar.getInstance();
-//		cal.add(Calendar.DATE, 1);
-//		System.out.println(cal.getTime());
-//		cal.add(Calendar.DATE, 1);
-//		System.out.println(cal.getTime());
-
+		
+//		Map<String, Object> resultMap = Calculation4PlanTermInvoice.servedMonthDetails(new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-14"), 89d);
+//		System.out.println(resultMap.get("totalPrice"));
+//		System.out.println(resultMap.get("remainingDays"));
+//		System.out.println(resultMap.get("dailyPrice"));
+//
+//		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+//		boolean isServedCurrentMonth = sdf.format(sdf.parse("2014-05-19")).equals(sdf.format(new Date()));
+//		System.out.println(isServedCurrentMonth);
+		
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		String yyyy_MM = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).substring(0, 7);
+		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));
+		System.out.println(cal.getTime());
 	}
-
-//    public static void testGzip() {
-//        HttpClient httpClient = new HttpClient();
-//        GetMethod getMethod = new GetMethod("http://localhost:8080/broadband/home");
-//        try {
-//                getMethod.addRequestHeader("accept-encoding", "gzip,deflate");
-//                getMethod.addRequestHeader("user-agent","Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.0; Alexa Toolbar; Maxthon 2.0)");
-//                int result = httpClient.executeMethod(getMethod);
-//                if (result == 200) {
-//                        System.out.println(getMethod.getResponseContentLength());
-//                        String html = getMethod.getResponseBodyAsString();
-//                        System.out.println(html);
-////                        System.out.println(html.getBytes().length);
-//                }
-//        } catch (HttpException e) {
-//                e.printStackTrace();
-//        } catch (IOException e) {
-//                e.printStackTrace();
-//        } finally {
-//                getMethod.releaseConnection();
-//        }
-//    }
 
 }

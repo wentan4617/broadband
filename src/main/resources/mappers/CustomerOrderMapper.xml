@@ -239,6 +239,11 @@
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
 					<if test="params.order_type_no_term != null">and co.order_type=#{params.order_type_no_term}</if>
 				</when>
+				<when test="params.where == 'query_term'">
+					co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now())
+					<if test="params.status != null">and co.order_status=#{params.status}</if>
+					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
+				</when>
 				<when test="params.where == 'query_topup'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.order_due_backward_one != null and params.order_due_backward_two != null">and (date(co.order_due)=date(#{params.order_due_backward_one}) or date(co.order_due)=date(#{params.order_due_backward_two}))</if>
@@ -273,8 +278,10 @@
 	<select id="selectCustomerOrders"  parameterType="CustomerOrder" resultMap="selectCustomerOrdersResultMap">
 		select
 			<include refid="customerOrderColumns"/>,
+			<include refid="customerColumns"/>,
 			<include refid="customerOrderDetailColumns"/>
 		from tm_customer_order as co
+		left join tm_customer as c on c.id = co.customer_id
 		left join tm_customer_order_detail as cod on cod.order_id = co.id
 		<include refid="customerOrderWhere"/>
 	</select>
@@ -309,7 +316,7 @@
 		<result property="signature" column="co_signature" />
 		<result property="optional_request" column="co_optional_request" />
 		
-		<!-- <association property="customer" resultMap="customerResultMap"/> -->
+		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
 	</resultMap>
 	
