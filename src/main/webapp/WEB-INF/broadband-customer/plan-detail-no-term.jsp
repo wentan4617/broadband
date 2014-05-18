@@ -32,7 +32,7 @@ background-color: #7BC3EC;
 	border-right: 0;
 	border-radius: 0;
 }
-#adslPanel .col-md-3:fisrt-child .thumbnail{
+#adslPanel .col-md-3:first-child .thumbnail{
 	border-radius: 4px 0 0 4px;
 }
 #adslPanel .col-md-3:last-child .thumbnail{

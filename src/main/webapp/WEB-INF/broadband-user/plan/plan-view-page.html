@@ -13,8 +13,10 @@
 			<th>Class</th>
 			<th>Type</th>
 			<th>Sort</th>
-			<th>Monthly fee (Inc GST)</th>
-			<th>New Connection fee (Inc GST)</th>
+			<th>Monthly</th>
+			<th>Transition</th>
+			<th>New Connection</th>
+			<th>Jackpot Installation</th>
 			<th>Data Flow</th>
 			<th>Status</th>
 		</tr>
@@ -53,7 +55,13 @@
 				$ <.=Number(plan.plan_price).toFixed(2).>
 			</td>
 			<td>
+				$ <.=Number(plan.transition_fee).toFixed(2).>
+			</td>
+			<td>
 				$ <.=Number(plan.plan_new_connection_fee).toFixed(2).>
+			</td>
+			<td>
+				$ <.=Number(plan.jackpot_fee).toFixed(2).>
 			</td>
 			<td>
 				<.=plan.data_flow < 0 ? 'Unlimited': (plan.data_flow || 0) + ' GB'.> 

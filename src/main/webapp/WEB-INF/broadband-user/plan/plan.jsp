@@ -113,6 +113,16 @@
 						</div>
 						
 						<div class="form-group">
+							<label for="transition_fee" class="control-label col-md-4">Transition fee</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input type="text" value="${plan.transition_fee}" id="transition_fee" class="form-control" />
+								</div>
+							</div>
+						</div>
+						
+						<div class="form-group">
 							<label for="plan_new_connection_fee" class="control-label col-md-4">New Connection fee</label>
 							<div class="col-md-3">
 								<div class="input-group">
@@ -293,7 +303,6 @@
 	</div>
 </div>
 
-
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
@@ -322,6 +331,7 @@
 			, plan_sort: $('#plan_sort').val()
 			, plan_price: $('#plan_price').val()
 			, original_price: $('#original_price').val()
+			, transition_fee: $('#transition_fee').val()
 			, plan_new_connection_fee: $('#plan_new_connection_fee').val()
 			, jackpot_fee: $('#jackpot_fee').val()
 			, data_flow: $('#data_flow').val()
@@ -335,10 +345,8 @@
 		};
 		$btn.button('loading');
 		$.post('${ctx}${action}', plan, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
-				window.location.href='${ctx}' + json.url;
+			if (!$.jsonValidation(json, 'right')) {
+				window.location.href = '${ctx}' + json.url;
 			}
 		}, 'json').always(function () {
 			$btn.button('reset');

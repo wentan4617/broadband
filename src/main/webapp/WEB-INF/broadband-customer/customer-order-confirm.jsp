@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
@@ -16,6 +15,7 @@ color: #fff;
 background-color: #7BC3EC;
 }
 </style>
+
 <div class="container" >
 
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
@@ -145,11 +145,11 @@ background-color: #7BC3EC;
 					<h2>Transition</h2>
 					<hr style="margin-top:0;"/>
 					<div class="row" >
-						<div class="col-sm-4"><strong>Current Provider Name</strong></div>
+						<div class="col-sm-4"><strong>Current Provider</strong></div>
 						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_provider_name }</strong></div>
 					</div>
 					<div class="row" style="margin-top:5px;">
-						<div class="col-sm-4"><strong>Account Holder Name</strong></div>
+						<div class="col-sm-4"><strong>Account Holder</strong></div>
 						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_account_holder_name }</strong></div>
 					</div>
 					<div class="row" style="margin-top:5px;">
@@ -271,10 +271,10 @@ background-color: #7BC3EC;
 											</td>
 										</tr>
 										<tr>
-											<td>Plus GST at 12% </td>
+											<td>Plus GST at 15% </td>
 											<td>
 												NZ$ 
-												<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.12}" type="number" pattern="#,##0.00" />
+												<fmt:formatNumber value="${customer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
 											</td>
 										</tr>
 										<tr>
@@ -282,7 +282,7 @@ background-color: #7BC3EC;
 											<td>
 												<strong class="text-success">
 													NZ$ 
-													<fmt:formatNumber value="${customer.customerOrder.order_total_price * 1.12 }" type="number" pattern="#,##0.00" />
+													<fmt:formatNumber value="${customer.customerOrder.order_total_price * 1.15 }" type="number" pattern="#,##0.00" />
 												</strong>
 											</td>
 										</tr>
@@ -304,18 +304,39 @@ background-color: #7BC3EC;
 				</div>
 				<hr/>
 				<div class="row">
-					<div class="col-md-12">
+					<div class="col-md-2">
 						<c:choose>
 							<c:when test="${orderPlan.plan_group == 'plan-no-term' || orderPlan.plan_group == 'plan-term' }">
-								<a href="${ctx }/order/${orderPlan.id}" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
+								<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block">Back</a>
 							</c:when>
 							<c:when test="${orderPlan.plan_group == 'plan-topup' }">
-								<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" style="width:120px;" class="btn btn-success btn-lg pull-left">Back</a>
+								<a href="${ctx }/order/${orderPlan.id}/topup/<fmt:formatNumber value="${orderPlan.topup.topup_fee}" type="number" pattern="##" />" class="btn btn-success btn-lg btn-block">Back</a>
 							</c:when>
 						</c:choose>
-						<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
-							<button type="submit" style="width:120px;" class="btn btn-success btn-lg pull-right">Checkout</button>
-						</form>
+					</div>
+					<div class="col-md-2 col-md-offset-8">
+						<c:choose>
+							<c:when test="${orderPlan.plan_group == 'plan-term' }">
+								<c:choose>
+									<c:when test="${customer.customer_type == 'personal' }">
+										<form class="form-horizontal" action="${ctx }/order/plan-term/personal/save" method="post" id="orderForm">
+											<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
+										</form>
+									</c:when>
+									<c:when test="${customer.customer_type == 'business' }">
+										<form class="form-horizontal" action="${ctx }/order/plan-term/business/save" method="post" id="orderForm">
+											<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
+										</form>
+									</c:when>
+								</c:choose>
+							</c:when>
+							<c:otherwise>
+								<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
+									<button type="submit"  class="btn btn-success btn-lg btn-block" data-id="checkoutForm">Checkout</button>
+								</form>
+							</c:otherwise>
+						</c:choose>
+						
 					</div>
 					
 				</div>		
@@ -329,7 +350,7 @@ background-color: #7BC3EC;
 
 <!-- Modal -->
 <div class="modal fade" id="cyberParkTerm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="width:800px;">
+	<div class="modal-dialog" style="width:1000px;">
     	<div class="modal-content">
       		<div class="modal-header">
         		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -359,6 +380,8 @@ background-color: #7BC3EC;
   	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+
+
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
@@ -374,7 +397,8 @@ background-color: #7BC3EC;
 		e.preventDefault();
 		var b = $('#termckb').prop('checked');
 		if (b) {
-			$('#checkoutForm').submit();
+			var form_id = $(this).attr('data-id');
+			$('#' + form_id).submit();
 		} else {
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}
