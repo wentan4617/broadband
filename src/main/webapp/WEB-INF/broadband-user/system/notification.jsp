@@ -37,6 +37,7 @@
 									<form:option value="register-post-pay">Register Post Pay</form:option>
 									<form:option value="register-pre-pay">Register Pre Pay</form:option>
 									<form:option value="invoice">Invoice</form:option>
+									<form:option value="plan-term_invoice">Plan Term Invoice</form:option>
 									<form:option value="payment">Payment</form:option>
 									<form:option value="topup-notification">Topup Notification</form:option>
 									<form:option value="service-giving">Service Giving</form:option>

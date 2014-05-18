@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,7 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -673,6 +675,264 @@ public class CRMService {
 		}
 		// END TOPUP NOTIFICATION
 		
+	}
+
+	@Transactional 
+	public void createTermPlanInvoice() throws ParseException{
+		
+		// Production environment should edit as shown below
+		// where = query_term
+		// status = using
+		// order_type_term = order-term
+		CustomerOrder coTemp = new CustomerOrder();
+		coTemp.getParams().put("where", "query_term");
+		coTemp.getParams().put("status", "using");
+		coTemp.getParams().put("order_type", "order-term"); 
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
+		
+		// If found any order(s)
+		if(cos.size() > 0){
+			
+			for (CustomerOrder co : cos) {
+				// BEGIN get usable beans
+				// Customer
+				Customer c = co.getCustomer();
+				// Previous invoice's preparation
+				CustomerInvoice cpi = new CustomerInvoice();
+				cpi.getParams().put("where", "by_max_id");
+				cpi.getParams().put("customer_id", c.getId());
+				cpi.getParams().put("order_id", co.getId());
+				// Previous invoice
+				cpi = this.customerInvoiceMapper.selectCustomerInvoice(cpi);
+				// Current invoice
+				CustomerInvoice ci = new CustomerInvoice();
+				// Current invoice detail
+				List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+				// END get usable beans
+
+				// If current order don't have any invoice then true, else false
+				// Production environment should edit as shown below
+				// {true} change to {cpi == null ? true : false;}
+				boolean isFirst = //true;
+						cpi == null ? true : false;
+				// If service giving is gave by this month then true, else false
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+				// Production environment should edit as shown below
+				// {true} change to {below long statement}
+				boolean isServedCurrentMonth = //true; 
+						co.getOrder_using_start() != null ? sdf.format(co.getOrder_using_start()).equals(sdf.format(new Date())) : false;
+				
+				ci.setCustomer_id(c.getId());
+				ci.setOrder_id(co.getId());
+				ci.setAmount_paid(0d);
+				this.customerInvoiceMapper.insertCustomerInvoice(ci);
+				// Set id for invoice's update
+				ci.getParams().put("id", ci.getId());
+				ci.setCreate_date(new Date());
+				ci.setDue_date(Calculation4PlanTermInvoice.getInvoiceDueDate());
+				ci.setStatus("unpaid");
+
+				// Preparing for calculations, invoice's payable amount
+				BigDecimal bigPayableAmount = new BigDecimal(0d);
+				
+				for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
+					CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+					
+					// If first invoice then add all order details into invoice details
+					if(isFirst){
+						
+						if("plan-term".equals(cod.getDetail_type())){
+							
+							// Get served month's term plan's remaining charges 
+							// Production environment should edit as shown below
+							// {new Date()} change to {co.getOrder_using_start()}
+							Map<String, Object> resultMap = Calculation4PlanTermInvoice.servedMonthDetails(//new Date()
+									co.getOrder_using_start()
+									, cod.getDetail_price());
+							cid.setInvoice_detail_name(cod.getDetail_name()+" ("+resultMap.get("remainingDays")+" day(s) counting from service start date to end of month)");
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							cid.setInvoice_detail_price((Double)resultMap.get("totalPrice"));
+							
+							// Preparing for calculations, term plan's remaining price
+							BigDecimal bigRemainingPrice = new BigDecimal(cid.getInvoice_detail_price());
+							// Add remaining price into payable amount
+							bigPayableAmount.add(bigRemainingPrice);
+							
+							cids.add(cid);
+							
+							// If is not served in current month, then add plan-term type detail into invoice detail
+							if (!isServedCurrentMonth) {
+								
+								// Reconstruct invoice's detail
+								cid = new CustomerInvoiceDetail();
+								
+								cid.setInvoice_detail_name(cod.getDetail_name());
+								cid.setInvoice_detail_unit(cod.getDetail_unit());
+								cid.setInvoice_detail_price(cod.getDetail_price());
+								
+								// Preparing for calculations, term plan's monthly price
+								BigDecimal bigMonthlyPrice = new BigDecimal(cid.getInvoice_detail_price());
+								// Add monthly price into payable amount
+								bigPayableAmount.add(bigMonthlyPrice);
+								
+								cids.add(cid);
+							}
+
+						// Else if discount and unexpired then do add discount
+						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+							
+							cid.setInvoice_detail_name(cod.getDetail_name());
+							cid.setInvoice_detail_discount(cod.getDetail_price());
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							
+							// Preparing for calculations, term plan's discount price
+							BigDecimal bigDiscountPrice = new BigDecimal(cid.getInvoice_detail_discount());
+							BigDecimal bigDiscountUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							
+							// Payable amount minus ( discount price times discount unit )
+							bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
+							
+							cids.add(cid);
+							
+						// Else add all non plan-term type details into invoice details
+						} else {
+
+							cid.setInvoice_detail_name(cod.getDetail_name());
+							cid.setInvoice_detail_price(cod.getDetail_price());
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							
+							// Preparing for calculations, invoice detail's unit price
+							BigDecimal bigDetailPrice = new BigDecimal(cid.getInvoice_detail_price());
+							BigDecimal bigDetailUnit = new BigDecimal(cid.getInvoice_detail_unit());
+
+							// Payable amount plus ( detail price times detail unit )
+							bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
+
+							cids.add(cid);
+						}
+						
+					// Else not first invoice, add unexpired order detail(s) into invoice detail(s)
+					} else {
+						// Add previous invoice's balance
+						BigDecimal bigPreviousInvoiceBalance = new BigDecimal(cpi.getBalance());
+						bigPayableAmount.add(bigPreviousInvoiceBalance);
+						
+						// Add previous invoice's details into
+						ci.setLast_invoice_id(cpi.getId());
+						ci.setLastCustomerInvoice(cpi);
+
+						// If plan-term type, then add detail into invoice detail
+						if("plan-term".equals(cod.getDetail_type())){
+
+							cid.setInvoice_detail_name(cod.getDetail_name());
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							cid.setInvoice_detail_price(cod.getDetail_price());
+							
+							// Preparing for calculations, term plan's monthly price
+							BigDecimal bigMonthlyPrice = new BigDecimal(cid.getInvoice_detail_price());
+							// Add monthly price into payable amount
+							bigPayableAmount.add(bigMonthlyPrice);
+							
+							cids.add(cid);
+
+						// Else if discount and unexpired then do add discount
+						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+							
+							cid.setInvoice_detail_name(cod.getDetail_name());
+							cid.setInvoice_detail_discount(cod.getDetail_price());
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							
+							// Preparing for calculations, term plan's discount price
+							BigDecimal bigDiscountPrice = new BigDecimal(cid.getInvoice_detail_discount());
+							BigDecimal bigDiscountUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							
+							// Payable amount minus ( discount price times discount unit )
+							bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
+							
+							cids.add(cid);
+
+						// Else if unexpired then add order detail(s) into invoice detail(s)
+						} else if(cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+
+							cid.setInvoice_detail_name(cod.getDetail_name());
+							cid.setInvoice_detail_price(cod.getDetail_price());
+							cid.setInvoice_detail_unit(cod.getDetail_unit());
+							
+							// Preparing for calculations, invoice detail's unit price
+							BigDecimal bigDetailPrice = new BigDecimal(cid.getInvoice_detail_price());
+							BigDecimal bigDetailUnit = new BigDecimal(cid.getInvoice_detail_unit());
+
+							// Payable amount plus ( detail price times detail unit )
+							bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
+
+							cids.add(cid);
+						}
+						
+					}
+				}
+				// Set invoice details into 
+				ci.setCustomerInvoiceDetails(cids);
+				
+				// Set current invoice's payable amount
+				ci.setAmount_payable(bigPayableAmount.doubleValue());
+				
+				// Set current invoice's balance = ( payable - paid )
+				BigDecimal bigBalance = new BigDecimal(ci.getBalance() != null ? ci.getBalance() : 0d);
+				BigDecimal bigPaidAmount = new BigDecimal(ci.getAmount_paid() != null ? ci.getAmount_paid() : 0d);
+				bigBalance.add(bigPayableAmount.subtract(bigPaidAmount));
+				ci.setBalance(bigBalance.doubleValue());
+				
+				// Updates invoice
+				this.customerInvoiceMapper.updateCustomerInvoice(ci);
+				
+				// Iteratively inserting invoice detail(s) into tm_invoice_detail table
+				for (CustomerInvoiceDetail cid : cids) {
+					cid.setInvoice_id(ci.getId());
+					this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(cid);
+				}
+				
+
+				// store company detail begin
+				CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+				// store company detail end
+
+				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+				invoicePDF.setCompanyDetail(companyDetail);
+				invoicePDF.setCustomer(c);
+				invoicePDF.setCurrentCustomerInvoice(ci);
+
+				String filePath = "";
+				// set file path
+				try {
+					// generate invoice PDF
+					filePath = invoicePDF.create();
+				} catch (DocumentException | IOException e) {
+					e.printStackTrace();
+				}
+				ci.setInvoice_pdf_path(filePath);
+				// add sql condition: id
+				this.customerInvoiceMapper.updateCustomerInvoice(ci);
+
+				Notification notificationEmail = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "email");
+				Notification notificationSMS = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "sms");
+
+				// call mail at value retriever
+				TMUtils.mailAtValueRetriever(notificationEmail, c, ci, companyDetail);
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(c.getEmail());
+				applicationEmail.setSubject(notificationEmail.getTitle());
+				applicationEmail.setContent(notificationEmail.getContent());
+				// binding attachment name & path to email
+				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+				applicationEmail.setAttachPath(filePath);
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+				// get sms register template from db
+				TMUtils.mailAtValueRetriever(notificationSMS, c, ci, companyDetail);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
+			}
+		}
 	}
 	
 	
