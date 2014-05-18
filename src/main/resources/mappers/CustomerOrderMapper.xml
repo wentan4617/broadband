@@ -234,14 +234,14 @@
 					<if test="params.customer_id != null">co.customer_id=#{params.customer_id}</if>
 					<if test="params.order_status != null and params.order_status_1 != null">and (co.order_status!=#{params.order_status} or co.order_status!=#{params.order_status_1})</if>
 				</when>
-				<when test="params.where == 'query_term_or_no_term'">
+				<when test="params.where == 'query_no_term'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
-					<if test="params.order_type_no_term != null and params.order_type_term != null">and (co.order_type=#{params.order_type_no_term} or co.order_type=#{params.order_type_term})</if>
+					<if test="params.order_type_no_term != null">and co.order_type=#{params.order_type_no_term}</if>
 				</when>
 				<when test="params.where == 'query_topup'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
-					<if test="params.before_order_due_one != null and params.before_order_due_two != null">and (date(co.order_due)=date(#{params.before_order_due_one}) or date(co.order_due)=date(#{params.before_order_due_two}))</if>
+					<if test="params.order_due_backward_one != null and params.order_due_backward_two != null">and (date(co.order_due)=date(#{params.order_due_backward_one}) or date(co.order_due)=date(#{params.order_due_backward_two}))</if>
 					<if test="params.order_type_topup != null">and co.order_type=#{params.order_type_topup}</if>
 				</when>
 				<otherwise>

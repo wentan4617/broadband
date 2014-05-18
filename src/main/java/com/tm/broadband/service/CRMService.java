@@ -644,11 +644,11 @@ public class CRMService {
 
         // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
 		// using new Date() under production environment
-		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse("2014-05-19"));
+		cal.setTime(new Date());
 		cal.add(Calendar.DATE, 1);
-		topupCustomerOrder.getParams().put("before_order_due_one", cal.getTime());
+		topupCustomerOrder.getParams().put("order_due_backward_one", cal.getTime());
 		cal.add(Calendar.DATE, 1);
-		topupCustomerOrder.getParams().put("before_order_due_two", cal.getTime());
+		topupCustomerOrder.getParams().put("order_due_backward_two", cal.getTime());
 		List<CustomerOrder> topupCustomerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(topupCustomerOrder);
 		
 		for (CustomerOrder customerOrder : topupCustomerOrders) {

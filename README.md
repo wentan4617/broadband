@@ -26,9 +26,9 @@ demand version 1.0.9 2014-05-15
 * 重构sale下单流程(kanny)
 * 重构管理员下单流程(kanny)
 * 更新出invoice算法，判断如果是term的order则在Service Giving的时候不出账单，再写一个Quartz的Schedule类，每个月10号获取类型为term的订单并且出账单，判断当前是否是第一张账单，如果是第一张账单判断该customer是business还是personal，如果是business则总价加上15%GST，总价除以当月的天数取得单天价格再乘以Service Giving开通后本月剩余天数再加上该term的包月价格得到该invoice。(steven)
-* invoicePDF和orderPDF里的12%businessGST要改成15%(steven)
+* [invoicePDF和orderPDF里的12%businessGST要改成15%](steven)
 * 管理员有权限将某一张单转变到某个sales名下，改变账单sales id 即可，将此功能添加至customer order界面(steven)
-* cyberpark home 做seo相关工作(steven)
+* [cyberpark home 做seo初步工作](steven)
 
 demand version 1.0.8 2014-05-14
 
