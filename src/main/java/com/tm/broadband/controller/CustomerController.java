@@ -246,18 +246,77 @@ public class CustomerController {
 			@ModelAttribute("customer") @Validated(CustomerOrganizationValidatedMark.class) Customer customer, BindingResult result,
 			@ModelAttribute("orderPlan") Plan plan, 
 			RedirectAttributes attr) {
+
+		if (result.hasErrors()) {
+			return "broadband-customer/customer-order-business";
+		}
+
+		this.crmService.doOrderConfirm(customer, plan);
+
+		CompanyDetail cd = this.systemService.queryCompanyDetail();
+		model.addAttribute("company", cd);
+
+		return "broadband-customer/customer-order-confirm";
+	}
+	
+	/*
+	 * /order/plan-term/personal/save
+	 * /order/plan-term/business/save
+	 */
+	
+	@RequestMapping(value = "/order/plan-term/personal/save", method = RequestMethod.POST)
+	public String orderTermPersoanlSave(Model model,
+			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result,
+			@ModelAttribute("orderPlan") Plan plan, 
+			RedirectAttributes attr, SessionStatus status) {
+		
+		if (result.hasErrors()) {
+			return "broadband-customer/customer-order-personal";
+		}
+		
+		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setUser_name(customer.getLogin_name());
+		customer.setStatus("active");
+		
+		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
+		
+		status.setComplete();
+		
+		Response responseBean = new Response();
+		responseBean.setSuccess("1");
+		attr.addFlashAttribute("responseBean", responseBean);
+		
+		return "redirect:/order/result";
+	}
+	
+	@RequestMapping(value = "/order/plan-term/business/save", method = RequestMethod.POST)
+	public String orderTermBusinessSave(Model model,
+			@ModelAttribute("customer") @Validated(CustomerOrganizationValidatedMark.class) Customer customer, BindingResult result,
+			@ModelAttribute("orderPlan") Plan plan, 
+			RedirectAttributes attr, SessionStatus status) {
 		
 		if (result.hasErrors()) {
 			return "broadband-customer/customer-order-business";
 		}
 		
-		this.crmService.doOrderConfirm(customer, plan);
+		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setUser_name(customer.getLogin_name());
+		customer.setStatus("active");
 		
-		CompanyDetail cd = this.systemService.queryCompanyDetail();
-		model.addAttribute("company", cd);
+		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
-		return "broadband-customer/customer-order-confirm";
+		status.setComplete();
+		
+		Response responseBean = new Response();
+		responseBean.setSuccess("1");
+		attr.addFlashAttribute("responseBean", responseBean);
+		
+		return "redirect:/order/result";
 	}
+	
+	/*
+	 * end *****************************************************
+	 */
 	
 	@RequestMapping(value = "/order/checkout", method = RequestMethod.POST)
 	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
@@ -270,7 +329,7 @@ public class CustomerController {
 		GenerateRequest gr = new GenerateRequest();
 		
 		if ("business".equals(customer.getCustomer_type())) {
-			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.12);
+			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
 		}
 
 		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerOrder().getOrder_total_price()));
@@ -336,10 +395,10 @@ public class CustomerController {
 			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id());
 
 			String filePath = TMUtils.createPath(
-					"broadband"
-					+File.separator+"customers"
-					+File.separator+customer.getId()
-					+File.separator+"Invoice-"+customerTransaction.getInvoice_id()+".pdf");
+					"broadband" 
+					+ File.separator
+					+ "customers" + File.separator + customer.getId()
+					+ File.separator + "invoice_" + customerTransaction.getInvoice_id() + ".pdf");
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -385,8 +444,6 @@ public class CustomerController {
 		return "broadband-customer/forgotten-password";
 	}
 
-
-	
 	@RequestMapping("/customer/home/redirect")
 	public String redirectCustomerHome(RedirectAttributes attr) {
 		attr.addFlashAttribute("success", "Welcome to CyberTech Customer Home.");

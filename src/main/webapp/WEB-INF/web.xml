@@ -126,7 +126,10 @@
 	<filter-mapping>
 		<filter-name>CustomerOrderSessionFilter</filter-name>
 		<!-- <url-pattern>/order</url-pattern> -->
-		<url-pattern>/order/confirm</url-pattern>
+		<url-pattern>/order/personal/confirm</url-pattern>
+		<url-pattern>/order/business/confirm</url-pattern>
+		<url-pattern>/order/plan-term/personal/save</url-pattern>
+		<url-pattern>/order/plan-term/business/save</url-pattern>
 		<url-pattern>/order/checkout</url-pattern>
 	</filter-mapping>
 

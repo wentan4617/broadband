@@ -65,10 +65,11 @@ public class InvoicePDFCreator extends ITextUtils {
         Document document = new Document(PageSize.A4);
         
 		// Output PDF Path, e.g.: application_60089.pdf
-		String outputFile = TMUtils.createPath("broadband" + File.separator
+		String outputFile = TMUtils.createPath(
+				"broadband" 
+				+ File.separator
 				+ "customers" + File.separator + this.customer.getId()
-				+ File.separator + "invoice_" + this.getCurrentCustomerInvoice().getId()
-				+ ".pdf");
+				+ File.separator + "invoice_" + this.getCurrentCustomerInvoice().getId() + ".pdf");
 		
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
         document.open();

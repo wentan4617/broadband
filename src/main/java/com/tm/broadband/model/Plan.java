@@ -47,6 +47,8 @@ public class Plan implements Serializable {
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	private String plan_group;
 	private String plan_class;
+	@NumberFormat
+	@NotNull(groups = { PlanValidatedMark.class })
 	private Double plan_new_connection_fee;
 	private Integer plan_prepay_months;
 	private Integer pstn_count;
@@ -57,7 +59,12 @@ public class Plan implements Serializable {
 	private String img3;
 	private Boolean promotion;
 	private Integer place_sort;
+	@NumberFormat
+	@NotNull(groups = { PlanValidatedMark.class })
 	private Double jackpot_fee;
+	@NumberFormat
+	@NotNull(groups = { PlanValidatedMark.class })
+	private Double transition_fee;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -305,6 +312,14 @@ public class Plan implements Serializable {
 
 	public void setJackpot_fee(Double jackpot_fee) {
 		this.jackpot_fee = jackpot_fee;
+	}
+
+	public Double getTransition_fee() {
+		return transition_fee;
+	}
+
+	public void setTransition_fee(Double transition_fee) {
+		this.transition_fee = transition_fee;
 	}
 
 	

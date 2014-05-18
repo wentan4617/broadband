@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
@@ -16,8 +15,8 @@
 	top:30px;
 }
 .nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
-color: #fff;
-background-color: #7BC3EC;
+	color: #fff;
+	background-color: #7BC3EC;
 }
 </style>
 
@@ -114,17 +113,28 @@ background-color: #7BC3EC;
 												<c:if test="${customer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
 													checked="checked"
 												</c:if> />
-											&nbsp; <strong>Transfer the existing broadband connection to CyberPark is free</strong>
+											&nbsp; 
+											<strong>
+												Transfer the existing broadband connection to CyberPark 
+												<c:choose>
+													<c:when test="${orderPlan.transition_fee > 0 }">
+														costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
+													</c:when>
+													<c:otherwise>
+														is free
+													</c:otherwise>
+												</c:choose>
+											</strong>
 										</li>
 										<li>
 											<input type="radio" name="order_broadband_type" 
 												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) jackpot charge NZD$145</strong>
+											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) jackpot charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
 										</li>
 										<li>
 											<input type="radio" name="order_broadband_type" 
 												${customer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
-											&nbsp; <strong>Get a new broadband connection and an new jackpot installation and activation charge NZD$199</strong>
+											&nbsp; <strong>Get a new broadband connection and an new jackpot installation and activation charge NZ$ <fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></strong>
 										</li>
 									</ul>
 								</div>
@@ -139,25 +149,25 @@ background-color: #7BC3EC;
 								<hr/>
 								
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Current Provider Name</label>
+									<label class="control-label col-md-4">Current Provider</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Account Holder Name</label>
+									<label class="control-label col-md-4">Account Holder</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Current Account Number</label>
+									<label class="control-label col-md-4">Current Account Number</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label for="" class="control-label col-md-4">Your Telephone Number</label>
+									<label class="control-label col-md-4">Telephone Number</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
 									</div>
@@ -243,6 +253,8 @@ background-color: #7BC3EC;
 				</c:if>
 					
 			</div>
+			
+			<!-- order-modal -->
 			<div class="col-md-3" >
 				<div data-spy="affix" data-offset-top="150" id="order-result"></div>
 			</div>
@@ -283,10 +295,11 @@ background-color: #7BC3EC;
 		, pstn_count: new Number(${orderPlan.pstn_count})
 		, term_period: new Number(${orderPlan.term_period})
 		, jackpot_fee: new Number(${orderPlan.jackpot_fee})
+		, transition_fee: new Number(${orderPlan.transition_fee})
 	};
 	
 	var price = {
-		plan_price: plan.plan_price
+		plan_price: 0
 		, service_price: 0
 		, addons_price: 0
 	};
@@ -302,15 +315,16 @@ background-color: #7BC3EC;
 	
 	function loadOrderModal() {
 		$('#order-result').html(tmpl('order_modeal_tmpl', modal));
+		$('#btnConfirm').click(confirm);
 	}
 	
-	loadOrderModal();
+	//loadOrderModal();
 	
 	$('input[name="order_broadband_type"]').on('ifChecked', function(){
 		modal.order_broadband_type = this.value;
 		if (this.value == "transition") {
 			$('#transitionContainer').show('fast');
-			price.service_price = 0;
+			price.service_price = plan.transition_fee;
 		} else if (this.value == "new-connection") {
 			$('#transitionContainer').hide('fast');
 			price.service_price = plan.plan_new_connection_fee;
@@ -320,6 +334,8 @@ background-color: #7BC3EC;
 		}
 		loadOrderModal();
 	});
+	
+	$('input[name="order_broadband_type"]:checked').trigger('ifChecked');
 	
 	$('input[data-name="addons"]').on('ifChecked', function(){
 		var $ipt = $(this);
@@ -336,15 +352,15 @@ background-color: #7BC3EC;
 		price.addons_price = 0;
 		modal.addons = [];
 		$('input[data-name="addons"][data-hname]:checked').each(function(){
-			price.addons_price += Number($(this).attr('data-price'));
-			modal.addons.push({ name: $(this).attr('data-hname') });
+			var $addon = $(this);
+			price.addons_price += Number($addon.attr('data-price'));
+			modal.addons.push({ name: $addon.attr('data-hname'), price: Number($addon.attr('data-price')) });
 		});
 		loadOrderModal();
 	});
 	
-	$('#btnConfirm').click(function(){
+	function confirm() {
 		var $btn = $(this);
-		$btn.button('loading');
 		var url = '${ctx}/order/personal';
 		var customer = {
 			address: $('#address').val()
@@ -377,6 +393,7 @@ background-color: #7BC3EC;
 			customer.customerOrder.hardwares.push(hardware);
 		}); //console.log("customer request:"); console.log(customer);
 		
+		$btn.button('loading');
 		$.ajax({
 			type: 'post'
 			, contentType:'application/json;charset=UTF-8'         
@@ -384,16 +401,15 @@ background-color: #7BC3EC;
 		   	, data: JSON.stringify(customer)
 		   	, dataType: 'json'
 		   	, success: function(json){
-				if (json.hasErrors) {
-					$.jsonValidation(json, 'right');
-				} else {  //console.log("customer response:"); console.log(json.model);
-					window.location.href='${ctx}' + json.url;
-				}
+				if (!$.jsonValidation(json, 'right')) { //console.log("customer response:"); console.log(json.model);
+					window.location.href = '${ctx}' + json.url;
+				} 
 		   	}
 		}).always(function () {
 			$btn.button('reset');
 	    });
-	});
+	}
+	
 })(jQuery);
 </script>
 <script src="http://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>

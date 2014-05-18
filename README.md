@@ -16,7 +16,6 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
-
 demand version 1.0.9 2014-05-15 
 
 * 修改customer order, 添加更多的属性，把sv cv和 service giving分开更改

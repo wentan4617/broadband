@@ -31,7 +31,7 @@ background-color: #7BC3EC;
 		<p><strong>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</strong></p>
 		<p>The process and conditions as bellows, it will be more cost efficiency and convenience to all the Top Up users. </p>
 		<p>CyberPark Top Up Plan offer you unlimited data plan by weekly charges,</p>
-		<p>NZD$30/week Top Up payment method include: credit cards, account to account, or call 0800 2 Cyber (29237) for help.</p>
+		<p>NZ$ 30/week Top Up payment method include: credit cards, account to account, or call 0800 2 Cyber (29237) for help.</p>
 	</div>
 	
  	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
@@ -109,17 +109,17 @@ background-color: #7BC3EC;
 				</div>
 			</div>
 			
-			<p class="lead">
-				Promotion: NZD$20/week CyberPark Top Up Unlimited Naked ADSL Broadband (UNAB) plan if you apply before the end of August, 2014.
+			<p class="text-danger">
+				Promotion: NZ$ 20/week CyberPark Top Up Unlimited Naked ADSL Broadband (UNAB) plan if you apply before the end of August, 2014.
 			</p>
 		</div>
 	</div>
 	
 	<div>
 		<ul>
-			<li>No Terms, No contract </li>
+			<li>No Terms, No contract</li>
 			<li>Use your own Routers</li>
-			<li>New Connection fee, one off charge $ ${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}</li>
+			<li>New Connection fee, one off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
 		</ul>
 	</div>
 	
@@ -147,10 +147,11 @@ background-color: #7BC3EC;
 			<li>Visit our website www.cyberpark.co.nz and choose “Apply Top-up broadband”</li>
 			<li>Filling your personal details, like name, address, contact phone number</li>
 			<li>If you are transiting from your current Internet service providers, please accurately fill the details of your current provider and account number. </li>
-			<li>Submit all your details and select the first top-up value (minimum $20 for 7 days)</li>
-			<li>New connection has one-off charge $145</li>
-			<li>New Jack-point installation has one-off charge $199</li>
-			<li>If you don’t have ADSL router, we can offer you $50 for TP link ADSL2+ router</li>
+			<li>Submit all your details and select the first top-up value (minimum NZ$ 20 for 7 days)</li>
+			<li>Transition Provider has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
+			<li>New connection has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
+			<li>New Jack-point installation has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
+			<li>If you don’t have ADSL router, we can offer you NDZ$ 50 for TP link ADSL2+ router</li>
 		</ul>
 	</div>
 	
@@ -180,7 +181,7 @@ background-color: #7BC3EC;
 				Payment functions can offer you different methods to Top-up, like credit cards, account-to-account, paypal, or top-up voucher. All these payment methods are security and convenience in NZ market.  	
 			</li>
 			<li>
-				When you overdue your usage period, you broadband service will be automatically suspend in the following 48 hours. After that, your broadband connection will be disconnected and reaction may charges you as a New Connection which costs $99.  
+				When you overdue your usage period, you broadband service will be automatically suspend in the following 48 hours. After that, your broadband connection will be disconnected and reaction may charges you as a New Connection which costs NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" />.  
 			</li>
 		</ul>
 	</div>
@@ -197,12 +198,12 @@ background-color: #7BC3EC;
 			<li>User your own router/modem</li>
 			<li>No term</li>
 			<li>“week” is defined as 7 days after the customer received UNAB service</li>
-			<li>Transfer the existing broadband connection to CyberPark is free </li>
-			<li>Get a new broadband connection on an existing (but inactive) jackpot charge NZD$145</li>
-			<li>Get a new broadband connection and an new jackpot installation and activation charge NZD$199</li>
+			<li>Transfer the existing broadband connection to CyberPark costs NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
+			<li>Get a new broadband connection on an existing (but inactive) jackpot charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
+			<li>Get a new broadband connection and an new jackpot installation and activation charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
 			<li>CyberPark Top Up UNAB plan service is automatically terminated in 48 hours after expire date</li>
 			<li>After CyberPark Top Up UNAB plan service was terminated, CyberPark account user can Top Up his/her CyberPark account online or contact with our customer service to reactivating the broadband services in 2-5 days. However, we cannot guarantee the previous ADSL pots available all the time. More information, please contact with our customer service , 0800 2 Cyber (29237) </li>
-			<li>Re-activating CyberPark Top Up UNAB plan charges: 1st re-activating plan account for free, 2nd re-activating costs NZD $49, 3rd re-activating costs NZD $99 and 4th re-activating costs NZD $149 in 1 year period from CyberPark account by online, message, or telephone calling 0800 2 Cyber.  </li>
+			<li>Re-activating CyberPark Top Up UNAB plan charges: 1st re-activating plan account for free, 2nd re-activating costs NZ $49, 3rd re-activating costs NZ $99 and 4th re-activating costs NZ $149 in 1 year period from CyberPark account by online, message, or telephone calling 0800 2 Cyber.  </li>
 			<li>Reasonable unlimited data use</li>
 			<li>Respect to the copy right regulation in NZ</li>
 			<li>Free of charge upgrade to any CyberPark term plans</li>
