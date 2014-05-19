@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class Calculation4PlanTermInvoice {
 	
+	// Get service begin month's daily price, remaining days, total price
 	public static Map<String, Object> servedMonthDetails(Date serviceGivingDate, Double monthlyCharge){
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		Calendar cal = Calendar.getInstance(Locale.CHINA);
@@ -27,7 +28,7 @@ public class Calculation4PlanTermInvoice {
 		
 		// Term plan's daily price, monthlyCharge divide monthly maximum days
 		Double dailyPrice = bigMonthlyCharge.divide(bigMaximumDays, 5, BigDecimal.ROUND_DOWN).doubleValue();
-		resultMap.put("dailyPrice", dailyPrice);
+		resultMap.put("dailyPrice", Double.parseDouble(TMUtils.fillDecimal(String.valueOf(dailyPrice))));
 		
 		// BEGIN FIRST STEP, get maximum days in month & daily price
 		
@@ -44,7 +45,7 @@ public class Calculation4PlanTermInvoice {
 		
 		// Term plan's daily price, monthlyCharge divide monthly maximum days
 		Double totalPrice = bigDailyPrice.multiply(bigRemainingDays).doubleValue();
-		resultMap.put("totalPrice", totalPrice);
+		resultMap.put("totalPrice", Double.parseDouble(TMUtils.fillDecimal(String.valueOf(totalPrice))));
 		
 		
 //		System.out.println(cal.getActualMaximum(Calendar.DATE));
@@ -54,6 +55,7 @@ public class Calculation4PlanTermInvoice {
 		return resultMap;
 	}
 	
+	// Get current month's 20th date
 	public static Date getInvoiceDueDate(){
 		
 		Calendar cal = Calendar.getInstance(Locale.CHINA);

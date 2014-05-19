@@ -20,14 +20,16 @@ Total Mobile Solution Internet Service Web Project
  
  * 
 
-demand version 1.0.9 2014-05-15 
-
+demand version 1.0.9 2014-05-15
+ 
+* 设计一个界面用来实现上传PSTN数据到数据库里。(kanny)
+* customer的invoice detail里Make Payment功能里的DDPay点击确认后将该invoice的status变成paid，payable赋给paid然后payable赋值为0d相应地balance也赋值为0d，将该记录存至transaction。(steven)
 * order表加个previous_provider_invoice字段，sale下单时选择transition则显示上传功能，上传文件的保存路径存放到pervious_provider_invoice字段中(steven)
-* 在每月的10号，11 am，以email的形式推送生成的plan-term的invoice pdf
-* 修改customer order, 添加更多的属性，把sv cv和 service giving分开更改
-* 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库
-* customer edit界面的order,如果有sale显示sale, 还可以把当前订单
-* customer edit的order information界面，现实order的note，并且可以修改(steven)
+* 在每月的10号，11 am，以email的形式推送生成的plan-term的invoice pdf(steven)
+* 修改customer order, 添加更多的属性，把sv cv和 service giving分开更改(steven)
+* 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库(steven)
+* customer edit界面的order,如果有sale显示sale,可以当前订单的所有者改变成其他sales(steven)
+* customer edit的order information界面，现实order的option request，并且可以修改(steven)
 * [重构客户购买订购流程](kanny)
 * 重构sale下单流程(kanny)
 * 重构管理员下单流程(kanny)
