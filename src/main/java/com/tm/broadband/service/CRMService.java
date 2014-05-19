@@ -754,9 +754,9 @@ public class CRMService {
 							cid.setInvoice_detail_price((Double)resultMap.get("totalPrice"));
 							
 							// Preparing for calculations, term plan's remaining price
-							BigDecimal bigRemainingPrice = new BigDecimal(cid.getInvoice_detail_price());
+							BigDecimal bigRemainingPrice = new BigDecimal((Double)resultMap.get("totalPrice"));
 							// Add remaining price into payable amount
-							bigPayableAmount.add(bigRemainingPrice);
+							bigPayableAmount = bigPayableAmount.add(bigRemainingPrice);
 							
 							cids.add(cid);
 							
@@ -771,9 +771,9 @@ public class CRMService {
 								cid.setInvoice_detail_price(cod.getDetail_price());
 								
 								// Preparing for calculations, term plan's monthly price
-								BigDecimal bigMonthlyPrice = new BigDecimal(cid.getInvoice_detail_price());
+								BigDecimal bigMonthlyPrice = new BigDecimal(cod.getDetail_price());
 								// Add monthly price into payable amount
-								bigPayableAmount.add(bigMonthlyPrice);
+								bigPayableAmount = bigPayableAmount.add(bigMonthlyPrice);
 								
 								cids.add(cid);
 							}
@@ -786,11 +786,11 @@ public class CRMService {
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							
 							// Preparing for calculations, term plan's discount price
-							BigDecimal bigDiscountPrice = new BigDecimal(cid.getInvoice_detail_discount());
-							BigDecimal bigDiscountUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							BigDecimal bigDiscountPrice = new BigDecimal(cod.getDetail_price());
+							BigDecimal bigDiscountUnit = new BigDecimal(cod.getDetail_unit());
 							
 							// Payable amount minus ( discount price times discount unit )
-							bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
+							bigPayableAmount = bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
 							
 							cids.add(cid);
 							
@@ -802,20 +802,17 @@ public class CRMService {
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							
 							// Preparing for calculations, invoice detail's unit price
-							BigDecimal bigDetailPrice = new BigDecimal(cid.getInvoice_detail_price());
-							BigDecimal bigDetailUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							BigDecimal bigDetailPrice = new BigDecimal(cod.getDetail_price());
+							BigDecimal bigDetailUnit = new BigDecimal(cod.getDetail_unit());
 
 							// Payable amount plus ( detail price times detail unit )
-							bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
+							bigPayableAmount = bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
 
 							cids.add(cid);
 						}
 						
 					// Else not first invoice, add unexpired order detail(s) into invoice detail(s)
 					} else {
-						// Add previous invoice's balance
-						BigDecimal bigPreviousInvoiceBalance = new BigDecimal(cpi.getBalance());
-						bigPayableAmount.add(bigPreviousInvoiceBalance);
 						
 						// Add previous invoice's details into
 						ci.setLast_invoice_id(cpi.getId());
@@ -823,15 +820,16 @@ public class CRMService {
 
 						// If plan-term type, then add detail into invoice detail
 						if("plan-term".equals(cod.getDetail_type())){
-
+							
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							cid.setInvoice_detail_price(cod.getDetail_price());
 							
 							// Preparing for calculations, term plan's monthly price
-							BigDecimal bigMonthlyPrice = new BigDecimal(cid.getInvoice_detail_price());
+							BigDecimal bigMonthlyPrice = new BigDecimal(cod.getDetail_price());
 							// Add monthly price into payable amount
-							bigPayableAmount.add(bigMonthlyPrice);
+							
+							bigPayableAmount = bigPayableAmount.add(bigMonthlyPrice);
 							
 							cids.add(cid);
 
@@ -843,11 +841,11 @@ public class CRMService {
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							
 							// Preparing for calculations, term plan's discount price
-							BigDecimal bigDiscountPrice = new BigDecimal(cid.getInvoice_detail_discount());
-							BigDecimal bigDiscountUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							BigDecimal bigDiscountPrice = new BigDecimal(cod.getDetail_price());
+							BigDecimal bigDiscountUnit = new BigDecimal(cod.getDetail_unit());
 							
 							// Payable amount minus ( discount price times discount unit )
-							bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
+							bigPayableAmount = bigPayableAmount.subtract(bigDiscountPrice.multiply(bigDiscountUnit));
 							
 							cids.add(cid);
 
@@ -859,17 +857,23 @@ public class CRMService {
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							
 							// Preparing for calculations, invoice detail's unit price
-							BigDecimal bigDetailPrice = new BigDecimal(cid.getInvoice_detail_price());
-							BigDecimal bigDetailUnit = new BigDecimal(cid.getInvoice_detail_unit());
+							BigDecimal bigDetailPrice = new BigDecimal(cod.getDetail_price());
+							BigDecimal bigDetailUnit = new BigDecimal(cod.getDetail_unit());
 
 							// Payable amount plus ( detail price times detail unit )
-							bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
+							bigPayableAmount = bigPayableAmount.add(bigDetailPrice.multiply(bigDetailUnit));
 
 							cids.add(cid);
 						}
 						
 					}
 				}
+				if(!isFirst){
+					// Add previous invoice's balance
+					BigDecimal bigPreviousInvoiceBalance = new BigDecimal(cpi.getBalance());
+					bigPayableAmount = bigPayableAmount.add(bigPreviousInvoiceBalance);
+				}
+				
 				// Set invoice details into 
 				ci.setCustomerInvoiceDetails(cids);
 				
@@ -879,7 +883,7 @@ public class CRMService {
 				// Set current invoice's balance = ( payable - paid )
 				BigDecimal bigBalance = new BigDecimal(ci.getBalance() != null ? ci.getBalance() : 0d);
 				BigDecimal bigPaidAmount = new BigDecimal(ci.getAmount_paid() != null ? ci.getAmount_paid() : 0d);
-				bigBalance.add(bigPayableAmount.subtract(bigPaidAmount));
+				bigBalance = bigBalance.add(bigPayableAmount.subtract(bigPaidAmount));
 				ci.setBalance(bigBalance.doubleValue());
 				
 				// Updates invoice
@@ -910,27 +914,27 @@ public class CRMService {
 					e.printStackTrace();
 				}
 				ci.setInvoice_pdf_path(filePath);
-				// add sql condition: id
+				
 				this.customerInvoiceMapper.updateCustomerInvoice(ci);
 
-				Notification notificationEmail = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "email");
-				Notification notificationSMS = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "sms");
-
-				// call mail at value retriever
-				TMUtils.mailAtValueRetriever(notificationEmail, c, ci, companyDetail);
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(c.getEmail());
-				applicationEmail.setSubject(notificationEmail.getTitle());
-				applicationEmail.setContent(notificationEmail.getContent());
-				// binding attachment name & path to email
-				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-				applicationEmail.setAttachPath(filePath);
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-				// get sms register template from db
-				TMUtils.mailAtValueRetriever(notificationSMS, c, ci, companyDetail);
-				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
+//				Notification notificationEmail = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "email");
+//				Notification notificationSMS = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "sms");
+//
+//				// call mail at value retriever
+//				TMUtils.mailAtValueRetriever(notificationEmail, c, ci, companyDetail);
+//				ApplicationEmail applicationEmail = new ApplicationEmail();
+//				applicationEmail.setAddressee(c.getEmail());
+//				applicationEmail.setSubject(notificationEmail.getTitle());
+//				applicationEmail.setContent(notificationEmail.getContent());
+//				// binding attachment name & path to email
+//				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+//				applicationEmail.setAttachPath(filePath);
+//				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//
+//				// get sms register template from db
+//				TMUtils.mailAtValueRetriever(notificationSMS, c, ci, companyDetail);
+//				// send sms to customer's mobile phone
+//				this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
 			}
 		}
 	}
