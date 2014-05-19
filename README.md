@@ -28,7 +28,7 @@ demand version 1.0.9 2014-05-15
 * 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库
 * customer edit界面的order,如果有sale显示sale, 还可以把当前订单
 * customer edit的order information界面，现实order的note，并且可以修改(steven)
-* 重构客户购买订购流程(kanny)
+* [重构客户购买订购流程](kanny)
 * 重构sale下单流程(kanny)
 * 重构管理员下单流程(kanny)
 * [更新出invoice算法，判断如果是term的order则在Service Giving的时候不出账单，再写一个Quartz的Schedule类，每个月10号获取类型为term的订单并且出账单，判断当前是否是第一张账单，如果是第一张账单判断该customer是business还是personal，如果是business则总价加上15%GST，总价除以当月的天数取得单天价格再乘以Service Giving开通后本月剩余天数再加上该term的包月价格得到该invoice。](steven)

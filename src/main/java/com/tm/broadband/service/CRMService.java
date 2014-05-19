@@ -719,7 +719,7 @@ public class CRMService {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 				// Production environment should edit as shown below
 				// {true} change to {below long statement}
-				boolean isServedCurrentMonth = //true; 
+				boolean isServedCurrentMonth = //false; 
 						co.getOrder_using_start() != null ? sdf.format(co.getOrder_using_start()).equals(sdf.format(new Date())) : false;
 				
 				ci.setCustomer_id(c.getId());
