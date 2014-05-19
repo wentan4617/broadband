@@ -1,9 +1,5 @@
 package com.tm.broadband.util;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 
 
@@ -39,10 +35,11 @@ public class Test {
 //		boolean isServedCurrentMonth = sdf.format(sdf.parse("2014-05-19")).equals(sdf.format(new Date()));
 //		System.out.println(isServedCurrentMonth);
 		
-		Calendar cal = Calendar.getInstance(Locale.CHINA);
-		String yyyy_MM = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).substring(0, 7);
-		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));
-		System.out.println(cal.getTime());
+//		Calendar cal = Calendar.getInstance(Locale.CHINA);
+//		String yyyy_MM = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).substring(0, 7);
+//		cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));
+//		System.out.println(cal.getTime());
+		
 	}
 
 }
