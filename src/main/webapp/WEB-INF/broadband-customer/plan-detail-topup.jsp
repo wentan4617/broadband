@@ -66,7 +66,7 @@ background-color: #7BC3EC;
 							<p class="bg-success text-center text-success" style="position:relative;margin-bottom:0;height: 140px;">
 								<span style="font-size:40px; font-weight:bold; float:left;margin-left: 40px;margin-top: 80px;line-height: 1;">$</span>
 								<span style="font-size: 100px; font-weight:bold; float: left;margin-left: 10px;margin-top: 30px;line-height: 1;"> 
-									<fmt:formatNumber value="20" type="number" pattern="##0" />
+									<fmt:formatNumber value="30" type="number" pattern="##0" />
 								</span>
 							</p>
 						</div>
@@ -110,7 +110,7 @@ background-color: #7BC3EC;
 			</div>
 			
 			<p class="text-danger">
-				Promotion: NZ$ 20/week CyberPark Top Up Unlimited Naked ADSL Broadband (UNAB) plan if you apply before the end of August, 2014.
+				Promotion: Before the end of August, 2014, NZ$ 20/week CyberPark Top Up Unlimited Naked ADSL Broadband (UNAB) plan .
 			</p>
 		</div>
 	</div>
@@ -119,7 +119,7 @@ background-color: #7BC3EC;
 		<ul>
 			<li>No Terms, No contract</li>
 			<li>Use your own Routers</li>
-			<li>New Connection fee, one off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
+			
 		</ul>
 	</div>
 	
@@ -147,7 +147,7 @@ background-color: #7BC3EC;
 			<li>Visit our website www.cyberpark.co.nz and choose “Apply Top-up broadband”</li>
 			<li>Filling your personal details, like name, address, contact phone number</li>
 			<li>If you are transiting from your current Internet service providers, please accurately fill the details of your current provider and account number. </li>
-			<li>Submit all your details and select the first top-up value (minimum NZ$ 20 for 7 days)</li>
+			<li>Submit all your details and select the first top-up value (minimum NZ$ 30 for 7 days)</li>
 			<li>Transition Provider has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
 			<li>New connection has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
 			<li>New Jack-point installation has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
