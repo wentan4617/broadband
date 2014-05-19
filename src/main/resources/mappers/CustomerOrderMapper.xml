@@ -240,7 +240,7 @@
 					<if test="params.order_type_no_term != null">and co.order_type=#{params.order_type_no_term}</if>
 				</when>
 				<when test="params.where == 'query_term'">
-					<!-- co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now()) -->
+					co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now())
 					<if test="params.status != null">and co.order_status=#{params.status}</if>
 					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
 				</when>

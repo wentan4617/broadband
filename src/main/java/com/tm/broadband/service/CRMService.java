@@ -686,7 +686,7 @@ public class CRMService {
 		// order_type_term = order-term
 		CustomerOrder coTemp = new CustomerOrder();
 		coTemp.getParams().put("where", "query_term");
-		coTemp.getParams().put("status", "pending");
+		coTemp.getParams().put("status", "using");
 		coTemp.getParams().put("order_type", "order-term"); 
 		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
 		
@@ -719,8 +719,8 @@ public class CRMService {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
 				// Production environment should edit as shown below
 				// {true} change to {below long statement}
-				boolean isServedCurrentMonth = false; 
-						//co.getOrder_using_start() != null ? sdf.format(co.getOrder_using_start()).equals(sdf.format(new Date())) : false;
+				boolean isServedCurrentMonth = //false; 
+						co.getOrder_using_start() != null ? sdf.format(co.getOrder_using_start()).equals(sdf.format(new Date())) : false;
 				
 				ci.setCustomer_id(c.getId());
 				ci.setOrder_id(co.getId());
@@ -746,8 +746,8 @@ public class CRMService {
 							// Get served month's term plan's remaining charges 
 							// Production environment should edit as shown below
 							// {new Date()} change to {co.getOrder_using_start()}
-							Map<String, Object> resultMap = Calculation4PlanTermInvoice.servedMonthDetails(new Date()
-									//co.getOrder_using_start()
+							Map<String, Object> resultMap = Calculation4PlanTermInvoice.servedMonthDetails(//new Date()
+									co.getOrder_using_start()
 									, cod.getDetail_price());
 							cid.setInvoice_detail_name(cod.getDetail_name()+" ("+resultMap.get("remainingDays")+" day(s) counting from service start date to end of month)");
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
