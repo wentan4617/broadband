@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
 
@@ -74,7 +73,7 @@ background-color: #7BC3EC;
 	<div class="panel panel-success" id="adslPanel">
 		<div class="panel-body">
 			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="ADSL provides fast bandwidth for home use">
-			<h1 style="height:54px;font-weight:bold;" class="text-success">ADSL BROADBAND</h1>
+			<h1 style="height:54px;font-weight:bold;" class="text-success">ADSL Naked BROADBAND (No Term)</h1>
 			<hr/>
 			<div class="well">
 				The broadband standard in NZ. Fast Internet over your copper phone line.
@@ -86,7 +85,12 @@ background-color: #7BC3EC;
 					<div class="col-md-3">
 						<div class="thumbnail">
 							<div class="caption">
-								<div class="text-success text-center home-title" style="font-weight:bold;">${plan.data_flow } GB</div>
+								<div class="text-success text-center home-title" style="font-weight:bold;">
+									<c:choose>
+										<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
+										<c:otherwise>${plan.data_flow } GB</c:otherwise>
+									</c:choose>
+								</div>
 								<hr style="margin-top:0;"/>
 								<p class="text-center text-success" style="position:relative;margin-bottom:0;">
 									<span style="font-size:40px;font-weight:bold;float:left;margin-left:20px;margin-top:20px;">$</span>
