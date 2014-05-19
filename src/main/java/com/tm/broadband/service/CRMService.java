@@ -894,7 +894,6 @@ public class CRMService {
 					cid.setInvoice_id(ci.getId());
 					this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(cid);
 				}
-				
 
 				// store company detail begin
 				CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
