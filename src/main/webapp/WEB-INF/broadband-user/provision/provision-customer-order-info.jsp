@@ -1,5 +1,4 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <style>
@@ -44,6 +43,8 @@
 	$('#provision-customer-order-info-modal').on('show.bs.modal', function (e) {
 		
 		$('a[data-name]').popover('destroy');
+		$('#customer_information_container').empty();
+		$('#customer_order_container').empty();
 		
 		if (order_id != null) {
 			
@@ -97,7 +98,7 @@
 						detailHtml += '<td>' + (customerOrderDetail.detail_plan_type || ' ') + '</td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_plan_sort || ' ') + '</td>';
 						detailHtml += '<td><strong>' + (customerOrderDetail.detail_plan_status || ' ') + '</strong></td>';
-						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow || ' ') + '</td>';
+						detailHtml += '<td>' + (customerOrderDetail.detail_data_flow < 0 ? 'Unlimited': customerOrderDetail.detail_data_flow || '') + '</td>';
 						detailHtml += '<td><strong>' + (customerOrderDetail.detail_price || ' ') + '</strong></td>';
 						detailHtml += '<td>' + (customerOrderDetail.detail_unit || ' ') + '</td>';
 						detailHtml += '<td><strong>' + (customerOrderDetail.detail_expired_str || ' ') + '</strong></td>';

@@ -210,23 +210,36 @@ public class CRMController {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
 			customerOrder.setOrder_due(cal.getTime());
-			this.crmService.editCustomerOrder(customerOrder, proLog);
+			
 		}
+		
 		this.crmService.editCustomerOrder(customerOrder, proLog);
+		
+		// check order status
+		if ("ordering-paid".equals(order_status) || "order-term".equals(order_type)) {
 
-		// send mailer
-		Customer customer = this.crmService.queryCustomerById(customer_id);
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+			// send mailer
+			Customer customer = this.crmService.queryCustomerById(customer_id);
+			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
+			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+			this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+		}
+
+		if ("ordering-pending".equals(order_status) && !"order-term".equals(order_type)) {
+			
+			Notification notificationEmail = this.systemService.queryNotificationBySort("service-giving", "email");
+			Notification notificationSMS = this.systemService.queryNotificationBySort("service-giving", "sms");
+			this.crmService.createInvoicePDF(customerOrder, notificationEmail, notificationSMS);
+				
+		}
 
 		return customerOrder;
 	}
