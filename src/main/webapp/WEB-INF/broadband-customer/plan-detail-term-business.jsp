@@ -99,7 +99,11 @@
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
 							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
+							<c:if test="${plan.original_price > 0 }">
+								<i style="font-size:24px;text-decoration:line-through;">
+									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
+								</i>
+							</c:if>
 							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</span>
@@ -183,7 +187,11 @@
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
 							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
+							<c:if test="${plan.original_price > 0 }">
+								<i style="font-size:24px;text-decoration:line-through;">
+									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
+								</i>
+							</c:if>
 							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</span>
@@ -268,7 +276,11 @@
 					<div class="panel-heading">
 						<h2 class="panel-title text-center">
 							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<i style="font-size:24px;text-decoration:line-through;"><fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" /></i>
+							<c:if test="${plan.original_price > 0 }">
+								<i style="font-size:24px;text-decoration:line-through;">
+									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
+								</i>
+							</c:if>
 							<span style="font-size:60px;font-weight:bold;"> 
 								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 							</span>
