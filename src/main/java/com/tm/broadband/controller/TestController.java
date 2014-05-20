@@ -86,5 +86,11 @@ public class TestController {
 	public String planView(Model model) {
 		return "test/test-plan-view";
 	}
+	
+	
+	@RequestMapping(value = "/test/upload")
+	public String upload(Model model) {
+		return "test/test-file-upload";
+	}
 
 }
