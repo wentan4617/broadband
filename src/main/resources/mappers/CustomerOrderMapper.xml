@@ -538,7 +538,7 @@
 			<if test="sale_id != null">sale_id=#{sale_id},</if>
 			<if test="order_pdf_path != null">order_pdf_path=#{order_pdf_path},</if>
 			<if test="credit_pdf_path != null">credit_pdf_path=#{credit_pdf_path},</if>
-			<if test="signature != null">signature=#{signature}</if>
+			<if test="signature != null">signature=#{signature},</if>
 			<if test="optional_request != null">optional_request=#{optional_request}</if>
 		</set>
 		<where>

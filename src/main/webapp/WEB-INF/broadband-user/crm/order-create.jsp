@@ -57,13 +57,10 @@
 								<label for="" class="control-label col-md-3"></label>
 								<div class="col-md-6">
 									<form:select path="plan.topup.topup_fee" class="selectpicker show-tick form-control">
-										<form:option value="30">Top up $ 30</form:option>
+										<form:option value="30">Top up $ 20</form:option>
+										<form:option value="50">Top up $ 30</form:option>
+										<form:option value="50">Top up $ 40</form:option>
 										<form:option value="50">Top up $ 50</form:option>
-										<form:option value="80">Top up $ 80</form:option>
-										<form:option value="100">Top up $ 100</form:option>
-										<form:option value="120">Top up $ 120</form:option>
-										<form:option value="150">Top up $ 150</form:option>
-										<form:option value="180">Top up $ 180</form:option>
 									</form:select>
 								</div>
 							</div>
@@ -73,8 +70,9 @@
 								<div class="col-md-6">
 									<form:select path="order_broadband_type" class="selectpicker show-tick form-control">
 										<form:option value="">None</form:option>
-										<form:option value="new-connection">New Connection</form:option>
 										<form:option value="transition">Transition</form:option>
+										<form:option value="new-connection">New Connection</form:option>
+										<form:option value="jackpot">New Connection & Jackpot Installation</form:option>
 									</form:select>
 								</div>
 								<p class="help-block">
@@ -177,12 +175,6 @@
 		</div>
 	</div>
 </div>
-
-<c:forEach var="plan" items="${plans}">
-	<c:if test="${plan.plan_group == 'plan-topup' }"></c:if>
-	<c:if test="${plan.plan_group == 'plan-no-term' }"></c:if>
-	<c:if test="${plan.plan_group == 'plan-term' }"></c:if>
-</c:forEach>
 	
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
@@ -417,9 +409,9 @@
 	});
 	
 	function showTransitionContainer(val) {
-		if (val === "new-connection") {
+		if (val == "new-connection") {
 			$('#transitionContainer').hide('fast');
-		} else if (val === "transition"){
+		} else if (val == "transition"){
 			$('#transitionContainer').show('fast');
 		} else {
 			$('#transitionContainer').hide('fast');
