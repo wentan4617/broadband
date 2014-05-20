@@ -409,7 +409,7 @@ public class CustomerController {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("Invoice-" + customerTransaction.getInvoice_id() + ".pdf");
+			applicationEmail.setAttachName("invoice_" + customerTransaction.getInvoice_id() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
