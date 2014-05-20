@@ -212,7 +212,6 @@ public class CRMController {
 			customerOrder.setOrder_due(cal.getTime());
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 		}
-		
 		this.crmService.editCustomerOrder(customerOrder, proLog);
 
 		// send mailer

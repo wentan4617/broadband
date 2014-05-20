@@ -1,0 +1,162 @@
+<. if (invoicePage.results != null && invoicePage.results.length > 0) { .>
+<table class="table">
+<. for (var o = 0, len = orderIds.length; o < len; o++){ .>
+	<thead>
+		<tr>
+			<th colspan="11">
+				<!-- In the external page, assign orderIds as obj's attribute -->
+				<h3 class="text-success" style="margin: 2px;"><strong>Order Serial:&nbsp;<small><.=orderIds[o].></small></strong></h3>
+			</th>
+		</tr>
+		<tr>
+			<th>Reference</th>
+			<th>Create Date</th>
+			<th>Due Date</th>
+			<th>Amount Payable</th>
+			<th>Amount Paid</th>
+			<th>Balance</th>
+			<th>Status</th>
+			<th>&nbsp;</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+		<.
+			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
+				var invoice = invoicePage.results[i];
+				
+				if(orderIds[o]==invoice.order_id){
+				
+					for (var t = 0, txLen = transactionsList.length; t < txLen; t++) {
+						var tx = transactionsList[t];
+						
+						if(tx.invoice_id==invoice.id){
+							var txAmount_paid = new Number(invoice.amount_paid);
+		.>
+							<tr class="success">
+								<td>Transaction# - <.= tx.id .></td>
+								<td><.= tx.transaction_date_str .></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+								<td><strong><.= txAmount_paid.toFixed(2) .></strong></td>
+								<td>&nbsp;</td>
+								<td><.= invoice.status .></td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+		<.
+						}
+					}
+		.>
+					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'danger' : '' .>" >
+					<td>Invoice# - <.= invoice.id .></td>
+					<td><.= invoice.create_date_str .></td>
+		<.
+					if(invoice.status!='unpaid' && invoice.status!='not_pay_off'){
+		.>
+						<td>&nbsp;</td>
+		<.
+					} else {
+		.>
+						<td><strong style="color:red;"><.= invoice.due_date_str .></strong></td>
+		<.
+					}
+					var invoiceAmount_payable = new Number(invoice.amount_payable);
+					var invoiceAmount_paid = new Number(invoice.amount_paid);
+					var invoiceBalance = new Number(invoice.balance);
+		.>
+					<td><strong><.= invoiceAmount_payable.toFixed(2) .></strong></td>
+					<td><strong><.= invoiceAmount_paid.toFixed(2) .></strong></td>
+					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
+					<td><strong><.= invoice.status .></strong></td>
+		<. 
+					if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
+		.>
+					<td>
+						<div class="btn-group dropup">
+							<button type="button" class="btn btn-primary btn-xs">Make Payment</button>
+							<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+								<span class="sr-only">Toggle Dropdown</span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+								<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>
+								<li><a data-toggle="modal" data-target="#confirmDDPayModal" data-id="<.= invoice.id .>" data-name="ddpay_btn" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+								<li><a href="#"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+							</ul>
+						</div>
+					</td>
+		<.
+					} else {
+		.>
+					<td>&nbsp;</td>
+		<. 
+					}
+					var downloadUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
+					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + customer_id;
+					var generateUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
+					if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
+						if(invoice.invoice_pdf_path != null){
+		.>
+						<td>
+							<!-- regenerate icon -->
+							<!-- Need to activate onclick event -->
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<!-- download icon -->
+							<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+							<!-- download icon -->
+							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email"><span class="glyphicon glyphicon-send"></span></a>
+						</td>
+		<.
+						} else {
+		.>
+						<td>
+							<!-- regenerate icon -->
+							<!-- Need to activate onclick event -->
+							<a target="_blank" href="javascript:void(0);" data-name="generateUrl<.= invoice.id .>" data-url="<.= generateUrl .>" id="<.= invoice.id .>regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<!-- download icon -->
+							<a target="_blank" href="<.= downloadUrl .>" data-name="download<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+							<!-- download icon -->
+							<a target="_blank" href="<.= sendUrl .>" data-name="send<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>
+						</td>
+		<.
+						}
+					} else {
+		.>
+					<td>
+						<!-- download icon -->
+						<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+					</td>
+		<.
+					}
+		.>
+				</tr>
+		<. } .>
+	<. } .>
+<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = invoicePage.totalPage; i <= len; i++) {
+	.>
+						<li class="<.= invoicePage.pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<. } else { .>
+	<div class="alert alert-warning">No records have been found.</div>
+<. } .>

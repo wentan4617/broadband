@@ -36,8 +36,6 @@
 					<jsp:include page="customer-order.jsp" />
 				</div>
 				<div class="panel-body tab-pane fade" id="invoice_detail">
-					<!-- Customer Invoice Info Module -->
-					<jsp:include page="customer-invoice.jsp" />
 				</div>
 				<div class="panel-body tab-pane fade" id="transaction_detail">
 					<!-- Customer Transaction Info Module -->
@@ -47,10 +45,49 @@
 		</div>
 	</div>
 </div>
+
+<!-- Edit confirmDDPay Modal -->
+<div class="modal fade" id="confirmDDPayModal" tabindex="-1" role="dialog"
+	aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal"
+					aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="confirmDDPayModalLabel">
+					<strong>Use DDPay to Pay Off this invoice?</strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<p>
+						<strong>
+						This operation will assign invoice's balance to zero.<br/><br/>
+						And this operation will store your id and operating time into CyberPark's database as a record.<br/>
+						</strong>
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:void(0);" class="btn btn-success col-md-12"
+					data-name="confirm_ddpay_modal_btn" data-dismiss="modal"><strong>Confirm to use DDPay</strong></a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<!-- Customer Invoice Detail Template -->
+<script type="text/html" id="invoice_table_tmpl">
+<jsp:include page="customer-invoice-view-page.html" />
+</script>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
 (function($){
 	
@@ -452,164 +489,62 @@
 	}
 	
 	$.getInvoicePage = function(pageNo) {
-		
-		$.get('${ctx}/broadband-user/crm/invoice/view/' + pageNo+'/'+ ${customer.id}, callbackPage, "json");
-		
-		function callbackPage(map){
-			var html = "";
-			if (map.invoicePage.results != null && map.invoicePage.results.length > 0) {
-				html += '<table class="table">';
-				
-				// ieterating order's related invoices according to each and every order id
-				for (var o = 0, len = orderIds.length; o < len; o++){
-					html += '<thead>';
-					html += '<tr>';
-					html += '<th colspan="11"><h3 class="text-success" style="margin:2px;"><strong>Order Serial:&nbsp;<small>' + orderIds[o] + '</small></strong></h3></th>';
-					html += '</tr>';
-					html += '<tr>';
-					html += '<th>Reference</th>';
-					html += '<th>Create Date</th>';
-					html += '<th>Due Date</th>';
-					html += '<th>Amount Payable</th>';
-					html += '<th>Amount Paid</th>';
-					html += '<th>Balance</th>';
-					html += '<th>Status</th>';
-					html += '<th>&nbsp;</th>';
-					html += '<th>&nbsp;</th>';
-					html += '</tr>';
-					html += '</thead>';
-					html += '<tbody>';
-					for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
-						var invoice = map.invoicePage.results[i];
-						if(orderIds[o]==invoice.order_id){
-							for (var t = 0, txLen = map.transactionsList.length; t < txLen; t++) {
-								var tx = map.transactionsList[t];
-								if(tx.invoice_id==invoice.id){
-									html += '<tr class="success">';
-									html += '<td>Transaction# - ' + tx.id + '</td>';
-									html += '<td>' + tx.transaction_date_str + '</td>';
-									html += '<td>&nbsp;</td>';
-									html += '<td>&nbsp;</td>';
-									var txAmount_paid = new Number(invoice.amount_paid);
-									html += '<td><strong>' + txAmount_paid.toFixed(2) + '</strong></td>';
-									html += '<td>&nbsp;</td>';
-									html += '<td>' + invoice.status + '</td>';
-									html += '<td>&nbsp;</td>';
-									html += '<td>&nbsp;</td>';
-									html += '</tr>';
-								}
-							}
-							html += '<tr ';
-							
-							// if unpaid or not pay off then class=danger else class=active
-							invoice.status=='unpaid' || invoice.status=='not_pay_off' ? html+='class="danger"' : html+='';
-							html += '>';
-							html += '<td>Invoice# - ' + invoice.id + '</td>';
-							html += '<td>' + invoice.create_date_str + '</td>';
-							invoice.status!='unpaid' && invoice.status!='not_pay_off' ? html+='<td>&nbsp;</td>' : html+='<td><strong style="color:red;">'+invoice.due_date_str+'</strong></td>';
-							var invoiceAmount_payable = new Number(invoice.amount_payable);
-							var invoiceAmount_paid = new Number(invoice.amount_paid);
-							var invoiceBalance = new Number(invoice.balance);
-							html += '<td><strong>' + invoiceAmount_payable.toFixed(2) + '</strong></td>';
-							html += '<td><strong>' + invoiceAmount_paid.toFixed(2) + '</strong></td>';
-							html += '<td><strong>' + invoiceBalance.toFixed(2) + '</strong></td>';
-							html += '<td><strong>' + invoice.status + '</strong></td>';
-							if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
-								html += '<td>';
-								html += '	<div class="btn-group dropup">';
-								html += '		<button type="button" class="btn btn-primary btn-xs">Make Payment</button>';
-								html += '		<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">';
-								html += '			<span class="caret"></span>';
-								html += '			<span class="sr-only">Toggle Dropdown</span>';
-								html += '		</button>';
-								html += '		<ul class="dropdown-menu" role="menu">';
-								html += '			<li><a href="${ctx}/broadband-user/crm/customer/invoice/payment/credit-card/'+invoice.id+'"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>';
-								html += '			<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>';
-								html += '			<li><a href="#"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>';
-								html += '			<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>';
-								html += '			<li><a href="#"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>';
-								html += '		</ul>';
-								html += '	</div>';
-								html += '</td>';
-							} else {
-								html += '<td>&nbsp;</td>';
-							}
-							var downloadUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
-							var sendUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + ${customer.id};
-							var generateUrl = '${ctx}/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
-							
-							if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
-								if(invoice.invoice_pdf_path != null){
-									html += '<td>';
-									// regenerate icon
-									html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
-									// download icon
-									html += '<a target="_blank" href="' + downloadUrl + '" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
-									// send icon
-									html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + '" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer\'s email"><span class="glyphicon glyphicon-send"></span></a>';
-									html += '</td>';
-								}else{
-									// generate first invoice PDF
-									html += '<td>';
-									// regenerate icon
-									html += '<a target="_blank" href="javascript:void(0);" onclick="var xmlHttp=new XMLHttpRequest; xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\'); xmlHttp.send();" id="' + invoice.id + 'regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;';
-									// download icon
-									html += '<a target="_blank" href="' + downloadUrl + '" id="' + invoice.id + 'download" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
-									// send icon
-									html += '<a target="_blank" href="' + sendUrl + '" id="' + invoice.id + 'send" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>';
-									
-									// showed before first time click generate invoice PDF icon
-									html += '<script type="text\/javascript">														';
-									html += '	function showOthers(obj){															';
-									html += '		obj.style.display = "none";														';
-									html += '		document.getElementById(\'' + invoice.id + 'regenerate\').style.display=\'\';	';
-									html += '		document.getElementById(\'' + invoice.id + 'download\').style.display=\'\';		';
-									html += '		document.getElementById(\'' + invoice.id + 'send\').style.display=\'\';			';
-									html += '		var xmlHttp = new XMLHttpRequest;												';
-									html += '		xmlHttp.open(\'GET\',\'' + generateUrl + '\',\'true\');							';
-									html += '		xmlHttp.send();																	';
-									html += '	}																					';
-									html += '<\/script>																				';
-									html += '<a target="_blank" href="javascript:void(0);" onclick="showOthers(this);" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>';
-									html += '</td>';
-								}
-							} else {
-								html += '<td>';
-								// download icon
-								html += '<a target="_blank" href="' + downloadUrl + '" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;';
-								html += '</td>';
-							}
-							html += '</tr>';
-						}
-					}
-				}
-				html += '</tbody>';
-				html += '<tfoot>';
-				html += '<tr>';
-				html += '<td colspan="11">';
-				html += '<ul class="pagination">';
-				for (var i = 1, len = map.invoicePage.totalPage; i <= len; i++) {
-					html += '<li class="' + (map.invoicePage.pageNo == i ? 'active' : '') + '">';
-					html += '<a href="javascript:void(0);" onclick="$.getInvoicePage(' + i + ')">' + i + '</a>';
-					html += '</li>';
-				}
-				html += '</ul>';
-				html += '</td>';
-				html += '</tr>';
-				html += '</tfoot>';
-				html += '</table>';
-			} else {
-				html += '<div class="panel-body">';
-				html += '<div class="alert alert-warning">No records have been found.</div>';
-				html += '</div>';
-			}
-			$('#invoiceContainer').html(html);
+		$.get('${ctx}/broadband-user/crm/invoice/view/' + pageNo +'/'+ ${customer.id}, function(map){
+			map.ctx = '${ctx}';
+			map.customer_id = ${customer.id};
+			map.orderIds = orderIds;
+	   		var $table = $('#invoice_detail');
+			$table.html(tmpl('invoice_table_tmpl', map));
+			$table.find('tfoot a').click(function(){
+				$.getInvoicePage($(this).attr('data-pageNo'));
+			});
+			
 			$('a[data-toggle="tooltip"]').tooltip();
-		}
+			
+			// Iterating and binding all invoice's id to specific buttons
+			for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
+				
+				// BEGIN generate invoice
+				// Binding every generateUrl button's click event by assign them specific invoice's id
+				var invoice = map.invoicePage.results[i];
+				$('a[data-name="generateUrl'+invoice.id+'"]').click(function(){
+					
+					var url = $(this).attr('data-url');
+					$.post(url, function(){
+						
+						// If successful, then prompt notice
+						alert('Generate New Invoice Successfully!');
+					})
+				});
+				// END generate invoice
+				
+				// BEGIN first generate
+				// Binding every firstGenerate button's click event by assign them specific invoice's id
+				$('a[data-name="firstGenerate'+invoice.id+'"]').click(function(){
+					
+					var url = $(this).attr('data-url');
+					
+					$.post(url, function(){
+						
+						// If successful, then prompt notice
+						alert('Generate New Invoice Successfully!');
+					})
+					
+					$(this).css('display', 'none');
+					$('regenerate'+$(this).attr('id')).css('display', '');
+					$('download'+$(this).attr('id')).css('display', '');
+					$('send'+$(this).attr('id')).css('display', '');
+				});
+				// END first generate
+				
+			}
+			
+			
+		}, 'json');
 	}
-
-	$.getTxPage(1);
+	
 	$.getInvoicePage(1);
+	$.getTxPage(1);
 	
 	
 })(jQuery);

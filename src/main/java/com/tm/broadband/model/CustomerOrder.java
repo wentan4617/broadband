@@ -51,6 +51,7 @@ public class CustomerOrder implements Serializable {
 	private String credit_pdf_path;
 	private String signature;
 	private String optional_request;
+	private String broadband_asid;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -394,6 +395,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOptional_request(String optional_request) {
 		this.optional_request = optional_request;
+	}
+
+	public String getBroadband_asid() {
+		return broadband_asid;
+	}
+
+	public void setBroadband_asid(String broadband_asid) {
+		this.broadband_asid = broadband_asid;
 	}
 
 	
