@@ -779,7 +779,7 @@ public class CRMService {
 							}
 
 						// Else if discount and unexpired then do add discount
-						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 							
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -834,7 +834,7 @@ public class CRMService {
 							cids.add(cid);
 
 						// Else if discount and unexpired then do add discount
-						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+						} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 							
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -850,7 +850,7 @@ public class CRMService {
 							cids.add(cid);
 
 						// Else if unexpired then add order detail(s) into invoice detail(s)
-						} else if(cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+						} else if(cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
 
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_price(cod.getDetail_price());
@@ -1037,7 +1037,16 @@ public class CRMService {
 					// else if detail type is discount then this discount is expired
 					// and will not be add to the invoice detail list
 				} else if (!"discount".equals(cod.getDetail_type())) {
-					if (cod.getDetail_expired()==null) {
+					if (cod.getDetail_expired()==null && !is_Next_Invoice) {
+						// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+						customerInvoiceDetail.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice ? cod.getDetail_unit() : 1);
+						customerInvoiceDetail.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+						// increase amountPayable
+						amountPayable += customerInvoiceDetail.getInvoice_detail_price() != null ? customerInvoiceDetail.getInvoice_detail_price() * customerInvoiceDetail.getInvoice_detail_unit() : 0;
+						// add invoice detail to list
+						customerInvoiceDetailList.add(customerInvoiceDetail);
+					}
+					if(is_Next_Invoice && cod.getDetail_is_next_pay()==1){
 						// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 						customerInvoiceDetail.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice ? cod.getDetail_unit() : 1);
 						customerInvoiceDetail.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());

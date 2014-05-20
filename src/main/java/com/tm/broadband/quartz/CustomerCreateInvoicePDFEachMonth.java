@@ -1,7 +1,7 @@
 package com.tm.broadband.quartz;
 
 import java.text.ParseException;
-import java.util.Date;
+import java.text.SimpleDateFormat;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -31,7 +31,7 @@ public class CustomerCreateInvoicePDFEachMonth {
         
         // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
 		// using new Date() under production environment
-        customerOrder.getParams().put("next_invoice_create_date", new Date());
+        customerOrder.getParams().put("next_invoice_create_date", new SimpleDateFormat("yyyy-MM-dd").parse("2014-08-05"));
         customerOrder.getParams().put("order_type_no_term", "order-no-term"); 
         customerOrder.getParams().put("where", "query_no_term"); 
         

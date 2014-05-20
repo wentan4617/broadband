@@ -446,14 +446,6 @@
 						</a>
 					</td>
 				</tr>
-				<tr>
-					<td colspan="12">
-						<!-- Button trigger modal -->
-						<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_installation_fee" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addIModal" style="width:100px;">
-						  <span class="glyphicon glyphicon-plus"></span> Discount
-						</a>
-					</td>
-				</tr>
 			</tfoot>
 		</table>
 		
