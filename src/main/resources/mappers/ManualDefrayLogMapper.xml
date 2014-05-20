@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.ManualDefrayLogMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="manualDefrayLogColumns">
+		m.`id`					as m_id,
+		m.`user_id`				as m_user_id,
+		m.`invoice_id`			as m_invoice_id,
+		m.`customer_id`			as m_customer_id,
+		m.`order_id`			as m_order_id,
+		m.`eliminate_amount`	as m_eliminate_amount,
+		m.`eliminate_way`		as m_eliminate_way,
+		m.`eliminate_time`		as m_eliminate_time
+	</sql>
+	
+	<sql id="manualDefrayLogSet">
+		<set>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id},</if>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="eliminate_amount != null">eliminate_amount = #{eliminate_amount},</if>
+			<if test="eliminate_way != null">eliminate_way = #{eliminate_way},</if>
+			<if test="eliminate_time != null">eliminate_time = #{eliminate_time}</if>
+		</set>
+	</sql>
+	
+	<sql id="manualDefrayLogWhere">
+		<where>
+			<if test="param.id != null">id = #{params.id}</if>
+			<if test="param.user_id != null">and user_id = #{params.user_id}</if>
+			<if test="param.invoice_id != null">and invoice_id = #{params.invoice_id}</if>
+			<if test="param.customer_id != null">and customer_id = #{params.customer_id}</if>
+			<if test="param.order_id != null">and order_id = #{params.order_id}</if>
+			<if test="param.eliminate_amount != null">and eliminate_amount = #{params.eliminate_amount}</if>
+			<if test="param.eliminate_way != null">and eliminate_way = #{params.eliminate_way}</if>
+			<if test="param.eliminate_time != null">and eliminate_time = #{params.eliminate_time}</if>
+		</where>
+	</sql>
+	
+	<!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
+	
+	<!-- select manual defray logs page -->
+	<select id="selectManualDefrayLogsByPage" parameterType="Page" resultType="ManualDefrayLog">
+		SELECT
+			<include refid="manualDefrayLogColumns"/>
+		FROM `tm_manual_defray_log`
+			<include refid="manualDefrayLogWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<!-- select manual defray logs page -->
+	<select id="selectManualDefrayLogsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer
+		<include refid="manualDefrayLogWhere"/>
+	</select>
+	
+	<select id="selectManualDefrayLog" resultType="ManualDefrayLog">
+		SELECT * FROM `tm_manual_defray_log`
+		<include refid="manualDefrayLogWhere"/>
+	</select>
+	
+	<!-- // END SELECT AREA -->
+	<!-- =================================================================================== -->
+	<!-- INSERT AREA -->
+	
+	<insert id="insertManualDefrayLog" parameterType="ManualDefrayLog">
+		INSERT INTO `tm_manual_defray_log`(
+			`user_id`, `customer_id`, `order_id`, `invoice_id`, `eliminate_amount`,
+		 	`eliminate_way`, `eliminate_time`
+		) VALUES (
+		 	#{user_id}, #{customer_id}, #{order_id}, #{invoice_id}, #{eliminate_amount},
+		 	#{eliminate_way}, #{eliminate_time}
+		)
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	<!-- UPDATE AREA -->
+	
+	<update id="updateManualDefrayLog" parameterType="ManualDefrayLog">
+		update `tm_manual_defray_log`
+		<include refid="manualDefrayLogSet"/>
+		<include refid="manualDefrayLogWhere"/>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteManualDefrayLog" parameterType="ManualDefrayLog">
+		delete from `tm_manual_defray_log`
+		<include refid="manualDefrayLogWhere"/>
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+</mapper>

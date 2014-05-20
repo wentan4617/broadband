@@ -25,6 +25,7 @@ import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
+import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
@@ -37,6 +38,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
@@ -66,6 +68,7 @@ public class CRMService {
 	private NotificationMapper notificationMapper;
 	private OrganizationMapper organizationMapper;
 	private ContactUsMapper contactUsMapper;
+	private ManualDefrayLogMapper manualDefrayLogMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -86,7 +89,8 @@ public class CRMService {
 			NotificationMapper notificationMapper,
 			SmserService smserService,
 			OrganizationMapper organizationMapper,
-			ContactUsMapper contactUsMapper) {
+			ContactUsMapper contactUsMapper,
+			ManualDefrayLogMapper manualDefrayLogMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -100,6 +104,7 @@ public class CRMService {
 		this.smserService = smserService;
 		this.organizationMapper = organizationMapper;
 		this.contactUsMapper = contactUsMapper;
+		this.manualDefrayLogMapper = manualDefrayLogMapper;
 	}
 	
 	
@@ -420,6 +425,11 @@ public class CRMService {
 	public List<CustomerTransaction> queryCustomerTransactionsByCustomerId(int id) {
 		return this.customerTransactionMapper.selectCustomerTransactionsByCustomerId(id);
 	}
+	
+	@Transactional
+	public String queryCustomerOrderTypeById(int id) {
+		return this.customerOrderMapper.selectCustomerOrderTypeById(id);
+	}
 
 	@Transactional
 	public void editCustomer(Customer customer) {
@@ -480,6 +490,11 @@ public class CRMService {
 	@Transactional
 	public void createContactUs(ContactUs contactUs) {
 		this.contactUsMapper.insertContactUs(contactUs);
+	}
+
+	@Transactional
+	public void createManualDefrayLog(ManualDefrayLog manualDefrayLog) {
+		this.manualDefrayLogMapper.insertManualDefrayLog(manualDefrayLog);
 	}
 
 	@Transactional
@@ -603,6 +618,7 @@ public class CRMService {
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
+		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
 		// set file path
 		try {
@@ -903,6 +919,7 @@ public class CRMService {
 				invoicePDF.setCompanyDetail(companyDetail);
 				invoicePDF.setCustomer(c);
 				invoicePDF.setCurrentCustomerInvoice(ci);
+				invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(c.getId()));
 
 				String filePath = "";
 				// set file path
@@ -1118,6 +1135,7 @@ public class CRMService {
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
+		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
 		String filePath = "";
 		// set file path

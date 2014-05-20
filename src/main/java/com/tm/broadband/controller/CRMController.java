@@ -889,5 +889,22 @@ public class CRMController {
 	/**
 	 * END order info
 	 */
+	
+	// BEGIN DDPay
+	@RequestMapping(value = "/manual_defray/redirect/{customer_id}/{invoice_id}/{order_id}/{process_way}/{invoice_balance}")
+	public String toDDPayRedirect(Model model, RedirectAttributes attr,
+			@PathVariable("customer_id") Integer customer_id,
+			@PathVariable("invoice_id") Integer invoice_id,
+			@PathVariable("order_id") Integer order_id,
+			@PathVariable("process_way") String process_way,
+			@PathVariable("invoice_balance") Double invoice_balance) {
+		if(invoice_balance <= 0d){
+			attr.addFlashAttribute("error", "Manipulation of pay by " + process_way + " for Invoice# - " + invoice_id + " which is related to Order# - " + order_id + " has not successfully been processed, this invoice had been paid off already!!");
+		} else {
+			attr.addFlashAttribute("success", "Manipulation of pay by " + process_way + " for Invoice# - " + invoice_id + " which is related to Order# - " + order_id + " has successfully been processed!!");
+		}
+		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
+	}
+	// END DDPay
 
 }

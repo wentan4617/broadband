@@ -25,6 +25,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -40,6 +41,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	private CustomerInvoice currentCustomerInvoice;
     private CustomerInvoice lastCustomerInvoice;
     private Customer customer;
+	private Organization org;
 
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
@@ -54,11 +56,13 @@ public class InvoicePDFCreator extends ITextUtils {
 	
 	public InvoicePDFCreator(CompanyDetail companyDetail
 			,CustomerInvoice currentCustomerInvoice
-			,Customer customer) {
+			,Customer customer
+			,Organization org) {
 		this.companyDetail = companyDetail;
 		this.currentCustomerInvoice = currentCustomerInvoice;
 		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
 		this.customer = customer;
+		this.org = org;
 	}
 
 	public String create() throws DocumentException, MalformedURLException, IOException{
@@ -237,8 +241,19 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfPTable headerTable = new PdfPTable(1);
         headerTable.setWidthPercentage(102);
 		// add common header
-        addEmptyCol(headerTable, 180F, 1);
-        addCol(headerTable, this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name()).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
+        addEmptyCol(headerTable, 150F, 1);
+        
+        String customerName = null;
+        String customerTitle = null;
+        if("business".equals(customer.getCustomer_type())){
+        	customerName = org.getOrg_name();
+        	customerTitle = "BUSINESS";
+        } else {
+        	customerName = this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
+        	customerTitle = "PERSONAL";
+        }
+        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
+        addCol(headerTable, customerName).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
         addCol(headerTable, this.getCustomer().getAddress()).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).o();
         addEmptyCol(headerTable, 40F, 1);
 		return headerTable;
@@ -639,6 +654,14 @@ public class InvoicePDFCreator extends ITextUtils {
 
 	public void setLastCustomerInvoice(CustomerInvoice lastCustomerInvoice) {
 		this.lastCustomerInvoice = lastCustomerInvoice;
+	}
+
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
 	}
 
 	
