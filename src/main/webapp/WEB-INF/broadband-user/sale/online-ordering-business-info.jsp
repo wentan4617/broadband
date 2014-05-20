@@ -60,13 +60,13 @@
 					<div class="form-group">
 						<label for="cellphone" class="control-label col-sm-4">Business Mobile</label>
 						<div class="col-sm-4">
-							<input type="text" id="cellphone" name="cellphone" value="${customer.cellphone }"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
+							<input type="text" id="cellphone" name="cellphone" value="${orderCustomer.cellphone }"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="email" class="control-label col-sm-4">Business Email</label>
 						<div class="col-sm-4">
-							<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
+							<input type="text" id="email" name="email" value="${orderCustomer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 						</div>
 					</div>
 
@@ -76,34 +76,37 @@
 					<hr/>
 					
 					<div class="form-group">
-						<label class="control-label col-sm-4">Broadband Type</label>
-						<div class="col-sm-5">
+						<div class="col-sm-12">
 							<ul class="list-unstyled topup-list">
 								<li>
-									<input type="radio" name="order_broadband_type" 
-										${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-									&nbsp; <strong>New Connection Only</strong>
-								</li>
-								<li>
 									<input type="radio" name="order_broadband_type" value="transition"
-										<c:if test="${customer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
+										<c:if test="${orderCustomer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
 											checked="checked"
 										</c:if> />
-									&nbsp; <strong>Transition</strong>
+									&nbsp; 
+									<strong>
+										Transfer the existing broadband connection to CyberPark 
+										<c:choose>
+											<c:when test="${orderPlan.transition_fee > 0 }">
+												costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
+											</c:when>
+											<c:otherwise>
+												is free
+											</c:otherwise>
+										</c:choose>
+									</strong>
+								</li>
+								<li>
+									<input type="radio" name="order_broadband_type" 
+										${orderCustomer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
+									&nbsp; <strong>Get a new broadband connection on an existing (but inactive) jackpot charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
+								</li>
+								<li>
+									<input type="radio" name="order_broadband_type" 
+										${orderCustomer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
+									&nbsp; <strong>Get a new broadband connection and an new jackpot installation and activation charge NZ$ <fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></strong>
 								</li>
 							</ul>
-						</div>
-						<div class="col-sm-4">
-							<c:choose>
-								<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-									<div class="well">
-										<p>If you choose a new connection</p>
-										<p> we will charge you </p>
-										<p>$ 99 broadband opening costs</p>
-									</div>
-								</c:when>
-								<c:when test="${orderPlan.plan_group == 'plan-term' }"></c:when>
-							</c:choose>
 						</div>
 					</div>
 					
@@ -115,25 +118,25 @@
 						<hr/>
 						
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Current Provider Name</label>
+							<label  class="control-label col-sm-4">Current Provider</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Account Holder Name</label>
+							<label  class="control-label col-sm-4">Account Holder</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Current Account Number</label>
+							<label  class="control-label col-sm-4">Current Account</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Telephone Number</label>
+							<label  class="control-label col-sm-4">Telephone Number</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
 							</div>
@@ -152,32 +155,32 @@
 						<label for="organization.org_type" class="control-label col-sm-4">Group/Organization Type</label>
 						<div class="col-sm-6">
 							<select name="org_type" id="organization.org_type" class="selectpicker show-tick form-control" data-error-field>
-								<option value="NZ Incorporated Company" ${customer.organization.org_type=='NZ Incorporated Company'?'selected="selected"':''}>NZ Incorporated Company</option>
-								<option value="Limited Partnership" ${customer.organization.org_type=='Limited Partnership'?'selected="selected"':''}>Limited Partnership</option>
-								<option value="Sole Trader" ${customer.organization.org_type=='Sole Trader'?'selected="selected"':''}>Sole Trader</option>
-								<option value="Partnership" ${customer.organization.org_type=='Partnership'?'selected="selected"':''}>Partnership</option>
-								<option value="Trust" ${customer.organization.org_type=='Trust'?'selected="selected"':''}>Trust</option>
-								<option value="Overseas Company" ${customer.organization.org_type=='Overseas Company'?'selected="selected"':''}>Overseas Company</option>
-								<option value="Society" ${customer.organization.org_type=='Society'?'selected="selected"':''}>Society</option>
+								<option value="NZ Incorporated Company" ${orderCustomer.organization.org_type=='NZ Incorporated Company'?'selected="selected"':''}>NZ Incorporated Company</option>
+								<option value="Limited Partnership" ${orderCustomer.organization.org_type=='Limited Partnership'?'selected="selected"':''}>Limited Partnership</option>
+								<option value="Sole Trader" ${orderCustomer.organization.org_type=='Sole Trader'?'selected="selected"':''}>Sole Trader</option>
+								<option value="Partnership" ${orderCustomer.organization.org_type=='Partnership'?'selected="selected"':''}>Partnership</option>
+								<option value="Trust" ${orderCustomer.organization.org_type=='Trust'?'selected="selected"':''}>Trust</option>
+								<option value="Overseas Company" ${orderCustomer.organization.org_type=='Overseas Company'?'selected="selected"':''}>Overseas Company</option>
+								<option value="Society" ${orderCustomer.organization.org_type=='Society'?'selected="selected"':''}>Society</option>
 							</select>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.org_name" class="control-label col-sm-4">Group/Organization Name</label>
 						<div class="col-sm-6">
-							<input type="text" name="org_name" id="organization.org_name" value="${customer.organization.org_name }" class="form-control" data-error-field/>
+							<input type="text" name="org_name" id="organization.org_name" value="${orderCustomer.organization.org_name }" class="form-control" data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.org_trading_name" class="control-label col-sm-4">Trading Name</label>
 						<div class="col-sm-6">
-							<input type="text" name="org_trading_name" id="organization.org_trading_name" value="${customer.organization.org_trading_name }" class="form-control" data-error-field/>
+							<input type="text" name="org_trading_name" id="organization.org_trading_name" value="${orderCustomer.organization.org_trading_name }" class="form-control" data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.org_register_no" class="control-label col-sm-4">Registration No.</label>
 						<div class="col-sm-6">
-							<input type="text" name="org_register_no" id="organization.org_register_no" value="${customer.organization.org_register_no }" class="form-control" data-error-field/>
+							<input type="text" name="org_register_no" id="organization.org_register_no" value="${orderCustomer.organization.org_register_no }" class="form-control" data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
@@ -185,7 +188,7 @@
 						<div class="col-sm-4">
 							<div class="input-group date">
 						  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" 
-						  			value="<fmt:formatDate  value="${customer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />" class="form-control" class="form-control"  data-error-field />
+						  			value="<fmt:formatDate  value="${orderCustomer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />" class="form-control" class="form-control"  data-error-field />
 						  		<span class="input-group-addon">
 						  			<i class="glyphicon glyphicon-calendar"></i>
 						  		</span>
@@ -202,25 +205,25 @@
 					<div class="form-group">
 						<label for="organization.holder_name" class="control-label col-sm-4">Full name</label>
 						<div class="col-sm-6">
-							<input type="text" name="holder_name" id="organization.holder_name" value="${customer.organization.holder_name }" class="form-control"  data-error-field/>
+							<input type="text" name="holder_name" id="organization.holder_name" value="${orderCustomer.organization.holder_name }" class="form-control"  data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.holder_job_title" class="control-label col-sm-4">Job title</label>
 						<div class="col-sm-6">
-							<input type="text" name="holder_job_title" id="organization.holder_job_title" value="${customer.organization.holder_job_title }" class="form-control" data-error-field/>
+							<input type="text" name="holder_job_title" id="organization.holder_job_title" value="${orderCustomer.organization.holder_job_title }" class="form-control" data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.holder_phone" class="control-label col-sm-4">Phone Number</label>
 						<div class="col-sm-6">
-							<input type="text" name="holder_phone" id="organization.holder_phone" value="${customer.organization.holder_phone }" class="form-control" data-error-field/>
+							<input type="text" name="holder_phone" id="organization.holder_phone" value="${orderCustomer.organization.holder_phone }" class="form-control" data-error-field/>
 						</div>
 					</div>
 					<div class="form-group">
 						<label for="organization.holder_email" class="control-label col-sm-4">Email Address</label>
 						<div class="col-sm-6">
-							<input type="text" name="holder_email" id="organization.holder_email" value="${customer.organization.holder_email }" class="form-control" data-error-field/>
+							<input type="text" name="holder_email" id="organization.holder_email" value="${orderCustomer.organization.holder_email }" class="form-control" data-error-field/>
 						</div>
 					</div>
 						
@@ -237,11 +240,9 @@
 			</div>
 		</div>
 	</div>
-		
-	
 </div>
-<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
+<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
@@ -275,9 +276,6 @@
 	
 	$('#confirm').click(function(){
 		var $btn = $(this);
-		$btn.button('loading');
-		//console.log($('input[name="order_broadband_type"]:checked').val());
-		
 		var url = '${ctx}/broadband-user/sale/online/ordering/order/business';
 		var customer = {
 			address: $('#address').val()
@@ -309,11 +307,9 @@
 			customer.customerOrder.transition_account_holder_name = $('#customerOrder\\.transition_account_holder_name').val();
 			customer.customerOrder.transition_account_number = $('#customerOrder\\.transition_account_number').val();
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
-		}
+		} //console.log("customer request:"); console.log(customer);
 		
-		//console.log("customer request:");
-		//console.log(customer);
-		
+		$btn.button('loading');
 		$.ajax({
 			type: 'post'
 			, contentType:'application/json;charset=UTF-8'         
@@ -321,11 +317,7 @@
 		   	, data: JSON.stringify(customer)
 		   	, dataType: 'json'
 		   	, success: function(json){
-				if (json.hasErrors) {
-					$.jsonValidation(json, 'right');
-				} else {
-					//console.log("customer response:");
-					//console.log(json.model);
+				if (!$.jsonValidation(json, 'right')) { //console.log("customer response:"); console.log(json.model);
 					window.location.href='${ctx}' + json.url;
 				}
 		   	}

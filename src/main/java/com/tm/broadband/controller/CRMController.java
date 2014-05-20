@@ -212,7 +212,6 @@ public class CRMController {
 			customerOrder.setOrder_due(cal.getTime());
 			this.crmService.editCustomerOrder(customerOrder, proLog);
 		}
-	
 		this.crmService.editCustomerOrder(customerOrder, proLog);
 
 		// send mailer
@@ -551,36 +550,9 @@ public class CRMController {
 			cod_plan.setDetail_type("plan-topup");
 			cod_plan.setDetail_is_next_pay(0);
 			
-			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
-				
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getTopup().getTopup_fee());
-				
-				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Installation");
-				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
-				cod_conn.setDetail_is_next_pay(0);
-				cod_conn.setDetail_type("new-connection");
-				cod_conn.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_conn);
-				
-			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
-				
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
-				
-				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
-				cod_trans.setDetail_name("Broadband Transition");
-				cod_trans.setDetail_is_next_pay(0);
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_type("transition");
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_trans);
-			}
+			customerOrder.setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
 			
 			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
-			
 			cod_topup.setDetail_name("Broadband Top-Up");
 			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
 			cod_topup.setDetail_type("topup");
@@ -591,66 +563,16 @@ public class CRMController {
 			
 		} else if ("plan-no-term".equals(customerOrder.getPlan().getPlan_group())) {
 			
+			customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
+			
 			cod_plan.setDetail_type("plan-no-term");
 			cod_plan.setDetail_is_next_pay(1);
 			
-			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
-				
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
-			
-				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Installation");
-				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
-				cod_conn.setDetail_is_next_pay(0);
-				cod_conn.setDetail_type("new-connection");
-				cod_conn.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_conn);
-				
-			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
-				
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
-				
-				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
-				cod_trans.setDetail_name("Broadband Transition");
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_is_next_pay(0);
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_type("transition");
-				cod_trans.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_trans);
-			}
-			
 		} else if ("plan-term".equals(customerOrder.getPlan().getPlan_group())) {
 			
-			if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
-				
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_new_connection_fee() + customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
-				
-				CustomerOrderDetail cod_conn = new CustomerOrderDetail();
-				cod_conn.setDetail_name("Installation");
-				cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
-				cod_conn.setDetail_is_next_pay(0);
-				cod_conn.setDetail_type("new-connection");
-				cod_conn.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_conn);
-
-			} else if ("transition".equals(customerOrder.getOrder_broadband_type())) {
-					
-				customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
-				
-				CustomerOrderDetail cod_trans = new CustomerOrderDetail();
-				cod_trans.setDetail_name("Broadband Transition");
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_is_next_pay(0);
-				cod_trans.setDetail_price(0d);
-				cod_trans.setDetail_type("transition");
-				cod_trans.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_trans);
-			}
+			customerOrder.setOrder_status("pending");
+			
+			customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 			
 			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
 			if ("personal".equals(customerOrder.getPlan().getPlan_class())) {
@@ -678,6 +600,48 @@ public class CRMController {
 			cod_hd.setDetail_type("hardware-router");
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+		}
+		
+		// *********************************************************************
+		
+		if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+			
+			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + customerOrder.getPlan().getTransition_fee());
+			
+			CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+			cod_trans.setDetail_name("Broadband Transition");
+			cod_trans.setDetail_price(customerOrder.getPlan().getTransition_fee());
+			cod_trans.setDetail_is_next_pay(0);
+			cod_trans.setDetail_type("transition");
+			cod_trans.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_trans);
+			
+		} else if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+			
+			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + customerOrder.getPlan().getPlan_new_connection_fee());
+			
+			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+			cod_conn.setDetail_name("Broadband New Connection");
+			cod_conn.setDetail_price(customerOrder.getPlan().getPlan_new_connection_fee());
+			cod_conn.setDetail_is_next_pay(0);
+			cod_conn.setDetail_type("new-connection");
+			cod_conn.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_conn);
+			
+		} else if ("jackpot".equals(customerOrder.getOrder_broadband_type())) {
+			
+			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + customerOrder.getPlan().getJackpot_fee());
+			
+			CustomerOrderDetail cod_jackpot = new CustomerOrderDetail();
+			cod_jackpot.setDetail_name("Broadband New Connection & Jackpot Installation");
+			cod_jackpot.setDetail_price(customerOrder.getPlan().getJackpot_fee());
+			cod_jackpot.setDetail_is_next_pay(0);
+			cod_jackpot.setDetail_type("jackpot");
+			cod_jackpot.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_jackpot);
 		}
 		
 		if (customerOrder.getCustomerOrderDetails() != null) {

@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -125,11 +124,11 @@
 							<h2>Transition</h2>
 							<hr style="margin-top:0;"/>
 							<div class="row" >
-								<div class="col-sm-4"><strong>Current Provider Name</strong></div>
+								<div class="col-sm-4"><strong>Current Provider</strong></div>
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_provider_name }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
-								<div class="col-sm-4"><strong>Account Holder Name</strong></div>
+								<div class="col-sm-4"><strong>Account Holder</strong></div>
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.customerOrder.transition_account_holder_name }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
@@ -252,10 +251,10 @@
 													</td>
 												</tr>
 												<tr>
-													<td>Plus GST at 12% </td>
+													<td>Plus GST at 15% </td>
 													<td>
 														NZ$ 
-														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.12}" type="number" pattern="#,##0.00" />
+														<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
 													</td>
 												</tr>
 												<tr>
@@ -263,7 +262,7 @@
 													<td>
 														<strong class="text-success">
 															NZ$ 
-															<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 1.12 }" type="number" pattern="#,##0.00" />
+															<fmt:formatNumber value="${orderCustomer.customerOrder.order_total_price * 1.15 }" type="number" pattern="#,##0.00" />
 														</strong>
 													</td>
 												</tr>

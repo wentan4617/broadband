@@ -75,34 +75,37 @@
 					<hr/>
 					
 					<div class="form-group">
-						<label class="control-label col-sm-4">Broadband Type</label>
-						<div class="col-sm-5">
+						<div class="col-sm-12">
 							<ul class="list-unstyled topup-list">
+								<li>
+									<input type="radio" name="order_broadband_type" value="transition"
+										<c:if test="${orderCustomer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
+											checked="checked"
+										</c:if> />
+									&nbsp; 
+									<strong>
+										Transfer the existing broadband connection to CyberPark 
+										<c:choose>
+											<c:when test="${orderPlan.transition_fee > 0 }">
+												costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
+											</c:when>
+											<c:otherwise>
+												is free
+											</c:otherwise>
+										</c:choose>
+									</strong>
+								</li>
 								<li>
 									<input type="radio" name="order_broadband_type" 
 										${orderCustomer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-									&nbsp; <strong>New Connection Only</strong>
+									&nbsp; <strong>Get a new broadband connection on an existing (but inactive) jackpot charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
 								</li>
 								<li>
-									<input type="radio" name="order_broadband_type" value="transition"
-										<c:if test="${orderCustomer.customerOrder.order_broadband_type=='transition' || orderCustomer.customerOrder.order_broadband_type==null}">
-											checked="checked"
-										</c:if> />
-									&nbsp; <strong>Transition</strong>
+									<input type="radio" name="order_broadband_type" 
+										${orderCustomer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
+									&nbsp; <strong>Get a new broadband connection and an new jackpot installation and activation charge NZ$ <fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></strong>
 								</li>
 							</ul>
-						</div>
-						<div class="col-sm-4">
-							<c:choose>
-								<c:when test="${orderPlan.plan_group == 'plan-no-term' }">
-									<div class="well">
-										<p>If you choose a new connection</p>
-										<p> we will charge you </p>
-										<p>$ 99 broadband opening costs</p>
-									</div>
-								</c:when>
-								<c:when test="${orderPlan.plan_group == 'plan-term' }"></c:when>
-							</c:choose>
 						</div>
 					</div>
 					
@@ -115,25 +118,25 @@
 						<hr/>
 						
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Your Current Provider Name</label>
+							<label  class="control-label col-sm-4">Current Provider</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${orderCustomer.customerOrder.transition_provider_name }" class="form-control"/>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Account Holder Name</label>
+							<label  class="control-label col-sm-4">Account Holder</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${orderCustomer.customerOrder.transition_account_holder_name }" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Your Current Account Number</label>
+							<label  class="control-label col-sm-4">Current Account Number</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${orderCustomer.customerOrder.transition_account_number }" class="form-control" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="" class="control-label col-sm-4">Your Telephone Number</label>
+							<label  class="control-label col-sm-4">Telephone Number</label>
 							<div class="col-sm-4">
 								<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${orderCustomer.customerOrder.transition_porting_number }" class="form-control" />
 							</div>
@@ -215,9 +218,6 @@
 	
 	$('#confirm').click(function(){
 		var $btn = $(this);
-		$btn.button('loading');
-		//console.log($('input[name="order_broadband_type"]:checked').val());
-		
 		var url = '${ctx}/broadband-user/sale/online/ordering/order/personal';
 		var customer = {
 			address: $('#address').val()
@@ -237,11 +237,9 @@
 			customer.customerOrder.transition_account_holder_name = $('#customerOrder\\.transition_account_holder_name').val();
 			customer.customerOrder.transition_account_number = $('#customerOrder\\.transition_account_number').val();
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
-		}
+		} //console.log("customer request:"); console.log(customer);
 		
-		//console.log("customer request:");
-		//console.log(customer);
-		
+		$btn.button('loading');
 		$.ajax({
 			type: 'post'
 			, contentType:'application/json;charset=UTF-8'         
@@ -249,11 +247,7 @@
 		   	, data: JSON.stringify(customer)
 		   	, dataType: 'json'
 		   	, success: function(json){
-				if (json.hasErrors) {
-					$.jsonValidation(json, 'right');
-				} else {
-					//console.log("customer response:");
-					//console.log(json.model);
+				if (!$.jsonValidation(json, 'right')) {  //console.log("customer response:"); console.log(json.model);
 					window.location.href='${ctx}' + json.url;
 				}
 		   	}
