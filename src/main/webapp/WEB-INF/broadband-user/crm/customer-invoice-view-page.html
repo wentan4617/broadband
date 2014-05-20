@@ -15,7 +15,7 @@
 			<th>Amount Payable</th>
 			<th>Amount Paid</th>
 			<th>Balance</th>
-			<th>Status</th>
+			<th>Status / Defray Way</th>
 			<th>&nbsp;</th>
 			<th>&nbsp;</th>
 		</tr>
@@ -27,11 +27,11 @@
 				
 				if(orderIds[o]==invoice.order_id){
 				
-					for (var t = 0, txLen = transactionsList.length; t < txLen; t++) {
+					for (var t = transactionsList.length-1; t >= 0; t--) {
 						var tx = transactionsList[t];
 						
 						if(tx.invoice_id==invoice.id){
-							var txAmount_paid = new Number(invoice.amount_paid);
+							var txAmount_paid = new Number(tx.amount);
 		.>
 							<tr class="success">
 								<td>Transaction# - <.= tx.id .></td>
@@ -40,7 +40,7 @@
 								<td>&nbsp;</td>
 								<td><strong><.= txAmount_paid.toFixed(2) .></strong></td>
 								<td>&nbsp;</td>
-								<td><.= invoice.status .></td>
+								<td style="text-align:center;"><.= tx.card_name .></td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 							</tr>
@@ -82,9 +82,9 @@
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>
-								<li><a data-toggle="modal" data-target="#confirmDDPayModal" data-id="<.= invoice.id .>" data-name="ddpay_btn" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a data-toggle="modal" data-target="#confirmDDPayModal" id="<.= invoice.id .>" data-name="ddpay_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a data-toggle="modal" data-target="#confirmCashModal" id="<.= invoice.id .>" data-name="cash_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
-								<li><a href="#"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 							</ul>
 						</div>
 					</td>
@@ -102,8 +102,7 @@
 		.>
 						<td>
 							<!-- regenerate icon -->
-							<!-- Need to activate onclick event -->
-							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
@@ -114,19 +113,20 @@
 		.>
 						<td>
 							<!-- regenerate icon -->
-							<!-- Need to activate onclick event -->
-							<a target="_blank" href="javascript:void(0);" data-name="generateUrl<.= invoice.id .>" data-url="<.= generateUrl .>" id="<.= invoice.id .>regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="javascript:void(0);" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" id="<.= invoice.id .>regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" data-name="download<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= sendUrl .>" data-name="send<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>
-							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>
 						</td>
 		<.
 						}
 					} else {
 		.>
 					<td>
+						<!-- regenerate icon -->
+						<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 						<!-- download icon -->
 						<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 					</td>
@@ -134,9 +134,82 @@
 					}
 		.>
 				</tr>
-		<. }
-		} 
-	} .>
+
+		<. } .>
+		
+		<!-- confirmDDPay Modal -->
+		<div class="modal fade" id="confirmDDPayModal" tabindex="-1" role="dialog"
+			aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="confirmDDPayModalLabel">
+							<strong>Use DDPay to Pay Off this invoice?</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<p>
+								<strong>
+								This operation will assign invoice's balance to zero.<br/><br/>
+								And this operation will store your identity and manipulate time into database as a record.<br/>
+								</strong>
+							</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-success col-md-12"
+							data-name="confirm_ddpay_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use DDPay to pay off this invoice</strong></a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+
+		<!-- confirmCash Modal -->
+		<div class="modal fade" id="confirmCashModal" tabindex="-1" role="dialog"
+			aria-labelledby="confirmCashModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"
+							aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="confirmCashModalLabel">
+							<strong>Use Cash to Pay (Off) this invoice?</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
+							<div class="col-md-6">
+								<input name="defray_amount_<.= invoice.id .>" value="<.= invoiceBalance.toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
+							</div>
+						</div>
+						<br/><br/><br/>
+						<div class="form-group">
+							<p>
+								This operation will assign invoice's balance to your input amount.<br/><br/>
+								And this operation will store your identity and manipulate time into database as a record.<br/>
+							</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-success col-md-12"
+							data-name="confirm_cash_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use Cash to pay (off) this invoice</strong></a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+	<. } .>
+<. } .>
 	</tbody>
 	<tfoot>
 		<tr>

@@ -2,13 +2,13 @@ package com.tm.broadband.mapper;
 
 import java.util.List;
 
-import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Page;
 
 /**
- * mapping tm_customer_order
+ * mapping tm_manual_defray_log, manualDefrayLog DAO component
  * 
- * @author Cook1fan
+ * @author Steven Chen
  * 
  */
 
@@ -20,45 +20,33 @@ import com.tm.broadband.model.Page;
 /* =================================================================================== */
 /* DELETE AREA *//* // END DELETE AREA */
 
-public interface CustomerOrderMapper {
+public interface ManualDefrayLogMapper {
 
 	/* SELECT AREA */
 	
-	String selectCustomerOrderTypeById(int id);
+	public List<ManualDefrayLog> selectManualDefrayLog(ManualDefrayLog manualDefrayLog);
 	
-	CustomerOrder selectCustomerOrder(CustomerOrder customerOrder);
-	List<CustomerOrder> selectCustomerOrders(CustomerOrder customerOrder);
-	
-	List<CustomerOrder> selectCustomerOrdersByPage(Page<CustomerOrder> page);
-	int selectCustomerOrdersSum(Page<CustomerOrder> page);
-	
-	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
-	CustomerOrder selectCustomerOrderById(int id);
-	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
-	
-	String selectCustomerOrderFilePathById(int id);
-	String selectCustomerCreditFilePathById(int id);
-	
+	List<ManualDefrayLog> selectManualDefrayLogsByPage(Page<ManualDefrayLog> page);
+	int selectManualDefrayLogsSum(Page<ManualDefrayLog> page);
 	
 	/* // END SELECT AREA */
-	
 	/* =================================================================================== */
-	
 	/* INSERT AREA */
 
-	void insertCustomerOrder(CustomerOrder customerOrder);
+	public void insertManualDefrayLog(ManualDefrayLog manualDefrayLog);
 	
 	/* // END INSERT AREA */
-	
 	/* =================================================================================== */
-	
 	/* UPDATE AREA */
 	
-	void updateCustomerOrder(CustomerOrder customerOrder);
+	public void updateManualDefrayLog(ManualDefrayLog manualDefrayLog);
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA */
-	void deleteCustomerOrderByCustomerId(int id);
+	
+	public void deleteManualDefrayLog(ManualDefrayLog manualDefrayLog);
+	
 	/* // END DELETE AREA */
+
 }

@@ -13,6 +13,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
 
 public class TestAll {
@@ -100,6 +101,7 @@ public class TestAll {
 		 */
 		
 		CompanyDetail cd = new CompanyDetail();
+		Organization org = new Organization();
 		Customer c = new Customer();
 		CustomerInvoice ci = new CustomerInvoice();
 		CustomerInvoice lci = new CustomerInvoice();
@@ -114,12 +116,23 @@ public class TestAll {
 		cd.setBank_name("ASB");
 		cd.setBank_account_name("CyberPark");
 		cd.setBank_account_number("3908 8987 6776 5654");
-		
+
+//		// set org
+		org.setOrg_name("CyberPark");
+		org.setOrg_type("NZ Incoporated Company");
+		org.setOrg_trading_name("NZ Limited");
+		org.setOrg_register_no("NZ19876542");
+		org.setOrg_incoporate_date(new Date());
+		org.setHolder_name("Steve");
+		org.setHolder_job_title("Manager");
+		org.setHolder_phone("0210210213");
+		org.setHolder_email("Steve@gmail.com");
 		
 		c.setId(600098);
 		c.setFirst_name("DONG");
 		c.setLast_name("CHEN");
 		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
+		c.setCustomer_type("business");
 		
 		lci.setAmount_paid(0d);
 		lci.setAmount_payable(89d);
@@ -150,7 +163,7 @@ public class TestAll {
 		cids.add(cid);
 		ci.setCustomerInvoiceDetails(cids);
 		
-		new InvoicePDFCreator(cd, ci, c).create();
+		new InvoicePDFCreator(cd, ci, c, org).create();
 		
 		/**
 		 * END TEST InvoicePDFCreator

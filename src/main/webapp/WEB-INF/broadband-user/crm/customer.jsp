@@ -46,39 +46,6 @@
 	</div>
 </div>
 
-<!-- Edit confirmDDPay Modal -->
-<div class="modal fade" id="confirmDDPayModal" tabindex="-1" role="dialog"
-	aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="confirmDDPayModalLabel">
-					<strong>Use DDPay to Pay Off this invoice?</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<p>
-						<strong>
-						This operation will assign invoice's balance to zero.<br/><br/>
-						And this operation will store your id and operating time into CyberPark's database as a record.<br/>
-						</strong>
-					</p>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success col-md-12"
-					data-name="confirm_ddpay_modal_btn" data-dismiss="modal"><strong>Confirm to use DDPay</strong></a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
 <!-- Customer Invoice Detail Template -->
 <script type="text/html" id="invoice_table_tmpl">
 <jsp:include page="customer-invoice-view-page.html" />
@@ -507,11 +474,11 @@
 				// BEGIN generate invoice
 				// Binding every generateUrl button's click event by assign them specific invoice's id
 				var invoice = map.invoicePage.results[i];
-				$('a[data-name="generateUrl'+invoice.id+'"]').click(function(){
+				$('a[data-name="generateUrl_'+invoice.id+'"]').click(function(){
 					
 					var url = $(this).attr('data-url');
 					$.post(url, function(){
-						
+
 						// If successful, then prompt notice
 						alert('Generate New Invoice Successfully!');
 					})
@@ -520,10 +487,9 @@
 				
 				// BEGIN first generate
 				// Binding every firstGenerate button's click event by assign them specific invoice's id
-				$('a[data-name="firstGenerate'+invoice.id+'"]').click(function(){
+				$('a[data-name="firstGenerate_'+invoice.id+'"]').click(function(){
 					
 					var url = $(this).attr('data-url');
-					
 					$.post(url, function(){
 						
 						// If successful, then prompt notice
@@ -531,11 +497,54 @@
 					})
 					
 					$(this).css('display', 'none');
-					$('regenerate'+$(this).attr('id')).css('display', '');
-					$('download'+$(this).attr('id')).css('display', '');
-					$('send'+$(this).attr('id')).css('display', '');
+					$('regenerate'+this.id).css('display', '');
+					$('download'+this.id).css('display', '');
+					$('send'+this.id).css('display', '');
 				});
 				// END first generate
+				
+				// BEGIN DDPay
+				// Confirm DDPay
+				$('a[data-name="confirm_ddpay_modal_btn_'+invoice.id+'"]').click(function(){
+					$(this).button('loading');
+					var data = {
+						invoice_id : this.id
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/ddpay', data, function(json){
+						if (json.hasErrors) {
+							$.jsonValidation(json, 'right');
+						} else {
+							window.location.href='${ctx}' + json.url;
+						}
+					}, 'json').always(function () {
+						$(this).button('reset');
+				    });
+					
+				});	
+				// END DDPay
+				
+				// BEGIN Cash
+				// Confirm Cash
+				$('a[data-name="confirm_cash_modal_btn_'+invoice.id+'"]').click(function(){
+					$(this).button('loading');
+					var data = {
+						invoice_id : this.id,
+						eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/cash', data, function(json){
+						if (json.hasErrors) {
+							$.jsonValidation(json, 'right');
+						} else {
+							window.location.href='${ctx}' + json.url;
+						}
+					}, 'json').always(function () {
+						$(this).button('reset');
+				    });
+					
+				});	
+				// END Cash
 				
 			}
 			
