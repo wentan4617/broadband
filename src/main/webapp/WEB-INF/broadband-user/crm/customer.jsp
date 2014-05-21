@@ -180,13 +180,13 @@
 		// END SV/CVLan Area Modal
 		// BEGIN Order Detail Area Modal
 		$('a[data-name="${co.id}_update_pstn"]').click(function(){
-			$('input[name="order_detail_pstn_id_${co.id}"]').val($(this).attr('data-val'));
+			$('input[data-name="order_detail_pstn_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		$('a[data-name="${co.id}_add_discount"]').click(function(){
-			$('input[name="order_discount_id_${co.id}"]').val($(this).attr('data-val'));
+			$('input[data-name="order_discount_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		$('a[data-name="${co.id}_remove_discount"]').click(function(){
-			$('input[name="order_detail_remove_id_${co.id}"]').val($(this).attr('data-val'));
+			$('input[data-name="order_detail_remove_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		// END Order Detail Area Modal
 		/*

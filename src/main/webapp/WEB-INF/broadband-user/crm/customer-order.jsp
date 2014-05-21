@@ -9,6 +9,10 @@
 #order_detail .form-group {
 	margin-bottom:4px;
 }
+
+.align-right {
+	text-align:right;
+}
 </style>
 
 <!-- orders -->
@@ -384,9 +388,9 @@
 					<th>Plan Sort</th>
 					<th>Plan Status</th>
 					<th>Data Flow</th>
-					<th>Detail Price</th>
-					<th>Unit</th>
-					<th>Detail Expired</th>
+					<th class="align-right">Detail Price</th>
+					<th class="align-right">Unit</th>
+					<th class="align-right">Detail Expired</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -410,13 +414,13 @@
 						<td>${customerOrderDetail.detail_plan_sort}</td>
 						<td><strong>${customerOrderDetail.detail_plan_status}</strong></td>
 						<td>${customerOrderDetail.detail_data_flow}</td>
-						<td><strong><fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,##0.00" /></strong></td>
-						<td 
+						<td class="align-right"><strong>${customerOrderDetail.detail_type == 'discount' ? '-' : ''}<fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,##0.00" /></strong></td>
+						<td class="align-right"
 							<c:if test="${fn:contains(customerOrderDetail.detail_type, 'plan-')}">
 							id="${customerOrder.id}_order_detail_unit" data-val="${customerOrderDetail.detail_unit}"
 							</c:if>
 						>${customerOrderDetail.detail_unit}</td>
-						<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
+						<td class="align-right"><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 						<td>&nbsp;
 							<c:if test="${customerOrderDetail.detail_type=='discount'}">
 								<a class="btn btn-danger btn-xs pull-right" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal_${customerOrder.id}">
@@ -604,7 +608,7 @@
 
 	<!-- Edit PSTN Modal -->
 	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/pstn/edit" method="post">
-		<input type="hidden" name="order_detail_pstn_id_${customerOrder.id}" />
+		<input type="hidden" name="order_detail_id" data-name="order_detail_pstn_id_${customerOrder.id}" />
 		<input type="hidden" name="customer_id" value="${customer.id}" />
 		<div class="modal fade" id="updatePSTNModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="updatePSTNModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -636,7 +640,7 @@
 
 	<!-- Remove Discount Modal -->
 	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/remove" method="post">
-		<input type="hidden" name="order_detail_remove_id_${customerOrder.id}" />
+		<input type="hidden" name="order_detail_id" data-name="order_detail_remove_id_${customerOrder.id}" />
 		<input type="hidden" name="customer_id" value="${customer.id}" />
 		<div class="modal fade" id="removeDiscountModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="removeDiscountModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
@@ -667,7 +671,8 @@
 
 	<!-- Add Discount Modal -->
 	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/save" method="post">
-		<input type="hidden" name="order_discount_id_${customerOrder.id}" /> <input type="hidden" name="customer_id" value="${customer.id}" />
+		<input type="hidden" name="order_id" data-name="order_discount_id_${customerOrder.id}" />
+		<input type="hidden" name="customer_id" value="${customer.id}" />
 		<div class="modal fade" id="addDiscountModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
