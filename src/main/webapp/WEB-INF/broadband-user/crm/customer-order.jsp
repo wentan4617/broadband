@@ -9,6 +9,10 @@
 #order_detail .form-group {
 	margin-bottom:4px;
 }
+
+.align-right {
+	text-align:right;
+}
 </style>
 
 <!-- orders -->
@@ -363,7 +367,7 @@
 					<a data-val="${customerOrder.id}" class="btn btn-danger btn-lg btn-block" data-name="${customerOrder.id}_svcvlan_edit">Update SV/CVLan</a>
 				</c:if>
 				<c:if test="${customerOrder.order_using_start==null}">
-					<a data-val="${customerOrder.id}" class="btn btn-success btn-lg btn-block" data-name="${customerOrder.id}_svcvlan_save">Save SV/CVLan</a>
+					<a class="btn btn-success btn-lg btn-block" data-name="${customerOrder.id}_svcvlan_save">Save SV/CVLan</a>
 				</c:if>
 				<a data-val="${customerOrder.id}" class="btn btn-danger btn-lg btn-block" data-name="${customerOrder.id}_svcvlan_edit" style="display: none;">Update SV/CVLan</a>
 			</div>
@@ -384,9 +388,9 @@
 					<th>Plan Sort</th>
 					<th>Plan Status</th>
 					<th>Data Flow</th>
-					<th>Detail Price</th>
-					<th>Unit</th>
-					<th>Detail Expired</th>
+					<th class="align-right">Detail Price</th>
+					<th class="align-right">Unit</th>
+					<th class="align-right">Detail Expired</th>
 					<th>&nbsp;</th>
 				</tr>
 			</thead>
@@ -410,26 +414,26 @@
 						<td>${customerOrderDetail.detail_plan_sort}</td>
 						<td><strong>${customerOrderDetail.detail_plan_status}</strong></td>
 						<td>${customerOrderDetail.detail_data_flow}</td>
-						<td><strong><fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,##0.00" /></strong></td>
-						<td 
+						<td class="align-right"><strong>${customerOrderDetail.detail_type == 'discount' ? '-' : ''}<fmt:formatNumber value="${customerOrderDetail.detail_price}" type="number" pattern="#,##0.00" /></strong></td>
+						<td class="align-right"
 							<c:if test="${fn:contains(customerOrderDetail.detail_type, 'plan-')}">
 							id="${customerOrder.id}_order_detail_unit" data-val="${customerOrderDetail.detail_unit}"
 							</c:if>
 						>${customerOrderDetail.detail_unit}</td>
-						<td><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
+						<td class="align-right"><strong><fmt:formatDate  value="${customerOrderDetail.detail_expired}" type="both" pattern="yyyy-MM-dd" /></strong></td>
 						<td>&nbsp;
 							<c:if test="${customerOrderDetail.detail_type=='discount'}">
-								<a class="btn btn-danger btn-xs pull-right" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal">
+								<a class="btn btn-danger btn-xs pull-right" data-name="${customerOrder.id}_remove_discount" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#removeDiscountModal_${customerOrder.id}">
 								  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
 								</a>
 							</c:if>
 							<c:if test="${customerOrderDetail.detail_type=='pstn'}">
-								<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:100px;">
+								<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal_${customerOrder.id}" style="width:100px;">
 								  	<span class="glyphicon glyphicon-edit"></span> PSTN
 								</a>
 							</c:if>
 							<c:if test="${customerOrderDetail.detail_type=='voip'}">
-								<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal" style="width:100px;">
+								<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_update_pstn" data-val="${customerOrderDetail.id}" data-toggle="modal" data-target="#updatePSTNModal_${customerOrder.id}" style="width:100px;">
 								  	<span class="glyphicon glyphicon-edit"></span> VoIP
 								</a>
 							</c:if>
@@ -441,335 +445,290 @@
 				<tr>
 					<td colspan="12">
 						<!-- Button trigger modal -->
-						<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal" style="width:100px;">
+						<a class="btn btn-success btn-xs pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal_${customerOrder.id}" style="width:100px;">
 						  <span class="glyphicon glyphicon-plus"></span> Discount
 						</a>
 					</td>
 				</tr>
 			</tfoot>
 		</table>
-		
 	</form>
+
+	<!-- Edit Order Info Modal -->
+	<div class="modal fade" id="editOrderInfoModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editOrderInfoModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderInfoModalLabel">
+						<strong>Update Order Info</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8 text-warning">Update order's info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="editOrderInfoModalBtn_${customerOrder.id}" data-dismiss="modal">Update Order</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save PPPoE Modal -->
+	<div class="modal fade" id="savePPPoEModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="savePPPoEModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="savePPPoEModalLabel">
+						<strong>Save Related Order's PPPoE Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Save PPPoE Info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_save_modal_btn_${customerOrder.id}" data-dismiss="modal">Save PPPoE</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit PPPoE Modal -->
+	<div class="modal fade" id="editPPPoEModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editPPPoEModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="editPPPoEModalLabel">
+						<strong>Update Related Order's PPPoE Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Update PPPoE Info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_edit_modal_btn_${customerOrder.id}" data-dismiss="modal">Update PPPoE</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save Order Modal -->
+	<div class="modal fade" id="saveOrderModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="saveOrderModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveOrderModalLabel">
+						<strong>Save Related Order's SV/CVLan Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Save SV/CVLan Info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_save_${customerOrder.id}" data-dismiss="modal">Save SV/CVLan</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save Order Denied Modal -->
+	<div class="modal fade" id="saveOrderDeniedModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="saveOrderDeniedModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveOrderDeniedModalLabel">
+						<strong>Save Related Order's SV/CVLan Information Denied</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">
+							Couldn't save these changes!<br />Please double check this order's status!!!
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">Close</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Order Modal -->
+	<div class="modal fade" id="editOrderModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="editOrderModalLabel">
+						<strong>Update Related Order's SV/CVLan Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Update SV/CVLan Info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_edit_${customerOrder.id}" data-dismiss="modal">Update SV/CVLan</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit PSTN Modal -->
+	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/pstn/edit" method="post">
+		<input type="hidden" name="order_detail_id" data-name="order_detail_pstn_id_${customerOrder.id}" />
+		<input type="hidden" name="customer_id" value="${customer.id}" />
+		<div class="modal fade" id="updatePSTNModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="updatePSTNModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="updatePSTNModalLabel">
+							<strong>Update PSTN Info</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">PSTN Number</label>
+							<div class="col-md-6">
+								<input name="pstn_number_${customerOrder.id}" class="form-control input-sm" placeholder="PSTN Number" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success">Update PSTN</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Remove Discount Modal -->
+	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/remove" method="post">
+		<input type="hidden" name="order_detail_id" data-name="order_detail_remove_id_${customerOrder.id}" />
+		<input type="hidden" name="customer_id" value="${customer.id}" />
+		<div class="modal fade" id="removeDiscountModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="removeDiscountModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="removeDiscountModalLabel">
+							<strong>Remove Selected Discount</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-8">
+								Are you sure want to remove this discount?
+							</label>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success" id="discount_save_${customerOrder.id}">Remove Discount</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Add Discount Modal -->
+	<form class="form-horizontal" action="${ctx }/broadband-user/crm/customer/order/discount/save" method="post">
+		<input type="hidden" name="order_id" data-name="order_discount_id_${customerOrder.id}" />
+		<input type="hidden" name="customer_id" value="${customer.id}" />
+		<div class="modal fade" id="addDiscountModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="addDiscountModalLabel">
+							<strong>Add A Discount</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Name</label>
+							<div class="col-md-6">
+								<input name="detail_name" class="form-control input-sm" placeholder="Discount Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Amount</label>
+							<div class="col-md-6">
+								<input name="detail_price" class="form-control input-sm" placeholder="Discount Amount" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Unit</label>
+							<div class="col-md-6">
+								<input name="detail_unit" class="form-control input-sm" placeholder="Discount Unit" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Expired</label>
+							<div class="col-md-6">
+								<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+								<!-- 	<div class="input-group date">
+							<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div> -->
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Type</label>
+							<div class="col-md-6">
+								<select name="detail_type" class="form-control input-sm">
+									<option value="discount">Discount</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="submit" class="btn btn-success" id="discount_save_${customerOrder.id}">Add Discount</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+	
 </c:forEach>
-
-<!-- Edit PSTN Modal -->
-<form class="form-horizontal"
-	action="${ctx }/broadband-user/crm/customer/order/pstn/edit"
-	method="post">
-	<input type="hidden" name="order_detail_id" /> <input type="hidden"
-		name="customer_id" value="${customer.id}" />
-	<div class="modal fade" id="updatePSTNModal" tabindex="-1"
-		role="dialog" aria-labelledby="updatePSTNModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title text-danger" id="updatePSTNModalLabel">
-						<strong>Update PSTN Info</strong>
-					</h4>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-4">PSTN Number</label>
-						<div class="col-md-6">
-							<input name="pstn_number" class="form-control input-sm"
-								placeholder="PSTN Number" />
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success">Update PSTN</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-</form>
-
-<!-- Edit Order Info Modal -->
-<div class="modal fade" id="editOrderInfoModal" tabindex="-1"
-	role="dialog" aria-labelledby="editOrderInfoModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title text-danger" id="editOrderInfoModalLabel">
-					<strong>Update Order Info</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8 text-warning">Update
-						order's info?</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success"
-					data-name="editOrderInfoModalBtn" data-dismiss="modal">Update
-					Order</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Save PPPoE Modal -->
-<div class="modal fade" id="savePPPoEModal" tabindex="-1" role="dialog"
-	aria-labelledby="savePPPoEModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="savePPPoEModalLabel">
-					<strong>Save Related Order's PPPoE Information</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8">Save PPPoE Info?</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success"
-					data-name="pppoe_save_modal_btn" data-dismiss="modal">Save
-					PPPoE</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Edit PPPoE Modal -->
-<div class="modal fade" id="editPPPoEModal" tabindex="-1" role="dialog"
-	aria-labelledby="editPPPoEModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="editPPPoEModalLabel">
-					<strong>Update Related Order's PPPoE Information</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8">Update PPPoE Info?</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success"
-					data-name="pppoe_edit_modal_btn" data-dismiss="modal">Update
-					PPPoE</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Save Order Denied Modal -->
-<div class="modal fade" id="saveOrderDeniedModal" tabindex="-1"
-	role="dialog" aria-labelledby="saveOrderDeniedModalLabel"
-	aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="saveOrderDeniedModalLabel">
-					<strong>Save Related Order's SV/CVLan Information Denied</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8">Couldn't save these
-						changes!<br />Please double check this order's status!!!
-					</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-primary"
-					data-dismiss="modal">Close</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Save Order Modal -->
-<div class="modal fade" id="saveOrderModal" tabindex="-1" role="dialog"
-	aria-labelledby="saveOrderModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="saveOrderModalLabel">
-					<strong>Save Related Order's SV/CVLan Information</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8">Save SV/CVLan Info?</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success"
-					data-name="svcvlan_save" data-dismiss="modal">Save SV/CVLan</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Edit Order Modal -->
-<div class="modal fade" id="editOrderModal" tabindex="-1" role="dialog"
-	aria-labelledby="editOrderModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal"
-					aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="editOrderModalLabel">
-					<strong>Update Related Order's SV/CVLan Information</strong>
-				</h4>
-			</div>
-			<div class="modal-body">
-				<div class="form-group">
-					<label class="control-label col-md-8">Update SV/CVLan Info?</label>
-				</div>
-			</div>
-			<div class="modal-footer">
-				<a href="javascript:void(0);" class="btn btn-success"
-					data-name="svcvlan_edit" data-dismiss="modal">Update SV/CVLan</a>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
-
-<!-- Remove Discount Modal -->
-<form class="form-horizontal"
-	action="${ctx }/broadband-user/crm/customer/order/discount/remove"
-	method="post">
-	<input type="hidden" name="order_detail_id" /> <input type="hidden"
-		name="customer_id" value="${customer.id}" />
-	<div class="modal fade" id="removeDiscountModal" tabindex="-1"
-		role="dialog" aria-labelledby="removeDiscountModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="removeDiscountModalLabel">
-						<strong>Remove Selected Discount</strong>
-					</h4>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">Are you sure want to
-							remove this discount?</label>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success" id="discount_save">Remove
-						Discount</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-</form>
-
-<!-- Add Discount Modal -->
-<form class="form-horizontal"
-	action="${ctx }/broadband-user/crm/customer/order/discount/save"
-	method="post">
-	<input type="hidden" name="order_id" /> <input type="hidden"
-		name="customer_id" value="${customer.id}" />
-	<div class="modal fade" id="addDiscountModal" tabindex="-1"
-		role="dialog" aria-labelledby="addDiscountModalLabel"
-		aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal"
-						aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="addDiscountModalLabel">
-						<strong>Add A Discount</strong>
-					</h4>
-				</div>
-				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-4">Discount Name</label>
-						<div class="col-md-6">
-							<input name="detail_name" class="form-control input-sm"
-								placeholder="Discount Name" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-4">Discount Amount</label>
-						<div class="col-md-6">
-							<input name="detail_price" class="form-control input-sm"
-								placeholder="Discount Amount" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-4">Discount Unit</label>
-						<div class="col-md-6">
-							<input name="detail_unit" class="form-control input-sm"
-								placeholder="Discount Unit" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-4">Discount Expired</label>
-						<div class="col-md-6">
-							<input name="detail_expired" class="form-control input-sm"
-								placeholder="e.g.:YYYY-MM-DD" />
-							<!-- 	<div class="input-group date">
-						<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
-						<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-					</div> -->
-						</div>
-					</div>
-					<div class="form-group">
-						<label class="control-label col-md-4">Discount Type</label>
-						<div class="col-md-6">
-							<select name="detail_type" class="form-control input-sm">
-								<option value="discount">Discount</option>
-							</select>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-success" id="discount_save">Add
-						Discount</button>
-				</div>
-			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
-	<!-- /.modal -->
-</form>

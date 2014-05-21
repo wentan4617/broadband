@@ -147,46 +147,46 @@
 		 */
 		// BEGIN Order Info Area Modal
 		$('a[data-name="${co.id}_order_info_edit"]').click(function(){
-			$('a[data-name="editOrderInfoModalBtn"]').attr('id',this.id);
-			$('#editOrderInfoModal').modal('show');
+			$('a[data-name="editOrderInfoModalBtn_${co.id}"]').prop('id',this.id);
+			$('#editOrderInfoModal_${co.id}').modal('show');
 		});
 		// END Order Info Area Modal
 		// BEGIN PPPoE Area Modal
 		$('a[data-name="${co.id}_pppoe_save"]').click(function(){
-			$('a[data-name="pppoe_save_modal_btn"]').attr('id',$(this).attr('data-val'));
-			$('#savePPPoEModal').modal('show');	// click Save PPPoE then performing Ajax action
+			$('a[data-name="pppoe_save_modal_btn_${co.id}"]').prop('id',$(this).attr('data-val'));
+			$('#savePPPoEModal_${co.id}').modal('show');	// click Save PPPoE then performing Ajax action
 		});
 		$('a[data-name="${co.id}_pppoe_edit"]').click(function(){
-			$('a[data-name="pppoe_edit_modal_btn"]').attr('id',$(this).attr('data-val'));
-			$('#editPPPoEModal').modal('show');	// click Edit PPPoE then performing Ajax action
+			$('a[data-name="pppoe_edit_modal_btn_${co.id}"]').prop('id',$(this).attr('data-val'));
+			$('#editPPPoEModal_${co.id}').modal('show');	// click Edit PPPoE then performing Ajax action
 		});
 		// END PPPoE Area Modal
 		// BEGIN SV/CVLan Area Modal
 		$('a[data-name="${co.id}_svcvlan_save"]').click(function(){
-			var order_status = $('#'+$(this).attr('data-val')+'_order_status');
+			var order_status = $('#${co.id}_order_status');
 			// if status is ordering then show save modal
 			if(order_status.attr('data-val')=='ordering-paid' || order_status.attr('data-val')=='ordering-pending'){
-				$('a[data-name="svcvlan_save"]').attr('id',$(this).attr('data-val'));
-				$('#saveOrderModal').modal('show');	// click Save Order then performing Ajax action
+				$('a[data-name="svcvlan_save_${co.id}"]').prop('id', '${co.id}');
+				$('#saveOrderModal_${co.id}').modal('show');	// click Save Order then performing Ajax action
 			// else show denied modal
 			} else {
-				$('#saveOrderDeniedModal').modal('show');
+				$('#saveOrderDeniedModal_${co.id}').modal('show');
 			}
 		});
 		$('a[data-name="${co.id}_svcvlan_edit"]').click(function(){
-			$('a[data-name="svcvlan_edit"]').attr('id',$(this).attr('data-val'));
-			$('#editOrderModal').modal('show');	// click Edit Order then performing Ajax action
+			$('a[data-name="svcvlan_edit_${co.id}"]').prop('id',$(this).attr('data-val'));
+			$('#editOrderModal_${co.id}').modal('show');	// click Edit Order then performing Ajax action
 		});
 		// END SV/CVLan Area Modal
 		// BEGIN Order Detail Area Modal
 		$('a[data-name="${co.id}_update_pstn"]').click(function(){
-			$('input[name="order_detail_id"]').val($(this).attr('data-val'));
+			$('input[data-name="order_detail_pstn_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		$('a[data-name="${co.id}_add_discount"]').click(function(){
-			$('input[name="order_id"]').val($(this).attr('data-val'));
+			$('input[data-name="order_discount_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		$('a[data-name="${co.id}_remove_discount"]').click(function(){
-			$('input[name="order_detail_id"]').val($(this).attr('data-val'));
+			$('input[data-name="order_detail_remove_id_${co.id}"]').val($(this).attr('data-val'));
 		});
 		// END Order Detail Area Modal
 		/*
@@ -224,7 +224,7 @@
 		/*
 		 *	BEGIN order info area
 		 */
-		$('a[data-name="editOrderInfoModalBtn"]').click(function(){
+		$('a[data-name="editOrderInfoModalBtn_${co.id}"]').click(function(){
 			var orderStatus = $('select[data-name="'+this.id+'_order_status_selector"]');
 			var orderDueDate = $('input[data-name="'+this.id+'_order_due_input"]');
 			var data = {
@@ -254,7 +254,7 @@
 		/*
 		 *	BEGIN PPPoE area
 		 */		
-		$('a[data-name="pppoe_save_modal_btn"]').click(function(){
+		$('a[data-name="pppoe_save_modal_btn_${co.id}"]').click(function(){
 			// for data
 			var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
 			var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
@@ -270,10 +270,10 @@
 			
 			var url = "${ctx}/broadband-user/crm/customer/order/ppppoe/save";
 			$.get(url, data, function(order){
-				var oBtnSave = $('a[data-name="pppoe_save"]');
+				var oBtnSave = $('a[data-name="${co.id}_pppoe_save"]');
 				// hide Save Btn
 				oBtnSave.css('display', 'none');
-				var oBtnEdit = $('a[data-name="pppoe_edit"]');
+				var oBtnEdit = $('a[data-name="${co.id}_pppoe_edit"]');
 				// show Edit Btn
 				oBtnEdit.css('display', '');
 				
@@ -283,7 +283,7 @@
 				
 			}, "json");
 		});
-		$('a[data-name="pppoe_edit_modal_btn"]').click(function(){
+		$('a[data-name="pppoe_edit_modal_btn_${co.id}"]').click(function(){
 			// for data
 			var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
 			var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
@@ -314,7 +314,7 @@
 		/*
 		 *	BEGIN service giving area
 		 */
-		$('a[data-name="svcvlan_save"]').click(function(){
+		$('a[data-name="svcvlan_save_${co.id}"]').click(function(){
 			// for data
 			var cvlan_input = $('#'+this.id+'_cvlan_input').val();
 			var svlan_input = $('#'+this.id+'_svlan_input').val();
@@ -342,13 +342,13 @@
 				};
 			var url = "${ctx}/broadband-user/crm/customer/order/save";
 			$.get(url, data, function(order){
-				var oBtnSave = $('a[data-name="save"]');
+				var oBtnSave = $('a[data-name="${co.id}_save"]');
 				// hide Save Btn
 				oBtnSave.css('display', 'none');
-				var oBtnEdit = $('a[data-name="edit"]');
+				var oBtnEdit = $('a[data-name="${co.id}_edit"]');
 				// show Edit Btn
 				oBtnEdit.css('display', '');
-				
+				 
 				// rewrite innerHTML
 				cvlan.html(cvlan_input);
 				svlan.html(svlan_input);
@@ -361,7 +361,7 @@
 			}, "json");
 			
 		});
-		$('a[data-name="svcvlan_edit"]').click(function(){
+		$('a[data-name="svcvlan_edit_${co.id}"]').click(function(){
 			// for data
 			var cvlan_input = $('#'+this.id+'_cvlan_input').val();
 			var svlan_input = $('#'+this.id+'_svlan_input').val();
@@ -422,7 +422,9 @@
 					var tx = page.results[i];
 					html += '<tr>';
 					html += '<td>Transaction# - ' + tx.id + '</td>';
-					html += '<td>' + tx.transaction_type + '</td>';
+					html += '<td>';
+					html += tx.transaction_type;
+					html += '</td>';
 					html += '<td>' + tx.transaction_date_str + '</td>';
 					html += '<td>' + tx.card_name + '</td>';
 					html += '<td>' + tx.transaction_sort + '</td>';
