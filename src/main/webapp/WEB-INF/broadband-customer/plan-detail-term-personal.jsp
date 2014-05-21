@@ -1,4 +1,4 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
@@ -107,7 +107,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -143,7 +143,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -194,7 +194,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -230,7 +230,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -282,7 +282,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">
@@ -318,7 +318,7 @@
 				 	<div class="panel-body">
 				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Purchase</a> 
+							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Order</a> 
 						</p>
 				  	</div>
 				  	<div class="panel-footer">

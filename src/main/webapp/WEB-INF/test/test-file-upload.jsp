@@ -7,9 +7,19 @@
 <head>
 <meta charset="utf-8">
 <title>jQuery File Upload Example</title>
+<link href="${ctx}/public/bootstrap3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
+<style type="text/css">
+.bar {
+    height: 18px;
+    background: green;
+}
+</style>
 </head>
 <body>
 	<input id="fileupload" type="file" name="files[]" data-url="${ctx }/test/upload/server" multiple />
+	<div id="progress">
+		<div class="bar" style="width: 0%;"></div>
+	</div>
 	<script src="${ctx }/public/bootstrap3/js/jquery-1.11.1.min.js"></script>
 	<script src="${ctx }/public/bootstrap3/js/vendor/jquery.ui.widget.js"></script>
 	<script src="${ctx }/public/bootstrap3/js/jquery.iframe-transport.js"></script>
@@ -17,13 +27,17 @@
 	<script>
 		$(function() {
 			$('#fileupload').fileupload({
-				dataType : 'json',
-				done : function(e, data) {
+				dataType: 'json'
+				, done: function(e, data){
 					console.log(data);
-					$.each(data.result.files, function(index, file) {
-						$('<p/>').text(file.name).appendTo(document.body);
+					$.each(data.result, function(index, file){
+						$('<p/>').text(file.fileName).appendTo(document.body);
 					});
 				}
+				, progressall: function (e, data) {
+			        var progress = parseInt(data.loaded/data.total * 100, 10);
+			        $('#progress .bar').css('width', progress + '%');
+			    }
 			});
 		});
 	</script>

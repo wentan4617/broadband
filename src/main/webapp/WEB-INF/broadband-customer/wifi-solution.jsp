@@ -19,6 +19,16 @@
 .nav-pills>li:last-child>a {
 	border-radius: 0 0 4px 4px;
 }
+.panel-primary>.panel-footer {
+	color: #fff;
+	background-color: #428bca;
+	border-color: #428bca;
+}
+.panel-info>.panel-footer {
+	color: #31708f;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+}
 </style>
 
 <div class="container">
@@ -106,81 +116,263 @@
 					</h1>
 				</div>
 				<div class="row">
-					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;border-bottom: 1px solid #dfe5d7;">
-						<h3>Naked ADSL</h3>
-						<ul>
-							<li>$99+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + ADSL2+ Router</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
+					<div class="col-lg-4">
+						<span class="label label-info">Naked ADSL</span>
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 99<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+						 		
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
 					</div>
-					<div class="col-lg-6" style="height:250px;border-bottom: 1px solid #dfe5d7;">
-						<h3>Naked VDSL</h3>
-						<ul>
-							<li>$109+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + VDSL Router</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
+					<div class="col-lg-4">
+						<span class="label label-info">Naked VDSL</span>
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 109<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
 					</div>
-					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;border-bottom: 1px solid #dfe5d7;">
-						<h3>Naked UFB</h3>
-						<ul>
-							<li>$119+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + UFB ONT</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
+					<div class="col-lg-4">
+						<span class="label label-info">Naked UFB</span>
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 119<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
 					</div>
-					<div class="col-lg-6" style="height:250px;border-bottom: 1px solid #dfe5d7;">
-						<h3>PSTN (Local phone) + ADSL</h3>
-						<ul>
-							<li>1 PSTN phone line</li>
-							<li>$119+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + ADSL Router</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
-					</div>
-					<div class="col-lg-6" style="height:250px;border-right: 1px solid #dfe5d7;">
-					
-						<h3>PSTN (Local phone) + VDSL</h3>
-						<ul>
-							<li>1 PSTN phone line</li>
-							<li>$119+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + VDSL Router</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
-					</div>
-					<div class="col-lg-6" style="height:250px;">
-						<h3>PSTN (Local phone) + UFB</h3>
-						<ul>
-							<li>1 PSTN phone line</li>
-							<li>$129+GST per month</li>
-							<li>300GB Data per month</li>
-							<li>1 VoIP phone line (optional)</li>
-							<li>Free Wifi Coverage Access Point (Professional Level) + UFB ONT</li>
-							<li>Carryover Data</li>
-							<li>36 months term</li>
-						</ul>
-					</div>
-					<p>&nbsp;</p>
-					<p>
-					If you are interested in our CyberPark WiFi coverage plans, please contact with our sales team by email: <a href="mailto:#">sales@cyberpark.co.nz</a>. We can arrange an appointment with you and discussion for your WiFi coverage solutions. Call us now: 0800 2 Cyber (29237), 
-					</p>
 				</div>
+				
+				
+				<div class="row">
+					<div class="col-lg-4">
+						<span class="label label-danger">ADSL + PSTN</span>
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 109<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+						 		
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-earphone"></span>  1 PSTN Phone Line
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<span class="label label-danger">VDSL + PSTN</span>
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 119<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-earphone"></span>  1 PSTN Phone Line
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-4">
+						<span class="label label-danger">UFB + PSTN</span>
+						<div class="panel panel-info">
+							<div class="panel-heading">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									NZ$ 129<sub style="bottom:0;">/ mth</sub>
+								</h2>
+							</div>
+						 	<div class="panel-body">
+								<ul class="list-unstyled">
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-earphone"></span>  1 PSTN Phone Line
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-phone-alt"></span>  1 Voip Phone Line (optional)
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-signal"></span> Free Router
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-cloud"></span> Carryover Data
+										</p>
+									</li>
+									<li>
+										<p class="text-info">
+											<span class="glyphicon glyphicon-calendar"></span> 36 Months Term
+										</p>
+									</li>
+								</ul>
+							</div>
+						  	<div class="panel-footer">
+								<h2 class="text-center" style="margin:0;font-weight:bold;">
+									300 GB	
+								</h2>
+							</div>
+						</div>
+					</div>
+				</div>
+				
 			</section>
 			
 		</div>

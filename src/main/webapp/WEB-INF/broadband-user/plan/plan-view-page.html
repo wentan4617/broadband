@@ -25,7 +25,7 @@
 	<. for (var i=0; i < results.length; i++) { 
 		var plan = results[i];
 	.>
-		<tr class="<.=plan.plan_status=='selling'?'success':'' .>">
+		<tr class="<.=plan.plan_status=='selling'?'success':'' .>" >
 			<td>
 				<input type="checkbox" name="checkbox_plans" value="<.=plan.id.>"/>
 			</td>
@@ -35,7 +35,7 @@
 				</a>
 				<. if(plan.promotion) {.>
 				<a data-toggle="tooltip" data-placement="top" data-original-title="Promotion">
-					<span class="glyphicon glyphicon-fire" style="font-size:20px;"></span>
+					<span class="glyphicon glyphicon-fire"></span>
 				</a>
 				<.}.>
 			</td>
