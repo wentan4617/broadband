@@ -210,7 +210,6 @@ public class CRMController {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
 			customerOrder.setOrder_due(cal.getTime());
-			
 		}
 		
 		this.crmService.editCustomerOrder(customerOrder, proLog);
