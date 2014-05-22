@@ -44,7 +44,7 @@
 		</h1>
 	</div>
 	
-	<img src="${ctx }/public/bootstrap3/images/business-plan.png"  class="img-responsive" alt="business plan">
+	<%-- <img src="${ctx }/public/bootstrap3/images/business-plan.png"  class="img-responsive" alt="business plan"> --%>
 	
 	<div class="alert alert-info">
 		<p>

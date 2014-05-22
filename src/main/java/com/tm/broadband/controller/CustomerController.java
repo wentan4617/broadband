@@ -158,6 +158,57 @@ public class CustomerController {
 
 		return url;
 	}
+	
+	@RequestMapping("/plans/{group}/{class}/{type}/promotion")
+	public String plansPromotion(Model model, 
+			@PathVariable("group") String group,
+			@PathVariable("class") String classz,
+			@PathVariable("type") String type) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+		model.addAttribute("customer", customer);
+		
+		List<Plan> plans = null;
+		//Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
+		String url = "";
+		
+		Plan plan = new Plan();
+		plan.getParams().put("plan_group", group);
+		plan.getParams().put("plan_class", classz);
+		plan.getParams().put("promotion", true);
+		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("orderby", "order by place_sort");
+		
+		plans = this.planService.queryPlans(plan);
+		
+		if (plans != null) {
+			for (Plan p: plans) {
+				if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+					List<Plan> plansPromotion = planMap.get(p.getPlan_type());
+					if (plansPromotion != null) {
+						plansPromotion.add(p);
+					} else {
+						plansPromotion = new ArrayList<Plan>();
+						plansPromotion.add(p);
+						planMap.put(p.getPlan_type(), plansPromotion);
+					}
+				}
+			}
+		}
+		
+		model.addAttribute("planMap", planMap);
+		model.addAttribute("selectdType", type);
+		
+		if ("personal".equals(classz)) {	
+			url = "broadband-customer/plan-detail-term-personal-promotion";
+		} else if ("business".equals(classz)) {
+			url = "broadband-customer/plan-detail-term-business-promotion";
+		} 
+
+		return url;
+	}
 
 	@RequestMapping("/order/{id}") 
 	public String orderPlanNoTermOrTerm(Model model, 

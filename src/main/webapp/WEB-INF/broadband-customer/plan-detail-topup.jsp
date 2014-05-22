@@ -28,7 +28,7 @@ background-color: #7BC3EC;
 		</h2>
 	</div>
 	
-	<img src="${ctx }/public/bootstrap3/images/topup-plan.png"  class="img-responsive" alt="Broadband Top-Up" >
+	<%-- <img src="${ctx }/public/bootstrap3/images/topup-plan.png"  class="img-responsive" alt="Broadband Top-Up" > --%>
 	
 	<div class="alert alert-success">
 		<p><strong>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</strong></p>

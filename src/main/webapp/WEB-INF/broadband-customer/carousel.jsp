@@ -8,17 +8,15 @@
 		<li data-target="#myCarousel" data-slide-to="1" ></li>
 		<li data-target="#myCarousel" data-slide-to="2" ></li>
 		<li data-target="#myCarousel" data-slide-to="3" ></li>
-		<li data-target="#myCarousel" data-slide-to="4" ></li>
-		<li data-target="#myCarousel" data-slide-to="5" ></li>
 	</ol>
 	<div class="carousel-inner slider-img">
 		<div class="item active" style="background-color:#05211a;"><!-- style="width:900px;height:380px;" -->
-			<a href="${ctx }/plans/plan-term/business" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/slider_biz.png" class="img-responsive" alt="ADSL is a fast broadband plan" >
+			<a href="${ctx }/plans/plan-term/business/adsl/promotion" target="_blank">
+				<img src="${ctx }/public/bootstrap3/images/slider_biz.png" class="img-responsive" alt="ADSL is a fast broadband plan">
 			</a>
 		</div>
 		<div class="item" style="background-color:#030205;">
-			<a href="${ctx }/plans/plan-term/personal" target="_blank"><!-- slider_fiber -->
+			<a href="${ctx }/plans/plan-term/personal/ufb/promotion" target="_blank"><!-- slider_fiber -->
 				<img src="${ctx }/public/bootstrap3/images/slider_fiber.png"  class="img-responsive" alt="VDSL is faster than ADSL">
 			</a>
 		</div>
