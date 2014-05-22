@@ -43,6 +43,9 @@
 			Business Broadband Plans <small>(BBP)</small>
 		</h1>
 	</div>
+	
+	<img src="${ctx }/public/bootstrap3/images/business-plan.png"  class="img-responsive" alt="business plan">
+	
 	<div class="alert alert-info">
 		<p>
 			We offer the best value and price business broadband plans to you. 

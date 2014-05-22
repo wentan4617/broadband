@@ -84,7 +84,90 @@
 						send email to <a href="mailto:#">${cyberpark.company_email }</a>
 					</p>
 				</address>
-
+				
+				
+				
+				<!-- Contact Us Details -->
+				<div class="panel panel-success">
+					<div class="panel-body">
+						<div id="alertContainer"></div>
+						
+						<div id="tempAlertSuccessContainer" style="display:none;">
+							<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none;">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
+								<span id="text-success"></span>
+							</div>
+						</div>
+						<div id="tempAlertErrorContainer" style="display:none;">
+							<div id="alert-error" class="alert alert-danger alert-dismissable fade in" style="display:none;">
+								<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
+								<span id="text-error"></span>
+							</div>
+						</div>
+						
+						<form class="form-horizontal" id="contactUsForm">
+							<div class="form-group">
+								<label for="first_name" class="control-label col-md-2">First Name *</label>
+								<div class="col-md-6">
+									<input id="first_name" class="form-control" placeholder="First Name" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="last_name" class="control-label col-md-2">Last Name *</label>
+								<div class="col-md-6">
+									<input id="last_name" class="form-control" placeholder="Last Name" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="email" class="control-label col-md-2">Email*</label>
+								<div class="col-md-6">
+									<input id="email" class="form-control" placeholder="Email" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="cellphone" class="control-label col-md-2">Mobile</label>
+								<div class="col-md-6">
+									<input id="cellphone" class="form-control" placeholder="Cellphone" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="phone" class="control-label col-md-2">Phone</label>
+								<div class="col-md-6">
+									<input id="phone" class="form-control" placeholder="Phone" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="content" class="control-label col-md-2">Your request*</label>
+								<div class="col-md-6">
+									<textarea id="content" class="form-control" rows="6" data-error-field></textarea>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="code" class="control-label col-md-2"></label>
+								<div class="col-md-6">
+									<input id="code" class="form-control" placeholder="Verification Code" data-error-field/>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="code" class="control-label col-md-2"></label>
+								<div class="col-md-3">
+									<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
+								</div>
+								<div class="col-md-5">
+									<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
+								</div>
+							</div>
+							<hr/>
+							<div class="form-group">
+								<div class="col-md-2"></div>
+								<div class="col-md-3">
+									<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="submit-btn">Submit Request</button>
+								</div>
+							</div>
+						</form>
+						
+					</div>
+				</div>
 			</section>
 			<section id="location">
 				<div class="page-header">
@@ -121,7 +204,37 @@
 <jsp:include page="script.jsp" />
 <script type="text/javascript">
 (function($){
-	$('body').scrollspy({ target: '.navbar-example' })
+	$('body').scrollspy({ target: '.navbar-example' });
+	
+	$(document).keypress(function(e){
+		if ($('#contactUsForm input:focus').length > 0 && event.keyCode == 13) {
+			$('#submit-btn').trigger('click');
+		}
+	});
+	
+	$('#submit-btn').on("click", function(){
+		var $btn = $(this);
+		$btn.button('loading');
+		var data = {
+			first_name: $('#first_name').val()
+			, last_name: $('#last_name').val()
+			, email: $('#email').val()
+			, cellphone: $('#cellphone').val()
+			, phone: $('#phone').val()
+			, content: $('#content').val()
+			, code: $('#code').val()
+		};
+		$.post('${ctx}/contact-us', data, function(json){
+			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+			$.jsonValidation(json, 'right');
+		}, 'json').always(function () {
+			$btn.button('reset');
+	    });
+	});
+	
+	$('#codeImage,#codeLink').click(function(){
+		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+	});
 })(jQuery);
 </script>
 <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVW1VF22QhBHMntGWSOt1Vqi5l88cPak8&sensor=true&region=NZ"></script>

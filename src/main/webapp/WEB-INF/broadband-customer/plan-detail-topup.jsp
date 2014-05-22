@@ -27,7 +27,10 @@ background-color: #7BC3EC;
 			Top Up Unlimited Naked ADSL Broadband Plan (Top Up UNAB Plan)
 		</h2>
 	</div>
-	<div class="alert alert-info">
+	
+	<img src="${ctx }/public/bootstrap3/images/topup-plan.png"  class="img-responsive" alt="Broadband Top-Up" >
+	
+	<div class="alert alert-success">
 		<p><strong>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</strong></p>
 		<p>The process and conditions as bellows, it will be more cost efficiency and convenience to all the Top Up users. </p>
 		<p>CyberPark Top Up Plan offer you unlimited data plan by weekly charges,</p>

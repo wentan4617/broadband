@@ -45,6 +45,8 @@
 			Personal Broadband Plans <small>(PBP)</small>
 		</h1>
 	</div>
+	
+	<img src="${ctx }/public/bootstrap3/images/persoanl-12months-unlimited-plan.png"  class="img-responsive" alt="persoanl 12months unlimited plan">
 	<div class="alert alert-info">
 		<p>
 			We offer the best value and price personal broadband plans to you. 

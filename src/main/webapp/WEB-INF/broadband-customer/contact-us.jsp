@@ -94,8 +94,6 @@
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript">
-
-
 (function($){
 	$(document).keypress(function(e){
 		if ($('#contactUsForm input:focus').length > 0 && event.keyCode == 13) {

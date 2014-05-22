@@ -358,6 +358,8 @@ public class CustomerController {
 		if (error.hasErrors()) {
 			TMUtils.printResultErrors(error);
 		}
+		
+		String url = "redirect:/order/result/error";
 
 		Response responseBean = null;
 
@@ -365,6 +367,8 @@ public class CustomerController {
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			url = "redirect:/order/result/success";
 			
 			customer.setStatus("active");
 			customer.setCustomer_type("personal");
@@ -418,20 +422,32 @@ public class CustomerController {
 			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);
-			status.setComplete();
+			//status.setComplete();
 		} else {
 
 		}
 
 		attr.addFlashAttribute("responseBean", responseBean);
 
-		return "redirect:/order/result";
+		return url; //"redirect:/order/result";
 	}
 	
 	@RequestMapping(value = "/order/result")
 	public String toOrderResult(SessionStatus status) {
-		
+		status.setComplete();
 		return "broadband-customer/customer-order-result";
+	}
+	
+	@RequestMapping(value = "/order/result/success")
+	public String toOrderPaidResultSuccess(SessionStatus status) {
+		status.setComplete();
+		return "broadband-customer/customer-order-result-success";
+	}
+	
+	@RequestMapping(value = "/order/result/error")
+	public String toOrderPaidResultError(SessionStatus status) {
+		
+		return "broadband-customer/customer-order-result-error";
 	}
 
 	@RequestMapping(value = "/login")

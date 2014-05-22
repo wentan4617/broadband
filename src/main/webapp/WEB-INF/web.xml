@@ -131,6 +131,7 @@
 		<url-pattern>/order/plan-term/personal/save</url-pattern>
 		<url-pattern>/order/plan-term/business/save</url-pattern>
 		<url-pattern>/order/checkout</url-pattern>
+		<url-pattern>/order/result/*</url-pattern>
 	</filter-mapping>
 
 	<!-- customer session filter -->
