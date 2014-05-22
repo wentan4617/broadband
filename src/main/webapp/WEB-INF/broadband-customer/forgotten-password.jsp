@@ -18,12 +18,16 @@
 							<div class="col-sm-12">
 								<ul class="list-inline topup-list" style="margin: 5px 0 0 0;">
 									<li>
-										<input type="radio" name="type" value="email" checked="checked" /> &nbsp; 
-										<strong>Email Address</strong>
+										<span data-name="email" data-holder="e.g. cyberpark@gmail.co.nz">
+											<input type="radio" name="type" value="email" checked="checked" /> &nbsp; 
+											<strong>Email Address</strong>
+										</span>
 									</li>
 									<li>
-										<input type="radio" name="type" value="cellphone" /> &nbsp; 
-										<strong>Mobile Number</strong>
+										<span data-name="cellphone" data-holder="e.g. 02112121212">
+											<input type="radio" name="type" value="cellphone" /> &nbsp; 
+											<strong>Mobile Number</strong>
+										</span>
 									</li>
 								</ul>
 							</div>
@@ -31,10 +35,10 @@
 					</form>
 					<form>
 						<div class="form-group">
-							<input type="text" id="login_name" class="form-control" placeholder="" data-error-field/>
+							<input type="text" id="login_name" class="form-control" placeholder="e.g. cyberpark@gmail.co.nz" data-error-field/>
 						</div>
 						<div class="form-group">
-							<input id="code" class="form-control" placeholder="Verification Code" data-error-field/>
+							<input id="code" class="form-control" placeholder="verification code shown in the picture" data-error-field/>
 						</div>
 						<div class="form-group">
 							<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
@@ -67,6 +71,13 @@
 		if ($('#loginForm input:focus').length > 0 && event.keyCode == 13) {
 			$('#submit-btn').trigger('click');
 		}
+	});
+	
+	$('span[data-name="email"] ins').on('click', function(){
+		$('#login_name').attr('placeholder', $('span[data-name="email"]').attr('data-holder'));
+	});
+	$('span[data-name="cellphone"] ins').on('click', function(){
+		$('#login_name').attr('placeholder', $('span[data-name="cellphone"]').attr('data-holder'));
 	});
 	
 	$('#submit-btn').on("click", function(){

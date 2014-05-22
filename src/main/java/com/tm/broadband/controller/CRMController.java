@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +45,6 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.ProvisionLog;
-import com.tm.broadband.model.User;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
@@ -166,84 +163,6 @@ public class CRMController {
 		return map;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/save")
-	@ResponseBody
-	public CustomerOrder saveCustomerOrderEdit(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("customer_id") int customer_id,
-			@RequestParam("cvlan_input") String cvlan_input,
-			@RequestParam("svlan_input") String svlan_input,
-			@RequestParam("order_using_start_input") String order_using_start_input,
-			@RequestParam("order_detail_unit") Integer order_detail_unit,
-			@RequestParam("order_status") String order_status,
-			@RequestParam("order_type") String order_type,
-			HttpServletRequest req) {
-
-		// new CustomerOrder to update 
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.setOrder_status("using");
-		customerOrder.setId(order_id); // important
-		customerOrder.setOrder_type(order_type); // important too, for createInvoicPDF checking, if order_type!=null
-		customerOrder.setSvlan(svlan_input);
-		customerOrder.setCvlan(cvlan_input);
-		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-		customerOrder.getParams().put("id", order_id);
-		
-		// new ProvisionLog to insert
-		ProvisionLog proLog = new ProvisionLog();
-		User userSession = (User) req.getSession().getAttribute("userSession"); // get user from userSession
-		proLog.setUser_id(userSession.getId());
-		proLog.setOrder_id_customer(order_id);
-		proLog.setOrder_sort("customer-order");
-		proLog.setProcess_way(order_status + " to using");
-
-		if (!"order-topup".equals(order_type)) {
-			int nextInvoiceMonth = order_detail_unit;
-			int nextInvoiceDay = -15;
-			Calendar calNextInvoiceDay = Calendar.getInstance();
-			calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-			calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-			// set next invoice date
-			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-		} else {
-			Calendar cal = Calendar.getInstance();
-			cal.add(Calendar.WEEK_OF_MONTH, 1);
-			customerOrder.setOrder_due(cal.getTime());
-		}
-		
-		this.crmService.editCustomerOrder(customerOrder, proLog);
-		
-		// check order status
-		if ("ordering-paid".equals(order_status) || "order-term".equals(order_type)) {
-
-			// send mailer
-			Customer customer = this.crmService.queryCustomerById(customer_id);
-			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
-			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-			this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
-		}
-
-		if ("ordering-pending".equals(order_status) && !"order-term".equals(order_type)) {
-			
-			Notification notificationEmail = this.systemService.queryNotificationBySort("service-giving", "email");
-			Notification notificationSMS = this.systemService.queryNotificationBySort("service-giving", "sms");
-			this.crmService.createInvoicePDF(customerOrder, notificationEmail, notificationSMS);
-				
-		}
-
-		return customerOrder;
-	}
-
-	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/save")
 	public String doCustomerOrderDetailDiscountCreate(Model model
 			,@RequestParam("order_id") int order_id
@@ -298,70 +217,6 @@ public class CRMController {
 		attr.addFlashAttribute("success", "Remove Customer Order Detail Discount is successful.");
 
 		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
-	}
-	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/edit")
-	@ResponseBody
-	public CustomerOrder toCustomerInvoiceEdit(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("customer_id") int customer_id,
-			@RequestParam("cvlan_input") String cvlan_input,
-			@RequestParam("svlan_input") String svlan_input,
-			@RequestParam("order_using_start_input") String order_using_start_input,
-			@RequestParam("order_detail_unit") Integer order_detail_unit,
-			@RequestParam("order_type") String order_type,
-			HttpServletRequest req) {
-		
-		// get user from session
-		User user = (User) req.getSession().getAttribute("userSession");
-		
-		// CustomerOrder begin
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.setId(order_id);
-		customerOrder.setSvlan(svlan_input);
-		customerOrder.setCvlan(cvlan_input);
-		customerOrder.setOrder_using_start(TMUtils.parseDateYYYYMMDD(order_using_start_input));
-		customerOrder.getParams().put("id", order_id);
-		
-		if (!"order-topup".equals(order_type)) {
-			int nextInvoiceMonth = order_detail_unit;
-			int nextInvoiceDay = -15;
-			Calendar calNextInvoiceDay = Calendar.getInstance();
-			calNextInvoiceDay.setTime(customerOrder.getOrder_using_start());
-			calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-			// set next invoice date
-			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-		}
-		
-		// ProvisionLog begin
-		ProvisionLog proLog = new ProvisionLog();
-		proLog.setUser(user);
-		//proLog.setOrder_id_customer(customerOrder);
-		proLog.setOrder_sort("customer-order");
-		proLog.setProcess_way("editing service giving");
-		// ProvisionLog end
-		
-		this.crmService.editCustomerOrderAndCreateProvision(customerOrder, proLog);
-		
-		Customer customer = this.crmService.queryCustomerById(customer_id);
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-		// get sms register template from db
-		notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer, notification);
-		
-		return customerOrder;
 	}
 
 	// create invoice PDF directly
@@ -695,7 +550,6 @@ public class CRMController {
 		return "broadband-user/crm/order-create";
 	}
 	
-	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
 	public String orderSave(Model model,
 			@ModelAttribute("customer") Customer customer, 
@@ -717,54 +571,8 @@ public class CRMController {
 	 */
 	
 	/**
-	 * BEGIN PPPoE Controller
-	 */
-	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/save")
-	@ResponseBody
-	public CustomerOrder saveCustomerOrderPPPPoEEdit(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("order_pppoe_loginname_input") String order_pppoe_loginname_input,
-			@RequestParam("order_pppoe_password_input") String order_pppoe_password_input,
-			HttpServletRequest req) {
-
-		// customer order begin
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("id", order_id);
-		customerOrder.setPppoe_loginname(order_pppoe_loginname_input);
-		customerOrder.setPppoe_password(order_pppoe_password_input);
-
-		this.crmService.editCustomerOrder(customerOrder);
-		
-		return customerOrder;
-	}
-
-	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit")
-	@ResponseBody
-	public CustomerOrder toCustomerPPPoEEdit(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("order_pppoe_loginname_input") String order_pppoe_loginname_input,
-			@RequestParam("order_pppoe_password_input") String order_pppoe_password_input,
-			HttpServletRequest req) {
-		
-		// CustomerOrder begin
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("id", order_id);
-		customerOrder.setPppoe_loginname(order_pppoe_loginname_input);
-		customerOrder.setPppoe_password(order_pppoe_password_input);
-
-		this.crmService.editCustomerOrder(customerOrder);
-		
-		return customerOrder;
-	}
-	/**
-	 * END PPPoE Controller
-	 */
-	
-	
-	/**
 	 * BEGIN Payment
 	 */
-
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/{invoice_id}")
 	public String toInvoicePayment(Model model, HttpServletRequest req, RedirectAttributes attr
 			,@PathVariable("invoice_id") Integer invoice_id) {
@@ -855,51 +663,12 @@ public class CRMController {
 		} else {
 
 		}
-
 		attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
-
 		return "redirect:/broadband-user/crm/customer/edit/"+customer.getId();
 	}
 
 	/**
 	 * END Payment
-	 */
-	
-	/**
-	 * BEGIN order info
-	 */
-	@RequestMapping(value = "/broadband-user/crm/customer/order/info/edit")
-	@ResponseBody
-	public CustomerOrder doCustomerOrderInfoEdit(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("order_status") String order_status,
-			@RequestParam("due_date") String due_date,
-			HttpServletRequest req) {
-
-		CustomerOrder customerOrder = new CustomerOrder();
-		// set order to current status
-		customerOrder.getParams().put("id", order_id);
-		customerOrder.setOrder_status(order_status);
-		customerOrder.setOrder_due(TMUtils.parseDateYYYYMMDD(due_date));
-		// get order to get previous status
-		CustomerOrder customerOrderPrevious = this.crmService.queryCustomerOrder(customerOrder);
-		
-		// new ProvisionLog to insert
-		ProvisionLog proLog = new ProvisionLog();
-		User userSession = (User) req.getSession().getAttribute("userSession"); // get user from userSession
-		proLog.setUser_id(userSession.getId());
-		proLog.setOrder_id_customer(order_id);
-		proLog.setOrder_sort("customer-order");
-		// get both previous status and current status
-		proLog.setProcess_way(customerOrderPrevious.getOrder_status() + " to " + order_status);
-
-
-		this.crmService.editCustomerOrder(customerOrder, proLog);
-		
-		return customerOrder;
-	}
-	/**
-	 * END order info
 	 */
 	
 	// BEGIN DDPay

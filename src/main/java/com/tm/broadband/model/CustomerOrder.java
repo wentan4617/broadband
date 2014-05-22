@@ -52,6 +52,7 @@ public class CustomerOrder implements Serializable {
 	private String signature;
 	private String optional_request;
 	private String broadband_asid;
+	private Date rfs_date;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -64,6 +65,7 @@ public class CustomerOrder implements Serializable {
 	private String order_create_date_str;
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
+	private String rfs_date_str;
 	private String order_due_str;
 	private Customer customer;
 	@Valid
@@ -187,7 +189,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		order_using_start_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start());
+		if(this.getOrder_using_start() != null){
+			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start()));
+		}
 		return order_using_start_str;
 	}
 
@@ -349,7 +353,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_due_str() {
-		this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_due()));
+		if(this.getOrder_due() != null){
+			this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_due()));
+		}
 		return order_due_str;
 	}
 
@@ -403,6 +409,25 @@ public class CustomerOrder implements Serializable {
 
 	public void setBroadband_asid(String broadband_asid) {
 		this.broadband_asid = broadband_asid;
+	}
+
+	public Date getRfs_date() {
+		return rfs_date;
+	}
+
+	public void setRfs_date(Date rfs_date) {
+		this.rfs_date = rfs_date;
+	}
+
+	public String getRfs_date_str() {
+		if(this.getRfs_date() != null){
+			this.setRfs_date_str(TMUtils.dateFormatYYYYMMDD(this.getRfs_date()));
+		}
+		return rfs_date_str;
+	}
+
+	public void setRfs_date_str(String rfs_date_str) {
+		this.rfs_date_str = rfs_date_str;
 	}
 
 	
