@@ -22,57 +22,56 @@
 		
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h4 class="panel-title">Plan View&nbsp;
-						
-						<select id="filter_operations" class="selectpicker pull-right" multiple >
-						    <optgroup label="Filter Plan Group">
-						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
-						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
-						      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
-						    </optgroup>
-						     <optgroup label="Filter Plan Class">
-						    	<option value="personal" data-type="plan-class">to Personal</option>
-						      	<option value="business" data-type="plan-class">to Business</option>
-						    </optgroup>
-						    <optgroup label="Filter Plan Type">
-						    	<option value="ADSL" data-type="plan-type">to ADSL</option>
-						      	<option value="VDSL" data-type="plan-type">to VDSL</option>
-						      	<option value="UFB" data-type="plan-type">to UFB</option>
-						    </optgroup>
-						</select>
-						
-						&nbsp;
-						
-						<select id="select_operations" class="selectpicker pull-right" multiple>
-						    <optgroup label="Essential Operations">
-						      	<option value="delete" data-type="plan-delete">Delete Selected Plan</option>
-						    </optgroup>
-						    <optgroup label="Change Plan Group">
-						    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
-						      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
-						      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
-						    </optgroup>
-						     <optgroup label="Change Plan Class">
-						    	<option value="personal" data-type="plan-class">to Personal</option>
-						      	<option value="business" data-type="plan-class">to Business</option>
-						    </optgroup>
-						    <optgroup label="Change Plan Type">
-						    	<option value="ADSL" data-type="plan-type">to ADSL</option>
-						      	<option value="VDSL" data-type="plan-type">to VDSL</option>
-						      	<option value="UFB" data-type="plan-type">to UFB</option>
-						    </optgroup>
-						    <optgroup label="Change Plan Sort">
-						    	<option value="NAKED" data-type="plan-sort">to NAKED</option>
-						      	<option value="CLOTHING" data-type="plan-sort">to CLOTHING</option>
-						    </optgroup>
-						    <optgroup label="Change Plan Status">
-						    	<option value="active" data-type="plan-status">to Active</option>
-						      	<option value="selling" data-type="plan-status">to Selling</option>
-						      	<option value="disable" data-type="plan-status">to Disable</option>
-						    </optgroup>
-						</select>
-						
+					<h4 class="panel-title">Plan View
+					
+						<div class="pull-right">
+							<select id="filter_operations" class="selectpicker" multiple >
+							    <optgroup label="Filter Plan Group">
+							    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
+							      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
+							      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
+							    </optgroup>
+							     <optgroup label="Filter Plan Class">
+							    	<option value="personal" data-type="plan-class">to Personal</option>
+							      	<option value="business" data-type="plan-class">to Business</option>
+							    </optgroup>
+							    <optgroup label="Filter Plan Type">
+							    	<option value="ADSL" data-type="plan-type">to ADSL</option>
+							      	<option value="VDSL" data-type="plan-type">to VDSL</option>
+							      	<option value="UFB" data-type="plan-type">to UFB</option>
+							    </optgroup>
+							</select>
+							<select id="select_operations" class="selectpicker" multiple>
+							    <optgroup label="Essential Operations">
+							      	<option value="delete" data-type="plan-delete">Delete Selected Plan</option>
+							    </optgroup>
+							    <optgroup label="Change Plan Group">
+							    	<option value="plan-topup" data-type="plan-group">to Plan Top-Up</option>
+							      	<option value="plan-no-term" data-type="plan-group">to Plan No Term</option>
+							      	<option value="plan-term" data-type="plan-group">to Plan Term</option>
+							    </optgroup>
+							     <optgroup label="Change Plan Class">
+							    	<option value="personal" data-type="plan-class">to Personal</option>
+							      	<option value="business" data-type="plan-class">to Business</option>
+							    </optgroup>
+							    <optgroup label="Change Plan Type">
+							    	<option value="ADSL" data-type="plan-type">to ADSL</option>
+							      	<option value="VDSL" data-type="plan-type">to VDSL</option>
+							      	<option value="UFB" data-type="plan-type">to UFB</option>
+							    </optgroup>
+							    <optgroup label="Change Plan Sort">
+							    	<option value="NAKED" data-type="plan-sort">to NAKED</option>
+							      	<option value="CLOTHING" data-type="plan-sort">to CLOTHING</option>
+							    </optgroup>
+							    <optgroup label="Change Plan Status">
+							    	<option value="active" data-type="plan-status">to Active</option>
+							      	<option value="selling" data-type="plan-status">to Selling</option>
+							      	<option value="disable" data-type="plan-status">to Disable</option>
+							    </optgroup>
+							</select>
+						</div>
 					</h4>
+					
 				</div>
 				
 				<!-- plan view of page table for ajax -->

@@ -158,6 +158,57 @@ public class CustomerController {
 
 		return url;
 	}
+	
+	@RequestMapping("/plans/{group}/{class}/{type}/promotion")
+	public String plansPromotion(Model model, 
+			@PathVariable("group") String group,
+			@PathVariable("class") String classz,
+			@PathVariable("type") String type) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+		model.addAttribute("customer", customer);
+		
+		List<Plan> plans = null;
+		//Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
+		String url = "";
+		
+		Plan plan = new Plan();
+		plan.getParams().put("plan_group", group);
+		plan.getParams().put("plan_class", classz);
+		plan.getParams().put("promotion", true);
+		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("orderby", "order by place_sort");
+		
+		plans = this.planService.queryPlans(plan);
+		
+		if (plans != null) {
+			for (Plan p: plans) {
+				if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+					List<Plan> plansPromotion = planMap.get(p.getPlan_type());
+					if (plansPromotion != null) {
+						plansPromotion.add(p);
+					} else {
+						plansPromotion = new ArrayList<Plan>();
+						plansPromotion.add(p);
+						planMap.put(p.getPlan_type(), plansPromotion);
+					}
+				}
+			}
+		}
+		
+		model.addAttribute("planMap", planMap);
+		model.addAttribute("selectdType", type);
+		
+		if ("personal".equals(classz)) {	
+			url = "broadband-customer/plan-detail-term-personal-promotion";
+		} else if ("business".equals(classz)) {
+			url = "broadband-customer/plan-detail-term-business-promotion";
+		} 
+
+		return url;
+	}
 
 	@RequestMapping("/order/{id}") 
 	public String orderPlanNoTermOrTerm(Model model, 
@@ -358,6 +409,8 @@ public class CustomerController {
 		if (error.hasErrors()) {
 			TMUtils.printResultErrors(error);
 		}
+		
+		String url = "redirect:/order/result/error";
 
 		Response responseBean = null;
 
@@ -365,6 +418,8 @@ public class CustomerController {
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			url = "redirect:/order/result/success";
 			
 			customer.setStatus("active");
 			customer.setCustomer_type("personal");
@@ -418,20 +473,32 @@ public class CustomerController {
 			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);
-			status.setComplete();
+			//status.setComplete();
 		} else {
 
 		}
 
 		attr.addFlashAttribute("responseBean", responseBean);
 
-		return "redirect:/order/result";
+		return url; //"redirect:/order/result";
 	}
 	
 	@RequestMapping(value = "/order/result")
 	public String toOrderResult(SessionStatus status) {
-		
+		status.setComplete();
 		return "broadband-customer/customer-order-result";
+	}
+	
+	@RequestMapping(value = "/order/result/success")
+	public String toOrderPaidResultSuccess(SessionStatus status) {
+		status.setComplete();
+		return "broadband-customer/customer-order-result-success";
+	}
+	
+	@RequestMapping(value = "/order/result/error")
+	public String toOrderPaidResultError(SessionStatus status) {
+		
+		return "broadband-customer/customer-order-result-error";
 	}
 
 	@RequestMapping(value = "/login")

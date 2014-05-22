@@ -275,13 +275,13 @@ public class CustomerRestController {
 		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
 		
 		// If contains script> value then this is a script injection
-		if(CheckScriptInjection.isScriptInjection(contactUs)){
+		if (CheckScriptInjection.isScriptInjection(contactUs)) {
 			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 		
 		// if verification does not matched!
-		if(!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
+		if (!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
 			json.getErrorMap().put("code", "Verification code does not matched!");
 			return json;
 		}
@@ -295,7 +295,7 @@ public class CustomerRestController {
 		contactUs.setSubmit_date(new Date());
 		this.crmService.createContactUs(contactUs);
 		
-		json.setUrl("/contact-us/redirect");
+		json.getSuccessMap().put("alert-success", "Your request has been submited, we will respond you as fast as we can.");
 
 		return json;
 	}

@@ -22,30 +22,17 @@
 	margin-top: 20px;
 	margin-bottom: 10px;
 }
+.slider-img img{
+	margin:0 auto;
+}
 </style>
+
+<jsp:include page="carousel.jsp" />
 
 <div class="homebg">
 	<div class="container marketing" >
-	
-		<!-- <div class="row" style="margin-top:20px;">
-			<div class="col-lg-2">
-			</div>
-			<div class="col-lg-8">
-				 <div class="input-group">
-	     			<input id="address" type="text" class="form-control input-lg" placeholder="Check your address" />
-	      			<span class="input-group-btn">
-	        			<button class="btn btn-success btn-lg" type="button">Go</button>
-	      			</span>
-	    		</div>
-			</div>
-			<div class="col-lg-2">
-				<a href="http://chorus-viewer.ufbmaps.co.nz/" target="_blank" class="btn btn-success btn-lg" >
-	  				<span class="glyphicon glyphicon-map-marker"></span> Map
-				</a>
-			</div>
-		</div> -->
 		
-		<div class="row" style="margin-top:20px;">
+		<%-- <div class="row" style="margin-top:20px;">
 			<div class="col-lg-9">
 				<jsp:include page="carousel.jsp" />
 			</div>
@@ -55,7 +42,7 @@
 		  				<img src="${ctx }/public/bootstrap3/images/personal-plan.png" alt="Personal Plan provides fast broadband for home users">
 			    	</a>
 		  			<a href="${ctx }/plans/plan-term/business" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
-		  				<img src="${ctx }/public/bootstrap3/images/business-plan.png" alt="Business Plan provides faster broadband for commercial users">
+		  				<img src="${ctx }/public/bootstrap3/images/business-plan-icon.png" alt="Business Plan provides faster broadband for commercial users">
 		  			</a>
 		  			<a href="${ctx }/wifi-solution" class="thumbnail" target="_blank" rel="nofollow" style="margin-top:10px;"> 
 		  				<img src="${ctx }/public/bootstrap3/images/wifi-solution.png" alt="Wifi Solution is for huge enterprise users">
@@ -66,7 +53,7 @@
 			    	
 			  	</div>
 			</div>
-		</div>
+		</div> --%>
 		
 		<div class="row" style="margin-top:20px;">
 			<div class="col-lg-2"></div>

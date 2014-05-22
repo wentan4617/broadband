@@ -96,6 +96,7 @@
 					<if test="params.plan_type != null">and p.plan_type = #{params.plan_type}</if>
 					<if test="params.plan_sort != null">and p.plan_sort = #{params.plan_sort}</if>
 					<if test="params.plan_status != null">and p.plan_status = #{params.plan_status}</if>
+					<if test="params.promotion != null">and p.promotion = #{params.promotion}</if>
 				</otherwise>
 			</choose>
 		</where>

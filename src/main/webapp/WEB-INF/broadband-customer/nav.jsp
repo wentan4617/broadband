@@ -10,11 +10,7 @@
 				<span class="icon-bar"></span> 
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx }/home"
-				<c:if test="${nofollow=='nofollow'}">
-					rel="${nofollow}"
-				</c:if>
-			>
+			<a class="navbar-brand" href="${ctx }/home" rel="${nofollow}">
 				<span class="logo"></span> 
 			</a>
 		</div>
@@ -25,20 +21,7 @@
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
 				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
 				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
-				<li><a href="${ctx }/term-and-conditions" rel="nofollow"><strong>Terms & Conditions</strong></a></li>
-				<%-- <li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" >
-						<strong>About US</strong><b class="caret"></b>
-					</a>
-					<ul class="dropdown-menu">
-						<li>
-							<a href="${ctx }/plans/t">About CyberPark</a>
-						</li>
-						<li>
-							<a href="${ctx }/plans/p">Terms & Conditions</a>
-						</li>
-					</ul>
-				</li> --%> 
+				<li><a href="${ctx }/about-us#contact" rel="nofollow"><strong>Contact Us: <span style="color:white;">0800 229 237</span></strong></a></li> 
 			</ul>
 			
 			<c:if test="${customerSession != null }">
@@ -63,7 +46,6 @@
 	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
 	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
 	 			</a>
-	 			<%--javascript:void(0);  id="login" data-ctx="${ctx }"--%>
 			</c:if>
 		</div>
 	</div>
