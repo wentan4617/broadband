@@ -18,6 +18,7 @@ import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.RegisterCustomer;
@@ -288,7 +289,8 @@ public class TMUtils {
 		// retrieve order begin
 		if(noti.getTitle() != null){
 			noti.setTitle(noti.getTitle().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
-			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date>", String.valueOf(preventNull(order.getOrder_due_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
 		}
 		// retrieve order end
 		// title end
@@ -297,10 +299,49 @@ public class TMUtils {
 		// retrieve order begin
 		if(noti.getContent() != null){
 			noti.setContent(noti.getContent().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
-			noti.setContent(noti.getContent().replaceAll("@<order_due_date>", String.valueOf(preventNull(order.getOrder_due_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
 		}
 		// retrieve order end
 		// content end
+	}
+	
+	public static void mailAtValueRetriever(Notification noti, List<CustomerOrderDetail> cods){
+		for (CustomerOrderDetail cod : cods) {
+			// title begin
+			// retrieve order begin
+			if(noti.getTitle() != null){
+				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number()))));
+				} else {
+					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", ""));
+				}
+				if("hardware-router".equals(cod.getDetail_type())){
+					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name()))));
+				} else {
+					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", ""));
+				}
+			}
+			// retrieve order end
+			// title end
+			
+			// content begin
+			// retrieve order begin
+			if(noti.getContent() != null){
+				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+					noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number()))));
+				} else {
+					noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", ""));
+				}
+				if("hardware-router".equals(cod.getDetail_type())){
+					noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name()))));
+				} else {
+					noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", ""));
+				}
+			}
+			// retrieve order end
+			// content end
+		}
 	}
 	
 	public static void mailAtValueRetriever(Notification noti, ContactUs contactUs, CompanyDetail company){
@@ -336,6 +377,36 @@ public class TMUtils {
 	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerInvoice inv, CompanyDetail company){
 		if(cus!=null){
 			mailAtValueRetriever(noti,cus);
+		}
+		if(inv!=null){
+			mailAtValueRetriever(noti,inv);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
+		}
+	}
+	
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, List<CustomerOrderDetail> cods, CompanyDetail company){
+		if(cus!=null){
+			mailAtValueRetriever(noti,cus);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
+		}
+		if(order!=null){
+			mailAtValueRetriever(noti,order);
+		}
+		if(cods.size()>0){
+			mailAtValueRetriever(noti,cods);
+		}
+	}
+	
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, CustomerInvoice inv, CompanyDetail company){
+		if(cus!=null){
+			mailAtValueRetriever(noti,cus);
+		}
+		if(order!=null){
+			mailAtValueRetriever(noti,order);
 		}
 		if(inv!=null){
 			mailAtValueRetriever(noti,inv);

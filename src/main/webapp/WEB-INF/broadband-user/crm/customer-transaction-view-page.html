@@ -1,0 +1,38 @@
+<. if (results != null && results.length > 0) { .>
+	<table class="table">
+	<.
+		for (var i = 0, len = results.length; i < len; i++){
+			var tx = results[i];
+	.>
+			<tr>
+			<td>Transaction# - <.= tx.id .></td>
+			<td><.= tx.transaction_type .></td>
+			<td><.= tx.transaction_date_str .></td>
+			<td><.= tx.card_name .></td>
+			<td><.= tx.transaction_sort .></td>
+			<td><.= tx.amount .></td>
+			<td>&nbsp;</td>
+			</tr>
+	<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = totalPage; i <= len; i++) {
+	.>
+						<li class="<.= pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<. } else { .>
+	<div class="alert alert-warning">No records have been found.</div>
+<. } .>

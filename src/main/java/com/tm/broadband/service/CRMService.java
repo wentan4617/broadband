@@ -520,17 +520,6 @@ public class CRMService {
 		// edit order
 		this.customerOrderMapper.updateCustomerOrder(customerOrder);
 	}
-
-	@Transactional
-	public void editCustomerOrderAndCreateProvision(
-			CustomerOrder customerOrder,
-			ProvisionLog proLog) {
-		// edit order
-		this.customerOrderMapper.updateCustomerOrder(customerOrder);
-		// insert provision
-		this.provisionLogMapper.insertProvisionLog(proLog);
-		
-	}
 	
 	@Transactional
 	public void editCustomerOrderDetail(
@@ -1152,7 +1141,7 @@ public class CRMService {
 
 
 		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerInvoice, companyDetail);
+		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerOrder, customerInvoice, companyDetail);
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notificationEmail.getTitle());
@@ -1163,7 +1152,7 @@ public class CRMService {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 		// get sms register template from db
-		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerInvoice, companyDetail);
+		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerOrder, customerInvoice, companyDetail);
 		// send sms to customer's mobile phone
 		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
 	}

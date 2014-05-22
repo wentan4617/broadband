@@ -16,15 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
-###Need To Be Adjust
- 
-* 
 
 demand version 1.0.9 2014-05-15
 
-* 实现后台下单如果order_type为order-no-term或order-topup则将order_detail迭代至invoice_detail内，然后paid为payable，balance为0d，
+* 实现后台下单如果order_type为order-no-term或order-topup则将order_detail迭代至invoice_detail内，然后paid为payable，balance为0d
 * 调通xero接口，每次生成invoice都传送到xero系统，让xero客户去催款。
-* 在customer order里提交service giving是判断SV/CV Lan不为空才能提交，提交后通过短信模版将SV/CV Lan信息以及service giving date发送到胡洁和Nathan手机。(steven)
+* [在customer order里提交service giving是判断SV/CV Lan不为空才能提交。](steven)
+* 提交后通过短信模版将SV/CV Lan信息以及service giving date发送到胡洁和Nathan手机。(steven)
 * 在order表里添加一个direct_debit_pdf_path字段，在customer order里添加一个上传direct debit copy PDF功能，操作员可以提交客户签字的direct debit表单PDF(steven)
 * 在order表里添加一个rfs_date(Ready For Service Date)字段，在customer order里添加一个填写并提交rfs_date日期的输入框。(steven)
 * [order model增加broadband_asid属性，添加一个model叫ManualDefrayLog，添加其Mapper文件及相关操作类](steven)
@@ -34,7 +32,7 @@ demand version 1.0.9 2014-05-15
 * [customer的invoice detail里Make Payment功能里的DDPay点击确认后将该invoice的status变成paid，payable赋给paid然后balance值赋为0d，将该记录存至transaction。](steven)
 * order表加个previous_provider_invoice字段，sale下单时选择transition则显示上传功能，上传文件的保存路径存放到pervious_provider_invoice字段中(steven)
 * 在每月的10号，11 am，以email的形式推送生成的plan-term的invoice pdf(steven)
-* 修改customer order, 添加更多的属性，把sv cv和 service giving分开更改(steven)
+* [修改customer order, 添加更多的属性，把sv cv和 service giving分开更改](steven)
 * 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库(steven)
 * customer edit界面的order,如果有sale显示sale,可以当前订单的所有者改变成其他sales(steven)
 * customer edit的order information界面，现实order的option request，并且可以修改(steven)

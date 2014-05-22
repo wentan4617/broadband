@@ -35,12 +35,8 @@
 					<!-- Customer Order Info Module -->
 					<jsp:include page="customer-order.jsp" />
 				</div>
-				<div class="panel-body tab-pane fade" id="invoice_detail">
-				</div>
-				<div class="panel-body tab-pane fade" id="transaction_detail">
-					<!-- Customer Transaction Info Module -->
-					<jsp:include page="customer-transaction.jsp" />
-				</div>
+				<div class="panel-body tab-pane fade" id="invoice_detail"></div>
+				<div class="panel-body tab-pane fade" id="transaction_detail"></div>
 			</div>
 		</div>
 	</div>
@@ -50,6 +46,11 @@
 <script type="text/html" id="invoice_table_tmpl">
 <jsp:include page="customer-invoice-view-page.html" />
 </script>
+<!-- Customer Transaction Detail Template -->
+<script type="text/html" id="transaction_table_tmpl">
+<jsp:include page="customer-transaction-view-page.html" />
+</script>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
@@ -143,71 +144,245 @@
 		orderIds.push('${co.id}');
 	
 		/*
-		 *	BEGIN order modal area
+		 *	BEGIN customer order area
 		 */
-		// BEGIN Order Info Area Modal
-		$('a[data-name="${co.id}_order_info_edit"]').click(function(){
-			$('a[data-name="editOrderInfoModalBtn_${co.id}"]').prop('id',this.id);
-			$('#editOrderInfoModal_${co.id}').modal('show');
+		// Update order status
+		// Get order status Dialog
+		$('a[data-name="${co.id}_order_status_edit"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="editOrderStatusModalBtn_${co.id}"]').prop('id',this.id);
+			$('#editOrderStatusModal_${co.id}').modal('show');
 		});
-		// END Order Info Area Modal
-		// BEGIN PPPoE Area Modal
-		$('a[data-name="${co.id}_pppoe_save"]').click(function(){
-			$('a[data-name="pppoe_save_modal_btn_${co.id}"]').prop('id',$(this).attr('data-val'));
-			$('#savePPPoEModal_${co.id}').modal('show');	// click Save PPPoE then performing Ajax action
+		// Submit to rest controller
+		$('a[data-name="editOrderStatusModalBtn_${co.id}"]').click(function(){
+			var orderStatus = $('select[data-name="'+this.id+'_order_status_selector"]');
+			var data = {
+					'id':this.id
+					,'order_status':orderStatus.val()
+			};
+			var order_status = $('#'+this.id+'_order_status');
+			$.post('${ctx}/broadband-user/crm/customer/order/status/edit', data, function(json){
+				// rewrite order status's content
+				order_status.html(json.model.order_status);
+				order_status.attr('data-val',json.model.order_status);
+			}, "json")
 		});
-		$('a[data-name="${co.id}_pppoe_edit"]').click(function(){
+		// Reset button when hidden order status dialog
+		$('#editOrderStatusModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_order_status_edit"]').button('reset');
+		});
+		
+		// Update order due date
+		// Get order due date Dialog
+		$('a[data-name="${co.id}_order_due_input_btn"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="editOrderDueDateModalBtn_${co.id}"]').prop('id',this.id);
+			$('#editOrderDueDateModal_${co.id}').modal('show');
+		});
+		// Submit to rest controller
+		$('a[data-name="editOrderDueDateModalBtn_${co.id}"]').click(function(){
+			var orderDueDate = $('input[data-name="'+this.id+'_order_due_input_picker"]');
+			var data = {
+					'id':this.id
+					,'order_due_str':orderDueDate.val()
+			};
+			var order_due_date = $('#'+this.id+'_order_due');
+			$.post('${ctx}/broadband-user/crm/customer/order/due_date/edit', data, function(json){
+				// rewrite order due date's content
+				order_due_date.html(json.model.order_due_str);
+				order_due_date.attr('data-val',json.model.order_due_str);
+			}, "json").always(function () {
+				$btn.button('reset');
+		    });
+		});
+		// Reset button when hidden order due date dialog
+		$('#editOrderDueDateModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_order_due_input_btn"]').button('reset');
+		});
+		/*
+		 *	END customer order area
+		 */
+
+		/*
+		 *	BEGIN customer order PPPoE area
+		 */
+		// Update order PPPoE
+		// Get order PPPoE Dialog
+		$('a[data-name="${co.id}_pppoe_edit_btn"]').click(function(){
+			$btn = $(this); $btn.button('loading');
 			$('a[data-name="pppoe_edit_modal_btn_${co.id}"]').prop('id',$(this).attr('data-val'));
 			$('#editPPPoEModal_${co.id}').modal('show');	// click Edit PPPoE then performing Ajax action
 		});
-		// END PPPoE Area Modal
-		// BEGIN SV/CVLan Area Modal
+		// Submit to rest controller
+		$('a[data-name="pppoe_edit_modal_btn_${co.id}"]').click(function(){
+			var order_pppoe_loginname_input = $('input[data-name="'+this.id+'_pppoe_loginname"]');
+			var order_pppoe_password_input = $('input[data-name="'+this.id+'_pppoe_password"]');
+			var data = {
+					 'id':this.id
+					,'pppoe_loginname':order_pppoe_loginname_input.val()+' '
+					,'pppoe_password':order_pppoe_password_input.val()+' '
+			};
+			var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
+			var order_pppoe_password = $('#'+this.id+'_pppoe_password');
+			$.post('${ctx}/broadband-user/crm/customer/order/ppppoe/edit', data, function(json){
+				if(!$.jsonValidation(json, 'left')){
+					// rewrite order PPPoE's content
+					order_pppoe_loginname.html(json.model.pppoe_loginname);
+					order_pppoe_password.html(json.model.pppoe_password);
+				}
+			}, "json");
+		});
+		// Reset button when hidden order PPPoE dialog
+		$('#editPPPoEModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_pppoe_edit_btn"]').button('reset');
+		});
+		/*
+		 *	END customer order PPPoE area
+		 */
+
+		/*
+		 *	BEGIN customer order SV/CVLan & RFS Date area
+		 */
+		 // Save/Update SV/CVLan & RFS Date
+		// Get order SV/CVLan & RFS Date Dialog
 		$('a[data-name="${co.id}_svcvlan_save"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="svcvlan_rfs_date_save_${co.id}"]').prop('id', '${co.id}');
+			$('a[data-name="svcvlan_rfs_date_save_${co.id}"]').attr('data-way', $(this).attr('data-way'));
+			$('#saveSVCVLanRFSDateModal_${co.id}').modal('show');
+		});
+		// Submit to rest controller
+		$('a[data-name="svcvlan_rfs_date_save_${co.id}"]').click(function(){
+			var cvlan_input = $('#'+this.id+'_cvlan_input').val();
+			var svlan_input = $('#'+this.id+'_svlan_input').val();
+			var rfs_date_input = $('input[data-name="'+this.id+'_rfs_date_input_picker"]').val();
+			var data = {
+					'customer_id':'${customer.id}'
+					,'id':this.id
+					,'cvlan':cvlan_input+' '
+					,'svlan':svlan_input+' '
+					,'rfs_date_str':rfs_date_input
+					,'way':$(this).attr('data-way')
+			};
+			var cvlan = $('#'+this.id+'_cvlan');
+			var svlan = $('#'+this.id+'_svlan');
+			var rfs_date = $('#'+this.id+'_rfs_date');
+			$.post('${ctx}/broadband-user/crm/customer/order/save/svcvlanrfsdate', data, function(json){
+				if(!$.jsonValidation(json, 'left')){
+					// rewrite order SV/CVLan & RFS Date's content
+					cvlan.html(json.model.cvlan);
+					svlan.html(json.model.svlan);
+					rfs_date.html(json.model.rfs_date_str);
+				}
+			}, "json");
+		});
+		// Reset button when hidden order PPPoE dialog
+		$('#saveSVCVLanRFSDateModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_svcvlan_save"]').button('reset');
+		});
+		/*
+		 *	END customer order SV/CVLan & RFS Date area
+		 */
+
+		/*
+		 *	BEGIN customer order Service Giving Date area
+		 */
+		 // Save/Update Service Giving Date
+		// Get order Service Giving Date Dialog
+		$('a[data-name="${co.id}_service_giving_save"]').click(function(){
 			var order_status = $('#${co.id}_order_status');
 			// if status is ordering then show save modal
-			if(order_status.attr('data-val')=='ordering-paid' || order_status.attr('data-val')=='ordering-pending'){
-				$('a[data-name="svcvlan_save_${co.id}"]').prop('id', '${co.id}');
-				$('#saveOrderModal_${co.id}').modal('show');	// click Save Order then performing Ajax action
+			if(order_status.attr('data-val')=='ordering-paid' || order_status.attr('data-val')=='ordering-pending' || order_status.attr('data-val')=='using'){
+				$('a[data-name="service_giving_save_${co.id}"]').prop('id', '${co.id}');
+				$('a[data-name="service_giving_save_${co.id}"]').attr('data-way', $(this).attr('data-way'));
+				$('#saveServiceGivingModal_${co.id}').modal('show');	// click Save Order then performing Ajax action
 			// else show denied modal
 			} else {
-				$('#saveOrderDeniedModal_${co.id}').modal('show');
+				$('#saveServiceGivingDeniedModal_${co.id}').modal('show');
 			}
 		});
-		$('a[data-name="${co.id}_svcvlan_edit"]').click(function(){
-			$('a[data-name="svcvlan_edit_${co.id}"]').prop('id',$(this).attr('data-val'));
-			$('#editOrderModal_${co.id}').modal('show');	// click Edit Order then performing Ajax action
+		// Submit to rest controller
+		$('a[data-name="service_giving_save_${co.id}"]').click(function(){
+			var order_using_start_input = $('input[data-name="'+this.id+'_order_using_start_input_picker"]').val();
+			var order_status = $('#'+this.id+'_order_status');
+			var order_type = $('#'+this.id+'_order_type');
+			var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
+			var data = {
+					'customer_id':'${customer.id}'
+					,'id':this.id
+					,'order_using_start_str':order_using_start_input
+					,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
+					,'order_status':order_status.attr('data-val')
+					,'order_type':order_type.attr('data-val')
+					,'way':$(this).attr('data-way')
+			};
+			var order_using_start = $('#'+this.id+'_order_using_start');
+			var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
+			$.post('${ctx}/broadband-user/crm/customer/order/service_giving_date', data, function(json){
+				// rewrite order Service Giving Date's content
+				order_status.html(json.model.order_status);
+				order_using_start.html(json.model.order_using_start_str);
+				order_next_invoice_create_date.html(json.model.next_invoice_create_date_str);
+				
+				// reload invoice page one
+				$.getInvoicePage(1);
+			}, "json");
 		});
-		// END SV/CVLan Area Modal
-		// BEGIN Order Detail Area Modal
-		$('a[data-name="${co.id}_update_pstn"]').click(function(){
-			$('input[data-name="order_detail_pstn_id_${co.id}"]').val($(this).attr('data-val'));
-		});
-		$('a[data-name="${co.id}_add_discount"]').click(function(){
-			$('input[data-name="order_discount_id_${co.id}"]').val($(this).attr('data-val'));
-		});
-		$('a[data-name="${co.id}_remove_discount"]').click(function(){
-			$('input[data-name="order_detail_remove_id_${co.id}"]').val($(this).attr('data-val'));
-		});
-		// END Order Detail Area Modal
 		/*
-		 *	END order modal area
+		 *	END customer order Service Giving Date area
 		 */
 		 
 
 		/*
-		 *	BEGIN order datepicker area
+		 *	BEGIN customer order detail(s) area
 		 */
-		// BEGIN order due Datapicker
-		var order_due_input = $('input[data-name="${co.id}_order_due_input"]').attr('data-val');
+		$('a[data-name="${co.id}_update_pstn"]').click(function(){
+			$('input[data-name="order_detail_pstn_id_${co.id}"]').val($(this).attr('data-val'));
+		});
+		// Reset button when hidden order PPPoE dialog
+		$('#updatePSTNModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_update_pstn"]').button('reset');
+		});
+		
+		$('a[data-name="${co.id}_add_discount"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('input[data-name="order_discount_id_${co.id}"]').val($(this).attr('data-val'));
+		});
+		// Reset button when hidden order PPPoE dialog
+		$('#addDiscountModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_add_discount"]').button('reset');
+		});
+		
+		$('a[data-name="${co.id}_remove_discount"]').click(function(){
+			$('input[data-name="order_detail_remove_id_${co.id}"]').val($(this).attr('data-val'));
+		});
+		/*
+		 *	BEGIN customer order detail(s) area
+		 */
+		 
+		/*
+		 *	BEGIN Datepicker area
+		 */
+		// Order due Datapicker
+		var order_due_input = $('input[data-name="${co.id}_order_due_input_picker"]').attr('data-val');
 		$('#${co.id}_order_due_datepicker').datepicker({
 		    format: "yyyy-mm-dd",
 		    autoclose: true,
 		    todayHighlight: true
 		    // if order due date is null then assign new Date(), else assign order due date
 		}).datepicker('setDate', order_due_input || new Date());
-		// END order due Datapicker
-		// BEGIN order using start Datapicker
-		var order_using_start_input = $('input[data-name="${co.id}_order_using_start_input"]').attr('data-val');
+		
+		// Order RFS date Datapicker
+		var rfs_date_input = $('input[data-name="${co.id}_rfs_date_picker"]').attr('data-val');
+		$('#${co.id}_rfs_date_datepicker').datepicker({
+		    format: "yyyy-mm-dd",
+		    autoclose: true,
+		    todayHighlight: true
+		    // if RFS date is null then assign new Date(), else assign RFS date
+		}).datepicker('setDate', rfs_date_input || new Date());
+		
+		// Order using start Datapicker
+		var order_using_start_input = $('input[data-name="${co.id}_order_using_start_input_picker"]').attr('data-val');
 		$('#${co.id}_order_using_start_datepicker').datepicker({
 		    format: "yyyy-mm-dd",
 		    autoclose: true,
@@ -215,246 +390,23 @@
 		    
 		    // if service giving date is null then assign new Date(), else assign service giving date 
 		}).datepicker('setDate', order_using_start_input || new Date());
-		// END order using start Datapicker
 		/*
-		 *	END order datepicker area
-		 */
-		 
-		
-		/*
-		 *	BEGIN order info area
-		 */
-		$('a[data-name="editOrderInfoModalBtn_${co.id}"]').click(function(){
-			var orderStatus = $('select[data-name="'+this.id+'_order_status_selector"]');
-			var orderDueDate = $('input[data-name="'+this.id+'_order_due_input"]');
-			var data = {
-					'order_id':this.id
-					,'order_status':orderStatus.val()
-					,'due_date':orderDueDate.val()
-			};
-			
-			var order_status = $('#'+this.id+'_order_status');
-			var order_due = $('#'+this.id+'_order_due');
-			
-			var url = "${ctx}/broadband-user/crm/customer/order/info/edit";
-			$.get(url, data, function(order){
-				
-				// rewrite innerHTML
-				order_status.html('<strong>'+order.order_status+'</strong>');
-				order_status.attr('data-val',order.order_status);
-				order_due.html('<strong>'+order.order_due_str+'</strong>');
-				
-			}, "json");
-		});
-		/*
-		 *	END order info area
-		 */
-
-
-		/*
-		 *	BEGIN PPPoE area
-		 */		
-		$('a[data-name="pppoe_save_modal_btn_${co.id}"]').click(function(){
-			// for data
-			var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
-			var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
-
-			// for callback
-			var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
-			var order_pppoe_password = $('#'+this.id+'_pppoe_password');
-			var data = {
-					 'order_id':this.id
-					,'order_pppoe_loginname_input':order_pppoe_loginname_input
-					,'order_pppoe_password_input':order_pppoe_password_input
-				};
-			
-			var url = "${ctx}/broadband-user/crm/customer/order/ppppoe/save";
-			$.get(url, data, function(order){
-				var oBtnSave = $('a[data-name="${co.id}_pppoe_save"]');
-				// hide Save Btn
-				oBtnSave.css('display', 'none');
-				var oBtnEdit = $('a[data-name="${co.id}_pppoe_edit"]');
-				// show Edit Btn
-				oBtnEdit.css('display', '');
-				
-				// rewrite innerHTML
-				order_pppoe_loginname.html(order_pppoe_loginname_input);
-				order_pppoe_password.html(order_pppoe_password_input);
-				
-			}, "json");
-		});
-		$('a[data-name="pppoe_edit_modal_btn_${co.id}"]').click(function(){
-			// for data
-			var order_pppoe_loginname_input = $('#'+this.id+'_pppoe_loginname_input').val();
-			var order_pppoe_password_input = $('#'+this.id+'_pppoe_password_input').val();
-
-			// for callback
-			var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
-			var order_pppoe_password = $('#'+this.id+'_pppoe_password');
-			var data = {
-					 'order_id':this.id
-					,'order_pppoe_loginname_input':order_pppoe_loginname_input
-					,'order_pppoe_password_input':order_pppoe_password_input
-				};
-			
-			var url = "${ctx}/broadband-user/crm/customer/order/ppppoe/edit";
-			$.get(url, data, function(order){
-				
-				// rewrite innerHTML
-				order_pppoe_loginname.html(order_pppoe_loginname_input);
-				order_pppoe_password.html(order_pppoe_password_input);
-				
-			}, "json");
-		});
-		/*
-		 *	END PPPoE area
+		 *	END Datepicker area
 		 */
 			
-		 
-		/*
-		 *	BEGIN service giving area
-		 */
-		$('a[data-name="svcvlan_save_${co.id}"]').click(function(){
-			// for data
-			var cvlan_input = $('#'+this.id+'_cvlan_input').val();
-			var svlan_input = $('#'+this.id+'_svlan_input').val();
-			var order_using_start_input = $('input[data-name="'+this.id+'_order_using_start_input"]').val();
-			var order_total_price = $('#'+this.id+'_order_total_price').attr('data-val');
-			var order_status = $('#'+this.id+'_order_status');
-			var order_type = $('#'+this.id+'_order_type');
-			var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
-
-			// for callback
-			var cvlan = $('#'+this.id+'_cvlan');
-			var svlan = $('#'+this.id+'_svlan');
-			var order_using_start = $('#'+this.id+'_order_using_start');
-			var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
-			var data = {
-					'customer_id':'${customer.id}'
-					,'order_id':this.id
-					,'cvlan_input':cvlan_input
-					,'svlan_input':svlan_input
-					,'order_using_start_input':order_using_start_input
-					,'order_total_price':order_total_price
-					,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
-					,'order_status':order_status.attr('data-val')
-					,'order_type':order_type.attr('data-val')
-				};
-			var url = "${ctx}/broadband-user/crm/customer/order/save";
-			$.get(url, data, function(order){
-				var oBtnSave = $('a[data-name="${co.id}_save"]');
-				// hide Save Btn
-				oBtnSave.css('display', 'none');
-				var oBtnEdit = $('a[data-name="${co.id}_edit"]');
-				// show Edit Btn
-				oBtnEdit.css('display', '');
-				 
-				// rewrite innerHTML
-				cvlan.html(cvlan_input);
-				svlan.html(svlan_input);
-				order_status.html(order.order_status);
-				order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
-				order_next_invoice_create_date.html('<strong>' + order.next_invoice_create_date_str + '<\/strong>');
-				
-				// reload invoice page one
-				$.getInvoicePage(1);
-			}, "json");
-			
-		});
-		$('a[data-name="svcvlan_edit_${co.id}"]').click(function(){
-			// for data
-			var cvlan_input = $('#'+this.id+'_cvlan_input').val();
-			var svlan_input = $('#'+this.id+'_svlan_input').val();
-			var order_using_start_input = $('input[data-name="'+this.id+'_order_using_start_input"]').val();
-			var order_type = $('#'+this.id+'_order_type');
-			var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
-
-			// for callback
-			var cvlan = $('#'+this.id+'_cvlan');
-			var svlan = $('#'+this.id+'_svlan');
-			var order_using_start = $('#'+this.id+'_order_using_start');
-			var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
-			var data = {
-					'customer_id':'${customer.id}'
-					,'order_id':this.id
-					,'cvlan_input':cvlan_input
-					,'svlan_input':svlan_input
-					,'order_using_start_input':order_using_start_input
-					,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
-					,'order_type':order_type.attr('data-val')
-				};
-			var url = "${ctx}/broadband-user/crm/customer/order/edit";
-			$.get(url, data, function(order){
-				cvlan.html(cvlan_input);
-				svlan.html(svlan_input);
-				order_using_start.html('<strong>' + order_using_start_input + '<\/strong>');
-				order_next_invoice_create_date.html('<strong>' + order.next_invoice_create_date_str + '<\/strong>');
-			}, "json");
-		});
-		/*
-		 *	END service giving area
-		 */
-		
 	</c:forEach>
 	
 	
 	$.getTxPage = function(pageNo) {
-		
-		$.get('${ctx}/broadband-user/crm/transaction/view/' + pageNo +'/'+ ${customer.id}, callbackPage, "json");
-		
-		function callbackPage(page){
-			var html = "";
-			if (page.results != null && page.results.length > 0) {
-				html += '<table class="table">';
-				html += '<thead>';
-				html += '<tr>';
-				html += '<th>Reference</th>';
-				html += '<th>Transaction Type</th>';
-				html += '<th>Transaction Date</th>';
-				html += '<th>Card Name</th>';
-				html += '<th>Transaction Sort</th>';
-				html += '<th>Amount</th>';
-				html += '<th>&nbsp;</th>';
-				html += '</tr>';
-				html += '</thead>';
-				html += '<tbody>';
-				for (var i = 0, len = page.results.length; i < len; i++) {
-					var tx = page.results[i];
-					html += '<tr>';
-					html += '<td>Transaction# - ' + tx.id + '</td>';
-					html += '<td>';
-					html += tx.transaction_type;
-					html += '</td>';
-					html += '<td>' + tx.transaction_date_str + '</td>';
-					html += '<td>' + tx.card_name + '</td>';
-					html += '<td>' + tx.transaction_sort + '</td>';
-					html += '<td>' + tx.amount + '</td>';
-					html += '<td>&nbsp;</td>';
-					html += '</tr>';
-				}
-				html += '</tbody>';
-				html += '<tfoot>';
-				html += '<tr>';
-				html += '<td colspan="11">';
-				html += '<ul class="pagination">';
-				for (var i = 1, len = page.totalPage; i <= len; i++) {
-					html += '<li class="' + (page.pageNo == i ? 'active' : '') + '">';
-					html += '<a href="javascript:void(0);" onclick="$.getTxPage(' + i + ')">' + i + '</a>';
-					html += '</li>';
-				}
-				html += '</ul>';
-				html += '</td>';
-				html += '</tr>';
-				html += '</tfoot>';
-				html += '</table>';
-			} else {
-				html += '<div class="panel-body">';
-				html += '<div class="alert alert-warning">No records have been found.</div>';
-				html += '</div>';
-			}
-			
-			$('#txContainer').html(html);
-		}
+		$.get('${ctx}/broadband-user/crm/transaction/view/' + pageNo +'/'+ ${customer.id}, function(json){
+			json.ctx = '${ctx}';
+			json.customer_id = ${customer.id};
+	   		var $table = $('#transaction_detail');
+			$table.html(tmpl('transaction_table_tmpl', json));
+			$table.find('tfoot a').click(function(){
+				$.getInvoicePage($(this).attr('data-pageNo'));
+			});
+		}, "json");
 	}
 	
 	$.getInvoicePage = function(pageNo) {

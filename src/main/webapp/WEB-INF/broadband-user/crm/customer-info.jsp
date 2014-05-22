@@ -220,13 +220,13 @@
 	<hr/>
 	
 	<div class="form-group">
-		<label for="status" class="control-label col-md-4">Credit</label>
+		<label for="balance" class="control-label col-md-4">Credit</label>
 		<div class="col-md-4">
 			<input type="text" id="balance" name="balance" value="<fmt:formatNumber value="${customer.balance }" type="number" pattern="#,##0.00" />" class="form-control" data-error-field />
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="title" class="control-label col-md-4">Register Date</label>
+		<label class="control-label col-md-4">Register Date</label>
 		<div class="col-md-4">
 			<p class="form-control-static"><strong><fmt:formatDate value="${customer.register_date}" type="both"/></strong></p>
 		</div>
