@@ -23,21 +23,27 @@
 <div class="container" >
 	
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
-		<li>
+		<li class="">
 			<a class="btn-lg">
-				1. Choose Plans And Pricing
+				1. Choose Plan
 				<span class="glyphicon glyphicon-hand-right pull-right"></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				2. Check Your Address
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
 			</a>
 		</li>
 		<li class="active">
 			<a class="btn-lg">
-				2. Fill Application Form
+				3. Fill Application Form
 				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
 			</a>
 		</li>
-		<li>
+		<li class="">
 			<a class="btn-lg">
-				3. Review and Order 
+				4. Review and Order
 			</a>
 		</li>
 	</ul>

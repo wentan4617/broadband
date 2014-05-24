@@ -16,7 +16,41 @@
 		</div>
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li class="active"><a href="${ctx }/plans/plan-term/personal" rel="nofollow"><strong>Personal Plan</strong></a></li>
+				<li><%--  --%>
+					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Personal Plan</strong><b class="caret"></b></a>
+					<ul class="dropdown-menu list-inline" style="width:610px;">
+			            <li style="width:100%;">
+			            	<div class="row">
+			            		<div class="col-md-4" style="border-right: 2px dotted;">
+			            			<p class="text-center text-success">
+			            				<span class="glyphicon glyphicon-th-list" style="font-size:85px;display:block;margin-top: 10px;"></span>
+				            			<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
+				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">No Term Plan</span>
+										</a>
+			            			</p>
+			            			
+								</div>
+			            		<div class="col-md-4" style="border-right: 2px dotted;">
+			            			<p class="text-center text-success">
+			            				<span class="glyphicon glyphicon-th-large " style="font-size:85px;display:block;margin-top: 10px;"></span>
+				            			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
+				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Top Up Plan</span>
+										</a>
+			            			</p>
+			            		</div>
+			            		<div class="col-md-4">
+			            			<p class="text-center text-success">
+			            				<span class="glyphicon glyphicon-th" style="font-size:85px;display:block;margin-top: 10px;"></span>
+				            			<a href="${ctx }/plans/plan-term/personal" target="_blank">
+				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Term Plan</span>
+										</a>
+			            			</p>
+			            		</div>
+			            	</div>
+			            	
+			            </li>
+		          	</ul>
+				</li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
 				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
