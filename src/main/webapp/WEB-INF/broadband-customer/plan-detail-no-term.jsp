@@ -49,7 +49,7 @@ background-color: #7BC3EC;
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
-				1. Choose Plans And Pricing
+				1. Choose Plan
 				<span class="glyphicon glyphicon-hand-right pull-right"></span>
 			</a>
 		</li>
@@ -61,7 +61,7 @@ background-color: #7BC3EC;
 		</li>
 		<li class="">
 			<a class="btn-lg">
-				3. Review and Checkout 
+				3. Review and Order 
 			</a>
 		</li>
 	</ul>
@@ -116,124 +116,20 @@ background-color: #7BC3EC;
 		</div>
 	</div>
 	
-	
 </div>
-
-
-<!-- Check Address Modal -->
-<div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="margin-top:55px;width:60%">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="checkAddressModalLabel">Check your address whether the service can be installed</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="input-group">
-							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
-							<span class="input-group-btn">
-								<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
-									<span class="ladda-label">Go</span>
-								</button>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="checkResult"></div>
-		</div> <!-- /.modal-content -->
-	</div> <!-- /.modal-dialog -->
-</div> <!-- /.modal -->
-
-<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
-<script type="text/html" id="result_tmpl">
-<jsp:include page="resultAddressCheck.html" />
-</script>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
 	
-	var adslPlans=[], vdslPlans=[], ufbPlans=[];
-	<c:forEach var="type" items="ADSL,VDSL,UFB">
-		<c:set var="plansPromotion" value="${planTypeMap[type]['plansPromotion'] }"></c:set>
-		<c:set var="plans" value="${planTypeMap[type]['plans'] }"></c:set>
-		<c:forEach var="plan" items="${plansPromotion }">
-			var plan = {
-				id: ${plan.id }
-				, plan_name: '${plan.plan_name }'
-				, plan_price: ${plan.plan_price }
-				, data_flow: ${plan.data_flow }
-			};
-			if ('${type }'=='ADSL') { adslPlans.push(plan); } 
-			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
-			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
-		</c:forEach>
-		<c:forEach var="plan" items="${plans }">
-			var plan = {
-				id: ${plan.id }
-				, plan_name: '${plan.plan_name }'
-				, plan_price: ${plan.plan_price }
-				, data_flow: ${plan.data_flow }
-			};
-			if ('${type }'=='ADSL') { adslPlans.push(plan); } 
-			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
-			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
-		</c:forEach>
-	</c:forEach>
-	
-	var select_plan_id = "";
-	var select_plan_type = "";
-	
-	$('#goCheck').click(function(){
-		var address = $('#address').val();
-		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
-		if (address != '') {
-			var l = Ladda.create(this);
-		 	l.start();
-			$.get('${ctx}/address/check/' + address, function(broadband){
-				broadband.type = select_plan_type;
-				broadband.selected_id = select_plan_id;
-				broadband.adslPlans = adslPlans;
-				broadband.vdslPlans = vdslPlans;
-				broadband.ufbPlans = ufbPlans;
-				$('#checkResult').html(tmpl('result_tmpl', broadband));
-				$(':radio').iCheck({
-					checkboxClass : 'icheckbox_square-green',
-					radioClass : 'iradio_square-green'
-				});
-				$('a[data-toggle="tooltip"]').tooltip();
-				$('a[data-name="continue-selected-plan"]').click(function(){
-					var type = $(this).attr('data-type');
-					$.get('${ctx}/do/service/', function(){
-						var id = $('input[name="' + type + '_id"]:checked').val();
-						if (id) window.location.href = '${ctx}/order/' + id;
-						else { alert('Please choose one plan at least.'); }
-						
-					});
-				});
-		   	}).always(function(){ l.stop(); });
-		} else {
-			alert('Please enter a real address.');
-		}
-	});
-	
 	$('a[data-name="purchase"]').click(function(){
-		select_plan_id = $(this).attr('data-id');
-		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
-		$('#checkResult').empty();
-		$('#checkAddressModal').modal('show');
+		
+		var select_plan_id = $(this).attr('data-id');
+		window.location.href = '${ctx}/order/' + select_plan_id;
+		
 	});
 
 })(jQuery);
 </script>
-<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />

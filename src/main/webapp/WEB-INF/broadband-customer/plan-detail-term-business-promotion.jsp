@@ -55,39 +55,45 @@
 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
-				1. Choose Plans And Pricing
+				1. Choose Plan
 				<span class="glyphicon glyphicon-hand-right pull-right"></span>
 			</a>
 		</li>
 		<li class="">
 			<a class="btn-lg">
-				2. Fill Application Form
+				2. Check Your Address
 				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
 			</a>
 		</li>
 		<li class="">
 			<a class="btn-lg">
-				3. Review and Order
+				3. Fill Application Form
+				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
+			</a>
+		</li>
+		<li class="">
+			<a class="btn-lg">
+				4. Review and Order
 			</a>
 		</li>
 	</ul>
 	
-	<c:set var="adslPlans" value="${planMap['ADSL'] }"></c:set>
-	<c:set var="vdslPlans" value="${planMap['VDSL'] }"></c:set>
-	<c:set var="ufbPlans" value="${planMap['UFB'] }"></c:set>
+	<c:set var="adslPlans" value="${planTypeMap['ADSL']['plansPromotion'] }"></c:set>
+	<c:set var="vdslPlans" value="${planTypeMap['VDSL']['plansPromotion'] }"></c:set>
+	<c:set var="ufbPlans" value="${planTypeMap['UFB']['plansPromotion'] }"></c:set>
 	
 	<div class="panel panel-success">
 		
 		<div class="panel-body">
 			<div class="btn-group btn-group-justified">
 				<div class="btn-group">
-					<button type="button" class="btn btn-success" data-name="promotion_service" data-type="adsl"><span class="tab-font">ADSL</span></button>
+					<button type="button" class="btn btn-danger" data-name="promotion_service" data-type="adsl"><span class="tab-font"><span class="glyphicon glyphicon-flash"></span>ADSL</span></button>
 				</div>
 				<div class="btn-group">
-					<button type="button" class="btn btn-success" data-name="promotion_service" data-type="vdsl"><span class="tab-font">VDSL</span></button>
+					<button type="button" class="btn btn-danger" data-name="promotion_service" data-type="vdsl"><span class="tab-font"><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>VDSL</span></button>
 				</div>
 				<div class="btn-group">
-					<button type="button" class="btn btn-success" data-name="promotion_service" data-type="ufb"><span class="tab-font">UFB</span></button>
+					<button type="button" class="btn btn-danger" data-name="promotion_service" data-type="ufb"><span class="tab-font"><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span><span class="glyphicon glyphicon-flash"></span>UFB</span></button>
 				</div>
 			</div>
 		</div>
@@ -101,9 +107,9 @@
 						<c:if test="${plan.original_price > 0 }">
 							<div class="row">
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-warning" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-warning">Original Price</h4>
+											<h4 class="well">Original Price</h4>
 											<p class="text-center text-warning" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;text-decoration:line-through;"> 
@@ -114,9 +120,9 @@
 									</div>
 								</div>
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-success" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-danger">Promotion Price</h4>
+											<h4 class="well">Promotion Price</h4>
 											<p class="text-center text-success" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;"> 
@@ -132,8 +138,8 @@
 								</div>
 								<div class="col-md-6">
 									<div class="thumbnail alert alert-info" style="height:330px;">
-										<div class="caption ">
-											<h2 class="text-success">${plan.plan_name }</h2>
+										<div class="caption">
+											<h4 class="well text-success">${plan.plan_name }</h4>
 											<!-- desc -->${fn:replace(plan.plan_desc, '70px', '5px') }<!-- // end desc -->
 										</div>
 									</div>
@@ -141,6 +147,7 @@
 							</div>
 						</c:if>
 					</c:forEach>
+					
 					</c:when>
 					<c:otherwise>
 						<div class="alert alert-warning">
@@ -159,9 +166,9 @@
 						<c:if test="${plan.original_price > 0 }">
 							<div class="row">
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-warning" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-warning">Original Price</h4>
+											<h4 class="well">Original Price</h4>
 											<p class="text-center text-warning" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;text-decoration:line-through;"> 
@@ -172,9 +179,9 @@
 									</div>
 								</div>
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-success" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-danger">Promotion Price</h4>
+											<h4 class="well">Promotion Price</h4>
 											<p class="text-center text-success" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;"> 
@@ -190,8 +197,8 @@
 								</div>
 								<div class="col-md-6">
 									<div class="thumbnail alert alert-info" style="height:330px;">
-										<div class="caption ">
-											<h2 class="text-success">${plan.plan_name }</h2>
+										<div class="caption">
+											<h4 class="well text-success">${plan.plan_name }</h4>
 											<!-- desc -->${fn:replace(plan.plan_desc, '70px', '5px') }<!-- // end desc -->
 										</div>
 									</div>
@@ -217,9 +224,9 @@
 						<c:if test="${plan.original_price > 0 }">
 							<div class="row">
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-warning" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-warning">Original Price</h4>
+											<h4 class="well">Original Price</h4>
 											<p class="text-center text-warning" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;text-decoration:line-through;"> 
@@ -230,9 +237,9 @@
 									</div>
 								</div>
 								<div class="col-md-3">
-									<div class="thumbnail" style="height:330px;">
+									<div class="thumbnail alert alert-success" style="height:330px;">
 										<div class="caption">
-											<h4 class="alert alert-danger">Promotion Price</h4>
+											<h4 class="well">Promotion Price</h4>
 											<p class="text-center text-success" style="position:relative;">
 												<span style="font-size:40px;font-weight:bold;float:left;margin-left:35px;margin-top:45px;">$</span>	
 												<span style="font-size:90px;font-weight:bold;"> 
@@ -248,8 +255,8 @@
 								</div>
 								<div class="col-md-6">
 									<div class="thumbnail alert alert-info" style="height:330px;">
-										<div class="caption ">
-											<h2 class="text-success">${plan.plan_name }</h2>
+										<div class="caption">
+											<h4 class="well text-success">${plan.plan_name }</h4>
 											<!-- desc -->${fn:replace(plan.plan_desc, '70px', '5px') }<!-- // end desc -->
 										</div>
 									</div>
@@ -271,109 +278,19 @@
 			
 	</div>
 	
-	
-	
 </div>
-
-<!-- Check Address Modal -->
-<div class="modal fade" id="checkAddressModal" tabindex="-1" role="dialog" aria-labelledby="checkAddressModalLabel" aria-hidden="true">
-	<div class="modal-dialog" style="margin-top:55px;width:60%">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="checkAddressModalLabel">Check your address whether the service can be installed</h4>
-			</div>
-			<div class="modal-body">
-				<div class="row">
-					<div class="col-md-12">
-						<div class="input-group">
-							<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
-							<span class="input-group-btn">
-								<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
-									<span class="ladda-label">Go</span>
-								</button>
-							</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div id="checkResult"></div>
-		</div> <!-- /.modal-content -->
-	</div> <!-- /.modal-dialog -->
-</div> <!-- /.modal -->
-
-<div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
-<script type="text/html" id="result_tmpl">
-<jsp:include page="resultAddressCheck.html" />
-</script>
-
-
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function($){
 	
-	var adslPlans=[], vdslPlans=[], ufbPlans=[];
-	<c:forEach var="type" items="ADSL,VDSL,UFB">
-		<c:forEach var="plan" items="${planMap[type] }">
-			var plan = {
-				id: ${plan.id }
-				, plan_name: '${plan.plan_name }'
-				, plan_price: ${plan.plan_price }
-				, data_flow: ${plan.data_flow }
-			};
-			if ('${type }'=='ADSL') { adslPlans.push(plan); } 
-			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
-			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
-		</c:forEach>
-	</c:forEach>
-	
-	var select_plan_id = "";
-	var select_plan_type = "";
-	
-	$('#goCheck').click(function(){
-		var address = $('#address').val();
-		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
-		if (address != '') {
-			var l = Ladda.create(this);
-		 	l.start();
-			$.get('${ctx}/address/check/' + address, function(broadband){
-				broadband.type = select_plan_type;
-				broadband.selected_id = select_plan_id;
-				broadband.adslPlans = adslPlans;
-				broadband.vdslPlans = vdslPlans;
-				broadband.ufbPlans = ufbPlans;
-				$('#checkResult').html(tmpl('result_tmpl', broadband));
-				$(':radio').iCheck({
-					checkboxClass : 'icheckbox_square-green',
-					radioClass : 'iradio_square-green'
-				});
-				$('a[data-toggle="tooltip"]').tooltip();
-				$('a[data-name="continue-selected-plan"]').click(function(){
-					var type = $(this).attr('data-type');
-					$.get('${ctx}/do/service/', function(){
-						var id = $('input[name="' + type + '_id"]:checked').val();
-						if (id) window.location.href = '${ctx}/order/' + id;
-						else { alert('Please choose one plan at least.'); }
-						
-					});
-				});
-		   	}).always(function(){ l.stop(); });
-		} else {
-			alert('Please enter a real address.');
-		}
-	});
-	
 	$('a[data-name="order"]').click(function(){
-		select_plan_id = $(this).attr('data-id');
-		select_plan_type = $(this).attr('data-type');//console.log(select_plan_id);
-		$('#checkResult').empty();
-		$('#checkAddressModal').modal('show');
+		
+		var select_plan_id = $(this).attr('data-id');
+		var select_plan_type = $(this).attr('data-type');
+		window.location.href = '${ctx}/plans/term-plan/personal/' + select_plan_type + '/address-check/' + select_plan_id;
+		
 	});
 	
 	$('button[data-name="promotion_service"]').click(function(){
@@ -390,6 +307,4 @@
 	
 })(jQuery);
 </script>
-<script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />

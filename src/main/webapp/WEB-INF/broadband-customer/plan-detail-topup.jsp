@@ -24,7 +24,7 @@ background-color: #7BC3EC;
 
  	<div class="page-header" style="margin-top:0;">
 		<h2>
-			Top Up Unlimited Naked ADSL Broadband Plan (Top Up UNAB Plan)
+			Top Up Unlimited Naked ADSL Broadband Plan
 		</h2>
 	</div>
 	
@@ -40,7 +40,7 @@ background-color: #7BC3EC;
  	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
-				1. Choose Plans And Pricing
+				1. Choose Plan
 				<span class="glyphicon glyphicon-hand-right pull-right"></span>
 			</a>
 		</li>

@@ -10,7 +10,7 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel panel-success">
-				<div class="panel-heading">CyberPark Customer Logon</div>
+				<div class="panel-heading">CyberPark Customer Login</div>
 				<div class="panel-body">
 					
 					<form id="loginForm">

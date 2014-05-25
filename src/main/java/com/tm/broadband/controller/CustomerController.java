@@ -57,7 +57,7 @@ import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
-@SessionAttributes(value = { "customer", "orderPlan"})
+@SessionAttributes(value = { "customer", "orderPlan", "planTypeMap"})
 public class CustomerController {
 
 	private PlanService planService;
@@ -105,44 +105,7 @@ public class CustomerController {
 		
 		plans = this.planService.queryPlans(plan);
 		
-		if (plans != null) {
-			for (Plan p: plans) {
-				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
-				if (planMap == null) {
-					planMap = new HashMap<String, List<Plan>>();	
-					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
-						List<Plan> plansPromotion = new ArrayList<Plan>();
-						plansPromotion.add(p);
-						planMap.put("plansPromotion", plansPromotion);
-					} else {
-						List<Plan> list = new ArrayList<Plan>();
-						list.add(p);
-						planMap.put("plans", list);
-					}
-					planTypeMap.put(p.getPlan_type(), planMap);
-				} else {
-					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
-						List<Plan> plansPromotion = planMap.get("plansPromotion");
-						if (plansPromotion == null) {
-							plansPromotion = new ArrayList<Plan>();
-							plansPromotion.add(p);
-							planMap.put("plansPromotion", plansPromotion);
-						} else {
-							plansPromotion.add(p);
-						}
-					} else {
-						List<Plan> list = planMap.get("plans");
-						if (list == null) {
-							list = new ArrayList<Plan>();
-							list.add(p);
-							planMap.put("plans", list);
-						} else {
-							list.add(p);
-						}
-					}
-				}
-			}
-		}
+		this.wiredPlanMap(planTypeMap, plans);
 		
 		model.addAttribute("planTypeMap", planTypeMap);
 		
@@ -170,8 +133,8 @@ public class CustomerController {
 		model.addAttribute("customer", customer);
 		
 		List<Plan> plans = null;
-		//Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
-		Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
+		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		//Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
 		String url = "";
 		
 		Plan plan = new Plan();
@@ -183,22 +146,9 @@ public class CustomerController {
 		
 		plans = this.planService.queryPlans(plan);
 		
-		if (plans != null) {
-			for (Plan p: plans) {
-				if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
-					List<Plan> plansPromotion = planMap.get(p.getPlan_type());
-					if (plansPromotion != null) {
-						plansPromotion.add(p);
-					} else {
-						plansPromotion = new ArrayList<Plan>();
-						plansPromotion.add(p);
-						planMap.put(p.getPlan_type(), plansPromotion);
-					}
-				}
-			}
-		}
+		this.wiredPlanMap(planTypeMap, plans);
 		
-		model.addAttribute("planMap", planMap);
+		model.addAttribute("planTypeMap", planTypeMap);
 		model.addAttribute("selectdType", type);
 		
 		if ("personal".equals(classz)) {	
@@ -208,6 +158,61 @@ public class CustomerController {
 		} 
 
 		return url;
+	}
+	
+	private void wiredPlanMap(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+		if (plans != null) {
+			for (Plan p: plans) {
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()
+							&& p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+						List<Plan> plansPromotion = new ArrayList<Plan>();
+						plansPromotion.add(p);
+						planMap.put("plansPromotion", plansPromotion);
+					} else {
+						List<Plan> list = new ArrayList<Plan>();
+						list.add(p);
+						planMap.put("plans", list);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
+				} else {
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()
+							&& p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+						List<Plan> plansPromotion = planMap.get("plansPromotion");
+						if (plansPromotion == null) {
+							plansPromotion = new ArrayList<Plan>();
+							plansPromotion.add(p);
+							planMap.put("plansPromotion", plansPromotion);
+						} else {
+							plansPromotion.add(p);
+						}
+					} else {
+						List<Plan> list = planMap.get("plans");
+						if (list == null) {
+							list = new ArrayList<Plan>();
+							list.add(p);
+							planMap.put("plans", list);
+						} else {
+							list.add(p);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@RequestMapping("/plans/{group}/{class}/{type}/address-check/{id}") 
+	public String toAddressCheck(Model model,
+			@PathVariable("group") String group,
+			@PathVariable("class") String classz, 
+			@PathVariable("type") String type,
+			@PathVariable("id") int id) {
+		
+		model.addAttribute("select_plan_id", id);
+		model.addAttribute("select_plan_type", type);
+		return "broadband-customer/address-check";
 	}
 
 	@RequestMapping("/order/{id}") 
@@ -331,7 +336,7 @@ public class CustomerController {
 		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
-		status.setComplete();
+		//status.setComplete();
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
@@ -356,7 +361,7 @@ public class CustomerController {
 		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
-		status.setComplete();
+		//status.setComplete();
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
