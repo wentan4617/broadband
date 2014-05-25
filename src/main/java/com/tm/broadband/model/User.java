@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.validation.constraints.Size;
 
-import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.validator.mark.UserLoginValidatedMark;
@@ -36,6 +35,8 @@ public class User implements Serializable {
 	private String user_role;
 	private String memo;
 	private String auth;
+	private String cellphone;
+	private String email;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -129,6 +130,22 @@ public class User implements Serializable {
 
 	public void setAuthArray(String[] authArray) {
 		this.authArray = authArray;
+	}
+
+	public String getCellphone() {
+		return cellphone;
+	}
+
+	public void setCellphone(String cellphone) {
+		this.cellphone = cellphone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 }

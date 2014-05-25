@@ -52,6 +52,24 @@
 								</form:select>
 							</div>
 						</div>
+						<div class="form-group">
+							<label for="email" class="control-label col-md-4">Email</label>
+							<div class="col-md-3">
+								<form:input path="email" class="form-control" placeholder="Email" />
+							</div>
+							<p class="help-block">
+								<form:errors path="email" cssErrorClass="error"/>
+							</p>
+						</div>
+						<div class="form-group">
+							<label for="cellphone" class="control-label col-md-4">Cellphone</label>
+							<div class="col-md-3">
+								<form:input path="cellphone" class="form-control" placeholder="Cellphone" />
+							</div>
+							<p class="help-block">
+								<form:errors path="cellphone" cssErrorClass="error"/>
+							</p>
+						</div>
 						<hr/>
 						<h4>User Authentication</h4>
 						<div class="form-group">

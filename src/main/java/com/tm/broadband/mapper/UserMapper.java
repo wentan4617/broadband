@@ -31,6 +31,8 @@ public interface UserMapper {
 	int selectExistNotSelfUserfByName(String login_name, int id);
 	User selectUserById(int id);
 	
+	List<User> selectUser(User user);
+	
 	List<User> selectUsersWhoseIdExistInOrder();
 	
 	/* // END SELECT AREA */

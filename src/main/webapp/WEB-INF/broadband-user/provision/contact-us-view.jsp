@@ -33,7 +33,6 @@
 					</div>
 				</div>
 			</div>
-			
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">Contact Us View</h4>
@@ -55,16 +54,16 @@
 						</thead>
 						<tbody>
 							<c:forEach var="contactUs" items="${page.results }">
-								<input type="hidden" data-name="${contactUs.id}_content" value="${contactUs.content}"/>
-								<input type="hidden" data-name="${contactUs.id}_respond_content" value="${contactUs.respond_content}"/>
+								<textarea data-name="${contactUs.id}_content" style="display:none;">${contactUs.content}</textarea>
+								<textarea data-name="${contactUs.id}_respond_content" style="display:none;">${contactUs.respond_content}</textarea>
 								<tr>
 									<td>
 										<input type="checkbox" name="checkbox_contactUss" value="${contactUs.id}"/>
 									</td>
-									<td>
+									<td data-name="first_name" data-value="${contactUs.first_name }">
 										${contactUs.first_name }
 									</td>
-									<td>
+									<td data-name="last_name" data-value="${contactUs.last_name }">
 										${contactUs.last_name }
 									</td>
 									<td data-name="${contactUs.id}_email" data-value="${contactUs.email }">
@@ -82,9 +81,9 @@
 									<td>
 										<fmt:formatDate value="${contactUs.submit_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" />
 									</td>
-									<td>
-										<a id="${contactUs.id }" data-name="respond" data-email="${contactUs.email }" data-status="${contactUs.status }" data-toggle="modal" data-target="#respondContactUsModal" >
-											<span class="glyphicon glyphicon-envelope btn-lg"></span>
+									<td style="font-size:20px;">
+										<a href="javascript:(0);" id="${contactUs.id }" data-name="respond" data-email="${contactUs.email }" data-status="${contactUs.status }" data-toggle="tooltip" data-placement="bottom" data-original-title="Response customer by E-Mail">
+											<span class="glyphicon glyphicon-envelope"></span>
 										</a>
 									</td>
 								</tr>
@@ -136,10 +135,43 @@
 						<p id="content"></p>
 					</div>
 					<div class="form-group">
-						<strong>Our Response:</strong>
+						Our Response:<strong>(editable, Press Ctrl+Z for undo)</strong>
 					</div>
 					<div class="form-group">
-						<textarea name="respond_content" class="form-control" rows="6"></textarea>
+						<textarea id="respond_content" name="respond_content" class="form-control" rows="6"></textarea>
+					</div>
+					<div class="form-group">
+						Content Preview:<strong>(Immediate view layer)</strong>
+					</div>
+					<p class="form-group" data-name="view-mode" style="border:1px #dedede solid; display:none;"></p>
+					<strong>Shortcuts:</strong>
+					<div class="form-group">
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-xs" data-name="newline" data-toggle="tooltip" data-placement="bottom" data-original-title="Start a new line behind focus point">
+							  <span class="glyphicon glyphicon-arrow-down"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" data-name="italic" data-toggle="tooltip" data-placement="bottom" data-original-title="Tilt selected words">
+							  <span class="glyphicon glyphicon-italic"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" data-name="strong" data-toggle="tooltip" data-placement="bottom" data-original-title="Emphasize selected words">
+							  <span class="glyphicon glyphicon-bold" style="font-weight:bold;"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" data-name="horizontal-line" data-toggle="tooltip" data-placement="bottom" data-original-title="Horizontal line">
+							  <span class="glyphicon glyphicon-header"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" data-name="view-mode" data-toggle="tooltip" data-placement="bottom" data-original-title="Have a preview">
+							  <span class="glyphicon glyphicon-eye-open"></span>
+							</button>
+						</div>
+						<hr/>
+						<div class="btn-group">
+							<button type="button" class="btn btn-default btn-xs" data-name="template-1" data-toggle="tooltip" data-placement="bottom" data-original-title="Template 1">
+							  <span class="glyphicon glyphicon-book"></span>
+							</button>
+							<button type="button" class="btn btn-default btn-xs" data-name="template-2" data-toggle="tooltip" data-placement="bottom" data-original-title="Template 2">
+							  <span class="glyphicon glyphicon-book"></span>
+							</button>
+						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
@@ -158,6 +190,7 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($) {
+	$('button[data-toggle="tooltip"]').tooltip();
 	
 	$('#checkbox_contactUss_top').click(function() {
 		var b = $(this).prop("checked");
@@ -171,10 +204,112 @@
 	$('a[data-name="respond"]').click(function(){
 		$('input[name="id"]').val(this.id);
 		$('input[name="email"]').val($(this).attr('data-email'));
-		$('input[name="content"]').html($('input[data-name="'+this.id+'_content"]').val());
-		$('#content').html($('input[data-name="'+this.id+'_content"]').val());
-		$('textarea[name="respond_content"]').html($('input[data-name="'+this.id+'_respond_content"]').val());
+		$('#content').html($('textarea[data-name="'+this.id+'_content"]').val());
+		$('#respond_content').text($('textarea[data-name="'+this.id+'_respond_content"]').val());
+		viewMode();
+		$('#respondContactUsModal').modal('show');
 	});
+	
+	$('#respond_content').keydown(function(){
+		viewMode();
+	});
+	
+	$('#respond_content').keyup(function(){
+		viewMode();
+	});
+	
+	function insertStyles(tag, type){
+		var content = $('#respond_content')[0];
+		if(content.selectionStart || content.selectionStart == '0'){
+			var distance = content.selectionEnd - content.selectionStart;
+			var tagLength = tag[0].length;
+			
+			//以下这句，应该是在焦点之前，和焦点之后的位置，中间插入我们传入的值 .然后把这个得到的新值，赋给文本框
+			var valueHolder = content.value.substring(content.selectionStart, content.selectionEnd);
+			if(type == 'single'){
+				// single tag
+				content.value = content.value.substring(0, content.selectionStart) + valueHolder + tag.shift() + content.value.substring(content.selectionEnd, content.value.length);
+			} else if(type == 'double'){
+				// double tag
+				content.value = content.value.substring(0, content.selectionStart) + tag.shift() + valueHolder + tag.shift() + content.value.substring(content.selectionEnd, content.value.length);
+			}
+			//在输入元素textara没有定位光标的情况
+			content.selectionStart += tagLength;
+			content.selectionEnd = content.selectionEnd + distance;
+			content.focus();
+		}
+		return content;
+	}
+	
+	function viewMode(){
+		var content = $('#respond_content');
+		var viewDiv = $('p[data-name="view-mode"]');
+		viewDiv.css('padding','10px');
+		viewDiv.css('border-radius', '10px');
+		viewDiv.css('display', '');
+		viewDiv.html(content.val());
+		content.selectionStart = null;
+		content.selectionEnd = null;
+	}
+	
+	$('button[data-name="newline"]').click(function(){
+		insertStyles(new Array('<br/>'), 'single');
+		viewMode();
+	})
+	
+	$('button[data-name="italic"]').click(function(){
+		insertStyles(new Array('<i>','</i>'), 'double');
+		viewMode();
+	})
+	
+	$('button[data-name="strong"]').click(function(){
+		insertStyles(new Array('<strong>','</strong>'), 'double');
+		viewMode();
+	})
+	
+	$('button[data-name="horizontal-line"]').click(function(){
+		insertStyles(new Array('<hr/>'), 'single');
+		viewMode();
+	})
+	
+	$('button[data-name="view-mode"]').click(function(){
+		viewMode();
+	})
+	
+	$('button[data-name="template-1"]').click(function(){
+		var content = $('#respond_content');
+		var first_name = $('td[data-name="first_name"]').attr('data-value');
+		var last_name = $('td[data-name="last_name"]').attr('data-value');
+		content.val(
+			'Dear <strong>' + last_name + ',' + first_name + '</strong><br/><br/>\n\n'
+			+'<blockquote>\n'
+			+'\t<p>We have view your request, and we are solving it recently!</p>\n'
+			+'</blockquote><br/><br/>\n\n'
+			+'Kind regards,<br/><br/>\n\n'
+			+'<p style="color:#8866dd;">\n'
+			+'<strong>${userSession.user_name}</strong><br/>\n'
+			+'<strong>${userSession.user_role}, CyberPark Limited</strong><br/>\n'
+			+'</p>'
+		);
+		viewMode();
+	})
+	
+	$('button[data-name="template-2"]').click(function(){
+		var content = $('#respond_content');
+		var first_name = $('td[data-name="first_name"]').attr('data-value');
+		var last_name = $('td[data-name="last_name"]').attr('data-value');
+		content.val(
+			'Hi <strong>' + last_name + ',' + first_name + '</strong><br/><br/>'
+			+'<blockquote><p>We have view your request, and we are solving it recently!</p></blockquote><br/><br/>'
+			+'Kind regards,<br/><br/>'
+			+'<p style="color:#8866dd;">'
+			+'<strong>${userSession.user_name}</strong><br/>'
+			+'<strong>${userSession.user_role}</strong><br/>'
+			+'<strong>CyberPark Limited</strong><br/>'
+			+'</p>'
+		);
+		viewMode();
+	})
 
 })(jQuery);
 </script>

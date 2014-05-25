@@ -19,22 +19,25 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.0.9 2014-05-15
 
+* 前台查询地址框之上添加文字，Class Mode时显示“First text entry box is your flat/house number, second one is for street, suburb, city”。Auto-Match Mode时显示“Please start with your flat/house number first, e.g. type in "863A Domi" will automatically show "863A Dominion Road" at below for choose。”
+* 前台查询地址框添加两个单选“Classic Mode”，“Auto-Match Mode”。自动匹配为现有查询模式，经典模式房屋号与地址名称分开。选Classic Mode隐藏自动匹配框并显示经典输入框。选Auto-Match Mode隐藏经典输入框并显示自动匹配框。
+* 前台用户下单后点check out弹出温馨提示框，提示如果用户“若在支付过程中有任何疑问，请将该情况告知我们或等待我们的回访”。支付失败页面提示“亲爱的customer_name！不好意思，请将该情况告知我们或您可以等待我们的回访！”(Kanny)
 * 实现后台下单如果order_type为order-no-term或order-topup则将order_detail迭代至invoice_detail内，然后paid为payable，balance为0d
 * 调通xero接口，每次生成invoice都传送到xero系统，让xero客户去催款。
 * [在customer order里提交service giving是判断SV/CV Lan不为空才能提交。](steven)
 * 提交后通过短信模版将SV/CV Lan信息以及service giving date发送到胡洁和Nathan手机。(steven)
 * 在order表里添加一个direct_debit_pdf_path字段，在customer order里添加一个上传direct debit copy PDF功能，操作员可以提交客户签字的direct debit表单PDF(steven)
-* 在order表里添加一个rfs_date(Ready For Service Date)字段，在customer order里添加一个填写并提交rfs_date日期的输入框。(steven)
+* [在order表里添加一个rfs_date(Ready For Service Date)字段，在customer order里添加一个填写并提交rfs_date日期的输入框。](steven)
 * [order model增加broadband_asid属性，添加一个model叫ManualDefrayLog，添加其Mapper文件及相关操作类](steven)
-* order detail的next invoice create date判断如果不为空且order type='order-term'则显示后台传过来的存储在customer的params里的plan_term_invoice_create_date的值(steven)
+* [order detail的next invoice create date判断如果不为空且order type='order-term'则显示后台传过来的存储在customer的params里的plan_term_invoice_create_date的值](steven)
 * 设计一个界面用来实现上传PSTN数据到数据库里。(kanny)
 * [customer的invoice detail里Make Payment功能里的Cash点击确认后将该invoice的status变成paid或not_pay_off，payable减去传进来的数目赋给paid然后payable减去paid赋给balance，将该记录存至transaction。](steven)
 * [customer的invoice detail里Make Payment功能里的DDPay点击确认后将该invoice的status变成paid，payable赋给paid然后balance值赋为0d，将该记录存至transaction。](steven)
 * order表加个previous_provider_invoice字段，sale下单时选择transition则显示上传功能，上传文件的保存路径存放到pervious_provider_invoice字段中(steven)
-* 在每月的10号，11 am，以email的形式推送生成的plan-term的invoice pdf(steven)
+* [在每月的10号，11 am，以email的形式推送生成的plan-term的invoice pdf](steven)
 * [修改customer order, 添加更多的属性，把sv cv和 service giving分开更改](steven)
-* 给provision team添加feedback to sales功能，可以选择某一个sale，然后选择性发送到他的手机，或者邮箱，记录到数据库(steven)
-* customer edit界面的order,如果有sale显示sale,可以当前订单的所有者改变成其他sales(steven)
+* 给provision team添加feedback to sales功能，在sales模块的view sales里可以给某一个sale发送到他的手机，或者邮箱，记录内容及发送时间到数据库(steven)
+* [customer edit界面的order,如果有sale显示sale,可以当前订单的所有者改变成其他sales](steven)
 * customer edit的order information界面，现实order的option request，并且可以修改(steven)
 * [重构客户购买订购流程](kanny)
 * [重构sale下单流程](kanny)
@@ -63,8 +66,7 @@ demand version 1.0.7 2014-05-06
 
 demand version 1.0.6 2014-04-24
 
-* online ordering list如果该order没有credit，则显示一个添加credit的图标链接到添加credit界面
-* 问keith看local list是否google analyst功能
+* [online ordering list如果该order没有credit，则显示一个添加credit的图标链接到添加credit界面](steven)
 * 数据库加一个字段，用来限制客户在没有修改随即密码的情况下频繁使用忘记密码功能(kanny)
 * [制作Contact Us动态加载客户在customer的contact us界面新提交的request的功能，客户提交时需要输入验证码](steven)
 * [create customer, company detail的地址框都加上google map auto complete](steven)
@@ -89,13 +91,13 @@ demand version 1.0.5 2014-04-16
 
 demand version 1.0.5 2014-04-04
 
-* [customer下添加organization表单从customer.organization里取出数据，如果为business则显示该表单，personal则不显示] (steven)
-* [sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF] (steven)
+* [customer下添加organization表单从customer.organization里取出数据，如果为business则显示该表单，personal则不显示](steven)
+* [sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF](steven)
 * [修改前端，注册购买页面，用mobile and email代替登入](kanny)
 * [给购买流添加导航](kanny)
 * 更换dps支付页面
 * 修改用户登入后所看到的界面
-* [order information界面，添加属性，可以下载签约的PDF] (steven)
+* [order information界面，添加属性，可以下载签约的PDF](steven)
 
 demand version 1.0.4 2014-04-04
 
@@ -103,7 +105,7 @@ demand version 1.0.4 2014-04-04
 
 demand version 1.0.4 2014-04-03
 
-* [customer order detail里voip加和pstn一样的修改号码的按钮和功能] (steven)
+* [customer order detail里voip加和pstn一样的修改号码的按钮和功能](steven)
 * [界面上在customer order detail在table处用style将字体设为12px](kanny)
 * [添加organization表，字段：org_type、org_trading_name、org_register_no、org_incoporate_date、org_trading_months](kanny)
 * [organization表再加holder相关字段：holder_name、holder_job_title、holder_phone、holder_email](kanny)
@@ -111,7 +113,7 @@ demand version 1.0.4 2014-04-03
 
 demand version 1.0.4 2014-04-02
 
-* [界面上补全customer以及customer order新添的字段] (steven)
+* [界面上补全customer以及customer order新添的字段](steven)
 * [customer 加字段](kanny)
 * [customerOrder 加字段](kanny)
 * [添加customer credit表](kanny)
@@ -126,8 +128,8 @@ demand version 1.0.4 2014-03-31
 * [填写好支付信息后点Next生成PDF，供客户签字，之后通过一个上传的界面上传至系统，跟相关order关联](STEVEN)
 * 选择支付方式后跳转到填写支付信息界面
 * online-ordering界面：界面1（填写基本信息），界面2（选plan），界面3（confirm界面，列出order的信息，显示选择Credit Card付款）
-* [添加sale模块] (steven)
-* [给User添加sale权限] (steven)
+* [添加sale模块](steven)
+* [给User添加sale权限](steven)
 * order_status字段添加两个状态：stop，close
 * VoIP信息
 * [plan的NON-NAKED改用CLOTHING](STEVEN)

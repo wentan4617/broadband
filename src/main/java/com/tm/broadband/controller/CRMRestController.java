@@ -400,6 +400,21 @@ public class CRMRestController {
 		json.setModel(co);
 		return json;
 	}
+
+	// Update order belongs to
+	@RequestMapping(value = "/broadband-user/crm/customer/order/belongs_to/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderBelonsToEdit( Model model,
+			CustomerOrder customerOrder,
+			@RequestParam("user_name") String user_name) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = customerOrder;
+		co.getParams().put("id", co.getId());
+		
+		this.crmService.editCustomerOrder(co);
+		json.setModel(user_name);
+		return json;
+	}
 	
 	// Update order PPPoE
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit", method = RequestMethod.POST)
@@ -591,6 +606,34 @@ public class CRMRestController {
 		
 		this.crmService.editCustomerOrder(co, proLog);
 		
+		json.setModel(co);
+		return json;
+	}
+
+	// Update optional request
+	@RequestMapping(value = "/broadband-user/crm/customer/order/optional_request/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerOrderOptionalRequestEdit( Model model,
+			CustomerOrder customerOrder) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		CustomerOrder co = customerOrder;
+		co.getParams().put("id", co.getId());
+		
+		this.crmService.editCustomerOrder(co);
+		json.setModel(co);
+		return json;
+	}
+
+	// Update broadband asid
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerOrderBroadbandASIDEdit( Model model,
+			CustomerOrder customerOrder) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		CustomerOrder co = customerOrder;
+		co.getParams().put("id", co.getId());
+		
+		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
 		return json;
 	}

@@ -76,6 +76,11 @@ public class SystemService {
 	}
 
 	@Transactional
+	public List<User> queryUser(User user) {
+		return this.userMapper.selectUser(user);
+	}
+
+	@Transactional
 	public int queryExistUserByName(String login_name) {
 		return this.userMapper.selectExistUserByName(login_name);
 	}

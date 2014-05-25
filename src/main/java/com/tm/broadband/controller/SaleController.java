@@ -683,4 +683,19 @@ public class SaleController {
 		
 		return "broadband-user/sale/online-order-view";
 	}
+	
+	@RequestMapping(value = "/broadband-user/sale/view/{pageNo}")
+	public String toSalesView(Model model
+			, @PathVariable("pageNo") int pageNo
+			,HttpServletRequest req) {
+
+		Page<User> page = new Page<User>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by user_name");
+		page.getParams().put("user_role", "sales");
+		
+		this.systemService.queryUsersByPage(page);
+		model.addAttribute("page", page);
+		return "broadband-user/sale/sales-view";
+	}
 }
