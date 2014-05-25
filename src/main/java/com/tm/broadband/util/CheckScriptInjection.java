@@ -34,11 +34,11 @@ public class CheckScriptInjection {
 					e.printStackTrace();
 				}
 				
-				// If contains script> value then this is a script injection
-				if(attributeValue!=null && attributeValue.contains("script>")){
+				// If contains "<" or "</" or "/>" then this is a script injection
+				if(attributeValue!=null && (attributeValue.contains("<") || attributeValue.contains("</") || attributeValue.contains("/>"))){
 					flag = true;
 					
-					// If found first containing script>'s attribute then break loop
+					// If found first containing "<" or "</" or "/>" attribute then break loop
 					break;
 				}
 			}

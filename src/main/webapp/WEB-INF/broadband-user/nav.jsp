@@ -216,6 +216,13 @@
 									Ordering Online (PAD | PC)
 								</a>
 							</li>
+							<li class="divider"></li>
+	                    	<li>
+								<a href="${ctx}/broadband-user/sale/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Sales
+								</a>
+	                    	</li>
 						</ul>
 					</li>
 				</ul>

@@ -33,6 +33,7 @@
 .strong {
 	font-weight:bold;
 }
+
 </style>
 
 <!-- orders -->
@@ -156,7 +157,7 @@
 					<label class="control-label col-md-6">Download Application Form</label>
 					<div class="col-md-6">
 						<c:if test="${customerOrder.order_pdf_path!=null}">
-							<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save btn-lg"></a>
+							<p class="form-control-static"><a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save"></a></p>
 						</c:if>
 						<c:if test="${customerOrder.order_pdf_path==null}">
   							<p class="form-control-static">Empty</p>
@@ -167,11 +168,31 @@
 					<label class="control-label col-md-6">Download Credit Card Rquest</label>
 					<div class="col-md-6">
 						<c:if test="${customerOrder.credit_pdf_path!=null}">
-							<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save btn-lg"></a>
+							<p class="form-control-static"><a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${customerOrder.id}" class="control-label glyphicon glyphicon-floppy-save"></a></p>
 						</c:if>
 						<c:if test="${customerOrder.credit_pdf_path==null}">
   							<p class="form-control-static">Empty</p>
 						</c:if>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">This Order Belongs To</label>
+					<div class="col-md-6">
+						<p class="form-control-static" id="${customerOrder.id}_order_belongs_to">
+							<c:forEach var="user" items="${users}">
+								<c:if test="${user.id == customerOrder.sale_id}">
+									${user.user_name}
+								</c:if>
+							</c:forEach>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Optional Request</label>
+					<div class="col-md-6">
+						<a href="javascript:void(0);" id="${customerOrder.id}_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Request" style="font-size:20px; display:${customerOrder.optional_request != '' ? '' : 'none' };">
+						  <span class="glyphicon glyphicon-registration-mark"></span>
+						</a>
 					</div>
 				</div>
 			</div>
@@ -186,7 +207,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-md-6">
-						<select data-name="${customerOrder.id}_order_status_selector" data-val="${customerOrder.order_status}" class="form-control input-sm">
+						<select data-name="${customerOrder.id}_order_status_selector" data-val="${customerOrder.order_status}" class="form-control input-sm" style="height:26px; padding:0 10px;">
 							<c:forEach var="status" items="paid,pending,ordering-paid,ordering-pending,using,cancel,discard">
 								<option value="${status}"
 									<c:if test="${customerOrder.order_status == status}">
@@ -215,8 +236,8 @@
 				<div class="form-group">
 					<div class="col-md-6">
 						<div class="input-group date" id="${customerOrder.id}_order_due_datepicker">
-							<strong><input data-val="${customerOrder.order_due_str}" data-name="${customerOrder.id}_order_due_input_picker" class="form-control input-sm" placeholder="Order Due Date"/></strong>
-							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							<strong><input data-val="${customerOrder.order_due_str}" data-name="${customerOrder.id}_order_due_input_picker" class="form-control input-sm" placeholder="Order Due Date" style="height:26px; padding:0 10px;"/></strong>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
 					</div>
 					<div class="col-md-6">
@@ -259,6 +280,28 @@
 					<label class="control-label col-md-6">&nbsp;</label>
 					<div class="col-md-6">&nbsp;</div>
 				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<select data-name="${customerOrder.id}_order_belongs_to_selector" data-val="${customerOrder.sale_id}" class="form-control input-sm" style="height:26px; padding:0 10px;">
+							<c:forEach var="user" items="${users}">
+								<option value="${user.id}"
+									<c:if test="${customerOrder.sale_id == user.id}">
+										selected="selected"
+									</c:if>
+								>${user.user_name}</option>
+							</c:forEach>
+						</select>
+					</div>
+					<div class="col-md-6">
+						<a id="${customerOrder.id}" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="${customerOrder.id}_order_belongs_to_edit" >Update Submitted By</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">
+						<a id="${customerOrder.id}" class="btn btn-success btn-sm pull-right xs-btn-width" data-name="${customerOrder.id}_optional_request_edit" >Update Request</a>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -283,25 +326,19 @@
 			</div>
 			<div class="col-md-6">
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- PPPoE Login Name --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_pppoe_loginname_input" value="${customerOrder.pppoe_loginname}" name="pppoe_loginname" data-name="${customerOrder.id}_pppoe_loginname" class="form-control input-sm" placeholder="PPPoE Login Name" data-error-field/>
+						<input id="${customerOrder.id}_pppoe_loginname_input" value="${customerOrder.pppoe_loginname}" name="pppoe_loginname" data-name="${customerOrder.id}_pppoe_loginname" class="form-control input-sm" data-placement="top" placeholder="PPPoE Login Name" style="height:26px; padding:0 10px;" data-error-field/>
 					</div>
+					<div class="col-md-6">&nbsp;</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- PPPoE Password --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_pppoe_password_input" value="${customerOrder.pppoe_password}" name="pppoe_password" data-name="${customerOrder.id}_pppoe_password" class="form-control input-sm" placeholder="PPPoE Password" data-error-field/>
+						<input id="${customerOrder.id}_pppoe_password_input" value="${customerOrder.pppoe_password}" name="pppoe_password" data-name="${customerOrder.id}_pppoe_password" class="form-control input-sm" data-placement="bottom" placeholder="PPPoE Password" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">
+						<a data-val="${customerOrder.id}" class="btn btn-success btn-xs btn-block xs-btn-width pull-right" data-name="${customerOrder.id}_pppoe_edit_btn">Update PPPoE</a>
 					</div>
 				</div>
-				
-			</div>
-		</div>
-		<hr />
-		<div class="row">
-			<div class="col-md-10"></div>
-			<div class="col-md-2">
-				<a data-val="${customerOrder.id}" class="btn btn-success btn-xs btn-block xs-btn-width pull-right" data-name="${customerOrder.id}_pppoe_edit_btn">Update PPPoE</a>
 			</div>
 		</div>
 		
@@ -334,38 +371,33 @@
 			</div>
 			<div class="col-md-6">
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- SVLan --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_svlan_input" value="${customerOrder.svlan}" class="form-control input-sm" placeholder="SVLan" data-error-field/>
+						<input id="${customerOrder.id}_svlan_input" value="${customerOrder.svlan}" class="form-control input-sm" data-placement="top" placeholder="SVLan" style="height:26px; padding:0 10px;" data-error-field/>
 					</div>
+					<div class="col-md-6">&nbsp;</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- CVLan --></label>
 					<div class="col-md-6">
-						<input id="${customerOrder.id}_cvlan_input" value="${customerOrder.cvlan}" class="form-control input-sm" placeholder="CVLan" data-error-field/>
+						<input id="${customerOrder.id}_cvlan_input" value="${customerOrder.cvlan}" class="form-control input-sm" data-placement="left" placeholder="CVLan" style="height:26px; padding:0 10px;" data-error-field/>
 					</div>
+					<div class="col-md-6">&nbsp;</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- RFS Date --></label>
 					<div class="col-md-6">
 						<div class="input-group date" id="${customerOrder.id}_rfs_date_datepicker">
-							<input id="${customerOrder.id}" data-val="${customerOrder.rfs_date_str}" data-name="${customerOrder.id}_rfs_date_input_picker" class="form-control input-sm" placeholder="RFS Date"/>
-							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							<input id="${customerOrder.id}" data-val="${customerOrder.rfs_date_str}" data-name="${customerOrder.id}_rfs_date_input_picker" class="form-control input-sm" placeholder="RFS Date" style="height:26px; padding:0 10px;"/>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
 					</div>
+					<div class="col-md-6">
+						<a data-val="${customerOrder.id}"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right ${customerOrder.rfs_date != null ? 'btn-danger' : 'btn-success'}"
+						data-name="${customerOrder.id}_svcvlan_save"
+						data-way="${customerOrder.rfs_date != null ? 'update' : 'save'}">
+							${customerOrder.rfs_date != null ? 'Update SV/CVLan &amp; RFS Date' : 'Save SV/CVLan &amp; RFS Date'}
+						</a>
+					</div>
 				</div>
-			</div>
-		</div>
-		<hr />
-		<div class="row">
-			<div class="col-md-8"></div>
-			<div class="col-md-4">
-				<a data-val="${customerOrder.id}"
-				class="btn btn-xs btn-block xs-btn-width-longer pull-right ${customerOrder.rfs_date != null ? 'btn-danger' : 'btn-success'}"
-				data-name="${customerOrder.id}_svcvlan_save"
-				data-way="${customerOrder.rfs_date != null ? 'update' : 'save'}">
-					${customerOrder.rfs_date != null ? 'Update SV/CVLan &amp; RFS Date' : 'Save SV/CVLan &amp; RFS Date'}
-				</a>
 			</div>
 		</div>
 		
@@ -394,29 +426,50 @@
 			</div>
 			<div class="col-md-6">
 				<div class="form-group">
-					<label class="control-label col-md-6"><!-- Service Giving Date --></label>
 					<div class="col-md-6">
 						<div class="input-group date" id="${customerOrder.id}_order_using_start_datepicker">
-							<input id="${customerOrder.id}" data-val="${customerOrder.order_using_start_str}" data-name="${customerOrder.id}_order_using_start_input_picker" class="form-control input-sm" placeholder="Order Using Start Date"/>
-							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+							<input id="${customerOrder.id}" data-val="${customerOrder.order_using_start_str}" data-name="${customerOrder.id}_order_using_start_input_picker" class="form-control input-sm" placeholder="Order Using Start Date" style="height:26px; padding:0 10px;"/>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
 					</div>
+					<div class="col-md-6">&nbsp;</div>
 				</div>
 				<div class="form-group">
 					<div class="col-md-6">&nbsp;</div>
+					<div class="col-md-6">
+						<a data-val="${customerOrder.id}"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right ${customerOrder.order_using_start != null ? 'btn-danger' : 'btn-success'}"
+						data-name="${customerOrder.id}_service_giving_save"
+						data-way="${customerOrder.order_using_start != null ? 'update' : 'save'}">
+							${customerOrder.order_using_start != null ? 'Update Service Giving' : 'Save Service Giving'}
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
+		
+		<!-- Broadband ASID -->
+		<hr />
+		<h4 class="text-success">Broadband ASID Information</h4>
 		<hr />
 		<div class="row">
-			<div class="col-md-10"></div>
-			<div class="col-md-2">
-				<a data-val="${customerOrder.id}"
-				class="btn btn-xs btn-block xs-btn-width-longer pull-right ${customerOrder.order_using_start != null ? 'btn-danger' : 'btn-success'}"
-				data-name="${customerOrder.id}_service_giving_save"
-				data-way="${customerOrder.order_using_start != null ? 'update' : 'save'}">
-					${customerOrder.order_using_start != null ? 'Update Service Giving' : 'Save Service Giving'}
-				</a>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">Broadband ASID</label>
+					<div class="col-md-6">
+						<p id="${customerOrder.id}_broadband_asid" class="form-control-static">${customerOrder.broadband_asid}</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-md-6">
+						<input value="${customerOrder.broadband_asid}" data-name="${customerOrder.id}_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">
+						<a id="${customerOrder.id}" class="btn btn-success btn-xs btn-block xs-btn-width-longer pull-right" data-name="${customerOrder.id}_brodband_asid_btn">Update Broadband ASID</a>
+					</div>
+				</div>
 			</div>
 		</div>
 		
@@ -488,8 +541,8 @@
 				<tr>
 					<td colspan="12">
 						<!-- Button trigger modal -->
-						<a class="btn btn-success btn-xs xs-btn-width-small pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal_${customerOrder.id}">
-						  <span class="glyphicon glyphicon-plus"></span> Discount
+						<a class="btn btn-success btn-xs xs-btn-width pull-right" data-name="${customerOrder.id}_add_discount" data-val="${customerOrder.id}" data-toggle="modal" data-target="#addDiscountModal_${customerOrder.id}">
+						  <span class="glyphicon glyphicon-plus"></span> Add Discount
 						</a>
 					</td>
 				</tr>
@@ -546,6 +599,87 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
+
+	<!-- Edit Order Belongs To Modal -->
+	<div class="modal fade" id="editOrderBelongsToModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editOrderBelongsToModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderBelongsToModalLabel">
+						<strong>Update Order Belongs To</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8 text-warning">Update Order Belongs To?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="editOrderBelongsToModalBtn_${customerOrder.id}" data-dismiss="modal">Confirm to update this order's belongs to</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	
+	<!-- View Order Optional Request Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="viewOrderOptionalRequestModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="viewOrderOptionalRequestModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="viewOrderOptionalRequestModalLabel">
+							<strong>View Order Optional Request</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p class="form-control-static">${customerOrder.optional_request}</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+	
+	<!-- Edit Order Optional Request Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editOrderOptionalRequestModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editOrderOptionalRequestModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editOrderOptionalRequestModalLabel">
+							<strong>Update Order Optional Request</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p class="form-control" data-name="${customerOrder.id}_order_optional_request_p" style="display:none;"></p>
+								<textarea class="form-control" data-name="${customerOrder.id}_order_optional_request" rows="6">${customerOrder.optional_request}</textarea>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-success" data-name="editOrderOptionalRequestModalBtn_${customerOrder.id}" data-dismiss="modal">Confirm to update this order's optional request</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
 
 	<!-- Edit PPPoE Modal -->
 	<div class="modal fade" id="editPPPoEModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="editPPPoEModalLabel" aria-hidden="true">
@@ -644,6 +778,31 @@
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">Close</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Broadband ASID Modal -->
+	<div class="modal fade" id="saveBroadbandASIDModal_${customerOrder.id}" tabindex="-1" role="dialog" aria-labelledby="saveBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveBroadbandASIDModalLabel">
+						<strong>Save Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Save Broadband ASID?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="saveBroadbandASIDModalBtn_${customerOrder.id}" data-dismiss="modal">Confirm to update Broadband ASID</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->

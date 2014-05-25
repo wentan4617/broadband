@@ -199,6 +199,65 @@
 		$('#editOrderDueDateModal_${co.id}').on('hidden.bs.modal', function (e) {
 			$('a[data-name="${co.id}_order_due_input_btn"]').button('reset');
 		});
+		
+		// Update order belongs to
+		// Get order belongs to Dialog
+		$('a[data-name="${co.id}_order_belongs_to_edit"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="editOrderBelongsToModalBtn_${co.id}"]').prop('id',this.id);
+			$('#editOrderBelongsToModal_${co.id}').modal('show');
+		});
+		// Submit to rest controller
+		$('a[data-name="editOrderBelongsToModalBtn_${co.id}"]').click(function(){
+			var belongsTo = $('select[data-name="'+this.id+'_order_belongs_to_selector"]');
+			var data = {
+					'id':this.id
+					,'sale_id':belongsTo.val()
+					,'user_name':belongsTo.find("option:selected").text()
+			};
+			var order_belongs_to = $('#'+this.id+'_order_belongs_to');
+			$.post('${ctx}/broadband-user/crm/customer/order/belongs_to/edit', data, function(json){
+				// rewrite belongs to's content
+				order_belongs_to.html(json.model);
+			}, "json")
+		});
+		// Reset button when hidden belongs to dialog
+		$('#editOrderBelongsToModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_order_belongs_to_edit"]').button('reset');
+		});
+		
+		//
+		// View order optional request
+		$('#${co.id}_order_optional_request').click(function(){
+			$('#viewOrderOptionalRequestModal_${co.id}').modal('show');
+		});
+		
+		// Update order optional request
+		// Get order optional request Dialog
+		$('a[data-name="${co.id}_optional_request_edit"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="editOrderOptionalRequestModalBtn_${co.id}"]').prop('id',this.id);
+			$('#editOrderOptionalRequestModal_${co.id}').modal('show');
+		});
+		// Submit to rest controller
+		$('a[data-name="editOrderOptionalRequestModalBtn_${co.id}"]').click(function(){
+			var optionalRequest = $('textarea[data-name="'+this.id+'_order_optional_request"]');
+			var data = {
+					'id':this.id
+					,'optional_request':optionalRequest.val()
+			};
+			var order_optional_request = $('#'+this.id+'_order_optional_request');
+			$.post('${ctx}/broadband-user/crm/customer/order/optional_request/edit', data, function(json){
+				// rewrite optional request's content
+				if(json.model.optional_request != ''){
+					order_optional_request.css('display', '');
+				}
+			}, "json")
+		});
+		// Reset button when hidden optional request dialog
+		$('#editOrderOptionalRequestModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_optional_request_edit"]').button('reset');
+		});
 		/*
 		 *	END customer order area
 		 */
@@ -331,6 +390,39 @@
 		/*
 		 *	END customer order Service Giving Date area
 		 */
+
+		/*
+		 *	BEGIN customer order Broadband ASID area
+		 */
+		// Update order Broadband ASID request
+		// Get order optional request Dialog
+		$('a[data-name="${co.id}_brodband_asid_btn"]').click(function(){
+			$btn = $(this); $btn.button('loading');
+			$('a[data-name="saveBroadbandASIDModalBtn_${co.id}"]').prop('id',this.id);
+			$('#saveBroadbandASIDModal_${co.id}').modal('show');
+		});
+		// Submit to rest controller
+		$('a[data-name="saveBroadbandASIDModalBtn_${co.id}"]').click(function(){
+			var broadbandASID = $('input[data-name="'+this.id+'_brodband_asid"]');
+			var data = {
+					'id':this.id
+					,'broadband_asid':broadbandASID.val()
+			};
+			var order_broadband_asid = $('#'+this.id+'_broadband_asid');
+			$.post('${ctx}/broadband-user/crm/customer/order/broadband_asid/edit', data, function(json){
+				// rewrite optional Broadband ASID's content
+				if(!$.jsonValidation(json, 'left')){
+					order_broadband_asid.html(json.model.broadband_asid);
+				}
+			}, "json")
+		});
+		// Reset button when hidden Broadband ASID dialog
+		$('#saveBroadbandASIDModal_${co.id}').on('hidden.bs.modal', function (e) {
+			$('a[data-name="${co.id}_brodband_asid_btn"]').button('reset');
+		});
+		/*
+		 *	END customer order Broadband ASID area
+		 */
 		 
 
 		/*
@@ -363,7 +455,7 @@
 		/*
 		 *	BEGIN Datepicker area
 		 */
-		// Order due Datapicker
+		// Order due Datepicker
 		var order_due_input = $('input[data-name="${co.id}_order_due_input_picker"]').attr('data-val');
 		$('#${co.id}_order_due_datepicker').datepicker({
 		    format: "yyyy-mm-dd",
@@ -372,7 +464,7 @@
 		    // if order due date is null then assign new Date(), else assign order due date
 		}).datepicker('setDate', order_due_input || new Date());
 		
-		// Order RFS date Datapicker
+		// Order RFS date Datepicker
 		var rfs_date_input = $('input[data-name="${co.id}_rfs_date_picker"]').attr('data-val');
 		$('#${co.id}_rfs_date_datepicker').datepicker({
 		    format: "yyyy-mm-dd",
@@ -381,7 +473,7 @@
 		    // if RFS date is null then assign new Date(), else assign RFS date
 		}).datepicker('setDate', rfs_date_input || new Date());
 		
-		// Order using start Datapicker
+		// Order using start Datepicker
 		var order_using_start_input = $('input[data-name="${co.id}_order_using_start_input_picker"]').attr('data-val');
 		$('#${co.id}_order_using_start_datepicker').datepicker({
 		    format: "yyyy-mm-dd",

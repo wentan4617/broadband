@@ -45,6 +45,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.User;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
@@ -116,7 +117,11 @@ public class CRMController {
 		
 		model.addAttribute("panelheading", "Customer Edit");
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		User user = new User();
+		user.getParams().put("user_role", "sales");
+		List<User> users = this.systemService.queryUser(user);
 		model.addAttribute("customer", customer);
+		model.addAttribute("users", users);
 		return "broadband-user/crm/customer";
 	}
 	

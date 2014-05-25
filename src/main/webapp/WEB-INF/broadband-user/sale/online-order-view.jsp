@@ -103,21 +103,21 @@
 									</td>
 									<td>${order.signature }</td>
 									<td>${order.sale_id }</td>
-									<td>
+									<td style="font-size:20px;">
 										<c:if test="${order.order_pdf_path != null}">
-											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Order PDF"></a>
+											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Order PDF"></a>&nbsp;
 										</c:if>
 										<c:if test="${order.credit_pdf_path != null}">
-											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>
+											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>&nbsp;
 										</c:if>
 										<c:if test="${order.credit_pdf_path == null}">
-											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card btn-lg" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>
+											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>&nbsp;
 										</c:if>|
-										<a data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open btn-lg" data-toggle="modal" data-placement="bottom" data-target="#uploadModal" style="cursor:pointer;"></a>
+										<a href="javascript:void;" data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Signed Form(s)"></a>&nbsp;
 										
 										<!-- If got additional requests -->
 										<c:if test="${order.optional_request != null}">
-											<a data-name="optional_request_btn" data-optional-request="${order.optional_request }" class="glyphicon glyphicon-info-sign btn-lg" data-toggle="modal" data-placement="bottom" data-target="#optionalRequestModel" style="cursor:pointer;"></a>
+											<a href="javascript:void;" data-name="optional_request_btn" data-optional-request="${order.optional_request }" class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="Sales's Optional Request"></a>&nbsp;
 										</c:if>
 									</td>
 								</tr>
@@ -234,10 +234,12 @@
 		$('input[name="order_id"]').val($(this).attr('data-order-id'));
 		$('input[name="customer_id"]').val($(this).attr('data-customer-id'));
 		$('input[name="sale_id"]').val($(this).attr('data-sale-id'));
+		$('#uploadModal').modal('show');
 	});
 	
 	$('a[data-name="optional_request_btn"]').click(function(){
 		$('p[data-name="optional_request_p"]').html($(this).attr('data-optional-request'));
+		$('#optionalRequestModel').modal('show');
 	});
 	
 })(jQuery);

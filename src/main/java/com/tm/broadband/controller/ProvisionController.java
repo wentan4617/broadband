@@ -18,11 +18,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
-import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
-import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
@@ -30,7 +28,6 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.ProvisionService;
 import com.tm.broadband.service.SystemService;
-import com.tm.broadband.util.TMUtils;
 
 @Controller
 public class ProvisionController {
@@ -237,7 +234,6 @@ public class ProvisionController {
 	public String respondContactUs(Model model
 			, @RequestParam("id") Integer id
 			, @RequestParam("email") String email
-			, @RequestParam("content") String content
 			, @RequestParam("respond_content") String respond_content
 			, @RequestParam("pageNo") Integer pageNo
 			,HttpServletRequest req) {
@@ -252,13 +248,13 @@ public class ProvisionController {
 		
 		contactUs = this.provisionService.queryContactUsById(id);
 		
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("contact-us-response", "email");
-		TMUtils.mailAtValueRetriever(notification, contactUs, companyDetail); // call mail at value retriever
+//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+//		Notification notification = this.systemService.queryNotificationBySort("contact-us-response", "email");
+//		TMUtils.mailAtValueRetriever(notification, contactUs, companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(email);
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setSubject("CyberPark Limited's feedback");
+		applicationEmail.setContent(respond_content);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		return "redirect:/broadband-user/provision/contact-us/view/"+pageNo+"/new";
