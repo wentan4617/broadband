@@ -6,8 +6,6 @@
 	</div>
 	<div class="panel-body">
 		<form class="form-horizontal" role="form">
-			<h4 class="text-success">Order Information</h4>
-			<hr />
 			<div class="form-group">
 				<label class="col-md-6 control-label">Hardware needs to be sent:</label>
 				<div class="col-md-6">
@@ -90,6 +88,18 @@
 				<label class="col-md-6 control-label">Transition Porting Number:</label>
 				<div class="col-md-6">
 					<p class="form-control-static"><.=transition_porting_number.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">Note:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=optional_request.></p>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-md-6 control-label">RFS Date:</label>
+				<div class="col-md-6">
+					<p class="form-control-static"><.=rfs_date.></p>
 				</div>
 			</div>
 		</form>
