@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
@@ -692,5 +693,55 @@ public class CRMController {
 		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
 	}
 	// END DDPay
+	
+	// Upload Previous Provider's invoice PDF
+	@RequestMapping(value = "/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload")
+	public String uploadSignedPDF(Model model
+			, @RequestParam("order_id") Integer order_id
+			, @RequestParam("customer_id") Integer customer_id
+			, @RequestParam("previous_provider_invoice_path") MultipartFile order_pdf_path
+			, HttpServletRequest req) {
+
+		if(!order_pdf_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "previous_provider_invoice_" + order_id
+					+ ".pdf");
+			try {
+				order_pdf_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			CustomerOrder co = new CustomerOrder();
+			co.setPrevious_provider_invoice(order_path);
+			co.getParams().put("id", order_id);
+			this.crmService.editCustomerOrder(co);
+		}
+		
+		return "redirect:/broadband-user/crm/customer/edit/" + customer_id;
+	}
+	
+	// download invoice PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/{orderId}")
+    public ResponseEntity<byte[]> downloadPreviousProviderInvoicePDF(Model model
+    		,@PathVariable(value = "orderId") int orderId) throws IOException {
+		String filePath = this.crmService.queryCustomerInvoiceFilePathById(orderId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
 
 }

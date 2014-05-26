@@ -17,13 +17,18 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
 
-demand version 1.0.9 2014-05-15
+demand version 1.0.9 2014-05-26
 
+* customer order界面每提交一个请求都要返回提示结果，无论成功失败。(steven)
 * 前台查询地址框之上添加文字，Class Mode时显示“First text entry box is your flat/house number, second one is for street, suburb, city”。Auto-Match Mode时显示“Please start with your flat/house number first, e.g. type in "863A Domi" will automatically show "863A Dominion Road" at below for choose。”
 * 前台查询地址框添加两个单选“Classic Mode”，“Auto-Match Mode”。自动匹配为现有查询模式，经典模式房屋号与地址名称分开。选Classic Mode隐藏自动匹配框并显示经典输入框。选Auto-Match Mode隐藏经典输入框并显示自动匹配框。
 * 前台用户下单后点check out弹出温馨提示框，提示如果用户“若在支付过程中有任何疑问，请将该情况告知我们或等待我们的回访”。支付失败页面提示“亲爱的customer_name！不好意思，请将该情况告知我们或您可以等待我们的回访！”(Kanny)
 * 实现后台下单如果order_type为order-no-term或order-topup则将order_detail迭代至invoice_detail内，然后paid为payable，balance为0d
 * 调通xero接口，每次生成invoice都传送到xero系统，让xero客户去催款。
+ 
+
+demand version 1.0.9 2014-05-15
+
 * [在customer order里提交service giving是判断SV/CV Lan不为空才能提交。](steven)
 * 提交后通过短信模版将SV/CV Lan信息以及service giving date发送到胡洁和Nathan手机。(steven)
 * 在order表里添加一个direct_debit_pdf_path字段，在customer order里添加一个上传direct debit copy PDF功能，操作员可以提交客户签字的direct debit表单PDF(steven)

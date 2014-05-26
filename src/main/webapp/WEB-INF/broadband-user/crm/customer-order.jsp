@@ -38,7 +38,9 @@
 
 <!-- orders -->
 <c:forEach var="customerOrder" items="${customer.customerOrders }">
-	<form class="form-horizontal">
+	<form class="form-horizontal" action="${ctx}/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload" enctype="multipart/form-data" method="post">
+		<input type="hidden" name="order_id" value="${customerOrder.id}"/>
+		<input type="hidden" name="customer_id" value="${customer.id}"/>
 	
 		<h4 class="text-success">Order Information</h4>
 		<hr/>
@@ -151,6 +153,17 @@
 						<p id="${customerOrder.id}_transition_porting_number" class="form-control-static">
 							${customerOrder.transition_porting_number}
 						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Previous Provider's Invoice</label>
+					<div class="col-md-6">
+						<c:if test="${customerOrder.previous_provider_invoice!=null}">
+							<p class="form-control-static"><a target="_blank" href="${ctx}/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/${customerOrder.id}" class="glyphicon glyphicon-floppy-save"></a></p>
+						</c:if>
+						<c:if test="${customerOrder.previous_provider_invoice==null}">
+  							<p class="form-control-static">Empty</p>
+						</c:if>
 					</div>
 				</div>
 				<div class="form-group">
@@ -271,6 +284,14 @@
 				<div class="form-group">
 					<label class="control-label col-md-6">&nbsp;</label>
 					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<input type="file" name="previous_provider_invoice_path" class="form-control" placeholder="File Path" />
+					</div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Invoice</button>
+					</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-md-6">&nbsp;</label>
