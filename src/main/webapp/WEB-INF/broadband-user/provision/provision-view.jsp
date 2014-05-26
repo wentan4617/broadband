@@ -22,7 +22,7 @@
 						
 						<c:if test="${order_status == 'pending' }">
 							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
 									Operate <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" data-role="menu">
@@ -38,7 +38,7 @@
 						
 						<c:if test="${order_status == 'paid' }">
 							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
 									Operate <span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu" data-role="menu">

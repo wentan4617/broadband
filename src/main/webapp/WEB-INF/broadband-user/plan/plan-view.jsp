@@ -14,6 +14,9 @@
 .bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
 	margin-bottom: 0;
 }
+#plan_table td, #plan_table th{
+	padding: 4px;
+}
 </style>
 
 <div class="container">
