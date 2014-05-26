@@ -119,7 +119,7 @@
 	<input type="hidden" name="id" /> <input type="hidden" name="email" />
 	<input type="hidden" name="content" /> <input type="hidden" name="pageNo" value="${page.pageNo}" />
 	<div class="modal fade" id="respondContactUsModal" tabindex="-1" role="dialog" aria-labelledby="respondContactUsModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
+		<div class="modal-dialog" style="width:1200px;">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -128,22 +128,33 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<strong>Visitor/Customer's Request:</strong>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<strong>Visitor/Customer's Request:</strong>
+							</div>
+							<div class="form-group">
+								<p id="content" style="border:1px #dedede solid; padding:10px; border-radius:10px"></p>
+							</div>
+						</div>
+						<hr/>
 					</div>
-					<div class="form-group">
-						<p id="content"></p>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								Our Response:<strong>(editable, Press Ctrl+Z for undo)</strong>
+							</div>
+							<div class="form-group">
+								<textarea id="respond_content" name="respond_content" class="form-control" rows="18"></textarea>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								Content Preview:<strong>(Immediate view layer)</strong>
+							</div>
+							<p class="form-group" data-name="view-mode" style="border:1px #dedede solid; display:none; height:374px;"></p>
+						</div>
 					</div>
-					<div class="form-group">
-						Our Response:<strong>(editable, Press Ctrl+Z for undo)</strong>
-					</div>
-					<div class="form-group">
-						<textarea id="respond_content" name="respond_content" class="form-control" rows="6"></textarea>
-					</div>
-					<div class="form-group">
-						Content Preview:<strong>(Immediate view layer)</strong>
-					</div>
-					<p class="form-group" data-name="view-mode" style="border:1px #dedede solid; display:none;"></p>
 					<strong>Shortcuts:</strong>
 					<div class="form-group">
 						<div class="btn-group">
@@ -299,13 +310,15 @@
 		var first_name = $('td[data-name="first_name"]').attr('data-value');
 		var last_name = $('td[data-name="last_name"]').attr('data-value');
 		content.val(
-			'Hi <strong>' + last_name + ',' + first_name + '</strong><br/><br/>'
-			+'<blockquote><p>We have view your request, and we are solving it recently!</p></blockquote><br/><br/>'
-			+'Kind regards,<br/><br/>'
-			+'<p style="color:#8866dd;">'
-			+'<strong>${userSession.user_name}</strong><br/>'
-			+'<strong>${userSession.user_role}</strong><br/>'
-			+'<strong>CyberPark Limited</strong><br/>'
+			'Hi <strong>' + last_name + ',' + first_name + '</strong><br/><br/>\n\n'
+			+'<blockquote>\n'
+			+'<p>We have view your request, and we are solving it recently!</p>\n'
+			+'</blockquote><br/><br/>\n\n'
+			+'Kind regards,<br/><br/>\n\n'
+			+'<p style="color:#8866dd;">\n'
+			+'<strong>${userSession.user_name}</strong><br/>\n'
+			+'<strong>${userSession.user_role}</strong><br/>\n'
+			+'<strong>CyberPark Limited</strong><br/>\n'
 			+'</p>'
 		);
 		viewMode();

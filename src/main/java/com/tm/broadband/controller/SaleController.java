@@ -482,6 +482,8 @@ public class SaleController {
 			}
 			
 			CustomerOrder co = new CustomerOrder();
+			co.setOrder_pdf_path(order_path);
+			co.setCredit_pdf_path(credit_path);
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);
@@ -512,6 +514,7 @@ public class SaleController {
 			}
 			
 			CustomerOrder co = new CustomerOrder();
+			co.setOrder_pdf_path(order_path);
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);
@@ -528,6 +531,7 @@ public class SaleController {
 			}
 			
 			CustomerOrder co = new CustomerOrder();
+			co.setCredit_pdf_path(credit_path);
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);

@@ -97,7 +97,8 @@
 		co.`signature`							as co_signature,
 		co.`optional_request`					as co_optional_request,
 		co.`broadband_asid`						as co_broadband_asid,
-		co.`rfs_date`							as co_rfs_date
+		co.`rfs_date`							as co_rfs_date,
+		co.`previous_provider_invoice`			as co_previous_provider_invoice
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -130,6 +131,7 @@
 		<result property="optional_request" column="co_optional_request" />
 		<result property="broadband_asid" column="co_broadband_asid" />
 		<result property="rfs_date" column="co_rfs_date" />
+		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -327,6 +329,7 @@
 		<result property="optional_request" column="co_optional_request" />
 		<result property="broadband_asid" column="co_broadband_asid" />
 		<result property="rfs_date" column="co_rfs_date" />
+		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -421,6 +424,7 @@
 		<result property="optional_request" column="co_optional_request" />
 		<result property="broadband_asid" column="co_broadband_asid" />
 		<result property="rfs_date" column="co_rfs_date" />
+		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -480,6 +484,7 @@
 		<result property="optional_request" column="co_optional_request" />
 		<result property="broadband_asid" column="co_broadband_asid" />
 		<result property="rfs_date" column="co_rfs_date" />
+		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -509,14 +514,14 @@
 			`transition_provider_name`, `transition_account_holder_name`, 
 			`transition_account_number`, `transition_porting_number`, `hardware_post`,
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
-			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`, `rfs_date`) 
+			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`, `rfs_date`, `previous_provider_invoice`) 
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
 			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
-			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid}, #{rfs_date})
+			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid}, #{rfs_date}, #{previous_provider_invoice})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -557,7 +562,8 @@
 			<if test="signature != null">signature=#{signature},</if>
 			<if test="optional_request != null">optional_request=#{optional_request},</if>
 			<if test="broadband_asid != null">broadband_asid=#{broadband_asid},</if>
-			<if test="rfs_date != null">rfs_date=#{rfs_date}</if>
+			<if test="rfs_date != null">rfs_date=#{rfs_date},</if>
+			<if test="previous_provider_invoice != null">previous_provider_invoice=#{previous_provider_invoice}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

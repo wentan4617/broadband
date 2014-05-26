@@ -53,6 +53,7 @@ public class CustomerOrder implements Serializable {
 	private String optional_request;
 	private String broadband_asid;
 	private Date rfs_date;
+	private String previous_provider_invoice;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -428,6 +429,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setRfs_date_str(String rfs_date_str) {
 		this.rfs_date_str = rfs_date_str;
+	}
+
+	public String getPrevious_provider_invoice() {
+		return previous_provider_invoice;
+	}
+
+	public void setPrevious_provider_invoice(String previous_provider_invoice) {
+		this.previous_provider_invoice = previous_provider_invoice;
 	}
 
 	
