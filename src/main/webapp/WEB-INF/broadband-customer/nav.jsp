@@ -23,8 +23,9 @@
 			            	<div class="row">
 			            		<div class="col-md-4" style="border-right: 2px dotted;">
 			            			<p class="text-center text-success">
-			            				<span class="glyphicon glyphicon-th-list" style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            			<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
+			            				
+				            			<a href="${ctx }/plans/plan-no-term/personal" target="_blank" style="text-decoration: none;">
+				            				<span class="glyphicon glyphicon-th-list" style="font-size:85px;display:block;margin-top: 10px;"></span>
 				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">No Term Plan</span>
 										</a>
 			            			</p>
@@ -32,16 +33,18 @@
 								</div>
 			            		<div class="col-md-4" style="border-right: 2px dotted;">
 			            			<p class="text-center text-success">
-			            				<span class="glyphicon glyphicon-th-large " style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
+			            				
+				            			<a href="${ctx }/plans/plan-topup/personal" target="_blank" style="text-decoration: none;">
+				            				<span class="glyphicon glyphicon-th-large " style="font-size:85px;display:block;margin-top: 10px;"></span>
 				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Top Up Plan</span>
 										</a>
 			            			</p>
 			            		</div>
 			            		<div class="col-md-4">
 			            			<p class="text-center text-success">
-			            				<span class="glyphicon glyphicon-th" style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            			<a href="${ctx }/plans/plan-term/personal" target="_blank">
+			            				
+				            			<a href="${ctx }/plans/plan-term/personal" target="_blank" style="text-decoration: none;">
+				            				<span class="glyphicon glyphicon-th" style="font-size:85px;display:block;margin-top: 10px;"></span>
 				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Term Plan</span>
 										</a>
 			            			</p>

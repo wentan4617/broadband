@@ -737,7 +737,7 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/contact-us/redirect")
 	public String toContactUsRedirect(Model model, RedirectAttributes attr) {
-		attr.addFlashAttribute("success", "Your request has been submited, we will respond you as fast as we can.");
+		attr.addFlashAttribute("success", "Your request has been submitted, we will respond you as fast as we can.");
 		return "redirect:/contact-us";
 	}
 

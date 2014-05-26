@@ -104,6 +104,11 @@
 									<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 								</div>
 							</div>
+
+							<!-- Broadband Options -->
+							<hr/>
+							<h4 class="text-success">Broadband Options</h4>
+							<hr/>
 							
 							<div class="form-group">
 								<div class="col-md-12">
