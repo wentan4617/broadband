@@ -295,7 +295,7 @@ public class CustomerRestController {
 		contactUs.setSubmit_date(new Date());
 		this.crmService.createContactUs(contactUs);
 		
-		json.getSuccessMap().put("alert-success", "Your request has been submited, we will respond you as fast as we can.");
+		json.getSuccessMap().put("alert-success", "Your request has been submitted, we will respond you as fast as we can.");
 
 		return json;
 	}
