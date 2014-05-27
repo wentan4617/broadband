@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
+import java.util.Map; 
+ 
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,8 +48,12 @@ public class TestRestController {
 	}
 	
 	@RequestMapping(value = "/test/upload/server", method = RequestMethod.POST)
-	public List<FileMeta> uploadServer(MultipartHttpServletRequest request, HttpServletResponse response) {
+	public List<FileMeta> uploadServer(MultipartHttpServletRequest request) {
+		
+		String plan_pic_path = request.getServletContext().getRealPath("/public/upload");
+		
 		// 1. build an iterator
+		
 		Iterator<String> itr = request.getFileNames();
 		MultipartFile mpf = null;
 		List<FileMeta> files = new ArrayList<FileMeta>();
@@ -77,8 +81,7 @@ public class TestRestController {
 
 				// copy file to local disk (make sure the path
 				// "e.g. D:/temp/files" exists)
-				FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream(
-						"c:/temp/files/" + mpf.getOriginalFilename()));
+				FileCopyUtils.copy(mpf.getBytes(), new FileOutputStream(plan_pic_path + "/" + mpf.getOriginalFilename()));
 
 			} catch (IOException e) {
 				e.printStackTrace();

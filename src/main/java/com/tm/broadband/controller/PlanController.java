@@ -118,8 +118,7 @@ public class PlanController {
 	
 	@RequestMapping(value = "/broadband-user/plan/delete", method = RequestMethod.POST)
 	public String deletePlans(
-			Model model,
-			@RequestParam(value = "checkbox_plans", required = false) String[] plan_ids,
+			Model model, @RequestParam(value = "checkbox_plans", required = false) String[] plan_ids,
 			HttpServletRequest req, RedirectAttributes attr) {
 
 		if (plan_ids == null) {
@@ -282,9 +281,7 @@ public class PlanController {
 
 		this.planService.editHardwarePic(hardware);
 
-		attr.addFlashAttribute("success",
-				"Edit Hardware Pic " + hardware.getHardware_name()
-						+ " is successful.");
+		attr.addFlashAttribute("success", "Edit Hardware Pic " + hardware.getHardware_name() + " is successful.");
 
 		return "redirect:/broadband-user/plan/hardware/view";
 	}
