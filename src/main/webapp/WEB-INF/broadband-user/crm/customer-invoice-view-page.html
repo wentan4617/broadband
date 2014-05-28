@@ -74,7 +74,7 @@
 		.>
 					<td>
 						<div class="btn-group dropup">
-							<button type="button" class="btn btn-primary btn-xs">Make Payment</button>
+							<button type="button" class="btn btn-primary btn-xs" data-name="make_payment_<.= invoice.id .>">Make Payment</button>
 							<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 								<span class="sr-only">Toggle Dropdown</span>
@@ -82,8 +82,8 @@
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>
-								<li><a data-toggle="modal" data-target="#confirmDDPayModal" id="<.= invoice.id .>" data-name="ddpay_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
-								<li><a data-toggle="modal" data-target="#confirmCashModal" id="<.= invoice.id .>" data-name="cash_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+								<li><a id="<.= invoice.id .>" data-name="pay_by_ddpay_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a id="<.= invoice.id .>" data-name="pay_by_cash_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 							</ul>
 						</div>
@@ -138,7 +138,7 @@
 		<. } .>
 		
 		<!-- confirmDDPay Modal -->
-		<div class="modal fade" id="confirmDDPayModal" tabindex="-1" role="dialog"
+		<div class="modal fade" id="confirmDDPayModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog"
 			aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
@@ -171,7 +171,7 @@
 		<!-- /.modal -->
 
 		<!-- confirmCash Modal -->
-		<div class="modal fade" id="confirmCashModal" tabindex="-1" role="dialog"
+		<div class="modal fade" id="confirmCashModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog"
 			aria-labelledby="confirmCashModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">

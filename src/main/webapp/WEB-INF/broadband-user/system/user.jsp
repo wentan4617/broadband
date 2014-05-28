@@ -48,6 +48,7 @@
 									<form:option value="none">define a role for this user</form:option>
 									<form:option value="administrator">Administrator</form:option>
 									<form:option value="operator">Operator</form:option>
+									<form:option value="crm-operator">CRM Operator</form:option>
 									<form:option value="sales">Sales</form:option>
 								</form:select>
 							</div>
@@ -125,27 +126,27 @@
 									</li>
 									<li>
 										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> All
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" data-crm-operator-role="true" /> All
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> View Customer
+											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" data-crm-operator-role="true" /> View Customer
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="crm/customer/personal/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Personal Customer
+											<form:checkbox path="authArray" value="crm/customer/personal/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" data-crm-operator-role="true" /> Create Personal Customer
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="crm/customer/business/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Create Business Customer
+											<form:checkbox path="authArray" value="crm/customer/business/create" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" data-crm-operator-role="true" /> Create Business Customer
 										</label>
 									</li>
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" /> Edit Customer
+											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" data-admin-role="true" data-operator-role="true" data-crm-operator-role="true" /> Edit Customer
 										</label>
 									</li>
 								</ul>
@@ -318,12 +319,15 @@
 		var role = $(this).find('option:selected').val();
 		if("administrator"==role){
 			$('input[data-admin-role=true]').prop("checked", true);
-		} else if("sales"==role){
-			$('input[data-admin-role=true]').prop("checked", false);
-			$('input[data-sales-role=true]').prop("checked", true);
 		} else if("operator"==role){
 			$('input[data-admin-role=true]').prop("checked", false);
 			$('input[data-operator-role=true]').prop("checked", true);
+		} else if("crm-operator"==role){
+			$('input[data-admin-role=true]').prop("checked", false);
+			$('input[data-crm-operator-role=true]').prop("checked", true);
+		} else if("sales"==role){
+			$('input[data-admin-role=true]').prop("checked", false);
+			$('input[data-sales-role=true]').prop("checked", true);
 		} else if("none"==role){
 			$('input[data-admin-role=true]').prop("checked", false);
 		}

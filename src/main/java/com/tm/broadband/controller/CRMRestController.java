@@ -1,9 +1,12 @@
 package com.tm.broadband.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,7 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
@@ -31,6 +37,7 @@ import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.pdf.OrderPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
@@ -636,6 +643,118 @@ public class CRMRestController {
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
 		return json;
+	}
+
+	// Update customer info
+	@RequestMapping(value = "/broadband-user/crm/customer/edit")
+	public Map<String, Object> toCustomerEdit(Model model,
+			@RequestParam("id") int id) {
+
+		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		User user = new User();
+		user.getParams().put("user_role", "sales");
+		List<User> users = this.systemService.queryUser(user);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("customer", customer);
+		map.put("users", users);
+		
+		return map;
+	}
+
+	// Update PSTN
+	@RequestMapping(value = "/broadband-user/crm/customer/order/pstn/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailPSTNEdit(Model model
+			,@RequestParam("order_detail_id") int order_detail_id
+			,@RequestParam("customer_id") int customer_id
+			,@RequestParam("pstn_number") String pstn_number
+			,RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		cod.getParams().put("id", order_detail_id);
+		cod.setPstn_number(pstn_number);
+		
+		this.crmService.editCustomerOrderDetail(cod);
+		
+		// Update Customer Order Detail PSTN is successful.
+
+		return json;
+	}
+
+	// Add discount
+	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/save", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailDiscountCreate(Model model
+			,@RequestParam("order_id") int order_id
+			,@RequestParam("customer_id") int customer_id
+			,@RequestParam("detail_name") String detail_name
+			,@RequestParam("detail_price") Double detail_price
+			,@RequestParam("detail_unit") Integer detail_unit
+			,@RequestParam("detail_expired") String detail_expired
+			,@RequestParam("detail_type") String detail_type
+			,RedirectAttributes attr) {
+		
+		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
+		customerOrderDetail.setOrder_id(order_id);
+		customerOrderDetail.setDetail_name(detail_name);
+		customerOrderDetail.setDetail_price(detail_price);
+		customerOrderDetail.setDetail_unit(detail_unit);
+		customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
+		customerOrderDetail.setDetail_type(detail_type);
+		this.crmService.createCustomerOrderDetail(customerOrderDetail);
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		// Create Customer Order Detail Discount is successful.
+
+		return json;
+	}
+
+	// Remove discount
+	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/remove", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailDiscountRemove(Model model
+			,@RequestParam("order_detail_id") int order_detail_id
+			,@RequestParam("customer_id") int customer_id
+			,RedirectAttributes attr) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		this.crmService.removeCustomerOrderDetailById(order_detail_id);
+
+		// Remove Customer Order Detail Discount is successful.
+
+		return json;
+	}
+
+	// Regenerate invoice PDF
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
+	public void generateInvoicePDF(Model model
+    		,@PathVariable(value = "invoiceId") int invoiceId){
+		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
+	}
+
+	// Regenerate application form PDF
+	@RequestMapping(value = "/broadband-user/crm/customer/order/application_form/regenerate/{order_id}")
+	public void regenerateOrderApplicationForm(Model model
+			,@PathVariable("order_id") int order_id) {
+		
+		CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
+
+		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
+		String orderPDFPath = null;
+		try {
+			orderPDFPath = new OrderPDFCreator(co.getCustomer(), co, co.getCustomer().getOrganization()).create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		co.getParams().put("id", co.getId());
+		co.setOrder_pdf_path(orderPDFPath);
+		
+		this.crmService.editCustomerOrder(co);
+		// END SET NECESSARY INFO AND GENERATE ORDER PDF
+		
+		// Regenerate order application PDF is successful.
+
 	}
 	
 }

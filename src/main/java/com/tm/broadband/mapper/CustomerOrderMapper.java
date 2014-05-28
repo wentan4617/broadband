@@ -38,7 +38,7 @@ public interface CustomerOrderMapper {
 	
 	String selectCustomerOrderFilePathById(int id);
 	String selectCustomerCreditFilePathById(int id);
-	
+	String selectCustomerPreviousProviderInvoiceFilePathById(int id);
 	
 	/* // END SELECT AREA */
 	

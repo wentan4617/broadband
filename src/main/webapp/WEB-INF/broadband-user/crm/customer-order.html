@@ -1,0 +1,1021 @@
+<style>
+#order_detail .form-group {
+	margin-bottom:4px;
+}
+
+.align-right {
+	text-align:right;
+}
+
+.xs-btn-width-small {
+	width:120px;
+}
+
+.xs-btn-width {
+	width:150px;
+}
+
+.xs-btn-width-long {
+	width:180px;
+}
+
+.xs-btn-width-longer {
+	width:220px;
+}
+
+.strong {
+	font-weight:bold;
+}
+
+</style>
+
+<!-- orders -->
+<.
+	var customerOrder = customer.customerOrders;
+	for(var i=0; i < customerOrder.length; i++){
+	var order_total_price = new Number(customerOrder[i].order_total_price);
+.>
+	<form class="form-horizontal" action="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload" enctype="multipart/form-data" method="post">
+		<input type="hidden" name="order_id" value="<.= customerOrder[i].id .>"/>
+		<input type="hidden" name="customer_id" value="<.= customer.id .>"/>
+	
+		<h4 class="text-success">Order Information</h4>
+		<hr/>
+		
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">Order ID</label>
+					<div class="col-md-6">
+						<p class="form-control-static"><.= customerOrder[i].id .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Create Date</label>
+					<div class="col-md-6">
+						<p class="form-control-static strong"><.= customerOrder[i].order_create_date_str .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Status</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_order_status" data-val="<.= customerOrder[i].order_status .>" class="form-control-static strong">
+							<.= customerOrder[i].order_status .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Type</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_order_type" data-val="<.= customerOrder[i].order_type .>" class="form-control-static">
+							<.= customerOrder[i].order_type .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Broadband Type</label>
+					<div class="col-md-6">
+						<p class="form-control-static"><.= customerOrder[i].order_broadband_type .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Total Price</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_order_total_price" data-val="<.= customerOrder[i].order_total_price .>" class="form-control-static strong">
+							$ <.= order_total_price.toFixed(2) .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Order Due</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_order_due" data-val="<.= customerOrder[i].order_due_str .>" class="form-control-static strong">
+							<.= customerOrder[i].order_due_str .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">PSTN Amount</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_pstn_count" data-val="<.= customerOrder[i].pstn_count .>" class="form-control-static">
+							<.= customerOrder[i].pstn_count .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">PSTN Rental Amount</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_pstn_rental_amount" data-val="<.= customerOrder[i].pstn_rental_amount .>" class="form-control-static">
+							<.= customerOrder[i].pstn_rental_amount .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Term Period</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_term_period" data-val="<.= customerOrder[i].term_period .>" class="form-control-static ">
+							<.= customerOrder[i].term_period .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Transition Provider Name</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_transition_provider_name" class="form-control-static">
+							<.= customerOrder[i].transition_provider_name .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Transition Account Holder</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_transition_account_holder_name" class="form-control-static">
+							<.= customerOrder[i].transition_account_holder_name .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Transition Account Number</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_transition_account_number" class="form-control-static">
+							<.= customerOrder[i].transition_account_number .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Transition Telephone Number</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_transition_porting_number" class="form-control-static">
+							<.= customerOrder[i].transition_porting_number .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Previous Provider Invoice</label>
+					<div class="col-md-6">
+					<.
+						if(customerOrder[i].previous_provider_invoice != null){
+					.>
+							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download previous provider's invoice PDF"></a></p>
+					<.
+						} else {
+					.>
+  							<p class="form-control-static">Empty</p>
+					<.
+						}
+					.>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Download Application Form</label>
+					<div class="col-md-6">
+						<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite current application form's PDF"></a>
+					<.
+						if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){
+					.>
+  							&nbsp;Empty
+					<.
+						} else {
+					.>
+							&nbsp;<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download application form's PDF"></a>
+					<.
+						}
+					.>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Download Credit Card Rquest</label>
+					<div class="col-md-6">
+					<.
+						if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){
+					.>
+  							<p class="form-control-static">Empty</p>
+					<.
+						} else {
+					.>
+							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save"></a></p>
+					<.
+						}
+					.>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">This Order Belongs To</label>
+					<div class="col-md-6">
+						<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
+						<.
+							for(var u=0; u<users.length; u++){
+								if(users[u].id == customerOrder[i].sale_id){
+						.>
+									<.=  users[u].user_name .>
+						<.
+								}
+							}
+						.>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Optional Request</label>
+					<div class="col-md-6">
+						<.
+							if(customerOrder[i].optional_request != ''){
+						.>
+							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Request" style="font-size:20px;">
+							  <span class="glyphicon glyphicon-registration-mark"></span>
+							</a>
+						<.
+							} else {
+						.>
+							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Request" style="font-size:20px; display:none;">
+							  <span class="glyphicon glyphicon-registration-mark"></span>
+							</a>
+						<.
+							}
+						.>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<select data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
+							<.
+								var status = ['paid','pending','ordering-paid','ordering-pending','using','cancel','discard'];
+								for(var s=0; s<status.length; s++){
+									if(customerOrder[i].order_status == status[s]){
+							.>
+										<option value="<.= status[s] .>" selected="selected"><.= status[s] .></option>
+							<.
+									} else {
+							.>
+										<option value="<.= status[s] .>"><.= status[s] .></option>
+							<.
+									}
+								}
+							.>
+						</select>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_status_edit">Update Order Status</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<div class="input-group date" id="<.= customerOrder[i].id .>_order_due_datepicker">
+							<strong><input data-val="<.= customerOrder[i].order_due_str .>" data-name="<.= customerOrder[i].id .>_order_due_input_picker" class="form-control input-sm" placeholder="Order Due Date" style="height:26px; padding:0 10px;"/></strong>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_due_input_btn" >Update Order Due</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<input type="file" name="previous_provider_invoice_path" class="form-control" placeholder="File Path" />
+					</div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Invoice</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
+							<.
+								for(var u=0; u<users.length; u++){
+									if(users[u] == customerOrder[i].sale_id){
+							.>
+								<option value="<.= users[u].id .>" selected="selected"><.= users[u].user_name .></option>
+							<.
+									} else {
+							.>
+								<option value="<.= users[u].id .>"><.= users[u].user_name .></option>
+							<.
+									}
+								}
+							.>
+						</select>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_belongs_to_edit" >Update Submitted By</a>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">&nbsp;</label>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-sm pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_optional_request_edit" >Update Request</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- pppoe -->
+		<hr />
+		<h4 class="text-success">PPPoE Information</h4>
+		<hr />
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">PPPoE Login Name</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_pppoe_loginname" class="form-control-static"><.= customerOrder[i].pppoe_loginname .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">PPPoE Password</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_pppoe_password" class="form-control-static"><.= customerOrder[i].pppoe_password .></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-md-6">
+						<input id="<.= customerOrder[i].id .>_pppoe_loginname_input" value="<.= customerOrder[i].pppoe_loginname .>" name="pppoe_loginname" data-name="<.= customerOrder[i].id .>_pppoe_loginname" class="form-control input-sm" data-placement="top" placeholder="PPPoE Login Name" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<input id="<.= customerOrder[i].id .>_pppoe_password_input" value="<.= customerOrder[i].pppoe_password .>" name="pppoe_password" data-name="<.= customerOrder[i].id .>_pppoe_password" class="form-control input-sm" data-placement="bottom" placeholder="PPPoE Password" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width pull-right" data-name="<.= customerOrder[i].id .>_pppoe_edit_btn">Update PPPoE</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- SV/CVLan Information -->
+		<hr />
+		<h4 class="text-success">SV/CVLan &amp; RFS(Ready For Service) Date Information</h4>
+		<hr />
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">SVLan</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_svlan" class="form-control-static"><.= customerOrder[i].svlan .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">CVLan</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_cvlan" class="form-control-static"><.= customerOrder[i].cvlan .></p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">RFS Date</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_rfs_date" data-val="<.= customerOrder[i].rfs_date_str .>" class="form-control-static strong">
+							<.= customerOrder[i].rfs_date_str .>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-md-6">
+						<input id="<.= customerOrder[i].id .>_svlan_input" value="<.= customerOrder[i].svlan .>" class="form-control input-sm" data-placement="top" placeholder="SVLan" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<input id="<.= customerOrder[i].id .>_cvlan_input" value="<.= customerOrder[i].cvlan .>" class="form-control input-sm" data-placement="left" placeholder="CVLan" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<div class="input-group date" id="<.= customerOrder[i].id .>_rfs_date_datepicker">
+							<input id="<.= customerOrder[i].id .>" data-val="<.= customerOrder[i].rfs_date_str .>" data-name="<.= customerOrder[i].id .>_rfs_date_input_picker" class="form-control input-sm" placeholder="RFS Date" style="height:26px; padding:0 10px;"/>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right <.= customerOrder[i].rfs_date != null ? 'btn-danger' : 'btn-success' .>"
+						data-name="<.= customerOrder[i].id .>_svcvlan_save"
+						data-way="<.= customerOrder[i].rfs_date != null ? 'update' : 'save' .>">
+							<.= customerOrder[i].rfs_date != null ? 'Update SV/CVLan &amp; RFS Date' : 'Save SV/CVLan &amp; RFS Date' .>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Service Giving Information -->
+		<hr />
+		<h4 class="text-success">Service Giving Information</h4>
+		<hr />
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">Service Giving Date</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_order_using_start" class="form-control-static">
+							<.= customerOrder[i].order_using_start_str .>
+						</p>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Next Invoice Create Date</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_next_invoice_create_date" class="form-control-static">
+							<.= customerOrder[i].next_invoice_create_date_str .>
+						</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-md-6">
+						<div class="input-group date" id="<.= customerOrder[i].id .>_order_using_start_datepicker">
+							<input id="<.= customerOrder[i].id .>" data-val="<.= customerOrder[i].order_using_start_str .>" data-name="<.= customerOrder[i].id .>_order_using_start_input_picker" class="form-control input-sm" placeholder="Order Using Start Date" style="height:26px; padding:0 10px;"/>
+							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div>
+					</div>
+					<div class="col-md-6">&nbsp;</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">&nbsp;</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right <.= customerOrder[i].order_using_start != null ? 'btn-danger' : 'btn-success' .>"
+						data-name="<.= customerOrder[i].id .>_service_giving_save"
+						data-way="<.= customerOrder[i].order_using_start != null ? 'update' : 'save' .>">
+							<.= customerOrder[i].order_using_start != null ? 'Update Service Giving' : 'Save Service Giving' .>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Broadband ASID -->
+		<hr />
+		<h4 class="text-success">Broadband ASID Information</h4>
+		<hr />
+		<div class="row">
+			<div class="col-md-6">
+				<div class="form-group">
+					<label class="control-label col-md-6">Broadband ASID</label>
+					<div class="col-md-6">
+						<p id="<.= customerOrder[i].id .>_broadband_asid" class="form-control-static"><.= customerOrder[i].broadband_asid .></p>
+					</div>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="form-group">
+					<div class="col-md-6">
+						<input value="<.= customerOrder[i].broadband_asid .>" data-name="<.= customerOrder[i].id .>_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
+					</div>
+					<div class="col-md-6">
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-longer pull-right" data-name="<.= customerOrder[i].id .>_brodband_asid_btn">Update Broadband ASID</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- order details -->
+		<hr />
+		<table class="table" style="font-size:12px;">
+			<thead>
+				<tr>
+					<th>Detail Name</th>
+					<th>Detail Type</th>
+					<th>Plan Type</th>
+					<th>Plan Sort</th>
+					<th>Plan Status</th>
+					<th>Data Flow</th>
+					<th class="align-right">Detail Price</th>
+					<th class="align-right">Unit</th>
+					<th class="align-right">Detail Expired</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<.
+					var customerOrderDetail = customerOrder[i].customerOrderDetails;
+					for(var d=0; d<customerOrderDetail.length; d++){
+						var detailPrice = new Number(customerOrderDetail[d].detail_price);
+				.>
+							<tr class="<.= customerOrderDetail[d].detail_type=='discount' ? 'alert alert-warning':'' .>">
+								<td>
+									<.= customerOrderDetail[d].detail_name .>
+				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip'){		.>
+							<br/>
+					(			
+				<.			if(customerOrderDetail[d].pstn_number == ''){		.>
+								<strong class="text-warning">Number is Empty</strong>
+				<.			} else if(customerOrderDetail[d].pstn_number != ''){		.>
+								<strong class="text-success"><.= customerOrderDetail[d].pstn_number .></strong>
+				<.
+							}
+				.>
+					)
+				<.
+						}
+				.>
+							</td>
+							<td><.= customerOrderDetail[d].detail_type .></td>
+							<td><.= customerOrderDetail[d].detail_plan_type .></td>
+							<td><.= customerOrderDetail[d].detail_plan_sort .></td>
+							<td><strong><.= customerOrderDetail[d].detail_plan_status .></strong></td>
+							<td><.= customerOrderDetail[d].detail_data_flow == -1 ? 'Ultimate' : customerOrderDetail[d].detail_data_flow .></td>
+							<td class="align-right">
+								<strong><.= customerOrderDetail[d].detail_type == 'discount' ? '-' : '' .><.= detailPrice.toFixed(2) .></strong>
+							</td>
+							<.
+								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
+							.>
+									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
+							<.
+								} else {
+							.>
+									<td class="align-right"><.= customerOrderDetail[d].detail_unit .></td>
+							<.
+								}
+							.>
+							<td class="align-right"><strong><.= customerOrderDetail[d].detail_expired_str .></strong></td>
+							<td>&nbsp;
+								<.
+									if(customerOrderDetail[d].detail_type=='discount'){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_discount" data-id="<.= customerOrderDetail[d].id .>">
+									  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
+									</a>
+								<.
+									}
+									if(customerOrderDetail[d].detail_type=='pstn'){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-id="<.= customerOrderDetail[d].id .>">
+									  	<span class="glyphicon glyphicon-edit"></span> PSTN
+									</a>
+								<.
+									}
+									if(customerOrderDetail[d].detail_type=='voip'){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-id="<.= customerOrderDetail[d].id .>">
+									  	<span class="glyphicon glyphicon-edit"></span> VoIP
+									</a>
+								<.
+									}
+								.>
+							</td>
+						</tr>
+				<.
+					}
+				.>
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="12">
+						<!-- Button trigger modal -->
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width pull-right" data-name="<.= customerOrder[i].id .>_add_discount">
+						  <span class="glyphicon glyphicon-plus"></span> Add Discount
+						</a>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+		
+	</form>
+
+	<!-- Edit Order Status Modal -->
+	<div class="modal fade" id="editOrderStatusModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderStatusModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderStatusModalLabel">
+						<strong>Update Order Status</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8 text-warning">Update order status?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderStatusModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order status</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Order Due Date Modal -->
+	<div class="modal fade" id="editOrderDueDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderDueDateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderDueDateModalLabel">
+						<strong>Update Order Due Date</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8 text-warning">Update order due date?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderDueDateModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order due date</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Order Belongs To Modal -->
+	<div class="modal fade" id="editOrderBelongsToModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderBelongsToModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderBelongsToModalLabel">
+						<strong>Update Order Belongs To</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8 text-warning">Update Order Belongs To?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderBelongsToModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order belongs to</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	
+	<!-- View Order Optional Request Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="viewOrderOptionalRequestModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="viewOrderOptionalRequestModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="viewOrderOptionalRequestModalLabel">
+							<strong>View Order Optional Request</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p class="form-control-static" data-name="<.= customerOrder[i].id .>_order_optional_request_p"><.= customerOrder[i].optional_request .></p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+	
+	<!-- Edit Order Optional Request Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editOrderOptionalRequestModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderOptionalRequestModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editOrderOptionalRequestModalLabel">
+							<strong>Update Order Optional Request</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<textarea class="form-control" data-name="<.= customerOrder[i].id .>_order_optional_request_text" rows="6"><.= customerOrder[i].optional_request .></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderOptionalRequestModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order optional request</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Edit PPPoE Modal -->
+	<div class="modal fade" id="editPPPoEModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editPPPoEModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="editPPPoEModalLabel">
+						<strong>Update Related Order PPPoE Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Update PPPoE Info?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_edit_modal_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Update PPPoE</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save SV/CVLan & RFS Date Modal -->
+	<div class="modal fade" id="saveSVCVLanRFSDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveSVCVLanRFSDateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveSVCVLanRFSDateModalLabel">
+						<strong>Save SV/CVLan &amp; RFS Date Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<p>
+							Save SV/CVLan &amp; RFS Date? This operation will send a sms message to customer cellphone directly!<br/><br/>
+							This message will content RFS date which is the one set by you recently!
+						</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_rfs_date_save_<.= customerOrder[i].id .>" data-dismiss="modal">Save SV/CVLan &amp; RFS Date</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save Service Giving Modal -->
+	<div class="modal fade" id="saveServiceGivingModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveServiceGivingModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveServiceGivingModalLabel">
+						<strong>Save Service Giving Date Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Save Service Giving Date?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="service_giving_save_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to save Service Giving Date</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Save Service Giving Denied Modal -->
+	<div class="modal fade" id="saveServiceGivingDeniedModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveServiceGivingDeniedModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveServiceGivingDeniedModalLabel">
+						<strong>Save Service Giving Date Denied</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">
+							Could not save these changes!<br />Please double check this order status!!!
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">Close</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Broadband ASID Modal -->
+	<div class="modal fade" id="saveBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="saveBroadbandASIDModalLabel">
+						<strong>Save Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">Save Broadband ASID?</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="saveBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update Broadband ASID</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit PSTN Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="updatePSTNModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="updatePSTNModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="updatePSTNModalLabel">
+							<strong>Update PSTN Info</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">PSTN Number</label>
+							<div class="col-md-6">
+								<input data-name="pstn_number_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="PSTN Number" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="updatePSTNModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Update PSTN</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Remove Discount Modal -->
+	<div class="modal fade" id="removeDiscountModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDiscountModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="removeDiscountModalLabel">
+						<strong>Remove Selected Discount</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">
+							Are you sure want to remove this discount?
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" data-name="removeDiscountModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Discount</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Add Discount Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addDiscountModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="addDiscountModalLabel">
+							<strong>Add A Discount</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Name</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_name" class="form-control input-sm" placeholder="Discount Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Amount</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_price" class="form-control input-sm" placeholder="Discount Amount" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Unit</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_unit" class="form-control input-sm" placeholder="Discount Unit" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Expired</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+								<!-- 	<div class="input-group date">
+							<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+						</div> -->
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Discount Type</label>
+							<div class="col-md-6">
+								<select data-name="<.= customerOrder[i].id .>_detail_type" class="form-control input-sm">
+									<option value="discount">Discount</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="addDiscountModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Add Discount</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+<.
+	}
+.>

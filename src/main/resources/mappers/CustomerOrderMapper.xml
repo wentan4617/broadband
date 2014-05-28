@@ -243,7 +243,7 @@
 				<when test="params.where == 'query_no_term'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
-					<if test="params.order_type_no_term != null">and co.order_type=#{params.order_type_no_term}</if>
+					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
 				</when>
 				<when test="params.where == 'query_term'">
 					co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now())
@@ -498,6 +498,11 @@
 	<!-- select customer credit file path by order_id -->
 	<select id="selectCustomerCreditFilePathById" parameterType="int" resultType="String">
 		SELECT credit_pdf_path FROM `tm_customer_order` WHERE id=#{0}
+	</select>
+	
+	<!-- select customer order previous provider invoice file path by order_id -->
+	<select id="selectCustomerPreviousProviderInvoiceFilePathById" parameterType="int" resultType="String">
+		SELECT previous_provider_invoice FROM `tm_customer_order` WHERE id=#{0}
 	</select>
 	
 	<!-- // END SELECT AREA -->
