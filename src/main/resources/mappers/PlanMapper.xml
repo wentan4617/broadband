@@ -167,7 +167,7 @@
 	
 	<!-- update plan -->
 	<update id="updatePlan" parameterType="Plan">
-		UPDATE `tm_plan` 
+		UPDATE `tm_plan` as p
 		<set>
 			<if test="plan_name != null">`plan_name`=#{plan_name},</if>
 			<if test="plan_desc != null">`plan_desc`=#{plan_desc},</if>
@@ -204,7 +204,7 @@
 	<!-- DELETE AREA -->
 	
 	<delete id="deletePlan" parameterType="Plan">
-		DELETE FROM tm_plan 
+		DELETE FROM tm_plan as p
 		<include refid="planWhere"/>
 	</delete>
 	

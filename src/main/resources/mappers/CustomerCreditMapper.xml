@@ -59,7 +59,7 @@
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
 	<insert id="insertCustomerCredit" parameterType="CustomerCredit">
-		INSERT INTO `tm_cutomer_credit`(
+		INSERT INTO `tm_customer_credit`(
 			`customer_id`, `card_type`, `holder_name`, `card_number`, `security_code`, `expiry_date`) 
 		VALUES (
 			#{customer_id},#{card_type},#{holder_name},#{card_number},#{security_code},#{expiry_date})
@@ -69,7 +69,7 @@
 	<!-- =================================================================================== -->
 	<!-- UPDATE AREA -->
 	<update id="updateCustomerCredit" parameterType="CustomerCredit">
-		UPDATE `tm_cutomer_credit` 
+		UPDATE `tm_customer_credit` 
 			<set>
 				<if test="customer_id != null">customer_id=#{customer_id},</if>
 				<if test="card_type != null">card_type=#{card_type},</if>

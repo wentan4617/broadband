@@ -3,7 +3,7 @@
 
 <style>
 #provision-customer-order-info-modal .form-group {
-	margin-bottom:6px;
+	margin-bottom:0px;
 }
 </style>
 

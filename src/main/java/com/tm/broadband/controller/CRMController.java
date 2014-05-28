@@ -444,7 +444,7 @@ public class CRMController {
 			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() + customerOrder.getPlan().getJackpot_fee());
 			
 			CustomerOrderDetail cod_jackpot = new CustomerOrderDetail();
-			cod_jackpot.setDetail_name("Broadband New Connection & Jackpot Installation");
+			cod_jackpot.setDetail_name("Broadband New Connection & Phone Jack Installation");
 			cod_jackpot.setDetail_price(customerOrder.getPlan().getJackpot_fee());
 			cod_jackpot.setDetail_is_next_pay(0);
 			cod_jackpot.setDetail_type("jackpot");
