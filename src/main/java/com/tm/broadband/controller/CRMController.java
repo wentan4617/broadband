@@ -169,70 +169,6 @@ public class CRMController {
 		return map;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/save")
-	public String doCustomerOrderDetailDiscountCreate(Model model
-			,@RequestParam("order_id") int order_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("detail_name") String detail_name
-			,@RequestParam("detail_price") Double detail_price
-			,@RequestParam("detail_unit") Integer detail_unit
-			,@RequestParam("detail_expired") String detail_expired
-			,@RequestParam("detail_type") String detail_type
-			,RedirectAttributes attr) {
-		
-		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
-		customerOrderDetail.setOrder_id(order_id);
-		customerOrderDetail.setDetail_name(detail_name);
-		customerOrderDetail.setDetail_price(detail_price);
-		customerOrderDetail.setDetail_unit(detail_unit);
-		customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
-		customerOrderDetail.setDetail_type(detail_type);
-		this.crmService.createCustomerOrderDetail(customerOrderDetail);
-		
-		attr.addFlashAttribute("success", "Create Customer Order Detail Discount is successful.");
-
-		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
-	}
-	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/pstn/edit")
-	public String doCustomerOrderDetailPSTNEdit(Model model
-			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("pstn_number") String pstn_number
-			,RedirectAttributes attr) {
-		
-		CustomerOrderDetail cod = new CustomerOrderDetail();
-		cod.getParams().put("id", order_detail_id);
-		cod.setPstn_number(pstn_number);
-		
-		this.crmService.editCustomerOrderDetail(cod);
-		
-		attr.addFlashAttribute("success", "Update Customer Order Detail PSTN is successful.");
-
-		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
-	}
-	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/discount/remove")
-	public String doCustomerOrderDetailDiscountRemove(Model model
-			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id
-			,RedirectAttributes attr) {
-		
-		this.crmService.removeCustomerOrderDetailById(order_detail_id);
-		
-		attr.addFlashAttribute("success", "Remove Customer Order Detail Discount is successful.");
-
-		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
-	}
-
-	// create invoice PDF directly
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
-	@ResponseBody
-	public void generateInvoicePDF(Model model
-    		,@PathVariable(value = "invoiceId") int invoiceId){
-		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
-	}
-	
 	// download invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/download/{invoiceId}")
     public ResponseEntity<byte[]> downloadInvoicePDF(Model model
@@ -726,7 +662,7 @@ public class CRMController {
 	@RequestMapping(value = "/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/{orderId}")
     public ResponseEntity<byte[]> downloadPreviousProviderInvoicePDF(Model model
     		,@PathVariable(value = "orderId") int orderId) throws IOException {
-		String filePath = this.crmService.queryCustomerInvoiceFilePathById(orderId);
+		String filePath = this.crmService.queryCustomerPreviousProviderInvoiceFilePathById(orderId);
 		
 		// get file path
         Path path = Paths.get(filePath);

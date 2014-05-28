@@ -136,6 +136,26 @@
 	</bean>
 	<!-- END createNextTermPlanInvoicePDF -->
 	
+	<!-- BEGIN sendNextTermPlanInvoicePDF -->
+	<!-- normal business Bean -->
+	<bean name="customerSendTermPlanInvoicePDFEachMonth" class="com.tm.broadband.quartz.CustomerSendTermPlanInvoicePDFEachMonth" />
+	<!-- assignment -->
+	<bean id="customerSendTermPlanInvoicePDFEachMonthJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerSendTermPlanInvoicePDFEachMonth" />
+		<property name="targetMethod" value="sendTermPlanInvoicePDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerSendTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerSendTermPlanInvoicePDFEachMonthJob" />
+		<property name="cronExpression" value="0 0 3 10 * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every month's 10th 3:00 a.m. -->
+		<!-- 0 0 3 10 * ? -->
+	</bean>
+	<!-- END sendNextTermPlanInvoicePDF -->
+	
 	<!-- plan -->
 	<bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -143,6 +163,7 @@
 			<list>
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
+				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">

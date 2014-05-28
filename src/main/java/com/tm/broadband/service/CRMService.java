@@ -430,6 +430,11 @@ public class CRMService {
 	public String queryCustomerOrderTypeById(int id) {
 		return this.customerOrderMapper.selectCustomerOrderTypeById(id);
 	}
+	
+	@Transactional
+	public CustomerOrder queryCustomerOrderById(int id) {
+		return this.customerOrderMapper.selectCustomerOrderById(id);
+	}
 
 	@Transactional
 	public void editCustomer(Customer customer) {
@@ -680,6 +685,44 @@ public class CRMService {
 		}
 		// END TOPUP NOTIFICATION
 		
+	}
+	
+	@Transactional 
+	public void sendTermPlanInvoicePDF() {
+		
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
+		
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+		
+		CustomerOrder coTemp = new CustomerOrder();
+		coTemp.getParams().put("where", "query_term");
+		coTemp.getParams().put("status", "using");
+		coTemp.getParams().put("order_type", "order-term"); 
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
+		for (CustomerOrder co : cos) {
+			CustomerInvoice ci = new CustomerInvoice();
+			ci.getParams().put("where", "by_max_id");
+			ci.getParams().put("customer_id", co.getCustomer().getId());
+			ci.getParams().put("order_id", co.getId());
+			ci = this.customerInvoiceMapper.selectCustomerInvoice(ci);
+			
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notificationEmail, co.getCustomer(), co, ci, companyDetail);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(co.getCustomer().getEmail());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+			applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			TMUtils.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(co.getCustomer(), notificationSMS);
+		}
 	}
 
 	@Transactional 
@@ -1207,4 +1250,9 @@ public class CRMService {
 	/**
 	 * END Organization
 	 */
+
+	@Transactional 
+	public String queryCustomerPreviousProviderInvoiceFilePathById(int id){
+		return this.customerOrderMapper.selectCustomerPreviousProviderInvoiceFilePathById(id);
+	}
 }

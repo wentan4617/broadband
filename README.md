@@ -16,6 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+ 
+demand version 1.0.9 2014-05-27
+
+* discount 根据过期日期加入改成根据单位加入，单位为0则不加入，单位没加一次减一。(steven)
+* order里添加重新生成order application form，上传application form。(steven)
+* order下面添加两个存放文件路径的字段，一个voice record，一个documentation record，用来存放客户的录音。(steven)
+* 下单时如果pstn或地址已存在数据库中则不予以通过。(kanny)
 
 demand version 1.0.9 2014-05-26
 
