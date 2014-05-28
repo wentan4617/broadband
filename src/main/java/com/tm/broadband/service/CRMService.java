@@ -237,7 +237,7 @@ public class CRMService {
 			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + plan.getJackpot_fee());
 			
 			CustomerOrderDetail cod_jackpot = new CustomerOrderDetail();
-			cod_jackpot.setDetail_name("Broadband New Connection & Jackpot Installation");
+			cod_jackpot.setDetail_name("Broadband New Connection & Phone Jack Installation");
 			cod_jackpot.setDetail_price(plan.getJackpot_fee());
 			if ("plan-term".equals(plan.getPlan_group())) {
 				cod_jackpot.setDetail_is_next_pay(1);

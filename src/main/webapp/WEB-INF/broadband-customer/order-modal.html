@@ -53,7 +53,7 @@
 		<.} else if (order_broadband_type == 'new-connection') {.>
 			<li class="text-danger" style="font-weight: bold;">New Connection Only ($ <.= plan.plan_new_connection_fee.toFixed(2).>)</li>
 		<.} else if (order_broadband_type == 'jackpot') {.>
-			<li class="text-danger" style="font-weight: bold;">New Connection & Jacpot Installation ($ <.=plan.jackpot_fee.toFixed(2).>)</li>
+			<li class="text-danger" style="font-weight: bold;">New Connection & Phone Jack Installation ($ <.=plan.jackpot_fee.toFixed(2).>)</li>
 		<.}.>
 		
 			</ul>
@@ -70,7 +70,7 @@
 			</ul>
 		<.}.>
 	
-		<hr style="margin:0"/>
+		<hr style="margin-bottom:10px;"/>
 		<.
 			if (plan.plan_group=='plan-topup') {
 				back_url = ctx + '/plans/plan-topup/personal';

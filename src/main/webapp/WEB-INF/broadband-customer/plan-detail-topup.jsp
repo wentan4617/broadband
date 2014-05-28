@@ -153,7 +153,7 @@ background-color: #7BC3EC;
 			<li>Submit all your details and select the first top-up value (minimum NZ$ 30 for 7 days)</li>
 			<li>Transition Provider has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
 			<li>New connection has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
-			<li>New Jack-point installation has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
+			<li>New Phone Jack installation has one-off charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
 			<li>If you don’t have ADSL router, we can offer you NDZ$ 50 for TP link ADSL2+ router</li>
 		</ul>
 	</div>
@@ -175,7 +175,7 @@ background-color: #7BC3EC;
 	<div>
 		<ul>
 			<li>
-				After your application, you will receive a confirmation email and provision confirmation email/message from us. Cyber Park broadband service normally can provide to you in 3 to 5 working days. New connection or New Jack-point installation application may takes longer, and our installation cooperator may contact with you for booking appointment.
+				After your application, you will receive a confirmation email and provision confirmation email/message from us. Cyber Park broadband service normally can provide to you in 3 to 5 working days. New connection or New Phone Jack installation application may takes longer, and our installation cooperator may contact with you for booking appointment.
 			</li>
 			<li>
 				We will generate your account and passwords. You can log in your account to check your data volume and usage period (expire date). 
@@ -202,8 +202,8 @@ background-color: #7BC3EC;
 			<li>No term</li>
 			<li>“week” is defined as 7 days after the customer received UNAB service</li>
 			<li>Transfer the existing broadband connection to CyberPark costs NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
-			<li>Get a new broadband connection on an existing (but inactive) jackpot charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
-			<li>Get a new broadband connection and an new jackpot installation and activation charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
+			<li>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
+			<li>Get a new broadband connection and an new Phone Jack installation and activation charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
 			<li>CyberPark Top Up UNAB plan service is automatically terminated in 48 hours after expire date</li>
 			<li>After CyberPark Top Up UNAB plan service was terminated, CyberPark account user can Top Up his/her CyberPark account online or contact with our customer service to reactivating the broadband services in 2-5 days. However, we cannot guarantee the previous ADSL pots available all the time. More information, please contact with our customer service , 0800 2 Cyber (29237) </li>
 			<li>Re-activating CyberPark Top Up UNAB plan charges: 1st re-activating plan account for free, 2nd re-activating costs NZ $49, 3rd re-activating costs NZ $99 and 4th re-activating costs NZ $149 in 1 year period from CyberPark account by online, message, or telephone calling 0800 2 Cyber.  </li>

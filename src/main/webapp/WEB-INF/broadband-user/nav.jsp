@@ -50,21 +50,6 @@
 									Create Hardware
 								</a>
 							</li>
-							
-							<%-- 
-							<li class="divider"></li>
-							<li>
-								<a href="${ctx}/broadband-user/plan/topup/view/1">
-									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-									View Topup
-								</a>
-							</li>
-							<li>
-								<a href="${ctx}/broadband-user/plan/topup/create">
-									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-									Create Topup
-								</a>
-							</li> --%>
 						</ul>
 					</li>
 					<li class="dropdown">
@@ -97,15 +82,14 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Billing <b class="caret"></b>
 						</a>
-						<!-- <ul class="dropdown-menu">
+						<ul class="dropdown-menu">
 							<li>
-								<a href="#">...</a>
+								<a href="${ctx}/broadband-user/billing/billing-file-upload">
+									<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
+									Billing File Upload
+								</a>
 							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="#">...</a>
-							</li>
-						</ul> -->
+						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">

@@ -1,0 +1,39 @@
+<. if (files != null && files.length > 0) { .>
+<table class="table" id="uploadTable">
+	<thead>
+		<tr>
+			<th>File Name</th>
+			<th>File Type</th>
+			<th>File Size</th>
+			<th>Progress</th>
+			<th>Operation</th>
+		</tr>
+	</thead>
+	<tbody>
+<.
+	for (var i=0, len=files.length; i < len; i++) {
+		var file = files[i];
+.>
+	<tr>
+		<td><.=file.name.></td>
+		<td><.=file.type.></td>
+		<td><.=file.size/1024.> KB</td>
+		<td>
+			<div class="progress progress-striped">
+				<div class="progress-bar progress-bar-info" style="width: 0%"></div>
+			</div>
+		</td>
+		<td>
+			<button type="button" class="btn btn-info ">
+				<span class="glyphicon glyphicon-upload"></span> Upload
+			</button>
+		</td>
+	</tr>
+<.
+	}
+.>
+	</tbody>
+</table>
+		
+	
+<.} else { .> <.}.>

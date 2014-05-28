@@ -11,6 +11,9 @@
 .panel-success {
 	min-height: 251px;
 }
+hr {
+	margin:0 0 5px 0;
+}
 </style>
 <div class="container">
     <div class="row">
@@ -42,17 +45,6 @@
                     		<a href="${ctx }/broadband-user/plan/hardware/create">Create Hardware</a>
                     	</li>
                     </ul>
-                    <%--  <hr/>
-                    <ul class="list-unstyled">
-                    	<li>
-                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/plan/topup/view/1">View Topup</a>
-                    	</li>
-                    	<li>
-                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/plan/topup/create">Create Topup</a>
-                    	</li>
-                    </ul> --%>
 			 	</div>
 			</div>
         </div>
@@ -88,6 +80,10 @@
 			  	<div class="panel-body">
 			  		<p>The generation, management, customer billing transmission, chorus bills.</p>
 					<ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/billing-file-upload">Billing File Upload</a>
+                    	</li>
 					</ul>
 			  	</div>
 			</div>

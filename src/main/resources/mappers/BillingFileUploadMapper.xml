@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.BillingFileUploadMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="billingFileUploadColumns">
+		bfu.id					as bfu_id,
+		bfu.upload_date			as bfu_upload_date,
+		bfu.upload_path			as bfu_upload_path,
+		bfu.upload_file_name	as bfu_upload_file_name,
+		bfu.inserted_database	as bfu_inserted_database,
+		bfu.upload_by			as bfu_upload_by,
+		bfu.billing_type		as bfu_billing_type
+	</sql>
+	<resultMap type="BillingFileUpload" id="billingFileUploadResultMap">
+		<id property="id" column="bfu_id" />
+		<result property="upload_date" column="bfu_upload_date" />
+		<result property="upload_path" column="bfu_upload_path" />
+		<result property="upload_file_name" column="bfu_upload_file_name" />
+		<result property="inserted_database" column="bfu_inserted_database" />
+		<result property="upload_by" column="bfu_upload_by" />
+		<result property="billing_type" column="bfu_billing_type" />
+	</resultMap>
+	
+	<sql id="billingFileUploadWhere">
+		<where>
+			<choose>
+				<otherwise>
+				
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- SELECT AREA -->
+	 
+	<select id="selectBillingFileUpload" parameterType="BillingFileUpload" resultType="BillingFileUpload">
+		select * from tm_billing_file_upload as bfu
+		<include refid="billingFileUploadWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+	</select>
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<insert id="insertBillingFileUpload" parameterType="BillingFileUpload">
+		INSERT INTO `tm_billing_file_upload`(
+			`upload_date`, `upload_path`, `upload_file_name`, `inserted_database`, `upload_by`, `billing_type`) 
+		VALUES (#{upload_date}, #{upload_path}, #{upload_file_name}, #{inserted_database}, #{upload_by}, #{billing_type})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<update id="updateBillingFileUpload" parameterType="BillingFileUpload">
+		UPDATE `tm_billing_file_upload` as bfu
+		<set>
+		</set>
+		<include refid="billingFileUploadWhere"/>
+	</update>
+	
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteBillingFileUpload" parameterType="BillingFileUpload">
+		DELETE FROM tm_billing_file_upload as bfu
+		<include refid="billingFileUploadWhere"/>
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+	
+</mapper>

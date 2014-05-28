@@ -190,7 +190,7 @@
 		<!-- CRM Module END -->
 
 		<!-- Billing Module BEGIN -->
-		<url-pattern>/broadband-user/billing/*</url-pattern>
+		<!-- <url-pattern>/broadband-user/billing/*</url-pattern> -->
 		<!-- Billing Module END -->
 
 		<!-- Provision Module BEGIN -->
