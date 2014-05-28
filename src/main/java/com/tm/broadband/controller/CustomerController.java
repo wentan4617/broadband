@@ -105,7 +105,7 @@ public class CustomerController {
 		
 		plans = this.planService.queryPlans(plan);
 		
-		this.wiredPlanMap(planTypeMap, plans);
+		this.wiredPlanMap(planTypeMap, plans, true);
 		
 		model.addAttribute("planTypeMap", planTypeMap);
 		
@@ -146,7 +146,7 @@ public class CustomerController {
 		
 		plans = this.planService.queryPlans(plan);
 		
-		this.wiredPlanMap(planTypeMap, plans);
+		this.wiredPlanMap(planTypeMap, plans, false);
 		
 		model.addAttribute("planTypeMap", planTypeMap);
 		model.addAttribute("selectdType", type);
@@ -160,16 +160,19 @@ public class CustomerController {
 		return url;
 	}
 	
-	private void wiredPlanMap(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+	private void wiredPlanMap(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans, boolean wiredPromotion) {
 		if (plans != null) {
 			for (Plan p: plans) {
 				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
 				if (planMap == null) {
 					planMap = new HashMap<String, List<Plan>>();	
-					if (p.getPromotion() != null && p.getPromotion().booleanValue()
-							&& p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
 						List<Plan> plansPromotion = new ArrayList<Plan>();
-						plansPromotion.add(p);
+						if (wiredPromotion) {
+							plansPromotion.add(p); 
+						} else if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+							plansPromotion.add(p); 
+						}
 						planMap.put("plansPromotion", plansPromotion);
 					} else {
 						List<Plan> list = new ArrayList<Plan>();
@@ -178,15 +181,22 @@ public class CustomerController {
 					}
 					planTypeMap.put(p.getPlan_type(), planMap);
 				} else {
-					if (p.getPromotion() != null && p.getPromotion().booleanValue()
-							&& p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+					if (p.getPromotion() != null && p.getPromotion().booleanValue()) {
 						List<Plan> plansPromotion = planMap.get("plansPromotion");
 						if (plansPromotion == null) {
 							plansPromotion = new ArrayList<Plan>();
-							plansPromotion.add(p);
+							if (wiredPromotion) {
+								plansPromotion.add(p); 
+							} else if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+								plansPromotion.add(p); 
+							}
 							planMap.put("plansPromotion", plansPromotion);
 						} else {
-							plansPromotion.add(p);
+							if (wiredPromotion) {
+								plansPromotion.add(p); 
+							} else if (p.getOriginal_price() != null && p.getOriginal_price() > 0) {
+								plansPromotion.add(p); 
+							}
 						}
 					} else {
 						List<Plan> list = planMap.get("plans");
