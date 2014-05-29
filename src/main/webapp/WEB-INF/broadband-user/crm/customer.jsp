@@ -432,7 +432,7 @@
 					}, "json");
 				});
 				// Reset button when hidden order PPPoE dialog
-				$('#saveSVCVLanRFSDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					console.log($(this).attr('data-id'));
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
 				});
