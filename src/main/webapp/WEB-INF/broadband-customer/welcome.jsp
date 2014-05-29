@@ -27,7 +27,7 @@
 		</div>
 		<div class="col-lg-6" style="border-right: 1px solid #dfe5d7;">
 			<div class="text-center home-title">
-				<span class="glyphicon glyphicon-tower"></span> Facility
+				<span class="glyphicon glyphicon-tower"></span> Facilitated
 			</div>
 			<p class="text-center">
 				Smart application, personal account, and payment system give you more services' supports.<br/>

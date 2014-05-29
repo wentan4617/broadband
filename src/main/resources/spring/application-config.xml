@@ -39,6 +39,28 @@
 		<property name="sqlSessionFactoryBeanName" value="broadbandSqlSessionFactory" />
 		<property name="basePackage" value="com.tm.broadband.mapper" />
 	</bean>
+	
+	
+	<!-- transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="radiusTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="radiusDataSource" />
+	</bean>
+
+	<!-- enable transaction demarcation with annotations -->
+	<tx:annotation-driven transaction-manager="radiusTransactionManager" proxy-target-class="true" />
+	
+	<!-- define the SqlSessionFactory -->
+	<bean id="radiusSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="radiusDataSource" />
+		<property name="mapperLocations" value="classpath*:mappers/radius/*.xml" />
+		<property name="typeAliasesPackage" value="com.tm.broadband.batch.domain" />
+	</bean>
+
+	<!-- scanning mapper xml -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="sqlSessionFactoryBeanName" value="radiusSqlSessionFactory" />
+		<property name="basePackage" value="com.tm.broadband.mapper" />
+	</bean>
 
 	<!-- <bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"> 
 		<property name="defaultUri" value="http://localhost:8080/broadband/services/holidayService/" 
@@ -92,6 +114,30 @@
 		<property name="subject" value="Test email from sina." />
 	</bean>
 	
+	<!-- ============================================================================= -->
+	
+	<!-- job注册 -->
+	<bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+		
+	<!-- job注册对象管理？？？ -->
+	<bean class="org.springframework.batch.core.configuration.support.JobRegistryBeanPostProcessor">
+		<property name="jobRegistry" ref="jobRegistry" />
+	</bean>
+	
+	<!-- job数据库持久化  对象  -->
+	<bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean"
+		p:isolationLevelForCreate="ISOLATION_SERIALIZABLE" p:dataSource-ref="broadbandDataSource"
+		p:transactionManager-ref="transactionManager" />
+		
+	<!-- job启动 对象 -->
+	<bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+		<property name="jobRepository" ref="jobRepository" />
+	</bean>
+	
+    
+    <import resource="importRadiusRadacctJob.xml"/>
+    
+    
 	
 	<!-- ///////////////////////////////////////////////////////////////////////// -->
 	<!-- timer configuration -->
