@@ -52,8 +52,8 @@
 	<!-- define the SqlSessionFactory -->
 	<bean id="radiusSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="radiusDataSource" />
-		<property name="mapperLocations" value="classpath*:mappers/radius/*.xml" />
-		<property name="typeAliasesPackage" value="com.tm.broadband.batch.domain" />
+		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
+		<property name="typeAliasesPackage" value="com.tm.broadband.model" />
 	</bean>
 
 	<!-- scanning mapper xml -->

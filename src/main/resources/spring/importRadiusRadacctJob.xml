@@ -11,7 +11,7 @@
 	<job id="importRadiusRadacctJob" xmlns="http://www.springframework.org/schema/batch">
 		<step id="dataExportImportStep" >
 			<tasklet><!-- task-executor="taskExecutor" -->
-				<chunk reader="dataExportRadiusRadacctReader" processor="dataImportProcessor" writer="dataImportRadacctWriter" commit-interval="10"></chunk>
+				<chunk reader="dataExportRadiusRadacctReader" processor="dataImportProcessor" writer="dataImportRadacctWriter" commit-interval="500"></chunk>
 			</tasklet>
 		</step>
 	</job>
@@ -19,7 +19,7 @@
 	<bean id="dataExportRadiusRadacctReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader">
 		<property name="sqlSessionFactory" ref="radiusSqlSessionFactory" />
 		<property name="queryId" value="selectRadiusRadaccts" />
-		<property name="pageSize" value="200" />
+		<property name="pageSize" value="500" />
 	</bean>
 	
 	<bean name="dataImportProcessor" class="com.tm.broadband.batch.DataImportProcessor" ></bean>
