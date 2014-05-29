@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.RadacctMapper">
+	
+	<!-- DEFINITION AREA -->
+	<sql id="radacctWhere">
+		<where>
+			
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
+	
+	
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<insert id="insertRadacct" parameterType="Radacct">
+		INSERT INTO `tm_radacct`(
+			`radacctid`, `username`, `nasipaddress`, `nasportid`, `acctstarttime`, 
+			`acctstoptime`, `acctsessiontime`, `acctinputoctets`, `acctoutputoctets`, `calledstationid`, 
+			`acctterminatecause`, `_accttime`) 
+		VALUES (
+			#{radacctid}, #{username}, #{nasipaddress}, #{nasportid}, #{acctstarttime},
+			#{acctstoptime}, #{acctsessiontime}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid}
+			#{acctterminatecause}, #{_accttime})
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	
+	
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	
+	
+</mapper>

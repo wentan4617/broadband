@@ -38,4 +38,36 @@
 		<property name="numTestsPerEvictionRun" value="${broadband.numTestsPerEvictionRun}" />
 	</bean>
 	
+	<!-- radius data source ========================================================================= -->
+	
+	<bean id="radiusDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${radius.driverClassName}" />
+		<property name="url" value="${radius.url}" />
+		<property name="username" value="${radius.username}" />
+		<property name="password" value="${radius.password}" />
+		
+		<property name="maxActive" value="${radius.maxActive}" />
+		<property name="initialSize" value="${radius.initialSize}" />
+		<property name="maxWait" value="${radius.maxWait}" />
+		<property name="maxIdle" value="${radius.maxIdle}" />
+		<property name="minIdle" value="${radius.minIdle}" />
+		<property name="removeAbandoned" value="${radius.removeAbandoned}" />
+		<property name="removeAbandonedTimeout" value="${radius.removeAbandonedTimeout}" />
+		<property name="connectionProperties" value="${radius.connectionProperties}" />
+
+		<property name="validationQuery" value="${radius.validationQuery}"/>
+		<property name="testWhileIdle" value="${radius.testWhileIdle}" /><!-- 打开检查,用异步线程evict进行检查 -->
+		<property name="testOnBorrow" value="${radius.testOnBorrow}" />
+		<property name="testOnReturn" value="${radius.testOnReturn}" />
+		<property name="timeBetweenEvictionRunsMillis" value="${radius.timeBetweenEvictionRunsMillis}" />
+		<property name="numTestsPerEvictionRun" value="${radius.numTestsPerEvictionRun}" />
+	</bean>
+	
+	<!-- init datasource  ========================================================================-->
+	
+    <jdbc:initialize-database data-source="broadbandDataSource">
+        <jdbc:script location="classpath:/org/springframework/batch/core/schema-drop-mysql.sql"/>
+        <jdbc:script location="classpath:/org/springframework/batch/core/schema-mysql.sql"/>
+    </jdbc:initialize-database>
+    
 </beans>
