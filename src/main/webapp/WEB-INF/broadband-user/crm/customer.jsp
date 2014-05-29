@@ -297,6 +297,7 @@
 				// Reset button when hidden optional request dialog
 				$('#editOrderOptionalRequestModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_optional_request_edit"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END customer order area
@@ -407,8 +408,8 @@
 				// Submit to rest controller
 				$('a[data-name="service_giving_save_'+co[i].id+'"]').click(function(){
 					var order_using_start_input = $('input[data-name="'+this.id+'_order_using_start_input_picker"]').val();
-					var order_status = $('#'+this.id+'_order_status');
-					var order_type = $('#'+this.id+'_order_type');
+					var order_status = $('#'+this.id+'_order_status')
+					var order_type = $('#'+this.id+'_order_type').attr('data-val')
 					var order_detail_unit_attr = $('#'+this.id+'_order_detail_unit').attr('data-val');
 					var data = {
 							'customer_id':'${customer.id}'
@@ -416,7 +417,7 @@
 							,'order_using_start_str':order_using_start_input
 							,'order_detail_unit':(order_detail_unit_attr==null?1:order_detail_unit_attr)
 							,'order_status':order_status.attr('data-val')
-							,'order_type':order_type.attr('data-val')
+							,'order_type':order_type
 							,'way':$(this).attr('data-way')
 					};
 					var order_using_start = $('#'+this.id+'_order_using_start');
@@ -426,19 +427,20 @@
 						order_status.html(json.model.order_status);
 						order_using_start.html(json.model.order_using_start_str);
 						order_next_invoice_create_date.html(json.model.next_invoice_create_date_str);
-						
+
 						// reload invoice page one
 						$.getInvoicePage(1);
 					}, "json");
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					console.log($(this).attr('data-id'));
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
+					$.getCustomerOrder();
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingDeniedModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END customer order Service Giving Date area
