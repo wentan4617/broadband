@@ -48,45 +48,45 @@ public class Test {
 		// cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));
 		// System.out.println(cal.getTime());
 
-//		try {
-//			File csv = new File("C:/TMS_20140428_EB05.csv"); // CSV文件
-//
-//			BufferedReader br = new BufferedReader(new FileReader(csv));
-//
-//			// 读取直到最后一行
-//			String line = "";
-//			Integer lineNumber = 0;
-//			while ((line = br.readLine()) != null) {
-//
-//				// If not header
-//				if(lineNumber > 0){
-//					
-//					// Split current line data into separate fields
-//					StringTokenizer st = new StringTokenizer(line, ",");
-//					
-//					
-//					
-//					while (st.hasMoreTokens()) {
-//						// Separate fields with TAB symbol
-//						System.out.print(st.nextToken() + "	");
-//					}
-//					// New line
-//					System.out.println();
-//					
-//				} else {
-//					// If header then lineNumber++
-//					lineNumber++;
-//				}
-//			}
-//			br.close();
-//
-//		} catch (FileNotFoundException e) {
-//			// 捕获File对象生成时的异常
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// 捕获BufferedReader对象关闭时的异常
-//			e.printStackTrace();
-//		}
+		try {
+			File csv = new File("C:/TMS_20140428_EB05.csv"); // CSV文件
+
+			BufferedReader br = new BufferedReader(new FileReader(csv));
+
+			// 读取直到最后一行
+			String line = "";
+			Integer lineNumber = 0;
+			while ((line = br.readLine()) != null) {
+
+				// If not header
+				if(lineNumber > 0){
+					
+					// Split current line data into separate fields
+					StringTokenizer st = new StringTokenizer(line, ",");
+					
+					
+					
+					while (st.hasMoreTokens()) {
+						// Separate fields with TAB symbol
+						System.out.print(st.nextToken() + "	");
+					}
+					// New line
+					System.out.println();
+					
+				} else {
+					// If header then lineNumber++
+					lineNumber++;
+				}
+			}
+			br.close();
+
+		} catch (FileNotFoundException e) {
+			// 捕获File对象生成时的异常
+			e.printStackTrace();
+		} catch (IOException e) {
+			// 捕获BufferedReader对象关闭时的异常
+			e.printStackTrace();
+		}
 
 	}
 

@@ -4,20 +4,11 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
 	http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 
-	<!-- <login-config>
-		<auth-method>CLIENT-CERT</auth-method>
-		<realm-name>Client Cert Users-only Area
-		</realm-name>
-	</login-config>
-	<security-constraint>
-		<web-resource-collection>
-			<web-resource-name>SSL</web-resource-name>
-			<url-pattern>/</url-pattern>
-		</web-resource-collection>
-		<user-data-constraint>
-			<transport-guarantee>CONFIDENTIAL</transport-guarantee>
-		</user-data-constraint>
-	</security-constraint> -->
+	<!-- <login-config> <auth-method>CLIENT-CERT</auth-method> <realm-name>Client 
+		Cert Users-only Area </realm-name> </login-config> <security-constraint> 
+		<web-resource-collection> <web-resource-name>SSL</web-resource-name> <url-pattern>/</url-pattern> 
+		</web-resource-collection> <user-data-constraint> <transport-guarantee>CONFIDENTIAL</transport-guarantee> 
+		</user-data-constraint> </security-constraint> -->
 
 	<welcome-file-list>
 		<welcome-file></welcome-file>
@@ -218,6 +209,16 @@
 		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
 		<!-- Sales Module END -->
 
+	</filter-mapping>
+	
+	
+	<filter>
+		<filter-name>UrlRedirect</filter-name>
+		<filter-class>com.tm.broadband.filter.UrlRedirect</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>UrlRedirect</filter-name>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<error-page>
