@@ -16,12 +16,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.RegisterCustomer;
@@ -30,7 +28,6 @@ import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
 import com.tm.broadband.validator.mark.NotificationValidatedMark;
-import com.tm.broadband.validator.mark.UserLoginValidatedMark;
 import com.tm.broadband.validator.mark.UserValidatedMark;
 
 /**
