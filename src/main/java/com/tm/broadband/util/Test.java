@@ -53,38 +53,27 @@ public class Test {
 
 			BufferedReader br = new BufferedReader(new FileReader(csv));
 
-			// 读取直到最后一行
 			String line = "";
-			Integer lineNumber = 0;
+			
 			while ((line = br.readLine()) != null) {
-
-				// If not header
-				if(lineNumber > 0){
 					
-					// Split current line data into separate fields
-					StringTokenizer st = new StringTokenizer(line, ",");
+				// Split current line data into separate fields
+				StringTokenizer st = new StringTokenizer(line, ",");
+				
+				while (st.hasMoreTokens()) {
 					
-					
-					
-					while (st.hasMoreTokens()) {
-						// Separate fields with TAB symbol
-						System.out.print(st.nextToken() + "	");
-					}
-					// New line
-					System.out.println();
-					
-				} else {
-					// If header then lineNumber++
-					lineNumber++;
+					// Separate fields with TAB symbol
+					System.out.print(st.nextToken() + "	");
+					break;
 				}
+				System.out.println();
+					
 			}
 			br.close();
 
 		} catch (FileNotFoundException e) {
-			// 捕获File对象生成时的异常
 			e.printStackTrace();
 		} catch (IOException e) {
-			// 捕获BufferedReader对象关闭时的异常
 			e.printStackTrace();
 		}
 

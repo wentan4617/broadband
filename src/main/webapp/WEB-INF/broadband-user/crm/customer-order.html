@@ -154,13 +154,13 @@
 					<label class="control-label col-md-6">Previous Provider Invoice</label>
 					<div class="col-md-6">
 					<.
-						if(customerOrder[i].previous_provider_invoice != null){
+						if(customerOrder[i].previous_provider_invoice == null || customerOrder[i].previous_provider_invoice == ''){
 					.>
-							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download previous provider's invoice PDF"></a></p>
+  							<p class="form-control-static">No Previous Provider Invoice PDF</p>
 					<.
 						} else {
 					.>
-  							<p class="form-control-static">Empty</p>
+							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download previous provider's invoice PDF"></a></p>
 					<.
 						}
 					.>
@@ -173,7 +173,7 @@
 					<.
 						if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){
 					.>
-  							&nbsp;Empty
+  							&nbsp;No Application Form PDF
 					<.
 						} else {
 					.>
@@ -190,7 +190,7 @@
 					<.
 						if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){
 					.>
-  							<p class="form-control-static">Empty</p>
+  							<p class="form-control-static">No Credit Card Form PDF</p>
 					<.
 						} else {
 					.>
@@ -220,15 +220,13 @@
 					<label class="control-label col-md-6">Optional Request</label>
 					<div class="col-md-6">
 						<.
-							if(customerOrder[i].optional_request != ''){
+							if(customerOrder[i].optional_request == '' || customerOrder[i].optional_request == null){
 						.>
-							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Request" style="font-size:20px;">
-							  <span class="glyphicon glyphicon-registration-mark"></span>
-							</a>
+  							<p class="form-control-static">No Request</p>
 						<.
 							} else {
 						.>
-							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Request" style="font-size:20px; display:none;">
+							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Additional Request" style="font-size:20px;">
 							  <span class="glyphicon glyphicon-registration-mark"></span>
 							</a>
 						<.

@@ -307,19 +307,31 @@ public class TMUtils {
 	}
 	
 	public static void mailAtValueRetriever(Notification noti, List<CustomerOrderDetail> cods){
+		
+		boolean firstTitlePSTN = true;
+		boolean firstTitleHardware = true;
+		boolean firstContentPSTN = true;
+		boolean firstContentHardware = true;
+		
 		for (CustomerOrderDetail cod : cods) {
 			// title begin
 			// retrieve order begin
 			if(noti.getTitle() != null){
 				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
-					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number()))));
-				} else {
-					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", ""));
+					if(firstTitlePSTN){
+						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+						firstTitlePSTN = false;
+					} else {
+						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+					}
 				}
 				if("hardware-router".equals(cod.getDetail_type())){
-					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name()))));
-				} else {
-					noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", ""));
+					if(firstTitleHardware){
+						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+						firstTitleHardware = false;
+					} else {
+						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf("; "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+					}
 				}
 			}
 			// retrieve order end
@@ -329,19 +341,33 @@ public class TMUtils {
 			// retrieve order begin
 			if(noti.getContent() != null){
 				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
-					noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number()))));
-				} else {
-					noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", ""));
+					if(firstContentPSTN){
+						noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+						firstContentPSTN = false;
+					} else {
+						noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+					}
 				}
 				if("hardware-router".equals(cod.getDetail_type())){
-					noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name()))));
-				} else {
-					noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", ""));
+					if(firstContentHardware){
+						noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+						firstContentHardware = false;
+					} else {
+						noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf("; "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+					}
 				}
 			}
 			// retrieve order end
 			// content end
 		}
+		noti.setTitle(noti.getTitle().replaceAll("; @<order_detail_number>", ""));
+		noti.setTitle(noti.getTitle().replaceAll("; @<order_detail_name>", ""));
+		noti.setContent(noti.getContent().replaceAll("; @<order_detail_number>", ""));
+		noti.setContent(noti.getContent().replaceAll("; @<order_detail_name>", ""));
+		noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", ""));
+		noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", ""));
+		noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", ""));
+		noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", ""));
 	}
 	
 	public static void mailAtValueRetriever(Notification noti, ContactUs contactUs, CompanyDetail company){

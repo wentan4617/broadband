@@ -488,11 +488,7 @@ public class CRMRestController {
 		tempCO.getParams().put("id", customerOrder.getId());
 		tempCO = this.crmService.queryCustomerOrder(tempCO);
 		for (CustomerOrderDetail cod : tempCO.getCustomerOrderDetails()) {
-			// If is hardware or pstn or voip
-			if("hardware-router".equals(cod.getDetail_type()) || ("pstn".equals(cod.getDetail_type()) && cod.getPstn_number() != null && !"".equals(cod.getPstn_number()))
-					|| ("voip".equals(cod.getDetail_type()) && cod.getPstn_number() != null && !"".equals(cod.getPstn_number()))){
-				cods.add(cod);
-			}
+			cods.add(cod);
 		}
 		
 		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
@@ -546,6 +542,7 @@ public class CRMRestController {
 		CustomerOrder co = new CustomerOrder();
 		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 		co.getParams().put("id", customerOrder.getId());
+		co.setOrder_status("using");
 		
 		if (!"order-topup".equals(customerOrder.getOrder_type()) && !"order-term".equals(customerOrder.getOrder_type())) {
 			Calendar calNextInvoiceDay = Calendar.getInstance();
@@ -564,7 +561,6 @@ public class CRMRestController {
 		
 		if("save".equals(way)){
 			co.setOrder_type(customerOrder.getOrder_type());
-			co.setOrder_status("using");
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			// check order status
 			if ("ordering-paid".equals(customerOrder.getOrder_status()) || "order-term".equals(customerOrder.getOrder_type())) {
@@ -592,7 +588,6 @@ public class CRMRestController {
 			}
 		} else {
 			proLog.setProcess_way("editing service giving");
-			
 			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
