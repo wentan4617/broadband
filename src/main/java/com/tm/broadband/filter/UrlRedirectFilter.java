@@ -21,26 +21,26 @@ public class UrlRedirectFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		
-		HttpServletRequest req = (HttpServletRequest)request;
-		HttpServletResponse res = (HttpServletResponse)response;
-        
-        // Get request domain
-        String serverName = request.getServerName();
-        
-        // Get request path
-        String url = req.getRequestURL().toString();
-        String queryString = (req.getQueryString() == null ? "" : "?"+req.getQueryString());   // Get params in the path
-        
-        int end = serverName.indexOf(DOMAIN);
-        
-        if (end == -1 || end == 0) {  // If is example.com
-        	System.out.println("UrlRedirectFilter: " + url);
-        	res.setStatus(301);
-        	res.setHeader( "Location", "http://www."+DOMAIN+url+queryString);
-            res.setHeader( "Connection", "close" );
-            return;
-        }
-        chain.doFilter(request, response);
+		HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse res = (HttpServletResponse) response;
+
+		// Get request domain
+		String serverName = request.getServerName();
+
+		// Get request path
+		String url = req.getRequestURI().toString();
+		String queryString = (req.getQueryString() == null ? "" : "?" + req.getQueryString()); // Get params in the path
+
+		int end = serverName.indexOf(DOMAIN);
+
+		if (end == -1 || end == 0) { // If is example.com
+			// System.out.println("UrlRedirectFilter: " + url);
+			res.setStatus(301);
+			res.setHeader("Location", "http://www." + DOMAIN + url + queryString);
+			res.setHeader("Connection", "close");
+			return;
+		}
+		chain.doFilter(request, response);
 	}
 	
 	@Override
