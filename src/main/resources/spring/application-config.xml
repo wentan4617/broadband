@@ -40,7 +40,6 @@
 		<property name="basePackage" value="com.tm.broadband.mapper" />
 	</bean>
 	
-	
 	<!-- transaction manager, use JtaTransactionManager for global tx -->
 	<bean id="radiusTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
 		<property name="dataSource" ref="radiusDataSource" />
@@ -52,6 +51,7 @@
 	<!-- define the SqlSessionFactory -->
 	<bean id="radiusSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<property name="dataSource" ref="radiusDataSource" />
+
 		<property name="mapperLocations" value="classpath*:mappers/*.xml" />
 		<property name="typeAliasesPackage" value="com.tm.broadband.model" />
 	</bean>
@@ -63,8 +63,8 @@
 	</bean>
 
 	<!-- <bean id="webServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate"> 
-		<property name="defaultUri" value="http://localhost:8080/broadband/services/holidayService/" 
-		/> </bean> -->
+		<property name="defaultUri" value="http://localhost:8080/broadband/services/holidayService/" /> 
+	</bean> -->
 
 	<!-- <bean id="simpleService" class="org.springframework.remoting.jaxws.JaxWsPortProxyFactoryBean"> 
 		<property name="serviceInterface" value="com.mycompany.hr.definitions.HumanResource" 

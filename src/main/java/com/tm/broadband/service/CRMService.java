@@ -19,6 +19,7 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.ContactUsMapper;
+import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -69,6 +70,7 @@ public class CRMService {
 	private OrganizationMapper organizationMapper;
 	private ContactUsMapper contactUsMapper;
 	private ManualDefrayLogMapper manualDefrayLogMapper;
+	private CustomerCallRecordMapper customerCallRecordMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -90,7 +92,8 @@ public class CRMService {
 			SmserService smserService,
 			OrganizationMapper organizationMapper,
 			ContactUsMapper contactUsMapper,
-			ManualDefrayLogMapper manualDefrayLogMapper) {
+			ManualDefrayLogMapper manualDefrayLogMapper,
+			CustomerCallRecordMapper customerCallRecordMapper) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -105,6 +108,7 @@ public class CRMService {
 		this.organizationMapper = organizationMapper;
 		this.contactUsMapper = contactUsMapper;
 		this.manualDefrayLogMapper = manualDefrayLogMapper;
+		this.customerCallRecordMapper = customerCallRecordMapper;
 	}
 	
 	
@@ -745,6 +749,8 @@ public class CRMService {
 				// BEGIN get usable beans
 				// Customer
 				Customer c = co.getCustomer();
+				
+				
 				// Previous invoice's preparation
 				CustomerInvoice cpi = new CustomerInvoice();
 				cpi.getParams().put("where", "by_max_id");
@@ -783,8 +789,19 @@ public class CRMService {
 				// Preparing for calculations, invoice's payable amount
 				BigDecimal bigPayableAmount = new BigDecimal(0d);
 				
+				String pstn_number = null;
+				
 				for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
 					CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+					
+					if("pstn".equals(cod.getDetail_type())){
+						
+						if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
+							&& ("".equals(pstn_number) || pstn_number==null)){
+							pstn_number = cod.getPstn_number();
+						}
+						
+					}
 					
 					// If first invoice then add all order details into invoice details
 					if(isFirst){
@@ -922,8 +939,22 @@ public class CRMService {
 					bigPayableAmount = bigPayableAmount.add(bigPreviousInvoiceBalance);
 				}
 				
-				// Set invoice details into 
-				ci.setCustomerInvoiceDetails(cids);
+
+				// store company detail begin
+				CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+				// store company detail end
+
+				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+				invoicePDF.setCompanyDetail(companyDetail);
+				invoicePDF.setCustomer(c);
+				invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(c.getId()));
+				
+				
+				// BEGIN IF HAVE PSTN_NUMBER
+				if(!"".equals(pstn_number) && pstn_number!=null){
+					bigPayableAmount = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, bigPayableAmount, this.customerCallRecordMapper);
+				}
+				// END IF HAVE PSTN_NUMBER
 				
 				// Set current invoice's payable amount
 				ci.setAmount_payable(bigPayableAmount.doubleValue());
@@ -933,26 +964,18 @@ public class CRMService {
 				BigDecimal bigPaidAmount = new BigDecimal(ci.getAmount_paid() != null ? ci.getAmount_paid() : 0d);
 				bigBalance = bigBalance.add(bigPayableAmount.subtract(bigPaidAmount));
 				ci.setBalance(bigBalance.doubleValue());
-				
-				// Updates invoice
-				this.customerInvoiceMapper.updateCustomerInvoice(ci);
-				
+
 				// Iteratively inserting invoice detail(s) into tm_invoice_detail table
 				for (CustomerInvoiceDetail cid : cids) {
 					cid.setInvoice_id(ci.getId());
 					this.customerInvoiceDetailMapper.insertCustomerInvoiceDetail(cid);
 				}
+				
+				// Set invoice details into 
+				ci.setCustomerInvoiceDetails(cids);
 
-				// store company detail begin
-				CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
-				// store company detail end
-
-				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
-				invoicePDF.setCompanyDetail(companyDetail);
-				invoicePDF.setCustomer(c);
 				invoicePDF.setCurrentCustomerInvoice(ci);
-				invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(c.getId()));
-
+				
 				String filePath = "";
 				// set file path
 				try {
@@ -964,25 +987,6 @@ public class CRMService {
 				ci.setInvoice_pdf_path(filePath);
 				
 				this.customerInvoiceMapper.updateCustomerInvoice(ci);
-
-//				Notification notificationEmail = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "email");
-//				Notification notificationSMS = this.notificationMapper.selectNotificationBySort("plan-term_invoice", "sms");
-//
-//				// call mail at value retriever
-//				TMUtils.mailAtValueRetriever(notificationEmail, c, ci, companyDetail);
-//				ApplicationEmail applicationEmail = new ApplicationEmail();
-//				applicationEmail.setAddressee(c.getEmail());
-//				applicationEmail.setSubject(notificationEmail.getTitle());
-//				applicationEmail.setContent(notificationEmail.getContent());
-//				// binding attachment name & path to email
-//				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-//				applicationEmail.setAttachPath(filePath);
-//				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//
-//				// get sms register template from db
-//				TMUtils.mailAtValueRetriever(notificationSMS, c, ci, companyDetail);
-//				// send sms to customer's mobile phone
-//				this.smserService.sendSMSByAsynchronousMode(c, notificationSMS);
 			}
 		}
 	}
@@ -1065,8 +1069,19 @@ public class CRMService {
 		// detail holder end
 		List<CustomerOrderDetail> customerOrderDetails = customerOrder.getCustomerOrderDetails();
 		
+		String pstn_number = "";
+		
 		if (customerOrderDetails != null) {
 			for (CustomerOrderDetail cod: customerOrderDetails) {
+
+				if("pstn".equals(cod.getDetail_type())){
+					
+					if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
+						&& ("".equals(pstn_number) || pstn_number==null)){
+						pstn_number = cod.getPstn_number();
+					}
+					
+				}
 				
 				CustomerInvoiceDetail customerInvoiceDetail = new CustomerInvoiceDetail();
 				customerInvoiceDetail.setInvoice_id(customerInvoice.getId());
@@ -1138,22 +1153,35 @@ public class CRMService {
 				}
 			}
 		}
-		customerInvoice.setAmount_payable(amountPayable + (customerPreviousInvoice != null && customerPreviousInvoice.getBalance() != null ? customerPreviousInvoice.getBalance() : 0));
-		customerInvoice.setStatus("unpaid");
-		customerInvoice.setAmount_paid(0d);
-		
-		BigDecimal currentTotalPayable = new BigDecimal(String.valueOf((amountPayable + (customerPreviousInvoice != null && customerPreviousInvoice.getBalance() != null ? customerPreviousInvoice.getBalance() : 0))));
-		BigDecimal currentAmountPaid = new BigDecimal(String.valueOf(customerInvoice.getAmount_paid()));
-		// balance = payable - paid
-		customerInvoice.setBalance(currentTotalPayable.subtract(currentAmountPaid).doubleValue());
-		// set customer's new invoice details end
 
 		// get generated key while performing insertion
 		this.customerInvoiceMapper.insertCustomerInvoice(customerInvoice);
 
-		// reset customer invoice from customer invoice got by invoice_id
-		//customerInvoice = this.customerInvoiceMapper.selectCustomerInvoiceById(customerInvoice.getId());
+		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+		invoicePDF.setCompanyDetail(companyDetail);
+		invoicePDF.setCustomer(customer);
+		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
+		BigDecimal currentTotalPayable = new BigDecimal(String.valueOf((amountPayable + (customerPreviousInvoice != null && customerPreviousInvoice.getBalance() != null ? customerPreviousInvoice.getBalance() : 0))));
+		
+		// BEGIN IF HAVE PSTN_NUMBER
+		if(!"".equals(pstn_number) && pstn_number!=null){
+			currentTotalPayable = TMUtils.ccrOperation(pstn_number, customerInvoiceDetailList, invoicePDF, currentTotalPayable, this.customerCallRecordMapper);
+		}
+		// END IF HAVE PSTN_NUMBER
+
+		customerInvoice.setAmount_payable(currentTotalPayable.doubleValue());
+		customerInvoice.setStatus("unpaid");
+		customerInvoice.setAmount_paid(0d);
+		
+		BigDecimal currentAmountPaid = new BigDecimal(String.valueOf(customerInvoice.getAmount_paid()));
+		// balance = payable - paid
+		customerInvoice.setBalance(currentTotalPayable.subtract(currentAmountPaid).doubleValue());
+		// set customer's new invoice details end
+		
+		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
+		
+		
 		// inserting customer invoice detail iteratively
 		for (CustomerInvoiceDetail cid : customerInvoiceDetailList) {
 			cid.setInvoice_id(customerInvoice.getId());
@@ -1163,11 +1191,6 @@ public class CRMService {
 		// relatively setting invoice details into invoice
 		customerInvoice.setCustomerInvoiceDetails(customerInvoiceDetailList);
 
-		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
-		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCustomer(customer);
-		invoicePDF.setCurrentCustomerInvoice(customerInvoice);
-		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
 		String filePath = "";
 		// set file path
@@ -1254,5 +1277,15 @@ public class CRMService {
 	@Transactional 
 	public String queryCustomerPreviousProviderInvoiceFilePathById(int id){
 		return this.customerOrderMapper.selectCustomerPreviousProviderInvoiceFilePathById(id);
+	}
+
+	@Transactional 
+	public String queryCustomerCreditFilePathById(int id){
+		return this.customerOrderMapper.selectCustomerCreditFilePathById(id);
+	}
+
+	@Transactional 
+	public String queryCustomerDDPayFormPathById(int id){
+		return this.customerOrderMapper.selectCustomerDDPayFormPathById(id);
 	}
 }

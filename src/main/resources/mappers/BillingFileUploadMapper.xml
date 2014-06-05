@@ -23,8 +23,11 @@
 		bfu.upload_file_name	as bfu_upload_file_name,
 		bfu.inserted_database	as bfu_inserted_database,
 		bfu.upload_by			as bfu_upload_by,
-		bfu.billing_type		as bfu_billing_type
+		bfu.billing_type		as bfu_billing_type,
+		bfu.statement_date		as bfu_statement_date,
+		bfu.insert_date			as bfu_insert_date
 	</sql>
+	
 	<resultMap type="BillingFileUpload" id="billingFileUploadResultMap">
 		<id property="id" column="bfu_id" />
 		<result property="upload_date" column="bfu_upload_date" />
@@ -33,13 +36,23 @@
 		<result property="inserted_database" column="bfu_inserted_database" />
 		<result property="upload_by" column="bfu_upload_by" />
 		<result property="billing_type" column="bfu_billing_type" />
+		<result property="statement_date" column="bfu_statement_date" />
+		<result property="insert_date" column="bfu_insert_date" />
 	</resultMap>
 	
 	<sql id="billingFileUploadWhere">
 		<where>
 			<choose>
 				<otherwise>
-				
+					<if test="params.id != null">bfu.id = #{params.id}</if>
+					<if test="params.upload_date != null">and bfu.upload_date = #{params.upload_date}</if>
+					<if test="params.upload_path != null">and bfu.upload_path = #{params.upload_path}</if>
+					<if test="params.upload_file_name != null">and bfu.upload_file_name = #{params.upload_file_name}</if>
+					<if test="params.inserted_database != null">and bfu.inserted_database = #{params.inserted_database}</if>
+					<if test="params.upload_by != null">and bfu.upload_by = #{params.upload_by}</if>
+					<if test="params.billing_type != null">and bfu.billing_type = #{params.billing_type}</if>
+					<if test="params.statement_date != null">and bfu.statement_date = #{params.statement_date}</if>
+					<if test="params.insert_date != null">and bfu.insert_date = #{params.insert_date}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -50,11 +63,31 @@
 	<!-- =================================================================================== -->
 	
 	<!-- SELECT AREA -->
+	
+	<select id="selectBillingFilePathById" parameterType="int" resultType="String">
+		select upload_path from tm_billing_file_upload where id = #{0}
+	</select>
 	 
 	<select id="selectBillingFileUpload" parameterType="BillingFileUpload" resultType="BillingFileUpload">
 		select * from tm_billing_file_upload as bfu
 		<include refid="billingFileUploadWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
+	</select>
+	
+	<!-- select billingFileUpload page -->
+	<select id="selectBillingFileUploadsByPage" parameterType="Page" resultMap="billingFileUploadResultMap">
+		select 
+			<include refid="billingFileUploadColumns"/>
+			from tm_billing_file_upload as bfu
+			<include refid="billingFileUploadWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select billingFileUpload amount -->
+	<select id="selectBillingFileUploadsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_billing_file_upload as bfu
+		<include refid="billingFileUploadWhere"/>
 	</select>
 	
 	<!-- // END SELECT AREA -->
@@ -65,8 +98,8 @@
 	
 	<insert id="insertBillingFileUpload" parameterType="BillingFileUpload">
 		INSERT INTO `tm_billing_file_upload`(
-			`upload_date`, `upload_path`, `upload_file_name`, `inserted_database`, `upload_by`, `billing_type`) 
-		VALUES (#{upload_date}, #{upload_path}, #{upload_file_name}, #{inserted_database}, #{upload_by}, #{billing_type})
+			`upload_date`, `upload_path`, `upload_file_name`, `inserted_database`, `upload_by`, `billing_type`, `statement_date`, `insert_date`) 
+		VALUES (#{upload_date}, #{upload_path}, #{upload_file_name}, #{inserted_database}, #{upload_by}, #{billing_type}, #{statement_date}, #{insert_date})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -78,6 +111,14 @@
 	<update id="updateBillingFileUpload" parameterType="BillingFileUpload">
 		UPDATE `tm_billing_file_upload` as bfu
 		<set>
+			<if test="upload_date != null">bfu.upload_date = #{upload_date},</if>
+			<if test="upload_path != null">bfu.upload_path = #{upload_path},</if>
+			<if test="upload_file_name != null">bfu.upload_file_name = #{upload_file_name},</if>
+			<if test="inserted_database != null">bfu.inserted_database = #{inserted_database},</if>
+			<if test="upload_by != null">bfu.upload_by = #{upload_by},</if>
+			<if test="billing_type != null">bfu.billing_type = #{billing_type},</if>
+			<if test="statement_date != null">bfu.statement_date = #{statement_date}</if>
+			<if test="insert_date != null">bfu.insert_date = #{insert_date}</if>
 		</set>
 		<include refid="billingFileUploadWhere"/>
 	</update>
@@ -88,9 +129,8 @@
 	
 	<!-- DELETE AREA -->
 	
-	<delete id="deleteBillingFileUpload" parameterType="BillingFileUpload">
-		DELETE FROM tm_billing_file_upload as bfu
-		<include refid="billingFileUploadWhere"/>
+	<delete id="deleteBillingFileUpload" parameterType="int">
+		DELETE FROM tm_billing_file_upload WHERE id = #{0}
 	</delete>
 	
 	<!-- // END DELETE AREA -->

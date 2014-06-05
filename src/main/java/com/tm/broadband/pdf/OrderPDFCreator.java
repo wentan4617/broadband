@@ -457,9 +457,9 @@ public class OrderPDFCreator extends ITextUtils {
                 addCol(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT);
                 addCol(orderDetailTable, cod.getDetail_data_flow() < 0 ? "Ultimate" : cod.getDetail_data_flow()+"GB", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
                 addCol(orderDetailTable, cod.getDetail_term_period()+" months", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
-                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
+                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 addCol(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
-                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
+                addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 // END PLAN ROWS
             	
     		}
@@ -518,9 +518,9 @@ public class OrderPDFCreator extends ITextUtils {
                 // BEGIN ADD ON ROWS
                 addColBottomBorder(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
                 addColBottomBorder(orderDetailTable, " ", 2, 0F, null, 0F, 0F, null, borderColor);
-                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
                 addColBottomBorder(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
-                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimal(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
+                addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
                 // END ADD ON ROWS
             	
     		}
@@ -583,7 +583,7 @@ public class OrderPDFCreator extends ITextUtils {
         // BEGIN TOTAL BEFORE GST
         addEmptyCol(orderDetailTable, 7);
         addCol(orderDetailTable, "Total before GST", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END TOTAL BEFORE GST
         
         if(this.getCustomer().getCustomer_type().equals("business")){
@@ -591,21 +591,21 @@ public class OrderPDFCreator extends ITextUtils {
             // BEGIN GST
             addEmptyCol(orderDetailTable, 7);
             addCol(orderDetailTable, "GST at " + this.businessGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-            addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             // END GST
         } else {
             
             // BEGIN GST
             addEmptyCol(orderDetailTable, 7);
             addCol(orderDetailTable, "GST at " + this.personalGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-            addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+            addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             // END GST
         }
         
         // BEGIN ORDER TOTAL
         addEmptyCol(orderDetailTable, 7);
         addCol(orderDetailTable, "Order Total", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, TMUtils.fillDecimal(String.valueOf(totalPrice)), 1, 0F, ITextFont.arial_bold_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
+        addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(totalPrice)), 1, 0F, ITextFont.arial_bold_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END ORDER TOTAL
  
         /**

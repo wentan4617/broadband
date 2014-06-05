@@ -54,7 +54,9 @@ public class CustomerOrder implements Serializable {
 	private String broadband_asid;
 	private Date rfs_date;
 	private String previous_provider_invoice;
-	
+	private Integer user_id;
+	private String ddpay_pdf_path;
+
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -78,8 +80,6 @@ public class CustomerOrder implements Serializable {
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
 	private NetworkUsage usage = new NetworkUsage();
-	
-
 
 	/*
 	 * END RELATED PROPERTIES
@@ -185,7 +185,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this
+				.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -194,8 +195,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		if(this.getOrder_using_start() != null){
-			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start()));
+		if (this.getOrder_using_start() != null) {
+			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this
+					.getOrder_using_start()));
 		}
 		return order_using_start_str;
 	}
@@ -358,8 +360,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_due_str() {
-		if(this.getOrder_due() != null){
-			this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_due()));
+		if (this.getOrder_due() != null) {
+			this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this
+					.getOrder_due()));
 		}
 		return order_due_str;
 	}
@@ -425,7 +428,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getRfs_date_str() {
-		if(this.getRfs_date() != null){
+		if (this.getRfs_date() != null) {
 			this.setRfs_date_str(TMUtils.dateFormatYYYYMMDD(this.getRfs_date()));
 		}
 		return rfs_date_str;
@@ -459,7 +462,20 @@ public class CustomerOrder implements Serializable {
 		this.usage = usage;
 	}
 
-	
-	
-	
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getDdpay_pdf_path() {
+		return ddpay_pdf_path;
+	}
+
+	public void setDdpay_pdf_path(String ddpay_pdf_path) {
+		this.ddpay_pdf_path = ddpay_pdf_path;
+	}
+
 }

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.CallChargeRateMapper">
+
+	<!-- DEFINITION AREA -->
+	<sql id="callChargeRateColumns">
+		c.`id` 					as c_id,
+		c.`customer_type` 		as c_customer_type,
+		c.`number_type` 		as c_number_type,
+		c.`charge_way` 			as c_charge_way,
+		c.`dial_destination` 	as c_dial_destination,
+		c.`cost_per_minute` 	as c_cost_per_minute,
+		c.`cost_per_second` 	as c_cost_per_second
+	</sql>
+	
+	<resultMap type="CallChargeRate" id="callChargeRateResultMap">
+		<id property="id" column="c_id" />
+		<result property="customer_type" column="c_customer_type" />
+		<result property="number_type" column="c_number_type" />
+		<result property="charge_way" column="c_charge_way" />
+		<result property="dial_destination" column="c_dial_destination" />
+		<result property="cost_per_minute" column="c_cost_per_minute" />
+		<result property="cost_per_second" column="c_cost_per_second" />
+	</resultMap>
+	
+	<sql id="callChargeRateWhere">
+		<where>
+			<if test="params.id != null">c.id = #{params.id}</if>
+			<if test="params.customer_type != null">and c.customer_type = #{params.customer_type}</if>
+			<if test="params.number_type != null">and c.number_type = #{params.number_type}</if>
+			<if test="params.charge_way != null">and c.charge_way = #{params.charge_way}</if>
+			<if test="params.dial_destination != null">and c.dial_destination = #{params.dial_destination}</if>
+			<if test="params.cost_per_minute != null">and c.cost_per_minute = #{params.cost_per_minute}</if>
+			<if test="params.cost_per_second != null">and c.cost_per_second = #{params.cost_per_second}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectCallChargeRate" parameterType="CallChargeRate" resultType="CallChargeRate">
+		select * from tm_call_charge_rates as c
+		<include refid="callChargeRateWhere"/>
+	</select>
+	
+	<!-- select callChargeRate page -->
+	<select id="selectCallChargeRatesByPage" parameterType="Page" resultMap="callChargeRateResultMap">
+		select 
+			<include refid="callChargeRateColumns"/>
+			from tm_call_charge_rates as c
+			<include refid="callChargeRateWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select callChargeRate amount -->
+	<select id="selectCallChargeRatesSum" parameterType="Page" resultType="int">
+		select count(*) from tm_call_charge_rates as c
+		<include refid="callChargeRateWhere"/>
+	</select>
+
+	<!-- select callChargeRate by id -->
+	<select id="selectCallChargeRateById" parameterType="int" resultType="CallChargeRate">
+		select * from tm_call_charge_rates where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCallChargeRate" parameterType="CallChargeRate" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_call_charge_rates`(
+			`customer_type`, `number_type`, `charge_way`, `dial_destination`, `cost_per_minute`, `cost_per_second`
+		) VALUES (
+			#{customer_type}, #{number_type}, #{charge_way}, #{dial_destination}, #{cost_per_minute}, #{cost_per_second}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update callChargeRate -->
+	<update id="updateCallChargeRate" parameterType="CallChargeRate">
+		update tm_call_charge_rates
+		<set>
+			<if test="customer_type != null">customer_type = #{customer_type},</if>
+			<if test="number_type != null">number_type = #{number_type},</if>
+			<if test="charge_way != null">charge_way = #{charge_way},</if>
+			<if test="dial_destination != null">dial_destination = #{dial_destination},</if>
+			<if test="cost_per_minute != null">cost_per_minute = #{cost_per_minute},</if>
+			<if test="cost_per_second != null">cost_per_second = #{cost_per_second}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteCallChargeRateById" parameterType="int">
+		DELETE FROM tm_call_charge_rates WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

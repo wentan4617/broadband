@@ -1,11 +1,9 @@
 package com.tm.broadband.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.StringTokenizer;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
+
 
 public class Test {
 
@@ -47,36 +45,45 @@ public class Test {
 		// Date()).substring(0, 7);
 		// cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));
 		// System.out.println(cal.getTime());
+		
+		
+//		List<CustomerCallRecord> ccrs = CallingRecordUltility.ccrs("C:/TMS_20140528_EB05.csv");
+//		for (CustomerCallRecord ccr : ccrs) {
+//			System.out.print(ccr.getStatement_date()+"\t");
+//			System.out.print(ccr.getRecord_type()+"\t");
+//			System.out.print(ccr.getClear_service_id()+"\t");
+//			System.out.print(ccr.getCharge_date_time()+"\t");
+//			System.out.print(ccr.getDuration()+"\t");
+//			System.out.print(ccr.getOot_id()+"\t");
+//			System.out.print(ccr.getBilling_description()+"\t");
+//			System.out.print(ccr.getAmount_excl()+"\t");
+//			System.out.print(ccr.getAmount_incl()+"\t");
+//			System.out.print(ccr.getPhone_called());
+//			System.out.println();
+//		}
+		
+//		Calendar c = Calendar.getInstance(Locale.CHINA);
+//		c.set(Calendar.MONDAY, c.get(Calendar.MONDAY)-1);
+//		System.out.println(TMUtils.dateFormatYYYYMMDD(c.getTime()));
+		
+//		System.out.println(CallingRecordUltility.statementDate("C:/TMS_20140428_EB05.csv"));
+//		
+//		File file = new File("C:/writers.csv");
+//		file.deleteOnExit();
+		
+//		String str = "09 - 0299%10*9";
+//		System.out.println(TMUtils.formatPhoneNumber(str));
+		
+//		String str = "4501";
+//		
+//		str = TMUtils.fillDecimalColon(String.valueOf(Double.parseDouble(str) / 60));
+//		System.out.println(str);
 
-		try {
-			File csv = new File("C:/TMS_20140428_EB05.csv"); // CSV文件
-
-			BufferedReader br = new BufferedReader(new FileReader(csv));
-
-			String line = "";
-			
-			while ((line = br.readLine()) != null) {
-					
-				// Split current line data into separate fields
-				StringTokenizer st = new StringTokenizer(line, ",");
-				
-				while (st.hasMoreTokens()) {
-					
-					// Separate fields with TAB symbol
-					System.out.print(st.nextToken() + "	");
-					break;
-				}
-				System.out.println();
-					
-			}
-			br.close();
-
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
+//		String sum = String.valueOf(Math.round((double)Double.valueOf("1.409")*100)/100.00);
+//		DecimalFormat df = new DecimalFormat("00.00");
+//		System.out.println(df.format(Double.parseDouble(sum)));
+		
+		
 	}
 
 }

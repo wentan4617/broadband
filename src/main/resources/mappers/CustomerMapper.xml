@@ -97,7 +97,9 @@
 		co.`optional_request`					as co_optional_request,
 		co.`broadband_asid`						as co_broadband_asid,
 		co.`rfs_date`							as co_rfs_date,
-		co.`previous_provider_invoice`			as co_previous_provider_invoice
+		co.`previous_provider_invoice`			as co_previous_provider_invoice,
+		co.`user_id`							as co_user_id,
+		co.`ddpay_pdf_path`						as co_ddpay_pdf_path
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -131,6 +133,8 @@
 		<result property="broadband_asid" column="co_broadband_asid" />
 		<result property="rfs_date" column="co_rfs_date" />
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
+		<result property="user_id" column="co_user_id" />
+		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -397,6 +401,8 @@
 			<result property="broadband_asid" column="co_broadband_asid" />
 			<result property="rfs_date" column="co_rfs_date" />
 			<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
+			<result property="user_id" column="co_user_id" />
+			<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 			
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail" resultMap="CustomerOrderDetailResultMap" />
 		</collection>

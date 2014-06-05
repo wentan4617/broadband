@@ -49,7 +49,7 @@
 							<select id="select_user" class="selectpicker">
 							    <optgroup label="Sales List">
 						    		<option value="0" data-name="selected" selected="selected">All</option>
-							    	<c:forEach var="user" items="${users}">
+							    	<c:forEach var="user" items="${salesUsers}">
 							    		<option value="${user.id}"
 							    			<c:if test="${user.id==sale_id}">
 							    				selected="selected"
@@ -75,7 +75,7 @@
 								<th>Broadband Type</th>
 								<th>Total Price (Inc GST)($)</th>
 								<th>Signature</th>
-								<th>Sales Id</th>
+								<th>Sales Name</th>
 								<th>Operations</th>
 							</tr>
 						</thead>
@@ -102,7 +102,13 @@
 										
 									</td>
 									<td>${order.signature }</td>
-									<td>${order.sale_id }</td>
+									<td>
+								    	<c:forEach var="user" items="${salesUsers}">
+							    			<c:if test="${user.id==order.sale_id}">
+							    				${user.user_name }
+							    			</c:if>
+								    	</c:forEach>
+									</td>
 									<td style="font-size:20px;">
 										<c:if test="${order.order_pdf_path != null}">
 											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Order PDF"></a>&nbsp;
@@ -114,6 +120,7 @@
 											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>&nbsp;
 										</c:if>|
 										<a href="javascript:void;" data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Signed Form(s)"></a>&nbsp;
+										<a href="javascript:void;" data-name="upload_previous_provider_invoice_pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Previous Provider Invoice"></a>&nbsp;
 										
 										<!-- If got additional requests -->
 										<c:if test="${order.optional_request != null}">
@@ -186,6 +193,34 @@
 	</div><!-- /.modal -->
 </form>
 
+<!-- Upload Previous Provider Invoice PDF Modal -->
+<form class="form-horizontal" action="${ctx }/broadband-user/sale/online/ordering/order/upload_previous_provider_invoice_pdf" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="order_id"/>
+	<input type="hidden" name="customer_id"/>
+	<input type="hidden" name="sale_id"/>
+	<div class="modal fade" id="uploadPreviousProviderInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="uploadPreviousProviderInvoiceModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h3 class="modal-title text-danger" id="uploadPreviousProviderInvoiceModalLabel"><strong>Upload Provider Invoice PDF</strong></h3>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-md-6">Previous Provider Invoice Path</label>
+				<div class="col-md-4">
+					<input type="file" name="previous_provider_invoice_path" class="form-control input-sm" placeholder="Choose a file"/>
+				</div>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-success">Upload File</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
 <!-- Modal -->
 <div class="modal fade" id="optionalRequestModel" tabindex="-1" role="dialog" aria-labelledby="optionalRequestModalLabel" aria-hidden="true">
 	<div class="modal-dialog">
@@ -235,6 +270,13 @@
 		$('input[name="customer_id"]').val($(this).attr('data-customer-id'));
 		$('input[name="sale_id"]').val($(this).attr('data-sale-id'));
 		$('#uploadModal').modal('show');
+	});
+	
+	$('a[data-name="upload_previous_provider_invoice_pdf"]').click(function(){
+		$('input[name="order_id"]').val($(this).attr('data-order-id'));
+		$('input[name="customer_id"]').val($(this).attr('data-customer-id'));
+		$('input[name="sale_id"]').val($(this).attr('data-sale-id'));
+		$('#uploadPreviousProviderInvoiceModal').modal('show');
 	});
 	
 	$('a[data-name="optional_request_btn"]').click(function(){

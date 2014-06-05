@@ -12,17 +12,16 @@ import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.ColumnText;
 import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.Organization;
@@ -42,31 +41,41 @@ public class InvoicePDFCreator extends ITextUtils {
     private CustomerInvoice lastCustomerInvoice;
     private Customer customer;
 	private Organization org;
+	private List<CustomerCallRecord> ccrs;
 
+	private BaseColor titleBorderColor = new BaseColor(230,230,230);
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
 	private Integer globalBorderWidth = 0;
 	
 	
-	private Double lastBalance;
-	private Double thisInvoiceTotalAmount;
+	private Double lastBalance = 0d;
+	private Double thisInvoiceTotalAmount = 0d;
+	private Double beforeTaxAmount = 0d;
+	private Double taxAmount = 0d;
+	
+	private String pstn_number = "";
 	
 	public InvoicePDFCreator(){}
 	
 	public InvoicePDFCreator(CompanyDetail companyDetail
 			,CustomerInvoice currentCustomerInvoice
 			,Customer customer
-			,Organization org) {
+			,Organization org
+			,List<CustomerCallRecord> ccrs) {
 		this.companyDetail = companyDetail;
 		this.currentCustomerInvoice = currentCustomerInvoice;
 		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
 		this.customer = customer;
 		this.org = org;
+		this.ccrs = ccrs;
 	}
 
 	public String create() throws DocumentException, MalformedURLException, IOException{
         Document document = new Document(PageSize.A4);
+        
+    	this.pstn_number = ccrs != null ? ccrs.get(0).getClear_service_id() : "";
         
 		// Output PDF Path, e.g.: application_60089.pdf
 		String outputFile = TMUtils.createPath(
@@ -87,6 +96,54 @@ public class InvoicePDFCreator extends ITextUtils {
 		
 		// BASIC INFO
         document.add(createCustomerBasicInfo());
+
+        
+        Double currentInvoiceDetailTotalPrice = 0.0;
+        List<CustomerInvoiceDetail> listInvoiceDetails = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
+        Iterator<CustomerInvoiceDetail> iterInvoiceDetails = listInvoiceDetails.iterator();
+    	// get invoice detail(s) from invoice
+        while(iterInvoiceDetails.hasNext()){
+        	CustomerInvoiceDetail customerInvoiceDetail = iterInvoiceDetails.next();
+        	// if both empty
+        	Double subTotal = 0.0;
+        	// if price and unit are not null
+        	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() != null){
+        		// price * unit
+        		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*customerInvoiceDetail.getInvoice_detail_unit());
+        	}
+        	// if price empty
+        	if(customerInvoiceDetail.getInvoice_detail_price() == null && customerInvoiceDetail.getInvoice_detail_unit() != null){
+        		// price == null then sub total = 0
+        		subTotal = 0.0;
+        	}
+        	// if unit empty
+        	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() == null){
+        		// price * 1
+        		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*1);
+        	}
+        	if(customerInvoiceDetail.getInvoice_detail_discount() == null){
+            	currentInvoiceDetailTotalPrice+=subTotal;
+        	} else {
+        		currentInvoiceDetailTotalPrice-=customerInvoiceDetail.getInvoice_detail_discount()*customerInvoiceDetail.getInvoice_detail_unit();
+        	}
+        }
+        
+
+        lastBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()!=null ? this.getLastCustomerInvoice().getBalance() : 0.0;
+        BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
+        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()));
+        thisInvoiceTotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
+        
+        if(thisInvoiceTotalAmount > 0){
+        	// personal plan include GST
+            this.beforeTaxAmount = thisInvoiceTotalAmount/1.15;
+            
+            // include GST
+            this.taxAmount = thisInvoiceTotalAmount-thisInvoiceTotalAmount/1.15;
+        } else {
+        	this.beforeTaxAmount = thisInvoiceTotalAmount;
+        	this.taxAmount = thisInvoiceTotalAmount;
+        }
         
         // RECENT TRANSACTION
         document.add(createRecentTransaction());
@@ -145,14 +202,14 @@ public class InvoicePDFCreator extends ITextUtils {
 	        addCol(paymentSlipTable, "Total amount due before").rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date_str()).rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(32F).o();
 	        // input box begin
-	        addCol(paymentSlipTable, TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
+	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
 	        // input box end
 	        addCol(paymentSlipTable, "Bank: "+this.getCompanyDetail().getBank_name()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        addCol(paymentSlipTable, "Name of Account: "+this.getCompanyDetail().getBank_account_name()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        addCol(paymentSlipTable, "Total amount due after").rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date_str()).rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(32F).o();
 	        // input box begin
-	        addCol(paymentSlipTable, TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
+	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
 	        // input box end
 	        addCol(paymentSlipTable, "Account Number: "+this.getCompanyDetail().getBank_account_number()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        
@@ -164,7 +221,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	        
 	        addCol(paymentSlipTable, "Paying by cheques").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 4F).indent(4F).o();
 	        addCol(paymentSlipTable, "ENCLOSED AMOUNT").colspan(2).font(ITextFont.arial_bold_white_10).bgColor(totleChequeAmountBGColor).paddingTo("t", 4F).indent(40F).o();
-	        addCol(paymentSlipTable, "Please make cheques payable to Total Mobile Solution Services Ltd and").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
+	        addCol(paymentSlipTable, "Please make cheques payable to "+this.companyDetail.getName()+" and").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
 	        
 			// BEGIN BOX
 			addCol(paymentSlipTable, " ").colspan(2).rowspan(4).bgColor(BaseColor.WHITE).paddingTo("l", 42F).paddingTo("t", 6F).borderColor(totleChequeAmountBGColor).border("r", 20F).o();
@@ -201,18 +258,12 @@ public class InvoicePDFCreator extends ITextUtils {
          */
 		// start new page
         document.newPage();
-
-        // ADD TABLE 2 DOCUMENT
-        document.add(createInvoiceDetails());
-        
-        /*
-         * 
-         * 
-         * 
-         */
         
         // SECOND PAGE'S HEADER
 		pageHeader(writer);
+
+        // ADD TABLE 2 DOCUMENT
+        document.add(createInvoiceDetails());
         /*
          *
          *  SECOND PAGE END
@@ -224,7 +275,18 @@ public class InvoicePDFCreator extends ITextUtils {
          *  THIRD PAGE BEGIN
          * 
          */
-
+        
+        // BEGIN CALLING RECORD
+        if(isCCRS()){
+     		// start new page
+            document.newPage();
+            // SECOND PAGE'S HEADER
+    		pageHeader(writer);
+            // ADD TABLE 2 DOCUMENT
+            document.add(createCallRecordDetails());
+        }
+        // END CALLING RECORD
+        
         /*
          *
          *  THIRD PAGE END
@@ -259,7 +321,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		return headerTable;
 	}
 	// END CUSTOMER BASIC INFO
-	
+
+    
+    // current invoice
+    // this invoice amount is consist of (current invoice total amount + last invoice balance - current customer invoice paid fees)
+    // preventing subtraction inaccuracy
+    
 	// BEGIN RECENT TRANSACTION
 	private PdfPTable createRecentTransaction(){
         /*
@@ -280,7 +347,6 @@ public class InvoicePDFCreator extends ITextUtils {
         // account filtering of last invoice begin
         Double lastAmountPayable = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getAmount_payable()!=null ? this.getLastCustomerInvoice().getAmount_payable() : 0.0;
         Double lastAmountPaid = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getAmount_paid()!=null ? this.getLastCustomerInvoice().getAmount_paid() : 0.0;
-        lastBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()!=null ? this.getLastCustomerInvoice().getBalance() : 0.0;
 //        if(lastAmountPayable==null){
 //        	lastAmountPayable = 0.0;
 //        }
@@ -298,12 +364,12 @@ public class InvoicePDFCreator extends ITextUtils {
             // LAST INVOICE PAYABLE CASE
         	addCol(transactionTable, this.getLastCustomerInvoice().getCreate_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, "Previous Invoice Total").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ " + TMUtils.fillDecimal(String.valueOf(lastAmountPayable))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        	addCol(transactionTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPayable))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
             
             // LAST INVOICE PAID CASE
         	addCol(transactionTable, this.getLastCustomerInvoice().getPaid_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getLastCustomerInvoice().getPaid_type()).colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ -" + TMUtils.fillDecimal(String.valueOf(lastAmountPaid))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPaid))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
 
             // LAST INVOICE SEPARATOR LINE
         	addEmptyCol(transactionTable, 7);
@@ -311,7 +377,7 @@ public class InvoicePDFCreator extends ITextUtils {
 
             // LAST INVOICE TOTAL AMOUNT
         	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
-        	addCol(transactionTable, "$ "+ TMUtils.fillDecimal(String.valueOf(lastBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(lastBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	addEmptyCol(transactionTable, 10F, colspan);
             
         } else {
@@ -319,12 +385,12 @@ public class InvoicePDFCreator extends ITextUtils {
             // CURRENT INVOICE PAYABLE CASE
         	addCol(transactionTable, this.getCurrentCustomerInvoice().getCreate_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, "Current Invoice Total").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ " + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable()))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        	addCol(transactionTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
             
             // CURRENT INVOICE PAID CASE
         	addCol(transactionTable, this.getCurrentCustomerInvoice().getPaid_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getCurrentCustomerInvoice().getPaid_type()).colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ -" + TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
+        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
             
             // CURRENT INVOICE SEPARATOR LINE
         	addEmptyCol(transactionTable, 7);
@@ -333,7 +399,7 @@ public class InvoicePDFCreator extends ITextUtils {
 
             // CURRENT INVOICE TOTAL AMOUNT
         	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
-        	addCol(transactionTable, "$ "+ TMUtils.fillDecimal(String.valueOf(this.getCurrentCustomerInvoice().getBalance()))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount - this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	addEmptyCol(transactionTable, 10F, colspan);
             
         }
@@ -353,65 +419,15 @@ public class InvoicePDFCreator extends ITextUtils {
         // INVOICE SUMMARY FIRST ROW
         addCol(invoiceSummaryTable, "Net charges").colspan(6).font(ITextFont.arial_normal_8).paddingTo("t", 10F).indent(10F).o();
         
-        
-        Double currentInvoiceDetailTotalPrice = 0.0;
-        List<CustomerInvoiceDetail> listInvoiceDetails = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
-        Iterator<CustomerInvoiceDetail> iterInvoiceDetails = listInvoiceDetails.iterator();
-    	// get invoice detail(s) from invoice
-        while(iterInvoiceDetails.hasNext()){
-        	CustomerInvoiceDetail customerInvoiceDetail = iterInvoiceDetails.next();
-        	// if both empty
-        	Double subTotal = 0.0;
-        	// if price and unit are not null
-        	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() != null){
-        		// price * unit
-        		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*customerInvoiceDetail.getInvoice_detail_unit());
-        	}
-        	// if price empty
-        	if(customerInvoiceDetail.getInvoice_detail_price() == null && customerInvoiceDetail.getInvoice_detail_unit() != null){
-        		// price == null then sub total = 0
-        		subTotal = 0.0;
-        	}
-        	// if unit empty
-        	if(customerInvoiceDetail.getInvoice_detail_price() != null && customerInvoiceDetail.getInvoice_detail_unit() == null){
-        		// price * 1
-        		subTotal = (customerInvoiceDetail.getInvoice_detail_price()*1);
-        	}
-        	if(customerInvoiceDetail.getInvoice_detail_discount() == null){
-            	currentInvoiceDetailTotalPrice+=subTotal;
-        	} else {
-        		currentInvoiceDetailTotalPrice-=customerInvoiceDetail.getInvoice_detail_discount()*customerInvoiceDetail.getInvoice_detail_unit();
-        	}
-        }
-        // current invoice
-        // this invoice amount is consist of (current invoice total amount + last invoice balance - current customer invoice paid fees)
-        // preventing subtraction inaccuracy
-        BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
-        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()));
-        thisInvoiceTotalAmount = currentInvoiceDetailTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
-        Double beforeTaxAmount = 0.0;
-        Double taxAmount = 0.0;
-        
-        if(thisInvoiceTotalAmount > 0){
-        	// personal plan include GST
-            beforeTaxAmount = thisInvoiceTotalAmount/1.15;
-            
-            // include GST
-            taxAmount = thisInvoiceTotalAmount-thisInvoiceTotalAmount/1.15;
-        } else {
-        	beforeTaxAmount = thisInvoiceTotalAmount;
-        	taxAmount = thisInvoiceTotalAmount;
-        }
-        
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimal(String.valueOf(beforeTaxAmount))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("t", 10F).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(beforeTaxAmount))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("t", 10F).alignH("r").o();
 
         // INVOICE SUMMARY SECOND ROW
         addCol(invoiceSummaryTable, "GST at 15%").colspan(6).font(ITextFont.arial_normal_8).indent(10F).o();
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimal(String.valueOf(taxAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(taxAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
 
         // INVOICE SUMMARY THIRD ROW
         addCol(invoiceSummaryTable, "Total charges (please see Invoice Details page)").colspan(6).font(ITextFont.arial_normal_8).indent(10F).o();
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
         
         // Empty ROW
         addEmptyCol(invoiceSummaryTable, 30F, colspan);
@@ -424,7 +440,7 @@ public class InvoicePDFCreator extends ITextUtils {
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
     	addCol(invoiceSummaryTable, "Invoice total due on").colspan(4).font(ITextFont.arial_normal_10).alignH("r").o();
     	addCol(invoiceSummaryTable, this.getCurrentCustomerInvoice().getDue_date_str()).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimal(String.valueOf(thisInvoiceTotalAmount))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         
         return invoiceSummaryTable;
 	}
@@ -433,7 +449,7 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfPTable invoiceDetailsTable = newTable().columns(10).widthPercentage(98F).o();
         addEmptyCol(invoiceDetailsTable, 150F, 10);
         // page's width percentage
-        addCol(invoiceDetailsTable, "Invoice Details").colspan(10).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
+        addCol(invoiceDetailsTable, "Current Invoice Details").colspan(10).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
         addEmptyCol(invoiceDetailsTable, 20F, 10);
         
         // title
@@ -448,7 +464,8 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(invoiceDetailsTable, 14F, 10);
         // PRODUCT ITEM(S) BEGIN
         
-        Double totalPrice = 0.0;
+        Double totalPrice = 0d;
+        
 
         List<CustomerInvoiceDetail> listInvoiceDetails = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
         Iterator<CustomerInvoiceDetail> iterInvoiceDetails = listInvoiceDetails.iterator();
@@ -497,28 +514,29 @@ public class InvoicePDFCreator extends ITextUtils {
 //        		price = 0.0;
 //        		unit = 0;
         	}
+        	
 			// plan name
         	addCol(invoiceDetailsTable, customerInvoiceDetail.getInvoice_detail_name()).colspan(4).font(ITextFont.arial_normal_7).indent(22F).o();
 			// term date
         	addEmptyCol(invoiceDetailsTable, 2);
 			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
 				// plan unit price
-				addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(price))).font(ITextFont.arial_normal_7).alignH("r").o();
+				addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(price))).font(ITextFont.arial_normal_7).alignH("r").o();
 				addEmptyCol(invoiceDetailsTable, 1);
 			} else {
 				// plan unit discount
 				addEmptyCol(invoiceDetailsTable, 1);
-				addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(discount))).font(ITextFont.arial_normal_7).alignH("r").o();
+				addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(discount))).font(ITextFont.arial_normal_7).alignH("r").o();
 			}
 			// unit
 			addCol(invoiceDetailsTable, unit.toString()).font(ITextFont.arial_normal_7).alignH("r").o();
 			if(customerInvoiceDetail.getInvoice_detail_discount() == null){
 				// sub total
-				addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
+				addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
 				totalPrice+=subTotal;
 			} else {
 				// sub total
-				addCol(invoiceDetailsTable, "-"+TMUtils.fillDecimal(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
+				addCol(invoiceDetailsTable, "-"+TMUtils.fillDecimalPeriod(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
 				totalPrice-=subTotal;
 			}
         }
@@ -538,14 +556,14 @@ public class InvoicePDFCreator extends ITextUtils {
         addCol(invoiceDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
         Double totalBeforeGST = totalPrice/1.15;
         // fill decimal, keep 2 decimals
-        addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(totalBeforeGST))).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBeforeGST))).font(ITextFont.arial_normal_8).alignH("r").o();
         // FIRST ROW END
         // SECOND ROW BEGIN
         addEmptyCol(invoiceDetailsTable, 14F, 7);
         addCol(invoiceDetailsTable, "GST at 15%").colspan(2).font(ITextFont.arial_normal_8).o();
         Double totalGST = totalPrice-totalPrice/1.15;
         // fill decimal, keep 2 decimals
-        addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(totalGST))).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalGST))).font(ITextFont.arial_normal_8).alignH("r").o();
         // SECOND ROW END
         
         // SEPARATOR BEGIN
@@ -556,11 +574,75 @@ public class InvoicePDFCreator extends ITextUtils {
         // TOTAL AMOUNT BEGIN
         addEmptyCol(invoiceDetailsTable, 7);
         addCol(invoiceDetailsTable, "Invoice Total").colspan(2).font(ITextFont.arial_bold_8).o();
-        addCol(invoiceDetailsTable, TMUtils.fillDecimal(String.valueOf(totalPrice))).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalPrice))).font(ITextFont.arial_bold_8).alignH("r").o();
         // TOTAL AMOUNT END
         
         // TOTAL END
         return invoiceDetailsTable;
+	}
+	
+	private PdfPTable createCallRecordDetails(){
+        PdfPTable callRecordDetailsTable = newTable().columns(11).widthPercentage(98F).o();
+        addEmptyCol(callRecordDetailsTable, 130F, 11);
+        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(11).font(ITextFont.arial_bold_12).paddingTo("b", 4F).alignH("r").o();
+        addEmptyCol(callRecordDetailsTable, 10F, 11);
+        addCol(callRecordDetailsTable, "Date").colspan(3).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Phone Number").colspan(2).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Destination").colspan(4).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Duration").colspan(1).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addCol(callRecordDetailsTable, "Amount").colspan(1).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addEmptyCol(callRecordDetailsTable, 6F, 11);
+        
+        Double totalCallFee = 0d;
+        for (CustomerCallRecord ccr : this.ccrs) {
+            addCol(callRecordDetailsTable, String.valueOf(ccr.getCharge_date_time_str())).colspan(3).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(4).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, String.valueOf(ccr.getFormated_duration())).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            totalCallFee += ccr.getAmount_incl();
+		}
+        addEmptyCol(callRecordDetailsTable, 20F, 11);
+        
+        // PRODUCT(S) END
+        
+        // #####SEPARATOR BEGIN
+        addCol(callRecordDetailsTable, " ").colspan(11).fixedHeight(8F).border("b", 1F).o();
+        // #####SEPARATOR END
+        
+        // TOTAL BEGIN
+        // #####EMTRY SPACE BEGIN
+        addEmptyCol(callRecordDetailsTable, 11);
+        // #####EMTRY SPACE END
+        
+        // FIRST ROW BEGIN
+        addEmptyCol(callRecordDetailsTable, 14F, 7);
+        addCol(callRecordDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
+        Double totalBeforeGST = totalCallFee/1.15;
+        // fill decimal, keep 2 decimals
+        addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBeforeGST))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        // FIRST ROW END
+        // SECOND ROW BEGIN
+        addEmptyCol(callRecordDetailsTable, 14F, 7);
+        addCol(callRecordDetailsTable, "GST at 15%").colspan(2).font(ITextFont.arial_normal_8).o();
+        Double totalGST = totalCallFee - totalCallFee/1.15;
+        // fill decimal, keep 2 decimals
+        addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalGST))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        // SECOND ROW END
+        
+        // SEPARATOR BEGIN
+        addEmptyCol(callRecordDetailsTable, 4F, 7);
+        addCol(callRecordDetailsTable, " ").colspan(4).borderWidth("b", 1F).fixedHeight(4F).o();
+        // SEPARATOR END
+        
+        // TOTAL AMOUNT BEGIN
+        addEmptyCol(callRecordDetailsTable, 7);
+        addCol(callRecordDetailsTable, "Invoice Total").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalCallFee))).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        // TOTAL AMOUNT END
+        
+        
+        return callRecordDetailsTable;
 	}
 	
 	private void pageHeader(PdfWriter writer) throws MalformedURLException, IOException, DocumentException{
@@ -609,18 +691,9 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfContentByte paymentSlipTableCanvas = writer.getDirectContent();
         headerTable.writeSelectedRows(0, -1, 41, 810, paymentSlipTableCanvas);
 	}
-
-	public PdfPCell newCell(String content, Font font, int border){
-		PdfPCell pcell = new PdfPCell(new Phrase(content, font));
-		pcell.setBorder(border);
-		return pcell;
-	}
 	
-	public PdfPCell newCell(String content, Font font, int border, BaseColor color){
-		PdfPCell pcell = new PdfPCell(new Phrase(content, font));
-		pcell.setBorder(border);
-		pcell.setBackgroundColor(color);
-		return pcell;
+	private Boolean isCCRS(){
+		return this.ccrs != null && this.ccrs.size() > 0;
 	}
 
 	public CompanyDetail getCompanyDetail() {
@@ -662,6 +735,14 @@ public class InvoicePDFCreator extends ITextUtils {
 
 	public void setOrg(Organization org) {
 		this.org = org;
+	}
+
+	public List<CustomerCallRecord> getCcrs() {
+		return ccrs;
+	}
+
+	public void setCcrs(List<CustomerCallRecord> ccrs) {
+		this.ccrs = ccrs;
 	}
 
 	

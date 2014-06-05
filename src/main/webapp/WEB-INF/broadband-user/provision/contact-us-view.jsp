@@ -60,10 +60,10 @@
 									<td>
 										<input type="checkbox" name="checkbox_contactUss" value="${contactUs.id}"/>
 									</td>
-									<td data-name="first_name" data-value="${contactUs.first_name }">
+									<td data-name="${contactUs.id}_first_name" data-value="${contactUs.first_name }">
 										${contactUs.first_name }
 									</td>
-									<td data-name="last_name" data-value="${contactUs.last_name }">
+									<td data-name="${contactUs.id}_last_name" data-value="${contactUs.last_name }">
 										${contactUs.last_name }
 									</td>
 									<td data-name="${contactUs.id}_email" data-value="${contactUs.email }">
@@ -217,6 +217,8 @@
 		$('input[name="email"]').val($(this).attr('data-email'));
 		$('#content').html($('textarea[data-name="'+this.id+'_content"]').val());
 		$('#respond_content').text($('textarea[data-name="'+this.id+'_respond_content"]').val());
+		$('button[data-name="template-1"]').attr('id', this.id);
+		$('button[data-name="template-2"]').attr('id', this.id);
 		viewMode();
 		$('#respondContactUsModal').modal('show');
 	});
@@ -289,8 +291,8 @@
 	
 	$('button[data-name="template-1"]').click(function(){
 		var content = $('#respond_content');
-		var first_name = $('td[data-name="first_name"]').attr('data-value');
-		var last_name = $('td[data-name="last_name"]').attr('data-value');
+		var first_name = $('td[data-name="'+this.id+'_first_name"]').attr('data-value');
+		var last_name = $('td[data-name="'+this.id+'_last_name"]').attr('data-value');
 		content.val(
 			'Dear <strong>' + last_name + ',' + first_name + '</strong><br/><br/>\n\n'
 			+'<blockquote>\n'
@@ -307,8 +309,8 @@
 	
 	$('button[data-name="template-2"]').click(function(){
 		var content = $('#respond_content');
-		var first_name = $('td[data-name="first_name"]').attr('data-value');
-		var last_name = $('td[data-name="last_name"]').attr('data-value');
+		var first_name = $('td[data-name="'+this.id+'_first_name"]').attr('data-value');
+		var last_name = $('td[data-name="'+this.id+'_last_name"]').attr('data-value');
 		content.val(
 			'Hi <strong>' + last_name + ',' + first_name + '</strong><br/><br/>\n\n'
 			+'<blockquote>\n'
