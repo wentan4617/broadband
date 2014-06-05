@@ -40,7 +40,7 @@
 	
 	<!-- radius data source ========================================================================= -->
 	
-	<bean id="radiusDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	<!-- <bean id="radiusDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
 		<property name="driverClassName" value="${radius.driverClassName}" />
 		<property name="url" value="${radius.url}" />
 		<property name="username" value="${radius.username}" />
@@ -56,12 +56,12 @@
 		<property name="connectionProperties" value="${radius.connectionProperties}" />
 
 		<property name="validationQuery" value="${radius.validationQuery}"/>
-		<property name="testWhileIdle" value="${radius.testWhileIdle}" /><!-- 打开检查,用异步线程evict进行检查 -->
+		<property name="testWhileIdle" value="${radius.testWhileIdle}" />
 		<property name="testOnBorrow" value="${radius.testOnBorrow}" />
 		<property name="testOnReturn" value="${radius.testOnReturn}" />
 		<property name="timeBetweenEvictionRunsMillis" value="${radius.timeBetweenEvictionRunsMillis}" />
 		<property name="numTestsPerEvictionRun" value="${radius.numTestsPerEvictionRun}" />
-	</bean>
+	</bean> -->
 	
 	<!-- init datasource  ========================================================================-->
 	

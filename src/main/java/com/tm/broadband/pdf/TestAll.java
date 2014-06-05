@@ -1,6 +1,7 @@
 package com.tm.broadband.pdf;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -11,10 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
+import com.tm.broadband.util.TMUtils;
 
 public class TestAll {
 	
@@ -163,7 +166,33 @@ public class TestAll {
 		cids.add(cid);
 		ci.setCustomerInvoiceDetails(cids);
 		
-		new InvoicePDFCreator(cd, ci, c, org).create();
+		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
+		
+		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
+		Double payPerMinute = 0.0133333333333333;
+		
+		int count = 42;
+		while(count >= 0){
+			
+			CustomerCallRecord ccr = new CustomerCallRecord();
+			ccr.setClear_service_id("96272424");
+			ccr.setCharge_date_time(TMUtils.parseDate2YYYYMMDD("2014-04-29 11:18:00"));
+			ccr.setDuration(60);
+			ccr.setBilling_description("HAMILTON");
+			ccr.setAmount_incl(0.1);
+			ccr.setAmount_incl((ccr.getDuration()) * payPerMinute);
+			ccr.setPhone_called("7-847 6989");
+			ccrs.add(ccr);
+			
+			count --;
+		}
+		
+		ipdfc.setCompanyDetail(cd);
+		ipdfc.setCurrentCustomerInvoice(ci);
+		ipdfc.setCustomer(c);
+		ipdfc.setOrg(org);
+		ipdfc.setCcrs(ccrs);
+		System.out.println(ipdfc.create());
 		
 		/**
 		 * END TEST InvoicePDFCreator

@@ -492,15 +492,27 @@ public class CRMController {
 		return "broadband-user/crm/order-create";
 	}
 	
+	/**
+	 * @param model
+	 * @param customer
+	 * @param customerOrder
+	 * @param attr
+	 * @param status
+	 * @return
+	 */
 	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
 	public String orderSave(Model model,
 			@ModelAttribute("customer") Customer customer, 
 			@ModelAttribute("customerOrder") CustomerOrder customerOrder,
-			RedirectAttributes attr, SessionStatus status) {
+			RedirectAttributes attr, SessionStatus status,
+			HttpServletRequest req) {
 		
 		customer.setUser_name(customer.getLogin_name());
 		customerOrder.setOrder_status("pending");
 		customerOrder.setOrder_type(customerOrder.getPlan().getPlan_group().replace("plan", "order"));
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		customerOrder.setUser_id(user.getId());
 		
 		this.crmService.saveCustomerOrder(customer, customerOrder);
 		attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
@@ -632,25 +644,60 @@ public class CRMController {
 	
 	// Upload Previous Provider's invoice PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload")
-	public String uploadSignedPDF(Model model
+	public String uploadOrderForms(Model model
 			, @RequestParam("order_id") Integer order_id
 			, @RequestParam("customer_id") Integer customer_id
-			, @RequestParam("previous_provider_invoice_path") MultipartFile order_pdf_path
+			, @RequestParam("previous_provider_invoice_path") MultipartFile previous_provider_invoice_path
+			, @RequestParam("application_form_path") MultipartFile application_form_path
+			, @RequestParam("ddpay_form_path") MultipartFile ddpay_form_path
 			, HttpServletRequest req) {
+		
+		Boolean isFile = false;
 
-		if(!order_pdf_path.isEmpty()){
+		CustomerOrder co = new CustomerOrder();
+		if(!previous_provider_invoice_path.isEmpty()){
 			String order_path = TMUtils.createPath("broadband" + File.separator
 					+ "customers" + File.separator + customer_id
 					+ File.separator + "previous_provider_invoice_" + order_id
 					+ ".pdf");
 			try {
-				order_pdf_path.transferTo(new File(order_path));
+				previous_provider_invoice_path.transferTo(new File(order_path));
 			} catch (IllegalStateException | IOException e) {
 				e.printStackTrace();
 			}
 			
-			CustomerOrder co = new CustomerOrder();
 			co.setPrevious_provider_invoice(order_path);
+			isFile = true ;
+		}
+		if(!application_form_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "application_" + order_id
+					+ ".pdf");
+			try {
+				application_form_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			co.setOrder_pdf_path(order_path);
+			isFile = true ;
+		}
+		if(!ddpay_form_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "ddpay_" + order_id
+					+ ".pdf");
+			try {
+				ddpay_form_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			co.setDdpay_pdf_path(order_path);
+			isFile = true ;
+		}
+		if(isFile){
 			co.getParams().put("id", order_id);
 			this.crmService.editCustomerOrder(co);
 		}
@@ -658,11 +705,55 @@ public class CRMController {
 		return "redirect:/broadband-user/crm/customer/edit/" + customer_id;
 	}
 	
-	// download invoice PDF directly
+	// download previous provider's invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/{orderId}")
     public ResponseEntity<byte[]> downloadPreviousProviderInvoicePDF(Model model
     		,@PathVariable(value = "orderId") int orderId) throws IOException {
 		String filePath = this.crmService.queryCustomerPreviousProviderInvoiceFilePathById(orderId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	// download customer credit form PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/credit/pdf/download/{orderId}")
+    public ResponseEntity<byte[]> downloadCustomerCreditFormPDF(Model model
+    		,@PathVariable(value = "orderId") int orderId) throws IOException {
+		String filePath = this.crmService.queryCustomerCreditFilePathById(orderId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	// download customer credit form PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/ddpay/pdf/download/{orderId}")
+    public ResponseEntity<byte[]> downloadDDPayFormPDF(Model model
+    		,@PathVariable(value = "orderId") int orderId) throws IOException {
+		String filePath = this.crmService.queryCustomerDDPayFormPathById(orderId);
 		
 		// get file path
         Path path = Paths.get(filePath);

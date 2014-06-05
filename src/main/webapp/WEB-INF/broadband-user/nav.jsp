@@ -83,10 +83,16 @@
 							Billing <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
-							<li>
+							<%-- <li>
 								<a href="${ctx}/broadband-user/billing/billing-file-upload">
 									<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
 									Billing File Upload
+								</a>
+							</li> --%>
+							<li>
+								<a href="${ctx}/broadband-user/billing/call-billing-record/view/1/inserted">
+									<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
+									Customer Call Billing Record
 								</a>
 							</li>
 						</ul>
@@ -164,6 +170,19 @@
 								<a href="${ctx}/broadband-user/system/notification/create">
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 									Create Notification
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="${ctx}/broadband-user/system/call_charge_rate/view/1">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Call Charge Rate
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/system/call_charge_rate/create">
+									<span class="glyphicon glyphicon-gbp" style="padding-right:10px;"></span>
+									Create Call Charge Rate
 								</a>
 							</li>
 							<li class="divider"></li>

@@ -78,11 +78,15 @@ hr {
 		  			<h3 class="panel-title"><strong class="text-success">Billing</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
-			  		<p>The generation, management, customer billing transmission, chorus bills.</p>
+			  		<p>The generation, management, customer billing transmission, chorus or callplus bills.</p>
 					<ul class="list-unstyled">
-						<li>
+						<%-- <li>
                     		<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/billing/billing-file-upload">Billing File Upload</a>
+                    	</li> --%>
+						<li>
+                    		<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/call-billing-record/view/1/inserted">Customer Call Billing Record</a>
                     	</li>
 					</ul>
 			  	</div>
@@ -94,7 +98,7 @@ hr {
 		  			<h3 class="panel-title"><strong class="text-success">Provision</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
-			  		<p>Review all customer purchase orders and payment orders.</p>
+			  		<p>Review all customer's purchased and paid orders.</p>
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
@@ -164,6 +168,17 @@ hr {
                     <hr/>
                     <ul class="list-unstyled">
                     	<li>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/call_charge_rate/view/1">View Call Charge Rate</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-gbp" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/system/call_charge_rate/create">Create Call Charge Rate</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
                     		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/system/company-detail/edit">Edit Company Detail</a>
                     	</li>
@@ -181,7 +196,7 @@ hr {
 		<div class="col-md-3">
 			<div class="panel panel-success">
 		  		<div class="panel-heading">
-		  			<h3 class="panel-title"><strong class="text-success">Sale</strong></h3>
+		  			<h3 class="panel-title"><strong class="text-success">Sales</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
 			  		<p>Sale Online Ordering.</p>

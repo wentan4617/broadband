@@ -647,12 +647,14 @@ public class CRMRestController {
 
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
 		User user = new User();
-		user.getParams().put("user_role", "sales");
 		List<User> users = this.systemService.queryUser(user);
+		user.getParams().put("user_role", "sales");
+		List<User> sales = this.systemService.queryUser(user);
 		
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("customer", customer);
 		map.put("users", users);
+		map.put("sales", sales);
 		
 		return map;
 	}

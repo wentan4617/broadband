@@ -169,7 +169,7 @@
 				<div class="form-group">
 					<label class="control-label col-md-6">Download Application Form</label>
 					<div class="col-md-6">
-						<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite current application form's PDF"></a>
+						<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
 					<.
 						if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){
 					.>
@@ -185,7 +185,7 @@
 					</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-md-6">Download Credit Card Rquest</label>
+					<label class="control-label col-md-6">Download Credit Card Form</label>
 					<div class="col-md-6">
 					<.
 						if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){
@@ -194,7 +194,23 @@
 					<.
 						} else {
 					.>
-							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save"></a></p>
+							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download credit card form's PDF"></a></p>
+					<.
+						}
+					.>
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-md-6">Download DDPay Form</label>
+					<div class="col-md-6">
+					<.
+						if(customerOrder[i].ddpay_pdf_path == null || customerOrder[i].ddpay_pdf_path == ''){
+					.>
+  							<p class="form-control-static">No DDPay Form PDF</p>
+					<.
+						} else {
+					.>
+							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ddpay/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download ddpay form's PDF"></a></p>
 					<.
 						}
 					.>
@@ -206,9 +222,9 @@
 						<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
 						<.
 							for(var u=0; u<users.length; u++){
-								if(users[u].id == customerOrder[i].sale_id){
+								if(users[u].id == customerOrder[i].user_id){
 						.>
-									<.=  users[u].user_name .>
+									<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
 						<.
 								}
 							}
@@ -323,7 +339,15 @@
 						<input type="file" name="previous_provider_invoice_path" class="form-control" placeholder="File Path" />
 					</div>
 					<div class="col-md-6">
-						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Invoice</button>
+						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Pre Invoice</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-6">
+						<input type="file" name="application_form_path" class="form-control" placeholder="File Path" />
+					</div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Apply Form</button>
 					</div>
 				</div>
 				<div class="form-group">
@@ -331,21 +355,25 @@
 					<div class="col-md-6">&nbsp;</div>
 				</div>
 				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
+					<div class="col-md-6">
+						<input type="file" name="ddpay_form_path" class="form-control" placeholder="File Path" />
+					</div>
+					<div class="col-md-6">
+						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload DDPay Form</button>
+					</div>
 				</div>
 				<div class="form-group">
 					<div class="col-md-6">
 						<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
 							<.
-								for(var u=0; u<users.length; u++){
-									if(users[u] == customerOrder[i].sale_id){
+								for(var u=0; u<sales.length; u++){
+									if(sales[u] == customerOrder[i].sale_id){
 							.>
-								<option value="<.= users[u].id .>" selected="selected"><.= users[u].user_name .></option>
+								<option value="<.= sales[u].id .>" selected="selected"><.= sales[u].user_name .></option>
 							<.
 									} else {
 							.>
-								<option value="<.= users[u].id .>"><.= users[u].user_name .></option>
+								<option value="<.= sales[u].id .>"><.= sales[u].user_name .></option>
 							<.
 									}
 								}

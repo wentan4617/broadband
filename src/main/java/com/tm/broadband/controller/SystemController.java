@@ -18,12 +18,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.RegisterCustomer;
 import com.tm.broadband.model.User;
+import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
@@ -41,10 +43,13 @@ import com.tm.broadband.validator.mark.UserValidatedMark;
 public class SystemController {
 
 	private SystemService systemService;
+	private BillingService billingService;
 
 	@Autowired
-	public SystemController(SystemService systemService) {
+	public SystemController(SystemService systemService
+			,BillingService billingService) {
 		this.systemService = systemService;
+		this.billingService = billingService;
 	}
 
 	/*
@@ -393,4 +398,47 @@ public class SystemController {
 		
 		return "broadband-user/system/customer-register-chart";
 	}
+
+	
+	// BEGIN Call Charge Rate
+	@RequestMapping(value = "/broadband-user/system/call_charge_rate/view/{pageNo}")
+	public String callChargeRateView(Model model,
+			@PathVariable(value = "pageNo") int pageNo) {
+
+		Page<CallChargeRate> page = new Page<CallChargeRate>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by customer_type");
+		this.billingService.queryCallChargeRatesByPage(page);
+		model.addAttribute("page", page);
+
+		return "/broadband-user/system/call-charge-rate-view";
+	}
+
+	@RequestMapping(value = "/broadband-user/system/call_charge_rate/create")
+	public String toCallChargeRateCreate(Model model) {
+
+		model.addAttribute("ccr", new CallChargeRate());
+		model.addAttribute("panelheading", "Call Charge Rate Create");
+		model.addAttribute("action", "/broadband-user/system/call_charge_rate/create");
+
+		return "broadband-user/system/create-call-billing";
+	}
+
+	@RequestMapping(value = "/broadband-user/system/call_charge_rate/create", method = RequestMethod.POST)
+	public String doCallChargeRateCreate(
+			Model model,
+			@ModelAttribute("callChargeRate") CallChargeRate ccr,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		
+		this.billingService.createCallChargeRate(ccr);
+		
+		attr.addFlashAttribute("success", "Create Call Charge Rate is successful.");
+
+		return "redirect:/broadband-user/system/call_charge_rate/view/1";
+	}
+	// END Call Charge Rate
+	
+	
 }

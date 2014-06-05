@@ -54,6 +54,8 @@ public class CustomerOrder implements Serializable {
 	private String broadband_asid;
 	private Date rfs_date;
 	private String previous_provider_invoice;
+	private Integer user_id;
+	private String ddpay_pdf_path;
 	
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -437,6 +439,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setPrevious_provider_invoice(String previous_provider_invoice) {
 		this.previous_provider_invoice = previous_provider_invoice;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
+	}
+
+	public String getDdpay_pdf_path() {
+		return ddpay_pdf_path;
+	}
+
+	public void setDdpay_pdf_path(String ddpay_pdf_path) {
+		this.ddpay_pdf_path = ddpay_pdf_path;
 	}
 
 	

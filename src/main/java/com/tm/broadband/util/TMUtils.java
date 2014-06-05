@@ -1,33 +1,45 @@
 package com.tm.broadband.util;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.RegisterCustomer;
+import com.tm.broadband.pdf.InvoicePDFCreator;
 
 public class TMUtils {
 	
 	private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	private static SimpleDateFormat date1Format = new SimpleDateFormat("yyyy/MM/dd");
+	private static SimpleDateFormat date1Format = new SimpleDateFormat("dd/MM/yyyy");
 	private static SimpleDateFormat date2Format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	private static SimpleDateFormat date3Format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	private static DecimalFormat numberFormat = new DecimalFormat("0.00");
+	private static DecimalFormat timeFormat = new DecimalFormat("00.00");
 	
 	public TMUtils() {
 	}
@@ -85,6 +97,36 @@ public class TMUtils {
 		return null;
 	}
 	
+	public static Date parseDate2YYYYMMDD(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date2Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
+	public static Date parseDate1YYYYMMDD(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date1Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
+	public static Date parseDate3YYYYMMDD(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date3Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
 	public static void setJSONErrorMap(JSONBean<?> json, BindingResult result) {
 		List<FieldError> fields = result.getFieldErrors();
 		for (FieldError field: fields) {
@@ -107,9 +149,21 @@ public class TMUtils {
 	
 	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
 	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
-	public static String fillDecimal(String sum){
-		sum = String.valueOf(Math.round((double)Double.valueOf(sum)*100)/100.00);
-		return sum.length()-sum.indexOf(".")-1 < 2 ? sum += "0" : sum;
+	public static String fillDecimalPeriod(String sum){
+		return numberFormat.format(Double.parseDouble(sum));
+	}
+	
+	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
+	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	public static BigDecimal fillDecimalPeriod(BigDecimal bigDecimal){
+		return new BigDecimal(numberFormat.format(bigDecimal));
+	}
+	
+	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
+	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	public static String fillDecimalColon(String sum){
+		sum = timeFormat.format(Double.parseDouble(sum));
+		return sum.replace(".", ":");
 	}
 	
 	/*
@@ -541,6 +595,23 @@ public class TMUtils {
 			registerCustomers.add(statistic);
 		}
 	}
+	/**
+	 * Methods from Calendar END
+	 */
+	
+	// Remove all non-numeric characters, if 0 is first char then remove it
+	public static String formatPhoneNumber(String str){
+		if(str!=null && !"".equals(str)){
+			String pattern = "\\D+";
+			Pattern p = Pattern.compile(pattern);
+			Matcher m = p.matcher(str);
+			str = m.replaceAll("");
+			if(str.indexOf("0") == 0){
+				str = str.substring(1, str.length());
+			}
+		}
+		return str;
+	}
 	
 	public static void printResultErrors(BindingResult result) {
 		if (result.hasErrors()) {
@@ -550,10 +621,89 @@ public class TMUtils {
 		}
 	}
 	
+	// BEGIN CustomerCallRecord OPERATION
+	public static BigDecimal ccrOperation(String pstn_number, List<CustomerInvoiceDetail> cids
+			, InvoicePDFCreator invoicePDF, BigDecimal bigPayableAmount
+			, CustomerCallRecordMapper customerCallRecordMapper){
+		
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		cal.set(Calendar.MONDAY, cal.get(Calendar.MONDAY)-1);
+		
+		
+		CustomerCallRecord ccrTemp = new CustomerCallRecord();
+		ccrTemp.getParams().put("where", "query_last_call_records");
+		ccrTemp.getParams().put("orderby", "ORDER BY charge_date_time ASC");
+		ccrTemp.getParams().put("last_month", cal.getTime());
+		ccrTemp.getParams().put("record_type", "T1");
+		// PRODUCTION MODE CHANGE TO pstn_number
+		ccrTemp.getParams().put("clear_service_id", //96272424
+				TMUtils.formatPhoneNumber(pstn_number)
+		);
+		List<CustomerCallRecord> ccrsTemp = customerCallRecordMapper.selectCustomerCallRecord(ccrTemp);
+		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
+
+		BigDecimal bigTotalAmountIncl = new BigDecimal(0d);
+		// ITERATIVELY ADD ALL CALL CHARGES
+		for (CustomerCallRecord ccr : ccrsTemp) {
+			
+
+			// BEGIN Rate Operation
+			boolean is0900 = false; boolean isFax = false;
+			boolean isMobile = ccr.getBilling_description().toUpperCase().contains("MOBILE")
+					|| ccr.getBilling_description().toUpperCase().contains("OTH NETWRK");
+			boolean isInternational = false; boolean isNational = false; boolean isBusinessLocal = false;
+
+			Double costPerMinute = 1d;
+			if(is0900){} if(isFax){}
+			if(isMobile){ costPerMinute = 0.19d ; }
+			if(isInternational){} if(isNational){} if(isBusinessLocal){}
+			
+			if(is0900 || isFax || isMobile || isInternational || isNational || isBusinessLocal){
+				
+				// COST PER MINUTE
+				BigDecimal bigCostPerMinute = new BigDecimal(costPerMinute);
+				
+				// DURATION/SECONDS
+				BigDecimal bigDuration = new BigDecimal(ccr.getDuration());
+				
+				// 60 SECONDS/MINUTE
+				BigDecimal bigDuration60 = new BigDecimal(60d);
+				
+				// FINAL DURATION/TOTAL MINUTE
+				BigDecimal bigFinalDuration = new BigDecimal(bigDuration.divide(bigDuration60, 2, BigDecimal.ROUND_DOWN).doubleValue());
+				ccr.setAmount_incl(bigFinalDuration.multiply(bigCostPerMinute).doubleValue());
+				bigTotalAmountIncl = bigTotalAmountIncl.add(bigFinalDuration.multiply(bigCostPerMinute));
+			} else {
+				BigDecimal bigOriginalCost = new BigDecimal(ccr.getAmount_incl());
+				bigTotalAmountIncl = bigTotalAmountIncl.add(bigOriginalCost);
+			}
+			
+			// END Rate Operation
+			
+			
+			// FORMAT DURATION(second) TO TIME STYLE
+			ccr.setFormated_duration(TMUtils.fillDecimalColon(String.valueOf((double)ccr.getDuration() / 60)));
+			
+			// ADD FINAL CCR
+			ccrs.add(ccr);
+		}
+		
+		bigTotalAmountIncl = fillDecimalPeriod(bigTotalAmountIncl);
+		
+		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+		cid.setInvoice_detail_name("Call Charge : ( " + pstn_number + " )");
+		cid.setInvoice_detail_price(bigTotalAmountIncl.doubleValue());
+		cid.setInvoice_detail_unit(1);
+		
+		cids.add(cid);
+		
+		invoicePDF.setCcrs(ccrs);
+		
+		// ADD TOTAL CALL FEE INTO INVOICE
+		return bigPayableAmount.add(bigTotalAmountIncl);
+	}
+	// END CustomerCallRecord OPERATION
 	
-	/**
-	 * Methods from Calendar END
-	 */
 	
 
 }

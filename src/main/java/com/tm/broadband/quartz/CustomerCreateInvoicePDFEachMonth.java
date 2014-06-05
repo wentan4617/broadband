@@ -29,7 +29,7 @@ public class CustomerCreateInvoicePDFEachMonth {
         // only if the order is in using status
         customerOrder.getParams().put("order_status", "using");
         
-        // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
+        // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-08-21") under testing environment
 		// using new Date() under production environment
         customerOrder.getParams().put("next_invoice_create_date", new Date());
         customerOrder.getParams().put("order_type", "order-no-term"); 

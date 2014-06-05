@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tm.broadband.util.TMUtils;
+
 /*
  * TABLE MAPPING PROPERTIES
  */
@@ -35,6 +37,8 @@ public class BillingFileUpload implements Serializable {
 	private Boolean inserted_database;
 	private Integer upload_by;
 	private String billing_type;
+	private Date statement_date;
+	private Date insert_date;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -42,6 +46,12 @@ public class BillingFileUpload implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String upload_date_str;
+	private String statement_date_str;
+	private String insert_date_str;
+	
+	
 	private Map<String, Object> params = new HashMap<String, Object>();
 
 	/*
@@ -118,6 +128,49 @@ public class BillingFileUpload implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getUpload_date_str() {
+		this.setUpload_date_str(TMUtils.dateFormatYYYYMMDD(this.getUpload_date()));
+		return upload_date_str;
+	}
+
+	public void setUpload_date_str(String upload_date_str) {
+		this.upload_date_str = upload_date_str;
+	}
+
+	public Date getStatement_date() {
+		return statement_date;
+	}
+
+	public void setStatement_date(Date statement_date) {
+		this.statement_date = statement_date;
+	}
+
+	public String getStatement_date_str() {
+		this.setStatement_date_str(TMUtils.dateFormatYYYYMMDD(this.getStatement_date()));
+		return statement_date_str;
+	}
+
+	public void setStatement_date_str(String statement_date_str) {
+		this.statement_date_str = statement_date_str;
+	}
+
+	public Date getInsert_date() {
+		return insert_date;
+	}
+
+	public void setInsert_date(Date insert_date) {
+		this.insert_date = insert_date;
+	}
+
+	public String getInsert_date_str() {
+		this.setInsert_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(this.getInsert_date()));
+		return insert_date_str;
+	}
+
+	public void setInsert_date_str(String insert_date_str) {
+		this.insert_date_str = insert_date_str;
 	}
 
 }

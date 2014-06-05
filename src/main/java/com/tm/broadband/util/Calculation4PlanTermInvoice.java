@@ -28,7 +28,7 @@ public class Calculation4PlanTermInvoice {
 		
 		// Term plan's daily price, monthlyCharge divide monthly maximum days
 		Double dailyPrice = bigMonthlyCharge.divide(bigMaximumDays, 5, BigDecimal.ROUND_DOWN).doubleValue();
-		resultMap.put("dailyPrice", Double.parseDouble(TMUtils.fillDecimal(String.valueOf(dailyPrice))));
+		resultMap.put("dailyPrice", Double.parseDouble(TMUtils.fillDecimalPeriod(String.valueOf(dailyPrice))));
 		
 		// BEGIN FIRST STEP, get maximum days in month & daily price
 		
@@ -45,7 +45,7 @@ public class Calculation4PlanTermInvoice {
 		
 		// Term plan's daily price, monthlyCharge divide monthly maximum days
 		Double totalPrice = bigDailyPrice.multiply(bigRemainingDays).doubleValue();
-		resultMap.put("totalPrice", Double.parseDouble(TMUtils.fillDecimal(String.valueOf(totalPrice))));
+		resultMap.put("totalPrice", Double.parseDouble(TMUtils.fillDecimalPeriod(String.valueOf(totalPrice))));
 		
 		
 //		System.out.println(cal.getActualMaximum(Calendar.DATE));

@@ -540,6 +540,35 @@ public class SaleController {
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
 	}
 	
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload_previous_provider_invoice_pdf")
+	public String uploadPreviousProviderInvoicePDF(Model model
+			, @RequestParam("sale_id") Integer sale_id
+			, @RequestParam("order_id") Integer order_id
+			, @RequestParam("customer_id") Integer customer_id
+			, @RequestParam("previous_provider_invoice_path") MultipartFile previous_provider_invoice_path
+			,HttpServletRequest req) {
+
+		
+		if(!previous_provider_invoice_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "previous_provider_invoice_" + order_id
+					+ ".pdf");
+			try {
+				previous_provider_invoice_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			CustomerOrder co = new CustomerOrder();
+			co.setPrevious_provider_invoice(order_path);
+			co.getParams().put("id", order_id);
+			this.crmService.editCustomerOrder(co);
+		}
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
+	}
+	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/{pageNo}/{sale_id}")
 	public String onlineOrderView(Model model
 			, @PathVariable("pageNo") int pageNo
@@ -568,10 +597,10 @@ public class SaleController {
 		}
 		
 		this.saleService.queryOrdersByPage(page);
-		List<User> users = this.saleService.queryUsersWhoseIdExistInOrder();
+		List<User> salesUsers = this.saleService.queryUsersWhoseIdExistInOrder();
 		
 		model.addAttribute("page", page);
-		model.addAttribute("users", users);
+		model.addAttribute("salesUsers", salesUsers);
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE

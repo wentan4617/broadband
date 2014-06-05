@@ -8,9 +8,9 @@
 
 	<!-- <import resource="application-config.xml"/> -->
 	
-	<job id="importRadiusRadacctJob" xmlns="http://www.springframework.org/schema/batch">
+	<!-- <job id="importRadiusRadacctJob" xmlns="http://www.springframework.org/schema/batch">
 		<step id="dataExportImportStep" >
-			<tasklet><!-- task-executor="taskExecutor" -->
+			<tasklet>task-executor="taskExecutor"
 				<chunk reader="dataExportRadiusRadacctReader" processor="dataImportProcessor" writer="dataImportRadacctWriter" commit-interval="10"></chunk>
 			</tasklet>
 		</step>
@@ -27,6 +27,6 @@
 	<bean id="dataImportRadacctWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter">
 		<property name="sqlSessionFactory" ref="broadbandSqlSessionFactory" />
   		<property name="statementId" value="insertRadacct" />
-	</bean>
+	</bean> -->
 	
 </beans>

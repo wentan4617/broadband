@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 
 /**
  * mapping tm_plan, plan DAO component
@@ -25,8 +24,12 @@ public interface BillingFileUploadMapper {
 	
 	/* SELECT AREA */
 	
-	BillingFileUpload selectBillingFileUpload(BillingFileUpload billingFileUpload);
-	List<BillingFileUpload> selectBillingFileUploads(BillingFileUpload billingFileUpload);
+	String selectBillingFilePathById(int id);
+	
+	BillingFileUpload selectBillingFileUpload(BillingFileUpload bfu);
+	List<BillingFileUpload> selectBillingFileUploads(BillingFileUpload bfu);
+	List<BillingFileUpload> selectBillingFileUploadsByPage(Page<BillingFileUpload> page);
+	int selectBillingFileUploadsSum(Page<BillingFileUpload> page);
 	
 	/* // END SELECT AREA */
 	
@@ -34,7 +37,7 @@ public interface BillingFileUploadMapper {
 	
 	/* INSERT AREA */
 	
-	void insertBillingFileUpload(BillingFileUpload billingFileUpload);
+	void insertBillingFileUpload(BillingFileUpload bfu);
 	
 	/* // END INSERT AREA */
 	
@@ -42,7 +45,7 @@ public interface BillingFileUploadMapper {
 	
 	/* UPDATE AREA */
 	
-	void updateBillingFileUpload(BillingFileUpload billingFileUpload);
+	void updateBillingFileUpload(BillingFileUpload bfu);
 	
 	/* // END UPDATE AREA */
 	
@@ -50,7 +53,7 @@ public interface BillingFileUploadMapper {
 	
 	/* DELETE AREA */
 	
-	void deleteBillingFileUpload(BillingFileUpload billingFileUpload);
+	void deleteBillingFileUpload(int id);
 	
 	/* // END DELETE AREA */
 	

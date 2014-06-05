@@ -16,6 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.10 2014-06-03
+ 
+ 
+demand version 1.0.9 2014-05-30
+
+* order表加个ddpay_form字段，界面上加一行操作，上传，下载功能。(steven)
+* order表加一个user_id字段，记录后台下单人员的user_id，order界面判断如果sale_id不为空则该user_name显示(显示user_role)，如果user_id不为空则显示该user_name(显示user_role)(steven)
  
 demand version 1.0.9 2014-05-27
 
