@@ -190,7 +190,7 @@
 		<!-- Provision Module END -->
 
 		<!-- Data Module BEGIN -->
-		<url-pattern>/broadband-user/data/*</url-pattern>
+		<!-- <url-pattern>/broadband-user/data/*</url-pattern> -->
 		<!-- Data Module END -->
 
 		<!-- System Module BEGIN -->

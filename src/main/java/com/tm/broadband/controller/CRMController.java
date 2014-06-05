@@ -197,9 +197,9 @@ public class CRMController {
     
 	// send invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}/{customerId}")
-	public String sendInvoicePDF(Model model
-    		,@PathVariable(value = "invoiceId") int invoiceId
-    		,@PathVariable(value = "customerId") int customerId){
+	public String sendInvoicePDF(Model model,
+			@PathVariable(value = "invoiceId") int invoiceId,
+			@PathVariable(value = "customerId") int customerId) {
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
 		Customer customer = this.crmService.queryCustomerById(customerId);
 		Notification notification = this.systemService.queryNotificationBySort("invoice", "email");

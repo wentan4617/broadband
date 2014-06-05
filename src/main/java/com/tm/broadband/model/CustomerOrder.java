@@ -74,8 +74,12 @@ public class CustomerOrder implements Serializable {
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
+	private CustomerOrderDetail cod;
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
+	private NetworkUsage usage = new NetworkUsage();
+	
+
 
 	/*
 	 * END RELATED PROPERTIES
@@ -437,6 +441,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setPrevious_provider_invoice(String previous_provider_invoice) {
 		this.previous_provider_invoice = previous_provider_invoice;
+	}
+
+	public CustomerOrderDetail getCod() {
+		return cod;
+	}
+
+	public void setCod(CustomerOrderDetail cod) {
+		this.cod = cod;
+	}
+
+	public NetworkUsage getUsage() {
+		return usage;
+	}
+
+	public void setUsage(NetworkUsage usage) {
+		this.usage = usage;
 	}
 
 	

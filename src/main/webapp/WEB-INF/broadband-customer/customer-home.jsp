@@ -100,25 +100,6 @@
 												<li><hr style="margin:0;"/></li>
 												<li><h4 class="text-info" style="margin:0;">${cod.detail_name }</h4></li>
 												<li><hr style="margin:0;"/></li>
-												<li>
-													<ul class="list-unstyled personal-info">
-														<li><strong class="text-success">Service Start on</strong> ${customerOrder.order_using_start }</li>
-														<li><strong class="text-success">renew automatically on</strong> ${customerOrder.order_using_start }</li>
-													</ul>
-												</li>
-												<li>
-													<ul class="list-inline" style="margin-left:40px">
-														<li>
-															<a href="#" class="btn btn-success">Change Plan</a>
-														</li>
-														<li>
-															<a href="#" class="btn btn-success">Cancel Plan</a>
-														</li>
-														<li>
-															<a href="#" class="btn btn-success">Data Usage</a>
-														</li>
-													</ul>
-												</li>
 											</c:if>
 											<c:if test="${fn:contains(cod.detail_type, 'hardware-')}">
 												<li><hr style="margin:0;"/></li>

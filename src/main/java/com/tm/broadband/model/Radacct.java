@@ -2,10 +2,16 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Radacct implements Serializable {
 
 	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
 
 	private Long radacctid;
 	private String username;
@@ -19,6 +25,20 @@ public class Radacct implements Serializable {
 	private String calledstationid;
 	private String acctterminatecause;
 	private Date _accttime;
+	
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
+
+	private Map<String, Object> params = new HashMap<String, Object>();
+
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public Radacct() {
 		// TODO Auto-generated constructor stub

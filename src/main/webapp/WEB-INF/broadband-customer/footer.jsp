@@ -12,6 +12,8 @@
 				&middot;
 				<a href="${ctx }/term-and-conditions" rel="nofollow">Terms & Conditions</a>
 				&middot;
+				<a href="${ctx }/e-commerce" rel="nofollow">E-Commerce</a>
+				&middot;
 				<a href="${ctx }/about-us#contact" rel="nofollow">Contact Us: 0800 229 237</a>
 			</p>
 	    </footer>

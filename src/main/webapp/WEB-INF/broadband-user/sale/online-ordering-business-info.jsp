@@ -188,7 +188,7 @@
 						<div class="col-sm-4">
 							<div class="input-group date">
 						  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" 
-						  			value="<fmt:formatDate  value="${orderCustomer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />" class="form-control" class="form-control"  data-error-field />
+						  			value="<fmt:formatDate  value="${orderCustomer.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />" class="form-control"  data-error-field />
 						  		<span class="input-group-addon">
 						  			<i class="glyphicon glyphicon-calendar"></i>
 						  		</span>

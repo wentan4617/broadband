@@ -1,6 +1,9 @@
 package com.tm.broadband.controller;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -8,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,9 +24,14 @@ import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.DateUsage;
 import com.tm.broadband.model.JSONBean;
+import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
@@ -43,13 +52,15 @@ public class CustomerRestController {
 	private MailerService mailerService;
 	private SmserService smserService;
 	private SystemService systemService;
+	private DataService dataService;
 
 	@Autowired
-	public CustomerRestController(CRMService crmService, MailerService mailerService, SystemService systemService, SmserService smserService) {
+	public CustomerRestController(CRMService crmService, MailerService mailerService, SystemService systemService, SmserService smserService, DataService dataService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.smserService = smserService;
 		this.systemService = systemService;
+		this.dataService = dataService;
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -299,4 +310,61 @@ public class CustomerRestController {
 
 		return json;
 	}
+	
+	@RequestMapping("/customer/data/view/{calculator_date}")
+	public List<DateUsage> doCustomerUsageView(HttpServletRequest req,
+			@PathVariable("calculator_date") String calculator_date){
+		
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+		CustomerOrder co = customer.getCustomerOrders().get(0);
+		String svlan = co.getSvlan()
+				, cvlan = co.getCvlan();
+		
+		Calendar c = Calendar.getInstance();
+		
+		String[] date_array = calculator_date.split("-");
+		int year = Integer.parseInt(date_array[0]);
+		int month = Integer.parseInt(date_array[1]);
+		
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month-1);
+		
+		int days = TMUtils.judgeDay(year, month);
+
+		List<DateUsage> dateUsages = new ArrayList<DateUsage>();
+		for (int i = 0; i < days; i++) {
+			c.set(Calendar.DAY_OF_MONTH, i + 1);
+			Date date = c.getTime();
+			
+			DateUsage dateUsage = new DateUsage();
+			dateUsage.setDate(TMUtils.dateFormatYYYYMMDD(date));
+			dateUsages.add(dateUsage);
+		}
+		
+		NetworkUsage u = new NetworkUsage();
+		u.getParams().put("where", "query_currentMonth");
+		u.getParams().put("vlan", svlan + cvlan);
+		u.getParams().put("currentYear", year);
+		u.getParams().put("currentMonth", month);
+		
+		List<NetworkUsage> usages = this.dataService.queryUsages(u);
+
+		if (usages != null && usages.size() > 0) {
+			for (NetworkUsage usage: usages) {
+				for (DateUsage dateUsage: dateUsages) {
+					//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+					if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
+						dateUsage.setUsage(usage);
+						System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+						break;
+					}
+				}
+			}
+		}
+		
+		return dateUsages;
+		
+	}
+	
+
 }

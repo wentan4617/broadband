@@ -128,7 +128,14 @@ hr {
 			  	<div class="panel-body">
 			  		<p>Configure, manage, query, customer data traffic.</p>
                     <ul class="list-unstyled">
-                    	
+                    	<li>
+                    		<span class="glyphicon glyphicon-cloud" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/data/operatre">Data Operatre</a>
+                    	</li>
+                    	<li>
+                    		<span class="glyphicon glyphicon-cloud" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/data/customer/view">Data Customer View</a>
+                    	</li>
                     </ul>
 			  	</div>
 			</div>

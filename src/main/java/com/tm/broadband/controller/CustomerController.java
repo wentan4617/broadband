@@ -48,6 +48,7 @@ import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
@@ -65,16 +66,18 @@ public class CustomerController {
 	private MailerService mailerService;
 	private SystemService systemService;
 	private SmserService smserService;
+	private DataService dataService;
 
 	@Autowired
 	public CustomerController(PlanService planService, CRMService crmService,
 			MailerService mailerService, SystemService systemService,
-			SmserService smserService) {
+			SmserService smserService, DataService dataService) {
 		this.planService = planService;
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
+		this.dataService = dataService;
 	}
 
 	@RequestMapping(value = {"", "/home" })
@@ -556,8 +559,11 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/customer/data")
-	public String customerData(Model model) {
+	public String customerData(Model model, HttpServletRequest req) {
+		
 		model.addAttribute("data", "active");
+		model.addAttribute("current_date", TMUtils.dateFormatYYYYMMDD(new Date()).substring(0, 7));
+		
 		return "broadband-customer/customer-data";
 	}
 
