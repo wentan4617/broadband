@@ -1,7 +1,9 @@
 package com.tm.broadband.util;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
+import java.util.List;
+
+import com.tm.broadband.model.CallInternationalRate;
 
 
 
@@ -83,6 +85,47 @@ public class Test {
 //		DecimalFormat df = new DecimalFormat("00.00");
 //		System.out.println(df.format(Double.parseDouble(sum)));
 		
+//		List<CallInternationalRate> cirs = CallInternationalRateUltility.cirs("E:\\项目\\ISP项目开发\\PDF模版\\账单电话拨打细目\\Calling Rate for CyberPark_05June2014.csv");
+//		
+//		for (CallInternationalRate cir : cirs) {
+//			System.out.print(cir.getArea_prefix()+"\t");
+//			System.out.print(cir.getRate_type()+"\t");
+//			System.out.print(cir.getArea_name()+"\t");
+//			System.out.println(cir.getRate_cost());
+//		}
+		
+//		System.out.println("0098755123".replaceFirst("^0*", ""));
+		
+//		System.out.println("09-9786548".substring(0, "09-9786548".indexOf("-")));
+		
+
+//		// DURATION/SECONDS
+//		BigDecimal bigDuration = new BigDecimal(120d);
+//		
+//		// 60 SECONDS/MINUTE
+//		BigDecimal bigDuration60 = new BigDecimal(60d);
+//		
+//		// FINAL DURATION/TOTAL MINUTE
+//		BigDecimal bigFinalDuration = new BigDecimal(bigDuration.divide(bigDuration60, 2, BigDecimal.ROUND_DOWN).doubleValue());
+//		
+//		boolean isReminder = bigFinalDuration.toString().indexOf(".") > 0;
+//		
+//		if(isReminder){
+//			System.out.println(isReminder);
+//			String bigFinalDurationStr = bigFinalDuration.toString();
+//			bigFinalDuration = new BigDecimal(Integer.parseInt(bigFinalDurationStr.substring(0, bigFinalDurationStr.indexOf(".")))+1);
+//			System.out.println(bigFinalDuration);
+//		}
+//		System.out.println(bigFinalDuration);
+		
+//		String sum = "2.69";
+//		Integer sumInteger = Integer.parseInt(sum.substring(0, sum.indexOf(".")));
+//		Integer sumReminder = Integer.parseInt(sum.substring(sum.indexOf(".")+1));
+//		if(sumReminder > 59){
+//			sumReminder = sumReminder - 60;
+//			sumInteger ++;
+//		}
+//		System.out.println(sumInteger+"."+sumReminder);
 		
 	}
 

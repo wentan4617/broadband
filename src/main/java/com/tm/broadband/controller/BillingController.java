@@ -26,12 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.tm.broadband.model.BillingFileUpload;
-import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.CallInternationalRateUltility;
 import com.tm.broadband.util.CallingRecordUltility;
 import com.tm.broadband.util.TMUtils;
 
@@ -209,4 +210,50 @@ public class BillingController {
 		
 		return "redirect:/broadband-user/billing/call-billing-record/view/" + pageNo + "/" + status;
 	}
+	
+	// BEGIN CallInternationalRate
+	@RequestMapping("/broadband-user/billing/call-international-rate/view/{pageNo}")
+	public String toCallInternationalRate(Model model
+			, @PathVariable("pageNo") int pageNo) {
+
+		Page<CallInternationalRate> page = new Page<CallInternationalRate>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "ORDER BY rate_type");
+		page = this.billingService.queryCallInternationalRatesByPage(page);
+		
+		model.addAttribute("page", page);		
+		
+		return "broadband-user/billing/call-international-rate-view";
+	}
+	
+	// Insert Call International Rate CSV into database
+	@RequestMapping(value = "/broadband-user/billing/call-international-rate/csv/insert", method = RequestMethod.POST)
+	public String insertCallInternationalRateCSVIntoDatabase(Model model
+			, @RequestParam("pageNo") int pageNo
+			, @RequestParam("call_international_rate_csv_file") MultipartFile filePath) {
+
+		if(!filePath.isEmpty()){
+			String save_path = TMUtils.createPath("broadband" + File.separator
+					+ "call_international_rate" + File.separator + filePath.getOriginalFilename());
+			try {
+				filePath.transferTo(new File(save_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			this.billingService.removeCallInternationalRate();
+			
+			// Get All data from the CSV file
+			List<CallInternationalRate> cirs = CallInternationalRateUltility.cirs(save_path);
+			
+			// Iteratively insert into database
+			for (CallInternationalRate cir : cirs) {
+				this.billingService.createCallInternationalRate(cir);
+			}
+		}
+		
+		return "redirect:/broadband-user/billing/call-international-rate/view/" + pageNo ;
+	}
+	// END CallInternationalRate
 }

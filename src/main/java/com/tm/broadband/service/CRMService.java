@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
@@ -71,6 +72,7 @@ public class CRMService {
 	private ContactUsMapper contactUsMapper;
 	private ManualDefrayLogMapper manualDefrayLogMapper;
 	private CustomerCallRecordMapper customerCallRecordMapper;
+	private CallInternationalRateMapper callInternationalRateMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -93,7 +95,8 @@ public class CRMService {
 			OrganizationMapper organizationMapper,
 			ContactUsMapper contactUsMapper,
 			ManualDefrayLogMapper manualDefrayLogMapper,
-			CustomerCallRecordMapper customerCallRecordMapper) {
+			CustomerCallRecordMapper customerCallRecordMapper,
+			CallInternationalRateMapper callInternationalRateMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -109,6 +112,7 @@ public class CRMService {
 		this.contactUsMapper = contactUsMapper;
 		this.manualDefrayLogMapper = manualDefrayLogMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
+		this.callInternationalRateMapper = callInternationalRateMapper;
 	}
 	
 	
@@ -952,7 +956,7 @@ public class CRMService {
 				
 				// BEGIN IF HAVE PSTN_NUMBER
 				if(!"".equals(pstn_number) && pstn_number!=null){
-					bigPayableAmount = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, bigPayableAmount, this.customerCallRecordMapper);
+					bigPayableAmount = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, bigPayableAmount, this.customerCallRecordMapper, this.callInternationalRateMapper);
 				}
 				// END IF HAVE PSTN_NUMBER
 				
@@ -1166,7 +1170,7 @@ public class CRMService {
 		
 		// BEGIN IF HAVE PSTN_NUMBER
 		if(!"".equals(pstn_number) && pstn_number!=null){
-			currentTotalPayable = TMUtils.ccrOperation(pstn_number, customerInvoiceDetailList, invoicePDF, currentTotalPayable, this.customerCallRecordMapper);
+			currentTotalPayable = TMUtils.ccrOperation(pstn_number, customerInvoiceDetailList, invoicePDF, currentTotalPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
 		}
 		// END IF HAVE PSTN_NUMBER
 

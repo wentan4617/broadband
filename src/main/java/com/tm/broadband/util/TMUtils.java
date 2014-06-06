@@ -18,7 +18,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
+import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
+import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
@@ -159,9 +161,16 @@ public class TMUtils {
 		return new BigDecimal(numberFormat.format(bigDecimal));
 	}
 	
-	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
-	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	// e.g.: fix time format, for example 2.77 change to 3.17 finally change to 3:17 and return
 	public static String fillDecimalColon(String sum){
+		sum = timeFormat.format(Double.parseDouble(sum));
+		Integer sumInteger = Integer.parseInt(sum.substring(0, sum.indexOf(".")));
+		Integer sumReminder = Integer.parseInt(sum.substring(sum.indexOf(".")+1));
+		if(sumReminder > 59){
+			sumReminder = sumReminder - 60;
+			sumInteger ++;
+		}
+		sum = sumInteger+"."+sumReminder;
 		sum = timeFormat.format(Double.parseDouble(sum));
 		return sum.replace(".", ":");
 	}
@@ -624,7 +633,8 @@ public class TMUtils {
 	// BEGIN CustomerCallRecord OPERATION
 	public static BigDecimal ccrOperation(String pstn_number, List<CustomerInvoiceDetail> cids
 			, InvoicePDFCreator invoicePDF, BigDecimal bigPayableAmount
-			, CustomerCallRecordMapper customerCallRecordMapper){
+			, CustomerCallRecordMapper customerCallRecordMapper
+			, CallInternationalRateMapper callInternationalRateMapper){
 		
 		Calendar cal = Calendar.getInstance(Locale.CHINA);
 		cal.set(Calendar.MONDAY, cal.get(Calendar.MONDAY)-1);
@@ -649,16 +659,19 @@ public class TMUtils {
 
 			// BEGIN Rate Operation
 			boolean is0900 = false; boolean isFax = false;
-			boolean isMobile = ccr.getBilling_description().toUpperCase().contains("MOBILE")
-					|| ccr.getBilling_description().toUpperCase().contains("OTH NETWRK");
-			boolean isInternational = false; boolean isNational = false; boolean isBusinessLocal = false;
+//			boolean isMobile = ccr.getBilling_description().toUpperCase().contains("MOBILE")
+//					|| ccr.getBilling_description().toUpperCase().contains("OTH NETWRK");
+			boolean isNational = false; boolean isBusinessLocal = false;
+			List<CallInternationalRate> cir = callInternationalRateMapper.selectCallInternationalRateByAreaPrefix(ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
+			boolean isInternational = cir!=null && cir.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
 			if(is0900){} if(isFax){}
-			if(isMobile){ costPerMinute = 0.19d ; }
-			if(isInternational){} if(isNational){} if(isBusinessLocal){}
+//			if(isMobile){ costPerMinute = 0.19d ; }
+			if(isNational){} if(isBusinessLocal){}
+			if(isInternational){ costPerMinute = cir.get(0).getRate_cost(); }
 			
-			if(is0900 || isFax || isMobile || isInternational || isNational || isBusinessLocal){
+			if((is0900 || isFax || isNational || isBusinessLocal) || (isInternational)){
 				
 				// COST PER MINUTE
 				BigDecimal bigCostPerMinute = new BigDecimal(costPerMinute);
@@ -671,6 +684,12 @@ public class TMUtils {
 				
 				// FINAL DURATION/TOTAL MINUTE
 				BigDecimal bigFinalDuration = new BigDecimal(bigDuration.divide(bigDuration60, 2, BigDecimal.ROUND_DOWN).doubleValue());
+				
+				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+				if(bigFinalDuration.toString().indexOf(".") > 0){
+					String bigFinalDurationStr = bigFinalDuration.toString();
+					bigFinalDuration = new BigDecimal(Integer.parseInt(bigFinalDurationStr.substring(0, bigFinalDurationStr.indexOf(".")))+1);
+				}
 				ccr.setAmount_incl(bigFinalDuration.multiply(bigCostPerMinute).doubleValue());
 				bigTotalAmountIncl = bigTotalAmountIncl.add(bigFinalDuration.multiply(bigCostPerMinute));
 			} else {
