@@ -227,6 +227,7 @@
 		$.post('${ctx}/contact-us', data, function(json){
 			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
 			$.jsonValidation(json, 'right');
+			$('.form-control').val('');
 		}, 'json').always(function () {
 			$btn.button('reset');
 	    });
