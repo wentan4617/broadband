@@ -57,9 +57,9 @@
 								<label for="" class="control-label col-md-3"></label>
 								<div class="col-md-6">
 									<form:select path="plan.topup.topup_fee" class="selectpicker show-tick form-control">
-										<form:option value="30">Top up $ 20</form:option>
-										<form:option value="50">Top up $ 30</form:option>
-										<form:option value="50">Top up $ 40</form:option>
+										<form:option value="20">Top up $ 20</form:option>
+										<form:option value="30">Top up $ 30</form:option>
+										<form:option value="40">Top up $ 40</form:option>
 										<form:option value="50">Top up $ 50</form:option>
 									</form:select>
 								</div>

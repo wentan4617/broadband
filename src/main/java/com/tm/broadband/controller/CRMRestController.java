@@ -510,13 +510,14 @@ public class CRMRestController {
 		
 		
 		CustomerOrder co = new CustomerOrder();
-		co.setSvlan(customerOrder.getSvlan());
-		co.setCvlan(customerOrder.getCvlan());
+		co.setSvlan(customerOrder.getSvlan().trim());
+		co.setCvlan(customerOrder.getCvlan().trim());
 		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder.getRfs_date_str()));
 		co.getParams().put("id", customerOrder.getId());
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
+		json.getSuccessMap().put("alert-success", "svlan, cvlan and rfs_date is updated successful.");
 		return json;
 	}
 

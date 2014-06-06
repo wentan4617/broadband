@@ -303,7 +303,7 @@ background-color: #7BC3EC;
 				<div class="row">
 					<div class="col-md-12">
 						<label class="well checkbox-inline pull-right">
-							<input type="checkbox" id="termckb" value="1" checked="checked"/>
+							<input type="checkbox" id="termckb" value="1" />
 							<a class="btn btn-link btn-lg"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
 						</label>
 					</div>

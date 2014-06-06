@@ -56,7 +56,7 @@
 				</li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
-				<li><a href="${ctx }/e-commerce"><strong>E-Commerce</strong></a></li>
+				
 				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
 				<li><a href="${ctx }/about-us#contact" rel="nofollow"><strong>Contact Us: <span style="color:white;">0800 229 237</span></strong></a></li> 
 			</ul>

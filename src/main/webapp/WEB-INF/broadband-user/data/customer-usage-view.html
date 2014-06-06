@@ -1,0 +1,94 @@
+<. if (list != null && list.length > 0) { .>
+
+<table id="table_usage" class="table table-hover table-bordered table-striped">
+	<thead class="trDemo">
+		<tr>
+			<th>Date</th>
+			<th>Upload</th>
+			<th>Download</th>
+			<th>Total</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. 
+	var curMonthUploadTotal = 0
+		, curMonthDownloadTotal = 0
+		, curMonthTotal = 0;
+	for (var i=0; i<list.length; i++) {
+			var dateUsage = list[i];
+	.>
+		<tr>
+			<td><.=dateUsage.date.></td>
+			<. 
+			if (dateUsage.usage != null) {
+				var upload = dateUsage.usage.upload/1024/1024/1024;
+				var download = dateUsage.usage.download/1024/1024/1024;
+				var curDayTotal = upload + download;
+				var curMonthTotalK = dateUsage.usage.upload + dateUsage.usage.download;
+				curMonthUploadTotal += upload;
+				curMonthDownloadTotal += download;
+				curMonthTotal += curDayTotal;
+			.>
+			<td>
+				<span class="text-success"> 
+					<strong> 
+						<.=upload.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+			<td>
+				<span class="text-success"> 
+					<strong>
+						<.=download.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+			<td>
+				<span class="text-success"> 
+					<strong>
+						<.=curDayTotal.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+			<.} else {.>
+			
+			<td><span class="text-muted">0.00&nbsp;GB</span></td>
+			<td><span class="text-muted">0.00&nbsp;GB</span></td>
+			<td><span class="text-muted">0.00&nbsp;GB</span></td>
+			
+			<.}.>
+
+		</tr>
+	
+	<.}.>
+		<tr>
+			<td colspan="1"></td>
+			<td>
+				<span class="text-warning"> 
+					<strong> 
+						<.=curMonthUploadTotal.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+			<td>
+				<span class="text-warning"> 
+					<strong>
+						<.=curMonthDownloadTotal.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+			<td>
+				<span class="text-warning"> 
+					<strong> 
+						<.=curMonthTotal.toFixed(3).>&nbsp;GB
+					</strong>
+				</span>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<input type="hidden" id="curMonthTotal" value="<.=curMonthTotal.>"/>
+
+
+<.}.>

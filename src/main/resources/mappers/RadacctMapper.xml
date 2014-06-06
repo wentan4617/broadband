@@ -20,11 +20,54 @@
 			
 		</where>
 	</sql>
+	
+	<sql id="radiusRadacctColumns">
+		rr.radacctid	 		as rr_radacctid,
+		rr.username				as rr_username,
+		rr.nasipaddress			as rr_nasipaddress,
+		rr.nasportid			as rr_nasportid,
+		rr.acctstarttime		as rr_acctstarttime,
+		rr.acctstoptime			as rr_acctstoptime,
+		rr.acctsessiontime		as rr_acctsessiontime,
+		rr.acctinputoctets		as rr_acctinputoctets,
+		rr.acctoutputoctets		as rr_acctoutputoctets,
+		rr.calledstationid		as rr_calledstationid,
+		rr.acctterminatecause	as rr_acctterminatecause,
+		rr._accttime			as rr__accttime
+	</sql>
+	
+	<resultMap type="com.tm.broadband.batch.domain.RadiusRadacct" id="radiusRadacctResultMap">
+		<result property="radacctid" column="rr_radacctid" />
+		<result property="username" column="rr_username" />
+		<result property="nasipaddress" column="rr_nasipaddress" />
+		<result property="nasportid" column="rr_nasportid" />
+		<result property="acctstarttime" column="rr_acctstarttime" />
+		<result property="acctstoptime" column="rr_acctstoptime" />
+		<result property="acctsessiontime" column="rr_acctsessiontime" />
+		<result property="acctinputoctets" column="rr_acctinputoctets" />
+		<result property="acctoutputoctets" column="rr_acctoutputoctets" />
+		<result property="calledstationid" column="rr_calledstationid" />
+		<result property="acctterminatecause" column="rr_acctterminatecause" />
+		<result property="_accttime" column="rr__accttime" />
+	</resultMap>
+	
+	<sql id="radiusRadacctWhere">
+		<where>
+			
+		</where>
+	</sql>
+	
 	<!-- // DEFINITION AREA -->
 	<!-- =================================================================================== -->
 	<!-- SELECT AREA -->
 	
-	
+	<select id="selectRadiusRadaccts" resultMap="radiusRadacctResultMap">
+		select 
+			<include refid="radiusRadacctColumns"/>
+		from radacct as rr
+			<include refid="radiusRadacctWhere" />
+		LIMIT #{_skiprows}, #{_pagesize}
+	</select>
 	
 	<!-- // END SELECT AREA -->
 	
@@ -39,7 +82,7 @@
 			`acctterminatecause`, `_accttime`) 
 		VALUES (
 			#{radacctid}, #{username}, #{nasipaddress}, #{nasportid}, #{acctstarttime},
-			#{acctstoptime}, #{acctsessiontime}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid}
+			#{acctstoptime}, #{acctsessiontime}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid},
 			#{acctterminatecause}, #{_accttime})
 	</insert>
 	

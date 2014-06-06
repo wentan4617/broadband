@@ -190,7 +190,7 @@
 		<!-- Provision Module END -->
 
 		<!-- Data Module BEGIN -->
-		<url-pattern>/broadband-user/data/*</url-pattern>
+		<!-- <url-pattern>/broadband-user/data/*</url-pattern> -->
 		<!-- Data Module END -->
 
 		<!-- System Module BEGIN -->
@@ -213,11 +213,11 @@
 	
 	
 	<!-- <filter>
-		<filter-name>UrlRedirect</filter-name>
-		<filter-class>com.tm.broadband.filter.UrlRedirect</filter-class>
+		<filter-name>UrlRedirectFilter</filter-name>
+		<filter-class>com.tm.broadband.filter.UrlRedirectFilter</filter-class>
 	</filter>
 	<filter-mapping>
-		<filter-name>UrlRedirect</filter-name>
+		<filter-name>UrlRedirectFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping> -->
 

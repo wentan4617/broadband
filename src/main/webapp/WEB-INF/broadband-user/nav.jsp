@@ -132,15 +132,20 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Data <b class="caret"></b>
 						</a>
-						<!-- <ul class="dropdown-menu">
+						<ul class="dropdown-menu">
 							<li>
-								<a href="#">...</a>
-							</li>
-							<li class="divider"></li>
-							<li>
-								<a href="#">...</a>
-							</li>
-						</ul> -->
+		                   		<a href="${ctx }/broadband-user/data/operatre">
+		                   			<span class="glyphicon glyphicon-cloud" style="padding-right:10px;"></span>
+		                   			Data Operatre
+		                   		</a>
+		                   	</li>
+		                   	<li>
+		                   		<a href="${ctx }/broadband-user/data/customer/view">
+		                   			<span class="glyphicon glyphicon-cloud" style="padding-right:10px;"></span>
+		                   			Data Customer View
+		                   		</a>
+		                   	</li>
+						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">

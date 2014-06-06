@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.UsageMapper">
+	
+	<!-- DEFINITION AREA -->
+	<sql id="dataCustomerColumn">
+		co.id as co_id
+		, co.svlan as co_svlan
+		, co.cvlan as co_cvlan
+		
+		, c.id as c_id
+		, c.first_name as c_first_name
+		, c.last_name as c_last_name
+		, c.email as c_email
+		, c.cellphone as c_cellphone
+		, c.`status` as c_status 
+		
+		, cod.id as cod_id
+		, cod.detail_name as cod_detail_name
+		, cod.detail_data_flow as cod_detail_data_flow
+		, cod.detail_type as cod_detail_type
+	</sql>
+	
+	<resultMap type="CustomerOrder" id="CustomerOrderResultMap">
+		<id property="id" column="co_id"/>
+		<result property="svlan" column="co_svlan"/>
+		<result property="cvlan" column="co_cvlan"/>
+		
+		<association property="customer" column="c_id" javaType="Customer">
+			<id property="id" column="c_id"/>
+			<result property="first_name" column="c_first_name"/>
+			<result property="last_name" column="c_last_name"/>
+			<result property="email" column="c_email"/>
+			<result property="cellphone" column="c_cellphone"/>
+			<result property="status" column="c_status"/>
+		</association>
+		
+		<association property="cod" column="cod_id" javaType="CustomerOrderDetail">
+			<id property="id" column="cod_id"/>
+			<result property="detail_name" column="cod_detail_name"/>
+			<result property="detail_data_flow" column="cod_detail_data_flow"/>
+			<result property="detail_type" column="cod_detail_type"/>
+		</association>
+	</resultMap>
+	
+	<resultMap type="NetworkUsage" id="CurrentMonthUsagesResultMap">
+		<result property="vlan" column="u_vlan"/>
+		<result property="total_upload" column="u_total_upload"/>
+		<result property="total_download" column="u_total_download"/>
+	</resultMap>
+		
+	<sql id="usageWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_currentMonth'">
+					<if test="params.vlan != null">and u.vlan = #{params.vlan}</if>
+					<if test="params.currentYear != null">and year(u.accounting_date) = #{params.currentYear}</if>
+					<if test="params.currentMonth != null">and month(u.accounting_date) = #{params.currentMonth}</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">and co.id = #{params.id}</if>
+				</otherwise>
+			</choose>
+			
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	<!-- =================================================================================== -->
+	<!-- SELECT AREA -->
+	
+	<select id="selectDataCustomer" parameterType="CustomerOrder" resultMap="CustomerOrderResultMap">
+		select 
+			<include refid="dataCustomerColumn"/>
+		from tm_customer_order as co
+		left join tm_customer as c on c.id = co.customer_id
+		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
+		<include refid="usageWhere"/>
+	</select>
+	
+	<select id="selectDataCustomersByPage" parameterType="Page" resultMap="CustomerOrderResultMap"  >
+		select 
+			<include refid="dataCustomerColumn"/>
+		from tm_customer_order as co
+		left join tm_customer as c on c.id = co.customer_id
+		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
+		<include refid="usageWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<select id="selectDataCustomersSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order as co
+		left join tm_customer as c on c.id = co.customer_id
+		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
+		<include refid="usageWhere"/>
+	</select>
+	
+	<select id="selectCurrentMonthUsages" parameterType="NetworkUsage" resultMap="CurrentMonthUsagesResultMap" >
+		select 
+			u.vlan as u_vlan
+			, sum(u.upload) as u_total_upload
+			, sum(u.download) as u_total_download
+		from tm_network_usage as u
+		where year(accounting_date) = #{params.currentYear}
+		and MONTH(accounting_date) = #{params.currentMonth}
+		GROUP BY u.vlan
+	</select>
+	
+	<select id="selectUsages" parameterType="NetworkUsage" resultType="NetworkUsage">
+		select * from tm_network_usage as u
+		<include refid="usageWhere"/>
+	</select>
+	
+	<!-- // END SELECT AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- INSERT AREA -->
+	
+	<insert id="insertUsage" parameterType="NetworkUsage">
+		insert tm_network_usage (vlan, upload, download, accounting_date)
+		select 
+			calledstationid as vlan,
+			SUM(acctinputoctets) as upload,
+			SUM(acctoutputoctets) as download,
+			DATE(_accttime) as accounting_date
+		from tm_radacct 
+		where year(_accttime) = #{params.year}
+		and (MONTH(_accttime) = #{params.month} or MONTH(_accttime) = #{params.last_month})
+		group by calledstationid, DATE(_accttime)
+	</insert>
+	
+	
+	
+	<!-- // END INSERT AREA -->
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	
+	
+	<!-- // END UPDATE AREA -->
+	
+	<!-- =================================================================================== -->
+	
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteUsage" parameterType="NetworkUsage">
+		delete from tm_network_usage
+		where year(accounting_date) = #{params.year}
+		and (MONTH(accounting_date) = #{params.month} or MONTH(accounting_date) = #{params.last_month})
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+	
+	
+</mapper>

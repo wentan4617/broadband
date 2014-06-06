@@ -56,7 +56,7 @@ public class CustomerOrder implements Serializable {
 	private String previous_provider_invoice;
 	private Integer user_id;
 	private String ddpay_pdf_path;
-	
+
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -76,8 +76,10 @@ public class CustomerOrder implements Serializable {
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
+	private CustomerOrderDetail cod;
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
+	private NetworkUsage usage = new NetworkUsage();
 
 	/*
 	 * END RELATED PROPERTIES
@@ -183,7 +185,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this
+				.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -192,8 +195,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_using_start_str() {
-		if(this.getOrder_using_start() != null){
-			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start()));
+		if (this.getOrder_using_start() != null) {
+			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this
+					.getOrder_using_start()));
 		}
 		return order_using_start_str;
 	}
@@ -356,8 +360,9 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_due_str() {
-		if(this.getOrder_due() != null){
-			this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_due()));
+		if (this.getOrder_due() != null) {
+			this.setOrder_due_str(TMUtils.dateFormatYYYYMMDD(this
+					.getOrder_due()));
 		}
 		return order_due_str;
 	}
@@ -423,7 +428,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getRfs_date_str() {
-		if(this.getRfs_date() != null){
+		if (this.getRfs_date() != null) {
 			this.setRfs_date_str(TMUtils.dateFormatYYYYMMDD(this.getRfs_date()));
 		}
 		return rfs_date_str;
@@ -439,6 +444,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setPrevious_provider_invoice(String previous_provider_invoice) {
 		this.previous_provider_invoice = previous_provider_invoice;
+	}
+
+	public CustomerOrderDetail getCod() {
+		return cod;
+	}
+
+	public void setCod(CustomerOrderDetail cod) {
+		this.cod = cod;
+	}
+
+	public NetworkUsage getUsage() {
+		return usage;
+	}
+
+	public void setUsage(NetworkUsage usage) {
+		this.usage = usage;
 	}
 
 	public Integer getUser_id() {
@@ -457,7 +478,4 @@ public class CustomerOrder implements Serializable {
 		this.ddpay_pdf_path = ddpay_pdf_path;
 	}
 
-	
-	
-	
 }

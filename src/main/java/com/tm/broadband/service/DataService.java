@@ -1,9 +1,57 @@
 package com.tm.broadband.service;
 
-public class DataService {
+import java.util.List;
 
-	public DataService() {
-		// TODO Auto-generated constructor stub
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.tm.broadband.mapper.UsageMapper;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.NetworkUsage;
+import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Plan;
+
+@Service
+public class DataService {
+	
+	private UsageMapper usageMapper;
+	
+	@Autowired
+	public DataService(UsageMapper usageMapper) {
+		this.usageMapper = usageMapper;
+	}
+	
+	public DataService(){
+		
+	}
+	
+	@Transactional
+	public void calculatorUsage(NetworkUsage usage) {
+		this.usageMapper.deleteUsage(usage);
+		this.usageMapper.insertUsage(usage);
+	}
+	
+	@Transactional
+	public Page<CustomerOrder> queryDataCustomersByPage(Page<CustomerOrder> page) {
+		page.setTotalRecord(this.usageMapper.selectDataCustomersSum(page));
+		page.setResults(this.usageMapper.selectDataCustomersByPage(page));
+		return page;
+	} 
+	
+	@Transactional
+	public List<NetworkUsage> queryUsages(NetworkUsage usage) {
+		return this.usageMapper.selectUsages(usage);
+	}
+	
+	@Transactional
+	public List<NetworkUsage> queryCurrentMonthUsages(NetworkUsage usage) {
+		return this.usageMapper.selectCurrentMonthUsages(usage);
+	}
+	
+	@Transactional
+	public CustomerOrder queryDataCustomer(CustomerOrder co) {
+		return this.usageMapper.selectDataCustomer(co);
 	}
 
 }

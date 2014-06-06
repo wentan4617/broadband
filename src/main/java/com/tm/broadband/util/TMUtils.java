@@ -705,5 +705,12 @@ public class TMUtils {
 	// END CustomerCallRecord OPERATION
 	
 	
+	public static int judgeDay(int year, int month) {
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.DAY_OF_MONTH, 1);
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month - 1);
+		return c.getActualMaximum(Calendar.DAY_OF_MONTH);
+	}
 
 }

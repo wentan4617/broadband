@@ -1,24 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="header.jsp" />
-<jsp:include page="alert.jsp" />
+<jsp:include page="../header.jsp" />
+<jsp:include page="../alert.jsp" />
+
+<style>
+#dataCustomer_table td, 
+#dataCustomer_table th {
+	padding: 4px;
+}
+</style>
 
 <div class="container">
 	<div class="row">
-		<div class="col-md-3">
-			<jsp:include page="sidebar.jsp" />
-		</div>
-		<div class="col-md-9">
+		<div class="col-md-12">
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h1 class="panel-title">Data Usage</h1>
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-6"><strong>Broadband User:</strong>&nbsp;${customerSession.first_name }&nbsp;${customerSession.last_name }</div>
+						<div class="col-md-6"><strong>Broadband User:</strong>&nbsp;${co.customer.first_name }&nbsp;${co.customer.last_name }</div>
 						<div class="col-md-3 col-md-offset-3">
 							<div class="btn-group">
 								<button type="button" class="btn btn-default active" data-btn="view-btn" data-type="table">
@@ -32,19 +36,19 @@
 					</div>
 					<hr />
 					<div class="row">
-						<div class="col-md-4"><strong>Plan:</strong>&nbsp;${customerSession.customerOrders[0].customerOrderDetails[0].detail_name } </div>
+						<div class="col-md-4"><strong>Plan:</strong>&nbsp;${co.cod.detail_name } </div>
 						<div class="col-md-4">
 							<strong>Data Quotation:</strong>
-							&nbsp;${customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow > 0 ? customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow : 'Unlimited'}</div>
+							&nbsp;${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 'Unlimited'}</div>
 					</div>
 					<hr />
 					<div class="row">
 						<div class="col-md-2">
 						    <strong>Current Date:</strong> 
 						</div>
-						<div class="col-md-4">
+						<div class="col-md-2">
 							<div class="input-group date">
-						  		<input type="text" id="calculator_date" name="calculator_date" class="form-control" />
+						  		<input type="text" id="calculator_date" name="calculator_date" class="form-control" data-error-field />
 						  		<span class="input-group-addon">
 						  			<i class="glyphicon glyphicon-calendar"></i>
 						  		</span>
@@ -63,11 +67,12 @@
 				<div class="panel-body">
 					<div id="usage_table"></div>
 					<div id="usage_chart" style="display:none;">
-						<canvas id="canvas" height="300" width="810"></canvas>
+						<canvas id="canvas" height="450" width="1100"></canvas>
 					</div>
 				</div>
 				
 			</div>
+			
 		</div>
 	</div>
 </div>
@@ -76,9 +81,8 @@
 <jsp:include page="customer-usage-view.html" />
 </script>
 
-
-<jsp:include page="footer.jsp" />
-<jsp:include page="script.jsp" />
+<jsp:include page="../footer.jsp" />
+<jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/Chart.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
@@ -93,8 +97,11 @@
 		doUsage(e.format());
 	});
 	
+	var svlan = '${co.svlan}';
+	var cvlan = '${co.cvlan}';
+	
 	function doUsage(date) {
-		var url = '${ctx}/customer/data/view/' + date;
+		var url = '${ctx}/broadband-user/data/customer/usage/view/' + svlan + '/' + cvlan + '/' + date;
 		$.get(url, function(list){ console.log(list);
 			dateUsages = list;
 			var obj = {
@@ -105,7 +112,7 @@
 			$table.html(tmpl('customer_usage_view_tmpl', obj));
 			
 			var curMonthTotal = Number($('#curMonthTotal').val());
-			var planUsage = Number(${customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow > 0 ? customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow : 9999});
+			var planUsage = Number(${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 9999});
 			var usageWidth = Number(curMonthTotal/planUsage);
 			
 			var widthVal = 0;
@@ -136,7 +143,7 @@
 			
 			for (var i = 0; i < list.length; i++) {
 				var dateUsage = list[i];
-				labelArray.push(dateUsage.date.substring(8));
+				labelArray.push(dateUsage.date);
 				if (dateUsage.usage != null) {
 					var upload = dateUsage.usage.upload/1024/1024/1024;
 					var download = dateUsage.usage.download/1024/1024/1024;
@@ -161,10 +168,10 @@
 			};
 				
 			var lineChartOptions = {
-				scaleOverride: true // 
-				, scaleSteps: 10 //
-				, scaleStepWidth: (maxData/10).toFixed(3) // 
-				, scaleStartValue : 0 //
+				scaleOverride: true // 如果我们想要一个硬编码的规模与覆盖, false
+				, scaleSteps: 10 // 纵轴步数, null
+				, scaleStepWidth: (maxData/10).toFixed(3) // 纵轴数字间隔, null
+				, scaleStartValue : 0 // 纵轴起始值, null
 			};
 			//$canvas.get(0).getContext("2d").clearRect(0, 0, 1100, 450);
 			new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, lineChartOptions);
@@ -188,4 +195,4 @@
 	
 })(jQuery);
 </script>
-<jsp:include page="footer-end.jsp" />
+<jsp:include page="../footer-end.jsp" />
