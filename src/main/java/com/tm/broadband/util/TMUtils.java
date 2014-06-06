@@ -162,17 +162,15 @@ public class TMUtils {
 	}
 	
 	// e.g.: fix time format, for example 2.77 change to 3.17 finally change to 3:17 and return
-	public static String fillDecimalColon(String sum){
-		sum = timeFormat.format(Double.parseDouble(sum));
+	public static String fillDecimalTime(String sum){
+		sum = numberFormat.format(Double.parseDouble(sum));
 		Integer sumInteger = Integer.parseInt(sum.substring(0, sum.indexOf(".")));
 		Integer sumReminder = Integer.parseInt(sum.substring(sum.indexOf(".")+1));
 		if(sumReminder > 59){
 			sumReminder = sumReminder - 60;
 			sumInteger ++;
 		}
-		sum = sumInteger+"."+sumReminder;
-		sum = timeFormat.format(Double.parseDouble(sum));
-		return sum.replace(".", ":");
+		return sumInteger+"."+sumReminder;
 	}
 	
 	/*
@@ -671,19 +669,15 @@ public class TMUtils {
 			if(isNational){} if(isBusinessLocal){}
 			if(isInternational){ costPerMinute = cir.get(0).getRate_cost(); }
 			
+			// DURATION/SECONDS
+			BigDecimal bigDuration = new BigDecimal(fillDecimalTime(String.valueOf((double)ccr.getDuration() / 60)));
 			if((is0900 || isFax || isNational || isBusinessLocal) || (isInternational)){
 				
 				// COST PER MINUTE
 				BigDecimal bigCostPerMinute = new BigDecimal(costPerMinute);
 				
-				// DURATION/SECONDS
-				BigDecimal bigDuration = new BigDecimal(ccr.getDuration());
-				
-				// 60 SECONDS/MINUTE
-				BigDecimal bigDuration60 = new BigDecimal(60d);
-				
 				// FINAL DURATION/TOTAL MINUTE
-				BigDecimal bigFinalDuration = new BigDecimal(bigDuration.divide(bigDuration60, 2, BigDecimal.ROUND_DOWN).doubleValue());
+				BigDecimal bigFinalDuration = bigDuration;
 				
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
 				if(bigFinalDuration.toString().indexOf(".") > 0){
@@ -701,7 +695,7 @@ public class TMUtils {
 			
 			
 			// FORMAT DURATION(second) TO TIME STYLE
-			ccr.setFormated_duration(TMUtils.fillDecimalColon(String.valueOf((double)ccr.getDuration() / 60)));
+			ccr.setFormated_duration(timeFormat.format(Double.parseDouble(bigDuration.toString())).replace(".", ":"));
 			
 			// ADD FINAL CCR
 			ccrs.add(ccr);

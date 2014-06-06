@@ -127,6 +127,8 @@ public class Test {
 //		}
 //		System.out.println(sumInteger+"."+sumReminder);
 		
+		System.out.println(TMUtils.fillDecimalTime("2.80"));
+		
 	}
 
 }
