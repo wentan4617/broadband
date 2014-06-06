@@ -71,7 +71,6 @@ public class CustomerRestController {
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
 		
-
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
 			return json;

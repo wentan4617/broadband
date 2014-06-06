@@ -134,10 +134,7 @@
 		<property name="jobRepository" ref="jobRepository" />
 	</bean>
 	
-    
     <import resource="importRadiusRadacctJob.xml"/>
-    
-    
 	
 	<!-- ///////////////////////////////////////////////////////////////////////// -->
 	<!-- timer configuration -->
