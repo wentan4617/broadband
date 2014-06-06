@@ -37,6 +37,5 @@ public class CustomerCreateInvoicePDFEachMonth {
         
         // call Service Method
 		crmService.createNextInvoice(customerOrder);
-            
     } 
 } 

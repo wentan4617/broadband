@@ -86,7 +86,11 @@ hr {
                     	</li> --%>
 						<li>
                     		<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/call-billing-record/view/1/inserted">Customer Call Billing Record</a>
+                    		<a href="${ctx }/broadband-user/billing/call-billing-record/view/1/inserted">Customer Calling Billing</a>
+                    	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/call-international-rate/view/1">Calling International Rate</a>
                     	</li>
 					</ul>
 			  	</div>

@@ -8,9 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.BillingFileUploadMapper;
 import com.tm.broadband.mapper.CallChargeRateMapper;
+import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallChargeRate;
+import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.Page;
 
@@ -20,14 +22,17 @@ public class BillingService {
 	private BillingFileUploadMapper billingFileUploadMapper;
 	private CustomerCallRecordMapper customerCallRecordMapper;
 	private CallChargeRateMapper callChargeRateMapper;
+	private CallInternationalRateMapper callInternationalRateMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
 			,CustomerCallRecordMapper customerCallRecordMapper
-			,CallChargeRateMapper callChargeRateMapper) {
+			,CallChargeRateMapper callChargeRateMapper
+			,CallInternationalRateMapper callInternationalRateMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
+		this.callInternationalRateMapper = callInternationalRateMapper;
 	}
 	
 	public BillingService(){}
@@ -110,5 +115,34 @@ public class BillingService {
 		this.callChargeRateMapper.updateCallChargeRate(ccr);
 	}
 	// END CallChargeRate
+
+	// BEGIN CallInternationalRate
+	@Transactional
+	public Page<CallInternationalRate> queryCallInternationalRatesByPage(Page<CallInternationalRate> page) {
+		page.setTotalRecord(this.callInternationalRateMapper.selectCallInternationalRatesSum(page));
+		page.setResults(this.callInternationalRateMapper.selectCallInternationalRatesByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createCallInternationalRate(CallInternationalRate cir) {
+		this.callInternationalRateMapper.insertCallInternationalRate(cir);
+	}
+
+	@Transactional 
+	public List<CallInternationalRate> queryCallInternationalRate(CallInternationalRate cir){
+		return this.callInternationalRateMapper.selectCallInternationalRate(cir);
+	}
+
+	@Transactional
+	public void removeCallInternationalRate() {
+		this.callInternationalRateMapper.deleteCallInternationalRate();
+	}
+
+	@Transactional
+	public void editCallInternationalRate(CallInternationalRate cir) {
+		this.callInternationalRateMapper.updateCallInternationalRate(cir);
+	}
+	// END CallInternationalRate
 
 }

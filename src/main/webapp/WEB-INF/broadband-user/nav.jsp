@@ -92,7 +92,13 @@
 							<li>
 								<a href="${ctx}/broadband-user/billing/call-billing-record/view/1/inserted">
 									<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
-									Customer Call Billing Record
+									Customer Calling Billing
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/call-international-rate/view/1">
+									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+									Calling International Rate
 								</a>
 							</li>
 						</ul>
