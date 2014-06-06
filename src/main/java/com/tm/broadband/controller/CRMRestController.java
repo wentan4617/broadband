@@ -619,8 +619,9 @@ public class CRMRestController {
 			CustomerOrder customerOrder) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		CustomerOrder co = customerOrder;
-		co.getParams().put("id", co.getId());
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customerOrder.getId());
+		co.setOptional_request(customerOrder.getOptional_request());
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
@@ -633,8 +634,9 @@ public class CRMRestController {
 			CustomerOrder customerOrder) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		CustomerOrder co = customerOrder;
-		co.getParams().put("id", co.getId());
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customerOrder.getId());
+		co.setBroadband_asid(customerOrder.getBroadband_asid());
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);

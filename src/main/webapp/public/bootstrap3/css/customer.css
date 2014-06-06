@@ -35,7 +35,6 @@ html {
 
 body {
 	padding-bottom: 0;
-	//background:#f7f7f7;
 }
 
 .list-menu h4 {
@@ -43,10 +42,19 @@ body {
 	margin-bottom: 15px;
 }
 
-.navbar-darkgreen {
+.navbar-default {
 	background-color: #08373a;
 	border-color: #386d71;
-	
+}
+
+.navbar-default .navbar-nav>li>a{
+	color:#fff;
+}
+
+.navbar-default .navbar-nav>li>a:active,
+.navbar-default .navbar-nav>li>a:focus,
+.navbar-default .navbar-nav>li>a:hover {
+	color:#378B5C;
 }
 
 .customer-panel-height {
