@@ -115,11 +115,7 @@
 		};
 		$.post('${ctx}/contact-us', data, function(json){
 			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
-				window.location.href='${ctx}' + json.url;
-			}
+			$.jsonValidation(json, 'right');
 		}, 'json').always(function () {
 			$btn.button('reset');
 	    });

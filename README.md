@@ -16,6 +16,11 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+ 
+demand version 1.0.10 2014-06-03
+
+* 后台首页ContactUs后面显示未处理数量
+ 
 demand version 1.0.10 2014-06-03
  
  

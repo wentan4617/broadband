@@ -75,7 +75,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	public String create() throws DocumentException, MalformedURLException, IOException{
         Document document = new Document(PageSize.A4);
         
-    	this.pstn_number = ccrs != null ? ccrs.get(0).getClear_service_id() : "";
+    	this.pstn_number = ccrs != null && ccrs.size() > 0 ? ccrs.get(0).getClear_service_id() : "";
         
 		// Output PDF Path, e.g.: application_60089.pdf
 		String outputFile = TMUtils.createPath(
