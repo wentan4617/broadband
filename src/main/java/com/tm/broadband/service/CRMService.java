@@ -991,6 +991,9 @@ public class CRMService {
 				ci.setInvoice_pdf_path(filePath);
 				
 				this.customerInvoiceMapper.updateCustomerInvoice(ci);
+
+				// Deleting repeated invoices
+				this.customerInvoiceMapper.deleteCustomerInvoiceByRepeat();
 			}
 		}
 	}
@@ -1209,6 +1212,8 @@ public class CRMService {
 		customerInvoice.getParams().put("id", customerInvoice.getId());
 		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
 
+		// Deleting repeated invoices
+		this.customerInvoiceMapper.deleteCustomerInvoiceByRepeat();
 
 		// call mail at value retriever
 		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerOrder, customerInvoice, companyDetail);

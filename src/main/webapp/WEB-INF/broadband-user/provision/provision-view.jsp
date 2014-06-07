@@ -91,7 +91,7 @@
 														${order.customer.first_name } ${order.customer.last_name }
 													</c:when>
 													<c:when test="${order.customer.customer_type == 'business' }">
-														${order.customer.organization.org_name }
+														${order.customer.organization.org_name == null ? order.customer.id : order.customer.organization.org_name }
 													</c:when>
 												</c:choose>
 											</a>				

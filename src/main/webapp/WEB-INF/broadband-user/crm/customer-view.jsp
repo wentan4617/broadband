@@ -46,7 +46,7 @@
 													${customer.first_name } ${customer.last_name }
 												</c:when>
 												<c:when test="${customer.customer_type == 'business' }">
-													${customer.organization.org_name }
+													${customer.organization.org_name == null ? customer.id : customer.organization.org_name}
 												</c:when>
 											</c:choose>
 										</a>

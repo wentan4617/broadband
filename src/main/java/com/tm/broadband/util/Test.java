@@ -126,8 +126,11 @@ public class Test {
 //			sumInteger ++;
 //		}
 //		System.out.println(sumInteger+"."+sumReminder);
-		
-		System.out.println(TMUtils.fillDecimalTime("2.80"));
+
+//		String str = String.valueOf((double)61/60);
+//		Integer reminderLength = str.substring(str.indexOf(".")+1).length();
+//		String strTemp = str.substring(str.indexOf(".")+1, reminderLength>2 ?str.indexOf(".")+3 : str.indexOf(".")+2);
+//		System.out.println(Integer.parseInt(strTemp)>0);
 		
 	}
 
