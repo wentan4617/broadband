@@ -167,7 +167,12 @@
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="/billing/billing-file-upload" data-type="checkbox_billing" /> Call Billing File Upload
+											<form:checkbox path="authArray" value="billing/call-billing-record/view" data-type="checkbox_billing" /> Customer Calling Billing
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="billing/call-international-rate/view" data-type="checkbox_billing" /> Calling International Rate
 										</label>
 									</li>
 								</ul>
@@ -192,6 +197,11 @@
 											<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" /> Provision Customer Order
 										</label>
 									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="provision/contact-us/view" data-type="checkbox_provision" /> View Contact Us
+										</label>
+									</li>
 								</ul>
 							</div>
 							<div class="col-md-2" data-module="data">
@@ -202,6 +212,16 @@
 									<li>
 										<label> 
 											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="data/operatre" data-type="checkbox_data" /> Data Operatre
+										</label>
+									</li>
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="data/customer/view" data-type="checkbox_data" /> Data Customer View
 										</label>
 									</li>
 								</ul>
@@ -281,6 +301,14 @@
 									<li>
 										<label> 
 											<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
+										</label>
+									</li>
+								</ul>
+								<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="sale/view" data-type="checkbox_system" /> View Sales
 										</label>
 									</li>
 								</ul>

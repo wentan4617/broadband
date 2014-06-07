@@ -173,6 +173,12 @@ public class TMUtils {
 		return sumInteger+"."+sumReminder;
 	}
 	
+	public static Boolean isReminder(String sum){
+		Integer reminderLength = sum.substring(sum.indexOf(".")+1).length();
+		String strTemp = sum.substring(sum.indexOf(".")+1, reminderLength>2 ?sum.indexOf(".")+3 : sum.indexOf(".")+2);
+		return Integer.parseInt(strTemp)>0;
+	}
+	
 	/*
 	 * mail at value retriever methods begin
 	 */
@@ -680,7 +686,7 @@ public class TMUtils {
 				BigDecimal bigFinalDuration = bigDuration;
 				
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
-				if(bigFinalDuration.toString().indexOf(".") > 0){
+				if(isReminder(bigFinalDuration.toString())){
 					String bigFinalDurationStr = bigFinalDuration.toString();
 					bigFinalDuration = new BigDecimal(Integer.parseInt(bigFinalDurationStr.substring(0, bigFinalDurationStr.indexOf(".")))+1);
 				}
