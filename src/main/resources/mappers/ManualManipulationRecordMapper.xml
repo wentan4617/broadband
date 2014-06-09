@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.ManualManipulationRecordMapper">
+
+	<!-- DEFINITION AREA -->
+	<sql id="manualManipulationRecordColumns">
+		mmr.`id` 					as mmr_id,
+		mmr.`manipulation_name` 	as mmr_manipulation_name,
+		mmr.`manipulation_type` 	as mmr_manipulation_type,
+		mmr.`manipulation_time` 	as mmr_manipulation_time,
+		mmr.`admin_name` 			as mmr_admin_name,
+		mmr.`admin_id` 				as mmr_admin_id
+	</sql>
+
+
+	<resultMap type="ManualManipulationRecord" id="manualManipulationRecordResultMap">
+		<id property="id" column="mmr_id" />
+		<result property="manipulation_name" column="mmr_manipulation_name" />
+		<result property="manipulation_type" column="mmr_manipulation_type" />
+		<result property="manipulation_time" column="mmr_manipulation_time" />
+		<result property="admin_name" column="mmr_admin_name" />
+		<result property="admin_id" column="mmr_admin_id" />
+	</resultMap>
+	
+	
+	<sql id="manualManipulationRecordWhere">
+		<where>
+			<if test="params.id != null">mmr.id = #{params.id}</if>
+			<if test="params.manipulation_name != null">and mmr.manipulation_name = #{params.manipulation_name}</if>
+			<if test="params.manipulation_type != null">and mmr.manipulation_type = #{params.manipulation_type}</if>
+			<if test="params.manipulation_time != null">and mmr.manipulation_time = #{params.manipulation_time}</if>
+			<if test="params.admin_name != null">and mmr.admin_name = #{params.admin_name}</if>
+			<if test="params.admin_id != null">and mmr.admin_id = #{params.admin_id}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectManualManipulationRecords" parameterType="ManualManipulationRecord" resultType="ManualManipulationRecord">
+		select * from tm_manual_manipulation_record as mmr
+			<include refid="manualManipulationRecordWhere"/>
+	</select>
+	
+	<!-- select manualManipulationRecord page -->
+	<select id="selectManualManipulationRecordsByPage" parameterType="Page" resultMap="manualManipulationRecordResultMap">
+		select
+			<include refid="manualManipulationRecordColumns"/>
+			from tm_manual_manipulation_record as mmr
+			<include refid="manualManipulationRecordWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select manualManipulationRecord amount -->
+	<select id="selectManualManipulationRecordsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_manual_manipulation_record as mmr
+		<include refid="manualManipulationRecordWhere"/>
+	</select>
+
+	<!-- select manualManipulationRecord amount -->
+	<select id="selectManualManipulationRecordsByManipulationType" parameterType="String" resultType="ManualManipulationRecord">
+		select * from tm_manual_manipulation_record as mmr where manipulation_type = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertManualManipulationRecord" parameterType="ManualManipulationRecord">
+		INSERT INTO `tm_manual_manipulation_record`(
+			`manipulation_name`, `manipulation_type`, `manipulation_time`, `admin_name`, `admin_id`
+		) VALUES (
+			#{manipulation_name}, #{manipulation_type}, #{manipulation_time}, #{admin_name}, #{admin_id}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update manualManipulationRecord -->
+	<update id="updateManualManipulationRecord" parameterType="ManualManipulationRecord">
+		update tm_manual_manipulation_record
+		<set>
+			<if test="manipulation_name != null">manipulation_name = #{manipulation_name},</if>
+			<if test="manipulation_type != null">manipulation_type = #{manipulation_type},</if>
+			<if test="manipulation_time != null">manipulation_time = #{manipulation_time},</if>
+			<if test="admin_name != null">admin_name = #{admin_name},</if>
+			<if test="admin_id != null">admin_id = #{admin_id}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteManualManipulationRecordById" parameterType="int">
+		DELETE FROM tm_manual_manipulation_record WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

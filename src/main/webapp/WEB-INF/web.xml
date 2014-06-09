@@ -213,6 +213,11 @@
 		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
 		<!-- Sales Module END -->
 
+		<!-- Manual Manipulation Module BEGIN -->
+		<url-pattern>/broadband-user/system/manual-manipulation-record/view/*</url-pattern>
+		<url-pattern>/broadband-user/system/manual-manipulation-record/create/*</url-pattern>
+		<!-- Manual Manipulation Module END -->
+
 	</filter-mapping>
 	
 	

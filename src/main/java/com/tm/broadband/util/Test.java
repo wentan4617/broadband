@@ -1,9 +1,6 @@
 package com.tm.broadband.util;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import com.tm.broadband.model.CallInternationalRate;
+import java.util.Date;
 
 
 
@@ -131,6 +128,8 @@ public class Test {
 //		Integer reminderLength = str.substring(str.indexOf(".")+1).length();
 //		String strTemp = str.substring(str.indexOf(".")+1, reminderLength>2 ?str.indexOf(".")+3 : str.indexOf(".")+2);
 //		System.out.println(Integer.parseInt(strTemp)>0);
+		
+		Calculation4PlanTermInvoice.servedMonthDetails(TMUtils.parseDateYYYYMMDD("2014-05-01"), 89d);
 		
 	}
 
