@@ -57,6 +57,26 @@ body {
 	color:#378B5C;
 }
 
+.navbar-default .navbar-link {
+	color:#fff;
+}
+
+.navbar-default .navbar-link:active,
+.navbar-default .navbar-link:focus,
+.navbar-default .navbar-link:hover {
+	color:#378B5C;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu>li>a {
+	color:#428bca;
+}
+
+.navbar-default .navbar-nav .open .dropdown-menu>li>a:active,
+.navbar-default .navbar-nav .open .dropdown-menu>li>a:focus,
+.navbar-default .navbar-nav .open .dropdown-menu>li>a:hover{
+	color:#378B5C;
+}
+
 .customer-panel-height {
 	min-height:500px;
 }

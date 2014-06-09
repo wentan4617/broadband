@@ -5,10 +5,10 @@
 <div class="navbar navbar-default navbar-static-top" id="navhead">
 	<div class="container">
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-				<span class="icon-bar"></span> 
-				<span class="icon-bar"></span> 
-				<span class="icon-bar"></span>
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="background-color:#5cb85c;">
+				<span class="icon-bar" style="background-color:#fff;"></span> 
+				<span class="icon-bar" style="background-color:#fff;"></span> 
+				<span class="icon-bar" style="background-color:#fff;"></span>
 			</button>
 			<a class="navbar-brand" href="${ctx }/home" rel="${nofollow}">
 				<span class="logo"></span> 
@@ -18,7 +18,7 @@
 			<ul class="nav navbar-nav">
 				<li>
 					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Personal Plan</strong><b class="caret"></b></a>
-					<ul class="dropdown-menu list-inline" style="width:610px;">
+					<ul class="dropdown-menu list-inline hidden-xs hidden-sm" style="width:610px;">
 			            <li style="width:100%;">
 			            	<div class="row">
 			            		<div class="col-md-4" style="border-right: 2px dotted;">
@@ -28,7 +28,6 @@
 				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">No Term Plan</span>
 										</a>
 			            			</p>
-			            			
 								</div>
 			            		<div class="col-md-4" style="border-right: 2px dotted;">
 			            			<p class="text-center text-success">
@@ -47,20 +46,35 @@
 			            			</p>
 			            		</div>
 			            	</div>
-			            	
+			            </li>
+		          	</ul>
+		          	<ul class="dropdown-menu hidden-md hidden-lg"><!--  visible-xs visible-sm -->
+			            <li>
+			            	<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
+	            				<span class="glyphicon glyphicon-th-list"></span> No Term Plan
+							</a>	
+			            </li>
+			            <li>
+			            	<a href="${ctx }/plans/plan-topup/personal" target="_blank" >
+	            				<span class="glyphicon glyphicon-th-large "></span> Top Up Plan
+							</a>
+			            </li>
+			            <li>
+			            	<a href="${ctx }/plans/plan-term/personal" target="_blank" >
+	            				<span class="glyphicon glyphicon-th"></span> Term Plan
+							</a>
 			            </li>
 		          	</ul>
 				</li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
 				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
-				
 				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
 				<li><a href="${ctx }/about-us#contact" rel="nofollow"><strong>Contact Us: <span style="color:white;">0800 229 237</span></strong></a></li> 
 			</ul>
 			
 			<c:if test="${customerSession != null }">
 				<p class="navbar-text pull-right" >
-					<a href="${ctx }/customer/home" class="navbar-link" style="margin-right:10px;">
+					<a href="${ctx }/customer/home"  class="navbar-link" style="margin-right:10px;">
 						<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
 						<c:choose>
 							<c:when test="${customerSession.customer_type == 'personal' }">
@@ -77,7 +91,10 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right" >
+	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right hidden-xs hidden-sm">
+	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
+	 			</a>
+	 			<a href="${ctx }/login" class="btn btn-success btn-block btn-lg navbar-btn navbar-right hidden-md hidden-lg" >
 	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
 	 			</a>
 			</c:if>

@@ -24,8 +24,6 @@
 }
 </style>
 
-
-
 <div class="container">
 	<div class="page-header" style="margin-top:0;">
 		<h1>
@@ -33,15 +31,13 @@
 		</h1>
 	</div>
 	
-	<%-- <img src="${ctx }/public/bootstrap3/images/persoanl-12months-unlimited-plan.png"  class="img-responsive" alt="persoanl 12months unlimited plan"> --%>
-	
 	<div class="alert alert-info">
 		<p>
 			We offer the best value and price personal broadband plans to you. 
 			We can offer more values and better price telecommunication plans to you.
 		</p>
 	</div>
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm">
 		<li class="active">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -67,250 +63,166 @@
 		</li>
 	</ul>
 	
-	<c:set var="adslPlanMap" value="${planTypeMap['ADSL'] }"></c:set>
-	<c:set var="vdslPlanMap" value="${planTypeMap['VDSL'] }"></c:set>
-	<c:set var="ufbPlanMap" value="${planTypeMap['UFB'] }"></c:set>
+	<c:forEach var="type" items="ADSL,VDSL,UFB">
+		<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+			<h3 class="hidden-xs">
+				<c:choose>
+					<c:when test="${type=='ADSL' }">
+						<span class="label label-primary">
+							ADSL + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+					<c:when test="${type=='VDSL' }">
+						<span class="label label-info">
+							VDSL + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+					<c:when test="${type=='UFB' }">
+						<span class="label label-danger">
+							UFB + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+				</c:choose>
+			</h3>
+			<h5 class="hidden-lg hidden-md hidden-sm">
+				<c:choose>
+					<c:when test="${type=='ADSL' }">
+						<span class="label label-primary">
+							ADSL + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+					<c:when test="${type=='VDSL' }">
+						<span class="label label-info">
+							VDSL + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+					<c:when test="${type=='UFB' }">
+						<span class="label label-danger">
+							UFB + Home Phone Line&nbsp;
+							(FAST&nbsp;
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>
+								<span class="glyphicon glyphicon-flash"></span>)
+						</span>
+					</c:when>
+				</c:choose>
+			</h5>
+		</div>
+		
+		<c:set var="planMap" value="${planTypeMap[type] }"></c:set>
+		
+		<c:set var="plansPromotion" value="${planMap['plansPromotion'] }"></c:set>
+		<c:set var="plans" value="${planMap['plans'] }"></c:set>
+		
+		<div class="row">
+		<c:forEach var="plan" items="${plans }">
+			<div class="col-md-4">
+				<div class="panel panel-${type=='ADSL'?'primary':type=='VDSL'?'info':type=='UFB'?'danger':'default' }">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<span style="font-size:30px;font-weight:bold;">$</span>
+							<span style="font-size:60px;font-weight:bold;" class="hidden-xs"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</span>
+							<span style="font-size:35px;font-weight:bold;" class="hidden-lg hidden-md hidden-sm"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</span>
+							/ mth
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapse${plan.id }">
+								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-icon></span>
+							</a>
+						</h2>
+					</div>
+					<div id="collapse${plan.id }" class="panel-collapse collapse in">
+					 	<div class="panel-body pb-bg">
+					 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</p>
+					 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					 		<hr style="margin:0;"/>
+						   	<p class="text-center">
+								<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
+							</p>
+					  	</div>
+				  	</div>
+				</div>
+			</div>
+		</c:forEach>
+		<c:forEach var="plan" items="${plansPromotion }">
+			<div class="col-md-4">
+				<div class="panel panel-${type=='ADSL'?'primary':type=='VDSL'?'info':type=='UFB'?'danger':'default' }">
+					<div class="panel-heading">
+						<h2 class="panel-title text-center">
+							<span style="font-size:30px;font-weight:bold;">$</span>	
+							<c:if test="${plan.original_price > 0 }">
+								<i style="font-size:24px;text-decoration:line-through;">
+									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
+								</i>
+							</c:if>
+							<span style="font-size:60px;font-weight:bold;" class="hidden-xs"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</span>
+							<span style="font-size:35px;font-weight:bold;" class="hidden-lg hidden-md hidden-sm"> 
+								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+							</span>
+							/ mth
+							<a data-toggle="collapse" data-parent="#accordion" href="#collapse${plan.id }">
+								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-icon></span>
+							</a>
+						</h2>
+					</div>
+					<div id="collapse${plan.id }" class="panel-collapse collapse in">
+					 	<div class="panel-body pb-bg">
+					 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
+								<c:choose>
+									<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
+									<c:otherwise>${plan.data_flow } GB</c:otherwise>
+								</c:choose>
+							</p>
+					 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+					 		<hr style="margin:0;"/>
+						   	<p class="text-center">
+								<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
+							</p>
+					  	</div>
+				  	</div>
+				</div>
+			</div>
+		</c:forEach>
+		
+		</div>
+		
+	</c:forEach>
 
-	<!-- adsl -->
-	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
-		<h3>
-			<span class="label label-primary" id="adsl">
-				ADSL + Home Phone Line&nbsp;
-				(FAST&nbsp;
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>)
-			</span>
-		</h3>
-	</div>
-	<div class="row">
-		<c:set var="plansPromotion" value="${adslPlanMap['plansPromotion'] }"></c:set>
-		<c:set var="plans" value="${adslPlanMap['plans'] }"></c:set>
-		
-		<c:forEach var="plan" items="${plans }">
-			<div class="col-md-4">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-		<c:forEach var="plan" items="${plansPromotion }">
-			<div class="col-md-4">
-				<div class="panel panel-primary">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<c:if test="${plan.original_price > 0 }">
-								<i style="font-size:24px;text-decoration:line-through;">
-									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
-								</i>
-							</c:if>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="adsl-purchase" data-id="${plan.id}" data-type="adsl" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-	</div>
-
-	<!-- vdsl -->
-	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
-		<h3>
-			<span class="label label-info" id="vdsl">
-				VDSL + Home Phone Line&nbsp;
-				(FASTER&nbsp;
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>)
-			</span>
-		</h3>
-	</div>
-	<div class="row">
-		<c:set var="plansPromotion" value="${vdslPlanMap['plansPromotion'] }"></c:set>
-		<c:set var="plans" value="${vdslPlanMap['plans'] }"></c:set>
-		
-		
-		<c:forEach var="plan" items="${plans }">
-			<div class="col-md-4">
-				<div class="panel panel-info">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-		<c:forEach var="plan" items="${plansPromotion }">
-			<div class="col-md-4">
-				<div class="panel panel-info">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<c:if test="${plan.original_price > 0 }">
-								<i style="font-size:24px;text-decoration:line-through;">
-									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
-								</i>
-							</c:if>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="vdsl-purchase" data-id="${plan.id}" data-type="vdsl" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-	</div>
-	
-	<!-- ufb -->
-	<div class="page-header" style="margin-top:0;margin-bottom:5px;">
-		<h3>
-			<span class="label label-danger" id="ufb">
-				UFB + Home Phone Line&nbsp;
-				(FASTEST&nbsp;
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>
-					<span class="glyphicon glyphicon-flash"></span>)
-			</span>
-		</h3>
-	</div>
-	<div class="row">
-		<c:set var="plansPromotion" value="${ufbPlanMap['plansPromotion'] }"></c:set>
-		<c:set var="plans" value="${ufbPlanMap['plans'] }"></c:set>
-		
-		<c:forEach var="plan" items="${plans }">
-			<div class="col-md-4">
-				<div class="panel panel-danger">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-		<c:forEach var="plan" items="${plansPromotion }">
-			<div class="col-md-4">
-				<div class="panel panel-danger">
-					<div class="panel-heading">
-						<h2 class="panel-title text-center">
-							<span style="font-size:30px;font-weight:bold;float:left;margin-left:70px;margin-right:-50px;margin-top:25px;">$</span>	
-							<c:if test="${plan.original_price > 0 }">
-								<i style="font-size:24px;text-decoration:line-through;">
-									<fmt:formatNumber value="${plan.original_price} " type="number" pattern="##0" />
-								</i>
-							</c:if>
-							<span style="font-size:60px;font-weight:bold;"> 
-								<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
-							</span>
-							/ mth
-						</h2>
-					</div>
-				 	<div class="panel-body pb-bg">
-				 		<p class="text-center" style="font-weight:bold;font-size: 50px;">
-							<c:choose>
-								<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
-								<c:otherwise>${plan.data_flow } GB</c:otherwise>
-							</c:choose>
-						</p>
-				 		<!-- desc -->${plan.plan_desc }<!-- // end desc -->
-				 		<hr style="margin:0;"/>
-					   	<p class="text-center">
-							<a class="btn btn-success btn-lg btn-block" id="ufb-purchase" data-id="${plan.id}" data-type="ufb" data-name="purchase">Order</a> 
-						</p>
-				  	</div>
-				</div>
-			</div>
-		</c:forEach>
-	</div>
 </div>
 
 <jsp:include page="footer.jsp" />
@@ -321,6 +233,16 @@
 		var select_plan_id = $(this).attr('data-id');
 		var select_plan_type = $(this).attr('data-type');
 		window.location.href = '${ctx}/plans/term-plan/personal/' + select_plan_type + '/address-check/' + select_plan_id;
+	});
+	
+	$('span[data-icon]').click(function(){
+		var $btn = $(this);
+		var gl = $btn.attr('class');
+		if (gl == 'glyphicon glyphicon-minus-sign pull-right') {
+			$btn.attr('class', 'glyphicon glyphicon-plus-sign pull-right');
+		} else {
+			$btn.attr('class', 'glyphicon glyphicon-minus-sign pull-right');
+		}
 	});
 })(jQuery);
 </script>

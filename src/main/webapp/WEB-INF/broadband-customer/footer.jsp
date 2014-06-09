@@ -4,13 +4,25 @@
 <div class="navbar-inverse" style="padding-bottom:50px;">
 	<div class="container" >
 	    <footer style="margin-top: 10px;">
-	        <p class="pull-right" style="color:#fff">
+	        <p class="pull-right hidden-xs hidden-sm" style="color:#fff">
 				&copy; 2014 CyberPark Limited &middot;
 			</p>
-			<p>
+			<p class="text-center hidden-md hidden-lg" style="color:#fff">
+				&copy; 2014 CyberPark Limited &middot;
+			</p>
+			<p class="hidden-xs hidden-sm">
 				<a href="${ctx }/about-us" rel="nofollow">About CyberPark</a>
 				&middot;
-				<a href="${ctx }/term-and-conditions" rel="nofollow">Terms & Conditions</a>
+				<a href="${ctx }/term-and-conditions" rel="nofollow" >Terms & Conditions</a>
+				&middot;
+				<a href="${ctx }/e-commerce" rel="nofollow">E-Commerce</a>
+				&middot;
+				<a href="${ctx }/about-us#contact" rel="nofollow">Contact Us: 0800 229 237</a>
+			</p>
+			<p class="text-center hidden-md hidden-lg">
+				<a href="${ctx }/about-us" rel="nofollow">About CyberPark</a>
+				&middot;
+				<a href="${ctx }/term-and-conditions" rel="nofollow" >Terms & Conditions</a>
 				&middot;
 				<a href="${ctx }/e-commerce" rel="nofollow">E-Commerce</a>
 				&middot;
