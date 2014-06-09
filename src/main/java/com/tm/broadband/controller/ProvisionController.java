@@ -53,7 +53,7 @@ public class ProvisionController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.getParams().put("where", "query_order_status");
-		page.getParams().put("orderby", "order by co.order_create_date");
+		page.getParams().put("orderby", "order by co.id desc");
 		page.getParams().put("status", "active");
 		if (order_status.equals("ordering")) {
 			page.getParams().put("order_status", order_status + "-paid");

@@ -72,8 +72,8 @@
 									<th>Status</th>
 									<th>Type</th>
 									<th>Broadband Type</th>
+									<th>Service Giving</th>
 									<th>Post</th>
-									<th>&nbsp;</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -106,11 +106,14 @@
 										<td>${order.order_type }</td>
 										<td>${order.order_broadband_type }</td>
 										<td>
+											<fmt:formatDate value="${order.order_using_start }" type="both" pattern="yyyy-MM-dd" />
+										</td>
+										<td>
 											<c:if test="${order.hardware_post > 0}">
 												<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="hardware need to be post"><span class="glyphicon glyphicon-gift"></span></a>
 											</c:if>
 										</td>
-										<td>&nbsp;</td>
+										
 									</tr>
 								</c:forEach>
 							</tbody>
