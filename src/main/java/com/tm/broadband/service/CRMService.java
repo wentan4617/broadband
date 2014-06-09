@@ -863,8 +863,8 @@ public class CRMService {
 							
 							cids.add(cid);
 							
-						// Else add all non plan-term type details into invoice details
-						} else {
+						// Else add all non plan-term, discount type details into invoice details
+						} else if(!"discount".equals(cod.getDetail_type())) {
 
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_price(cod.getDetail_price());

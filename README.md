@@ -17,9 +17,14 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.20 2014-06-09
+
+* [开发手动出termed的invoice功能](steven)
+ 
+ 
 demand version 1.0.10 2014-06-03
 
-* 后台首页ContactUs后面显示未处理数量
+* 后台首页ContactUs后面显示未处理数量(steven)
  
 demand version 1.0.10 2014-06-03
  
