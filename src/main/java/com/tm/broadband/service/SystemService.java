@@ -9,10 +9,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
@@ -24,16 +26,19 @@ public class SystemService {
 	private NotificationMapper notificationMapper;
 	private CompanyDetailMapper companyDetailMapper;
 	private CustomerMapper customerMapper;
+	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
 			NotificationMapper notificationMapper,
 			CompanyDetailMapper companyDetailMapper,
-			CustomerMapper customerMapper) {
+			CustomerMapper customerMapper,
+			ManualManipulationRecordMapper manualManipulationRecordMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
 		this.companyDetailMapper = companyDetailMapper;
 		this.customerMapper = customerMapper;
+		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 	}
 
 	public SystemService() {
@@ -188,4 +193,33 @@ public class SystemService {
 	/**
 	 * Chart Services END
 	 */
+
+	// BEGIN ManualManipulationRecord
+	@Transactional
+	public Page<ManualManipulationRecord> queryManualManipulationRecordsByPage(Page<ManualManipulationRecord> page) {
+		page.setTotalRecord(this.manualManipulationRecordMapper.selectManualManipulationRecordsSum(page));
+		page.setResults(this.manualManipulationRecordMapper.selectManualManipulationRecordsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createManualManipulationRecord(ManualManipulationRecord cir) {
+		this.manualManipulationRecordMapper.insertManualManipulationRecord(cir);
+	}
+
+	@Transactional 
+	public List<ManualManipulationRecord> queryManualManipulationRecord(ManualManipulationRecord cir){
+		return this.manualManipulationRecordMapper.selectManualManipulationRecords(cir);
+	}
+
+	@Transactional
+	public void removeManualManipulationRecord(int id) {
+		this.manualManipulationRecordMapper.deleteManualManipulationRecordById(id);
+	}
+
+	@Transactional
+	public void editManualManipulationRecord(ManualManipulationRecord cir) {
+		this.manualManipulationRecordMapper.updateManualManipulationRecord(cir);
+	}
+	// END ManualManipulationRecord
 }

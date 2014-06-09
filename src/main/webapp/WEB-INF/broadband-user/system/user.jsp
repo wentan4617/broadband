@@ -336,6 +336,29 @@
 									</li>
 								</ul>
 							</div>
+							<hr/>
+							<div class="col-md-2" data-module="manual-manipulation">
+								<ul class="list-unstyled">
+									<li>
+										<h3>Manual Manipulation</h3>
+									</li>
+									<li>
+										<label> 
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_manual_manipulation" /> All
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="system/manual-manipulation-record/view" data-type="checkbox_manual_manipulation" /> View Manual Termed Invoice
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="system/manual-manipulation-record/create" data-type="checkbox_manual_manipulation" /> Manual Create Termed Invoice
+										</label>
+									</li>
+								</ul>
+							</div>
 						</div>
 						<hr/>
 						<div class="form-group">
