@@ -614,10 +614,11 @@ public class CRMController {
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
 		} else {
-
+			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
 		}
-		attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+		
 		return "redirect:/broadband-user/crm/customer/edit/"+customer.getId();
 	}
 

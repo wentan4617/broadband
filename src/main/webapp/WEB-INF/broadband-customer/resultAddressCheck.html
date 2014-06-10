@@ -1,4 +1,4 @@
-<div class="panel panel-info">
+<div class="panel panel-info hidden-xs hidden-sm">
 	<div class="panel-heading">
 		<h4 class="panel-title">Check Result</h4>
 	</div>
@@ -226,5 +226,199 @@
 		</div>
 	</div>
 	
-	
 </div>
+
+<!-- mobile -->
+<div class="panel panel-<.=adsl_available?'success':'danger'.> hidden-md hidden-lg"><!--  -->
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			<span class="glyphicon glyphicon-<.=adsl_available?'ok':'remove'.>" style="font-size:18px;"></span>
+			ADSL 
+			<small><.=adsl_available?'Available':'Not Available'.></small>
+		</h4>
+	</div>
+	<. if (adslPlans.length > 0){.>
+	<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Plan</th>
+				<th>Price</th>
+				<th>Data</th>
+			</tr>
+		</thead>
+		<tbody>
+			<. 
+			for(var i = 0; i < adslPlans.length; i++) { 
+				var plan = adslPlans[i];
+			.>
+			<tr>
+				<td>
+					<.if (adsl_available) {.>
+					
+					<. if (selected_id == plan.id) { .>
+					<input type="radio" name="m_adsl_id" value="<.=plan.id.>" checked />
+					<.} else {.>
+					<input type="radio" name="m_adsl_id" value="<.=plan.id.>" />
+					<.}.>
+					
+					<.}.>
+				</td>
+				<td style="font-weigth:bold;"><.=plan.plan_name.></td>
+				<td>NZ$ <.=plan.plan_price.></td>
+				<td>
+					<. if (plan.data_flow > 0) {.>
+						<.=plan.data_flow.> GB
+					<.}else {.>
+						Unlimited Data
+					<.}.>
+				</td>
+			</tr>
+			<.}.>
+		</tbody>
+	</table>
+	</div>
+	<.} else {.>
+	<p class="alert alert-warning" style="font-weight:bold;">
+		Sorry, There are't no plans on this broadband service!
+	</p>
+	<.}.>
+	<div class="panel-body">
+		<.if (adsl_available && adslPlans.length > 0) {.>
+		<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="m_adsl" class="btn btn-success btn-block">
+			<span class="glyphicon glyphicon-circle-arrow-right" ></span> Continue Selected Plan
+		</a>
+		<.}.>
+	</div>
+</div>
+
+<div class="panel panel-<.=vdsl_available?'success':'danger'.> hidden-md hidden-lg">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			<span class="glyphicon glyphicon-<.=vdsl_available?'ok':'remove'.>" style="font-size:18px;"></span>
+			VDSL
+			<small><.=vdsl_available?'Available':'Not Available'.></small>
+		</h4>
+	</div>
+	<. if (vdslPlans.length > 0){.>
+	<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Plan</th>
+				<th>Price</th>
+				<th>Data</th>
+			</tr>
+		</thead>
+		<tbody>
+			<. 
+			for(var i = 0; i < vdslPlans.length; i++) { 
+				var plan = vdslPlans[i];
+			.>
+			<tr>
+				<td>
+					<.if (vdsl_available) {.>
+					
+					<. if (selected_id == plan.id) { .>
+					<input type="radio" name="m_vdsl_id" value="<.=plan.id.>" checked />
+					<.} else {.>
+					<input type="radio" name="m_vdsl_id" value="<.=plan.id.>" />
+					<.}.>
+					
+					<.}.>
+				</td>
+				<td style="font-weigth:bold;"><.=plan.plan_name.></td>
+				<td>NZ$ <.=plan.plan_price.></td>
+				<td>
+					<. if (plan.data_flow > 0) {.>
+						<.=plan.data_flow.> GB
+					<.}else {.>
+						Unlimited Data
+					<.}.>
+				</td>
+			</tr>
+			<.}.>
+		</tbody>
+	</table>
+	</div>
+	<.} else {.>
+	<p class="alert alert-warning" style="font-weight:bold;">
+		Sorry, There are't no plans on this broadband service!
+	</p>
+	<.}.>
+	<div class="panel-body">
+		<.if (vdsl_available && vdslPlans.length > 0) {.>
+		<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="m_vdsl" class="btn btn-success btn-block">
+			<span class="glyphicon glyphicon-circle-arrow-right" ></span> Continue Selected Plan
+		</a>
+		<.}.>
+	</div>
+</div>
+
+<div class="panel panel-<.=ufb_available?'success':'danger'.> hidden-md hidden-lg">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			<span class="glyphicon glyphicon-<.=ufb_available?'ok':'remove'.>" style="font-size:18px;"></span>
+			UFB
+			<small><.=ufb_available?'Available':'Not Available'.></small>
+		</h4>
+	</div>
+	<. if (ufbPlans.length > 0){.>
+	<div class="table-responsive">
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>Plan</th>
+				<th>Price</th>
+				<th>Data</th>
+			</tr>
+		</thead>
+		<tbody>
+			<. 
+			for(var i = 0; i < ufbPlans.length; i++) { 
+				var plan = ufbPlans[i];
+			.>
+			<tr>
+				<td>
+					<.if (ufb_available) {.>
+					
+					<. if (selected_id == plan.id) { .>
+					<input type="radio" name="m_ufb_id" value="<.=plan.id.>" checked />
+					<.} else {.>
+					<input type="radio" name="m_ufb_id" value="<.=plan.id.>" />
+					<.}.>
+					
+					<.}.>
+					
+				</td>
+				<td style="font-weigth:bold;"><.=plan.plan_name.></td>
+				<td>NZ$ <.=plan.plan_price.></td>
+				<td>
+					<. if (plan.data_flow > 0) {.>
+						<.=plan.data_flow.> GB
+					<.}else {.>
+						Unlimited Data
+					<.}.>
+				</td>
+			</tr>
+			<.}.>
+		</tbody>
+	</table>
+	</div>
+	<.} else {.>
+	<p class="alert alert-warning" style="font-weight:bold;">
+		Sorry, There are't no plans on this broadband service!
+	</p>
+	<.}.>
+	<div class="panel-body">
+		<.if (ufb_available && ufbPlans.length > 0) {.>
+		<a href="javascript:void(0);" data-name="continue-selected-plan" data-type="m_ufb" class="btn btn-success btn-block">
+			<span class="glyphicon glyphicon-circle-arrow-right" ></span> Continue Selected Plan
+		</a>
+		<.}.>
+	</div>
+</div>
+
