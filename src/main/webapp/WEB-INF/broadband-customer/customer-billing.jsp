@@ -71,15 +71,17 @@
 											</td>
 											<td>&nbsp;</td>
 											<td>
-												<div class="btn-group">
-													<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
-														Make Payment <span class="caret"></span>
-    													
-													</button>
-													<ul class="dropdown-menu" role="menu">
-														<li><a href="#">Credit Card</a></li>
-													</ul>
-												</div>
+												<c:if test="${(invoice.status=='unpaid' || invoice.status=='not_pay_off')}">
+													<div class="btn-group">
+														<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+															Make Payment <span class="caret"></span>
+														</button>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href="#" data-balance="${invoice.amount_payable}">Credit Card</a></li>
+														</ul>
+													</div>
+												</c:if>
+												
 											</td>
 											<!-- download icon -->
 											<td>
@@ -124,7 +126,17 @@
 	</div>
 </div>
 
+<form action="${ctx }/customer/invoice/checkout" method="post" id="balanceForm">
+</form>
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script type="text/javascript">
+(function($){
+	$('a[data-balance]').click(function(){
+		$('#balanceForm').submit();
+	});
+})(jQuery);
+</script>
 <jsp:include page="footer-end.jsp" />

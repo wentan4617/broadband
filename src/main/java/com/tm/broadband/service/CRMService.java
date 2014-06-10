@@ -365,6 +365,12 @@ public class CRMService {
 	}
 	
 	@Transactional
+	public void customerBalance(CustomerInvoice customerInvoice, CustomerTransaction customerTransaction) {
+		this.customerInvoiceMapper.updateCustomerInvoice(customerInvoice);
+		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
+	}
+	
+	@Transactional
 	public int queryExistCustomer(Customer customer) {
 		return this.customerMapper.selectExistCustomer(customer);
 	}

@@ -694,6 +694,100 @@ public class CustomerController {
 		return "redirect:/customer/topup";
 	}
 	
+	@RequestMapping(value = "/customer/invoice/checkout", method = RequestMethod.POST)
+	public String balanceCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
+		
+		Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+		
+		System.out.println("customer.getCustomerInvoice().getBalance(): " + customer.getCustomerInvoice().getBalance());
+
+		GenerateRequest gr = new GenerateRequest();
+
+		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerInvoice().getBalance()));
+		//gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+		
+		System.out.println(req.getRequestURL().toString());
+		gr.setUrlFail(req.getRequestURL().toString());
+		gr.setUrlSuccess(req.getRequestURL().toString());
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/customer/invoice/checkout")
+	public String toBalanceSuccess(Model model,
+			@RequestParam(value = "result", required = true) String result,
+			RedirectAttributes attr, HttpServletRequest request
+			) throws Exception {
+		
+		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+
+		Response responseBean = null;
+
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setTransaction_sort("");
+			
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			
+			CustomerInvoice customerInvoice = new CustomerInvoice();
+			customerInvoice.setStatus("paid");
+			customerInvoice.setAmount_paid(customer.getCustomerInvoice().getBalance());
+			customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+			customerInvoice.getParams().put("id", customer.getCustomerInvoice().getId());
+			
+			this.crmService.customerBalance(customerInvoice, customerTransaction);
+			
+			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+			// call mail at value retriever
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			
+			// get sms register template from db
+			notification = this.crmService.queryNotificationBySort("payment", "sms");
+			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			
+			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
+			
+		} else {
+			
+			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
+		}
+
+		return "redirect:/customer/billing/1";
+	}
+	
 
 	@RequestMapping(value = "/customer/payment")
 	public String customerPayment(Model model) {

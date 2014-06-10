@@ -73,12 +73,10 @@
 									NZ$ 
 									<strong class="text-success">
 										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
-										
 									</strong>
 								</div>
 								<div class="col-md-6">
-									
-									<a href="#" class="btn btn-success pull-right" style="width:120px;">Make Payment</a>
+									<a href="${ctx }/customer/billing/1" class="btn btn-success pull-right" style="width:120px;">View Invoice</a>
 								</div>
 							</div>
 						</div>

@@ -155,7 +155,7 @@
 							</span>
 							/ mth
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapse${plan.id }">
-								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-icon></span>
+								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-id="collapse${plan.id }"></span>
 							</a>
 						</h2>
 					</div>
@@ -196,7 +196,7 @@
 							</span>
 							/ mth
 							<a data-toggle="collapse" data-parent="#accordion" href="#collapse${plan.id }">
-								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-icon></span>
+								<span class="glyphicon glyphicon-minus-sign pull-right" style="font-size:28px;" data-id="collapse${plan.id }"></span>
 							</a>
 						</h2>
 					</div>
@@ -235,15 +235,12 @@
 		window.location.href = '${ctx}/plans/term-plan/personal/' + select_plan_type + '/address-check/' + select_plan_id;
 	});
 	
-	$('span[data-icon]').click(function(){
-		var $btn = $(this);
-		var gl = $btn.attr('class');
-		if (gl == 'glyphicon glyphicon-minus-sign pull-right') {
-			$btn.attr('class', 'glyphicon glyphicon-plus-sign pull-right');
-		} else {
-			$btn.attr('class', 'glyphicon glyphicon-minus-sign pull-right');
-		}
+	$('div[id^="collapse"]').on('show.bs.collapse', function(){
+		$('span[data-id="' + this.id + '"]').attr('class', 'glyphicon glyphicon-minus-sign pull-right');
+	}).on('hide.bs.collapse', function(){
+		$('span[data-id="' + this.id + '"]').attr('class', 'glyphicon glyphicon-plus-sign pull-right');
 	});
+	
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

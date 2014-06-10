@@ -27,7 +27,7 @@
 	
 	<%-- <img src="${ctx }/public/bootstrap3/images/persoanl-12months-unlimited-plan.png"  class="img-responsive" alt="persoanl 12months unlimited plan"> --%>
 	
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -54,13 +54,16 @@
 	</ul>
 	
 	<div class="page-header" style="margin-top:0;">
-		<h2>
+		<h2 class="hidden-xs hidden-sm">
 			Check your address whether the service can be installed
 		</h2>
+		<h4 class="hidden-lg hidden-md">
+			Check your address whether the service can be installed
+		</h4>
 	</div>
 	
 	<div class="row">
-		<div class="col-md-7">
+		<div class="col-md-7 col-xs-12 col-sm-12">
 			<div class="input-group">
 				<input id="address" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
 				<span class="input-group-btn">
@@ -150,7 +153,6 @@
 						var id = $('input[name="' + type + '_id"]:checked').val();
 						if (id) window.location.href = '${ctx}/order/' + id;
 						else { alert('Please choose one plan at least.'); }
-						
 					});
 				});
 		   	}).always(function(){ l.stop(); });
@@ -158,7 +160,6 @@
 			alert('Please enter a real address.');
 		}
 	});
-	
 	
 })(jQuery);
 </script>
