@@ -8,7 +8,7 @@ import java.util.List;
 
 import com.tm.broadband.model.CallInternationalRate;
 
-public class CallInternationalRateUltility {
+public class CallInternationalRateUtility {
 	
 	private static Integer areaPrefixIndex 			= 1;
 	private static Integer rateTypeIndex 			= 2;

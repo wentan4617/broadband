@@ -757,5 +757,23 @@ public class CRMRestController {
 		// Regenerate order application PDF is successful.
 
 	}
+
+	// Remove discount
+	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/manually-generate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateOrdersInvoice(Model model
+			,@RequestParam("id") int id
+			,@RequestParam("generateType") String generateType
+			,RedirectAttributes attr) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		boolean isRegenerateInvoice = "regenerate".equals(generateType) ? true : false ;
+		
+		try {
+			this.crmService.createTermPlanInvoiceByOrder(co, isRegenerateInvoice);
+		} catch (ParseException e) { e.printStackTrace(); }
+		
+		return json;
+	}
 	
 }

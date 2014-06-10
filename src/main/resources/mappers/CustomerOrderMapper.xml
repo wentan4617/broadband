@@ -295,10 +295,12 @@
 		select
 			<include refid="customerOrderColumns"/>,
 			<include refid="customerColumns"/>,
+			<include refid="organizationColumns"/>,
 			<include refid="customerOrderDetailColumns"/>
 		from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
 		left join tm_customer_order_detail as cod on cod.order_id = co.id
+		left join tm_organization as o on o.customer_id = c.id
 		<include refid="customerOrderWhere"/>
 	</select>
 	

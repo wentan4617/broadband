@@ -17,6 +17,20 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.20 2014-06-10
+
+* 审查重新生成order的application form时的逻辑，看是否能加入discount的判断
+* 未付款账单，全部罗列到billing模块里，列出所有的order的最近一张invoice(steven)
+* [检查为什么sales下的单不显示在belongs to里](steven)
+* 复审出账时invoice拨打记录的rate，检查各rate是否正常转化(steven)
+* [customer order界面添加手动生成下一张term invoice的功能。](steven)
+* [customer order界面添加手动重新生成最近invoice的功能，先删除最近invoice的PDF再删除该invoice信息和相关invoice detail的信息，最后重新生成最近一张invoice及PDF](steven)
+* [从服务器拷贝所有order和invoice信息，重新在本地调整后发出](steven)
+* [Arun Vanama的invoice PDF上传到服务器](steven)
+* [检查发送term invoice的定时器，为何串数据](steven)
+* [重新生成order，修复出discount类型detail问题](steven)
+ 
+ 
 demand version 1.0.20 2014-06-09
 
 * [开发手动出termed的invoice功能](steven)
@@ -31,13 +45,13 @@ demand version 1.0.10 2014-06-03
  
 demand version 1.0.9 2014-05-30
 
-* order表加个ddpay_form字段，界面上加一行操作，上传，下载功能。(steven)
-* order表加一个user_id字段，记录后台下单人员的user_id，order界面判断如果sale_id不为空则该user_name显示(显示user_role)，如果user_id不为空则显示该user_name(显示user_role)(steven)
+* [order表加个ddpay_form字段，界面上加一行操作，上传，下载功能。](steven)
+* [order表加一个user_id字段，记录后台下单人员的user_id，order界面判断如果sale_id不为空则该user_name显示(显示user_role)，如果user_id不为空则显示该user_name(显示user_role)](steven)
  
 demand version 1.0.9 2014-05-27
 
 * discount 根据过期日期加入改成根据单位加入，单位为0则不加入，单位没加一次减一。(steven)
-* order里添加重新生成order application form，上传application form。(steven)
+* [order里添加重新生成order application form，上传application form。](steven)
 * order下面添加两个存放文件路径的字段，一个voice record，一个documentation record，用来存放客户的录音。(steven)
 * 下单时如果pstn或地址已存在数据库中则不予以通过。(kanny)
 
@@ -55,7 +69,7 @@ demand version 1.0.9 2014-05-15
 
 * [在customer order里提交service giving是判断SV/CV Lan不为空才能提交。](steven)
 * 提交后通过短信模版将SV/CV Lan信息以及service giving date发送到胡洁和Nathan手机。(steven)
-* 在order表里添加一个direct_debit_pdf_path字段，在customer order里添加一个上传direct debit copy PDF功能，操作员可以提交客户签字的direct debit表单PDF(steven)
+* [在order表里添加一个direct_debit_pdf_path字段，在customer order里添加一个上传direct debit copy PDF功能，操作员可以提交客户签字的direct debit表单PDF](steven)
 * [在order表里添加一个rfs_date(Ready For Service Date)字段，在customer order里添加一个填写并提交rfs_date日期的输入框。](steven)
 * [order model增加broadband_asid属性，添加一个model叫ManualDefrayLog，添加其Mapper文件及相关操作类](steven)
 * [order detail的next invoice create date判断如果不为空且order type='order-term'则显示后台传过来的存储在customer的params里的plan_term_invoice_create_date的值](steven)

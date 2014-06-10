@@ -32,8 +32,8 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.SystemService;
-import com.tm.broadband.util.CallInternationalRateUltility;
-import com.tm.broadband.util.CallingRecordUltility;
+import com.tm.broadband.util.CallInternationalRateUtility;
+import com.tm.broadband.util.CallingRecordUtility;
 import com.tm.broadband.util.TMUtils;
 
 @Controller
@@ -130,7 +130,7 @@ public class BillingController {
 			bfu.setUpload_file_name(filaName);	// upload_file_name
 			User user = (User) req.getSession().getAttribute("userSession");
 			bfu.setUpload_by(user.getId());													// user_id
-			bfu.setStatement_date(CallingRecordUltility.statementDate(save_path));			// statement_date
+			bfu.setStatement_date(CallingRecordUtility.statementDate(save_path));			// statement_date
 			this.billingService.createBillingFileUpload(bfu);
 		}
 		
@@ -199,7 +199,7 @@ public class BillingController {
 		this.billingService.editBillingFileUpload(bfu);
 		
 		// Get All data from the CSV file
-		List<CustomerCallRecord> ccrs = CallingRecordUltility.ccrs(filePath);
+		List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
 		
 		// Iteratively insert into database
 		for (CustomerCallRecord ccr : ccrs) {
@@ -245,7 +245,7 @@ public class BillingController {
 			this.billingService.removeCallInternationalRate();
 			
 			// Get All data from the CSV file
-			List<CallInternationalRate> cirs = CallInternationalRateUltility.cirs(save_path);
+			List<CallInternationalRate> cirs = CallInternationalRateUtility.cirs(save_path);
 			
 			// Iteratively insert into database
 			for (CallInternationalRate cir : cirs) {

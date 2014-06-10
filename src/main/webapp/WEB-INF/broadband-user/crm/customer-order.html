@@ -40,6 +40,16 @@
 		<input type="hidden" name="customer_id" value="<.= customer.id .>"/>
 	
 		<h4 class="text-success">Order Information</h4>
+		<.
+			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){
+		.>
+			<br/>
+			<strong>Termed Order's Operations:</strong>&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next invoice</a>
+		<.
+			}
+		.>
 		<hr/>
 		
 		<div class="row">
@@ -222,7 +232,7 @@
 						<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
 						<.
 							for(var u=0; u<users.length; u++){
-								if(users[u].id == customerOrder[i].user_id){
+								if(users[u].id == customerOrder[i].user_id || users[u].id == customerOrder[i].sale_id){
 						.>
 									<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
 						<.
@@ -665,6 +675,30 @@
 		</table>
 		
 	</form>
+
+	<!-- Regenerate/Generate order's invoice Modal -->
+	<div class="modal fade" id="generateOrderInvoiceModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="generateOrderInvoiceModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="generateOrderInvoiceModalLabel">
+						<strong data-name="generate_invoice_title_<.= customerOrder[i].id .>"></strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p class="text-warning" data-name="generate_invoice_content_<.= customerOrder[i].id .>">
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="generateOrderInvoiceModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal"></a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<!-- Edit Order Status Modal -->
 	<div class="modal fade" id="editOrderStatusModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderStatusModalLabel" aria-hidden="true">

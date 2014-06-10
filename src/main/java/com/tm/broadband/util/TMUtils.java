@@ -230,8 +230,13 @@ public class TMUtils {
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_login_name>", preventNull(cus.getLogin_name())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
-			noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
-			noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
+			if("business".equals(cus.getCustomer_type())){
+				noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));
+				noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", ""));
+			} else {
+				noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
+				noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
+			}
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_address>", preventNull(cus.getAddress())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_email>", preventNull(cus.getEmail())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_phone>", preventNull(cus.getPhone())));
@@ -251,8 +256,13 @@ public class TMUtils {
 			noti.setContent(noti.getContent().replaceAll("@<customer_login_name>", preventNull(cus.getLogin_name())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
-			noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
-			noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
+			if("business".equals(cus.getCustomer_type())){
+				noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));
+				noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", ""));
+			} else {
+				noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
+				noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
+			}
 			noti.setContent(noti.getContent().replaceAll("@<customer_address>", preventNull(cus.getAddress())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_email>", preventNull(cus.getEmail())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_phone>", preventNull(cus.getPhone())));

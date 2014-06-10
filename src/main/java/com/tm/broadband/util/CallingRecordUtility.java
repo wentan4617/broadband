@@ -9,7 +9,7 @@ import java.util.List;
 
 import com.tm.broadband.model.CustomerCallRecord;
 
-public class CallingRecordUltility {
+public class CallingRecordUtility {
 	
 	private static Integer statementDateIndex 			= 0;
 	private static Integer recordTypeIndex 				= 5;

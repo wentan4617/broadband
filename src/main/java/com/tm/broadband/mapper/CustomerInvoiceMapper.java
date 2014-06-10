@@ -56,6 +56,8 @@ public interface CustomerInvoiceMapper {
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA */
+	void deleteCustomerInvoiceById(int id);
+	
 	void deleteCustomerInvoiceByCustomerId(int id);
 	
 	void deleteCustomerInvoiceByRepeat();

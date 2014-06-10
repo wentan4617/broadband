@@ -26,6 +26,12 @@ public class Notification implements Serializable {
 	/*
 	 * END RELATED PROPERTIES
 	 */
+
+	public Notification(String title, String content) {
+		super();
+		this.title = title;
+		this.content = content;
+	}
 	
 	public int getId() {
 		return id;
