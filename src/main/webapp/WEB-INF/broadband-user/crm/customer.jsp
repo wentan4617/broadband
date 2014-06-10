@@ -165,6 +165,7 @@
 		}
 		$.get('${ctx}/broadband-user/crm/customer/edit', data, function(map){
 			map.ctx = '${ctx}';
+			map.user_role = '${userSession.user_role}';
 	   		var $table = $('#order_detail');
 			$table.html(tmpl('customer_order_table_tmpl', map));
 
@@ -173,6 +174,51 @@
 				/*
 				 *	BEGIN customer order area
 				 */
+				// Regenerate most recent invoice
+				// Get regenerate most recent invoice Dialog
+				var orderStatusCheck = $('#'+co[i].id+'_order_status');
+				if(orderStatusCheck.attr('data-val') != 'using'){
+					$('a[data-name="'+co[i].id+'_regenerate_invoice"]').attr('disabled', 'disabled');
+					$('a[data-name="'+co[i].id+'_manually_generate_invoice"]').attr('disabled', 'disabled');
+				}
+				$('a[data-name="'+co[i].id+'_regenerate_invoice"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Regenerate Most Recent Invoice');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('This action will remove all the details related to this order\'s most recent invoice. And will regenerate that invoice with it\'s PDF based on order\'s details. Do you want to regenerate this order\'s most recent invoice immediately?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to regenerate invoice!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
+				$('a[data-name="'+co[i].id+'_manually_generate_invoice"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Generate Next Invoice');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('This action will generate first(if there is no invoice(s)...) or next invoice for this order. Do you want to generate this order\'s first or next invoice immediately?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to generate invoice!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="generateOrderInvoiceModalBtn_'+co[i].id+'"]').click(function(){
+					var generateType = $(this).attr('data-type');
+					var data = {
+							'id':this.id
+							,'generateType':generateType
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/order/invoice/manually-generate', data, function(json){
+					}, "json").always(function () {
+						$.getInvoicePage();
+				    });
+				});
+				// Reset button when hidden regenerate most recent invoice dialog
+				$('#generateOrderInvoiceModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_invoice"]').button('reset');
+					$('a[data-name="'+$(this).attr('data-id')+'_manually_generate_invoice"]').button('reset');
+				});
+				
+				
 				// Update order status
 				// Get order status Dialog
 				$('a[data-name="'+co[i].id+'_order_status_edit"]').click(function(){
@@ -218,9 +264,7 @@
 						// rewrite order due date's content
 						order_due_date.html(json.model.order_due_str);
 						order_due_date.attr('data-val',json.model.order_due_str);
-					}, "json").always(function () {
-						$btn.button('reset');
-				    });
+					}, "json");
 				});
 				// Reset button when hidden order due date dialog
 				$('#editOrderDueDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {

@@ -171,7 +171,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateTermPlanInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0-59/30 * * * * ?"></property>
+		<property name="cronExpression" value="0 0 3 7 * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every month's 7th 3:00 a.m. -->
@@ -192,6 +192,8 @@
 	<bean id="customerSendTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerSendTermPlanInvoicePDFEachMonthJob" />
 		<property name="cronExpression" value="0 0 3 10 * ?"></property>
+		<!-- every 1 minute -->
+		<!-- 0 */1 * * * ? -->
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every month's 10th 3:00 a.m. -->

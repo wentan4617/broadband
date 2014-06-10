@@ -322,6 +322,10 @@
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
 	<!-- DELETE AREA -->
+	<delete id="deleteCustomerInvoiceById" parameterType="int">
+		DELETE FROM tm_customer_invoice WHERE id = #{0}
+	</delete>
+	
 	<delete id="deleteCustomerInvoiceByCustomerId" parameterType="int">
 		DELETE FROM tm_customer_invoice WHERE customer_id = #{0}
 	</delete>
