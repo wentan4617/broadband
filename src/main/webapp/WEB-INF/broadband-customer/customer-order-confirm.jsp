@@ -132,10 +132,7 @@ background-color: #7BC3EC;
 					<hr /><!-- style="margin-top:0;" -->
 					<h2>Personal Information</h2>
 					<hr style="margin-top:0;"/>
-					<%-- <div class="row" >
-						<div class="col-sm-4"><strong>Phone</strong></div>
-						<div class="col-sm-6"><strong class="text-info">${customer.cellphone }</strong></div>
-					</div> --%>
+					
 					<div class="row" style="margin-top:5px;">
 						<div class="col-sm-4"><strong>Mobile</strong></div>
 						<div class="col-sm-6"><strong class="text-info">${customer.cellphone }</strong></div>
@@ -143,6 +140,14 @@ background-color: #7BC3EC;
 					<div class="row" style="margin-top:5px;">
 						<div class="col-sm-4"><strong>Email</strong></div>
 						<div class="col-sm-6"><strong class="text-info">${customer.email }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Identity Type</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.identity_type }</strong></div>
+					</div>
+					<div class="row" style="margin-top:5px;">
+						<div class="col-sm-4"><strong>Identity Number</strong></div>
+						<div class="col-sm-6"><strong class="text-info">${customer.identity_number }</strong></div>
 					</div>
 				</c:if>
 				
@@ -167,8 +172,7 @@ background-color: #7BC3EC;
 						<div class="col-sm-6"><strong class="text-info">${customer.customerOrder.transition_porting_number }</strong></div>
 					</div>
 				</c:if>
-							
-							
+								
 				<hr/>
 				<table class="table">
 					<thead>

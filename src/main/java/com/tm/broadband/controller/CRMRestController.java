@@ -758,7 +758,7 @@ public class CRMRestController {
 
 	}
 
-	// Remove discount
+	// manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/manually-generate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateOrdersInvoice(Model model
 			,@RequestParam("id") int id
@@ -771,7 +771,10 @@ public class CRMRestController {
 		
 		try {
 			this.crmService.createTermPlanInvoiceByOrder(co, isRegenerateInvoice);
+			json.getSuccessMap().put("alert-success", "Manually Generate is successful");
 		} catch (ParseException e) { e.printStackTrace(); }
+		
+		
 		
 		return json;
 	}

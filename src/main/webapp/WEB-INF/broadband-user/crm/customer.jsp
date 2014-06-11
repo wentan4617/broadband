@@ -67,11 +67,9 @@
 		orderIds.push('${co.id}');
 	</c:forEach>
 	
-	
 	$.getCustomerInfo = function() {
-		var data = {
-				'id' : ${customer.id}
-		}
+		var data = { 'id' : ${customer.id} };
+		
 		$.get('${ctx}/broadband-user/crm/customer/edit', data, function(map){
 			map.customer.ctx = '${ctx}';
 	   		var $table = $('#customer_edit');
@@ -121,6 +119,8 @@
 					, title: $('#title').val()
 					, first_name: $('#first_name').val()
 					, last_name: $('#last_name').val()
+					, identity_type: $('#identity_type').val()
+					, identity_number: $('#identity_number').val()
 					, organization: {
 						org_name: $('#organization\\.org_name').val()
 						, org_type: $('#organization\\.org_type').val()
@@ -137,9 +137,8 @@
 					, customer_type: customer_type
 					, balance: $('#balance').val()
 					, status: $('#status').val()
-				};
-				//console.log("customer request:");
-				//console.log(customer);
+				}; // console.log("customer request:"); console.log(customer);
+				
 				$btn.button('loading');
 				$.ajax({
 					type: 'post'
@@ -160,9 +159,8 @@
 
 
 	$.getCustomerOrder = function() {
-		var data = {
-				'id' : ${customer.id}
-		}
+		var data = { 'id' : ${customer.id} };
+		
 		$.get('${ctx}/broadband-user/crm/customer/edit', data, function(map){
 			map.ctx = '${ctx}';
 			map.user_role = '${userSession.user_role}';
@@ -203,13 +201,15 @@
 				$('a[data-name="generateOrderInvoiceModalBtn_'+co[i].id+'"]').click(function(){
 					var generateType = $(this).attr('data-type');
 					var data = {
-							'id':this.id
-							,'generateType':generateType
+						'id':this.id
+						,'generateType':generateType
 					};
 					
 					$.post('${ctx}/broadband-user/crm/customer/order/invoice/manually-generate', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getInvoicePage(1);
 					}, "json").always(function () {
-						$.getInvoicePage();
+						
 				    });
 				});
 				// Reset button when hidden regenerate most recent invoice dialog
@@ -738,9 +738,7 @@
 					$('#confirmDDPayModal_'+this.id).modal('show');
 				});
 				$('a[data-name="confirm_ddpay_modal_btn_'+invoice.id+'"]').click(function(){
-					var data = {
-							invoice_id : this.id
-					};
+					var data = { invoice_id : this.id };
 					
 					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/ddpay', data, function(json){
 						if (json.hasErrors) {
@@ -763,8 +761,8 @@
 				});
 				$('a[data-name="confirm_cash_modal_btn_'+invoice.id+'"]').click(function(){
 					var data = {
-							invoice_id : this.id,
-							eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
+						invoice_id : this.id,
+						eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
 					};
 					
 					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/cash', data, function(json){

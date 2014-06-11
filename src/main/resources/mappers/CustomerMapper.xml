@@ -39,7 +39,9 @@
 		c.`passport`		as c_passport,
 		c.`country`			as c_country,
 		c.`company_name`	as c_company_name,
-		c.`customer_type`	as c_customer_type
+		c.`customer_type`	as c_customer_type,
+		c.`identity_type`	as c_identity_type,
+		c.`identity_number` as c_identity_number
 	</sql>
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
@@ -64,6 +66,8 @@
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
 		<result property="customer_type" column="c_customer_type" />
+		<result property="identity_type" column="c_identity_type" />
+		<result property="identity_number" column="c_identity_number" />
 	</resultMap>
 	
 	<sql id="customerOrderColumns">
@@ -315,6 +319,8 @@
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
 		<result property="customer_type" column="c_customer_type" />
+		<result property="identity_type" column="c_identity_type" />
+		<result property="identity_number" column="c_identity_number" />
 
 		<association property="organization" resultMap="organizationResultMap" />
 	</resultMap>
@@ -366,6 +372,8 @@
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
 		<result property="customer_type" column="c_customer_type" />
+		<result property="identity_type" column="c_identity_type" />
+		<result property="identity_number" column="c_identity_number" />
 
 		<association property="organization" resultMap="organizationResultMap" />
 		
@@ -425,12 +433,14 @@
 		`login_name`, `password`, `user_name`, `first_name`, `last_name`,
 		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`,
 		`register_date`, `active_date`, `balance`, 
-		`title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`)
+		`title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`,
+		`identity_type`, `identity_number`)
 		VALUES (
 		#{login_name}, #{password}, #{user_name}, #{first_name}, #{last_name}, 
 		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post},
 		#{register_date}, #{active_date}, #{balance},
-		#{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type})
+		#{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type},
+		#{identity_type}, #{identity_number})
 	</insert>
 
 	<!-- // END INSERT AREA -->
@@ -473,7 +483,9 @@
 			<if test="passport != null">passport = #{passport},</if>
 			<if test="country != null">country = #{country},</if>
 			<if test="company_name != null">company_name = #{company_name},</if>
-			<if test="customer_type != null">customer_type = #{customer_type}</if>
+			<if test="customer_type != null">customer_type = #{customer_type},</if>
+			<if test="identity_type != null">identity_type = #{identity_type},</if>
+			<if test="identity_number != null">identity_number = #{identity_number}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
