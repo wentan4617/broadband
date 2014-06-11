@@ -799,7 +799,7 @@ public class CRMService {
 		cpi = customerInvoiceMapper.selectCustomerInvoice(cpiTemp);
 		
 		// If is regenerate current invoice, then execute some cleaning jobs
-		if(isRegenerateInvoice){
+		if(isRegenerateInvoice && cpi != null){
 			
 			// Delete most recent invoice's PDF
 			File file = new File(cpi.getInvoice_pdf_path());

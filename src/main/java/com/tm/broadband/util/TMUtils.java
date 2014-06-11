@@ -89,6 +89,12 @@ public class TMUtils {
 		return "";
 	}
 	
+	public static String dateFormat1YYYYMMDD(Date date) {
+		if (date != null) 
+			return date1Format.format(date);
+		return "";
+	}
+	
 	public static Date parseDateYYYYMMDD(String dateStr) {
 		if (dateStr != null && !"".equals(dateStr))
 			try {
@@ -676,14 +682,21 @@ public class TMUtils {
 //			boolean isMobile = ccr.getBilling_description().toUpperCase().contains("MOBILE")
 //					|| ccr.getBilling_description().toUpperCase().contains("OTH NETWRK");
 			boolean isNational = false; boolean isBusinessLocal = false;
-			List<CallInternationalRate> cir = callInternationalRateMapper.selectCallInternationalRateByAreaPrefix(ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
-			boolean isInternational = cir!=null && cir.size()>0 ? true : false;
+			
+			CallInternationalRate cir = new CallInternationalRate();
+			String areaCode = ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-"));
+			if("27".equals(areaCode) && ("OTH NETWRK".equals(ccr.getBilling_description()) || "MOBILE".equals(ccr.getBilling_description()))){
+				cir.getParams().put("rate_type", "NZ Mobile");
+			}
+			cir.getParams().put("area_prefix", areaCode);
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRate(cir);
+			boolean isInternational = cirs!=null && cirs.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
 			if(is0900){} if(isFax){}
 //			if(isMobile){ costPerMinute = 0.19d ; }
 			if(isNational){} if(isBusinessLocal){}
-			if(isInternational){ costPerMinute = cir.get(0).getRate_cost(); }
+			if(isInternational){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
 			// DURATION/SECONDS
 			BigDecimal bigDuration = new BigDecimal(fillDecimalTime(String.valueOf((double)ccr.getDuration() / 60)));
@@ -741,5 +754,33 @@ public class TMUtils {
 		c.set(Calendar.MONTH, month - 1);
 		return c.getActualMaximum(Calendar.DAY_OF_MONTH);
 	}
+
+	// BEGIN RetrieveMonthAbbrWithDate
+	public static String retrieveMonthAbbrWithDate(Date date){
+		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
+		String day = dateArr[2];
+		String finalDateStr = "";
+		if(Integer.parseInt(day) < 10){
+			finalDateStr = day.charAt(1)+" ";
+		} else {
+			finalDateStr = day+" ";
+		}
+		switch (dateArr[1]) {
+		case "01": finalDateStr += "Jan "; break;
+		case "02": finalDateStr += "Feb "; break;
+		case "03": finalDateStr += "Mar "; break;
+		case "04": finalDateStr += "Apr "; break;
+		case "05": finalDateStr += "May "; break;
+		case "06": finalDateStr += "Jun "; break;
+		case "07": finalDateStr += "Jul "; break;
+		case "08": finalDateStr += "Aug "; break;
+		case "09": finalDateStr += "Sep "; break;
+		case "10": finalDateStr += "Oct "; break;
+		case "11": finalDateStr += "Nov "; break;
+		case "12": finalDateStr += "Dec "; break;
+		}
+		return finalDateStr += dateArr[0];
+	}
+	// END RetrieveMonthAbbrWithDate
 
 }

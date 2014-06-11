@@ -41,7 +41,7 @@
 	
 		<h4 class="text-success">Order Information</h4>
 		<.
-			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){
+			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){
 		.>
 			<br/>
 			<strong>Termed Order's Operations:</strong>&nbsp;

@@ -17,28 +17,32 @@
 
 	<!-- DEFINITION AREA -->
 	<sql id="callInternationalRateColumns">
-		c.`area_prefix` 		as c_area_prefix,
-		c.`rate_type` 			as c_rate_type,
-		c.`area_name` 			as c_area_name,
-		c.`rate_cost` 			as c_rate_cost
+		cir.`area_prefix` 		as cir_area_prefix,
+		cir.`rate_type` 			as cir_rate_type,
+		cir.`area_name` 			as cir_area_name,
+		cir.`rate_cost` 			as cir_rate_cost
 	</sql>
 	
 
 
 
 	<resultMap type="CallInternationalRate" id="callInternationalRateResultMap">
-		<result property="area_prefix" column="c_area_prefix" />
-		<result property="rate_type" column="c_rate_type" />
-		<result property="area_name" column="c_area_name" />
-		<result property="rate_cost" column="c_rate_cost" />
+		<result property="area_prefix" column="cir_area_prefix" />
+		<result property="rate_type" column="cir_rate_type" />
+		<result property="area_name" column="cir_area_name" />
+		<result property="rate_cost" column="cir_rate_cost" />
 	</resultMap>
 	
 	<sql id="callInternationalRateWhere">
 		<where>
-			<if test="params.area_prefix != null">c.area_prefix = #{params.area_prefix}</if>
-			<if test="params.rate_type != null">and c.rate_type = #{params.rate_type}</if>
-			<if test="params.area_name != null">and c.area_name = #{params.area_name}</if>
-			<if test="params.rate_cost != null">and c.rate_cost = #{params.rate_cost}</if>
+			<choose>
+				<otherwise>
+					<if test="params.area_prefix != null">cir.area_prefix = #{params.area_prefix}</if>
+					<if test="params.rate_type != null">and cir.rate_type = #{params.rate_type}</if>
+					<if test="params.area_name != null">and cir.area_name = #{params.area_name}</if>
+					<if test="params.rate_cost != null">and cir.rate_cost = #{params.rate_cost}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	<!-- // DEFINITION AREA -->
@@ -48,7 +52,7 @@
 	<!-- SELECT AREA -->
 	
 	<select id="selectCallInternationalRate" parameterType="CallInternationalRate" resultType="CallInternationalRate">
-		select * from tm_call_international_rates as c
+		select * from tm_call_international_rates as cir
 		<include refid="callInternationalRateWhere"/>
 	</select>
 	
@@ -56,7 +60,7 @@
 	<select id="selectCallInternationalRatesByPage" parameterType="Page" resultMap="callInternationalRateResultMap">
 		select 
 			<include refid="callInternationalRateColumns"/>
-			from tm_call_international_rates as c
+			from tm_call_international_rates as cir
 			<include refid="callInternationalRateWhere"/>
 			<if test="params.orderby != null">${params.orderby}</if>
 			limit #{pageOffset}, #{pageSize}
@@ -64,13 +68,8 @@
 
 	<!-- select callInternationalRate amount -->
 	<select id="selectCallInternationalRatesSum" parameterType="Page" resultType="int">
-		select count(*) from tm_call_international_rates as c
+		select count(*) from tm_call_international_rates as cir
 		<include refid="callInternationalRateWhere"/>
-	</select>
-
-	<!-- select callInternationalRate amount -->
-	<select id="selectCallInternationalRateByAreaPrefix" parameterType="String" resultType="CallInternationalRate">
-		select * from tm_call_international_rates as c where area_prefix = #{0}
 	</select>
 
 	<!-- // END SELECT AREA -->
