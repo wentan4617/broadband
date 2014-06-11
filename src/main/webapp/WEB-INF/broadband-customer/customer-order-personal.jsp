@@ -22,7 +22,7 @@
 
 <div class="container" >
 	
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -51,7 +51,7 @@
 	<form id="customerInfoFrom" class="form-horizontal">
 	
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-md-9 col-sm-12 col-xs-12">
 				
 				<!-- application form -->
 				
@@ -60,7 +60,7 @@
 					<div class="panel-heading">
 						<h4 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#application">
-								Your Application Form <span class="text-danger">(All Fields Required)</span>
+								Your Application Form <span class="text-danger hidden-xs hidden-sm">(All Fields Required)</span>
 							</a>
 						</h4>
 					</div>
@@ -75,7 +75,6 @@
 							<div class="form-group">
 								<label for="address" class="control-label col-md-4">Your Address</label>
 								<div class="col-md-8">
-									
 									<c:choose>
 										<c:when test="${customer.address!=null&&customer.serviceAvailable}">
 											<p class="form-control-static">${customer.address }</p>
@@ -192,9 +191,9 @@
 								<label for="title" class="control-label col-md-4">Title</label>
 								<div class="col-md-2">
 									<select name="title" id="title" class="selectpicker show-tick form-control">
-										<option value="Mr">Mr</option>
-										<option value="Mrs">Mrs</option>
-										<option value="Ms">Ms</option>
+										<option value="Mr" ${customer.title=='Mr'?'selected="selected"':''}>Mr</option>
+										<option value="Mrs" ${customer.title=='Mrs'?'selected="selected"':''}>Mrs</option>
+										<option value="Ms" ${customer.title=='Ms'?'selected="selected"':''}>Ms</option>
 									</select>
 								</div>
 							</div>
@@ -208,6 +207,30 @@
 								<label for="last_name" class="control-label col-md-4">Last name</label>
 								<div class="col-md-4">
 									<input type="text" id="last_name" name="last_name" value="${customer.last_name }" class="form-control" data-error-field />
+								</div>
+							</div>
+							
+							
+							<!-- For ID Purpose Only -->
+							
+							<hr/>
+							<h4 class="text-success">For ID Purpose Only</h4>
+							<hr/>
+							
+							<div class="form-group">
+								<label for="identity_type" class="control-label col-md-4">Identity Type</label>
+								<div class="col-md-3">
+									<select name="identity_type" id="identity_type" class="selectpicker show-tick form-control">
+										<option value="Driver Licence" ${customer.identity_type=='Driver Licence'?'selected="selected"':''}>Driver Licence</option>
+										<option value="Passport" ${customer.identity_type=='Passport'?'selected="selected"':''}>Passport</option>
+										<option value="18+" ${customer.identity_type=='18+'?'selected="selected"':''}>18+</option>
+									</select>
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="identity_number" class="control-label col-md-4">Identity Number</label>
+								<div class="col-md-4">
+									<input type="text" id="identity_number" name="identity_number" value="${customer.identity_number }" class="form-control" data-error-field />
 								</div>
 							</div>
 						</div>
@@ -257,11 +280,17 @@
 						
 					</div>
 				</c:if>
+				
+				<div class="panel panel-success hidden-lg hidden-md">
+					<div class="panel-body">
+						<button type="button" class="btn btn-success btn-lg btn-block" id="m_btnConfirm">Confirm</button>
+					</div>
+				</div>
 					
 			</div>
 			
 			<!-- order-modal -->
-			<div class="col-md-3" >
+			<div class="col-md-3 hidden-xs hidden-sm" >
 				<div data-spy="affix" data-offset-top="150" id="order-result"></div>
 			</div>
 		</div>
@@ -322,6 +351,7 @@
 	function loadOrderModal() {
 		$('#order-result').html(tmpl('order_modeal_tmpl', modal));
 		$('#btnConfirm').click(confirm);
+		$('#m_btnConfirm').click(confirm);
 	}
 	
 	//loadOrderModal();
@@ -376,6 +406,8 @@
 			, title: $('#title').val()
 			, first_name: $('#first_name').val()
 			, last_name: $('#last_name').val()
+			, identity_type: $('#identity_type').val()
+			, identity_number: $('#identity_number').val()
 			, customerOrder: {
 				order_broadband_type: $('input[name="order_broadband_type"]:checked').val()
 				, hardwares: []

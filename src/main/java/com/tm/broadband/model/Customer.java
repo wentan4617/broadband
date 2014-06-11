@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -68,9 +69,15 @@ public class Customer implements Serializable {
 	private Date birth;
 	private String driver_licence;
 	private String passport;
+	
 	private String country;
 	private String company_name;
 	private String customer_type;
+	
+	private String identity_type;
+	@NotEmpty(groups = { CustomerValidatedMark.class})
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class})
+	private String identity_number;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -463,6 +470,22 @@ public class Customer implements Serializable {
 
 	public void setServiceAvailable(boolean serviceAvailable) {
 		this.serviceAvailable = serviceAvailable;
+	}
+
+	public String getIdentity_type() {
+		return identity_type;
+	}
+
+	public void setIdentity_type(String identity_type) {
+		this.identity_type = identity_type;
+	}
+
+	public String getIdentity_number() {
+		return identity_number;
+	}
+
+	public void setIdentity_number(String identity_number) {
+		this.identity_number = identity_number;
 	}
 
 	

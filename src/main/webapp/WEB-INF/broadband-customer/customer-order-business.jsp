@@ -22,7 +22,7 @@
 
 <div class="container" >
 	
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -51,7 +51,7 @@
 	<form id="customerInfoFrom" class="form-horizontal">
 	
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-md-9 col-sm-12 col-xs-12">
 				
 				<!-- application form -->
 				
@@ -310,11 +310,17 @@
 						
 					</div>
 				</c:if>
+				
+				<div class="panel panel-success hidden-lg hidden-md">
+					<div class="panel-body">
+						<button type="button" class="btn btn-success btn-lg btn-block" id="m_btnConfirm">Confirm</button>
+					</div>
+				</div>
 					
 			</div>
 			
 			<!-- order-modal -->
-			<div class="col-md-3" >
+			<div class="col-md-3 hidden-xs hidden-sm" >
 				<div data-spy="affix" data-offset-top="150" id="order-result"></div>
 			</div>
 			
@@ -381,6 +387,7 @@
 	function loadOrderModal() {
 		$('#order-result').html(tmpl('order_modeal_tmpl', modal));
 		$('#btnConfirm').click(confirm);
+		$('#m_btnConfirm').click(confirm);
 	}
 	
 	//loadOrderModal();
