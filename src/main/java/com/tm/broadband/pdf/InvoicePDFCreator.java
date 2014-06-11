@@ -187,7 +187,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	        // LIGHT GRAY VALUE
 	        addCol(paymentSlipTable, this.getCustomer().getId().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getId().toString()).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
-	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date_str()).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
+	        addCol(paymentSlipTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).o();
@@ -230,7 +230,7 @@ public class InvoicePDFCreator extends ITextUtils {
 			addCol(paymentSlipTable, "write your Name and Phone Number on the back of your cheque.").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
 			addCol(paymentSlipTable, " ").colspan(3).bgColor(totleChequeAmountBGColor).o();
 			addCol(paymentSlipTable, "Please post it with this payment slip to").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
-			addCol(paymentSlipTable, this.getCompanyDetail().getName()+" "+this.getCompanyDetail().getAddress()).colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
+			addCol(paymentSlipTable, this.getCompanyDetail().getName()+" PO Box 41547, St Lukes, Auckland 1346, New Zealand").colspan(3).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(4F).o();
 			addCol(paymentSlipTable, "** PLEASE DO NOT SEND CASH").colspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).indent(40F).o();
 			addEmptyCol(paymentSlipTable, 2F, 5);
 	        // complete the table
@@ -303,20 +303,24 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfPTable headerTable = new PdfPTable(1);
         headerTable.setWidthPercentage(102);
 		// add common header
-        addEmptyCol(headerTable, 150F, 1);
+        addEmptyCol(headerTable, 140F, 1);
         
         String customerName = null;
-        String customerTitle = null;
+//        String customerTitle = null;
         if("business".equals(customer.getCustomer_type())){
         	customerName = org.getOrg_name();
-        	customerTitle = "BUSINESS";
+//        	customerTitle = "BUSINESS";
         } else {
         	customerName = this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
-        	customerTitle = "PERSONAL";
+//        	customerTitle = "PERSONAL";
         }
-        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
-        addCol(headerTable, customerName).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
-        addCol(headerTable, this.getCustomer().getAddress()).font(ITextFont.arial_normal_10).border(0).paddingTo("l", 50F).o();
+//        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
+        addCol(headerTable, customerName.trim()).font(ITextFont.arial_bold_9).paddingTo("l", 30F).paddingTo("b", 10F).border(0).o();
+        this.getCustomer().setAddress("898 New North Road, Mount Albert, Auckland 1025");
+        String addressArr[] = this.getCustomer().getAddress().split(",");
+        for (String address : addressArr) {
+            addCol(headerTable, address.trim()).font(ITextFont.arial_bold_8).paddingTo("l", 30F).border(0).o();
+		}
         addEmptyCol(headerTable, 40F, 1);
 		return headerTable;
 	}
@@ -362,7 +366,7 @@ public class InvoicePDFCreator extends ITextUtils {
         if(this.getLastCustomerInvoice()!=null){
         	
             // LAST INVOICE PAYABLE CASE
-        	addCol(transactionTable, this.getLastCustomerInvoice().getCreate_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
+        	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getLastCustomerInvoice().getCreate_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, "Previous Invoice Total").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
         	addCol(transactionTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPayable))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
             
@@ -447,7 +451,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	
 	private PdfPTable createInvoiceDetails(){
         PdfPTable invoiceDetailsTable = newTable().columns(10).widthPercentage(98F).o();
-        addEmptyCol(invoiceDetailsTable, 150F, 10);
+        addEmptyCol(invoiceDetailsTable, 160F, 10);
         // page's width percentage
         addCol(invoiceDetailsTable, "Current Invoice Details").colspan(10).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
         addEmptyCol(invoiceDetailsTable, 20F, 10);
@@ -583,23 +587,23 @@ public class InvoicePDFCreator extends ITextUtils {
 	
 	private PdfPTable createCallRecordDetails(){
         PdfPTable callRecordDetailsTable = newTable().columns(11).widthPercentage(98F).o();
-        addEmptyCol(callRecordDetailsTable, 130F, 11);
-        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(11).font(ITextFont.arial_bold_12).paddingTo("b", 4F).alignH("r").o();
+        addEmptyCol(callRecordDetailsTable, 160F, 11);
+        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(11).font(ITextFont.arial_bold_12).paddingTo("b", 4F).o();
         addEmptyCol(callRecordDetailsTable, 10F, 11);
-        addCol(callRecordDetailsTable, "Date").colspan(3).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("l").o();
-        addCol(callRecordDetailsTable, "Phone Number").colspan(2).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
-        addCol(callRecordDetailsTable, "Destination").colspan(4).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
-        addCol(callRecordDetailsTable, "Duration").colspan(2).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
-        //addCol(callRecordDetailsTable, "Amount").colspan(1).font(ITextFont.arial_bold_white_10).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addCol(callRecordDetailsTable, "Date").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Phone Number").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Destination").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
+        addCol(callRecordDetailsTable, "Duration").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addCol(callRecordDetailsTable, "Sub Total").colspan(1).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
         addEmptyCol(callRecordDetailsTable, 6F, 11);
         
         Double totalCallFee = 0d;
         for (CustomerCallRecord ccr : this.ccrs) {
-            addCol(callRecordDetailsTable, String.valueOf(ccr.getCharge_date_time_str())).colspan(3).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, TMUtils.retrieveMonthAbbrWithDate(ccr.getCharge_date_time())).colspan(3).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("l").o();
             addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
-            addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(4).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
             addCol(callRecordDetailsTable, String.valueOf(ccr.getFormated_duration())).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
-            //addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
             totalCallFee += ccr.getAmount_incl();
 		}
         addEmptyCol(callRecordDetailsTable, 20F, 11);
@@ -666,8 +670,8 @@ public class InvoicePDFCreator extends ITextUtils {
 		 */
         addEmptyCol(headerTable, 34F, colspan);
         addCol(headerTable, this.getCompanyDetail().getName()).colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
-        addCol(headerTable, this.getCompanyDetail().getAddress()).colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
-        addCol(headerTable, "Tel: "+this.getCompanyDetail().getTelephone()+"  /  Fax: "+this.getCompanyDetail().getFax()).colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(headerTable, "PO Box 41547, St Lukes, Auckland 1346, New Zealand").colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(headerTable, "Tel: "+this.getCompanyDetail().getTelephone()).colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
         addCol(headerTable, this.getCompanyDetail().getDomain()).colspan(colspan).font(ITextFont.arial_normal_8).alignH("r").o();
         addCol(headerTable, " ").colspan(colspan).borderColor("b", titleBGColor).borderWidth("b", 3F).o();
 		/*
@@ -676,11 +680,17 @@ public class InvoicePDFCreator extends ITextUtils {
 		/*
 		 * invoice basics begin
 		 */
-        addEmptyCol(headerTable, 4F, colspan);
-        addCol(headerTable, "Date: " + TMUtils.dateFormatYYYYMMDD(this.getCurrentCustomerInvoice().getCreate_date())).colspan(4).font(ITextFont.arial_bold_8).o();
-        addCol(headerTable, "Invoice No: " + this.getCurrentCustomerInvoice().getId().toString()).colspan(4).font(ITextFont.arial_bold_8).o();
-        addCol(headerTable, "Customer Id: " + this.getCustomer().getId().toString()).colspan(4).font(ITextFont.arial_bold_8).o();
-        addEmptyCol(headerTable, 3);
+        addEmptyCol(headerTable, 14F, colspan);
+        addEmptyCol(headerTable, 4F, colspan-4);
+        addCol(headerTable, "Customer Id: ").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(headerTable, this.getCustomer().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addEmptyCol(headerTable, 4F, colspan-4);
+        addCol(headerTable, "Invoice No: ").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(headerTable, this.getCurrentCustomerInvoice().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addEmptyCol(headerTable, 4F, colspan-4);
+        addCol(headerTable, "Date: ").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(headerTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getCreate_date())).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addEmptyCol(headerTable, colspan);
 
 		/*
 		 * invoice basics end

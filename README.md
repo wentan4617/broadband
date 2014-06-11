@@ -17,6 +17,13 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.21 2014-06-11
+
+* 做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表(steven)
+* billing模块做一个early termination charge的界面，列出所有的客户，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
+* 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)
+ 
+ 
 demand version 1.0.20 2014-06-10
 
 * 审查重新生成order的application form时的逻辑，看是否能加入discount的判断

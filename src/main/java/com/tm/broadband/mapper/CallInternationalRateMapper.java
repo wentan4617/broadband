@@ -16,21 +16,21 @@ public interface CallInternationalRateMapper {
 
 	/* SELECT AREA */
 	
-	List<CallInternationalRate> selectCallInternationalRate(CallInternationalRate ccr);
+	List<CallInternationalRate> selectCallInternationalRate(CallInternationalRate cir);
 	List<CallInternationalRate> selectCallInternationalRatesByPage(Page<CallInternationalRate> page);
 	int selectCallInternationalRatesSum(Page<CallInternationalRate> page);
-	List<CallInternationalRate> selectCallInternationalRateByAreaPrefix(String area_prefix);
+	
 	/* // END SELECT AREA */
 	/* =================================================================================== */
 	/* INSERT AREA */
 	
-	void insertCallInternationalRate(CallInternationalRate ccr);
+	void insertCallInternationalRate(CallInternationalRate cir);
 	
 	/* // END INSERT AREA */
 	/* =================================================================================== */
 	/* UPDATE AREA */
 	
-	void updateCallInternationalRate(CallInternationalRate ccr);
+	void updateCallInternationalRate(CallInternationalRate cir);
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */

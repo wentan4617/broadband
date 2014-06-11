@@ -37,7 +37,6 @@ public class Calculation4PlanTermInvoice {
 		
 		// Specific month's maximum days minus beginDate's date number equals to remaining days
 		Integer remainingDays = monthlyMaximumDays - Integer.parseInt(new SimpleDateFormat("dd").format(serviceGivingDate))+1;
-		System.out.println(remainingDays);
 		resultMap.put("remainingDays", remainingDays);
 		
 		// Encapsulating daily price and remaining days into BigDecimal separately

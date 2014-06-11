@@ -129,7 +129,9 @@ public class Test {
 //		String strTemp = str.substring(str.indexOf(".")+1, reminderLength>2 ?str.indexOf(".")+3 : str.indexOf(".")+2);
 //		System.out.println(Integer.parseInt(strTemp)>0);
 		
-		Calculation4PlanTermInvoice.servedMonthDetails(TMUtils.parseDateYYYYMMDD("2014-05-01"), 89d);
+//		Calculation4PlanTermInvoice.servedMonthDetails(TMUtils.parseDateYYYYMMDD("2014-05-01"), 89d);
+		
+		System.out.println(TMUtils.retrieveMonthAbbrWithDate(TMUtils.parseDateYYYYMMDD("2014-06-09")));
 		
 	}
 
