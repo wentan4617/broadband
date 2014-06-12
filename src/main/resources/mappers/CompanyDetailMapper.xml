@@ -42,6 +42,7 @@
 		<set>
 			<if test="name != null">`name`=#{name},</if>
 			<if test="address != null">`address`=#{address},</if>
+			<if test="billing_address != null">`billing_address`=#{billing_address},</if>
 			<if test="telephone != null">`telephone`=#{telephone},</if>
 			<if test="fax != null">`fax`=#{fax},</if>
 			<if test="domain != null">`domain`=#{domain},</if>

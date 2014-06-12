@@ -181,14 +181,14 @@
 		<!-- CRM Module END -->
 
 		<!-- Billing Module BEGIN -->
-		<url-pattern>/broadband-user/billing/call-billing-record/view/*</url-pattern>
-		<url-pattern>/broadband-user/billing/call-international-rate/view/*</url-pattern>
+		<url-pattern>/broadband-user/billing/early-termination-charge/view/*</url-pattern>
 		<!-- Billing Module END -->
 
 		<!-- Provision Module BEGIN -->
 		<url-pattern>/broadband-user/provision/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/customer/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/contact-us/view/*</url-pattern>
+		<url-pattern>/broadband-user/provision/sale/view/*</url-pattern>
 		<!-- Provision Module END -->
 
 		<!-- Data Module BEGIN -->
@@ -205,7 +205,6 @@
 		<url-pattern>/broadband-user/system/notification/edit/*</url-pattern>
 		<url-pattern>/broadband-user/system/company-detail/edit</url-pattern>
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
-		<url-pattern>/broadband-user/sale/view/*</url-pattern>
 		<!-- System Module END -->
 
 		<!-- Sales Module BEGIN -->
@@ -214,8 +213,9 @@
 		<!-- Sales Module END -->
 
 		<!-- Manual Manipulation Module BEGIN -->
-		<url-pattern>/broadband-user/system/manual-manipulation-record/view/*</url-pattern>
-		<url-pattern>/broadband-user/system/manual-manipulation-record/create/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/manual-manipulation-record/view/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/call-billing-record/view/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/call-international-rate/view/*</url-pattern>
 		<!-- Manual Manipulation Module END -->
 
 	</filter-mapping>

@@ -19,6 +19,8 @@ public class CompanyDetail implements Serializable {
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String address;
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
+	private String billing_address;
+	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String telephone;
 	@NotEmpty(groups = { CompanyDetailValidatedMark.class})
 	private String fax;
@@ -70,6 +72,14 @@ public class CompanyDetail implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public String getBilling_address() {
+		return billing_address;
+	}
+
+	public void setBilling_address(String billing_address) {
+		this.billing_address = billing_address;
 	}
 
 	public String getTelephone() {

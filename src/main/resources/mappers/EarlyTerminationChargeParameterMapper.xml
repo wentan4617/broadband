@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectEarlyTerminationChargeParameter" resultType="EarlyTerminationChargeParameter">
+		select * from tm_early_termination_charge_parameter
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertEarlyTerminationChargeParameter" parameterType="EarlyTerminationChargeParameter">
+		INSERT INTO `tm_early_termination_charge_parameter`(
+			`overdue_extra_charge`
+		) VALUES (
+			#{overdue_extra_charge}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update earlyTerminationChargeParameter -->
+	<update id="updateEarlyTerminationCharge" parameterType="EarlyTerminationCharge">
+		update tm_early_termination_charge_parameter
+		<set>
+			<if test="overdue_extra_charge != null">overdue_extra_charge = #{overdue_extra_charge}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteEarlyTerminationCharge">
+		DELETE FROM tm_early_termination_charge_parameter
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

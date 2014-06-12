@@ -19,6 +19,7 @@ Total Mobile Solution Internet Service Web Project
  
 demand version 1.0.21 2014-06-11
 
+* 检查一下为什么手动出账单没有将order的discount加进去(steven)
 * 做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表(steven)
 * billing模块做一个early termination charge的界面，列出所有的客户，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
 * 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)

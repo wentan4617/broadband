@@ -104,7 +104,7 @@ public class SimplePDFCell {
 	
 	/**
 	 * 
-	 * @param alignHTo r=right, l=left, c=right
+	 * @param alignHTo r=right, l=left, c=center
 	 * @return this
 	 */
 	public SimplePDFCell alignH(String alignHTo){

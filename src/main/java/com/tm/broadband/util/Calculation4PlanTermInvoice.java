@@ -55,9 +55,8 @@ public class Calculation4PlanTermInvoice {
 		return resultMap;
 	}
 	
-	// Get current month's 20th date
 	public static Date getInvoiceDueDate(){
-		
+		// Get current month's 20th date
 		Calendar cal = Calendar.getInstance(Locale.CHINA);
 		String yyyy_MM = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).substring(0, 7);
 		try {cal.setTime(new SimpleDateFormat("yyyy-MM-dd").parse(yyyy_MM+"-20"));}catch(ParseException e){e.printStackTrace();}

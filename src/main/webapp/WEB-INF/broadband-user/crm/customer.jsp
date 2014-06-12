@@ -218,6 +218,35 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_manually_generate_invoice"]').button('reset');
 				});
 				
+
+				// Early Termination Charge modal
+				// Get Early Termination Charge Dialog
+				if(orderStatusCheck.attr('data-val') != 'cancel'){
+					$('a[data-name="'+co[i].id+'_early_termination_charge"]').attr('disabled', 'disabled');
+				}
+				$('a[data-name="'+co[i].id+'_early_termination_charge"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="earlyTerminationChargeModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('#earlyTerminationChargeModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="earlyTerminationChargeModalBtn_'+co[i].id+'"]').click(function(){
+					var data = {
+						'id':this.id,
+						'terminatedDate':$('input[data-name="early_terminated_date_'+this.id+'"]').val()
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/order/early-termination-charge/invoice/generate', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json").always(function () {
+						
+				    });
+				});
+				// Reset button when hidden Early Termination Charge dialog
+				$('#earlyTerminationChargeModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_charge"]').button('reset');
+				});
+				
 				
 				// Update order status
 				// Get order status Dialog
@@ -235,14 +264,13 @@
 					};
 					var order_status = $('#'+this.id+'_order_status');
 					$.post('${ctx}/broadband-user/crm/customer/order/status/edit', data, function(json){
-						// rewrite order status's content
-						order_status.html(json.model.order_status);
-						order_status.attr('data-val',json.model.order_status);
+						$.jsonValidation(json, 'left');
 					}, "json")
 				});
 				// Reset button when hidden order status dialog
 				$('#editOrderStatusModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_order_status_edit"]').button('reset');
+					$.getCustomerOrder();
 				});
 				
 				// Update order due date
@@ -261,24 +289,19 @@
 					};
 					var order_due_date = $('#'+this.id+'_order_due');
 					$.post('${ctx}/broadband-user/crm/customer/order/due_date/edit', data, function(json){
-						// rewrite order due date's content
-						order_due_date.html(json.model.order_due_str);
-						order_due_date.attr('data-val',json.model.order_due_str);
+						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden order due date dialog
 				$('#editOrderDueDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_order_due_input_btn"]').button('reset');
+					$.getCustomerOrder();
 				});
 				
 				$('a[data-name="generateApplicationUrl_'+co[i].id+'"]').click(function(){
-					
 					var url = $(this).attr('data-url');
-					$.post(url, function(){
-
-						// If successful, then prompt notice
-						alert('Generate New Order Application Successfully!');
-						
+					$.post(url, function(json){
+						$.jsonValidation(json, 'left');
 						$.getCustomerOrder();
 					})
 				});
@@ -300,13 +323,13 @@
 					};
 					var order_belongs_to = $('#'+this.id+'_order_belongs_to');
 					$.post('${ctx}/broadband-user/crm/customer/order/belongs_to/edit', data, function(json){
-						// rewrite belongs to's content
-						order_belongs_to.html(json.model);
+						$.jsonValidation(json, 'left');
 					}, "json")
 				});
 				// Reset button when hidden belongs to dialog
 				$('#editOrderBelongsToModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_order_belongs_to_edit"]').button('reset');
+					$.getCustomerOrder();
 				});
 
 				//
@@ -331,11 +354,7 @@
 					};
 					var order_optional_request = $('a[data-name="'+this.id+'_order_optional_request"]');
 					$.post('${ctx}/broadband-user/crm/customer/order/optional_request/edit', data, function(json){
-						// rewrite optional request's content
-						if(json.model.optional_request != ''){
-							order_optional_request.css('display', '');
-							$('p[data-name="'+json.model.id+'_order_optional_request_p"]').html(json.model.optional_request);
-						}
+						$.jsonValidation(json, 'left');
 					}, "json")
 				});
 				// Reset button when hidden optional request dialog
@@ -360,20 +379,19 @@
 				});
 				// Submit to rest controller
 				$('a[data-name="pppoe_edit_modal_btn_'+co[i].id+'"]').click(function(){
-					var order_pppoe_loginname_input = $('input[data-name="'+this.id+'_pppoe_loginname"]');
-					var order_pppoe_password_input = $('input[data-name="'+this.id+'_pppoe_password"]');
+					var loginname_input_val = $('input[data-name="'+this.id+'_pppoe_loginname"]').val();
+					var password_input_val = $('input[data-name="'+this.id+'_pppoe_password"]').val();
 					var data = {
 							 'id':this.id
-							,'pppoe_loginname':order_pppoe_loginname_input.val()+' '
-							,'pppoe_password':order_pppoe_password_input.val()+' '
+							,'pppoe_loginname':loginname_input_val+''
+							,'pppoe_password':password_input_val+''
 					};
 					var order_pppoe_loginname = $('#'+this.id+'_pppoe_loginname');
 					var order_pppoe_password = $('#'+this.id+'_pppoe_password');
 					$.post('${ctx}/broadband-user/crm/customer/order/ppppoe/edit', data, function(json){
 						if(!$.jsonValidation(json, 'left')){
-							// rewrite order PPPoE's content
-							order_pppoe_loginname.html(json.model.pppoe_loginname);
-							order_pppoe_password.html(json.model.pppoe_password);
+							order_pppoe_loginname.html(loginname_input_val);
+							order_pppoe_password.html(password_input_val);
 						}
 					}, "json");
 				});
@@ -405,8 +423,8 @@
 					var data = {
 							'customer_id':'${customer.id}'
 							,'id':this.id
-							,'cvlan':cvlan_input+' '
-							,'svlan':svlan_input+' '
+							,'cvlan':cvlan_input+''
+							,'svlan':svlan_input+''
 							,'rfs_date_str':rfs_date_input
 							,'way':$(this).attr('data-way')
 					};
@@ -415,10 +433,9 @@
 					var rfs_date = $('#'+this.id+'_rfs_date');
 					$.post('${ctx}/broadband-user/crm/customer/order/save/svcvlanrfsdate', data, function(json){
 						if(!$.jsonValidation(json, 'left')){
-							// rewrite order SV/CVLan & RFS Date's content
-							cvlan.html(json.model.cvlan);
-							svlan.html(json.model.svlan);
-							rfs_date.html(json.model.rfs_date_str);
+							cvlan.html(cvlan_input);
+							svlan.html(svlan_input);
+							rfs_date.html(rfs_date_input);
 						}
 					}, "json");
 				});
@@ -467,24 +484,20 @@
 					var order_using_start = $('#'+this.id+'_order_using_start');
 					var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 					$.post('${ctx}/broadband-user/crm/customer/order/service_giving_date', data, function(json){
-						// rewrite order Service Giving Date's content
-						order_status.html(json.model.order_status);
-						order_using_start.html(json.model.order_using_start_str);
-						order_next_invoice_create_date.html(json.model.next_invoice_create_date_str);
-
-						// reload invoice page one
-						$.getInvoicePage(1);
+						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
 					$.getCustomerOrder();
+					$.getInvoicePage(1);
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingDeniedModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
 					$.getCustomerOrder();
+					$.getInvoicePage(1);
 				});
 				/*
 				 *	END customer order Service Giving Date area
@@ -509,15 +522,13 @@
 					};
 					var order_broadband_asid = $('#'+this.id+'_broadband_asid');
 					$.post('${ctx}/broadband-user/crm/customer/order/broadband_asid/edit', data, function(json){
-						// rewrite optional Broadband ASID's content
-						if(!$.jsonValidation(json, 'left')){
-							order_broadband_asid.html(json.model.broadband_asid);
-						}
+						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden Broadband ASID dialog
 				$('#saveBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_brodband_asid_btn"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END customer order Broadband ASID area
@@ -529,28 +540,28 @@
 				 */
 				$('a[data-name="'+co[i].id+'_update_pstn"]').click(function(){
 					$btn = $(this); $btn.button('loading');
-					$('#updatePSTNModal_'+this.id).attr('data-detail-id', $(this).attr('data-id'));
+					$('a[data-name="updatePSTNModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
+					$('a[data-name="updatePSTNModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('input[data-name="pstn_number_'+this.id+'"]').val($(this).attr('data-val'));
 					$('#updatePSTNModal_'+this.id).modal('show');
 				});
-				$('a[data-name="updatePSTNModalBtn_'+co[i].id+'"]').on('click', function(){
-					$('#updatePSTNModal_'+this.id).attr('type', 'submit');
+				$('a[data-name="updatePSTNModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					this.id = $(this).attr('data-id');
+					var order_detail_id = $(this).attr('data-detail-id');
+					var pstn_number = $('input[data-name="pstn_number_'+this.id+'"]').val();
+					var data = {
+							'order_detail_id':order_detail_id
+							,'customer_id':${customer.id}
+							,'pstn_number':pstn_number
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/pstn/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
 				});
 				// Reset button when hidden order pstn dialog
-				$('#updatePSTNModal_'+co[i].id+'').on('hidden.bs.modal', function (e) {
-					if($(this).attr('type') == 'submit'){
-						this.id = $(this).attr('data-id');
-						var order_detail_id = $(this).attr('data-detail-id');
-						var pstn_number = $('input[data-name="pstn_number_'+this.id+'"]').val();
-						var data = {
-								'order_detail_id':order_detail_id
-								,'customer_id':${customer.id}
-								,'pstn_number':pstn_number
-						};
-						$.post('${ctx}/broadband-user/crm/customer/order/pstn/edit', data, function(json){
-							$.getCustomerOrder();
-						}, "json");
-					}
+				$('#updatePSTNModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_update_pstn"]').button('reset');
+					$.getCustomerOrder();
 				});
 
 				
@@ -559,27 +570,24 @@
 				 */
 				$('a[data-name="'+co[i].id+'_remove_discount"]').click(function(){
 					$btn = $(this); $btn.button('loading');
-					$('#removeDiscountModal_'+this.id).attr('data-detail-id', $(this).attr('data-id'));
+					$('a[data-name="removeDiscountModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
 					$('#removeDiscountModal_'+this.id).modal('show');
 				});
-				$('a[data-name="removeDiscountModalBtn_'+co[i].id+'"]').on('click', function(){
-					$('#removeDiscountModal_'+this.id).attr('type', 'submit');
-				});
 				// Submit to rest controller
+				$('a[data-name="removeDiscountModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					var order_detail_id = $(this).attr('data-detail-id');
+					var data = {
+							'order_detail_id':order_detail_id
+							,'customer_id':${customer.id}
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/discount/remove', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden order remove discount dialog
 				$('#removeDiscountModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					if($(this).attr('type') == 'submit'){
-						this.id = $(this).attr('data-id');
-						var order_detail_id = $(this).attr('data-detail-id');
-						var data = {
-								'order_detail_id':order_detail_id
-								,'customer_id':${customer.id}
-						};
-						$.post('${ctx}/broadband-user/crm/customer/order/discount/remove', data, function(json){
-							$.getCustomerOrder();
-						}, "json");
-					}
-					// Reset button when hidden order remove discount dialog
 					$('a[data-name="'+$(this).attr('data-id')+'_remove_discount"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END Remove discount
@@ -591,35 +599,34 @@
 				 */
 				$('a[data-name="'+co[i].id+'_add_discount"]').click(function(){
 					$btn = $(this); $btn.button('loading');
+					$('a[data-name="addDiscountModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#addDiscountModal_'+this.id).modal('show');
 				});
-				$('a[data-name="addDiscountModalBtn_'+co[i].id+'"]').on('click', function(){
-					$('#addDiscountModal_'+this.id).attr('type', 'submit');
-				});
 				// Submit to rest controller
+				$('a[data-name="addDiscountModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					this.id = $(this).attr('data-id');
+					var detail_name = $('input[data-name="'+this.id+'_detail_name"]');
+					var detail_price = $('input[data-name="'+this.id+'_detail_price"]');
+					var detail_unit = $('input[data-name="'+this.id+'_detail_unit"]');
+					var detail_expired = $('input[data-name="'+this.id+'_detail_expired"]');
+					var detail_type = $('select[data-name="'+this.id+'_detail_type"]');
+					var data = {
+							'order_id':this.id
+							,'customer_id':${customer.id}
+							,'detail_name':detail_name.val()+''
+							,'detail_price':detail_price.val()+''
+							,'detail_unit':detail_unit.val()+''
+							,'detail_expired':detail_expired.val()+''
+							,'detail_type':detail_type.val()+''
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/discount/save', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden order add discount dialog
 				$('#addDiscountModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					if($(this).attr('type') == 'submit'){
-						this.id = $(this).attr('data-id');
-						var detail_name = $('input[data-name="'+this.id+'_detail_name"]');
-						var detail_price = $('input[data-name="'+this.id+'_detail_price"]');
-						var detail_unit = $('input[data-name="'+this.id+'_detail_unit"]');
-						var detail_expired = $('input[data-name="'+this.id+'_detail_expired"]');
-						var detail_type = $('select[data-name="'+this.id+'_detail_type"]');
-						var data = {
-								'order_id':this.id
-								,'customer_id':${customer.id}
-								,'detail_name':detail_name.val()+''
-								,'detail_price':detail_price.val()+''
-								,'detail_unit':detail_unit.val()+''
-								,'detail_expired':detail_expired.val()+''
-								,'detail_type':detail_type.val()+''
-						};
-						$.post('${ctx}/broadband-user/crm/customer/order/discount/save', data, function(json){
-							$.getCustomerOrder();
-						}, "json");
-					}
-					// Reset button when hidden order add discount dialog
 					$('a[data-name="'+$(this).attr('data-id')+'_add_discount"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END Add discount
@@ -642,8 +649,8 @@
 				}).datepicker('setDate', order_due_input || new Date());
 				
 				// Order RFS date Datepicker
-				var rfs_date_input = $('input[data-name="'+co[i].id+'_rfs_date_picker"]').attr('data-val');
-				$('#'+co[i].id+'_rfs_date_datepicker').datepicker({
+				var rfs_date_input = $('input[data-name="'+co[i].id+'_rfs_date_input_picker"]').attr('data-val');
+				$('#'+co[i].id+'_rfs_date_picker').datepicker({
 				    format: "yyyy-mm-dd",
 				    autoclose: true,
 				    todayHighlight: true
@@ -703,33 +710,30 @@
 				// Binding every generateUrl button's click event by assign them specific invoice's id
 				var invoice = map.invoicePage.results[i];
 				$('a[data-name="generateUrl_'+invoice.id+'"]').click(function(){
-					
-					var url = $(this).attr('data-url');
-					$.post(url, function(){
-
-						// If successful, then prompt notice
-						alert('Generate New Invoice Successfully!');
-					})
+					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-url', $(this).attr('data-url'));
+					$('#regenerateInvoiceModal_'+this.id).modal('show');
 				});
-				// END generate invoice
-				
 				// BEGIN first generate
 				// Binding every firstGenerate button's click event by assign them specific invoice's id
 				$('a[data-name="firstGenerate_'+invoice.id+'"]').click(function(){
-					
-					var url = $(this).attr('data-url');
-					$.post(url, function(){
-						
-						// If successful, then prompt notice
-						alert('Generate New Invoice Successfully!');
-					})
-					
-					$(this).css('display', 'none');
-					$('regenerate'+this.id).css('display', '');
-					$('download'+this.id).css('display', '');
-					$('send'+this.id).css('display', '');
+					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-url', $(this).attr('data-url'));
+					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-type', 'first');
+					$('#regenerateInvoiceModal_'+this.id).modal('show');
 				});
 				// END first generate
+				$('a[data-name="regenerateInvoiceBtn_'+invoice.id+'"]').click(function(){
+					var url = $(this).attr('data-url');
+					$.post(url, function(json){
+						$.jsonValidation(json, 'left');
+					})
+					if(typeof $(this).attr('data-type') != 'undefined'){
+						$('a[data-name="firstGenerate_'+this.id+'"]').css('display', 'none');
+						$('a[data-name="generateUrl_'+this.id+'"]').css('display', '');
+						$('a[data-name="download_'+this.id+'"]').css('display', '');
+						$('a[data-name="send_'+this.id+'"]').css('display', '');
+					}
+				});
+				// END generate invoice
 				
 				// BEGIN DDPay
 				// Confirm DDPay
@@ -741,15 +745,13 @@
 					var data = { invoice_id : this.id };
 					
 					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/ddpay', data, function(json){
-						if (json.hasErrors) {
-							$.jsonValidation(json, 'right');
-						} else {
-							$.getInvoicePage(pageNo);
-						}
+						$.jsonValidation(json, 'right');
 					}, 'json');
 				});
 				$('#confirmDDPayModal_'+invoice.id).on('hidden.bs.modal', function(){
 					$('button[data-name="make_payment_'+$(this).attr('data-id')+'"]').button('reset');
+					$.getInvoicePage(pageNo);
+					$.getTxPage(1);
 				});
 				// END DDPay
 				
@@ -766,15 +768,13 @@
 					};
 					
 					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/cash', data, function(json){
-						if (json.hasErrors) {
-							$.jsonValidation(json, 'right');
-						} else {
-							$.getInvoicePage(pageNo);
-						}
+						$.jsonValidation(json, 'right');
 					}, 'json');
 				});
 				$('#confirmCashModal_'+invoice.id).on('hidden.bs.modal', function(){
 					$('button[data-name="make_payment_'+$(this).attr('data-id')+'"]').button('reset');
+					$.getInvoicePage(pageNo);
+					$.getTxPage(1);
 				});
 				// END Cash
 				

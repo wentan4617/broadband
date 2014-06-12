@@ -1,9 +1,7 @@
 package com.tm.broadband.controller;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,10 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.RegisterCustomer;
@@ -47,16 +43,12 @@ import com.tm.broadband.validator.mark.UserValidatedMark;
 public class SystemController {
 
 	private SystemService systemService;
-	private BillingService billingService;
-	private CRMService crmService;
 
 	@Autowired
 	public SystemController(SystemService systemService
 			,BillingService billingService
 			,CRMService crmService) {
 		this.systemService = systemService;
-		this.billingService = billingService;
-		this.crmService = crmService;
 	}
 
 	/*
@@ -405,89 +397,5 @@ public class SystemController {
 		
 		return "broadband-user/system/customer-register-chart";
 	}
-
-	
-	// BEGIN Call Charge Rate
-	@RequestMapping(value = "/broadband-user/system/call_charge_rate/view/{pageNo}")
-	public String callChargeRateView(Model model,
-			@PathVariable(value = "pageNo") int pageNo) {
-
-		Page<CallChargeRate> page = new Page<CallChargeRate>();
-		page.setPageNo(pageNo);
-		page.setPageSize(30);
-		page.getParams().put("orderby", "order by customer_type");
-		this.billingService.queryCallChargeRatesByPage(page);
-		model.addAttribute("page", page);
-
-		return "/broadband-user/system/call-charge-rate-view";
-	}
-
-	@RequestMapping(value = "/broadband-user/system/call_charge_rate/create")
-	public String toCallChargeRateCreate(Model model) {
-
-		model.addAttribute("ccr", new CallChargeRate());
-		model.addAttribute("panelheading", "Call Charge Rate Create");
-		model.addAttribute("action", "/broadband-user/system/call_charge_rate/create");
-
-		return "broadband-user/system/create-call-billing";
-	}
-
-	@RequestMapping(value = "/broadband-user/system/call_charge_rate/create", method = RequestMethod.POST)
-	public String doCallChargeRateCreate(
-			Model model,
-			@ModelAttribute("callChargeRate") CallChargeRate ccr,
-			BindingResult result, HttpServletRequest req,
-			RedirectAttributes attr) {
-		
-		this.billingService.createCallChargeRate(ccr);
-		
-		attr.addFlashAttribute("success", "Create Call Charge Rate is successful.");
-
-		return "redirect:/broadband-user/system/call_charge_rate/view/1";
-	}
-	// END Call Charge Rate
-
-
-	// BEGIN ManualManipulationRecord
-	@RequestMapping(value = "/broadband-user/system/manual-manipulation-record/view/{pageNo}/{manipulation_type}")
-	public String manualManipulationRecordView(Model model,
-			@PathVariable(value = "pageNo") int pageNo,
-			@PathVariable(value = "manipulation_type") String manipulation_type) {
-
-		Page<ManualManipulationRecord> page = new Page<ManualManipulationRecord>();
-		page.setPageNo(pageNo);
-		page.setPageSize(30);
-		page.getParams().put("orderby", "ORDER BY manipulation_time DESC");
-		page.getParams().put("manipulation_type", manipulation_type);
-		this.systemService.queryManualManipulationRecordsByPage(page);
-		model.addAttribute("page", page);
-
-		return "broadband-user/system/manual-manipulation/manual-termed-invoice-view";
-	}
-
-	@RequestMapping(value = "/broadband-user/system/manual-manipulation-record/create/{pageNo}", method = RequestMethod.POST)
-	public String doManualManipulationRecordCreate(
-			@PathVariable(value = "pageNo") int pageNo,
-			@ModelAttribute("manualManipulationRecord") ManualManipulationRecord mmr,
-			HttpServletRequest req,
-			RedirectAttributes attr) {
-		
-		try {
-			this.crmService.createTermPlanInvoice();
-		} catch (ParseException e) { e.printStackTrace(); }
-		
-		// RECORDING MANIPULATOR'S DETAILS
-		User user = (User) req.getSession().getAttribute("userSession");
-		mmr.setAdmin_id(user.getId());
-		mmr.setAdmin_name(user.getUser_name());
-		mmr.setManipulation_time(new Date());
-		mmr.setManipulation_name("Manually Generate Termed Invoices");
-		this.systemService.createManualManipulationRecord(mmr);
-		
-		attr.addFlashAttribute("success", "Create Manual Manipulation Record is successful.");
-
-		return "redirect:/broadband-user/system/manual-manipulation-record/view/" + pageNo + "/" + mmr.getManipulation_type();
-	}
-	// END ManualManipulationRecord
 	
 }

@@ -78,19 +78,11 @@ hr {
 		  			<h3 class="panel-title"><strong class="text-success">Billing</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
-			  		<p>The generation, management, customer billing transmission, chorus or callplus bills.</p>
+			  		<p>Accounting module, contains all billing related details.</p>
 					<ul class="list-unstyled">
-						<%-- <li>
-                    		<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/billing-file-upload">Billing File Upload</a>
-                    	</li> --%>
 						<li>
-                    		<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/call-billing-record/view/1/inserted">Customer Calling Billing</a>
-                    	</li>
-						<li>
-                    		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/call-international-rate/view/1">Calling International Rate</a>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1">View Early Termination Charge</a>
                     	</li>
 					</ul>
 			  	</div>
@@ -121,6 +113,13 @@ hr {
                     	<li>
                     		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">View Contact Us</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/provision/sale/view/1">View Sales</a>
                     	</li>
                     </ul>
 			  	</div>
@@ -179,17 +178,6 @@ hr {
                     <hr/>
                     <ul class="list-unstyled">
                     	<li>
-                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/system/call_charge_rate/view/1">View Call Charge Rate</a>
-                    	</li>
-                    	<li>
-                    		<span class="glyphicon glyphicon-gbp" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/system/call_charge_rate/create">Create Call Charge Rate</a>
-                    	</li>
-                    </ul>
-                    <hr/>
-                    <ul class="list-unstyled">
-                    	<li>
                     		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/system/company-detail/edit">Edit Company Detail</a>
                     	</li>
@@ -221,13 +209,6 @@ hr {
                     		<a href="${ctx }/broadband-user/sale/online/ordering/plans/business">Ordering Online (PAD | PC)</a>
                     	</li>
                     </ul>
-                    <hr/>
-                    <ul class="list-unstyled">
-                    	<li>
-                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/sale/view/1">View Sales</a>
-                    	</li>
-                    </ul>
 			  	</div>
 			</div>
 		</div>
@@ -241,7 +222,18 @@ hr {
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-                    		<a href='${ctx }/broadband-user/system/manual-manipulation-record/view/1/generate-termed-invoice'>Manual Termed Invoice</a>
+                    		<a href='${ctx }/broadband-user/manual-manipulation/manual-manipulation-record/view/1/generate-termed-invoice'>Manual Termed Invoice</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/manual-manipulation/call-billing-record/view/1/inserted">Customer Calling Billing</a>
+                    	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/manual-manipulation/call-international-rate/view/1">Calling International Rate</a>
                     	</li>
                     </ul>
 			  	</div>

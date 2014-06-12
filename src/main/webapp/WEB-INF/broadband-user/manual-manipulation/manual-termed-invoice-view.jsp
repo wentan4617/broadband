@@ -5,8 +5,8 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="../../header.jsp" />
-<jsp:include page="../../alert.jsp" />
+<jsp:include page="../header.jsp" />
+<jsp:include page="../alert.jsp" />
 
 <div class="container">
 	<div class="row">
@@ -61,7 +61,7 @@
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/system/manual-manipulation-record/view/${num}/termed-invoice-view">${num}</a>
+												<a href="${ctx}/broadband-user/manual-manipulation/manual-manipulation-record/view/${num}/termed-invoice-view">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>
@@ -81,7 +81,7 @@
 </div>
 
 <!-- Manually Generate All Termed Invoices Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/system/manual-manipulation-record/create/${page.pageNo}" method="post">
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/manual-manipulation-record/create/${page.pageNo}" method="post">
 	<input type="hidden" name="manipulation_type" value="generate-termed-invoice" />
 	<div class="modal fade" id="manuallyGenerateAllTermedInvoicesModal" tabindex="-1" role="dialog" aria-labelledby="manuallyGenerateAllTermedInvoicesModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -109,8 +109,8 @@
 	<!-- /.modal -->
 </form>
 
-<jsp:include page="../../footer.jsp" />
-<jsp:include page="../../script.jsp" />
+<jsp:include page="../footer.jsp" />
+<jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($) {
 	$('button[data-toggle="tooltip"]').tooltip();
@@ -130,4 +130,4 @@
 
 })(jQuery);
 </script>
-<jsp:include page="../../footer-end.jsp" />
+<jsp:include page="../footer-end.jsp" />
