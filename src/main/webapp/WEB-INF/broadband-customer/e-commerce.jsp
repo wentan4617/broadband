@@ -27,7 +27,7 @@
 <div class="container">
 	<div class="row" style="margin-bottom:20px;">
 		
-		<div class="col-md-9">
+		<div class="col-md-9 col-xs-12 col-sm-12">
 		
 			<section id="e-commerce">
 				<div class="page-header">
@@ -214,10 +214,8 @@
 		</div>
 		
 		
-		
-		
 		<!-- sidebar -->
-		<div class="col-md-3">
+		<div class="col-md-3 hidden-xs hidden-sm">
 			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">

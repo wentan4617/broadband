@@ -48,13 +48,12 @@
 									</strong> 
 									NZ$ 
 									<strong class="text-success">
-										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />
-										
+										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
 									</strong>
 								</div>
-								<div class="col-md-6">
-									<div class="btn-group pull-right">
-										<button type="button" style="width:120px;" class="btn btn-success  dropdown-toggle" data-toggle="dropdown">
+								<div class="col-md-4">
+									<div class="btn-group">
+										<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
 									   		Top Up <span class="caret"></span>
 									  	</button>
 									  	<ul class="dropdown-menu" data-role="menu">
@@ -75,8 +74,8 @@
 										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
 									</strong>
 								</div>
-								<div class="col-md-6">
-									<a href="${ctx }/customer/billing/1" class="btn btn-success pull-right" style="width:120px;">View Invoice</a>
+								<div class="col-md-4">
+									<a href="${ctx }/customer/billing/1" class="btn btn-success btn-block" >View Invoice</a>
 								</div>
 							</div>
 						</div>
