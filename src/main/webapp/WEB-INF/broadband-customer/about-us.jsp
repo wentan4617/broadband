@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<p class="lead">
-					CyberPark as Internet Service Provider（ISP） provides professional Telecommunication services to NZ customers. 
+					CyberPark as Internet Service Provider (ISP) provides professional Telecommunication services to NZ customers. 
 				</p>
 				<p>
 					We are going to give a new method of broadband services to NZ market. Our main products include: Top-up plans, No Term (Combo) plans, 12 months Term plans, Commercial plans, and Professional Wifi Coverage broadband plans and solutions based on specific environments. 
@@ -84,8 +84,6 @@
 						send email to <a href="mailto:#">${cyberpark.company_email }</a>
 					</p>
 				</address>
-				
-				
 				
 				<!-- Contact Us Details -->
 				<div class="panel panel-success">

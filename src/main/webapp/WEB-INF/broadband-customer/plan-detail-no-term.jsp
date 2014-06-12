@@ -8,16 +8,13 @@
 <jsp:include page="header.jsp" />
 
 <style>
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
-color: #fff;
-background-color: #7BC3EC;
+.nav-pills>li.active>a, 
+.nav-pills>li.active>a:hover, 
+.nav-pills>li.active>a:focus {
+	color: #fff;
+	background-color: #7BC3EC;
 }
-.modal {
-	z-index: 140;
-}
-.modal-backdrop{
-	z-index: 130;
-}
+
 #adslPanel .col-md-3 {
 	padding: 0;
 }
@@ -46,7 +43,7 @@ background-color: #7BC3EC;
 
 <div class="container" style="margin-top:20px;">
 
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -93,7 +90,7 @@ background-color: #7BC3EC;
 								</div>
 								<hr style="margin-top:0;"/>
 								<p class="text-center text-success" style="position:relative;margin-bottom:0;">
-									<span style="font-size:40px;font-weight:bold;float:left;margin-left:20px;margin-top:20px;">$</span>
+									<span style="font-size:40px;font-weight:bold;">$</span>
 									<span style="font-size:60px;font-weight:bold;"> 
 										<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 									</span>

@@ -685,7 +685,6 @@ public class SaleController {
 		page.getParams().put("where", "query_sale_id_not_null");
 		User user = (User) req.getSession().getAttribute("userSession");
 
-
 		Page<CustomerOrder> pageSignatureSum = new Page<CustomerOrder>();
 		pageSignatureSum.getParams().put("where", "query_sale_id_not_null");
 		

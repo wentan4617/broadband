@@ -10,15 +10,17 @@
 .personal-info li{
 	padding:5px 40px;
 }
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
-color: #fff;
-background-color: #7BC3EC;
+.nav-pills>li.active>a, 
+.nav-pills>li.active>a:hover, 
+.nav-pills>li.active>a:focus {
+	color: #fff;
+	background-color: #7BC3EC;
 }
 </style>
 
 <div class="container" >
 
-	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="">
 			<a class="btn-lg">
 				1. Choose Plan
@@ -43,6 +45,7 @@ background-color: #7BC3EC;
 			</a>
 		</li>
 	</ul>
+	
 	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h4 class="panel-title">
@@ -55,7 +58,7 @@ background-color: #7BC3EC;
 			<div class="panel-body">
 			
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-6 col-xs-12 col-sm-12">
 						<h4 class="text-success">
 							<c:if test="${customer.customer_type == 'personal' }">
 								${customer.title } ${customer.first_name } ${customer.last_name }
@@ -65,7 +68,6 @@ background-color: #7BC3EC;
 							</c:if>
 						</h4>
 					</div>
-					<div class="col-md-6"></div>
 				</div>
 				<div class="row">
 					<div class="col-sm-6">
@@ -74,7 +76,13 @@ background-color: #7BC3EC;
 						</h4>
 					</div>
 					<div class="col-sm-6">
-						<h4 class="text-success pull-right" >
+						<h4 class="text-success pull-right hidden-xs hidden-sm" >
+							Order Date: 
+							<strong class="text-info">
+								<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
+							</strong>
+						</h4>
+						<h4 class="text-success hidden-md hidden-lg" >
 							Order Date: 
 							<strong class="text-info">
 								<fmt:formatDate  value="${customer.customerOrder.order_create_date}" type="both" pattern="yyyy-MM-dd" />
@@ -174,6 +182,8 @@ background-color: #7BC3EC;
 				</c:if>
 								
 				<hr/>
+				
+				<div class="table-responsive">
 				<table class="table">
 					<thead>
 						<tr>
@@ -241,6 +251,9 @@ background-color: #7BC3EC;
 						</c:forEach>
 					</tbody>
 				</table>
+				</div>
+				
+				
 				<div class="row">
 					<div class="col-md-4 col-md-offset-8">
 					
@@ -305,16 +318,17 @@ background-color: #7BC3EC;
 				</div>
 				<hr>
 				<div class="row">
-					<div class="col-md-12">
-						<label class="well checkbox-inline pull-right">
+					<div class="col-md-12 col-xs-12 col-sm-12">
+						<label class="well checkbox-inline pull-right"><!-- -->
 							<input type="checkbox" id="termckb" value="1" />
-							<a class="btn btn-link btn-lg"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
+							<a class="btn btn-link btn-lg hidden-xs hidden-sm"  data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
+							<a class="hidden-md hidden-lg" data-toggle="modal" data-target="#cyberParkTerm"> &lt;&lt; CyberPark Terms & Conditions &gt;&gt;</a>
 						</label>
 					</div>
 				</div>
 				<hr/>
 				<div class="row">
-					<div class="col-md-2">
+					<div class="col-md-2 hidden-xs hidden-sm">
 						<c:choose>
 							<c:when test="${orderPlan.plan_group == 'plan-no-term' || orderPlan.plan_group == 'plan-term' }">
 								<a href="${ctx }/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block">Back</a>

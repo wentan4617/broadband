@@ -9,7 +9,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading"><h4 class="panel-title">${panelheading}</h4></div>
 				<div class="panel-body">
 					<form:form modelAttribute="notification" method="post" action="${ctx}${action }" class="form-horizontal">
@@ -51,17 +51,13 @@
 						</div>
 						<div class="form-group">
 							<div class="col-md-3 col-md-offset-4">
-								<button type="submit" class="btn btn-success">Save</button>
+								<button type="submit" class="btn btn-success btn-block">Save</button>
 							</div>
 						</div>
 						<div class="form-group">
-							<label for="content" class="control-label col-md-2">Content</label>
-							<div class="col-md-10">
+							<div class="col-md-12">
 								<form:textarea path="content" class="form-control" rows="40" />
 							</div>
-							<p class="help-block">
-								<form:errors path="content" cssErrorClass="error"/>
-							</p>
 						</div>
 					</form:form>
 				</div>

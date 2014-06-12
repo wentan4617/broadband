@@ -15,25 +15,23 @@
 			<p class="form-control-static"><.=customer_type.></p>
 		</div>
 	</div>
+	
 	<div class="form-group">
-		<label for="identity_type" class="control-label col-md-4">Identity Type</label>
+		<label class="control-label col-md-4">Identity Type</label>
 		<div class="col-md-2">
 			<select name="identity_type" id="identity_type" class="selectpicker show-tick form-control">
-			<. if (identity_type == 'Driver Licence').> 
-				<option value="Driver Licence" selected="selected">Driver Licence</option>
-			<. else .> 
-				<option value="Driver Licence" >Driver Licence</option>
-			<. if (identity_type == 'Passport').> 
-				<option value="Passport" selected="selected">Passport</option>
-			<. else .> 
-				<option value="Passport">Passport</option>
-			<. if (identity_type == '18+').> 
-				<option value="18+" selected="selected">18+</option>
-			<. else .> 
-				<option value="18+">18+</option>
+			<. var types = ['Driver Licence', 'Passport', '18+'];
+				for(var i = 0; i < types.length; i++) {
+					if (identity_type == types[i])
+			.> 
+				<option value="<.=types[i].>" selected="selected"><.=types[i].></option>
+			<. 		else .>
+				<option value="<.=types[i].>"><.=types[i].></option>
+			<. 	}.>
 			</select>
 		</div>
 	</div>
+	
 	<div class="form-group">
 		<label for="identity_number" class="control-label col-md-4">Identity Number</label>
 		<div class="col-md-4">
@@ -89,18 +87,14 @@
 		<label for="title" class="control-label col-md-4">Title</label>
 		<div class="col-md-2">
 			<select name="title" id="title" class="selectpicker show-tick form-control">
-			<. if (title == 'Mr').> 
-				<option value="Mr" selected="selected">Mr</option>
-			<. else .> 
-				<option value="Mr" >Mr</option>
-			<. if (title == 'Mrs').> 
-				<option value="Mrs" selected="selected">Mrs</option>
-			<. else .> 
-				<option value="Mrs">Mrs</option>
-			<. if (title == 'Ms').> 
-				<option value="Ms" selected="selected">Ms</option>
-			<. else .> 
-				<option value="Ms">Ms</option>
+			<. var types = ['Mr', 'Mrs', 'Ms'];
+				for(var i = 0; i < types.length; i++) {
+					if (title == types[i])
+			.> 
+				<option value="<.=types[i].>" selected="selected"><.=types[i].></option>
+			<. 		else .>
+				<option value="<.=types[i].>"><.=types[i].></option>
+			<. 	}.>
 			</select>
 		</div>
 	</div>
