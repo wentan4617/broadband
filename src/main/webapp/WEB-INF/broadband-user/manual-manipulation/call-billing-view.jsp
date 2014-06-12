@@ -23,10 +23,10 @@
 				<div id="collapseOne" class="panel-collapse collapse in">
 					<div class="panel-body">
 						<div class="btn-group btn-group">
-							<a href="${ctx}/broadband-user/billing/call-billing-record/view/1/inserted" class="btn btn-default ${insertedActive }">
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted" class="btn btn-default ${insertedActive }">
 								Already Insert&nbsp;<span class="badge">${insertedSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/call-billing-record/view/1/notInserted" class="btn btn-default ${notInsertedActive }">
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/notInserted" class="btn btn-default ${notInsertedActive }">
 								Haven't Insert&nbsp;<span class="badge">${notInsertedSum}</span>
 							</a>
 						</div>
@@ -91,7 +91,7 @@
 										<strong>${callBillingRecord.billing_type }</strong>
 									</td>
 									<td style="font-size:20px;">
-										<a target="_blank" href="${ctx}/broadband-user/billing/call-billing-record/csv/download/${callBillingRecord.id }" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Call Billing Record CSV"></a>
+										<a target="_blank" href="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/download/${callBillingRecord.id }" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Call Billing Record CSV"></a>
 										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-play" style="font-size:20px;" data-name="insertBillingFile" data-id="${callBillingRecord.id }" data-date="${callBillingRecord.statement_date_str }" data-path="${callBillingRecord.upload_path}" data-toggle="tooltip" data-placement="bottom" data-original-title="Insert Records Into Database"></a>
 										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-trash" style="font-size:20px;" data-name="deleteBillingFile" data-id="${callBillingRecord.id }" data-path="${callBillingRecord.upload_path}" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete record and CSV file"></a>
 									</td>
@@ -104,7 +104,7 @@
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/billing/call-billing-record/view/${num}/${status}">${num}</a>
+												<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/${num}/${status}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>
@@ -124,7 +124,7 @@
 </div>
 
 <!-- Upload Call Billing Record Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/billing/call-billing-record/csv/upload" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/upload" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
 	<input type="hidden" name="status" value="${status}" />
 	<div class="modal fade" id="uploadCallBillingRecordCSVModal" tabindex="-1" role="dialog" aria-labelledby="uploadCallBillingRecordCSVModalLabel" aria-hidden="true">
@@ -165,7 +165,7 @@
 </form>
 
 <!-- Delete Call Billing Record Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/billing/call-billing-record/csv/delete" method="post">
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/delete" method="post">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
 	<input type="hidden" name="status" value="${status}" />
 	<input type="hidden" name="billingFileId" />
@@ -196,7 +196,7 @@
 </form>
 
 <!-- Insert Call Billing Record Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/billing/call-billing-record/csv/insert" method="post">
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/insert" method="post">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
 	<input type="hidden" name="status" value="${status}" />
 	<input type="hidden" name="billingFileId" />

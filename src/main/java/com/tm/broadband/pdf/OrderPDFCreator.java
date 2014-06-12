@@ -75,8 +75,10 @@ public class OrderPDFCreator extends ITextUtils {
 					// SAVE PLAN
 					codPlans.add(cod);
 				} else {
-					// SAVE ADD ON
-					codAddOns.add(cod);
+					if(!cod.getDetail_type().contains("discount")){
+						// SAVE ADD ON NOT INCLUDE DISCOUNT
+						codAddOns.add(cod);
+					}
 				}
 			}
 		}

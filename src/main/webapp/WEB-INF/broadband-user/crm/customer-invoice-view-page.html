@@ -104,7 +104,7 @@
 							<!-- regenerate icon -->
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
-							<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email"><span class="glyphicon glyphicon-send"></span></a>
 						</td>
@@ -113,11 +113,11 @@
 		.>
 						<td>
 							<!-- regenerate icon -->
-							<a target="_blank" href="javascript:void(0);" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" id="<.= invoice.id .>regenerate" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
-							<a target="_blank" href="<.= downloadUrl .>" data-name="download<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-name="download_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
-							<a target="_blank" href="<.= sendUrl .>" data-name="send<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>
+							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-name="send_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;"><span class="glyphicon glyphicon-send"></span></a>
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF"><span class="glyphicon glyphicon-hdd"></span></a>
 						</td>
 		<.
@@ -137,14 +137,39 @@
 
 		<. } .>
 		
-		<!-- confirmDDPay Modal -->
-		<div class="modal fade" id="confirmDDPayModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog"
-			aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
+		<!-- regenerateInvoice Modal -->
+		<div class="modal fade" id="regenerateInvoiceModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="regenerateInvoiceModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="regenerateInvoiceModalLabel">
+							<strong>Regenerate this invoice?</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<p>
+								<strong>This operation will regenerate this selected invoice's PDF.</strong>
+							</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="regenerateInvoiceBtn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to regenerate this invoice</strong></a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+		<!-- confirmDDPay Modal -->
+		<div class="modal fade" id="confirmDDPayModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="confirmDDPayModalLabel">
 							<strong>Use DDPay to Pay Off this invoice?</strong>
 						</h4>
@@ -160,8 +185,7 @@
 						</div>
 					</div>
 					<div class="modal-footer">
-						<a href="javascript:void(0);" class="btn btn-success col-md-12"
-							data-name="confirm_ddpay_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use DDPay to pay off this invoice</strong></a>
+						<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_ddpay_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use DDPay to pay off this invoice</strong></a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -171,13 +195,11 @@
 		<!-- /.modal -->
 
 		<!-- confirmCash Modal -->
-		<div class="modal fade" id="confirmCashModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog"
-			aria-labelledby="confirmCashModalLabel" aria-hidden="true">
+		<div class="modal fade" id="confirmCashModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="confirmCashModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 						<h4 class="modal-title" id="confirmCashModalLabel">
 							<strong>Use Cash to Pay (Off) this invoice?</strong>
 						</h4>

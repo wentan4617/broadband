@@ -28,6 +28,8 @@ import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
+import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
+import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
@@ -40,6 +42,7 @@ import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Notification;
@@ -47,6 +50,7 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
+import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.TMUtils;
@@ -74,6 +78,8 @@ public class CRMService {
 	private ManualDefrayLogMapper manualDefrayLogMapper;
 	private CustomerCallRecordMapper customerCallRecordMapper;
 	private CallInternationalRateMapper callInternationalRateMapper;
+	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
+	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -97,7 +103,9 @@ public class CRMService {
 			ContactUsMapper contactUsMapper,
 			ManualDefrayLogMapper manualDefrayLogMapper,
 			CustomerCallRecordMapper customerCallRecordMapper,
-			CallInternationalRateMapper callInternationalRateMapper){
+			CallInternationalRateMapper callInternationalRateMapper,
+			EarlyTerminationChargeMapper earlyTerminationChargeMapper,
+			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -114,6 +122,8 @@ public class CRMService {
 		this.manualDefrayLogMapper = manualDefrayLogMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callInternationalRateMapper = callInternationalRateMapper;
+		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
+		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
 	}
 	
 	
@@ -756,6 +766,43 @@ public class CRMService {
 	}
 
 	@Transactional 
+	public void createEarlyTerminationInvoice(Integer order_id
+			, Date terminatedDate
+			, Integer executor_id) throws ParseException{
+		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
+		Customer c = co.getCustomer();
+		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(co.getOrder_using_start(), terminatedDate);
+		
+		EarlyTerminationCharge etc = new EarlyTerminationCharge();
+		etc.setCustomer_id(c.getId());
+		etc.setOrder_id(co.getId());
+		etc.setCreate_date(new Date());
+		etc.setService_given_date(co.getOrder_using_start());
+		etc.setTermination_date(terminatedDate);
+		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
+		etc.setDue_date((Date) map.get("due_date"));
+		etc.setOverdue_extra_charge(this.earlyTerminationChargeParameterMapper.selectEarlyTerminationChargeParameter().getOverdue_extra_charge());
+		etc.setCharge_amount((Double) map.get("charge_amount"));
+		etc.setTotal_payable_amount((Double) map.get("charge_amount") + etc.getOverdue_extra_charge());
+		etc.setMonths_between_begin_end((Integer) map.get("months_between_begin_end"));
+		etc.setExecute_by(executor_id);
+		
+		this.earlyTerminationChargeMapper.insertEarlyTerminationCharge(etc);
+		
+		String invoicePDFPath = "";
+		try {
+			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
+			Organization org = c.getOrganization();
+			invoicePDFPath = new EarlyTerminationChargePDFCreator(cd, c, org, etc).create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		etc.getParams().put("id", etc.getId());
+		etc.setInvoice_pdf_path(invoicePDFPath);
+		this.earlyTerminationChargeMapper.updateEarlyTerminationCharge(etc);
+	}
+
+	@Transactional 
 	public void createTermPlanInvoice() throws ParseException{
 		
 		// Production environment should edit as shown below
@@ -842,7 +889,7 @@ public class CRMService {
 		// Set id for invoice's update
 		ci.getParams().put("id", ci.getId());
 		ci.setCreate_date(new Date());
-		ci.setDue_date(Calculation4PlanTermInvoice.getInvoiceDueDate());
+		ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 15));
 		ci.setStatus("unpaid");
 
 		// Preparing for calculations, invoice's payable amount
@@ -1110,12 +1157,6 @@ public class CRMService {
 						: new Date()) 
 				: customerOrder.getNext_invoice_create_date();
 		
-		// set invoice due date begin
-		int invoiceDueDay = 10;
-		Calendar calInvoiceDueDay = Calendar.getInstance();
-		calInvoiceDueDay.setTime(invoiceCreateDay);
-		calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, invoiceDueDay);
-		// set invoice due date end
 		/*
 		 * set next invoice date begin
 		 */
@@ -1123,7 +1164,7 @@ public class CRMService {
 		customerInvoice.setCustomer_id(customer.getId());
 		customerInvoice.setOrder_id(customerOrder.getId());
 		customerInvoice.setCreate_date(invoiceCreateDay);
-		customerInvoice.setDue_date(calInvoiceDueDay.getTime());
+		customerInvoice.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 15));
 		// detail holder begin
 		Double amountPayable = 0d;
 		List<CustomerInvoiceDetail> customerInvoiceDetailList = new ArrayList<CustomerInvoiceDetail>();

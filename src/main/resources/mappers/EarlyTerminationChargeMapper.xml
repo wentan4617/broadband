@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.EarlyTerminationChargeMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="earlyTerminationChargeColumns">
+		etc.`id` 						as etc_id,
+		etc.`customer_id` 				as etc_customer_id,
+		etc.`order_id` 					as etc_order_id,
+		etc.`create_date` 				as etc_create_date,
+		etc.`service_given_date` 		as etc_service_given_date,
+		etc.`termination_date` 			as etc_termination_date,
+		etc.`legal_termination_date` 	as etc_legal_termination_date,
+		etc.`due_date` 					as etc_due_date,
+		etc.`overdue_extra_charge` 		as etc_overdue_extra_charge,
+		etc.`charge_amount` 			as etc_charge_amount,
+		etc.`total_payable_amount` 		as etc_total_payable_amount,
+		etc.`months_between_begin_end` 	as etc_months_between_begin_end,
+		etc.`execute_by` 				as etc_execute_by,
+		etc.`invoice_pdf_path` 			as etc_invoice_pdf_path
+	</sql>
+	
+	<resultMap type="EarlyTerminationCharge" id="earlyTerminationChargeResultMap">
+		<id property="id" column="etc_id" />
+		<result property="customer_id" column="etc_customer_id" />
+		<result property="order_id" column="etc_order_id" />
+		<result property="create_date" column="etc_create_date" />
+		<result property="service_given_date" column="etc_service_given_date" />
+		<result property="termination_date" column="etc_termination_date" />
+		<result property="legal_termination_date" column="etc_legal_termination_date" />
+		<result property="due_date" column="etc_due_date" />
+		<result property="overdue_extra_charge" column="etc_overdue_extra_charge" />
+		<result property="charge_amount" column="etc_charge_amount" />
+		<result property="total_payable_amount" column="etc_total_payable_amount" />
+		<result property="months_between_begin_end" column="etc_months_between_begin_end" />
+		<result property="execute_by" column="etc_execute_by" />
+		<result property="invoice_pdf_path" column="etc_invoice_pdf_path" />
+	</resultMap>
+	
+	<sql id="earlyTerminationChargeWhere">
+		<where>
+			<if test="params.id != null">etc.id = #{params.id}</if>
+			<if test="params.customer_id != null">and etc.customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and etc.order_id = #{params.order_id}</if>
+			<if test="params.create_date != null">and etc.create_date = #{params.create_date}</if>
+			<if test="params.service_given_date != null">and etc.service_given_date = #{params.service_given_date}</if>
+			<if test="params.termination_date != null">and etc.termination_date = #{params.termination_date}</if>
+			<if test="params.legal_termination_date != null">and etc.legal_termination_date = #{params.legal_termination_date}</if>
+			<if test="params.due_date != null">and etc.due_date = #{params.due_date}</if>
+			<if test="params.overdue_extra_charge != null">and etc.overdue_extra_charge = #{params.overdue_extra_charge}</if>
+			<if test="params.charge_amount != null">and etc.charge_amount = #{params.charge_amount}</if>
+			<if test="params.total_payable_amount != null">and etc.total_payable_amount = #{params.total_payable_amount}</if>
+			<if test="params.months_between_begin_end != null">and etc.months_between_begin_end = #{params.months_between_begin_end}</if>
+			<if test="params.execute_by != null">and etc.execute_by = #{params.execute_by}</if>
+			<if test="params.invoice_pdf_path != null">and etc.invoice_pdf_path = #{params.invoice_pdf_path}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectEarlyTerminationCharge" parameterType="EarlyTerminationCharge" resultType="EarlyTerminationCharge">
+		select * from tm_early_termination_charge as etc
+		<include refid="earlyTerminationChargeWhere"/>
+	</select>
+	
+	<!-- select contactUs page -->
+	<select id="selectEarlyTerminationChargesByPage" parameterType="Page" resultMap="earlyTerminationChargeResultMap">
+		select 
+			<include refid="earlyTerminationChargeColumns"/>
+			from tm_early_termination_charge as etc
+			<include refid="earlyTerminationChargeWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select contactUs amount -->
+	<select id="selectEarlyTerminationChargesSum" parameterType="Page" resultType="int">
+		select count(*) from tm_early_termination_charge as etc
+		<include refid="earlyTerminationChargeWhere"/>
+	</select>
+
+	<!-- select contactUs by id -->
+	<select id="selectEarlyTerminationChargeById" parameterType="int" resultType="EarlyTerminationCharge">
+		select * from tm_early_termination_charge where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertEarlyTerminationCharge" parameterType="EarlyTerminationCharge" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_early_termination_charge`(
+			`customer_id`, `order_id`, `create_date`, `service_given_date`, `termination_date`
+			, `legal_termination_date`, `due_date`, `overdue_extra_charge`
+			, `charge_amount`, `total_payable_amount`, `months_between_begin_end`, `execute_by`, `invoice_pdf_path`
+		) VALUES (
+			#{customer_id}, #{order_id}, #{create_date}, #{service_given_date}, #{termination_date}
+			,#{legal_termination_date}, #{due_date}, #{overdue_extra_charge}
+			, #{charge_amount}, #{total_payable_amount}, #{months_between_begin_end}, #{execute_by}, #{invoice_pdf_path}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update contactUs -->
+	<update id="updateEarlyTerminationCharge" parameterType="EarlyTerminationCharge">
+		update tm_early_termination_charge
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="create_date != null">create_date = #{create_date},</if>
+			<if test="service_given_date != null">service_given_date = #{service_given_date},</if>
+			<if test="termination_date != null">termination_date = #{termination_date},</if>
+			<if test="legal_termination_date != null">legal_termination_date = #{legal_termination_date},</if>
+			<if test="due_date != null">due_date = #{due_date},</if>
+			<if test="overdue_extra_charge != null">overdue_extra_charge = #{overdue_extra_charge},</if>
+			<if test="charge_amount != null">charge_amount = #{charge_amount},</if>
+			<if test="total_payable_amount != null">total_payable_amount = #{total_payable_amount},</if>
+			<if test="months_between_begin_end != null">months_between_begin_end = #{months_between_begin_end},</if>
+			<if test="execute_by != null">execute_by = #{execute_by},</if>
+			<if test="invoice_pdf_path != null">invoice_pdf_path = #{invoice_pdf_path}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteEarlyTerminationChargeById" parameterType="int">
+		DELETE FROM tm_early_termination_charge WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

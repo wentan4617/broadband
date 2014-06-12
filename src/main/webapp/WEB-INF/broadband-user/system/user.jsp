@@ -167,12 +167,7 @@
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="billing/call-billing-record/view" data-type="checkbox_billing" /> Customer Calling Billing
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/call-international-rate/view" data-type="checkbox_billing" /> Calling International Rate
+											<form:checkbox path="authArray" value="billing/early-termination-charge/view" data-type="checkbox_billing" /> View Early Termination Charge
 										</label>
 									</li>
 								</ul>
@@ -200,6 +195,14 @@
 									<li>
 										<label> 
 											<form:checkbox path="authArray" value="provision/contact-us/view" data-type="checkbox_provision" /> View Contact Us
+										</label>
+									</li>
+								</ul>
+								<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_system" /> View Sales
 										</label>
 									</li>
 								</ul>
@@ -304,14 +307,6 @@
 										</label>
 									</li>
 								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="sale/view" data-type="checkbox_system" /> View Sales
-										</label>
-									</li>
-								</ul>
 							</div>
 							<hr/>
 							<div class="col-md-2" data-module="sales">
@@ -349,12 +344,17 @@
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="system/manual-manipulation-record/view" data-type="checkbox_manual_manipulation" /> View Manual Termed Invoice
+											<form:checkbox path="authArray" value="manual-manipulation/manual-manipulation-record/view" data-type="checkbox_manual_manipulation" /> View Manual Termed Invoice
 										</label>
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="system/manual-manipulation-record/create" data-type="checkbox_manual_manipulation" /> Manual Create Termed Invoice
+											<form:checkbox path="authArray" value="manual-manipulation/call-billing-record/view" data-type="checkbox_manual_manipulation" /> View Customer Calling Billing
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="manual-manipulation/call-international-rate/view" data-type="checkbox_manual_manipulation" /> View Calling International Rate
 										</label>
 									</li>
 								</ul>

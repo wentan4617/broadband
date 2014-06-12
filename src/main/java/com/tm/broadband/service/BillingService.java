@@ -10,10 +10,12 @@ import com.tm.broadband.mapper.BillingFileUploadMapper;
 import com.tm.broadband.mapper.CallChargeRateMapper;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
+import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
+import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.Page;
 
 @Service
@@ -23,16 +25,19 @@ public class BillingService {
 	private CustomerCallRecordMapper customerCallRecordMapper;
 	private CallChargeRateMapper callChargeRateMapper;
 	private CallInternationalRateMapper callInternationalRateMapper;
+	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
 			,CustomerCallRecordMapper customerCallRecordMapper
 			,CallChargeRateMapper callChargeRateMapper
-			,CallInternationalRateMapper callInternationalRateMapper) {
+			,CallInternationalRateMapper callInternationalRateMapper
+			,EarlyTerminationChargeMapper earlyTerminationChargeMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
 		this.callInternationalRateMapper = callInternationalRateMapper;
+		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
 	}
 	
 	public BillingService(){}
@@ -144,5 +149,29 @@ public class BillingService {
 		this.callInternationalRateMapper.updateCallInternationalRate(cir);
 	}
 	// END CallInternationalRate
+
+	// BEGIN EarlyTerminationCharge
+	@Transactional
+	public Page<EarlyTerminationCharge> queryEarlyTerminationChargesByPage(Page<EarlyTerminationCharge> page) {
+		page.setTotalRecord(this.earlyTerminationChargeMapper.selectEarlyTerminationChargesSum(page));
+		page.setResults(this.earlyTerminationChargeMapper.selectEarlyTerminationChargesByPage(page));
+		return page;
+	}
+
+	@Transactional 
+	public List<EarlyTerminationCharge> queryEarlyTerminationCharge(EarlyTerminationCharge etc){
+		return this.earlyTerminationChargeMapper.selectEarlyTerminationCharge(etc);
+	}
+
+	@Transactional
+	public void removeEarlyTerminationCharge(int id) {
+		this.earlyTerminationChargeMapper.deleteEarlyTerminationChargeById(id);
+	}
+
+	@Transactional
+	public void editEarlyTerminationCharge(EarlyTerminationCharge etc) {
+		this.earlyTerminationChargeMapper.updateEarlyTerminationCharge(etc);
+	}
+	// END EarlyTerminationCharge
 
 }

@@ -8,6 +8,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -272,6 +274,8 @@ public class CRMRestController {
 		// END REGENERATE INVOICE PDF
 
 		json.setUrl(redirectUrl);
+
+		json.getSuccessMap().put("alert-success", "Related invoice's balance had successfully been paid off!");
 		
 		return json;
 	}
@@ -375,6 +379,8 @@ public class CRMRestController {
 		
 
 		json.setUrl(redirectUrl);
+
+		json.getSuccessMap().put("alert-success", "Cash defray had successfully been operates!");
 		
 		return json;
 	}
@@ -391,6 +397,9 @@ public class CRMRestController {
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
+
+		json.getSuccessMap().put("alert-success", "Order Status had successfully been saved!");
+		
 		return json;
 	}
 
@@ -406,6 +415,9 @@ public class CRMRestController {
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
+
+		json.getSuccessMap().put("alert-success", "Order Due Date had successfully been saved!");
+		
 		return json;
 	}
 
@@ -421,6 +433,9 @@ public class CRMRestController {
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(user_name);
+		
+		json.getSuccessMap().put("alert-success", "Belongs to had successfully been edited!");
+		
 		return json;
 	}
 	
@@ -432,29 +447,31 @@ public class CRMRestController {
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
 		// If loginname is empty
-		boolean loginNameEmpty = customerOrder.getPppoe_loginname().trim().equals("");
+		String loginName = customerOrder.getPppoe_loginname();
 		// If password is empty
-		boolean passwordEmpty = customerOrder.getPppoe_password().trim().equals("");
+		String password = customerOrder.getPppoe_password();
 		
 		// If any of them is empty
-		boolean anyEmpty = loginNameEmpty || passwordEmpty;
+		boolean anyEmpty = "".equals(loginName) || "".equals(password);
 		
 		if (anyEmpty) {
-			if(loginNameEmpty){
+			if("".equals(loginName)){
 				json.getErrorMap().put(customerOrder.getId()+"_pppoe_loginname_input", "Enter PPPoE login name!");
 			}
-			if(passwordEmpty){
+			if("".equals(password)){
 				json.getErrorMap().put(customerOrder.getId()+"_pppoe_password_input", "Enter PPPoE password!");
 			}
 			return json;
 		}
 		CustomerOrder co = new CustomerOrder();
-		co.setPppoe_loginname(customerOrder.getPppoe_loginname());
-		co.setPppoe_password(customerOrder.getPppoe_password());
+		co.setPppoe_loginname(loginName);
+		co.setPppoe_password(password);
 		co.getParams().put("id", customerOrder.getId());
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
+		json.getSuccessMap().put("alert-success", "PPPoE details had successfully been saved!");
+		
 		return json;
 	}
 
@@ -467,18 +484,18 @@ public class CRMRestController {
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
 		// If SVLan is empty
-		boolean svLanEmpty = customerOrder.getSvlan().trim().equals("");
+		String svLan = customerOrder.getSvlan().trim();
 		// If CVLan is empty
-		boolean cvLanEmpty = customerOrder.getCvlan().trim().equals("");
+		String cvLan = customerOrder.getCvlan().trim();
 		
 		// If any of them is empty
-		boolean anyLanEmpty = svLanEmpty || cvLanEmpty;
+		boolean anyLanEmpty = "".equals(svLan) || "".equals(cvLan);
 		
 		if (anyLanEmpty) {
-			if(svLanEmpty){
+			if("".equals(svLan)){
 				json.getErrorMap().put(customerOrder.getId()+"_svlan_input", "Enter SVLan!");
 			}
-			if(cvLanEmpty){
+			if("".equals(cvLan)){
 				json.getErrorMap().put(customerOrder.getId()+"_cvlan_input", "Enter CVLan!");
 			}
 			return json;
@@ -511,14 +528,14 @@ public class CRMRestController {
 		
 		
 		CustomerOrder co = new CustomerOrder();
-		co.setSvlan(customerOrder.getSvlan().trim());
-		co.setCvlan(customerOrder.getCvlan().trim());
+		co.setSvlan(svLan);
+		co.setCvlan(cvLan);
 		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder.getRfs_date_str()));
 		co.getParams().put("id", customerOrder.getId());
 		
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
-		json.getSuccessMap().put("alert-success", "svlan, cvlan and rfs_date is updated successful.");
+		json.getSuccessMap().put("alert-success", "svlan, cvlan and rfs_date had successfully been updated.");
 		return json;
 	}
 
@@ -588,6 +605,7 @@ public class CRMRestController {
 				this.crmService.createInvoicePDF(customerOrder, notificationEmail, notificationSMS);
 					
 			}
+			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been saved!");
 		} else {
 			proLog.setProcess_way("editing service giving");
 			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
@@ -606,6 +624,7 @@ public class CRMRestController {
 			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
 		}
 		
 		this.crmService.editCustomerOrder(co, proLog);
@@ -620,12 +639,18 @@ public class CRMRestController {
 			CustomerOrder customerOrder) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		CustomerOrder co = new CustomerOrder();
-		co.getParams().put("id", customerOrder.getId());
-		co.setOptional_request(customerOrder.getOptional_request());
 		
-		this.crmService.editCustomerOrder(co);
-		json.setModel(co);
+		if(!"".equals(customerOrder.getOptional_request().trim())){
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", customerOrder.getId());
+			co.setOptional_request(customerOrder.getOptional_request());
+			this.crmService.editCustomerOrder(co);
+			json.setModel(co);
+			json.getSuccessMap().put("alert-success", "Optional Request had just been edited!");
+		} else {
+			json.getErrorMap().put("alert-error", "Please input correct Optional Request!");
+		}
+		
 		return json;
 	}
 
@@ -635,12 +660,18 @@ public class CRMRestController {
 			CustomerOrder customerOrder) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		CustomerOrder co = new CustomerOrder();
-		co.getParams().put("id", customerOrder.getId());
-		co.setBroadband_asid(customerOrder.getBroadband_asid());
 		
-		this.crmService.editCustomerOrder(co);
-		json.setModel(co);
+		if(!"".equals(customerOrder.getBroadband_asid().trim())){
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", customerOrder.getId());
+			co.setBroadband_asid(customerOrder.getBroadband_asid());
+			this.crmService.editCustomerOrder(co);
+			json.setModel(co);
+			json.getSuccessMap().put("alert-success", "Broadband ASID had just been edited!");
+		} else {
+			json.getErrorMap().put("alert-error", "Please input correct Broadband ASID!");
+		}
+		
 		return json;
 	}
 
@@ -673,13 +704,16 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 		
-		CustomerOrderDetail cod = new CustomerOrderDetail();
-		cod.getParams().put("id", order_detail_id);
-		cod.setPstn_number(pstn_number);
-		
-		this.crmService.editCustomerOrderDetail(cod);
-		
-		// Update Customer Order Detail PSTN is successful.
+		if(!"".equals(pstn_number.trim())){
+			CustomerOrderDetail cod = new CustomerOrderDetail();
+			cod.getParams().put("id", order_detail_id);
+			cod.setPstn_number(pstn_number);
+			this.crmService.editCustomerOrderDetail(cod);
+			// Update Customer Order Detail PSTN is successful.
+			json.getSuccessMap().put("alert-success", "PSTN number had just been edited!");
+		} else {
+			json.getErrorMap().put("alert-error", "Please input correct PSTN number!");
+		}
 
 		return json;
 	}
@@ -695,19 +729,27 @@ public class CRMRestController {
 			,@RequestParam("detail_expired") String detail_expired
 			,@RequestParam("detail_type") String detail_type
 			,RedirectAttributes attr) {
-		
-		CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
-		customerOrderDetail.setOrder_id(order_id);
-		customerOrderDetail.setDetail_name(detail_name);
-		customerOrderDetail.setDetail_price(detail_price);
-		customerOrderDetail.setDetail_unit(detail_unit);
-		customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
-		customerOrderDetail.setDetail_type(detail_type);
-		this.crmService.createCustomerOrderDetail(customerOrderDetail);
 
 		JSONBean<String> json = new JSONBean<String>();
 		
-		// Create Customer Order Detail Discount is successful.
+		String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+		Pattern pat = Pattern.compile(rexp);
+		Matcher mat = pat.matcher(detail_expired);
+		boolean dateType = mat.matches();
+		if(dateType){
+			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
+			customerOrderDetail.setOrder_id(order_id);
+			customerOrderDetail.setDetail_name(detail_name);
+			customerOrderDetail.setDetail_price(detail_price);
+			customerOrderDetail.setDetail_unit(detail_unit);
+			customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
+			customerOrderDetail.setDetail_type(detail_type);
+			this.crmService.createCustomerOrderDetail(customerOrderDetail);
+			// Create Customer Order Detail Discount is successful.
+			json.getSuccessMap().put("alert-success", "New discount is attached to related order! Order Id: " + order_id);
+		} else {
+			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyy-mm-dd");
+		}
 
 		return json;
 	}
@@ -720,24 +762,33 @@ public class CRMRestController {
 			,RedirectAttributes attr) {
 		
 		JSONBean<String> json = new JSONBean<String>();
+		
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
-
 		// Remove Customer Order Detail Discount is successful.
+		json.getSuccessMap().put("alert-success", "Selected discount is detached from related order!");
 
 		return json;
 	}
 
 	// Regenerate invoice PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
-	public void generateInvoicePDF(Model model
+	public JSONBean<String> generateInvoicePDF(Model model
     		,@PathVariable(value = "invoiceId") int invoiceId){
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
 		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
+		json.getSuccessMap().put("alert-success", "Regenerate Invoice Successfully!");
+
+		return json;
 	}
 
 	// Regenerate application form PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/order/application_form/regenerate/{order_id}")
-	public void regenerateOrderApplicationForm(Model model
+	public JSONBean<String> regenerateOrderApplicationForm(Model model
 			,@PathVariable("order_id") int order_id) {
+		
+		JSONBean<String> json = new JSONBean<String>();
 		
 		CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
 
@@ -750,12 +801,12 @@ public class CRMRestController {
 		}
 		co.getParams().put("id", co.getId());
 		co.setOrder_pdf_path(orderPDFPath);
-		
 		this.crmService.editCustomerOrder(co);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
-		
 		// Regenerate order application PDF is successful.
+		json.getSuccessMap().put("alert-success", "Generate New Order Application Successfully!");
 
+		return json;
 	}
 
 	// manually-generate
@@ -775,6 +826,33 @@ public class CRMRestController {
 		} catch (ParseException e) { e.printStackTrace(); }
 		
 		
+		
+		return json;
+	}
+
+	// manually-generate
+	@RequestMapping(value = "/broadband-user/crm/customer/order/early-termination-charge/invoice/generate", method = RequestMethod.POST)
+	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model
+			,@RequestParam("id") int id
+			,@RequestParam("terminatedDate") String terminatedDate
+			,HttpServletRequest req) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		try {
+			String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+			Pattern pat = Pattern.compile(rexp);
+			Matcher mat = pat.matcher(terminatedDate);
+			boolean dateType = mat.matches();
+			if(dateType){
+				this.crmService.createEarlyTerminationInvoice(id, TMUtils.parseDateYYYYMMDD(terminatedDate), user.getId());
+				json.getSuccessMap().put("alert-success", "Early termination charge invoice had just been generated!");
+			} else {
+				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+			}
+		} catch (ParseException e) { e.printStackTrace(); }
 		
 		return json;
 	}

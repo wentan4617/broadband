@@ -61,7 +61,7 @@
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/billing/call-international-rate/view/${num}">${num}</a>
+												<a href="${ctx}/broadband-user/manual-manipulation/call-international-rate/view/${num}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>
@@ -81,7 +81,7 @@
 </div>
 
 <!-- Upload Call International Rate Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/billing/call-international-rate/csv/insert" method="post" enctype="multipart/form-data">
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-international-rate/csv/insert" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
 	<div class="modal fade" id="uploadCallInternationalRateCSVModal" tabindex="-1" role="dialog" aria-labelledby="uploadCallInternationalRateCSVModalLabel" aria-hidden="true">
 		<div class="modal-dialog">

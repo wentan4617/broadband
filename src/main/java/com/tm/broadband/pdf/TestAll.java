@@ -1,20 +1,17 @@
 package com.tm.broadband.pdf;
 
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.CustomerCallRecord;
-import com.tm.broadband.model.CustomerInvoice;
-import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
@@ -103,96 +100,96 @@ public class TestAll {
 		 * BEGIN TEST InvoicePDFCreator
 		 */
 		
-		CompanyDetail cd = new CompanyDetail();
-		Organization org = new Organization();
-		Customer c = new Customer();
-		CustomerInvoice ci = new CustomerInvoice();
-		CustomerInvoice lci = new CustomerInvoice();
-		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-		
-		cd.setName("CyberPark");
-		cd.setAddress("945A New North Rd, Mt Albert, Auckland");
-		cd.setTelephone("02102387392");
-		cd.setFax("0211387649");
-		cd.setDomain("www.cyberpark.co.nz");
-		cd.setGst_registration_number("098 762 778 12");
-		cd.setBank_name("ASB");
-		cd.setBank_account_name("CyberPark");
-		cd.setBank_account_number("3908 8987 6776 5654");
-
-//		// set org
-		org.setOrg_name("CyberPark");
-		org.setOrg_type("NZ Incoporated Company");
-		org.setOrg_trading_name("NZ Limited");
-		org.setOrg_register_no("NZ19876542");
-		org.setOrg_incoporate_date(new Date());
-		org.setHolder_name("Steve");
-		org.setHolder_job_title("Manager");
-		org.setHolder_phone("0210210213");
-		org.setHolder_email("Steve@gmail.com");
-		
-		c.setId(600098);
-		c.setFirst_name("DONG");
-		c.setLast_name("CHEN");
-		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
-		c.setCustomer_type("business");
-		
-		lci.setAmount_paid(0d);
-		lci.setAmount_payable(89d);
-		lci.setBalance(89d);
-		lci.setCreate_date(new Date());
-		lci.setPaid_date(new Date());
-		lci.setPaid_type("MASTER CARD");
-		
-		ci.setId(700098);
-		ci.setCreate_date(new Date());
-		ci.setAmount_paid(0d);
-		ci.setAmount_payable(89d);
-		ci.setBalance(89d);
-		ci.setPaid_date(new Date());
-		ci.setPaid_type("VISA CARD");
-		ci.setDue_date(new Date());
-//		ci.setLastCustomerInvoice(lci);
-		
-		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
-		cid.setInvoice_detail_name("ADSL Naked 150 GB Plan");
-		cid.setInvoice_detail_price(89.0d);
-		cid.setInvoice_detail_unit(3);
-		cids.add(cid);
-		cid = new CustomerInvoiceDetail();
-		cid.setInvoice_detail_name("discount $30");
-		cid.setInvoice_detail_discount(30d);
-		cid.setInvoice_detail_unit(1);
-		cids.add(cid);
-		ci.setCustomerInvoiceDetails(cids);
-		
-		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
-		
-		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
-		Double payPerMinute = 0.0133333333333333;
-		
-		int count = 42;
-		while(count >= 0){
-			
-			CustomerCallRecord ccr = new CustomerCallRecord();
-			ccr.setClear_service_id("96272424");
-			ccr.setCharge_date_time(TMUtils.parseDate2YYYYMMDD("2014-04-29 11:18:00"));
-			ccr.setDuration(60);
-			ccr.setBilling_description("HAMILTON");
-			ccr.setAmount_incl(0.1);
-			ccr.setAmount_incl((ccr.getDuration()) * payPerMinute);
-			ccr.setPhone_called("7-847 6989");
-			ccrs.add(ccr);
-			
-			count --;
-		}
-		
-		ipdfc.setCompanyDetail(cd);
-		ipdfc.setCurrentCustomerInvoice(ci);
-		ipdfc.setCustomer(c);
-		ipdfc.setOrg(org);
-		ipdfc.setCcrs(ccrs);
-		System.out.println(ipdfc.create());
+//		CompanyDetail cd = new CompanyDetail();
+//		Organization org = new Organization();
+//		Customer c = new Customer();
+//		CustomerInvoice ci = new CustomerInvoice();
+//		CustomerInvoice lci = new CustomerInvoice();
+//		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+//		
+//		cd.setName("CyberPark");
+//		cd.setAddress("945A New North Rd, Mt Albert, Auckland");
+//		cd.setTelephone("02102387392");
+//		cd.setFax("0211387649");
+//		cd.setDomain("www.cyberpark.co.nz");
+//		cd.setGst_registration_number("098 762 778 12");
+//		cd.setBank_name("ASB");
+//		cd.setBank_account_name("CyberPark");
+//		cd.setBank_account_number("3908 8987 6776 5654");
+//
+////		// set org
+//		org.setOrg_name("CyberPark");
+//		org.setOrg_type("NZ Incoporated Company");
+//		org.setOrg_trading_name("NZ Limited");
+//		org.setOrg_register_no("NZ19876542");
+//		org.setOrg_incoporate_date(new Date());
+//		org.setHolder_name("Steve");
+//		org.setHolder_job_title("Manager");
+//		org.setHolder_phone("0210210213");
+//		org.setHolder_email("Steve@gmail.com");
+//		
+//		c.setId(600098);
+//		c.setFirst_name("DONG");
+//		c.setLast_name("CHEN");
+//		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
+//		c.setCustomer_type("business");
+//		
+//		lci.setAmount_paid(0d);
+//		lci.setAmount_payable(89d);
+//		lci.setBalance(89d);
+//		lci.setCreate_date(new Date());
+//		lci.setPaid_date(new Date());
+//		lci.setPaid_type("MASTER CARD");
+//		
+//		ci.setId(700098);
+//		ci.setCreate_date(new Date());
+//		ci.setAmount_paid(0d);
+//		ci.setAmount_payable(89d);
+//		ci.setBalance(89d);
+//		ci.setPaid_date(new Date());
+//		ci.setPaid_type("VISA CARD");
+//		ci.setDue_date(new Date());
+////		ci.setLastCustomerInvoice(lci);
+//		
+//		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+//		cid.setInvoice_detail_name("ADSL Naked 150 GB Plan");
+//		cid.setInvoice_detail_price(89.0d);
+//		cid.setInvoice_detail_unit(3);
+//		cids.add(cid);
+//		cid = new CustomerInvoiceDetail();
+//		cid.setInvoice_detail_name("discount $30");
+//		cid.setInvoice_detail_discount(30d);
+//		cid.setInvoice_detail_unit(1);
+//		cids.add(cid);
+//		ci.setCustomerInvoiceDetails(cids);
+//		
+//		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
+//		
+//		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
+//		Double payPerMinute = 0.0133333333333333;
+//		
+//		int count = 42;
+//		while(count >= 0){
+//			
+//			CustomerCallRecord ccr = new CustomerCallRecord();
+//			ccr.setClear_service_id("96272424");
+//			ccr.setCharge_date_time(TMUtils.parseDate2YYYYMMDD("2014-04-29 11:18:00"));
+//			ccr.setDuration(60);
+//			ccr.setBilling_description("HAMILTON");
+//			ccr.setAmount_incl(0.1);
+//			ccr.setAmount_incl((ccr.getDuration()) * payPerMinute);
+//			ccr.setPhone_called("7-847 6989");
+//			ccrs.add(ccr);
+//			
+//			count --;
+//		}
+//		
+//		ipdfc.setCompanyDetail(cd);
+//		ipdfc.setCurrentCustomerInvoice(ci);
+//		ipdfc.setCustomer(c);
+//		ipdfc.setOrg(org);
+//		ipdfc.setCcrs(ccrs);
+//		System.out.println(ipdfc.create());
 		
 		/**
 		 * END TEST InvoicePDFCreator
@@ -350,6 +347,63 @@ public class TestAll {
 //		System.out.println("20"+"08"+"-"+"01");
 //
 //	}
+
+		EarlyTerminationChargePDFCreator etcPDFCreator = new EarlyTerminationChargePDFCreator();
+		
+		CompanyDetail cd = new CompanyDetail();
+		Customer c = new Customer();
+		Organization org = new Organization();
+		CustomerOrder co = new CustomerOrder();
+		EarlyTerminationCharge etc = new EarlyTerminationCharge();
+		
+		cd.setName("CyberPark Limited");
+		cd.setBilling_address("PO Box 41547, St Lukes, Auckland 1346, New Zealand");
+		cd.setTelephone("0800 2 CYBER (29237)");
+		cd.setDomain("www.cyberpark.co.nz");
+		cd.setGst_registration_number("113-460-148");
+		cd.setBank_name("ANZ");
+		cd.setBank_account_name("CyberPark Limited");
+		cd.setBank_account_number("06-0709-0444426-00");
+		
+		c.setId(600000);
+		c.setFirst_name("DONG");
+		c.setLast_name("CHEN");
+		c.setCustomer_type("personal");
+		c.setAddress("898 New North Road, Mount Albert, Auckland 1025");
+		
+		org.setOrg_name("Triniti of Silver NZ Ltd");
+		
+		co.setId(700000);
+		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD("2014-01-10"));
+		
+		etc.setId(200000);
+		etc.setCustomer_id(c.getId());
+		etc.setOrder_id(co.getId());
+		etc.setCreate_date(new Date());
+		etc.setService_given_date(co.getOrder_using_start());
+		etc.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-07-11"));
+		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(etc.getService_given_date(), etc.getTermination_date());
+//		System.out.println(map.get("charge_amount"));
+//		System.out.println(map.get("legal_termination_date"));
+		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
+		etc.setDue_date((Date) map.get("due_date"));
+		etc.setCharge_amount((Double) map.get("charge_amount"));
+		etc.setMonths_between_begin_end((Integer) map.get("months_between_begin_end"));
+		etc.setExecute_by(13);
+		
+		etcPDFCreator.setCustomer(c);
+		etcPDFCreator.setEtc(etc);
+		etcPDFCreator.setCompanyDetail(cd);
+		etcPDFCreator.setOrg(org);
+		
+		
+		System.out.println(etcPDFCreator.create());
+		System.out.println("Due Date: " + etc.getDue_date_str());
+		System.out.println("Legal Termination Date: " + etc.getLegal_termination_date_str());
+		System.out.println("Charge Amount: " + etc.getCharge_amount());
+		System.out.println("Months Between Begin End: " + etc.getMonths_between_begin_end());
+		
+		
 	}
 
 }

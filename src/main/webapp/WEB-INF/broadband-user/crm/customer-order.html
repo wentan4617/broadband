@@ -46,7 +46,10 @@
 			<br/>
 			<strong>Termed Order's Operations:</strong>&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next invoice</a>
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_charge" data-type="early_termination_charge">
+				<span class="glyphicon glyphicon-bullhorn"></span>&nbsp;Early termination charge
+			</a>
 		<.
 			}
 		.>
@@ -482,7 +485,7 @@
 				</div>
 				<div class="form-group">
 					<div class="col-md-6">
-						<div class="input-group date" id="<.= customerOrder[i].id .>_rfs_date_datepicker">
+						<div class="input-group date" id="<.= customerOrder[i].id .>_rfs_date_picker">
 							<input id="<.= customerOrder[i].id .>" data-val="<.= customerOrder[i].rfs_date_str .>" data-name="<.= customerOrder[i].id .>_rfs_date_input_picker" class="form-control input-sm" placeholder="RFS Date" style="height:26px; padding:0 10px;"/>
 							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
@@ -643,7 +646,7 @@
 									}
 									if(customerOrderDetail[d].detail_type=='pstn'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-id="<.= customerOrderDetail[d].id .>">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>">
 									  	<span class="glyphicon glyphicon-edit"></span> PSTN
 									</a>
 								<.
@@ -675,6 +678,36 @@
 		</table>
 		
 	</form>
+
+	<!-- Early termination charge Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="earlyTerminationChargeModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="earlyTerminationChargeModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="earlyTerminationChargeModalLabel">
+							<strong>Generate early termination charge for this order</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group col-md-12">
+							<label class="control-label col-md-6">Terminated Date</label>
+							<div class="col-md-6">
+								<input class="form-control input-sm" type="text" data-name="early_terminated_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="earlyTerminationChargeModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate invoice</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
 
 	<!-- Regenerate/Generate order's invoice Modal -->
 	<div class="modal fade" id="generateOrderInvoiceModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="generateOrderInvoiceModalLabel" aria-hidden="true">

@@ -24,7 +24,6 @@ import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
-import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.ProvisionService;
 import com.tm.broadband.service.SystemService;
@@ -33,14 +32,12 @@ import com.tm.broadband.service.SystemService;
 public class ProvisionController {
 	
 	private ProvisionService provisionService;
-	private CRMService crmService;
 	private MailerService mailerService;
 	private SystemService systemService;
 
 	@Autowired
-	public ProvisionController(ProvisionService provisionService, CRMService crmService, MailerService mailerService, SystemService systemService) {
+	public ProvisionController(ProvisionService provisionService, MailerService mailerService, SystemService systemService) {
 		this.provisionService = provisionService;
-		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 	}
@@ -258,6 +255,21 @@ public class ProvisionController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		return "redirect:/broadband-user/provision/contact-us/view/"+pageNo+"/new";
+	}
+	
+	@RequestMapping(value = "/broadband-user/provision/sale/view/{pageNo}")
+	public String toSalesView(Model model
+			, @PathVariable("pageNo") int pageNo
+			,HttpServletRequest req) {
+
+		Page<User> page = new Page<User>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by user_name");
+		page.getParams().put("user_role", "sales");
+		
+		this.systemService.queryUsersByPage(page);
+		model.addAttribute("page", page);
+		return "broadband-user/sale/sales-view";
 	}
 
 }

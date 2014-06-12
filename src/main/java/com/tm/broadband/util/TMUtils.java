@@ -8,8 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -782,5 +784,44 @@ public class TMUtils {
 		return finalDateStr += dateArr[0];
 	}
 	// END RetrieveMonthAbbrWithDate
+	
+	// BEGIN EarlyTerminationChargeCalculations
+	public static Map<String, Object> earlyTerminationDatesCalculation(Date serviceGivenDate
+			, Date terminationDate){
+		Map<String, Object> map = new HashMap<String, Object>();
+		Calendar calHalfAnYearAfterServiceGivenDate = Calendar.getInstance(Locale.CHINA);
+		Calendar calLegalTerminationDate = Calendar.getInstance(Locale.CHINA);
+		
+		calHalfAnYearAfterServiceGivenDate.setTime(serviceGivenDate);
+		calHalfAnYearAfterServiceGivenDate.add(Calendar.MONTH, 6);
+		map.put("charge_amount", terminationDate.getTime() > calHalfAnYearAfterServiceGivenDate.getTime().getTime() ? 99d : 199d);
+		
+		calLegalTerminationDate.setTime(serviceGivenDate);
+		calLegalTerminationDate.add(Calendar.MONTH, 12);
+		calLegalTerminationDate.add(Calendar.DAY_OF_MONTH, 1);
+		map.put("legal_termination_date", calLegalTerminationDate.getTime());
+		
+		String serviceGivenDateStr = TMUtils.dateFormatYYYYMMDD(serviceGivenDate);
+		String terminationDateStr = TMUtils.dateFormatYYYYMMDD(terminationDate);
+		Integer serviceGivenDateMonth = Integer.parseInt(serviceGivenDateStr.substring(serviceGivenDateStr.indexOf("-")+1, serviceGivenDateStr.lastIndexOf("-")));
+		Integer terminationDateMonth = Integer.parseInt(terminationDateStr.substring(terminationDateStr.indexOf("-")+1, terminationDateStr.lastIndexOf("-")));
+		map.put("months_between_begin_end", terminationDateMonth - serviceGivenDateMonth);
+		
+		return map;
+	}
+	// END EarlyTerminationChargeCalculations
 
+	// BEGIN GetInvoiceDueDate
+	public static Date getInvoiceDueDate(Date invoiceCreateDay, Integer days){
+		
+		// set invoice due date begin
+		Calendar calInvoiceDueDay = Calendar.getInstance();
+		calInvoiceDueDay.setTime(invoiceCreateDay);
+		calInvoiceDueDay.add(Calendar.DAY_OF_MONTH, days);
+		
+		return calInvoiceDueDay.getTime();
+		// set invoice due date end
+
+	}
+	// END GetInvoiceDueDate
 }

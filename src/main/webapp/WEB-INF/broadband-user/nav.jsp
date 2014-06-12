@@ -83,22 +83,10 @@
 							Billing <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
-							<%-- <li>
-								<a href="${ctx}/broadband-user/billing/billing-file-upload">
-									<span class="glyphicon glyphicon-upload" style="padding-right:10px;"></span>
-									Billing File Upload
-								</a>
-							</li> --%>
 							<li>
-								<a href="${ctx}/broadband-user/billing/call-billing-record/view/1/inserted">
-									<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
-									Customer Calling Billing
-								</a>
-							</li>
-							<li>
-								<a href="${ctx}/broadband-user/billing/call-international-rate/view/1">
-									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
-									Calling International Rate
+								<a href="${ctx}/broadband-user/billing/early-termination-charge/view/1">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Early Termination Charge
 								</a>
 							</li>
 						</ul>
@@ -128,6 +116,13 @@
                     				View Contact Us
                     			</a>
 							</li>
+							<li class="divider"></li>
+	                    	<li>
+								<a href="${ctx}/broadband-user/provision/sale/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Sales
+								</a>
+	                    	</li>
 							<!-- <li class="divider"></li>
 							<li>
 								<a href="#">...</a>
@@ -185,19 +180,6 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/system/call_charge_rate/view/1">
-									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-									View Call Charge Rate
-								</a>
-							</li>
-							<li>
-								<a href="${ctx}/broadband-user/system/call_charge_rate/create">
-									<span class="glyphicon glyphicon-gbp" style="padding-right:10px;"></span>
-									Create Call Charge Rate
-								</a>
-							</li>
-							<li class="divider"></li>
-							<li>
 								<a href="${ctx}/broadband-user/system/company-detail/edit">
 									<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
 									Edit Company Detail
@@ -230,15 +212,36 @@
 									Ordering Online (PAD | PC)
 								</a>
 							</li>
-							<li class="divider"></li>
-	                    	<li>
-								<a href="${ctx}/broadband-user/sale/view/1">
-									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-									View Sales
-								</a>
-	                    	</li>
 						</ul>
 					</li>
+					<c:if test="${userSession.user_role != 'sales' }">
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Manual Manipulation <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="${ctx}/broadband-user/manual-manipulation/manual-manipulation-record/view/1/generate-termed-invoice">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									Manual Termed Invoice
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted">
+									<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
+									Customer Calling Billing
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/manual-manipulation/call-international-rate/view/1">
+									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+									Calling International Rate
+								</a>
+							</li>
+						</ul>
+					</li>
+					</c:if>
 				</ul>
 				<p class="navbar-text pull-right">
 					<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
