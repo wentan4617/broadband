@@ -27,7 +27,7 @@
 <div class="container">
 	<div class="row" style="margin-bottom:20px;">
 		
-		<div class="col-md-9">
+		<div class="col-md-9 col-xs-12 col-sm-12">
 			<section id="overview">
 				<div class="page-header">
 					<div class="home-title">
@@ -35,7 +35,7 @@
 					</div>
 				</div>
 				<p class="lead">
-					CyberPark as Internet Service Provider（ISP） provides professional Telecommunication services to NZ customers. 
+					CyberPark as Internet Service Provider (ISP) provides professional Telecommunication services to NZ customers. 
 				</p>
 				<p>
 					We are going to give a new method of broadband services to NZ market. Our main products include: Top-up plans, No Term (Combo) plans, 12 months Term plans, Commercial plans, and Professional Wifi Coverage broadband plans and solutions based on specific environments. 
@@ -84,8 +84,6 @@
 						send email to <a href="mailto:#">${cyberpark.company_email }</a>
 					</p>
 				</address>
-				
-				
 				
 				<!-- Contact Us Details -->
 				<div class="panel panel-success">
@@ -179,7 +177,7 @@
 			</section>
 			
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-3 hidden-xs hidden-sm">
 			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">

@@ -13,6 +13,9 @@
 			<p>
 				Now you can log on to CyberPark Customer Home, <a href="${ctx }/login"> please click here. </a>
 			</p>
+			<p class="text-danger">
+				System will send random password to you by email and SMS. please login your account to charge password.
+			</p>
 			<p>
 				Our customer service telephone number is <strong class="text-danger">0800 229 237</strong>
 			</p>

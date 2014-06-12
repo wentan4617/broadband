@@ -37,7 +37,7 @@ background-color: #7BC3EC;
 		<p>NZ$ 30/week Top Up payment method include: credit cards, account to account, or call 0800 2 Cyber (29237) for help.</p>
 	</div>
 	
- 	<ul class="panel panel-success nav nav-pills nav-justified"><!-- nav-justified -->
+ 	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
 		<li class="active">
 			<a class="btn-lg">
 				1. Choose Plan

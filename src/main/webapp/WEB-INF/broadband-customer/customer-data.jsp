@@ -52,7 +52,7 @@
 						</div>
 					</div>
 					<hr />
-					<div class="progress">
+					<div class="progress" style="height:40px;">
 						<div id="usageProgress" class="progress-bar" >
 							<span id="usedPart"></span>
 					  	</div>
@@ -62,7 +62,7 @@
 				</div>
 				<div class="panel-body">
 					<div id="usage_table"></div>
-					<div id="usage_chart" style="display:none;">
+					<div id="usage_chart" style="display:none;" class="hidden-xs hidden-sm">
 						<canvas id="canvas" height="300" width="810"></canvas>
 					</div>
 				</div>

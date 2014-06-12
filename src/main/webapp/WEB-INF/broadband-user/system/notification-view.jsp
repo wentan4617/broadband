@@ -11,7 +11,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading"><h4 class="panel-title">Notification View</h4></div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
@@ -21,7 +21,6 @@
 								<th>Title</th>
 								<th>Type</th>
 								<th>Sort</th>
-								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -37,23 +36,22 @@
 									</td>
 									<td>${notification.type }</td>
 									<td>${notification.sort }</td>
-									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
 						</tbody>
 						<tfoot>
-						<tr>
-							<td colspan="11">
-								<ul class="pagination">
-									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
-										<li class="${page.pageNo == num ? 'active' : ''}">
-											<a href="${ctx}/broadband-notification/notification/view/${num}">${num}</a>
-										</li>
-									</c:forEach>
-								</ul>
-							</td>
-						</tr>
-					</tfoot>
+							<tr>
+								<td colspan="11">
+									<ul class="pagination">
+										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
+											<li class="${page.pageNo == num ? 'active' : ''}">
+												<a href="${ctx}/broadband-notification/notification/view/${num}">${num}</a>
+											</li>
+										</c:forEach>
+									</ul>
+								</td>
+							</tr>
+						</tfoot>
 					</table>
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
@@ -65,6 +63,7 @@
 		</div>
 	</div>
 </div>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
