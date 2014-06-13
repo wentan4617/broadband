@@ -12,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
-import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.Notification;
 import com.tm.broadband.sms.Smser;
 
 @Service
@@ -30,17 +28,18 @@ public class SmserService implements Smser {
 	}
 
 	@Override
-	public void sendSMSBySynchronizationMode(Customer customer,
-			Notification notification) {
+	public void sendSMSBySynchronizationMode(String cellphone,
+			String content) {
 		try {
+			@SuppressWarnings({ "deprecation", "resource" })
 			HttpClient client = new DefaultHttpClient();
 			HttpGet pxpayRequest = new HttpGet(
 					"http://116.12.56.39/goip/en/dosend.php?USERNAME=root&PASSWORD="
 							+ URLEncoder.encode("hitech12345^", "UTF-8")
 							+ "&smsprovider=1&smsnum="
-							+ customer.getCellphone()
+							+ cellphone
 							+ "&method=2&Memo="
-							+ URLEncoder.encode(notification.getContent(),
+							+ URLEncoder.encode(content,
 									"UTF-8"));
 			ResponseHandler<String> responseHandler = new BasicResponseHandler();
 			client.execute(pxpayRequest, responseHandler);
@@ -52,11 +51,11 @@ public class SmserService implements Smser {
 	/**
 	 * 
 	 */
-	public void sendSMSByAsynchronousMode(final Customer customer, final Notification notification) {
+	public void sendSMSByAsynchronousMode(final String cellphone, final String content) {
 		taskExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
-				sendSMSBySynchronizationMode(customer, notification);
+				sendSMSBySynchronizationMode(cellphone, content);
 			}
 		});
 	}

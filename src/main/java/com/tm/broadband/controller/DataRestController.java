@@ -15,7 +15,6 @@ import com.tm.broadband.model.DateUsage;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.DataService;
 import com.tm.broadband.util.TMUtils;
 

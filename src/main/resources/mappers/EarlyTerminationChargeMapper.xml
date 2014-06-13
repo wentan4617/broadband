@@ -100,6 +100,10 @@
 	<select id="selectEarlyTerminationChargeById" parameterType="int" resultType="EarlyTerminationCharge">
 		select * from tm_early_termination_charge where id = #{0}
 	</select>
+	
+	<select id="selectEarlyTerminationChargePDFPathById" parameterType="int" resultType="String">
+		select invoice_pdf_path from tm_early_termination_charge where id = #{0}
+	</select>
 
 	<!-- // END SELECT AREA -->
 

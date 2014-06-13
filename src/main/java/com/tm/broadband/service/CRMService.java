@@ -716,7 +716,7 @@ public class CRMService {
 			// get sms register template from db
 			TMUtils.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c, topupNotificationSMS);
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMS.getContent());
 		}
 		// END TOPUP NOTIFICATION
 		
@@ -761,7 +761,7 @@ public class CRMService {
 			// get sms register template from db
 			TMUtils.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(co.getCustomer(), notificationSMS);
+			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMS.getContent());
 		}
 	}
 
@@ -780,7 +780,7 @@ public class CRMService {
 		etc.setService_given_date(co.getOrder_using_start());
 		etc.setTermination_date(terminatedDate);
 		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
-		etc.setDue_date((Date) map.get("due_date"));
+		etc.setDue_date(TMUtils.getInvoiceDueDate(new Date(), 15));
 		etc.setOverdue_extra_charge(this.earlyTerminationChargeParameterMapper.selectEarlyTerminationChargeParameter().getOverdue_extra_charge());
 		etc.setCharge_amount((Double) map.get("charge_amount"));
 		etc.setTotal_payable_amount((Double) map.get("charge_amount") + etc.getOverdue_extra_charge());
@@ -1324,7 +1324,7 @@ public class CRMService {
 		// get sms register template from db
 		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerOrder, customerInvoice, companyDetail);
 		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer, notificationSMS);
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
 	}
 	
 	/**

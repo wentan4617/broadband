@@ -760,7 +760,8 @@ public class TMUtils {
 	// BEGIN RetrieveMonthAbbrWithDate
 	public static String retrieveMonthAbbrWithDate(Date date){
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
-		String day = dateArr[2];
+		System.out.println("date: " + date);
+		String day = dateArr[1];
 		String finalDateStr = "";
 		if(Integer.parseInt(day) < 10){
 			finalDateStr = day.charAt(1)+" ";
