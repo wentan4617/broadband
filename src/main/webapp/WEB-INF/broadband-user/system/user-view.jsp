@@ -11,7 +11,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading"><h4 class="panel-title">User View</h4></div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
