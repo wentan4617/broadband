@@ -361,7 +361,7 @@ public class CustomerController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
 		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
@@ -398,7 +398,7 @@ public class CustomerController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
 		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
@@ -514,7 +514,7 @@ public class CustomerController {
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			//status.setComplete();
 		} else {
 
@@ -800,7 +800,7 @@ public class CustomerController {
 			notification = this.crmService.queryNotificationBySort("payment", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			
 			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
 			

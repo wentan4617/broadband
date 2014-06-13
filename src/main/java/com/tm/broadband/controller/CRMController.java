@@ -613,7 +613,7 @@ public class CRMController {
 			notification = this.crmService.queryNotificationBySort("payment", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
 		} else {
 			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());

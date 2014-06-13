@@ -17,20 +17,25 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.21 2014-06-13
+
+* 给order detail加discount时记录user_id，记录是谁给的discount(steven)
+* regenerate invoice PDF时保持之前的invoice_id和create_date以及due_date(steven)
+ 
 demand version 1.0.21 2014-06-11
 
-* 检查一下为什么手动出账单没有将order的discount加进去(steven)
-* 做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表(steven)
+* [检查一下为什么手动出账单没有将order的discount去掉](steven)
+* [做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表](steven)
 * billing模块做一个early termination charge的界面，列出所有的客户，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
 * 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)
  
  
 demand version 1.0.20 2014-06-10
 
-* 审查重新生成order的application form时的逻辑，看是否能加入discount的判断
+* [审查重新生成order的application form时的逻辑，看是否能加入discount的判断](steven)
 * 未付款账单，全部罗列到billing模块里，列出所有的order的最近一张invoice(steven)
 * [检查为什么sales下的单不显示在belongs to里](steven)
-* 复审出账时invoice拨打记录的rate，检查各rate是否正常转化(steven)
+* [复审出账时invoice拨打记录的rate，检查各rate是否正常转化](steven)
 * [customer order界面添加手动生成下一张term invoice的功能。](steven)
 * [customer order界面添加手动重新生成最近invoice的功能，先删除最近invoice的PDF再删除该invoice信息和相关invoice detail的信息，最后重新生成最近一张invoice及PDF](steven)
 * [从服务器拷贝所有order和invoice信息，重新在本地调整后发出](steven)

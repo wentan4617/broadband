@@ -20,6 +20,7 @@ public interface EarlyTerminationChargeMapper {
 	List<EarlyTerminationCharge> selectEarlyTerminationChargesByPage(Page<EarlyTerminationCharge> page);
 	int selectEarlyTerminationChargesSum(Page<EarlyTerminationCharge> page);
 	EarlyTerminationCharge selectEarlyTerminationChargeById(int id);
+	String selectEarlyTerminationChargePDFPathById(int id);
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */

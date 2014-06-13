@@ -25,7 +25,6 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.DateUsage;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
@@ -163,7 +162,7 @@ public class CustomerRestController {
 				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
 				notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
 				TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 				customer.getParams().put("cellphone", customer.getLogin_name());
 			}
 			

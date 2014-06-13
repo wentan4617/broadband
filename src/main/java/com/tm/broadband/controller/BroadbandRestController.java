@@ -14,7 +14,8 @@ import com.tm.broadband.util.broadband.BroadbandCapability;
 @SessionAttributes(value = { "customer", "orderCustomer"})
 public class BroadbandRestController {
 
-	public BroadbandRestController() {}
+	public BroadbandRestController() {
+	}
 	
 	@RequestMapping("/address/check/{address}")
 	public Broadband checkAddress(@PathVariable("address") String address,

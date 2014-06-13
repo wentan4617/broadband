@@ -202,7 +202,7 @@
 								<ul class="list-unstyled">
 									<li>
 										<label> 
-											<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_system" /> View Sales
+											<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_provision" /> View Sales
 										</label>
 									</li>
 								</ul>

@@ -48,7 +48,7 @@
 	<!-- UPDATE AREA -->
 	
 	<!-- update earlyTerminationChargeParameter -->
-	<update id="updateEarlyTerminationCharge" parameterType="EarlyTerminationCharge">
+	<update id="updateEarlyTerminationChargeParameter" parameterType="EarlyTerminationChargeParameter">
 		update tm_early_termination_charge_parameter
 		<set>
 			<if test="overdue_extra_charge != null">overdue_extra_charge = #{overdue_extra_charge}</if>
@@ -61,7 +61,7 @@
 
 	<!-- DELETE AREA -->
 	
-	<delete id="deleteEarlyTerminationCharge">
+	<delete id="deleteEarlyTerminationChargeParameter">
 		DELETE FROM tm_early_termination_charge_parameter
 	</delete>
 	

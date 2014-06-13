@@ -297,7 +297,7 @@ public class SaleController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
 		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		status.setComplete();
 		
@@ -316,8 +316,8 @@ public class SaleController {
 		model.addAttribute("customer_id", customer_id);
 		model.addAttribute("order_id", order_id);
 		model.addAttribute("customerCredit", new CustomerCredit());
-		
-		// BEGIN CREDIT CARD MONTH
+
+		// BEGIN CREDIT CARD YEAR
 		List<String> years = new ArrayList<String>();
 		for (int i = 14; i <= 99; i++) {
 			if(i<10){
@@ -326,9 +326,9 @@ public class SaleController {
 				years.add(String.format("%d",i));
 			}
 		}
-		// END CREDIT CARD MONTH
+		// END CREDIT CARD YEAR
 
-		// BEGIN CREDIT CARD YEAR
+		// BEGIN CREDIT CARD MONTH
 		List<String> months = new ArrayList<String>();
 		for (int i = 1; i <= 12; i++) {
 			if(i<10){
@@ -337,7 +337,7 @@ public class SaleController {
 				months.add(String.format("%d",i));
 			}
 		}
-		// END CREDIT CARD YEAR
+		// END CREDIT CARD MONTH
 
 		model.addAttribute("months", months);
 		model.addAttribute("years", years);

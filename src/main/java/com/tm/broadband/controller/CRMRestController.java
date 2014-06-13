@@ -524,7 +524,7 @@ public class CRMRestController {
 		notification = this.systemService.queryNotificationBySort("service-installation", "sms");
 		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, cods, companyDetail);
 		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer, notification);
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 		
 		
 		CustomerOrder co = new CustomerOrder();
@@ -596,7 +596,7 @@ public class CRMRestController {
 				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 				notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
 				TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(customer, notification); // send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 				
 			} else if ("ordering-pending".equals(customerOrder.getOrder_status()) && !"order-term".equals(customerOrder.getOrder_type())) {
 				
@@ -623,7 +623,7 @@ public class CRMRestController {
 			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
 			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer, notification);
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
 		}
 		

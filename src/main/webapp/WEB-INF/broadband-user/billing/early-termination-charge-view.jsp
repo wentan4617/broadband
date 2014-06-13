@@ -36,6 +36,7 @@
 								<th>Month Between</th>
 								<th>Total Charge Amount</th>
 								<th>Executor</th>
+								<th>Operations</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -72,6 +73,11 @@
 											</c:if>
 										</c:forEach>
 									</td>
+									<td>
+										<a target="_blank" href="${ctx }/broadband-user/early-termination-charge/pdf/download/${earlyTerminationCharge.id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Early Termination Charge PDF" style="font-size:20px;">
+										  <span class="glyphicon glyphicon-floppy-save"></span>
+										</a>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
@@ -101,8 +107,7 @@
 </div>
 
 <!-- Configure Call International Rate's Parameter Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/billing/call-international-rate/csv/insert" method="post" enctype="multipart/form-data">
-	<input type="hidden" name="pageNo" value="${page.pageNo}" />
+<form class="form-horizontal">
 	<div class="modal fade" id="earlyTerminationChargeModal" tabindex="-1" role="dialog" aria-labelledby="earlyTerminationChargeModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -114,14 +119,14 @@
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="call_international_rate_csv_file" class="control-label col-md-5">Call International Rate File(CSV):</label>
+						<label for="overdue_extra_charge" class="control-label col-md-5">Overdue Extra Chagre</label>
 						<div class="col-md-5">
-							<input class="form-control input-sm" type="file" name="call_international_rate_csv_file" placeholder="Choose a file"/>
+							<input class="form-control input-sm" type="text" id="overdue_extra_charge" value="${etcp.overdue_extra_charge }" placeholder="initial overdue extra charge"/>
 						</div>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<button type="submit" class="btn btn-success">Commit Setting</button>
+					<a href="javascript:void(0);" class="btn btn-success" data-name="overdueExtraChargeBtn" data-dismiss="modal">Commit Setting</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -148,6 +153,16 @@
 	
 	$('button[data-name="early_termination_charge_config_btn"]').click(function(){
 		$('#earlyTerminationChargeModal').modal('show');
+	});
+	
+	$('a[data-name="overdueExtraChargeBtn"]').click(function(){
+		var data = {
+				'overdue_extra_charge':$('#overdue_extra_charge').val(),
+				'pageNo':${page.pageNo}
+		};
+		$.post('${ctx}/broadband-user/billing/early-termination-charge/insert', data, function(json){
+			$.jsonValidation(json, 'left');
+		}, 'json');
 	});
 
 })(jQuery);
