@@ -760,8 +760,7 @@ public class TMUtils {
 	// BEGIN RetrieveMonthAbbrWithDate
 	public static String retrieveMonthAbbrWithDate(Date date){
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
-		System.out.println("date: " + date);
-		String day = dateArr[1];
+		String day = dateArr[2];
 		String finalDateStr = "";
 		if(Integer.parseInt(day) < 10){
 			finalDateStr = day.charAt(1)+" ";
@@ -825,4 +824,14 @@ public class TMUtils {
 
 	}
 	// END GetInvoiceDueDate
+	
+	// BEGIN GetLastDateOfMonth
+	public static Date getLastDateOfMonth(Date date){
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		cal.setTime(date);
+		int lastDay = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+		cal.set(Calendar.DAY_OF_MONTH, lastDay);
+		return cal.getTime();
+	}
+	// BEGIN GetLastDateOfMonth
 }

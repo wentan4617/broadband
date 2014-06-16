@@ -96,13 +96,12 @@
 					}
 					var downloadUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
 					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + customer_id;
-					var generateUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/generate/' + invoice.id;
 					if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
 						if(invoice.invoice_pdf_path != null){
 		.>
 						<td>
 							<!-- regenerate icon -->
-							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk" style="font-size:22px;"></span></a>&nbsp;
 							<!-- download icon -->
@@ -113,12 +112,12 @@
 		.>
 						<td>
 							<!-- regenerate icon -->
-							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
-							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-name="download_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 							<!-- download icon -->
 							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-name="send_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-send"></span></a>
-							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-hdd"></span></a>
+							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-hdd"></span></a>
 						</td>
 		<.
 						}
@@ -126,7 +125,7 @@
 		.>
 					<td>
 						<!-- regenerate icon -->
-						<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-url="<.= generateUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
+						<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
 						<!-- download icon -->
 						<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 					</td>

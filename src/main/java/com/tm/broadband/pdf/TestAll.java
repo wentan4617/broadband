@@ -3,7 +3,6 @@ package com.tm.broadband.pdf;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -11,7 +10,7 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.EarlyTerminationCharge;
+import com.tm.broadband.model.EarlyTerminationRefund;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
@@ -348,13 +347,13 @@ public class TestAll {
 //
 //	}
 
-		EarlyTerminationChargePDFCreator etcPDFCreator = new EarlyTerminationChargePDFCreator();
+//		EarlyTerminationChargePDFCreator etcPDFCreator = new EarlyTerminationChargePDFCreator();
 		
 		CompanyDetail cd = new CompanyDetail();
 		Customer c = new Customer();
 		Organization org = new Organization();
 		CustomerOrder co = new CustomerOrder();
-		EarlyTerminationCharge etc = new EarlyTerminationCharge();
+//		EarlyTerminationCharge etc = new EarlyTerminationCharge();
 		
 		cd.setName("CyberPark Limited");
 		cd.setBilling_address("PO Box 41547, St Lukes, Auckland 1346, New Zealand");
@@ -366,9 +365,10 @@ public class TestAll {
 		cd.setBank_account_number("06-0709-0444426-00");
 		
 		c.setId(600000);
+		c.setCustomer_type("personal");
+		c.setTitle("Mr");
 		c.setFirst_name("DONG");
 		c.setLast_name("CHEN");
-		c.setCustomer_type("personal");
 		c.setAddress("898 New North Road, Mount Albert, Auckland 1025");
 		
 		org.setOrg_name("Triniti of Silver NZ Ltd");
@@ -376,32 +376,53 @@ public class TestAll {
 		co.setId(700000);
 		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD("2014-01-10"));
 		
-		etc.setId(200000);
-		etc.setCustomer_id(c.getId());
-		etc.setOrder_id(co.getId());
-		etc.setCreate_date(new Date());
-		etc.setService_given_date(co.getOrder_using_start());
-		etc.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-07-11"));
-		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(etc.getService_given_date(), etc.getTermination_date());
+//		etc.setId(200000);
+//		etc.setCustomer_id(c.getId());
+//		etc.setOrder_id(co.getId());
+//		etc.setCreate_date(new Date());
+//		etc.setService_given_date(co.getOrder_using_start());
+//		etc.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-07-11"));
+//		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(etc.getService_given_date(), etc.getTermination_date());
 //		System.out.println(map.get("charge_amount"));
 //		System.out.println(map.get("legal_termination_date"));
-		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
-		etc.setDue_date((Date) map.get("due_date"));
-		etc.setCharge_amount((Double) map.get("charge_amount"));
-		etc.setMonths_between_begin_end((Integer) map.get("months_between_begin_end"));
-		etc.setExecute_by(13);
+//		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
+//		etc.setDue_date(TMUtils.getInvoiceDueDate(new Date(), 15));
+//		etc.setCharge_amount((Double) map.get("charge_amount"));
+//		etc.setMonths_between_begin_end((Integer) map.get("months_between_begin_end"));
+//		etc.setExecute_by(13);
+//		etc.setTotal_payable_amount(etc.getCharge_amount() + 0d);
+
+//		etcPDFCreator.setCustomer(c);
+//		etcPDFCreator.setEtc(etc);
+//		etcPDFCreator.setCompanyDetail(cd);
+//		etcPDFCreator.setOrg(org);
+//		
+//		
+//		System.out.println(etcPDFCreator.create());
+//		System.out.println("Due Date: " + etc.getDue_date_str());
+//		System.out.println("Legal Termination Date: " + etc.getLegal_termination_date_str());
+//		System.out.println("Charge Amount: " + etc.getCharge_amount());
+//		System.out.println("Months Between Begin End: " + etc.getMonths_between_begin_end());
 		
-		etcPDFCreator.setCustomer(c);
-		etcPDFCreator.setEtc(etc);
-		etcPDFCreator.setCompanyDetail(cd);
-		etcPDFCreator.setOrg(org);
 		
 		
-		System.out.println(etcPDFCreator.create());
-		System.out.println("Due Date: " + etc.getDue_date_str());
-		System.out.println("Legal Termination Date: " + etc.getLegal_termination_date_str());
-		System.out.println("Charge Amount: " + etc.getCharge_amount());
-		System.out.println("Months Between Begin End: " + etc.getMonths_between_begin_end());
+		
+		EarlyTerminationRefund etr = new EarlyTerminationRefund();
+		etr.setId(300000);
+		etr.setCreate_date(new Date());
+		etr.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-06-10"));
+		etr.setProduct_monthly_price(109d);
+		etr.setRefund_amount(30d);
+		etr.setRefund_bank_account_number("05-12345-09876-009");
+		etr.setRefund_bank_account_name("COOK");
+		
+		TerminationRefundPDFCreator trPDFCreator = new TerminationRefundPDFCreator();
+		trPDFCreator.setCd(cd);
+		trPDFCreator.setEtr(etr);
+		trPDFCreator.setOrg(org);
+		trPDFCreator.setC(c);
+		System.out.println(trPDFCreator.create());
+		
 		
 		
 	}
