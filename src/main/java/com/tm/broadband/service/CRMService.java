@@ -201,7 +201,7 @@ public class CRMService {
 			}
 			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-			cod_hd.setDetail_name("Free Router");
+			cod_hd.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router(Free)");
 			cod_hd.setDetail_price(0d);
 			cod_hd.setDetail_is_next_pay(0);
 			cod_hd.setDetail_expired(new Date());
