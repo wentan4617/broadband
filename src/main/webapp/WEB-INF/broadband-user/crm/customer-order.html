@@ -44,11 +44,14 @@
 			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){
 		.>
 			<br/>
-			<strong>Termed Order's Operations:</strong>&nbsp;
+			<strong>Termed Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_charge" data-type="early_termination_charge">
-				<span class="glyphicon glyphicon-bullhorn"></span>&nbsp;Early termination charge
+				Early termination charge&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-left"></span>
+			</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_refund" data-type="early_termination_refund">
+				Early termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
 		<.
 			}
@@ -626,7 +629,7 @@
 							<.
 								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 							.>
-									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
+									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="plan-price_<.= customerOrder[i].id .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
 							<.
 								} else {
 							.>
@@ -691,15 +694,64 @@
 						</h4>
 					</div>
 					<div class="modal-body">
+						<p class="text-success">
+							This operation will generate a early terminated charge PDF, you can find it in the <strong>Early Termination Charge</strong> List under the billing module.<br/><br/>
+							<strong>Algorithm is as shown below:</strong><br/><br/>
+							charge = terminated date <= (service given + 6 months) ? 199 : 99<br/><br/>
+							If terminated date greater than service given month + 6 then charge 99NZD, otherwise charge 199NZD
+						</p>
+						<hr/>
 						<div class="form-group col-md-12">
 							<label class="control-label col-md-6">Terminated Date</label>
 							<div class="col-md-6">
-								<input class="form-control input-sm" type="text" data-name="early_terminated_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
+								<input class="form-control input-sm" type="text" data-name="early_terminated_charge_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="earlyTerminationChargeModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate invoice</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Early termination refund Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="earlyTerminationRefundModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="earlyTerminationRefundModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="earlyTerminationRefundModalLabel">
+							<strong>Generate early termination refund for this order</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="text-success">
+							This operation will generate a refund PDF, you can find it in the <strong>Early Termination Refund</strong> List under the billing module.<br/><br/>
+							<strong>Algorithm is as shown below:</strong><br/><br/>
+							refund = monthly price / current month days * (last day - terminated date)
+						</p>
+						<hr/>
+						<div class="form-group">
+							<label class="control-label col-md-6">Terminated Date</label>
+							<div class="col-md-6">
+								<input class="form-control input-sm" type="text" data-name="early_terminated_refund_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-6">Plan Monthly Charge</label>
+							<div class="col-md-6">
+								<input class="form-control input-sm" type="text" data-name="early_terminated_refund_monthly_charge_<.= customerOrder[i].id .>" placeholder="0.0" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="earlyTerminationRefundModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate refund</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

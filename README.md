@@ -17,10 +17,16 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.21 2014-06-16
+
+
+* 根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。(steven)
+ 
+ 
 demand version 1.0.21 2014-06-13
 
 * 给order detail加discount时记录user_id，记录是谁给的discount(steven)
-* regenerate invoice PDF时保持之前的invoice_id和create_date以及due_date(steven)
+* [regenerate invoice PDF时保持之前的invoice_id和create_date以及due_date](steven)
  
 demand version 1.0.21 2014-06-11
 
@@ -32,6 +38,7 @@ demand version 1.0.21 2014-06-11
  
 demand version 1.0.20 2014-06-10
 
+* [调试并解决手机以27开头的费率换算问题](steven)
 * [审查重新生成order的application form时的逻辑，看是否能加入discount的判断](steven)
 * 未付款账单，全部罗列到billing模块里，列出所有的order的最近一张invoice(steven)
 * [检查为什么sales下的单不显示在belongs to里](steven)

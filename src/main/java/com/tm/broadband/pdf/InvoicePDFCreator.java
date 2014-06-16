@@ -5,8 +5,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -71,7 +73,9 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.ccrs = ccrs;
 	}
 
-	public String create() throws DocumentException, MalformedURLException, IOException{
+	public Map<String, Object> create() throws DocumentException, MalformedURLException, IOException{
+		Map<String, Object> map = new HashMap<String, Object>();
+		
         Document document = new Document(PageSize.A4);
         
     	this.pstn_number = ccrs != null && ccrs.size() > 0 ? ccrs.get(0).getClear_service_id() : "";
@@ -97,12 +101,12 @@ public class InvoicePDFCreator extends ITextUtils {
         document.add(createCustomerBasicInfo());
 
         
-        Double cidTotalPrice = 0.0;
+        Double cidTotalPrice = 0d;
         List<CustomerInvoiceDetail> cids = this.getCurrentCustomerInvoice().getCustomerInvoiceDetails();
     	// get invoice detail(s) from invoice
         for (CustomerInvoiceDetail cid : cids) {
         	// if both empty
-        	Double subTotal = 0.0;
+        	Double subTotal = 0d;
         	Double detailPrice = cid.getInvoice_detail_price();
         	Integer detailUnit = cid.getInvoice_detail_unit();
         	Double detailDiscount = cid.getInvoice_detail_discount();
@@ -112,10 +116,10 @@ public class InvoicePDFCreator extends ITextUtils {
 		}
         
 
-        lastBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()!=null ? this.getLastCustomerInvoice().getBalance() : 0.0;
-        BigDecimal bigLastBalance = new BigDecimal(String.valueOf(lastBalance));
-        BigDecimal bigAmountPaid = new BigDecimal(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()));
-        thisInvoiceTotalAmount = cidTotalPrice + bigLastBalance.subtract(bigAmountPaid).doubleValue();
+        lastBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()!=null ? this.getLastCustomerInvoice().getBalance() : 0d;
+        BigDecimal bigLastBalance = new BigDecimal(lastBalance);
+        BigDecimal bigTotalAmount = new BigDecimal(thisInvoiceTotalAmount);
+        thisInvoiceTotalAmount = cidTotalPrice + bigLastBalance.add(bigTotalAmount).doubleValue();
         
         if(thisInvoiceTotalAmount > 0){
         	// personal plan include GST
@@ -278,7 +282,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		
 		// CLOSE DOCUMENT
         document.close();
-		return outputFile;
+        
+        map.put("amount_paid", this.getCurrentCustomerInvoice().getAmount_paid());
+        map.put("amount_payable", thisInvoiceTotalAmount);
+        map.put("balance", thisInvoiceTotalAmount - this.getCurrentCustomerInvoice().getAmount_paid());
+        map.put("filePath", outputFile);
+		return map;
 	}
 	
 	// BEGIN CUSTOMER BASIC INFO
@@ -294,7 +303,8 @@ public class InvoicePDFCreator extends ITextUtils {
         	customerName = org.getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
+        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle()+" " : "";
+        	customerName += this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
 //        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
@@ -363,7 +373,7 @@ public class InvoicePDFCreator extends ITextUtils {
 
             // LAST INVOICE TOTAL AMOUNT
         	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
-        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(lastBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPayable - lastAmountPaid))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	addEmptyCol(transactionTable, 10F, colspan);
             
         } else {
@@ -385,7 +395,7 @@ public class InvoicePDFCreator extends ITextUtils {
 
             // CURRENT INVOICE TOTAL AMOUNT
         	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
-        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(thisInvoiceTotalAmount - this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+        	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid() - this.getCurrentCustomerInvoice().getAmount_payable()))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	addEmptyCol(transactionTable, 10F, colspan);
             
         }

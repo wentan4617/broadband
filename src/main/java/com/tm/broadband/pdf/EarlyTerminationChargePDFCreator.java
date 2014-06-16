@@ -197,7 +197,8 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         	customerName = org.getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
+        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle()+" " : "";
+        	customerName += this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
 //        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
@@ -229,16 +230,16 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         addCol(chargeDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getService_given_date())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
         addCol(chargeDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getTermination_date())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
         addCol(chargeDetailTable, String.valueOf(this.getEtc().getMonths_between_begin_end())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(chargeDetailTable, String.valueOf(this.getEtc().getCharge_amount())).colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(chargeDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtc().getCharge_amount()))).colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         addCol(chargeDetailTable, "").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         
         addEmptyCol(chargeDetailTable, 10F, 15);
         addLineCol(chargeDetailTable, 15, titleBorderColor, 1F);
         addEmptyCol(chargeDetailTable, 6F, 15);
         addCol(chargeDetailTable, "Total amount due defore " + TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getDue_date()) + " :").colspan(12).font(ITextFont.arial_normal_8).alignH("r").o();
-        addCol(chargeDetailTable, this.getEtc().getCharge_amount() + " (inc GST)").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(chargeDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtc().getCharge_amount())) + " (inc GST)").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         addCol(chargeDetailTable, "Total amount due after " + TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getDue_date()) + " :").colspan(12).font(ITextFont.arial_normal_8).alignH("r").o();
-        addCol(chargeDetailTable, this.getEtc().getTotal_payable_amount() + " (inc GST)").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(chargeDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtc().getTotal_payable_amount())) + " (inc GST)").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         
         addEmptyCol(chargeDetailTable, 10F, 15);
         addCol(chargeDetailTable, "LEGAL TERMINATION DATE").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();

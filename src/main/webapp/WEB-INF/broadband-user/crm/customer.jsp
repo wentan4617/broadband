@@ -223,6 +223,7 @@
 				// Get Early Termination Charge Dialog
 				if(orderStatusCheck.attr('data-val') != 'cancel'){
 					$('a[data-name="'+co[i].id+'_early_termination_charge"]').attr('disabled', 'disabled');
+					$('a[data-name="'+co[i].id+'_early_termination_refund"]').attr('disabled', 'disabled');
 				}
 				$('a[data-name="'+co[i].id+'_early_termination_charge"]').click(function(){
 					$btn = $(this); $btn.button('loading');
@@ -233,7 +234,7 @@
 				$('a[data-name="earlyTerminationChargeModalBtn_'+co[i].id+'"]').click(function(){
 					var data = {
 						'id':this.id,
-						'terminatedDate':$('input[data-name="early_terminated_date_'+this.id+'"]').val()
+						'terminatedDate':$('input[data-name="early_terminated_charge_date_'+this.id+'"]').val()
 					};
 					
 					$.post('${ctx}/broadband-user/crm/customer/order/early-termination-charge/invoice/generate', data, function(json){
@@ -245,6 +246,32 @@
 				// Reset button when hidden Early Termination Charge dialog
 				$('#earlyTerminationChargeModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_charge"]').button('reset');
+				});
+				
+				// Early Termination Charge modal
+				$('a[data-name="'+co[i].id+'_early_termination_refund"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="earlyTerminationRefundModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('input[data-name="early_terminated_refund_monthly_charge_'+this.id+'"]').val($('td[data-name="plan-price_'+this.id+'"]').attr('data-price'));
+					$('#earlyTerminationRefundModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="earlyTerminationRefundModalBtn_'+co[i].id+'"]').click(function(){
+					var data = {
+						'id':this.id,
+						'terminatedDate':$('input[data-name="early_terminated_refund_date_'+this.id+'"]').val(),
+						'monthlyCharge':$('input[data-name="early_terminated_refund_monthly_charge_'+this.id+'"]').val()
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/order/early-termination-refund/invoice/generate', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json").always(function () {
+						
+				    });
+				});
+				// Reset button when hidden Early Termination Charge dialog
+				$('#earlyTerminationRefundModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_refund"]').button('reset');
 				});
 				
 				
@@ -710,20 +737,18 @@
 				// Binding every generateUrl button's click event by assign them specific invoice's id
 				var invoice = map.invoicePage.results[i];
 				$('a[data-name="generateUrl_'+invoice.id+'"]').click(function(){
-					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-url', $(this).attr('data-url'));
 					$('#regenerateInvoiceModal_'+this.id).modal('show');
 				});
 				// BEGIN first generate
 				// Binding every firstGenerate button's click event by assign them specific invoice's id
 				$('a[data-name="firstGenerate_'+invoice.id+'"]').click(function(){
-					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-url', $(this).attr('data-url'));
 					$('a[data-name="regenerateInvoiceBtn_'+this.id+'"]').attr('data-type', 'first');
 					$('#regenerateInvoiceModal_'+this.id).modal('show');
 				});
 				// END first generate
 				$('a[data-name="regenerateInvoiceBtn_'+invoice.id+'"]').click(function(){
 					var url = $(this).attr('data-url');
-					$.post(url, function(json){
+					$.post('${ctx}/broadband-user/crm/customer/invoice/pdf/generate/'+this.id, function(json){
 						$.jsonValidation(json, 'left');
 					})
 					if(typeof $(this).attr('data-type') != 'undefined'){
@@ -732,6 +757,9 @@
 						$('a[data-name="download_'+this.id+'"]').css('display', '');
 						$('a[data-name="send_'+this.id+'"]').css('display', '');
 					}
+				});
+				$('#regenerateInvoiceModal_'+invoice.id).on('hidden.bs.modal', function (e) {
+					$.getInvoicePage(pageNo);
 				});
 				// END generate invoice
 				

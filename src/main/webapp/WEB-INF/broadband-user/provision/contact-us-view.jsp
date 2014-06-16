@@ -82,7 +82,7 @@
 										<fmt:formatDate value="${contactUs.submit_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" />
 									</td>
 									<td style="font-size:20px;">
-										<a href="javascript:(0);" id="${contactUs.id }" data-name="respond" data-email="${contactUs.email }" data-status="${contactUs.status }" data-toggle="tooltip" data-placement="bottom" data-original-title="Response customer by E-Mail">
+										<a href="javascript:(0);" id="${contactUs.id }" data-name="respond" data-email="${contactUs.email }" data-status="${contactUs.status }" data-toggle="tooltip" data-placement="bottom" data-original-title="Respond customer by E-Mail">
 											<span class="glyphicon glyphicon-envelope"></span>
 										</a>
 									</td>

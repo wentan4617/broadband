@@ -32,6 +32,16 @@
 						AND order_id=#{params.order_id}
 					)
 				</when>
+				<when test="params.where == 'by_second_id'">
+					id=(
+						SELECT MAX(id) FROM tm_customer_invoice
+						WHERE customer_id=#{params.customer_id} AND order_id=#{params.customer_id}
+						AND id != (
+							SELECT MAX(id) FROM tm_customer_invoice
+							WHERE customer_id=#{params.order_id} AND order_id=#{params.order_id}
+						)
+					)
+				</when>
 				<otherwise>
 					<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
 					<if test="params.order_id != null">and order_id=#{params.order_id}</if>
