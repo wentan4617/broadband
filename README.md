@@ -17,20 +17,29 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.0.21 2014-06-17
+
+* View Termination Refunde界面添加邮件发送功能(steven)
+* View Termination Refunde界面添加两个切换已发送和未发送的badge(steven)
+* View Early Termination Charge界面添加邮件发送功能(steven)
+* View Early Termination Charge界面添加两个切换已发送和未发送的badge(steven)
+* order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice(steven)
+ 
+ 
 demand version 1.0.21 2014-06-16
 
 * 根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。(steven)
  
 demand version 1.0.21 2014-06-13
 
-* 给order detail加discount时记录user_id，记录是谁给的discount(steven)
+* [给order detail加discount时记录user_id，记录是谁给的discount](steven)
 * [regenerate invoice PDF时保持之前的invoice_id和create_date以及due_date](steven)
  
 demand version 1.0.21 2014-06-11
 
 * [检查一下为什么手动出账单没有将order的discount去掉](steven)
 * [做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表](steven)
-* billing模块做一个early termination charge的界面，列出所有的客户，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
+* billing模块做一个early termination charge的界面，列出所有的记录，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
 * 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)
  
 demand version 1.0.20 2014-06-10
@@ -54,8 +63,8 @@ demand version 1.0.20 2014-06-09
  
 demand version 1.0.10 2014-06-03
 
-* 后台首页ContactUs后面显示未处理数量(steven)
-
+* [后台首页ContactUs后面显示未处理数量](steven)
+ 
 demand version 1.0.9 2014-05-30
 
 * [order表加个ddpay_form字段，界面上加一行操作，上传，下载功能。](steven)
@@ -70,7 +79,7 @@ demand version 1.0.9 2014-05-27
 
 demand version 1.0.9 2014-05-26
 
-* customer order界面每提交一个请求都要返回提示结果，无论成功失败。(steven)
+* [customer order界面每提交一个请求都要返回提示结果，无论成功失败。](steven)
 * 前台查询地址框之上添加文字，Class Mode时显示“First text entry box is your flat/house number, second one is for street, suburb, city”。Auto-Match Mode时显示“Please start with your flat/house number first, e.g. type in "863A Domi" will automatically show "863A Dominion Road" at below for choose。”
 * 前台查询地址框添加两个单选“Classic Mode”，“Auto-Match Mode”。自动匹配为现有查询模式，经典模式房屋号与地址名称分开。选Classic Mode隐藏自动匹配框并显示经典输入框。选Auto-Match Mode隐藏经典输入框并显示自动匹配框。
 * 前台用户下单后点check out弹出温馨提示框，提示如果用户“若在支付过程中有任何疑问，请将该情况告知我们或等待我们的回访”。支付失败页面提示“亲爱的customer_name！不好意思，请将该情况告知我们或您可以等待我们的回访！”(Kanny)
@@ -99,8 +108,8 @@ demand version 1.0.9 2014-05-15
 * [重构管理员下单流程](kanny)
 * [更新出invoice算法，判断如果是term的order则在Service Giving的时候不出账单，再写一个Quartz的Schedule类，每个月10号获取类型为term的订单并且出账单，判断当前是否是第一张账单，如果是第一张账单判断该customer是business还是personal，如果是business则总价加上15%GST，总价除以当月的天数取得单天价格再乘以Service Giving开通后本月剩余天数再加上该term的包月价格得到该invoice。](steven)
 * [invoicePDF和orderPDF里的12%businessGST要改成15%](steven)
-* 管理员有权限将某一张单转变到某个sales名下，改变账单sales id 即可，将此功能添加至customer order界面(steven)
-* ordering online界面将显示sales id更改为显示sales name(steven)
+* [管理员有权限将某一张单转变到某个sales名下，改变账单sales id 即可，将此功能添加至customer order界面](steven)
+* [ordering online界面将显示sales id更改为显示sales name](steven)
 * [cyberpark home 做seo初步工作](steven)
 
 demand version 1.0.8 2014-05-14
