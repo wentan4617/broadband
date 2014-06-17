@@ -37,7 +37,14 @@
 			.>
 			<tr>
 			<. } .>
-				<td><.=cod.detail_name || ''.></td>
+				<td>
+					<. if (cod.detail_type.indexOf('hardware-') > -1) { .>
+					<a href="javascript:void(0);">
+						<span class="glyphicon glyphicon-plus-sign" data-hardware data-id="<.=cod.id.>" data-status="close"></span>
+					</a>
+					<.  } .>
+					<.=cod.detail_name || ''.>
+				</td>
 				<td><.=cod.detail_type || ''.></td>
 				<td><.=cod.detail_plan_type || ''.></td>
 				<td><.=cod.detail_plan_sort || ''.></td>
@@ -55,7 +62,7 @@
 				<td></td>
 			</tr>
 			<. if (cod.detail_type.indexOf('hardware-') > -1) {.>
-			<tr>
+			<tr id="tr<.=cod.id.>" style="display:none;">
 				<td colspan="20">
 					<div>
 						<div class="col-md-2">

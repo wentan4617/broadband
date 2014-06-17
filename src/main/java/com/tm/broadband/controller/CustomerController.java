@@ -334,7 +334,7 @@ public class CustomerController {
 	 */
 	
 	@RequestMapping(value = "/order/plan-term/personal/save", method = RequestMethod.POST)
-	public String orderTermPersoanlSave(Model model,
+	public String orderTermPersonalSave(Model model,
 			@ModelAttribute("customer") @Validated(CustomerValidatedMark.class) Customer customer, BindingResult result,
 			@ModelAttribute("orderPlan") Plan plan, 
 			RedirectAttributes attr, SessionStatus status) {
@@ -350,18 +350,6 @@ public class CustomerController {
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
 		//status.setComplete();
-		
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
@@ -387,18 +375,6 @@ public class CustomerController {
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
 		//status.setComplete();
-		
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
