@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<!-- import the dataSource definition -->
 	<import resource="datasource-config.xml" />
 
 	<!-- scanning package -->
-	<context:component-scan base-package="com.tm.broadband.service" />
+	<context:component-scan base-package="com.tm.broadband.service,com.tm.broadband.aop" />
+	
+	<!-- enable aop with @Aspect -->
+	<aop:aspectj-autoproxy />
 
 	<!-- enable autowire -->
 	<context:annotation-config />
@@ -217,5 +224,7 @@
 			</map>
 		</property>
 	</bean>
+	
+	<!-- <import resource="aop-config.xml"/> -->
 
 </beans>

@@ -35,13 +35,17 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script>
 
+	
+
+(function($){
+	
 	var weekOptions = {
 		scaleOverride : true
 		//** 如果为硬编码模式 **
 		//Number - 硬编码模式下每一步的跨度
 		,scaleSteps : 6
 		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 5
+		,scaleStepWidth : 2
 		//Number - 起始值
 		,scaleStartValue : 0
 		//Number - XY轴线宽度
@@ -56,7 +60,7 @@
 		//Number - 硬编码模式下每一步的跨度
 		,scaleSteps : 6
 		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 5
+		,scaleStepWidth : 2
 		//Number - 起始值
 		,scaleStartValue : 0
 		//Number - XY轴线宽度
@@ -90,7 +94,7 @@
 	, monthMaxNum = 0;
 	
 	<c:forEach var="monthRegisterStatistic" items="${monthRegisterStatistics}">
-		monthLabelArray.push('${monthRegisterStatistic.registerMonthDate_str}');
+		monthLabelArray.push('${monthRegisterStatistic.registerMonthDate_str}'.substring(8));
 		monthDataArray.push(${monthRegisterStatistic.registerCount});
 		var monthTempNum = ${monthRegisterStatistic.registerCount};
 		monthMaxNum = monthTempNum > monthMaxNum ? monthTempNum : monthMaxNum;
@@ -108,20 +112,19 @@
 	new Chart(document.getElementById("canvasWeek").getContext("2d")).Line(weekLineChartData, weekOptions);
 	
 	new Chart(document.getElementById("canvasMonth").getContext("2d")).Line(monthLineChartData, monthOptions);
-
-	(function($){
-		
-		$('.input-group.date').datepicker({
-		    format: "yyyy-mm",
-		    autoclose: true,
-		    minViewMode: 1
-		});
-		
-		$('.input-group.date').datepicker()
-		.on('changeDate', function(ev){
-			var value = $('#year_month_input').val();
-			window.location.href = value;
-		});
-	})(jQuery);
+	
+	$('.input-group.date').datepicker({
+	    format: "yyyy-mm",
+	    autoclose: true,
+	    minViewMode: 1
+	});
+	
+	$('.input-group.date').datepicker()
+	.on('changeDate', function(ev){
+		var value = $('#year_month_input').val();
+		window.location.href = value;
+	});
+	
+})(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
