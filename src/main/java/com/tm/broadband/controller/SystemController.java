@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
@@ -26,6 +27,7 @@ import com.tm.broadband.model.RegisterCustomer;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.ProvisionService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CompanyDetailValidatedMark;
@@ -43,12 +45,15 @@ import com.tm.broadband.validator.mark.UserValidatedMark;
 public class SystemController {
 
 	private SystemService systemService;
+	private ProvisionService provisionService;
 
 	@Autowired
 	public SystemController(SystemService systemService
 			,BillingService billingService
-			,CRMService crmService) {
+			,CRMService crmService
+			,ProvisionService provisionService) {
 		this.systemService = systemService;
+		this.provisionService = provisionService;
 	}
 
 	/*
@@ -70,6 +75,13 @@ public class SystemController {
 
 	@RequestMapping(value = "/broadband-user/index")
 	public String userIndex(Model model) {
+
+		// BEGIN QUERY SUM BY CONTACT US STATUS
+		Page<ContactUs> pageContactUsStatusSum = new Page<ContactUs>();
+		pageContactUsStatusSum.getParams().put("status", "new");
+		model.addAttribute("newContactUsSum", this.provisionService.queryContactUssSumByPage(pageContactUsStatusSum));
+		// END QUERY SUM BY CONTACT US STATUS
+		
 		return "broadband-user/index";
 	}
 

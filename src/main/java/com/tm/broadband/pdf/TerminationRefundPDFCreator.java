@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.Date;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -18,8 +19,9 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.EarlyTerminationRefund;
+import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.Organization;
+import com.tm.broadband.model.User;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -34,7 +36,8 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 	private CompanyDetail cd;
     private Customer c;
 	private Organization org;
-	private EarlyTerminationRefund etr;
+	private TerminationRefund etr;
+	private User u;
 
 	private BaseColor titleBorderColor = new BaseColor(230,230,230);
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
@@ -46,11 +49,13 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 	public TerminationRefundPDFCreator(CompanyDetail cd
 			,Customer c
 			,Organization org
-			,EarlyTerminationRefund etr) {
+			,TerminationRefund etr
+			,User u) {
 		this.cd = cd;
 		this.c = c;
 		this.org = org;
 		this.etr = etr;
+		this.u = u;
 	}
 
 	public String create() throws DocumentException, MalformedURLException, IOException{
@@ -76,7 +81,9 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 		// BASIC INFO
         document.add(createCustomerBasicInfo());
         
-        document.add(createEarlyTerminationRefundDetail());
+        document.add(createTerminationRefundDetail());
+        
+        document.add(createExecutorDetail());
         
         
 
@@ -98,7 +105,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         PdfPTable headerTable = new PdfPTable(1);
         headerTable.setWidthPercentage(102);
 		// add common header
-        addEmptyCol(headerTable, 140F, 1);
+        addEmptyCol(headerTable, 200F, 1);
         
         String customerName = null;
 //        String customerTitle = null;
@@ -106,7 +113,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         	customerName = org.getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getC().getTitle() != null ? this.getC().getTitle()+" " : "";
+        	customerName = this.getC().getTitle() != null ? this.getC().getTitle().toUpperCase()+" " : "";
         	customerName += this.getC().getFirst_name()+" "+this.getC().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
@@ -122,31 +129,56 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 	// END CUSTOMER BASIC INFO
 	
 	
-	// BEGIN EARLY TERMINATION REFUND DETAIL
-	private PdfPTable createEarlyTerminationRefundDetail(){
-        PdfPTable refundDetailTable = new PdfPTable(15);
+	// BEGIN TERMINATION REFUND DETAIL
+	private PdfPTable createTerminationRefundDetail(){
+        PdfPTable refundDetailTable = new PdfPTable(16);
         refundDetailTable.setWidthPercentage(96);
-        addCol(refundDetailTable, "TERMINATION REFUND DETAIL").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
-        addEmptyCol(refundDetailTable, 10F, 15);
-        addCol(refundDetailTable, "Last Date Of Month").colspan(3).font(ITextFont.arial_bold_9).alignH("c").o();
-        addCol(refundDetailTable, "Terminated Date").colspan(3).font(ITextFont.arial_bold_9).alignH("c").o();
-        addCol(refundDetailTable, "Refund Bank Account Number").colspan(3).font(ITextFont.arial_bold_9).alignH("c").o();
-        addCol(refundDetailTable, "Refund Bank Account Name").colspan(3).font(ITextFont.arial_bold_9).alignH("c").o();
-        addCol(refundDetailTable, "Refund Amount").colspan(3).font(ITextFont.arial_bold_9).alignH("c").o();
+        addCol(refundDetailTable, "TERMINATION REFUND DETAIL").colspan(16).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
+        addEmptyCol(refundDetailTable, 10F, 16);
+        addCol(refundDetailTable, "REMAINING DAYS REFUND ACCORDING TO: ").colspan(6).font(ITextFont.arial_bold_8).paddingV(4F).paddingTo("l", 10F).o();
+        addCol(refundDetailTable, this.etr.getProduct_name()).colspan(10).font(ITextFont.arial_normal_8).paddingV(4F).paddingTo("l", 10F).o();
+        addEmptyCol(refundDetailTable, 6F, 16);
+        addLineCol(refundDetailTable, 16, titleBorderColor, 1F);
+        addEmptyCol(refundDetailTable, 6F, 16);
+        addCol(refundDetailTable, "Last Date Of Month").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(refundDetailTable, "Terminated Date").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(refundDetailTable, "Day(s) Between").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(refundDetailTable, "Bank Account No").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(refundDetailTable, "Account Name").colspan(2).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(refundDetailTable, "Amount").colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         
-        addEmptyCol(refundDetailTable, 10F, 15);
-        addLineCol(refundDetailTable, 15, titleBorderColor, 1F);
-        addEmptyCol(refundDetailTable, 6F, 15);
+        addEmptyCol(refundDetailTable, 10F, 16);
+        addLineCol(refundDetailTable, 16, titleBorderColor, 1F);
+        addEmptyCol(refundDetailTable, 6F, 16);
 
-        addCol(refundDetailTable, TMUtils.retrieveMonthAbbrWithDate(TMUtils.getLastDateOfMonth(this.getEtr().getTermination_date()))).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(refundDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtr().getTermination_date())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(refundDetailTable, this.getEtr().getRefund_bank_account_number()).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(refundDetailTable, this.getEtr().getRefund_bank_account_name()).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(refundDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtr().getRefund_amount()))).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        
+        addCol(refundDetailTable, TMUtils.retrieveMonthAbbrWithDate(TMUtils.getLastDateOfMonth(this.getEtr().getTermination_date()))).colspan(3).font(ITextFont.arial_normal_7).alignH("c").o();
+        addCol(refundDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtr().getTermination_date())).colspan(3).font(ITextFont.arial_normal_7).alignH("c").o();
+        addCol(refundDetailTable, String.valueOf(this.getEtr().getDays_between_end_last())).colspan(3).font(ITextFont.arial_normal_7).alignH("c").o();
+        addCol(refundDetailTable, this.getEtr().getRefund_bank_account_number()).colspan(3).font(ITextFont.arial_normal_7).alignH("c").o();
+        addCol(refundDetailTable, this.getEtr().getRefund_bank_account_name()).colspan(2).font(ITextFont.arial_normal_7).alignH("c").o();
+        addCol(refundDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtr().getRefund_amount()))).colspan(2).font(ITextFont.arial_normal_7).alignH("r").o();
+
+        addEmptyCol(refundDetailTable, 300F, 16);
 		return refundDetailTable;
 	}
-    // END EARLY TERMINATION REFUND DETAIL
+    // END TERMINATION REFUND DETAIL
+	
+	
+	// BEGIN EXECUTOR DETAIL
+	private PdfPTable createExecutorDetail(){
+        PdfPTable executorDetailTable = new PdfPTable(15);
+        executorDetailTable.setWidthPercentage(96);
+
+        addCol(executorDetailTable, "Executor Id:").colspan(12).font(ITextFont.arial_bold_9).alignH("r").o();
+        addCol(executorDetailTable, String.valueOf(this.getU().getId())).colspan(3).font(ITextFont.arial_bold_9).alignH("r").o();
+        addCol(executorDetailTable, "Executor Role:").colspan(12).font(ITextFont.arial_bold_9).alignH("r").o();
+        addCol(executorDetailTable, this.getU().getUser_role()).colspan(3).font(ITextFont.arial_bold_9).alignH("r").o();
+        addCol(executorDetailTable, "Executed Date:").colspan(12).font(ITextFont.arial_bold_9).alignH("r").o();
+        addCol(executorDetailTable, TMUtils.retrieveMonthAbbrWithDate(new Date())).colspan(3).font(ITextFont.arial_bold_9).alignH("r").o();
+        
+		return executorDetailTable;
+	}
+    // END EXECUTOR DETAIL
 
 	
 	
@@ -177,7 +209,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         addCol(headerTable, " ").colspan(colspan).borderColor("b", titleBGColor).borderWidth("b", 3F).o();
 		/*
 		 * header table end
-		 */      
+		 */
 		/*
 		 * invoice basics begin
 		 */
@@ -186,7 +218,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         addCol(headerTable, "Customer Id: ").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(headerTable, this.getC().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(headerTable, 4F, colspan-4);
-        addCol(headerTable, "Invoice No: ").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(headerTable, "Refund No: ").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(headerTable, this.getEtr().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Date: ").colspan(2).font(ITextFont.arial_bold_8).o();
@@ -229,12 +261,20 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 		this.org = org;
 	}
 
-	public EarlyTerminationRefund getEtr() {
+	public TerminationRefund getEtr() {
 		return etr;
 	}
 
-	public void setEtr(EarlyTerminationRefund etr) {
+	public void setEtr(TerminationRefund etr) {
 		this.etr = etr;
+	}
+
+	public User getU() {
+		return u;
+	}
+
+	public void setU(User u) {
+		this.u = u;
 	}
 
 	

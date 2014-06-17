@@ -34,6 +34,7 @@ import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
+import com.tm.broadband.mapper.TerminationRefundMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
@@ -43,6 +44,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
+import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Notification;
@@ -50,8 +52,11 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
+import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.User;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.TMUtils;
 
@@ -80,6 +85,7 @@ public class CRMService {
 	private CallInternationalRateMapper callInternationalRateMapper;
 	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
 	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
+	private TerminationRefundMapper terminationRefundMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -105,7 +111,8 @@ public class CRMService {
 			CustomerCallRecordMapper customerCallRecordMapper,
 			CallInternationalRateMapper callInternationalRateMapper,
 			EarlyTerminationChargeMapper earlyTerminationChargeMapper,
-			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper){
+			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper,
+			TerminationRefundMapper terminationRefundMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -124,6 +131,7 @@ public class CRMService {
 		this.callInternationalRateMapper = callInternationalRateMapper;
 		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
 		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
+		this.terminationRefundMapper = terminationRefundMapper;
 	}
 	
 	
@@ -787,11 +795,13 @@ public class CRMService {
 		etc.setTermination_date(terminatedDate);
 		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
 		etc.setDue_date(TMUtils.getInvoiceDueDate(new Date(), 15));
-		etc.setOverdue_extra_charge(this.earlyTerminationChargeParameterMapper.selectEarlyTerminationChargeParameter().getOverdue_extra_charge());
+		EarlyTerminationChargeParameter earlyTerminationChargeParam = this.earlyTerminationChargeParameterMapper.selectEarlyTerminationChargeParameter();
+		etc.setOverdue_extra_charge(earlyTerminationChargeParam != null ? earlyTerminationChargeParam.getOverdue_extra_charge() : 0d);
 		etc.setCharge_amount((Double) map.get("charge_amount"));
 		etc.setTotal_payable_amount((Double) map.get("charge_amount") + etc.getOverdue_extra_charge());
 		etc.setMonths_between_begin_end((Integer) map.get("months_between_begin_end"));
 		etc.setExecute_by(executor_id);
+		etc.setStatus("unpaid");
 		
 		this.earlyTerminationChargeMapper.insertEarlyTerminationCharge(etc);
 		
@@ -806,6 +816,44 @@ public class CRMService {
 		etc.getParams().put("id", etc.getId());
 		etc.setInvoice_pdf_path(invoicePDFPath);
 		this.earlyTerminationChargeMapper.updateEarlyTerminationCharge(etc);
+	}
+
+	@Transactional 
+	public void createTerminationRefundInvoice(Integer order_id
+			, Date terminatedDate, User u, String accountNo, String accountName, Double monthlyCharge, String productName) throws ParseException{
+		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
+		Customer c = co.getCustomer();
+		Map<String, Object> map = TMUtils.terminationRefundCalculations(terminatedDate, monthlyCharge);
+		
+		TerminationRefund tr = new TerminationRefund();
+		tr.setCustomer_id(c.getId());
+		tr.setOrder_id(co.getId());
+		tr.setCreate_date(new Date());
+		tr.setTermination_date(terminatedDate);
+		tr.setProduct_name(productName);
+		tr.setProduct_monthly_price(monthlyCharge);
+		tr.setRefund_bank_account_number(accountNo);
+		tr.setRefund_bank_account_name(accountName);
+		tr.setRefund_amount((Double) map.get("refund_amount"));
+		tr.setDays_between_end_last((Integer) map.get("remaining_days"));
+		tr.setStatus("unpaid");
+		tr.setExecute_by(u.getId());
+		tr.setLast_date_of_month((Date) map.get("last_date_of_month"));
+		
+		
+		this.terminationRefundMapper.insertTerminationRefund(tr);
+		
+		String refundPDFPath = "";
+		try {
+			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
+			Organization org = c.getOrganization();
+			refundPDFPath = new TerminationRefundPDFCreator(cd, c, org, tr, u).create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		tr.getParams().put("id", tr.getId());
+		tr.setRefund_pdf_path(refundPDFPath);
+		this.terminationRefundMapper.updateTerminationRefund(tr);
 	}
 
 	@Transactional 

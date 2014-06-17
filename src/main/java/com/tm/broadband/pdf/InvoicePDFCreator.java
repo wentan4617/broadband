@@ -303,7 +303,7 @@ public class InvoicePDFCreator extends ITextUtils {
         	customerName = org.getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle()+" " : "";
+        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle().toUpperCase()+" " : "";
         	customerName += this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
 //        	customerTitle = "PERSONAL";
         }

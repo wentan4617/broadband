@@ -223,7 +223,7 @@
 				// Get Early Termination Charge Dialog
 				if(orderStatusCheck.attr('data-val') != 'cancel'){
 					$('a[data-name="'+co[i].id+'_early_termination_charge"]').attr('disabled', 'disabled');
-					$('a[data-name="'+co[i].id+'_early_termination_refund"]').attr('disabled', 'disabled');
+					$('a[data-name="'+co[i].id+'_termination_refund"]').attr('disabled', 'disabled');
 				}
 				$('a[data-name="'+co[i].id+'_early_termination_charge"]').click(function(){
 					$btn = $(this); $btn.button('loading');
@@ -249,29 +249,32 @@
 				});
 				
 				// Early Termination Charge modal
-				$('a[data-name="'+co[i].id+'_early_termination_refund"]').click(function(){
+				$('a[data-name="'+co[i].id+'_termination_refund"]').click(function(){
 					$btn = $(this); $btn.button('loading');
-					$('a[data-name="earlyTerminationRefundModalBtn_'+this.id+'"]').prop('id', this.id);
-					$('input[data-name="early_terminated_refund_monthly_charge_'+this.id+'"]').val($('td[data-name="plan-price_'+this.id+'"]').attr('data-price'));
-					$('#earlyTerminationRefundModal_'+this.id).modal('show');
+					$('a[data-name="terminationRefundModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('input[data-name="terminated_refund_monthly_charge_'+this.id+'"]').val($('td[data-name="plan-detail_'+this.id+'"]').attr('data-price'));
+					$('#terminationRefundModal_'+this.id).modal('show');
 				});
 				// Submit to rest controller
-				$('a[data-name="earlyTerminationRefundModalBtn_'+co[i].id+'"]').click(function(){
+				$('a[data-name="terminationRefundModalBtn_'+co[i].id+'"]').click(function(){
 					var data = {
 						'id':this.id,
-						'terminatedDate':$('input[data-name="early_terminated_refund_date_'+this.id+'"]').val(),
-						'monthlyCharge':$('input[data-name="early_terminated_refund_monthly_charge_'+this.id+'"]').val()
+						'terminatedDate':$('input[data-name="terminated_refund_date_'+this.id+'"]').val(),
+						'monthlyCharge':$('input[data-name="terminated_refund_monthly_charge_'+this.id+'"]').val(),
+						'accountNo':$('input[data-name="terminated_refund_bank_account_no_'+this.id+'"]').val(),
+						'accountName':$('input[data-name="terminated_refund_bank_account_name_'+this.id+'"]').val(),
+						'productName':$('td[data-name="plan-detail_'+this.id+'"]').attr('data-plan-name')
 					};
 					
-					$.post('${ctx}/broadband-user/crm/customer/order/early-termination-refund/invoice/generate', data, function(json){
+					$.post('${ctx}/broadband-user/crm/customer/order/termination-refund/invoice/generate', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json").always(function () {
 						
 				    });
 				});
 				// Reset button when hidden Early Termination Charge dialog
-				$('#earlyTerminationRefundModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_refund"]').button('reset');
+				$('#terminationRefundModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_termination_refund"]').button('reset');
 				});
 				
 				

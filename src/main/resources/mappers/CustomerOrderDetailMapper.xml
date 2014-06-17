@@ -31,13 +31,13 @@
 			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
 			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
 			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_type`, `detail_expired`,
-			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`) 
+			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`, `user_id`) 
 		VALUES (
 			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
 			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow},
 			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_type}, #{detail_expired},
-			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number})
+			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number}, #{user_id})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -69,6 +69,7 @@
 			<if test="hardware_comment != null">hardware_comment=#{hardware_comment},</if>
 			<if test="track_code != null">track_code=#{track_code},</if>
 			<if test="pstn_number != null">pstn_number=#{pstn_number}</if>
+			<if test="user_id != null">user_id=#{user_id}</if>
 		</set>
 		<where>
 			<if test="params.id !=null">id=#{params.id}</if>

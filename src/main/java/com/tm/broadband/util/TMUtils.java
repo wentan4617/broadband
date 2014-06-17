@@ -834,4 +834,35 @@ public class TMUtils {
 		return cal.getTime();
 	}
 	// BEGIN GetLastDateOfMonth
+	
+	// BEGIN TerminationRefundCalculations
+	public static Map<String, Object> terminationRefundCalculations(Date terminatedDate, Double monthlyCharge){
+		Map<String, Object> map = new HashMap<String, Object>();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd");
+		Date lastDate = TMUtils.getLastDateOfMonth(terminatedDate);
+		Integer maxDay = Integer.parseInt(sdf.format(lastDate));
+		Integer terminatedDay = Integer.parseInt(sdf.format(terminatedDate));
+		Integer remainingDays = maxDay - terminatedDay;
+		
+		BigDecimal bigMaxDay = new BigDecimal(maxDay);
+		BigDecimal bigMonthlyCharge = new BigDecimal(monthlyCharge);
+		BigDecimal dailyCharge = bigMonthlyCharge.divide(bigMaxDay, 5, BigDecimal.ROUND_DOWN);
+		BigDecimal bigRemainingDays = new BigDecimal(remainingDays);
+		
+		map.put("remaining_days", remainingDays);
+		map.put("refund_amount", dailyCharge.multiply(bigRemainingDays).doubleValue());
+		map.put("last_date_of_month", lastDate);
+		
+		return map;
+	}
+	// END TerminationRefundCalculations
+	
+	// BEGIN isDateFormat
+	public static boolean isDateFormat(String dateStr, String separator){
+		String rexpFormat = "^(\\d{4}\\" + separator + "\\d{1,2}\\" + separator + "\\d{1,2})|(\\d{1,2}\\" + separator + "\\d{1,2}\\" + separator + "\\d{4})$";
+		Pattern pat = Pattern.compile(rexpFormat);
+		Matcher mat = pat.matcher(dateStr);
+		return mat.matches();
+	}
+	// END isDateFormat
 }

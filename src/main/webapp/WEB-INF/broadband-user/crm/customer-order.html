@@ -50,7 +50,7 @@
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_charge" data-type="early_termination_charge">
 				Early termination charge&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-left"></span>
 			</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_refund" data-type="early_termination_refund">
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
 				Early termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
 		<.
@@ -629,7 +629,7 @@
 							<.
 								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 							.>
-									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="plan-price_<.= customerOrder[i].id .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
+									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="plan-detail_<.= customerOrder[i].id .>" data-plan-name="<.= customerOrderDetail[d].detail_name .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
 							<.
 								} else {
 							.>
@@ -642,8 +642,19 @@
 								<.
 									if(customerOrderDetail[d].detail_type=='discount'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_discount" data-id="<.= customerOrderDetail[d].id .>">
-									  	<span data-toggle="tooltip" data-placement="bottom" data-original-title="delete this discount" class="glyphicon glyphicon-trash"></span> 
+										<.
+											for(var u=0; u<users.length; u++){
+												if(users[u].id == customerOrderDetail[d].user_id){
+										.>
+												<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Added by <.= users[u].user_name .>, role: <.=  users[u].user_role .>">
+										  			<span class="glyphicon glyphicon-search"></span>
+												</a>
+										<.
+												}
+											}
+										.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_discount" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete this discount">
+									  	<span class="glyphicon glyphicon-trash"></span> 
 									</a>
 								<.
 									}
@@ -719,20 +730,20 @@
 	</form>
 	<!-- /.modal -->
 
-	<!-- Early termination refund Modal -->
+	<!-- Termination refund Modal -->
 	<form class="form-horizontal">
-		<div class="modal fade" id="earlyTerminationRefundModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="earlyTerminationRefundModalLabel" aria-hidden="true">
+		<div class="modal fade" id="terminationRefundModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="terminationRefundModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title text-danger" id="earlyTerminationRefundModalLabel">
+						<h4 class="modal-title text-danger" id="terminationRefundModalLabel">
 							<strong>Generate early termination refund for this order</strong>
 						</h4>
 					</div>
 					<div class="modal-body">
 						<p class="text-success">
-							This operation will generate a refund PDF, you can find it in the <strong>Early Termination Refund</strong> List under the billing module.<br/><br/>
+							This operation will generate a refund PDF, you can find it in the <strong>Termination Refund</strong> List under the billing module.<br/><br/>
 							<strong>Algorithm is as shown below:</strong><br/><br/>
 							refund = monthly price / current month days * (last day - terminated date)
 						</p>
@@ -740,18 +751,30 @@
 						<div class="form-group">
 							<label class="control-label col-md-6">Terminated Date</label>
 							<div class="col-md-6">
-								<input class="form-control input-sm" type="text" data-name="early_terminated_refund_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
+								<input class="form-control input-sm" type="text" data-name="terminated_refund_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />
 							</div>
 						</div>
 						<div class="form-group">
 							<label class="control-label col-md-6">Plan Monthly Charge</label>
 							<div class="col-md-6">
-								<input class="form-control input-sm" type="text" data-name="early_terminated_refund_monthly_charge_<.= customerOrder[i].id .>" placeholder="0.0" />
+								<input class="form-control input-sm" type="text" data-name="terminated_refund_monthly_charge_<.= customerOrder[i].id .>" placeholder="0.0" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-6">Bank Account No</label>
+							<div class="col-md-6">
+								<input class="form-control input-sm" type="text" data-name="terminated_refund_bank_account_no_<.= customerOrder[i].id .>" placeholder="06-xxxx-xxxxxxx-00" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-6">Bank Account Name</label>
+							<div class="col-md-6">
+								<input class="form-control input-sm" type="text" data-name="terminated_refund_bank_account_name_<.= customerOrder[i].id .>" placeholder="xxxxx" />
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="earlyTerminationRefundModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate refund</a>
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="terminationRefundModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate refund</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
