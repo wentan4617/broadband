@@ -79,6 +79,23 @@
 					loadInfo();
 				});
 			});
+			
+			$('span[data-hardware]').on('click', function(){
+				var $span = $(this);
+				var id = $span.attr('data-id');
+				var status = $span.attr('data-status');
+				if (status == 'close') {
+					$('#tr' + id).show(function(){
+						$span.attr('data-status', 'open');
+						$span.attr('class', 'glyphicon glyphicon-minus-sign');
+					});
+				} else if (status == 'open') {
+					$('#tr' + id).hide(function(){
+						$span.attr('data-status', 'close');
+						$span.attr('class', 'glyphicon glyphicon-plus-sign');
+					});
+				}
+			});
 		}, 'json');
 	}
 	

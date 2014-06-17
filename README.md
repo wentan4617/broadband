@@ -19,9 +19,7 @@ Total Mobile Solution Internet Service Web Project
  
 demand version 1.0.21 2014-06-16
 
-
 * 根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。(steven)
- 
  
 demand version 1.0.21 2014-06-13
 
@@ -34,7 +32,6 @@ demand version 1.0.21 2014-06-11
 * [做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表](steven)
 * billing模块做一个early termination charge的界面，列出所有的客户，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
 * 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)
- 
  
 demand version 1.0.20 2014-06-10
 
@@ -55,14 +52,10 @@ demand version 1.0.20 2014-06-09
 
 * [开发手动出termed的invoice功能](steven)
  
- 
 demand version 1.0.10 2014-06-03
 
 * 后台首页ContactUs后面显示未处理数量(steven)
- 
-demand version 1.0.10 2014-06-03
- 
- 
+
 demand version 1.0.9 2014-05-30
 
 * [order表加个ddpay_form字段，界面上加一行操作，上传，下载功能。](steven)
@@ -84,7 +77,6 @@ demand version 1.0.9 2014-05-26
 * 实现后台下单如果order_type为order-no-term或order-topup则将order_detail迭代至invoice_detail内，然后paid为payable，balance为0d
 * 调通xero接口，每次生成invoice都传送到xero系统，让xero客户去催款。
  
-
 demand version 1.0.9 2014-05-15
 
 * [在customer order里提交service giving是判断SV/CV Lan不为空才能提交。](steven)

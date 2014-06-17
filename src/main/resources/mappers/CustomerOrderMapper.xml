@@ -38,7 +38,9 @@
 		c.`passport`		as c_passport,
 		c.`country`			as c_country,
 		c.`company_name`	as c_company_name,
-		c.`customer_type`	as c_customer_type
+		c.`customer_type`	as c_customer_type,
+		c.`identity_type`	as c_identity_type,
+		c.`identity_number` as c_identity_number
 	</sql>
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
@@ -63,6 +65,8 @@
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
 		<result property="customer_type" column="c_customer_type" />
+		<result property="identity_type" column="c_identity_type" />
+		<result property="identity_number" column="c_identity_number" />
 		
 		<association property="organization" resultMap="organizationResultMap"/>
 	</resultMap>
