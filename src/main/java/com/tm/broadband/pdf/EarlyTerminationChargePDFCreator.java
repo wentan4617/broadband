@@ -217,11 +217,11 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 	private PdfPTable createEarlyTerminationChargeDetail(){
         PdfPTable chargeDetailTable = new PdfPTable(15);
         chargeDetailTable.setWidthPercentage(96);
-        addCol(chargeDetailTable, "EARLY TERMINATION CHARGE DETAIL").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
+        addCol(chargeDetailTable, "Recent Invoice Detail").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
         addEmptyCol(chargeDetailTable, 10F, 15);
         addCol(chargeDetailTable, "Service Given Date").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
         addCol(chargeDetailTable, "Service Terminated Date").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
-        addCol(chargeDetailTable, "Month(s) Between").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(chargeDetailTable, "Description").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
         addCol(chargeDetailTable, "Charge Amount").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         addCol(chargeDetailTable, "Total Payable Amount").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(chargeDetailTable, 6F, 15);
@@ -229,7 +229,7 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         addEmptyCol(chargeDetailTable, 6F, 15);
         addCol(chargeDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getService_given_date())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
         addCol(chargeDetailTable, TMUtils.retrieveMonthAbbrWithDate(this.getEtc().getTermination_date())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
-        addCol(chargeDetailTable, String.valueOf(this.getEtc().getMonths_between_begin_end())).colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
+        addCol(chargeDetailTable, "early termination detail").colspan(3).font(ITextFont.arial_normal_8).alignH("c").o();
         addCol(chargeDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtc().getCharge_amount()))).colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         addCol(chargeDetailTable, "").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         
@@ -242,9 +242,9 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         addCol(chargeDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getEtc().getTotal_payable_amount())) + " (inc GST)").colspan(3).font(ITextFont.arial_bold_8).alignH("r").o();
         
         addEmptyCol(chargeDetailTable, 10F, 15);
-        addCol(chargeDetailTable, "LEGAL TERMINATION DATE").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
+        addCol(chargeDetailTable, "Plan Detail").colspan(15).bgColor(titleBGColor).font(ITextFont.arial_bold_white_10).paddingV(4F).paddingTo("l", 10F).o();
         addEmptyCol(chargeDetailTable, 10F, 15);
-        addCol(chargeDetailTable, "Legal Termination Date").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
+        addCol(chargeDetailTable, "Plan End Date").colspan(3).font(ITextFont.arial_bold_8).alignH("c").o();
         addCol(chargeDetailTable, "").colspan(12).o();
         addEmptyCol(chargeDetailTable, 6F, 15);
         addLineCol(chargeDetailTable, 15, titleBorderColor, 1F);
