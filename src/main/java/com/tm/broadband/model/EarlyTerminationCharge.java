@@ -31,6 +31,7 @@ public class EarlyTerminationCharge implements Serializable {
 	private Integer months_between_begin_end;
 	private Integer execute_by;
 	private String invoice_pdf_path;
+	private String status;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -215,6 +216,14 @@ public class EarlyTerminationCharge implements Serializable {
 
 	public void setInvoice_pdf_path(String invoice_pdf_path) {
 		this.invoice_pdf_path = invoice_pdf_path;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
 	}
 
 }

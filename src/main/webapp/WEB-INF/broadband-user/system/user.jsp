@@ -170,6 +170,11 @@
 											<form:checkbox path="authArray" value="billing/early-termination-charge/view" data-type="checkbox_billing" /> View Early Termination Charge
 										</label>
 									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="billing/termination-refund/view" data-type="checkbox_billing" /> View Termination Refund
+										</label>
+									</li>
 								</ul>
 							</div>
 							<div class="col-md-2" data-module="provision">

@@ -3,6 +3,9 @@ package com.tm.broadband.pdf;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -10,8 +13,9 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.EarlyTerminationRefund;
 import com.tm.broadband.model.Organization;
+import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.User;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
 
@@ -406,24 +410,30 @@ public class TestAll {
 		
 		
 		
+		Map<String, Object> map = TMUtils.terminationRefundCalculations(TMUtils.parseDateYYYYMMDD("2014-06-10"), 109d);
 		
-		EarlyTerminationRefund etr = new EarlyTerminationRefund();
-		etr.setId(300000);
-		etr.setCreate_date(new Date());
-		etr.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-06-10"));
-		etr.setProduct_monthly_price(109d);
-		etr.setRefund_amount(30d);
-		etr.setRefund_bank_account_number("05-12345-09876-009");
-		etr.setRefund_bank_account_name("COOK");
+		TerminationRefund tr = new TerminationRefund();
+		tr.setId(300000);
+		tr.setCreate_date(new Date());
+		tr.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-06-10"));
+		tr.setProduct_name("ADSL + PSTN - Office Advisor $109 + GST, 150GB");
+		tr.setProduct_monthly_price(109d);
+		tr.setRefund_amount((Double) map.get("refund_amount"));
+		tr.setRefund_bank_account_number("05-12345-09876-009");
+		tr.setRefund_bank_account_name("COOK");
+		tr.setDays_between_end_last((Integer) map.get("remaining_days"));
+		
+		User u = new User();
+		u.setId(10);
+		u.setUser_role("accountant");
 		
 		TerminationRefundPDFCreator trPDFCreator = new TerminationRefundPDFCreator();
 		trPDFCreator.setCd(cd);
-		trPDFCreator.setEtr(etr);
+		trPDFCreator.setEtr(tr);
 		trPDFCreator.setOrg(org);
 		trPDFCreator.setC(c);
-		System.out.println(trPDFCreator.create());
-		
-		
+		trPDFCreator.setU(u);
+//		System.out.println(trPDFCreator.create());
 		
 	}
 

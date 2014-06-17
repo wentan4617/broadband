@@ -728,7 +728,8 @@ public class CRMRestController {
 			,@RequestParam("detail_unit") Integer detail_unit
 			,@RequestParam("detail_expired") String detail_expired
 			,@RequestParam("detail_type") String detail_type
-			,RedirectAttributes attr) {
+			,RedirectAttributes attr
+			,HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		
@@ -736,7 +737,7 @@ public class CRMRestController {
 		Pattern pat = Pattern.compile(rexp);
 		Matcher mat = pat.matcher(detail_expired);
 		boolean dateType = mat.matches();
-		if(dateType){
+		if(dateType && TMUtils.isDateFormat(detail_expired, "-")){
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
 			customerOrderDetail.setDetail_name(detail_name);
@@ -744,9 +745,11 @@ public class CRMRestController {
 			customerOrderDetail.setDetail_unit(detail_unit);
 			customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
 			customerOrderDetail.setDetail_type(detail_type);
+			User user = (User) req.getSession().getAttribute("userSession");
+			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
 			// Create Customer Order Detail Discount is successful.
-			json.getSuccessMap().put("alert-success", "New discount is attached to related order! Order Id: " + order_id);
+			json.getSuccessMap().put("alert-success", "New discount had been attached to related order! Order Id: " + order_id);
 		} else {
 			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyy-mm-dd");
 		}
@@ -830,7 +833,7 @@ public class CRMRestController {
 		return json;
 	}
 
-	// manually-generate
+	// EarlyTerminationCharge Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/early-termination-charge/invoice/generate", method = RequestMethod.POST)
 	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model
 			,@RequestParam("id") int id
@@ -846,9 +849,40 @@ public class CRMRestController {
 			Pattern pat = Pattern.compile(rexp);
 			Matcher mat = pat.matcher(terminatedDate);
 			boolean dateType = mat.matches();
-			if(dateType){
+			if(dateType && TMUtils.isDateFormat(terminatedDate, "-")){
 				this.crmService.createEarlyTerminationInvoice(id, TMUtils.parseDateYYYYMMDD(terminatedDate), user.getId());
 				json.getSuccessMap().put("alert-success", "Early termination charge invoice had just been generated!");
+			} else {
+				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+			}
+		} catch (ParseException e) { e.printStackTrace(); }
+		
+		return json;
+	}
+
+	// TerminationRefund Controller
+	@RequestMapping(value = "/broadband-user/crm/customer/order/termination-refund/invoice/generate", method = RequestMethod.POST)
+	public JSONBean<String> doTerminationRefundInvoice(Model model
+			,@RequestParam("id") int id
+			,@RequestParam("terminatedDate") String terminatedDate
+			,@RequestParam("productName") String productName
+			,@RequestParam("monthlyCharge") Double monthlyCharge
+			,@RequestParam("accountNo") String accountNo
+			,@RequestParam("accountName") String accountName
+			,HttpServletRequest req) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		try {
+			String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+			Pattern pat = Pattern.compile(rexp);
+			Matcher mat = pat.matcher(terminatedDate);
+			boolean dateType = mat.matches();
+			if(dateType && TMUtils.isDateFormat(terminatedDate, "-")){
+				this.crmService.createTerminationRefundInvoice(id, TMUtils.parseDateYYYYMMDD(terminatedDate), user, accountNo, accountName, monthlyCharge, productName);
+				json.getSuccessMap().put("alert-success", "Termination refund invoice had just been generated!");
 			} else {
 				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
 			}

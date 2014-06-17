@@ -82,7 +82,14 @@ hr {
 					<ul class="list-unstyled">
 						<li>
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1">View Early Termination Charge</a>
+                    		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1/unpaid">View Early Termination Charge</a>
+                    	</li>
+					</ul>
+					<hr/>
+					<ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/termination-refund/view/1/unpaid">View Termination Refund</a>
                     	</li>
 					</ul>
 			  	</div>
@@ -111,8 +118,12 @@ hr {
                     <hr/>
                     <ul class="list-unstyled">
                     	<li>
-                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">View Contact Us</a>
+							<div class="btn-group">
+	                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
+	                    		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">
+	                    			View Contact Us&nbsp;&nbsp;<span class="badge">${newContactUsSum}</span>
+	                    		</a>
+	                    	</div>
                     	</li>
                     </ul>
                     <hr/>

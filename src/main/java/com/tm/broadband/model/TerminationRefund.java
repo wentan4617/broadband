@@ -5,7 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EarlyTerminationRefund implements Serializable {
+import com.tm.broadband.util.TMUtils;
+
+public class TerminationRefund implements Serializable {
 
 	/**
 	 * 
@@ -20,12 +22,16 @@ public class EarlyTerminationRefund implements Serializable {
 	private Integer order_id;
 	private Double product_monthly_price;
 	private Date create_date;
+	private Date last_date_of_month;
 	private Date termination_date;
 	private String refund_bank_account_number;
 	private String refund_bank_account_name;
 	private Double refund_amount;
 	private Integer execute_by;
 	private String refund_pdf_path;
+	private String product_name;
+	private String status;
+	private Integer days_between_end_last;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -38,6 +44,7 @@ public class EarlyTerminationRefund implements Serializable {
 	private Map<String, Object> params = new HashMap<String, Object>();
 	
 	private String create_date_str;
+	private String last_date_of_month_str;
 	private String termination_date_str;
 	
 	/*
@@ -145,6 +152,7 @@ public class EarlyTerminationRefund implements Serializable {
 	}
 
 	public String getCreate_date_str() {
+		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDD(this.getCreate_date()));
 		return create_date_str;
 	}
 
@@ -153,11 +161,53 @@ public class EarlyTerminationRefund implements Serializable {
 	}
 
 	public String getTermination_date_str() {
+		this.setTermination_date_str(TMUtils.dateFormatYYYYMMDD(this.getTermination_date()));
 		return termination_date_str;
 	}
 
 	public void setTermination_date_str(String termination_date_str) {
 		this.termination_date_str = termination_date_str;
+	}
+
+	public String getProduct_name() {
+		return product_name;
+	}
+
+	public void setProduct_name(String product_name) {
+		this.product_name = product_name;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public Integer getDays_between_end_last() {
+		return days_between_end_last;
+	}
+
+	public void setDays_between_end_last(Integer days_between_end_last) {
+		this.days_between_end_last = days_between_end_last;
+	}
+
+	public Date getLast_date_of_month() {
+		return last_date_of_month;
+	}
+
+	public void setLast_date_of_month(Date last_date_of_month) {
+		this.last_date_of_month = last_date_of_month;
+	}
+
+	public String getLast_date_of_month_str() {
+		this.setLast_date_of_month_str(TMUtils.dateFormatYYYYMMDD(this.getLast_date_of_month()));
+		return last_date_of_month_str;
+	}
+
+	public void setLast_date_of_month_str(String last_date_of_month_str) {
+		this.last_date_of_month_str = last_date_of_month_str;
 	}
 
 }

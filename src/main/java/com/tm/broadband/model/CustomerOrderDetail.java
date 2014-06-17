@@ -40,6 +40,7 @@ public class CustomerOrderDetail implements Serializable {
 	private String hardware_comment;
 	private String track_code;
 	private String pstn_number;
+	private Integer user_id;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -282,6 +283,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_plan_class(String detail_plan_class) {
 		this.detail_plan_class = detail_plan_class;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
 	}
 	
 	

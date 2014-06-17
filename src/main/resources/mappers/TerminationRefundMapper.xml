@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.TerminationRefundMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="terminationRefundColumns">
+		tr.`id` 							as tr_id,
+		tr.`customer_id` 					as tr_customer_id,
+		tr.`order_id` 						as tr_order_id,
+		tr.`product_monthly_price` 			as tr_product_monthly_price,
+		tr.`create_date` 					as tr_create_date,
+		tr.`last_date_of_month` 			as tr_last_date_of_month,
+		tr.`termination_date` 				as tr_termination_date,
+		tr.`refund_bank_account_number` 	as tr_refund_bank_account_number,
+		tr.`refund_bank_account_name` 		as tr_refund_bank_account_name,
+		tr.`refund_amount` 					as tr_refund_amount,
+		tr.`execute_by` 					as tr_execute_by,
+		tr.`refund_pdf_path` 				as tr_refund_pdf_path,
+		tr.`status` 						as tr_status,
+		tr.`days_between_end_last` 			as tr_days_between_end_last
+	</sql>
+	
+	<resultMap type="TerminationRefund" id="terminationRefundResultMap">
+		<id property="id" column="tr_id" />
+		<result property="customer_id" column="tr_customer_id" />
+		<result property="order_id" column="tr_order_id" />
+		<result property="product_monthly_price" column="tr_product_monthly_price" />
+		<result property="create_date" column="tr_create_date" />
+		<result property="last_date_of_month" column="tr_last_date_of_month" />
+		<result property="termination_date" column="tr_termination_date" />
+		<result property="refund_bank_account_number" column="tr_refund_bank_account_number" />
+		<result property="refund_bank_account_name" column="tr_refund_bank_account_name" />
+		<result property="refund_amount" column="tr_refund_amount" />
+		<result property="execute_by" column="tr_execute_by" />
+		<result property="refund_pdf_path" column="tr_refund_pdf_path" />
+		<result property="status" column="tr_status" />
+		<result property="days_between_end_last" column="tr_days_between_end_last" />
+	</resultMap>
+	
+	<sql id="terminationRefundWhere">
+		<where>
+			<if test="params.id != null">tr.id = #{params.id}</if>
+			<if test="params.customer_id != null">and tr.customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and tr.order_id = #{params.order_id}</if>
+			<if test="params.product_monthly_price != null">and tr.product_monthly_price = #{params.product_monthly_price}</if>
+			<if test="params.create_date != null">and tr.create_date = #{params.create_date}</if>
+			<if test="params.last_date_of_month != null">and tr.last_date_of_month = #{params.last_date_of_month}</if>
+			<if test="params.termination_date != null">and tr.termination_date = #{params.termination_date}</if>
+			<if test="params.refund_bank_account_number != null">and tr.refund_bank_account_number = #{params.refund_bank_account_number}</if>
+			<if test="params.refund_bank_account_name != null">and tr.refund_bank_account_name = #{params.refund_bank_account_name}</if>
+			<if test="params.refund_amount != null">and tr.refund_amount = #{params.refund_amount}</if>
+			<if test="params.execute_by != null">and tr.execute_by = #{params.execute_by}</if>
+			<if test="params.refund_pdf_path != null">and tr.refund_pdf_path = #{params.refund_pdf_path}</if>
+			<if test="params.status != null">and tr.status = #{params.status}</if>
+			<if test="params.days_between_end_last != null">and tr.days_between_end_last = #{params.days_between_end_last}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectTerminationRefund" parameterType="TerminationRefund" resultType="TerminationRefund">
+		select * from tm_termination_refund as tr
+		<include refid="terminationRefundWhere"/>
+	</select>
+	
+	<!-- select contactUs page -->
+	<select id="selectTerminationRefundsByPage" parameterType="Page" resultMap="terminationRefundResultMap">
+		select 
+			<include refid="terminationRefundColumns"/>
+			from tm_termination_refund as tr
+			<include refid="terminationRefundWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select contactUs amount -->
+	<select id="selectTerminationRefundsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_termination_refund as tr
+		<include refid="terminationRefundWhere"/>
+	</select>
+
+	<!-- select contactUs by id -->
+	<select id="selectTerminationRefundById" parameterType="int" resultType="TerminationRefund">
+		select * from tm_termination_refund where id = #{0}
+	</select>
+	
+	<select id="selectTerminationRefundPDFPathById" parameterType="int" resultType="String">
+		select refund_pdf_path from tm_termination_refund where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTerminationRefund" parameterType="TerminationRefund" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_termination_refund`(
+			`customer_id`, `order_id`, `product_name`, `product_monthly_price`, `create_date`, `termination_date`
+			, `refund_bank_account_number`, `refund_bank_account_name`, `refund_amount`
+			, `execute_by`, `refund_pdf_path`, `status`, `days_between_end_last`, `last_date_of_month`
+		) VALUES (
+			#{customer_id}, #{order_id}, #{product_name}, #{product_monthly_price}, #{create_date}, #{termination_date}
+			,#{refund_bank_account_number}, #{refund_bank_account_name}, #{refund_amount}
+			, #{execute_by}, #{refund_pdf_path}, #{status}, #{days_between_end_last}, #{last_date_of_month}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update contactUs -->
+	<update id="updateTerminationRefund" parameterType="TerminationRefund">
+		update tm_termination_refund
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="product_monthly_price != null">product_monthly_price = #{product_monthly_price},</if>
+			<if test="create_date != null">create_date = #{create_date},</if>
+			<if test="termination_date != null">termination_date = #{termination_date},</if>
+			<if test="last_date_of_month != null">last_date_of_month = #{last_date_of_month},</if>
+			<if test="refund_bank_account_number != null">refund_bank_account_number = #{refund_bank_account_number},</if>
+			<if test="refund_bank_account_name != null">refund_bank_account_name = #{refund_bank_account_name},</if>
+			<if test="refund_amount != null">refund_amount = #{refund_amount},</if>
+			<if test="execute_by != null">execute_by = #{execute_by},</if>
+			<if test="refund_pdf_path != null">refund_pdf_path = #{refund_pdf_path},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="days_between_end_last != null">days_between_end_last = #{days_between_end_last}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteTerminationRefundById" parameterType="int">
+		DELETE FROM tm_termination_refund WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>
