@@ -208,6 +208,21 @@
 	</bean>
 	<!-- END sendNextTermPlanInvoicePDF -->
 	
+	<!-- BEGIN radiusDataUsageImportCalculator -->
+	<bean name="radiusDataUsageImportCalculator" class="com.tm.broadband.quartz.RadiusDataUsageImportCalculator" />
+	<!-- assignment -->
+	<bean id="radiusDataUsageImportCalculatorJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="radiusDataUsageImportCalculator" />
+		<property name="targetMethod" value="doRadiusDataImportCalculator" />
+	</bean>
+	<!-- trigger -->
+	<bean id="radiusDataUsageImportCalculatorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="radiusDataUsageImportCalculatorJob" />
+		<property name="cronExpression" value="0 0/45 * * * ?"></property>
+	</bean>
+	<!-- END radiusDataUsageImportCalculator -->
+	
 	<!-- plan -->
 	<bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -216,6 +231,7 @@
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
+				<ref bean="radiusDataUsageImportCalculatorTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">

@@ -36,6 +36,8 @@ public class DataImportProcessor implements ItemProcessor<RadiusRadacct, Radacct
 		acct.setAcctstoptime(rr.getAcctstoptime());
 		//private Integer acctsessiontime;
 		acct.setAcctsessiontime(rr.getAcctsessiontime());
+		//private String connectinfo_start;
+		acct.setConnectinfo_start(rr.getConnectinfo_start());
 		//private Long acctinputoctets;
 		acct.setAcctinputoctets(rr.getAcctinputoctets());
 		//private Long acctouputoctets;

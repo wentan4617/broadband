@@ -10,23 +10,27 @@
 	</ol>
 	<div class="carousel-inner">
 		<div class="item active" >
-			<a href="${ctx }/plans/plan-topup/personal" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/topup-plan.jpg" class="img-responsive" alt="Broadband Top-Up" >
+			<a href="${ctx }/plans/plan-topup/personal" target="_blank"><!-- class="img-responsive" -->
+				<img src="${ctx }/public/bootstrap3/images/plan-1-lg.jpg" class="hidden-xs hidden-sm" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/plan-1-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/personal" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/persoanl-12months-unlimited-plan.jpg"  class="img-responsive" alt="persoanl 12months unlimited plan" >
+				<img src="${ctx }/public/bootstrap3/images/plan-2-lg.jpg" class="hidden-xs hidden-sm" alt="persoanl 12months unlimited plan" >
+				<img src="${ctx }/public/bootstrap3/images/plan-2-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/business/adsl/promotion" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/slider_biz.jpg" class="img-responsive" alt="ADSL is a fast broadband plan">
+				<img src="${ctx }/public/bootstrap3/images/plan-3-lg.jpg" class="hidden-xs hidden-sm" alt="ADSL is a fast broadband plan">
+				<img src="${ctx }/public/bootstrap3/images/plan-3-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/personal/ufb/promotion" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/slider_fiber.jpg"  class="img-responsive" alt="VDSL is faster than ADSL">
+				<img src="${ctx }/public/bootstrap3/images/plan-4-lg.jpg" class="hidden-xs hidden-sm" alt="VDSL is faster than ADSL">
+				<img src="${ctx }/public/bootstrap3/images/plan-4-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		

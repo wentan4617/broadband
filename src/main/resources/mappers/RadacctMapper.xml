@@ -15,11 +15,6 @@
 <mapper namespace="com.tm.broadband.mapper.RadacctMapper">
 	
 	<!-- DEFINITION AREA -->
-	<sql id="radacctWhere">
-		<where>
-			
-		</where>
-	</sql>
 	
 	<sql id="radiusRadacctColumns">
 		rr.radacctid	 		as rr_radacctid,
@@ -29,6 +24,7 @@
 		rr.acctstarttime		as rr_acctstarttime,
 		rr.acctstoptime			as rr_acctstoptime,
 		rr.acctsessiontime		as rr_acctsessiontime,
+		rr.connectinfo_start	as rr_connectinfo_start,
 		rr.acctinputoctets		as rr_acctinputoctets,
 		rr.acctoutputoctets		as rr_acctoutputoctets,
 		rr.calledstationid		as rr_calledstationid,
@@ -44,6 +40,7 @@
 		<result property="acctstarttime" column="rr_acctstarttime" />
 		<result property="acctstoptime" column="rr_acctstoptime" />
 		<result property="acctsessiontime" column="rr_acctsessiontime" />
+		<result property="connectinfo_start" column="rr_connectinfo_start" />
 		<result property="acctinputoctets" column="rr_acctinputoctets" />
 		<result property="acctoutputoctets" column="rr_acctoutputoctets" />
 		<result property="calledstationid" column="rr_calledstationid" />
@@ -53,7 +50,9 @@
 	
 	<sql id="radiusRadacctWhere">
 		<where>
-			
+			<!-- rr.connectinfo_start is not null -->
+			length(trim(rr.connectinfo_start)) > 1
+			and rr._accttime > date_add(now(), interval -7 day)
 		</where>
 	</sql>
 	
@@ -78,11 +77,11 @@
 	<insert id="insertRadacct" parameterType="Radacct">
 		INSERT INTO `tm_radacct`(
 			`radacctid`, `username`, `nasipaddress`, `nasportid`, `acctstarttime`, 
-			`acctstoptime`, `acctsessiontime`, `acctinputoctets`, `acctoutputoctets`, `calledstationid`, 
+			`acctstoptime`, `acctsessiontime`, `connectinfo_start`, `acctinputoctets`, `acctoutputoctets`, `calledstationid`, 
 			`acctterminatecause`, `_accttime`) 
 		VALUES (
 			#{radacctid}, #{username}, #{nasipaddress}, #{nasportid}, #{acctstarttime},
-			#{acctstoptime}, #{acctsessiontime}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid},
+			#{acctstoptime}, #{acctsessiontime}, #{connectinfo_start}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid},
 			#{acctterminatecause}, #{_accttime})
 	</insert>
 	
@@ -97,7 +96,16 @@
 	
 	<!-- =================================================================================== -->
 	
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteRadacct">
+		delete from `tm_radacct` 
+		where 
+			length(trim(connectinfo_start)) > 1
+			and _accttime > date_add(now(), interval -7 day)
+	</delete>
+	
+	<!-- // END DELETE AREA -->
 	
 	
 </mapper>

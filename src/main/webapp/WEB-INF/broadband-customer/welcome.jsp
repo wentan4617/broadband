@@ -1,5 +1,48 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <div class="container">
+	<div class="row visible-xs visible-sm" style="margin-top:10px;">
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/plans/plan-no-term/personal" target="_blank" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-star-empty" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">No Term Plan</span>
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/plans/plan-topup/personal" target="_blank" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-gift" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">Top Up Plan</span>
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/plans/plan-term/personal" target="_blank" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-list-alt" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">Term Plan</span>
+			</a>
+		</div>
+	</div>
+	<div class="row visible-xs visible-sm" style="margin-top:10px;">
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/plans/plan-term/business" rel="nofollow" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-briefcase" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">Business</span>
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/about-us" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-leaf" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">About US</span>
+			</a>
+		</div>
+		<div class="col-xs-4 col-sm-4 ">
+			<a href="${ctx }/about-us#contact" rel="nofollow" class="btn btn-success btn-block">
+				<span class="glyphicon glyphicon-phone-alt" style="display:block;font-size:24px;"></span>
+				<span style="display:block;font-weight:blod;font-size:12px;margin-top:5px;">0800 229 237</span>
+			</a>
+		</div>
+	</div>
+	
 	<div class="jumbotron text-center" style="background-color: transparent; margin-bottom:0;padding-bottom:0;">
 		<h1><strong>Welcome to CyberPark</strong></h1>
 		<p class="lead text-muted">A Safe Park</p>

@@ -111,7 +111,6 @@
 	<select id="selectPlan" parameterType="Plan" resultType="Plan">
 		select * from tm_plan as p
 		<include refid="planWhere"/>
-		<if test="params.orderby != null">${params.orderby}</if>
 	</select>
 	
 	<select id="selectPlans" parameterType="Plan" resultType="Plan">
@@ -167,7 +166,7 @@
 	
 	<!-- update plan -->
 	<update id="updatePlan" parameterType="Plan">
-		UPDATE `tm_plan` as p
+		UPDATE `tm_plan`
 		<set>
 			<if test="plan_name != null">`plan_name`=#{plan_name},</if>
 			<if test="plan_desc != null">`plan_desc`=#{plan_desc},</if>
@@ -204,7 +203,7 @@
 	<!-- DELETE AREA -->
 	
 	<delete id="deletePlan" parameterType="Plan">
-		DELETE FROM tm_plan as p
+		DELETE FROM tm_plan
 		<include refid="planWhere"/>
 	</delete>
 	

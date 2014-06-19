@@ -4,13 +4,13 @@
 	<thead>
 		<tr>
 			<th>Order ID</th>
+			<th>Status</th>
 			<th>vLan</th>
 			<th>Customer ID</th>
 			<th>Name</th>
-			<th>Email</th>
+			<!-- <th>Email</th>
 			<th>Mobile</th>
-			<th>Status</th>
-			<th>Detail ID</th>
+			<th>Detail ID</th> -->
 			<th>Plan Data</th>
 			<th>Plan Type</th>
 			<th>Upload</th>
@@ -32,13 +32,19 @@
 			<td>
 				<a href="<.=ctx.>/broadband-user/data/customer/usage/view/<.=co.id.>" target="_blank"><.=co.id.></a>
 			</td>
-			<td><.=(co.svlan+co.cvlan).></td>
+			<td><.=co.order_status.></td>
+			<td><.=((co.svlan || '') + '/' + (co.cvlan || '')).></td>
 			<td><.=co.customer.id.></td>
-			<td><.=co.customer.first_name.>&nbsp;<.=co.customer.last_name.></td>
-			<td><.=co.customer.email.></td>
+			<td>
+				<. if (co.customer.customer_type == 'personal') { .>
+				<.=co.customer.first_name.>&nbsp;<.=co.customer.last_name.>
+				<.} else if (co.customer.customer_type == 'business') {.>
+				<.=co.customer.organization.org_name.>
+				<.} .>
+			</td>
+			<!-- <td><.=co.customer.email.></td>
 			<td><.=co.customer.cellphone.></td>
-			<td><.=co.customer.status.></td>
-			<td><.=co.cod.id.></td>
+			<td><.=co.cod.id.></td> -->
 			<td>
 				<.=co.cod.detail_data_flow < 0 ? 'Unlimited': (co.cod.detail_data_flow || 0) + ' GB'.> 
 			</td>
