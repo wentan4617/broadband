@@ -3,6 +3,7 @@
 	<.
 		for (var i = 0, len = results.length; i < len; i++){
 			var tx = results[i];
+			var txAmount = new Number(tx.amount);
 	.>
 			<tr>
 			<td>Transaction# - <.= tx.id .></td>
@@ -10,7 +11,7 @@
 			<td><.= tx.transaction_date_str .></td>
 			<td><.= tx.card_name .></td>
 			<td><.= tx.transaction_sort .></td>
-			<td><.= tx.amount .></td>
+			<td><.= txAmount.toFixed(2) .></td>
 			<td>&nbsp;</td>
 			</tr>
 	<. } .>

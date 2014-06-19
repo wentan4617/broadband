@@ -35,10 +35,10 @@
 				<when test="params.where == 'by_second_id'">
 					id=(
 						SELECT MAX(id) FROM tm_customer_invoice
-						WHERE customer_id=#{params.customer_id} AND order_id=#{params.customer_id}
+						WHERE customer_id=#{params.customer_id} AND order_id=#{params.order_id}
 						AND id != (
 							SELECT MAX(id) FROM tm_customer_invoice
-							WHERE customer_id=#{params.order_id} AND order_id=#{params.order_id}
+							WHERE customer_id=#{params.customer_id} AND order_id=#{params.order_id}
 						)
 					)
 				</when>
@@ -56,6 +56,7 @@
 		i.`invoice_serial`			as i_invoice_serial,
 		i.`create_date`				as i_create_date,
 		i.`due_date`				as i_due_date,
+		i.`final_payable_amount`	as i_final_payable_amount,
 		i.`amount_payable`			as i_amount_payable,
 		i.`amount_paid`				as i_amount_paid,
 		i.`balance`					as i_balance,
@@ -71,6 +72,7 @@
 		li.`invoice_serial`				as li_invoice_serial,
 		li.`create_date`				as li_create_date,
 		li.`due_date`					as li_due_date,
+		li.`final_payable_amount`		as li_final_payable_amount,
 		li.`amount_payable`				as li_amount_payable,
 		li.`amount_paid`				as li_amount_paid,
 		li.`balance`					as li_balance,
@@ -201,6 +203,7 @@
 		<result property="invoice_serial" column="i_invoice_serial" />
 		<result property="create_date" column="i_create_date" />
 		<result property="due_date" column="i_due_date" />
+		<result property="final_payable_amount" column="i_final_payable_amount" />
 		<result property="amount_payable" column="i_amount_payable" />
 		<result property="amount_paid" column="i_amount_paid" />
 		<result property="balance" column="i_balance" />
@@ -275,6 +278,7 @@
 			<result property="invoice_serial" column="li_invoice_serial" />
 			<result property="create_date" column="li_create_date" />
 			<result property="due_date" column="li_due_date" />
+			<result property="final_payable_amount" column="li_final_payable_amount" />
 			<result property="amount_payable" column="li_amount_payable" />
 			<result property="amount_paid" column="li_amount_paid" />
 			<result property="balance" column="li_balance" />
@@ -294,11 +298,11 @@
 	<insert id="insertCustomerInvoice" parameterType="CustomerInvoice" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_invoice`(
 			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
-			`amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
+			`final_payable_amount`, `amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
 			`paid_date`, `paid_type`, `last_invoice_id`) 
 		VALUES (
 			#{invoice_serial}, #{customer_id}, #{order_id}, #{create_date}, #{due_date},
-			#{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
+			#{final_payable_amount}, #{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
 			#{paid_date}, #{paid_type}, #{last_invoice_id})
 	</insert>
 	
@@ -314,6 +318,7 @@
 			<if test="order_id != null">`order_id`=#{order_id},</if>
 			<if test="create_date != null">`create_date`=#{create_date},</if>
 			<if test="due_date != null">`due_date`=#{due_date},</if>
+			<if test="final_payable_amount != null">`final_payable_amount`=#{final_payable_amount},</if>
 			<if test="amount_payable != null">`amount_payable`=#{amount_payable},</if>
 			<if test="amount_paid != null">`amount_paid`=#{amount_paid},</if>
 			<if test="balance != null">`balance`=#{balance},</if>

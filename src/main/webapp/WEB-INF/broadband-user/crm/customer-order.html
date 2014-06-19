@@ -600,7 +600,11 @@
 					for(var d=0; d<customerOrderDetail.length; d++){
 						var detailPrice = new Number(customerOrderDetail[d].detail_price);
 				.>
-							<tr class="<.= customerOrderDetail[d].detail_type=='discount' ? 'alert alert-warning':'' .>">
+							<tr class="<.= customerOrderDetail[d].detail_type=='discount' ? 'alert alert-warning' :
+											customerOrderDetail[d].detail_type=='debit' ? 'alert alert-danger' :
+											 customerOrderDetail[d].detail_type=='present-calling-minutes' ? 'alert alert-info' :
+											  customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
+											   customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
 								<td>
 									<.= customerOrderDetail[d].detail_name .>
 				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip'){		.>
@@ -624,7 +628,14 @@
 							<td><strong><.= customerOrderDetail[d].detail_plan_status .></strong></td>
 							<td><.= customerOrderDetail[d].detail_data_flow == -1 ? 'Ultimate' : customerOrderDetail[d].detail_data_flow .></td>
 							<td class="align-right">
-								<strong><.= customerOrderDetail[d].detail_type == 'discount' ? '-' : '' .><.= detailPrice.toFixed(2) .></strong>
+								<strong><.= customerOrderDetail[d].detail_type == 'discount' || customerOrderDetail[d].detail_type == 'termination-credit' ? '-' : '' .><.= detailPrice.toFixed(2) .></strong>
+								<.
+									if(customerOrderDetail[d].detail_type == 'plan-term'){
+								.>
+									<span style="display:none;" data-name="<.= customerOrder[i].id .>_detail_plan_monthly_price" data-val="<.= detailPrice.toFixed(2) .>"></span>
+								<.
+									}
+								.>
 							</td>
 							<.
 								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
@@ -640,20 +651,34 @@
 							<td class="align-right"><strong><.= customerOrderDetail[d].detail_expired_str .></strong></td>
 							<td>&nbsp;
 								<.
-									if(customerOrderDetail[d].detail_type=='discount'){
+									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')
+										&&
+										(customerOrderDetail[d].detail_type=='discount'
+										|| customerOrderDetail[d].detail_type=='debit'
+										|| customerOrderDetail[d].detail_type=='present-calling-minutes'
+										|| customerOrderDetail[d].detail_type=='early-termination-debit'
+										|| customerOrderDetail[d].detail_type=='termination-credit')
+									){
 								.>
 										<.
 											for(var u=0; u<users.length; u++){
 												if(users[u].id == customerOrderDetail[d].user_id){
 										.>
-												<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Added by <.= users[u].user_name .>, role: <.=  users[u].user_role .>">
+												<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Provider: <.= users[u].user_name .>. Role: <.=  users[u].user_role .>">
 										  			<span class="glyphicon glyphicon-search"></span>
 												</a>
 										<.
 												}
 											}
+											if(customerOrderDetail[d].detail_type=='early-termination-debit' || customerOrderDetail[d].detail_type=='termination-credit'){
 										.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_discount" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete this discount">
+													<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="<.= customerOrderDetail[d].detail_plan_memo .> <.= customerOrderDetail[d].detail_desc .>">
+											  			<span class="glyphicon glyphicon-eye-open"></span>
+													</a>
+										<.
+											}
+										.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete this <.= customerOrderDetail[d].detail_type .>">
 									  	<span class="glyphicon glyphicon-trash"></span> 
 									</a>
 								<.
@@ -681,12 +706,18 @@
 			</tbody>
 			<tfoot>
 				<tr>
-					<td colspan="12">
+				<.
+					if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){
+				.>
+					<td colspan="12"><br/>
 						<!-- Button trigger modal -->
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width pull-right" data-name="<.= customerOrder[i].id .>_add_discount">
-						  <span class="glyphicon glyphicon-plus"></span> Add Discount
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width pull-right" data-name="<.= customerOrder[i].id .>_add_detail">
+						  <span class="glyphicon glyphicon-plus"></span> Add Detail
 						</a>
 					</td>
+				<.
+					}
+				.>
 				</tr>
 			</tfoot>
 		</table>
@@ -1098,25 +1129,25 @@
 		<!-- /.modal -->
 	</form>
 
-	<!-- Remove Discount Modal -->
-	<div class="modal fade" id="removeDiscountModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDiscountModalLabel" aria-hidden="true">
+	<!-- Remove Detail Modal -->
+	<div class="modal fade" id="removeDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDetailModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="removeDiscountModalLabel">
-						<strong>Remove Selected Discount</strong>
+					<h4 class="modal-title" id="removeDetailModalLabel">
+						<strong>Remove Selected Detail</strong>
 					</h4>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
 						<label class="control-label col-md-8">
-							Are you sure want to remove this discount?
+							Are you sure you want to remove this detail?
 						</label>
 					</div>
 				</div>
 				<div class="modal-footer">
-					<a id="<.= customerOrder[i].id .>" data-name="removeDiscountModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Discount</a>
+					<a id="<.= customerOrder[i].id .>" data-name="removeDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Detail</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -1127,55 +1158,216 @@
 
 	<!-- Add Discount Modal -->
 	<form class="form-horizontal">
-		<div class="modal fade" id="addDiscountModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+		<div class="modal fade" id="addDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addDetailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="addDiscountModalLabel">
-							<strong>Add A Discount</strong>
+						<h4 class="modal-title" id="addDetailModalLabel">
+							<strong>Add A Detail</strong>
 						</h4>
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Type</label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_detail_type" class="form-control input-sm">
+									<option value="none">---choose one---</option>
+									<option value="discount">Credit</option>
+									<option value="debit">Debit</option>
+									<option value="present-calling-minutes">Offer Calling Minutes</option>
+									<option value="early-termination-debit">Early Termination Charge</option>
+									<option value="termination-credit">Termination Refund</option>
+								</select>
+							</div>
+						</div>
 					</div>
-					<div class="modal-body">
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_none_modal_body">
+						<p>
+							Please choose a type to add into this order!
+						</p>
+					</div>
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_discount_modal_body" style="display:none;">
 						<div class="form-group">
-							<label class="control-label col-md-4">Discount Name</label>
+							<label class="control-label col-md-4">Credit Name</label>
 							<div class="col-md-6">
-								<input data-name="<.= customerOrder[i].id .>_detail_name" class="form-control input-sm" placeholder="Discount Name" />
+								<input data-name="<.= customerOrder[i].id .>_discount_name" class="form-control input-sm" placeholder="Credit Name" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Discount Amount</label>
+							<label class="control-label col-md-4">Credit Amount</label>
 							<div class="col-md-6">
-								<input data-name="<.= customerOrder[i].id .>_detail_price" class="form-control input-sm" placeholder="Discount Amount" />
+								<input data-name="<.= customerOrder[i].id .>_discount_price" class="form-control input-sm" placeholder="Credit Amount" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Discount Unit</label>
+							<label class="control-label col-md-4">Credit Unit</label>
 							<div class="col-md-6">
-								<input data-name="<.= customerOrder[i].id .>_detail_unit" class="form-control input-sm" placeholder="Discount Unit" />
+								<input data-name="<.= customerOrder[i].id .>_discount_unit" class="form-control input-sm" placeholder="Credit Unit" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Discount Expired</label>
+							<label class="control-label col-md-4">Credit Expired</label>
 							<div class="col-md-6">
-								<input data-name="<.= customerOrder[i].id .>_detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
-								<!-- 	<div class="input-group date">
-							<input name="detail_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD"/>
-							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-						</div> -->
+								<input data-name="<.= customerOrder[i].id .>_discount_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_debit_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Debit Name</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_debit_name" class="form-control input-sm" placeholder="Debit Name" />
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Discount Type</label>
+							<label class="control-label col-md-4">Debit Amount</label>
 							<div class="col-md-6">
-								<select data-name="<.= customerOrder[i].id .>_detail_type" class="form-control input-sm">
-									<option value="discount">Discount</option>
+								<input data-name="<.= customerOrder[i].id .>_debit_price" class="form-control input-sm" placeholder="Debit Amount" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Debit Unit</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_debit_unit" class="form-control input-sm" placeholder="Debit Unit" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Debit Expired</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_debit_expired" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_early-termination-debit_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Termination Date</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_early_termination_date" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_termination-credit_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Termination Date</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_detail_termination_date" class="form-control input-sm" placeholder="e.g.:YYYY-MM-DD" />
+							</div>
+						</div>
+					</div>
+					
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_present-calling-minutes_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Calling Minutes</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_calling_minutes" class="form-control input-sm" placeholder="Calling Minutes" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Calling Country</label>
+							<div class="col-md-6">
+								<select data-name="<.= customerOrder[i].id .>_calling_country" class="form-control input-sm" style="height:26px; padding:0 10px;">
+								
+										<option disabled="disabled">--- Mobile + Fixed line ---</option>
+										<option value="Bangladesh-both" >Bangladesh</option>
+										<option value="Malaysia-both" >Malaysia</option>
+										<option value="Cambodia-both" >Cambodia</option>
+										<option value="Singapore-both" >Singapore</option>
+										<option value="Canada-both" >Canada</option>
+										<option value="Korea-both" >Korea</option>
+										<option value="China-both" >China</option>
+										<option value="USA-both" >USA</option>
+										<option value="Hong Kong-both" >Hong Kong</option>
+										<option value="Vietnam-both" >Vietnam</option>
+										<option value="India-both" >India</option>
+										
+										<option disabled="disabled"></option>
+										<option disabled="disabled">--- Fixed line ---</option>
+										<option value="Argentina-fixedline">Argentina</option>
+										<option value="Germany-fixedline">Germany</option>
+										<option value="Laos-fixedline">Laos</option>
+										<option value="South Africa-fixedline">South Africa</option>
+										<option value="Australia-fixedline">Australia</option>
+										<option value="Greece-fixedline">Greece</option>
+										<option value="Netherlands-fixedline">Netherlands</option>
+										<option value="Spain-fixedline">Spain</option>
+										<option value="Belgium-fixedline">Belgium</option>
+										<option value="Indonesia-fixedline">Indonesia</option>
+										<option value="Norway-fixedline">Norway</option>
+										<option value="Sweden-fixedline">Sweden</option>
+										<option value="Brazil-fixedline">Brazil</option>
+										<option value="Ireland-fixedline">Ireland</option>
+										<option value="Pakistan-fixedline">Pakistan</option>
+										<option value="Switzerland-fixedline">Switzerland</option>
+										<option value="Cyprus-fixedline">Cyprus</option>
+										<option value="Israel-fixedline">Israel</option>
+										<option value="Poland-fixedline">Poland</option>
+										<option value="Taiwan-fixedline">Taiwan</option>
+										<option value="Czech-fixedline">Czech</option>
+										<option value="Italy-fixedline">Italy</option>
+										<option value="Portugal-fixedline">Portugal</option>
+										<option value="Thailand-fixedline">Thailand</option>
+										<option value="Denmark-fixedline">Denmark</option>
+										<option value="Japan-fixedline">Japan</option>
+										<option value="Russia-fixedline">Russia</option>
+										<option value="United Kingdom-fixedline">United Kingdom</option>
+										<option value="France-fixedline">France</option>
 								</select>
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<a id="<.= customerOrder[i].id .>" data-name="addDiscountModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Add Discount</a>
+						<a id="<.= customerOrder[i].id .>" data-name="addDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Add Detail</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Remove Calling Minutes Modal -->
+	<div class="modal fade" id="removeCallingMinutesModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeCallingMinutesModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="removeCallingMinutesModalLabel">
+						<strong>Remove Selected Calling Minutes</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-8">
+							Are you sure want to remove this presented calling minutes?
+						</label>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" data-name="removeCallingMinutesModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Calling Minutes</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Offer Calling Minutes Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="offerCallingMinutesModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="offerCallingMinutesModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="offerCallingMinutesModalLabel">
+							<strong>Offer Calling Minutes</strong>
+						</h4>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="offerCallingMinutesModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm to offer calling minutes</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

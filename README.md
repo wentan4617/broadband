@@ -16,6 +16,24 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-06-19
+ 
+* [点击Regenerate most recent invoice按钮时，后台判断最新账单是否已付款，如果未付则逻辑不变，如果状态为paid并且create_date不是当月则生成新的账单并且不包含当月plan的月租费](steven)
+* [修改DDPay的逻辑,将按payable付款改成按balance付款](steven)
+* [每个invoice都不叠加上个月invoice的balance](steven)
+* [重新生成invoice时如果不是生成新的invoice则保留原invoice的create以及due date](steven)
+* 每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance(steven)
+ 
+ 
+demand version 1.0.21 2014-06-18
+
+* [customer invoice表添加一个final_payable_amount，存储用discount抵消后的最终应付金额](steven)
+* [invoice PDF的recent transaction里的布局做个调整，添加一行总discount的detail，以及一行final_payable_amount的detail](steven)
+* [复查invoice的Recent Trancation以及This Invoice Summary的总金额逻辑](steven)
+* [所有term invoice在生成下一张账单的时候如果上一张账单不是paid，那么把上一张账单的balance加过来并且状态改为discard](steven)
+* [将early termination charge和termination refund分别做成order的detail](steven)
+* [在生成invoice的时候判断并计算early-termination-charge以及termination-refund类型的invoice detail](steven)
+* [优化页面Header部分的Description以及Keywords内容，改进搜索引擎优化效果](steven)
  
 demand version 1.0.21 2014-06-17
 

@@ -5,6 +5,7 @@ import java.util.Date;
 
 
 
+
 public class Test {
 
 	public static void main(String[] args) throws Exception {
@@ -132,12 +133,17 @@ public class Test {
 		
 //		Calculation4PlanTermInvoice.servedMonthDetails(TMUtils.parseDateYYYYMMDD("2014-05-01"), 89d);
 		
+
 		//System.out.println(TMUtils.retrieveMonthAbbrWithDate(TMUtils.parseDateYYYYMMDD("2014-06-09")));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date());
 		
 		System.out.println(cal.get(Calendar.MONTH));
+
+//		System.out.println(TMUtils.retrieveMonthAbbrWithDate(TMUtils.parseDateYYYYMMDD("2014-06-09")));
+		
+
 		
 	}
 
