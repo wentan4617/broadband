@@ -15,26 +15,6 @@
 	background-color: #7BC3EC;
 }
 
-#adslPanel .col-md-3 {
-	padding: 0;
-}
-#adslPanel .col-md-3:first-child {
-	padding-left: 15px;
-}
-#adslPanel .col-md-3:last-child {
-	padding-right: 15px;
-}
-#adslPanel .thumbnail {
-	border-right: 0;
-	border-radius: 0;
-}
-#adslPanel .col-md-3:first-child .thumbnail{
-	border-radius: 4px 0 0 4px;
-}
-#adslPanel .col-md-3:last-child .thumbnail{
-	border-right: 1px solid #ddd;
-	border-radius: 0 4px 4px 0;
-}
 .home-title {
 	font-size:36px;
 }
@@ -70,13 +50,14 @@
 	<div class="panel panel-success" id="adslPanel">
 		<div class="panel-body">
 			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="ADSL provides fast bandwidth for home use">
-			<h1 style="height:54px;font-weight:bold;" class="text-success">ADSL Naked BROADBAND (No Term)</h1>
+			<h1 style="height:54px;font-weight:bold;" class="text-success hidden-xs hidden-sm">ADSL Naked BROADBAND (No Term)</h1>
+			<h4 style="height:54px;font-weight:bold;" class="text-success hidden-md hidden-lg">ADSL Naked BROADBAND (No Term)</h4>
 			<hr/>
 			<div class="well">
 				The broadband standard in NZ. Fast Internet over your copper phone line.
 			</div>
-			<h3><strong class="text-success">How much data do you need?</strong></h3>
-			
+			<h3 class="hidden-xs hidden-sm"><strong class="text-success">How much data do you need?</strong></h3>
+			<h4 class="hidden-lg hidden-md"><strong class="text-success">How much data do you need?</strong></h4>
 			<div class="row">
 				<c:forEach var="plan" items="${plans}" varStatus="item">
 					<div class="col-md-3">
