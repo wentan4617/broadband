@@ -45,5 +45,7 @@ public interface RadacctMapper {
 	
 	/* DELETE AREA */
 	
+	void deleteRadacct();
+	
 	/* // END DELETE AREA */
 }

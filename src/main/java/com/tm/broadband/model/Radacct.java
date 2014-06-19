@@ -20,6 +20,7 @@ public class Radacct implements Serializable {
 	private Date acctstarttime;
 	private Date acctstoptime;
 	private Integer acctsessiontime;
+	private String connectinfo_start;
 	private Long acctinputoctets;
 	private Long acctoutputoctets;
 	private String calledstationid;
@@ -144,6 +145,22 @@ public class Radacct implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getConnectinfo_start() {
+		return connectinfo_start;
+	}
+
+	public void setConnectinfo_start(String connectinfo_start) {
+		this.connectinfo_start = connectinfo_start;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

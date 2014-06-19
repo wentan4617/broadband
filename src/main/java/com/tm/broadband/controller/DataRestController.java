@@ -81,7 +81,7 @@ public class DataRestController {
 			for (CustomerOrder co: cos) {
 				svlan = co.getSvlan() != null ? co.getSvlan().toLowerCase() : "";
 				cvlan = co.getCvlan() != null ? co.getCvlan().toLowerCase() : "";
-				vlan = svlan + cvlan;
+				vlan = svlan + "/" + cvlan;
 				for (NetworkUsage u : usages) {
 					if (u.getVlan() != null && vlan.equals(u.getVlan().toLowerCase())) {
 						co.setUsage(u);
@@ -125,7 +125,7 @@ public class DataRestController {
 		
 		NetworkUsage u = new NetworkUsage();
 		u.getParams().put("where", "query_currentMonth");
-		u.getParams().put("vlan", svlan + cvlan);
+		u.getParams().put("vlan", svlan + "/" + cvlan);
 		u.getParams().put("currentYear", year);
 		u.getParams().put("currentMonth", month);
 		

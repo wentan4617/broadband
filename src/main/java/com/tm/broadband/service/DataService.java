@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.tm.broadband.mapper.RadacctMapper;
 import com.tm.broadband.mapper.UsageMapper;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.NetworkUsage;
@@ -16,10 +17,12 @@ import com.tm.broadband.model.Plan;
 public class DataService {
 	
 	private UsageMapper usageMapper;
+	private RadacctMapper radacctMapper;
 	
 	@Autowired
-	public DataService(UsageMapper usageMapper) {
+	public DataService(UsageMapper usageMapper, RadacctMapper radacctMapper) {
 		this.usageMapper = usageMapper;
+		this.radacctMapper = radacctMapper;
 	}
 	
 	public DataService(){
@@ -52,6 +55,11 @@ public class DataService {
 	@Transactional
 	public CustomerOrder queryDataCustomer(CustomerOrder co) {
 		return this.usageMapper.selectDataCustomer(co);
+	}
+	
+	@Transactional
+	public void removeRadacct() {
+		this.radacctMapper.deleteRadacct();
 	}
 
 }
