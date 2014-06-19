@@ -28,6 +28,7 @@ public class CustomerInvoice implements Serializable {
 	private Integer order_id;
 	private Date create_date;
 	private Date due_date;
+	private Double final_payable_amount;
 	private Double amount_payable;
 	private Double amount_paid;
 	private Double balance;
@@ -119,6 +120,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setDue_date(Date due_date) {
 		this.due_date = due_date;
+	}
+
+	public Double getFinal_payable_amount() {
+		return final_payable_amount;
+	}
+
+	public void setFinal_payable_amount(Double final_payable_amount) {
+		this.final_payable_amount = final_payable_amount;
 	}
 
 	public Double getAmount_payable() {

@@ -126,7 +126,7 @@
 							<li class="divider"></li>
 	                    	<li>
 								<a href="${ctx}/broadband-user/provision/sale/view/1">
-									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
 									View Sales
 								</a>
 	                    	</li>

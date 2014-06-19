@@ -104,7 +104,7 @@ hr {
 			  		<p>Review all customer's purchased and paid orders.</p>
                     <ul class="list-unstyled">
                     	<li>
-                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/provision/view/1">View Provision</a>
                     	</li>
                     </ul>
@@ -129,7 +129,7 @@ hr {
                     <hr/>
                     <ul class="list-unstyled">
                     	<li>
-                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/provision/sale/view/1">View Sales</a>
                     	</li>
                     </ul>

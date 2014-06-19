@@ -12,8 +12,9 @@
 			<th>Reference</th>
 			<th>Create Date</th>
 			<th>Due Date</th>
-			<th>Amount Payable</th>
-			<th>Amount Paid</th>
+			<th>Payable</th>
+			<th>Credit</th>
+			<th>Paid</th>
 			<th>Balance</th>
 			<th>Status / Defray Way</th>
 			<th>&nbsp;</th>
@@ -38,7 +39,8 @@
 								<td><.= tx.transaction_date_str .></td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
-								<td><strong><.= txAmount_paid.toFixed(2) .></strong></td>
+								<td>&nbsp;</td>
+								<td><strong>-<.= txAmount_paid.toFixed(2) .></strong></td>
 								<td>&nbsp;</td>
 								<td style="text-align:center;"><.= tx.card_name .></td>
 								<td>&nbsp;</td>
@@ -48,7 +50,8 @@
 						}
 					}
 		.>
-					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'danger' : '' .>" >
+					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'danger' : 
+									invoice.status=='discard' ? 'info' : '' .>" >
 					<td>Invoice# - <.= invoice.id .></td>
 					<td><.= invoice.create_date_str .></td>
 		<.
@@ -62,11 +65,13 @@
 		<.
 					}
 					var invoiceAmount_payable = new Number(invoice.amount_payable);
+					var invoiceCredit_back = new Number(invoice.amount_payable - invoice.final_payable_amount);
 					var invoiceAmount_paid = new Number(invoice.amount_paid);
 					var invoiceBalance = new Number(invoice.balance);
 		.>
 					<td><strong><.= invoiceAmount_payable.toFixed(2) .></strong></td>
-					<td><strong><.= invoiceAmount_paid.toFixed(2) .></strong></td>
+					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
+					<td><strong>-<.= invoiceAmount_paid.toFixed(2) .></strong></td>
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
 					<td><strong><.= invoice.status .></strong></td>
 		<. 

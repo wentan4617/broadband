@@ -165,6 +165,12 @@ public class TMUtils {
 	
 	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
 	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	public static String fillDecimalPeriod(Double sum){
+		return numberFormat.format(sum);
+	}
+	
+	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
+	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
 	public static BigDecimal fillDecimalPeriod(BigDecimal bigDecimal){
 		return new BigDecimal(numberFormat.format(bigDecimal));
 	}
@@ -653,8 +659,8 @@ public class TMUtils {
 	}
 	
 	// BEGIN CustomerCallRecord OPERATION
-	public static BigDecimal ccrOperation(String pstn_number, List<CustomerInvoiceDetail> cids
-			, InvoicePDFCreator invoicePDF, BigDecimal bigPayableAmount
+	public static Double ccrOperation(String pstn_number, List<CustomerInvoiceDetail> cids
+			, InvoicePDFCreator invoicePDF, Double totalPayableAmouont
 			, CustomerCallRecordMapper customerCallRecordMapper
 			, CallInternationalRateMapper callInternationalRateMapper){
 		
@@ -674,7 +680,7 @@ public class TMUtils {
 		List<CustomerCallRecord> ccrsTemp = customerCallRecordMapper.selectCustomerCallRecord(ccrTemp);
 		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
 
-		BigDecimal bigTotalAmountIncl = new BigDecimal(0d);
+		Double totalAmountIncl = 0d;
 		// ITERATIVELY ADD ALL CALL CHARGES
 		for (CustomerCallRecord ccr : ccrsTemp) {
 			
@@ -701,42 +707,33 @@ public class TMUtils {
 			if(isInternational){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
 			// DURATION/SECONDS
-			BigDecimal bigDuration = new BigDecimal(fillDecimalTime(String.valueOf((double)ccr.getDuration() / 60)));
+			Double duration = Double.parseDouble(fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
 			if((is0900 || isFax || isNational || isBusinessLocal) || (isInternational)){
 				
-				// COST PER MINUTE
-				BigDecimal bigCostPerMinute = new BigDecimal(costPerMinute);
-				
-				// FINAL DURATION/TOTAL MINUTE
-				BigDecimal bigFinalDuration = bigDuration;
 				
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
-				if(isReminder(bigFinalDuration.toString())){
-					String bigFinalDurationStr = bigFinalDuration.toString();
-					bigFinalDuration = new BigDecimal(Integer.parseInt(bigFinalDurationStr.substring(0, bigFinalDurationStr.indexOf(".")))+1);
+				if(isReminder(String.valueOf(duration))){
+					String durationStr = String.valueOf(duration);
+					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
 				}
-				ccr.setAmount_incl(bigFinalDuration.multiply(bigCostPerMinute).doubleValue());
-				bigTotalAmountIncl = bigTotalAmountIncl.add(bigFinalDuration.multiply(bigCostPerMinute));
+				ccr.setAmount_incl(TMUtils.bigMultiply(duration, costPerMinute));
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, TMUtils.bigMultiply(duration, costPerMinute));
 			} else {
-				BigDecimal bigOriginalCost = new BigDecimal(ccr.getAmount_incl());
-				bigTotalAmountIncl = bigTotalAmountIncl.add(bigOriginalCost);
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
 			}
 			
 			// END Rate Operation
 			
-			
 			// FORMAT DURATION(second) TO TIME STYLE
-			ccr.setFormated_duration(timeFormat.format(Double.parseDouble(bigDuration.toString())).replace(".", ":"));
-			
-			// ADD FINAL CCR
+			ccr.setFormated_duration(timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
 			ccrs.add(ccr);
 		}
 		
-		bigTotalAmountIncl = fillDecimalPeriod(bigTotalAmountIncl);
+		totalAmountIncl = Double.parseDouble(fillDecimalPeriod(totalAmountIncl));
 		
 		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 		cid.setInvoice_detail_name("Call Charge : ( " + pstn_number + " )");
-		cid.setInvoice_detail_price(bigTotalAmountIncl.doubleValue());
+		cid.setInvoice_detail_price(totalAmountIncl);
 		cid.setInvoice_detail_unit(1);
 		
 		cids.add(cid);
@@ -744,7 +741,7 @@ public class TMUtils {
 		invoicePDF.setCcrs(ccrs);
 		
 		// ADD TOTAL CALL FEE INTO INVOICE
-		return bigPayableAmount.add(bigTotalAmountIncl);
+		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
 	// END CustomerCallRecord OPERATION
 	
@@ -862,7 +859,55 @@ public class TMUtils {
 		String rexpFormat = "^(\\d{4}\\" + separator + "\\d{1,2}\\" + separator + "\\d{1,2})|(\\d{1,2}\\" + separator + "\\d{1,2}\\" + separator + "\\d{4})$";
 		Pattern pat = Pattern.compile(rexpFormat);
 		Matcher mat = pat.matcher(dateStr);
-		return mat.matches();
+		String rexpFormat2 = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+		Pattern pat2 = Pattern.compile(rexpFormat2);
+		Matcher mat2 = pat2.matcher(dateStr);
+		return mat.matches() && mat2.matches();
 	}
 	// END isDateFormat
+	
+	// BEGIN isNumber
+	public static boolean isNumber(String numberStr){
+		return Pattern.compile("[0-9]+").matcher(numberStr).matches();
+	}
+	// EDN isNumber
+	
+	// BEGIN isSameMonth
+	public static boolean isSameMonth(Date compareDate1, Date compareDate2){
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM");
+		return sdf.format(compareDate1).equals(sdf.format(compareDate2));
+	}
+	// END isSameMonth
+	
+	// BEGIN BigDecimal OPERATIONS
+	// ADDITION
+	public static Double bigAdd(Double addend1, Double addend2){
+		BigDecimal bigAddend1 = new BigDecimal(addend1);
+		BigDecimal bigAddend2 = new BigDecimal(addend2);
+		return bigAddend1.add(bigAddend2).doubleValue();
+	}
+	// SUBSTRACTION
+	public static Double bigSub(Double minuend, Double subtrahend){
+		BigDecimal bigMinuend = new BigDecimal(minuend);
+		BigDecimal bigSubtrahend = new BigDecimal(subtrahend);
+		return bigMinuend.subtract(bigSubtrahend).doubleValue();
+	}
+	// MULTIPLICATION
+	public static Double bigMultiply(Double multiplier1, Double multiplier2){
+		BigDecimal bigMultiplier1 = new BigDecimal(multiplier1);
+		BigDecimal bigMultiplier2 = new BigDecimal(multiplier2);
+		return bigMultiplier1.multiply(bigMultiplier2).doubleValue();
+	}
+	public static Double bigMultiply(Double multiplier1, Integer multiplier2){
+		BigDecimal bigMultiplier1 = new BigDecimal(multiplier1);
+		BigDecimal bigMultiplier2 = new BigDecimal(multiplier2);
+		return bigMultiplier1.multiply(bigMultiplier2).doubleValue();
+	}
+	// DIVISION
+	public static Double bigDivide(Double divisor1, Double divisor2){
+		BigDecimal bigDivisor1 = new BigDecimal(divisor1);
+		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
+		return bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue();
+	}
+	// END BigDecimal OPERATIONS
 }

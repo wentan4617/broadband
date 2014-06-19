@@ -248,7 +248,7 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_charge"]').button('reset');
 				});
 				
-				// Early Termination Charge modal
+				// Termination Refund modal
 				$('a[data-name="'+co[i].id+'_termination_refund"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="terminationRefundModalBtn_'+this.id+'"]').prop('id', this.id);
@@ -266,13 +266,13 @@
 						'productName':$('td[data-name="plan-detail_'+this.id+'"]').attr('data-plan-name')
 					};
 					
-					$.post('${ctx}/broadband-user/crm/customer/order/termination-refund/invoice/generate', data, function(json){
+					$.post('${ctx}/broadband-user/crm/customer/order/termination-credit/invoice/generate', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json").always(function () {
 						
 				    });
 				});
-				// Reset button when hidden Early Termination Charge dialog
+				// Reset button when hidden Termination Refund dialog
 				$('#terminationRefundModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_termination_refund"]').button('reset');
 				});
@@ -596,70 +596,137 @@
 
 				
 				/*
-				 *	BEGIN Remove discount
+				 *	BEGIN Remove detail
 				 */
-				$('a[data-name="'+co[i].id+'_remove_discount"]').click(function(){
+				$('a[data-name="'+co[i].id+'_remove_detail"]').click(function(){
 					$btn = $(this); $btn.button('loading');
-					$('a[data-name="removeDiscountModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
-					$('#removeDiscountModal_'+this.id).modal('show');
+					$('a[data-name="removeDetailModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
+					$('a[data-name="removeDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
+					$('#removeDetailModal_'+this.id).modal('show');
 				});
 				// Submit to rest controller
-				$('a[data-name="removeDiscountModalBtn_'+co[i].id+'"]').on('click', function (e) {
+				$('a[data-name="removeDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					var order_detail_id = $(this).attr('data-detail-id');
+					var data = {
+							'order_detail_id':order_detail_id
+							,'customer_id':${customer.id}
+							,'detail_type':$(this).attr('data-type')
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/detail/remove', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden order remove detail dialog
+				$('#removeDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_remove_detail"]').button('reset');
+					$.getCustomerOrder();
+				});
+				/*
+				 *	END Remove detail
+				 */
+				
+				 
+				/*
+				 *	BEGIN Add detail
+				 */
+				$('a[data-name="'+co[i].id+'_add_detail"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('#addDetailModal_'+this.id).modal('show');
+				});
+				$('select[data-name="'+co[i].id+'_detail_type"]').change(function(){
+					$('div[data-name="'+this.id+'_detail_modal_body"]').css('display','none');
+					$('div[data-type="'+this.id+'_'+$(this).val()+'_modal_body"]').css('display','');
+					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).val());
+				});
+				// Submit to rest controller
+				$('a[data-name="addDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					this.id = $(this).attr('data-id');
+					var detail_type = $(this).attr('data-type');
+					var data = {};
+					
+					var url = '${ctx}/broadband-user/crm/customer/order/detail/save';
+					if(detail_type == 'early-termination-debit'){
+						data = {
+								'order_id':this.id
+								,'terminatedDate':$('input[data-name="'+this.id+'_detail_early_termination_date"]').val()+''
+								,'detail_type':detail_type+''
+						};
+						url = '${ctx}/broadband-user/crm/customer/order/detail/early-termination-debit/save';
+					} else if(detail_type == 'termination-credit'){
+						data = {
+								'order_id':this.id
+								,'terminatedDate':$('input[data-name="'+this.id+'_detail_termination_date"]').val()+''
+								,'detail_type':detail_type+''
+								,'monthlyCharge':$('span[data-name="'+this.id+'_detail_plan_monthly_price"]').attr('data-val')+''
+						};
+						url = '${ctx}/broadband-user/crm/customer/order/detail/termination-credit/save';
+					} else if(detail_type == 'present-calling-minutes'){
+						data = {
+								'order_id':this.id
+								,'customer_id':${customer.id}
+								,'calling_minutes':$('input[data-name="'+this.id+'_calling_minutes"]').val()+''
+								,'calling_country':$('select[data-name="'+this.id+'_calling_country"]').val()+''
+						};
+						url = '${ctx}/broadband-user/crm/customer/order/offer-calling-minutes/save';
+					} else {
+						var detail_name = $('input[data-name="'+this.id+'_'+detail_type+'_name"]').val();
+						var detail_price = $('input[data-name="'+this.id+'_'+detail_type+'_price"]').val();
+						var detail_unit = $('input[data-name="'+this.id+'_'+detail_type+'_unit"]').val();
+						var detail_expired = $('input[data-name="'+this.id+'_'+detail_type+'_expired"]').val();
+						data = {
+								'order_id':this.id
+								,'customer_id':${customer.id}
+								,'detail_name':detail_name+''
+								,'detail_price':detail_price+''
+								,'detail_unit':detail_unit+''
+								,'detail_expired':detail_expired+''
+								,'detail_type':detail_type+''
+						};
+					}
+					if(detail_type != 'none'){
+						$.post(url, data, function(json){
+							$.jsonValidation(json, 'left');
+						}, "json");
+					}
+					
+				});
+				// Reset button when hidden order add detail dialog
+				$('#addDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_add_detail"]').button('reset');
+					$.getCustomerOrder();
+				});
+				/*
+				 *	END Add detail
+				 */
+
+					
+				/*
+// 				 *	BEGIN Remove calling minutes
+				 */
+				$('a[data-name="'+co[i].id+'_remove_present-calling-minutes"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="removeCallingMinutesModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
+					$('#removeCallingMinutesModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="removeCallingMinutesModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					var order_detail_id = $(this).attr('data-detail-id');
 					var data = {
 							'order_detail_id':order_detail_id
 							,'customer_id':${customer.id}
 					};
-					$.post('${ctx}/broadband-user/crm/customer/order/discount/remove', data, function(json){
+					$.post('${ctx}/broadband-user/crm/customer/order/present-calling-minutes/remove', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden order remove discount dialog
-				$('#removeDiscountModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_remove_discount"]').button('reset');
+				$('#removeCallingMinutesModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_remove_present-calling-minutes"]').button('reset');
 					$.getCustomerOrder();
 				});
 				/*
-				 *	END Remove discount
-				 */
-				
-				 
-				/*
-				 *	BEGIN Add discount
-				 */
-				$('a[data-name="'+co[i].id+'_add_discount"]').click(function(){
-					$btn = $(this); $btn.button('loading');
-					$('a[data-name="addDiscountModalBtn_'+this.id+'"]').attr('data-id', this.id);
-					$('#addDiscountModal_'+this.id).modal('show');
-				});
-				// Submit to rest controller
-				$('a[data-name="addDiscountModalBtn_'+co[i].id+'"]').on('click', function (e) {
-					this.id = $(this).attr('data-id');
-					var detail_name = $('input[data-name="'+this.id+'_detail_name"]');
-					var detail_price = $('input[data-name="'+this.id+'_detail_price"]');
-					var detail_unit = $('input[data-name="'+this.id+'_detail_unit"]');
-					var detail_expired = $('input[data-name="'+this.id+'_detail_expired"]');
-					var detail_type = $('select[data-name="'+this.id+'_detail_type"]');
-					var data = {
-							'order_id':this.id
-							,'customer_id':${customer.id}
-							,'detail_name':detail_name.val()+''
-							,'detail_price':detail_price.val()+''
-							,'detail_unit':detail_unit.val()+''
-							,'detail_expired':detail_expired.val()+''
-							,'detail_type':detail_type.val()+''
-					};
-					$.post('${ctx}/broadband-user/crm/customer/order/discount/save', data, function(json){
-						$.jsonValidation(json, 'left');
-					}, "json");
-				});
-				// Reset button when hidden order add discount dialog
-				$('#addDiscountModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_add_discount"]').button('reset');
-					$.getCustomerOrder();
-				});
-				/*
-				 *	END Add discount
+				 *	END Remove calling minutes
 				 */
 				/*
 				 *	END customer order detail(s) area
