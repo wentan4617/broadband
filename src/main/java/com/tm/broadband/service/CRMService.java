@@ -55,6 +55,7 @@ import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -654,9 +655,9 @@ public class CRMService {
 			e.printStackTrace();
 		}
 		// add sql condition: id
-		ci.setAmount_paid((Double) map.get("amount_paid"));
-		ci.setAmount_payable((Double) map.get("amount_payable"));
-		ci.setBalance((Double) map.get("balance")); 
+//		ci.setAmount_paid((Double) map.get("amount_paid"));
+//		ci.setAmount_payable((Double) map.get("amount_payable"));
+//		ci.setBalance((Double) map.get("balance")); 
 		ci.getParams().put("id", ci.getId());
 		
 		this.ciMapper.updateCustomerInvoice(ci);
@@ -716,7 +717,7 @@ public class CRMService {
 			Notification topupNotificationSMS = new Notification(topupNotificationSMSTemp.getTitle(), topupNotificationSMSTemp.getContent());
 
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(topupNotificationEmail, c, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(topupNotificationEmail, c, customerOrder, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
 			applicationEmail.setSubject(topupNotificationEmail.getTitle());
@@ -725,7 +726,7 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			TMUtils.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMS.getContent());
 		}
@@ -759,7 +760,7 @@ public class CRMService {
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 			
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notificationEmail, co.getCustomer(), co, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationEmail, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(co.getCustomer().getEmail());
 			applicationEmail.setSubject(notificationEmail.getTitle());
@@ -770,7 +771,7 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			TMUtils.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMS.getContent());
 		}
@@ -1148,10 +1149,14 @@ public class CRMService {
 		}
 		// END IF HAVE PSTN_NUMBER
 		
+		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
+		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
+		totalPayableAmouont = Double.parseDouble(TMUtils.fillDecimalPeriod(totalPayableAmouont));
+		
 		// Set current invoice's payable amount
 		ci.setAmount_payable(totalPayableAmouont);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalPayableAmouont, totalCreditBack));
-		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 
 		// Iteratively inserting invoice detail(s) into tm_invoice_detail table
 		for (CustomerInvoiceDetail cid : cids) {
@@ -1405,7 +1410,7 @@ public class CRMService {
 		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
 		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
+		MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notificationEmail.getTitle());
@@ -1416,7 +1421,7 @@ public class CRMService {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 		// get sms register template from db
-		TMUtils.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
+		MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
 		// send sms to customer's mobile phone
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
 	}

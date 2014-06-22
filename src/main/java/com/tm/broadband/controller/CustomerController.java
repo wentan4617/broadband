@@ -53,6 +53,7 @@ import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -477,7 +478,7 @@ public class CustomerController {
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
@@ -488,7 +489,7 @@ public class CustomerController {
 			
 			// get sms register template from db
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			//status.setComplete();
@@ -765,7 +766,7 @@ public class CustomerController {
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
@@ -774,7 +775,7 @@ public class CustomerController {
 			
 			// get sms register template from db
 			notification = this.crmService.queryNotificationBySort("payment", "sms");
-			TMUtils.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			

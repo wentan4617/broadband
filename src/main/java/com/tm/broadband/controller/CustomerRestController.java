@@ -35,6 +35,7 @@ import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.CheckScriptInjection;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.ContactUsValidatedMark;
@@ -151,7 +152,7 @@ public class CustomerRestController {
 
 			if("email".equals(customer.getType())){
 				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
-				TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
 				ApplicationEmail applicationEmail = new ApplicationEmail();
 				applicationEmail.setAddressee(customer.getEmail());
 				applicationEmail.setSubject(notification.getTitle());
@@ -161,7 +162,7 @@ public class CustomerRestController {
 			} else if("cellphone".equals(customer.getType())){
 				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
 				notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
-				TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 				customer.getParams().put("cellphone", customer.getLogin_name());
 			}

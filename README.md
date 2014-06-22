@@ -21,8 +21,13 @@ demand version 1.0.21 2014-06-19
 * [点击Regenerate most recent invoice按钮时，后台判断最新账单是否已付款，如果未付则逻辑不变，如果状态为paid并且create_date不是当月则生成新的账单并且不包含当月plan的月租费](steven)
 * [修改DDPay的逻辑,将按payable付款改成按balance付款](steven)
 * [每个invoice都不叠加上个月invoice的balance](steven)
-* [重新生成invoice时如果不是生成新的invoice则保留原invoice的create以及due date](steven)
+* [重新生成invoice时如果不是生成新的invoice则保留原invoice的create以及due date](steven))
+* [DDPay支付没有问题，账单逻辑大改动之后Cash支付会叠加上一张账单的detail，检查为什么会出现这种情况并解决](steven)
 * 每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance(steven)
+* 添加一张tm_customer_service表记录order的一些note，字段包括id,customer_id,user_id,description,create_date(steven)
+* invoice加一个payment_status字段，用来记录该invoice的付款状态，如果billing正在付款的途中则他会将其改变成pending状态，显示在Invoice的status后面(steven)
+* 检查并调试plan-no-term的invoice生成代码，主要检查final_payable以及total credit的最终值(steven)
+* 检查并调试plan-term的invoice下一次生成账单的代码，重新生成plan-term的invoice功能已完成，所以要确保下一次生成的账单是准确无误的(steven)
  
  
 demand version 1.0.21 2014-06-18
@@ -37,11 +42,11 @@ demand version 1.0.21 2014-06-18
  
 demand version 1.0.21 2014-06-17
 
-* View Termination Refunde界面添加邮件发送功能(steven)
-* View Termination Refunde界面添加两个切换已发送和未发送的badge(steven)
-* View Early Termination Charge界面添加邮件发送功能(steven)
-* View Early Termination Charge界面添加两个切换已发送和未发送的badge(steven)
-* order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice(steven)
+* //View Termination Refunde界面添加邮件发送功能(steven)
+* //View Termination Refunde界面添加两个切换已发送和未发送的badge(steven)
+* //View Early Termination Charge界面添加邮件发送功能(steven)
+* //View Early Termination Charge界面添加两个切换已发送和未发送的badge(steven)
+* [order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice](steven)
  
  
 demand version 1.0.21 2014-06-16
