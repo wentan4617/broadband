@@ -1,38 +1,49 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CallInternationalRate implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	/*
 	 * BEGIN TABLE MAPPING PROPERTIES
 	 */
+
 	private Integer id;
 	private String area_prefix;
 	private String rate_type;
 	private String area_name;
 	private Double rate_cost;
+
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
+
 	
 
 	/*
 	 * BEGIN RELATED PROPERTIES
 	 */
 	
+	private String letter;
+	private List<CallInternationalRate> cirs = new ArrayList<CallInternationalRate>();
 	private Map<String, Object> params = new HashMap<String, Object>();
 
 	/*
 	 * END RELATED PROPERTIES
 	 */
+	public CallInternationalRate() {
+
+	}
+
+	public CallInternationalRate(String letter) {
+		this.setLetter(letter);
+	}
 
 	public Integer getId() {
 		return id;
@@ -81,4 +92,25 @@ public class CallInternationalRate implements Serializable {
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
 	}
+
+	public String getLetter() {
+		return letter;
+	}
+
+	public void setLetter(String letter) {
+		this.letter = letter;
+	}
+
+	public List<CallInternationalRate> getCirs() {
+		return cirs;
+	}
+
+	public void setCirs(List<CallInternationalRate> cirs) {
+		this.cirs = cirs;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
 }

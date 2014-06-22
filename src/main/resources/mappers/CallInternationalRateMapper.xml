@@ -12,20 +12,17 @@
 <!-- =================================================================================== -->
 <!-- DELETE AREA --><!-- // END DELETE AREA -->
 
-
 <mapper namespace="com.tm.broadband.mapper.CallInternationalRateMapper">
 
 	<!-- DEFINITION AREA -->
+	
 	<sql id="callInternationalRateColumns">
-		cir.`area_prefix` 		as cir_area_prefix,
+		cir.`area_prefix` 			as cir_area_prefix,
 		cir.`rate_type` 			as cir_rate_type,
 		cir.`area_name` 			as cir_area_name,
 		cir.`rate_cost` 			as cir_rate_cost
 	</sql>
 	
-
-
-
 	<resultMap type="CallInternationalRate" id="callInternationalRateResultMap">
 		<result property="area_prefix" column="cir_area_prefix" />
 		<result property="rate_type" column="cir_rate_type" />
@@ -45,37 +42,41 @@
 			</choose>
 		</where>
 	</sql>
+	
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
 
 	<!-- SELECT AREA -->
 	
-	<select id="selectCallInternationalRate" parameterType="CallInternationalRate" resultType="CallInternationalRate">
+	<select id="selectCallInternationalRates" parameterType="CallInternationalRate" resultType="CallInternationalRate">
 		select * from tm_call_international_rates as cir
 		<include refid="callInternationalRateWhere"/>
 	</select>
 	
-	<!-- select callInternationalRate page -->
 	<select id="selectCallInternationalRatesByPage" parameterType="Page" resultMap="callInternationalRateResultMap">
 		select 
 			<include refid="callInternationalRateColumns"/>
-			from tm_call_international_rates as cir
-			<include refid="callInternationalRateWhere"/>
-			<if test="params.orderby != null">${params.orderby}</if>
-			limit #{pageOffset}, #{pageSize}
+		from tm_call_international_rates as cir
+		<include refid="callInternationalRateWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
 	</select>
-
-	<!-- select callInternationalRate amount -->
+	
 	<select id="selectCallInternationalRatesSum" parameterType="Page" resultType="int">
 		select count(*) from tm_call_international_rates as cir
 		<include refid="callInternationalRateWhere"/>
 	</select>
+	
+	<select id="selectCallInternationalRatesGroupBy" resultType="CallInternationalRate">
+		select 
+			rate_type, area_name, rate_cost 
+		from tm_call_international_rates
+		GROUP BY rate_type, area_name, rate_cost
+	</select>
 
 	<!-- // END SELECT AREA -->
-
 	<!-- =================================================================================== -->
-
 	<!-- INSERT AREA -->
 
 	<insert id="insertCallInternationalRate" parameterType="CallInternationalRate">
@@ -87,12 +88,9 @@
 	</insert>
 
 	<!-- // END INSERT AREA -->
-
 	<!-- =================================================================================== -->
-	
 	<!-- UPDATE AREA -->
 	
-	<!-- update callInternationalRate -->
 	<update id="updateCallInternationalRate" parameterType="CallInternationalRate">
 		update tm_call_international_rates
 		<set>
@@ -104,12 +102,10 @@
 	</update>
 
 	<!-- // END UPDATE AREA -->
-
 	<!-- =================================================================================== -->
-
 	<!-- DELETE AREA -->
 	
-	<delete id="deleteCallInternationalRate">
+	<delete id="deleteCallInternationalRate" parameterType="CallInternationalRate">
 		DELETE FROM tm_call_international_rates
 	</delete>
 	

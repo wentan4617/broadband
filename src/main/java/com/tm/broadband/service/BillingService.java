@@ -132,6 +132,7 @@ public class BillingService {
 	// END CallChargeRate
 
 	// BEGIN CallInternationalRate
+	
 	@Transactional
 	public Page<CallInternationalRate> queryCallInternationalRatesByPage(Page<CallInternationalRate> page) {
 		page.setTotalRecord(this.callInternationalRateMapper.selectCallInternationalRatesSum(page));
@@ -146,18 +147,24 @@ public class BillingService {
 
 	@Transactional 
 	public List<CallInternationalRate> queryCallInternationalRate(CallInternationalRate cir){
-		return this.callInternationalRateMapper.selectCallInternationalRate(cir);
+		return this.callInternationalRateMapper.selectCallInternationalRates(cir);
 	}
 
 	@Transactional
-	public void removeCallInternationalRate() {
-		this.callInternationalRateMapper.deleteCallInternationalRate();
+	public void removeCallInternationalRate(CallInternationalRate cir) {
+		this.callInternationalRateMapper.deleteCallInternationalRate(cir);
 	}
 
 	@Transactional
 	public void editCallInternationalRate(CallInternationalRate cir) {
 		this.callInternationalRateMapper.updateCallInternationalRate(cir);
 	}
+	
+	@Transactional
+	public List<CallInternationalRate> queryCallInternationalRatesGroupBy() {
+		return this.callInternationalRateMapper.selectCallInternationalRatesGroupBy();
+	}
+	
 	// END CallInternationalRate
 
 	// BEGIN EarlyTerminationCharge

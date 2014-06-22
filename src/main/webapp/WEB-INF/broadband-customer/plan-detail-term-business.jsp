@@ -42,7 +42,6 @@
 			Give us your telecommunication requirements and your previous telecommunication bills.
 			We can offer more values and better price telecommunication plans to you.
 		</p>
-
 	</div>
 	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm">
 		<li class="active">

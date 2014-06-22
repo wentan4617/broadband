@@ -697,7 +697,7 @@ public class TMUtils {
 				cir.getParams().put("rate_type", "NZ Mobile");
 			}
 			cir.getParams().put("area_prefix", areaCode);
-			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRate(cir);
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
 			boolean isInternational = cirs!=null && cirs.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
