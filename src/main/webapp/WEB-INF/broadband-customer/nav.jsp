@@ -67,8 +67,36 @@
 		          	</ul>
 				</li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
-				<li><a href="${ctx }/wifi-solution"><strong>Wifi Solution</strong></a></li>
-				<li><a href="${ctx }/about-us"><strong>About CyberPark</strong></a></li>
+				<li>
+					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Information</strong><b class="caret"></b></a>
+					<ul class="dropdown-menu"><!--  visible-xs visible-sm -->
+			            <li>
+			            	<a href="${ctx }/about-us" >
+	            				About CyberPark
+							</a>	
+			            </li>
+			            <li>
+			            	<a href="${ctx }/home-phone-calling-rates" >
+	            				Home Phone Calling Rates
+							</a>
+			            </li>
+			            <li>
+			            	<a href="${ctx }/wifi-solution" >
+	            				Wifi Solution
+							</a>
+			            </li>
+			            <li>
+			            	<a href="${ctx }/e-commerce" >
+	            				E-Commerce
+							</a>
+			            </li>
+		             	<li>
+			            	<a href="${ctx }/term-and-conditions" >
+	            				Terms & Conditions
+							</a>
+			            </li>
+		          	</ul>
+				</li>
 				<li><a href="${ctx }/about-us#contact" rel="nofollow"><strong>Contact Us: <span style="color:white;">0800 229 237</span></strong></a></li> 
 			</ul>
 			

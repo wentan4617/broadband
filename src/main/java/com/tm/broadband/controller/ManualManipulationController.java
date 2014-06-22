@@ -283,7 +283,7 @@ public class ManualManipulationController {
 				e.printStackTrace();
 			}
 			
-			this.billingService.removeCallInternationalRate();
+			this.billingService.removeCallInternationalRate(null);
 			
 			// Get All data from the CSV file
 			List<CallInternationalRate> cirs = CallInternationalRateUtility.cirs(save_path);

@@ -7,18 +7,12 @@ import com.tm.broadband.model.Page;
 
 public interface CallInternationalRateMapper {
 
-/**
- * mapping tm_call_internation_rate, callInternationalRate DAO component
- * 
- * @author Dong Chen
- *
- */
-
 	/* SELECT AREA */
 	
-	List<CallInternationalRate> selectCallInternationalRate(CallInternationalRate cir);
+	List<CallInternationalRate> selectCallInternationalRates(CallInternationalRate cir);
 	List<CallInternationalRate> selectCallInternationalRatesByPage(Page<CallInternationalRate> page);
 	int selectCallInternationalRatesSum(Page<CallInternationalRate> page);
+	List<CallInternationalRate> selectCallInternationalRatesGroupBy();
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */
@@ -36,7 +30,7 @@ public interface CallInternationalRateMapper {
 	/* =================================================================================== */
 	/* DELETE AREA */
 
-	void deleteCallInternationalRate();
+	void deleteCallInternationalRate(CallInternationalRate cir);
 	
 	/* // END DELETE AREA */
 

@@ -34,6 +34,7 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
@@ -47,6 +48,7 @@ import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
 import com.tm.broadband.paymentexpress.Response;
+import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
@@ -68,17 +70,19 @@ public class CustomerController {
 	private SystemService systemService;
 	private SmserService smserService;
 	private DataService dataService;
+	private BillingService billingService;
 
 	@Autowired
 	public CustomerController(PlanService planService, CRMService crmService,
 			MailerService mailerService, SystemService systemService,
-			SmserService smserService, DataService dataService) {
+			SmserService smserService, DataService dataService, BillingService billingService) {
 		this.planService = planService;
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
 		this.dataService = dataService;
+		this.billingService = billingService;
 	}
 
 	@RequestMapping(value = {"", "/home" })
@@ -863,6 +867,60 @@ public class CustomerController {
 	@RequestMapping(value = "/chorus-googlemap")
 	public String toChorusGoogleMap(Model model) {
 		return "broadband-customer/chorus-googlemap";
+	}
+	
+	@RequestMapping("/home-phone-calling-rates")
+	public String homePhoneCallingRates(Model model) {
+		
+		List<CallInternationalRate> letterCirs = new ArrayList<CallInternationalRate>();
+		letterCirs.add(new CallInternationalRate("A"));
+		letterCirs.add(new CallInternationalRate("B"));
+		letterCirs.add(new CallInternationalRate("C"));
+		letterCirs.add(new CallInternationalRate("D"));
+		letterCirs.add(new CallInternationalRate("E"));
+		letterCirs.add(new CallInternationalRate("F"));
+		letterCirs.add(new CallInternationalRate("G"));
+		letterCirs.add(new CallInternationalRate("H"));
+		letterCirs.add(new CallInternationalRate("I"));
+		letterCirs.add(new CallInternationalRate("J"));
+		letterCirs.add(new CallInternationalRate("K"));
+		letterCirs.add(new CallInternationalRate("L"));
+		letterCirs.add(new CallInternationalRate("M"));
+		letterCirs.add(new CallInternationalRate("N"));
+		letterCirs.add(new CallInternationalRate("O"));
+		letterCirs.add(new CallInternationalRate("P"));
+		letterCirs.add(new CallInternationalRate("Q"));
+		letterCirs.add(new CallInternationalRate("R"));
+		letterCirs.add(new CallInternationalRate("S"));
+		letterCirs.add(new CallInternationalRate("T"));
+		letterCirs.add(new CallInternationalRate("U"));
+		letterCirs.add(new CallInternationalRate("V"));
+		letterCirs.add(new CallInternationalRate("W"));
+		letterCirs.add(new CallInternationalRate("X"));
+		letterCirs.add(new CallInternationalRate("Y"));
+		letterCirs.add(new CallInternationalRate("Z"));
+		letterCirs.add(new CallInternationalRate(""));
+		
+		List<CallInternationalRate> cirs = this.billingService.queryCallInternationalRatesGroupBy();
+		if (cirs != null) {
+			for (CallInternationalRate cir: cirs) {
+				boolean b = false;
+				for (CallInternationalRate lCir: letterCirs) {
+					if (!"".equals(cir.getArea_name()) &&
+							lCir.getLetter().equals(cir.getArea_name().toUpperCase().charAt(0))) {
+						lCir.getCirs().add(cir);
+						b = true;
+						break;
+					} 
+				}
+				if (!b) {
+					letterCirs.get(letterCirs.size()-1).getCirs().add(cir);
+				}
+			}
+		}
+		model.addAttribute("letterCirs", letterCirs);
+		
+		return "broadband-customer/calling-rates";
 	}
 
 }

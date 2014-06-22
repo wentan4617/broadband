@@ -18,19 +18,19 @@
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/personal" target="_blank">
 				<img src="${ctx }/public/bootstrap3/images/plan-2-lg.jpg" class="hidden-xs hidden-sm" alt="persoanl 12months unlimited plan" >
-				<img src="${ctx }/public/bootstrap3/images/plan-2-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/plan-2-sm.png" class="hidden-lg hidden-md" alt="persoanl 12months unlimited plan" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/business/adsl/promotion" target="_blank">
 				<img src="${ctx }/public/bootstrap3/images/plan-3-lg.jpg" class="hidden-xs hidden-sm" alt="ADSL is a fast broadband plan">
-				<img src="${ctx }/public/bootstrap3/images/plan-3-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/plan-3-sm.png" class="hidden-lg hidden-md" alt="ADSL is a fast broadband plan" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/personal/ufb/promotion" target="_blank">
 				<img src="${ctx }/public/bootstrap3/images/plan-4-lg.jpg" class="hidden-xs hidden-sm" alt="VDSL is faster than ADSL">
-				<img src="${ctx }/public/bootstrap3/images/plan-4-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/plan-4-sm.png" class="hidden-lg hidden-md" alt="VDSL is faster than ADSL" />
 			</a>
 		</div>
 		
