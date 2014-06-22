@@ -51,6 +51,7 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SaleService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
@@ -289,14 +290,14 @@ public class SaleController {
 
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		TMUtils.mailAtValueRetriever(notification, customer, companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		status.setComplete();

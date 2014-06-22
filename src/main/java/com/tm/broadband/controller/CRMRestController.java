@@ -45,6 +45,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -211,10 +212,10 @@ public class CRMRestController {
 		customer_id = ci.getCustomer_id();
 		order_id = ci.getOrder_id();
 		invoice_id = ci.getId();
-		paid_amount = ci.getFinal_payable_amount();
+		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
 		
-		// Assign payable to paid, make this invoice paid off
-		ci.setAmount_paid(paid_amount);
+		// Assign paid to paid + paid_amount, make this invoice paid off
+		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
 		// Assign balance as 0.0, make this invoice paid off
 		ci.setBalance(0d);
 		// Assign status to paid directly, make this invoice paid off
@@ -313,10 +314,19 @@ public class CRMRestController {
 		invoice_id = ci.getId();
 		paid_amount = manualDefrayLog.getEliminate_amount();
 		
+		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getAmount_paid())));
+		ci.setFinal_payable_amount(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getFinal_payable_amount())));
+		
+		System.out.println("paid_amount: "+paid_amount);
+		System.out.println("ci.getAmount_paid(): "+ci.getAmount_paid());
+		System.out.println("ci.getBalance(): "+ci.getBalance());
+		System.out.println("ci.getFinal_payable_amount(): "+ci.getFinal_payable_amount());
+		
 		// Assign (paid plus eliminate amount) to paid, make this invoice paid (off)
-		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
+		ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), paid_amount));
 		// Assign balance as 0.0, make this invoice paid off
-		ci.setBalance(ci.getBalance() - paid_amount);
+		
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 		// If balance equals to 0d then paid else not_pay_off, make this invoice paid (off)
 		if(ci.getBalance() <= 0d){
 			ci.setStatus("paid");
@@ -514,7 +524,7 @@ public class CRMRestController {
 		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// call mail at value retriever
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, cods,  companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, cods,  companyDetail);
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
@@ -522,7 +532,7 @@ public class CRMRestController {
 
 		// get sms register template from db
 		notification = this.systemService.queryNotificationBySort("service-installation", "sms");
-		TMUtils.mailAtValueRetriever(notification, customer, customerOrder, cods, companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, cods, companyDetail);
 		// send sms to customer's mobile phone
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 		
@@ -588,14 +598,14 @@ public class CRMRestController {
 				Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
 				CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 				Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-				TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
+				MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
 				ApplicationEmail applicationEmail = new ApplicationEmail();
 				applicationEmail.setAddressee(customer.getEmail());
 				applicationEmail.setSubject(notification.getTitle());
 				applicationEmail.setContent(notification.getContent());
 				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 				notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
-				TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+				MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 				
 			} else if ("ordering-pending".equals(customerOrder.getOrder_status()) && !"order-term".equals(customerOrder.getOrder_type())) {
@@ -613,7 +623,7 @@ public class CRMRestController {
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
-			TMUtils.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
@@ -621,7 +631,7 @@ public class CRMRestController {
 
 			// get sms register template from db
 			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-			TMUtils.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
