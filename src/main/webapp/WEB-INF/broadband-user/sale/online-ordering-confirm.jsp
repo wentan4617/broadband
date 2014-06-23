@@ -101,21 +101,27 @@
 								<div class="col-sm-6"><strong class="text-info">${orderCustomer.organization.holder_email }</strong></div>
 							</div>
 						</c:if>
-						<c:if test="${orderCustomer.customer_type == 'personal' }">
+						
+						<c:if test="${customer.customer_type == 'personal' }">
 							<hr /><!-- style="margin-top:0;" -->
 							<h2>Personal Information</h2>
 							<hr style="margin-top:0;"/>
-							<%-- <div class="row" >
-								<div class="col-sm-4"><strong>Phone</strong></div>
-								<div class="col-sm-6"><strong class="text-info">${orderCustomer.cellphone }</strong></div>
-							</div> --%>
+							
 							<div class="row" style="margin-top:5px;">
 								<div class="col-sm-4"><strong>Mobile</strong></div>
-								<div class="col-sm-6"><strong class="text-info">${orderCustomer.cellphone }</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${customer.cellphone }</strong></div>
 							</div>
 							<div class="row" style="margin-top:5px;">
 								<div class="col-sm-4"><strong>Email</strong></div>
-								<div class="col-sm-6"><strong class="text-info">${orderCustomer.email }</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${customer.email }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Identity Type</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${customer.identity_type }</strong></div>
+							</div>
+							<div class="row" style="margin-top:5px;">
+								<div class="col-sm-4"><strong>Identity Number</strong></div>
+								<div class="col-sm-6"><strong class="text-info">${customer.identity_number }</strong></div>
 							</div>
 						</c:if>
 						
