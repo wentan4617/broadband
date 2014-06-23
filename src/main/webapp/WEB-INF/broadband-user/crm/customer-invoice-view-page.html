@@ -87,8 +87,9 @@
 							<ul class="dropdown-menu" role="menu">
 								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>
-								<li><a id="<.= invoice.id .>" data-name="pay_by_ddpay_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
-								<li><a id="<.= invoice.id .>" data-name="pay_by_cash_<.= invoice.id .>" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="a2a" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Account2Account</a></li>
+								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 							</ul>
 						</div>
@@ -168,64 +169,32 @@
 		</div>
 		<!-- /.modal -->
 		
-		<!-- confirmDDPay Modal -->
-		<div class="modal fade" id="confirmDDPayModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="confirmDDPayModalLabel" aria-hidden="true">
+		<!-- confirmPayWay Modal -->
+		<div class="modal fade" id="confirmPayWayModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="confirmPayWayModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="confirmDDPayModalLabel">
-							<strong>Use DDPay to Pay Off this invoice?</strong>
+						<h4 class="modal-title" id="confirmPayWayModalLabel">
+							<strong data-name="confirm_payway_modal_title_<.= invoice.id .>"></strong>
 						</h4>
 					</div>
 					<div class="modal-body">
-						<div class="form-group">
-							<p>
-								<strong>
-								This operation will assign invoice's balance to zero.<br/><br/>
-								And this operation will store your identity and manipulate time into database as a record.<br/>
-								</strong>
-							</p>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_ddpay_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use DDPay to pay off this invoice</strong></a>
-					</div>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-		<!-- /.modal -->
-
-		<!-- confirmCash Modal -->
-		<div class="modal fade" id="confirmCashModal_<.= invoice.id .>" data-id="<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="confirmCashModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title" id="confirmCashModalLabel">
-							<strong>Use Cash to Pay (Off) this invoice?</strong>
-						</h4>
-					</div>
-					<div class="modal-body">
-						<div class="form-group">
+						<div class="form-group" style="display:none;" data-name="cash_defray_amount_input_<.= invoice.id .>">
 							<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
 							<div class="col-md-6">
 								<input name="defray_amount_<.= invoice.id .>" value="<.= invoiceBalance.toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
 							</div>
 						</div>
-						<br/><br/><br/>
+						<br/>
 						<div class="form-group">
 							<p>
-								This operation will assign invoice's balance to your input amount.<br/><br/>
-								And this operation will store your identity and manipulate time into database as a record.<br/>
+								<strong data-name="confirm_payway_modal_content_<.= invoice.id .>"></strong>
 							</p>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<a href="javascript:void(0);" class="btn btn-success col-md-12"
-							data-name="confirm_cash_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"><strong>Confirm to use Cash to pay (off) this invoice</strong></a>
+						<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_payway_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"></a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

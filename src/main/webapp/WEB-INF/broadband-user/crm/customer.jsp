@@ -72,6 +72,7 @@
 		
 		$.get('${ctx}/broadband-user/crm/customer/edit', data, function(map){
 			map.customer.ctx = '${ctx}';
+			map.customer.user_role = '${userSession.user_role}';
 	   		var $table = $('#customer_edit');
 			$table.html(tmpl('customer_info_table_tmpl', map.customer));
 			
@@ -865,51 +866,63 @@
 				});
 				// END generate invoice
 				
-				// BEGIN DDPay
-				// Confirm DDPay
-				$('a[data-name="pay_by_ddpay_'+invoice.id+'"]').click(function(){
+				// BEGIN PayWay
+				$('a[data-name="pay_way_by_'+invoice.id+'"]').click(function(){
+					var pay_way = $(this).attr('data-way');
+					$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').attr('data-way', pay_way);
+					console.log(pay_way);
+					if(pay_way == 'ddpay'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use DDPay to Pay Off this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use DDPay to pay off this invoice');
+					} else if(pay_way == 'a2a'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use A2A to Pay Off this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use A2A to pay off this invoice');
+					} else if(pay_way == 'cash'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Cash to Pay (Off/Not Off) this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - your input amount).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Cash to pay (off) this invoice');
+						$('div[data-name="cash_defray_amount_input_'+this.id+'"]').css('display','');
+					}
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
-					$('#confirmDDPayModal_'+this.id).modal('show');
+					$('#confirmPayWayModal_'+this.id).modal('show');
 				});
-				$('a[data-name="confirm_ddpay_modal_btn_'+invoice.id+'"]').click(function(){
-					var data = { invoice_id : this.id };
+				// Confirm PayWay
+				$('a[data-name="confirm_payway_modal_btn_'+invoice.id+'"]').click(function(){
+					var pay_way = $(this).attr('data-way');
+					var url = '';
+					if(pay_way == 'ddpay'){
+						var data = {
+								invoice_id : this.id
+								,process_way : 'DDPay'
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a';
+					} else if(pay_way == 'a2a'){
+						var data = {
+								invoice_id : this.id
+								,process_way : 'Account2Account'
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a';
+					} else if(pay_way == 'cash'){
+						var data = {
+							invoice_id : this.id
+							,eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/cash';
+					}
 					
-					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/ddpay', data, function(json){
+					$.post(url, data, function(json){
 						$.jsonValidation(json, 'right');
 					}, 'json');
 				});
-				$('#confirmDDPayModal_'+invoice.id).on('hidden.bs.modal', function(){
+				$('#confirmPayWayModal_'+invoice.id).on('hidden.bs.modal', function(){
 					$('button[data-name="make_payment_'+$(this).attr('data-id')+'"]').button('reset');
 					$.getInvoicePage(pageNo);
 					$.getTxPage(1);
 				});
-				// END DDPay
-				
-				// BEGIN Cash
-				// Confirm Cash
-				$('a[data-name="pay_by_cash_'+invoice.id+'"]').click(function(){
-					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
-					$('#confirmCashModal_'+this.id).modal('show');
-				});
-				$('a[data-name="confirm_cash_modal_btn_'+invoice.id+'"]').click(function(){
-					var data = {
-						invoice_id : this.id,
-						eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
-					};
-					
-					$.post('${ctx}/broadband-user/crm/customer/invoice/defray/cash', data, function(json){
-						$.jsonValidation(json, 'right');
-					}, 'json');
-				});
-				$('#confirmCashModal_'+invoice.id).on('hidden.bs.modal', function(){
-					$('button[data-name="make_payment_'+$(this).attr('data-id')+'"]').button('reset');
-					$.getInvoicePage(pageNo);
-					$.getTxPage(1);
-				});
-				// END Cash
-				
+				// END PayWay
 			}
-			
 			
 		}, 'json');
 	}

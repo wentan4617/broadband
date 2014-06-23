@@ -183,8 +183,9 @@ public class CRMRestController {
 	}
 	
 	// BEGIN DDPay
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay", method = RequestMethod.POST)
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay-a2a", method = RequestMethod.POST)
 	public JSONBean<ManualDefrayLog> doDefrayByDDPay(Model model,
+			@RequestParam("process_way") String process_way,
 			ManualDefrayLog manualDefrayLog, BindingResult result,
 			HttpServletRequest req) {
 		
@@ -194,7 +195,6 @@ public class CRMRestController {
 		Integer order_id = null;
 		Integer invoice_id = null;
 		Double paid_amount = null;
-		String process_way = "DDPay";
 		String process_sort = null;
 		
 		// BEGIN INVOICE ASSIGNMENT
