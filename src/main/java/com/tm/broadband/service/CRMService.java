@@ -673,7 +673,7 @@ public class CRMService {
 		createInvoicePDFBoth(customerOrder
 				,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 				,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
-				, false);	// false : first invoice
+				, false, false);	// false : first invoice
 	}
 
 	@Transactional 
@@ -687,7 +687,7 @@ public class CRMService {
 			createInvoicePDFBoth(customerOrder
 					,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					,new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
-					, true);	// true : next invoice
+					, true, false);	// true : next invoice
 		}
 		
 		// BEGIN TOPUP NOTIFICATION
@@ -1195,70 +1195,60 @@ public class CRMService {
 	@Transactional
 	public void createInvoicePDFBoth(CustomerOrder customerOrder
 			,Notification notificationEmail
-			,Notification notificationSMS, Boolean is_Next_Invoice){
+			,Notification notificationSMS, Boolean is_Next_Invoice, boolean isRegenerate){
 		// store company detail begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
 
-		/*
-		 * get specific models begin
-		 */
-		// initiate models begin
-		// current customer order model
-		//CustomerOrder customerOrder = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam).get(0);
-
-		// customer model
 		Customer customer = customerOrder.getCustomer();
 		// current invoice model
 		CustomerInvoice ci = new CustomerInvoice();
+		ci.getParams().put("customer_id", customer.getId());
+		ci.getParams().put("order_id", customerOrder.getId());
 		// previous invoice model
-		CustomerInvoice customerPreviousInvoice = new CustomerInvoice();
-		customerPreviousInvoice.getParams().put("where", "by_max_id");
-		customerPreviousInvoice.getParams().put("customer_id", customer.getId());
-		customerPreviousInvoice.getParams().put("order_id", customerOrder.getId());
+		CustomerInvoice cpi = new CustomerInvoice();
+		cpi.getParams().put("customer_id", customer.getId());
+		cpi.getParams().put("order_id", customerOrder.getId());
 		
-		// customer previous invoice
-		customerPreviousInvoice = this.ciMapper.selectCustomerInvoice(customerPreviousInvoice);
-		if (customerPreviousInvoice != null ) {	
-			// if status is not paid then update the status to discard
-//			if (!"paid".equals(customerPreviousInvoice.getStatus())) {
-//				customerPreviousInvoice.setStatus("discard");
-//				customerPreviousInvoice.getParams().put("id", customerPreviousInvoice.getId());
-//				this.ciMapper.updateCustomerInvoice(customerPreviousInvoice);
-//			}
-			ci.setLast_invoice_id(customerPreviousInvoice.getId());
-			ci.setLastCustomerInvoice(customerPreviousInvoice);
+		if(!isRegenerate){
+			// If Not Regenerate then set next invoice create date
+			Date invoiceCreateDay = !is_Next_Invoice 
+					? (customerOrder.getOrder_using_start() != null 
+							? customerOrder.getOrder_using_start() 
+							: new Date()) 
+					: customerOrder.getNext_invoice_create_date();
+			// Next invoice create date
+			ci.setCustomer_id(customer.getId());
+			ci.setOrder_id(customerOrder.getId());
+			ci.setCreate_date(invoiceCreateDay);
+			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 10));
+			this.ciMapper.insertCustomerInvoice(ci);
+			// If Not Regenerate then get most recent invoice as previous invoice
+			cpi.getParams().put("where", "by_max_id");
+		} else {
+			// If Regenerate then get most recent invoice as current invoice
+			ci.getParams().put("where", "by_max_id");
+			ci = this.ciMapper.selectCustomerInvoice(ci);
+			// If Regenerate then get before than most recent invoice as previous invoice
+			if(!"unpaid".equals(ci.getStatus())){
+				cpi.getParams().put("where", "by_max_id");
+				this.ciMapper.insertCustomerInvoice(ci);
+			} else {
+				cpi.getParams().put("where", "by_second_id");
+			}
 		}
-		// initiate models end
-		/*
-		 * get specific models end
-		 */
-
-		// set customer's new invoice details begin
-
-		// set invoice create date begin
-
-		/*
-		 * 
-		 * invoiceCreateDay HAVE TO ASSIGN TO new Date() BEFORE PRODUCT MODE
-		 */
-		// if first time then judge if using start not null then using start else new Date(), else next create date.
-		Date invoiceCreateDay = !is_Next_Invoice 
-				? (customerOrder.getOrder_using_start() != null 
-						? customerOrder.getOrder_using_start() 
-						: new Date()) 
-				: customerOrder.getNext_invoice_create_date();
+		// Customer previous invoice
+		cpi = this.ciMapper.selectCustomerInvoice(cpi);
+		if (cpi != null && !ci.getId().equals(cpi.getId())) {
+			ci.setLast_invoice_id(cpi.getId());
+			ci.setLastCustomerInvoice(cpi);
+		} else {
+			cpi = null;
+		}
+		boolean isFirst = cpi==null ? true : false;
 		
-		/*
-		 * set next invoice date begin
-		 */
-
-		ci.setCustomer_id(customer.getId());
-		ci.setOrder_id(customerOrder.getId());
-		ci.setCreate_date(invoiceCreateDay);
-		ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 10));
 		// detail holder begin
-		List<CustomerInvoiceDetail> ciDetailList = new ArrayList<CustomerInvoiceDetail>();
+		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 		// detail holder end
 		List<CustomerOrderDetail> customerOrderDetails = customerOrder.getCustomerOrderDetails();
 
@@ -1267,128 +1257,112 @@ public class CRMService {
 		
 		String pstn_number = "";
 		
-		if (customerOrderDetails != null) {
-			for (CustomerOrderDetail cod: customerOrderDetails) {
+		for (CustomerOrderDetail cod: customerOrderDetails) {
 
-				if("pstn".equals(cod.getDetail_type())){
-					
-					if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
-						&& ("".equals(pstn_number) || pstn_number==null)){
-						pstn_number = cod.getPstn_number();
-					}
-					
+			if("pstn".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
+					&& ("".equals(pstn_number) || pstn_number==null)){
+					pstn_number = cod.getPstn_number();
 				}
 				
-				CustomerInvoiceDetail ciDetail = new CustomerInvoiceDetail();
-				ciDetail.setInvoice_id(ci.getId());
-				ciDetail.setInvoice_detail_name(cod.getDetail_name());
-				ciDetail.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
+			}
+			
+			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			cid.setInvoice_id(ci.getId());
+			cid.setInvoice_detail_name(cod.getDetail_name());
+			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 
-				// if detail type equals discount and detail expire date greater
-				// equal than today's date then go into if statement
-				if ("discount".equals(cod.getDetail_type())
-						&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
-					
-					ciDetail.setInvoice_detail_discount(cod.getDetail_price());
-					// decrease amountPayable
-					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(ciDetail.getInvoice_detail_discount(), ciDetail.getInvoice_detail_unit()));
+			// if detail type equals discount and detail expire date greater
+			// equal than today's date then go into if statement
+			if ("discount".equals(cod.getDetail_type())
+					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+				
+				cid.setInvoice_detail_discount(cod.getDetail_price());
+				// decrease amountPayable
+				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cid.getInvoice_detail_discount(), cid.getInvoice_detail_unit()));
+				// add invoice detail to list
+				cids.add(cid);
+				// else if detail type is discount then this discount is expired
+				// and will not be add to the invoice detail list
+			} else if (!"discount".equals(cod.getDetail_type())) {
+				if(cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-")){
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
-					ciDetailList.add(ciDetail);
-					// else if detail type is discount then this discount is expired
-					// and will not be add to the invoice detail list
-				} else if (!"discount".equals(cod.getDetail_type())) {
-					if (cod.getDetail_expired()==null && !is_Next_Invoice) {
-						// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
-						ciDetail.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice ? cod.getDetail_unit() : 1);
-						ciDetail.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
-						// increase amountPayable
-						totalAmountPayable =  ciDetail.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(ciDetail.getInvoice_detail_price(), ciDetail.getInvoice_detail_unit())) : 0;
-						// add invoice detail to list
-						ciDetailList.add(ciDetail);
-					}
-					if(is_Next_Invoice && cod.getDetail_is_next_pay()==1){
-						// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
-						ciDetail.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice ? cod.getDetail_unit() : 1);
-						ciDetail.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
-						// increase amountPayable
-						totalAmountPayable = ciDetail.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(ciDetail.getInvoice_detail_price(), ciDetail.getInvoice_detail_unit())) : 0;
-						// add invoice detail to list
-						ciDetailList.add(ciDetail);
-					}
-					if (cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") 
-							&& !"plan-topup".equals(cod.getDetail_type())) {
-						
-						// get next invoice date
-						// if is next invoice then plus one month else plus unit month(s)
-						int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-						int nextInvoiceDay = is_Next_Invoice ? 0 : -15;
-						Calendar calNextInvoiceDay = Calendar.getInstance();
-						calNextInvoiceDay.setTime(!is_Next_Invoice 
-									? (customerOrder.getOrder_using_start() != null 
-									? customerOrder.getOrder_using_start() 
-									: new Date()) 
-							: customerOrder.getNext_invoice_create_date());
-						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+					cids.add(cid);
+				} else if((!is_Next_Invoice && isFirst) || cod.getDetail_expired().getTime() >= System.currentTimeMillis()
+						  && !"termination-credit".equals(cod.getDetail_type())){
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+					// add invoice detail to list
+					cids.add(cid);
+				} else if("termination-credit".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_discount(cod.getDetail_price());
+					cid.setInvoice_detail_desc(cod.getDetail_desc());
+					cids.add(cid);
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+				}
+				if (cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") 
+						&& !"plan-topup".equals(cod.getDetail_type()) && !isRegenerate) {
+					
+					// if is next invoice then plus one month else plus unit month(s)
+					int nextInvoiceMonth = is_Next_Invoice && !isFirst ? 1 : cod.getDetail_unit();
+					int nextInvoiceDay = is_Next_Invoice && !isFirst ? 0 : -15;
+					Calendar calNextInvoiceDay = Calendar.getInstance();
+					calNextInvoiceDay.setTime(!is_Next_Invoice && !isFirst
+								? (customerOrder.getOrder_using_start() != null 
+								? customerOrder.getOrder_using_start() 
+								: new Date()) 
+						: customerOrder.getNext_invoice_create_date());
+					calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 
-						// update customer order's next invoice create day begin
-						customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-						customerOrder.getParams().put("id", customerOrder.getId());
-						
-						this.customerOrderMapper.updateCustomerOrder(customerOrder);
-						// update customer order's next invoice create day end
-						/*
-						 * set next invoice date end
-						 */
-					} else {
-						CustomerOrderDetail codTemp = new CustomerOrderDetail();
-						codTemp.setDetail_expired(new Date());
-						codTemp.getParams().put("id", cod.getId());
-						this.customerOrderDetailMapper.updateCustomerOrderDetail(codTemp);
-					}
+					// update customer order's next invoice create day begin
+					customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+					customerOrder.getParams().put("id", customerOrder.getId());
+					
+					this.customerOrderMapper.updateCustomerOrder(customerOrder);
+					// update customer order's next invoice create day end
 				}
 			}
 		}
-
-		// get generated key while performing insertion
-		this.ciMapper.insertCustomerInvoice(ci);
 
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
-
-//		totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, customerPreviousInvoice != null && customerPreviousInvoice.getBalance() != null ? customerPreviousInvoice.getBalance() : 0); 
+		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		// BEGIN IF HAVE PSTN_NUMBER
 		if(!"".equals(pstn_number) && pstn_number!=null){
-			totalAmountPayable = TMUtils.ccrOperation(pstn_number, ciDetailList, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
+			totalAmountPayable = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
 		}
 		// END IF HAVE PSTN_NUMBER
 
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setStatus("unpaid");
-		ci.setAmount_paid(0d);
-		
+		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		// balance = final payable - paid
 		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
-		// set customer's new invoice details end
+		// Add cids into ci
+		ci.setCustomerInvoiceDetails(cids);
 		
-		invoicePDF.setCurrentCustomerInvoice(ci);
-		
-		
-		// inserting customer invoice detail iteratively
-		for (CustomerInvoiceDetail cid : ciDetailList) {
-			cid.setInvoice_id(ci.getId());
+		// Add cids into db
+		for (CustomerInvoiceDetail cid : cids) {
 			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
 
-		// relatively setting invoice details into invoice
-		ci.setCustomerInvoiceDetails(ciDetailList);
-
-
-		// set file path
+		// Set file path
 		Map<String, Object> map = null;
 		try {
 			map = invoicePDF.create();
@@ -1397,33 +1371,30 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		// add sql condition: id
-//		ci.setAmount_paid((Double) map.get("amount_paid"));
-//		ci.setFinal_payable_amount((Double) map.get("final_amount_payable"));
-//		ci.setAmount_payable((Double) map.get("amount_payable"));
-//		ci.setBalance((Double) map.get("balance"));
-		// add sql condition: id
+		
 		ci.getParams().put("id", ci.getId());
 		this.ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
 		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
-		// call mail at value retriever
-		MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notificationEmail.getTitle());
-		applicationEmail.setContent(notificationEmail.getContent());
-		// binding attachment name & path to email
-		applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-		applicationEmail.setAttachPath((String) map.get("filePath"));
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-		// get sms register template from db
-		MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
-		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
+		if(!isRegenerate){
+//			// call mail at value retriever
+//			MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			applicationEmail.setAddressee(customer.getEmail());
+//			applicationEmail.setSubject(notificationEmail.getTitle());
+//			applicationEmail.setContent(notificationEmail.getContent());
+//			// binding attachment name & path to email
+//			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+//			applicationEmail.setAttachPath((String) map.get("filePath"));
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//
+//			// get sms register template from db
+//			MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
+		}
 	}
 	
 	/**

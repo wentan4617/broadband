@@ -173,7 +173,30 @@
 							<input type="text" id="last_name" name="last_name" value="${orderCustomer.last_name }" class="form-control" data-error-field />
 						</div>
 					</div>
-						
+					
+					<!-- For ID Purpose Only -->
+					
+					<hr/>
+					<h4 class="text-success">For ID Purpose Only</h4>
+					<hr/>
+					
+					<div class="form-group">
+						<label for="identity_type" class="control-label col-md-4">Identity Type</label>
+						<div class="col-md-3">
+							<select name="identity_type" id="identity_type" class="selectpicker show-tick form-control">
+								<option value="Driver Licence" ${customer.identity_type=='Driver Licence'?'selected="selected"':''}>Driver Licence</option>
+								<option value="Passport" ${customer.identity_type=='Passport'?'selected="selected"':''}>Passport</option>
+								<option value="18+" ${customer.identity_type=='18+'?'selected="selected"':''}>18+</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="identity_number" class="control-label col-md-4">Identity Number</label>
+						<div class="col-md-4">
+							<input type="text" id="identity_number" name="identity_number" value="${customer.identity_number }" class="form-control" data-error-field />
+						</div>
+					</div>
+					
 					<hr>
 					<div class="form-group">
 						<div class="col-sm-2">
@@ -226,6 +249,8 @@
 			, title: $('#title').val()
 			, first_name: $('#first_name').val()
 			, last_name: $('#last_name').val()
+			, identity_type: $('#identity_type').val()
+			, identity_number: $('#identity_number').val()
 			, customerOrder: {
 				order_broadband_type: $('input[name="order_broadband_type"]:checked').val()
 			}
