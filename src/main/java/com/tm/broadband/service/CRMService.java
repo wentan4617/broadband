@@ -1203,12 +1203,16 @@ public class CRMService {
 		Customer customer = customerOrder.getCustomer();
 		// current invoice model
 		CustomerInvoice ci = new CustomerInvoice();
-		ci.getParams().put("customer_id", customer.getId());
-		ci.getParams().put("order_id", customerOrder.getId());
+		CustomerInvoice ciCur = new CustomerInvoice();
+		ciCur.getParams().put("customer_id", customer.getId());
+		ciCur.getParams().put("order_id", customerOrder.getId());
 		// previous invoice model
 		CustomerInvoice cpi = new CustomerInvoice();
-		cpi.getParams().put("customer_id", customer.getId());
-		cpi.getParams().put("order_id", customerOrder.getId());
+		CustomerInvoice ciPre = new CustomerInvoice();
+		ciPre.getParams().put("customer_id", customer.getId());
+		ciPre.getParams().put("order_id", customerOrder.getId());
+		
+		boolean isMostRecentInvoicePaid = false;
 		
 		if(!isRegenerate){
 			// If Not Regenerate then set next invoice create date
@@ -1223,22 +1227,41 @@ public class CRMService {
 			ci.setCreate_date(invoiceCreateDay);
 			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 10));
 			this.ciMapper.insertCustomerInvoice(ci);
+			ci.setStatus("unpaid");
 			// If Not Regenerate then get most recent invoice as previous invoice
-			cpi.getParams().put("where", "by_max_id");
+			ciPre.getParams().put("where", "by_max_id");
+			cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+			this.ciMapper.insertCustomerInvoice(ci);
 		} else {
 			// If Regenerate then get most recent invoice as current invoice
-			ci.getParams().put("where", "by_max_id");
-			ci = this.ciMapper.selectCustomerInvoice(ci);
+			ciCur.getParams().put("where", "by_max_id");
+			ci = this.ciMapper.selectCustomerInvoice(ciCur);
 			// If Regenerate then get before than most recent invoice as previous invoice
-			if(!"unpaid".equals(ci.getStatus())){
-				cpi.getParams().put("where", "by_max_id");
+			if(ci!=null && !"paid".equals(ci.getStatus())){
+				ciPre.getParams().put("where", "by_second_id");
+				cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+			} else if(ci!=null) {
+				ciPre.getParams().put("where", "by_max_id");
+				cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+				isMostRecentInvoicePaid = true;
+				ci = new CustomerInvoice();
+				ci.setCustomer_id(customer.getId());
+				ci.setOrder_id(customerOrder.getId());
+				ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
+				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 10));
 				this.ciMapper.insertCustomerInvoice(ci);
-			} else {
-				cpi.getParams().put("where", "by_second_id");
+			} else if(ci==null) {
+				ci = new CustomerInvoice();
+				ci.setCustomer_id(customer.getId());
+				ci.setOrder_id(customerOrder.getId());
+				ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
+				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 10));
+				this.ciMapper.insertCustomerInvoice(ci);
 			}
 		}
 		// Customer previous invoice
-		cpi = this.ciMapper.selectCustomerInvoice(cpi);
+		System.out.println("ci.getId(): "+ci.getId());
+		System.out.println("cpi.getId(): "+cpi.getId());
 		if (cpi != null && !ci.getId().equals(cpi.getId())) {
 			ci.setLast_invoice_id(cpi.getId());
 			ci.setLastCustomerInvoice(cpi);
@@ -1246,6 +1269,7 @@ public class CRMService {
 			cpi = null;
 		}
 		boolean isFirst = cpi==null ? true : false;
+		System.out.println("isFirst: "+isFirst);
 		
 		// detail holder begin
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
@@ -1286,39 +1310,46 @@ public class CRMService {
 				// else if detail type is discount then this discount is expired
 				// and will not be add to the invoice detail list
 			} else if (!"discount".equals(cod.getDetail_type())) {
-				if(cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-")){
-					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
-					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
-					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
-					// increase amountPayable
-					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
-					// add invoice detail to list
-					cids.add(cid);
-				} else if((!is_Next_Invoice && isFirst) || cod.getDetail_expired().getTime() >= System.currentTimeMillis()
-						  && !"termination-credit".equals(cod.getDetail_type())){
-					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
-					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
-					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
-					// increase amountPayable
-					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
-					// add invoice detail to list
-					cids.add(cid);
-				} else if("termination-credit".equals(cod.getDetail_type())){
+				if(cod.getDetail_type()!=null && "termination-credit".equals(cod.getDetail_type())){
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-")){
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+					// add invoice detail to list
+					cids.add(cid);
+				} else if(!isMostRecentInvoicePaid && !is_Next_Invoice && isFirst){
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+					// add invoice detail to list
+					cids.add(cid);
+				} else if(cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+					// add invoice detail to list
+					cids.add(cid);
 				}
 				if (cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") 
 						&& !"plan-topup".equals(cod.getDetail_type()) && !isRegenerate) {
-					
+					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
-					int nextInvoiceMonth = is_Next_Invoice && !isFirst ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = is_Next_Invoice && !isFirst ? 0 : -15;
+					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
+					int nextInvoiceDay = is_Next_Invoice ? 0 : -15;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
-					calNextInvoiceDay.setTime(!is_Next_Invoice && !isFirst
+					calNextInvoiceDay.setTime(!is_Next_Invoice 
 								? (customerOrder.getOrder_using_start() != null 
 								? customerOrder.getOrder_using_start() 
 								: new Date()) 
@@ -1350,12 +1381,12 @@ public class CRMService {
 
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
-		ci.setStatus("unpaid");
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		// balance = final payable - paid
 		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
 		// Add cids into ci
 		ci.setCustomerInvoiceDetails(cids);
+		ci.setStatus("unpaid");
 		
 		// Add cids into db
 		for (CustomerInvoiceDetail cid : cids) {

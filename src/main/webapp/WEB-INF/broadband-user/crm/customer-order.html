@@ -51,7 +51,7 @@
 				Early termination charge&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-left"></span>
 			</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
-				Early termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
+				Termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
 		<.
 			}
@@ -63,6 +63,9 @@
 			<strong>No-Term Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_no_term_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_generate_no_term_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
+				Termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
+			</a>
 		<.
 			}
 		.>
@@ -640,7 +643,7 @@
 							<td class="align-right">
 								<strong><.= customerOrderDetail[d].detail_type == 'discount' || customerOrderDetail[d].detail_type == 'termination-credit' ? '-' : '' .><.= detailPrice.toFixed(2) .></strong>
 								<.
-									if(customerOrderDetail[d].detail_type == 'plan-term'){
+									if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 								.>
 									<span style="display:none;" data-name="<.= customerOrder[i].id .>_detail_plan_monthly_price" data-val="<.= detailPrice.toFixed(2) .>"></span>
 								<.

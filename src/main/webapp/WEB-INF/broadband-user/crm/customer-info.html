@@ -282,7 +282,9 @@
 			<a href="javascript:void(0);" class="btn btn-success btn-lg btn-block" id="updateCustomer" >Update Customer</a>
 		</div>
 		<div class="col-md-4">
-			<a class="btn btn-danger  btn-lg btn-block" data-toggle="modal" data-target="#deleteCustomerModal">Delete customer and related information</a>
+			<. if(user_role == 'system-developer'){ .>
+				<a class="btn btn-danger  btn-lg btn-block" data-toggle="modal" data-target="#deleteCustomerModal">Delete customer and related information</a>
+			<. } .>
 		</div>
 	</div>
 </form>
