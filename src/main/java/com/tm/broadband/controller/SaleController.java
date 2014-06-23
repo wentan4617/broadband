@@ -367,28 +367,6 @@ public class SaleController {
         return response;
     }
 	
-	// DOWNLOAD CREDIT PDF
-	@RequestMapping(value = "/broadband-user/crm/customer/order/credit/pdf/download/{order_id}")
-    public ResponseEntity<byte[]> downloadCreditPDF(Model model
-    		,@PathVariable(value = "order_id") int order_id) throws IOException {
-		String filePath = this.saleService.queryCustomerCreditFilePathById(order_id);
-		
-		// get file path
-        Path path = Paths.get(filePath);
-        byte[] contents = null;
-        // transfer file contents to bytes
-        contents = Files.readAllBytes( path );
-        
-        HttpHeaders headers = new HttpHeaders();
-        // set spring framework media type
-        headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        // get file name with file's suffix
-        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
-        headers.setContentDispositionFormData( filename, filename );
-        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
-        return response;
-    }
-	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/create", method = RequestMethod.POST)
 	public String doCredit(Model model,
 			@ModelAttribute("customerCredit") @Validated(CustomerCreditValidatedMark.class) CustomerCredit customerCredit

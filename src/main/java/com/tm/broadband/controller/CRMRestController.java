@@ -875,9 +875,9 @@ public class CRMRestController {
 		return json;
 	}
 
-	// manually-generate
-	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/manually-generate", method = RequestMethod.POST)
-	public JSONBean<String> doManuallyGenerateOrdersInvoice(Model model
+	// termed manually-generate
+	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/termed/manually-generate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateTermedOrderInvoice(Model model
 			,@RequestParam("id") int id
 			,@RequestParam("generateType") String generateType
 			,RedirectAttributes attr) {
@@ -885,12 +885,34 @@ public class CRMRestController {
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
-		System.out.println("generateType: " + generateType);
 		
 		try {
 			this.crmService.createTermPlanInvoiceByOrder(co, isRegenerateInvoice);
-			json.getSuccessMap().put("alert-success", "Manually Generate is successful");
+			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) { e.printStackTrace(); }
+		
+		
+		
+		return json;
+	}
+
+	// no term manually-generate
+	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/no-term/manually-generate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateNoTermOrderInvoice(Model model
+			,@RequestParam("id") int id
+			,@RequestParam("generateType") String generateType
+			,RedirectAttributes attr) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		boolean isRegenerateInvoice = "regenerate".equals(generateType);
+		
+		try {
+			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
+			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
+			this.crmService.createInvoicePDFBoth(co, notificationEmail, notificationSMS, isRegenerateInvoice==true ? false : true, isRegenerateInvoice);
+			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
+		} catch (Exception e) { e.printStackTrace(); }
 		
 		
 		

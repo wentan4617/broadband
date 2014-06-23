@@ -45,14 +45,24 @@
 		.>
 			<br/>
 			<strong>Termed Order's Operations:</strong><br/><br/>
-			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
-			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent termed invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_manually_generate_invoice" data-type="generate">Generate next termed invoice</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_early_termination_charge" data-type="early_termination_charge">
 				Early termination charge&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-left"></span>
 			</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
 				Early termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
+		<.
+			}
+		.>
+		<.
+			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-no-term'){
+		.>
+			<br/>
+			<strong>No-Term Order's Operations:</strong><br/><br/>
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_no_term_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_generate_no_term_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
 		<.
 			}
 		.>
