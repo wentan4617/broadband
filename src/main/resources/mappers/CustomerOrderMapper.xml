@@ -230,6 +230,9 @@
 					<if test="params.order_status_1 != null">or co.order_status=#{params.order_status_1}</if>
 					<if test="params.status != null">and c.status=#{params.status}</if>
 				</when>
+				<when test="params.where == 'query_no_invoice'">
+					co.id NOT IN(SELECT DISTINCT order_id FROM tm_customer_invoice)
+				</when>
 				<when test="params.where == 'query_sale_id_not_null'">
 					co.sale_id is not null
 					<if test="params.sale_id != null">and co.sale_id = #{params.sale_id}</if>

@@ -201,7 +201,7 @@ tbody td {text-align:center;}
 					</p>
 				</div>
 				<div class="modal-footer">
-					<a href="javascript:void(0);" class="btn btn-success" data-name="changeStatusBtn" data-dismiss="modal">Comfirn to change Status</a>
+					<a href="javascript:void(0);" class="btn btn-success" data-name="changeStatusBtn" data-dismiss="modal">Confirm to change Status</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->

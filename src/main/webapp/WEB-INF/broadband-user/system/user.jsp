@@ -167,6 +167,14 @@
 									</li>
 									<li>
 										<label>
+											<form:checkbox path="authArray" value="billing/invoice/view" data-type="checkbox_billing" /> View Invoice
+										</label>
+									</li>
+								</ul>
+								<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label>
 											<form:checkbox path="authArray" value="billing/early-termination-charge/view" data-type="checkbox_billing" /> View Early Termination Charge
 										</label>
 									</li>

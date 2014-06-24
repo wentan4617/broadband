@@ -82,10 +82,16 @@ hr {
 					<ul class="list-unstyled">
 						<li>
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1/unpaid">View Early Termination Charge</a>
+                    		<a href="${ctx }/broadband-user/billing/invoice/view/1/unpaid">View Invoice</a>
                     	</li>
 					</ul>
 					<hr/>
+					<ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1/unpaid">View Early Termination Charge</a>
+                    	</li>
+					</ul>
 					<ul class="list-unstyled">
 						<li>
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>

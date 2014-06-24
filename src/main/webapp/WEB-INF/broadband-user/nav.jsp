@@ -84,12 +84,18 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
+								<a href="${ctx}/broadband-user/billing/invoice/view/1/unpaid">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Invoice
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
 								<a href="${ctx}/broadband-user/billing/early-termination-charge/view/1/unpaid">
 									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
 									View Early Termination Charge
 								</a>
 							</li>
-							<li class="divider"></li>
 							<li>
 								<a href="${ctx}/broadband-user/billing/termination-refund/view/1/unpaid">
 									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
