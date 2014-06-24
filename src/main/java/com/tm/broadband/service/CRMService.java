@@ -445,12 +445,29 @@ public class CRMService {
 	public List<CustomerOrder> queryCustomerOrders(CustomerOrder customerOrder) {
 		return this.customerOrderMapper.selectCustomerOrders(customerOrder);
 	}
+	
+	@Transactional
+	public Page<CustomerOrder> queryCustomerOrdersByPage(Page<CustomerOrder> page) {
+		page.setTotalRecord(this.customerOrderMapper.selectCustomerOrdersSum(page));
+		page.setResults(this.customerOrderMapper.selectCustomerOrdersByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public int queryCustomerOrdersSumByPage(Page<CustomerOrder> page) {
+		return this.customerOrderMapper.selectCustomerOrdersSum(page);
+	}
 
 	@Transactional
 	public Page<CustomerInvoice> queryCustomerInvoicesByPage(Page<CustomerInvoice> page) {
 		page.setTotalRecord(this.ciMapper.selectCustomerInvoicesSum(page));
 		page.setResults(this.ciMapper.selectCustomerInvoicesByPage(page));
 		return page;
+	}
+	
+	@Transactional
+	public int queryCustomerInvoicesSumByPage(Page<CustomerInvoice> page) {
+		return this.ciMapper.selectCustomerInvoicesSum(page);
 	}
 	
 	@Transactional

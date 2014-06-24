@@ -18,12 +18,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
+import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.SystemService;
 
 @Controller
@@ -31,12 +34,15 @@ public class BillingController {
 
 	private BillingService billingService;
 	private SystemService systemService;
+	private CRMService crmService;
 	
 	@Autowired
-	public BillingController(BillingService billingService,
-			SystemService systemService) {
+	public BillingController(BillingService billingService
+			,SystemService systemService
+			,CRMService crmService) {
 		this.billingService = billingService;
 		this.systemService = systemService;
+		this.crmService = crmService;
 	}
 	
 	// BEGIN EarlyTerminationCharge
@@ -175,4 +181,54 @@ public class BillingController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;
     }
+	
+	// BEGIN InvoiceView
+	@RequestMapping("/broadband-user/billing/invoice/view/{pageNo}/{status}")
+	public String toInvoice(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("status") String status) {
+
+		Page<CustomerInvoice> pageCis = new Page<CustomerInvoice>();
+		pageCis.setPageNo(pageNo);
+		pageCis.setPageSize(30);
+		pageCis.getParams().put("orderby", "ORDER BY create_date DESC");
+		System.out.println("status: "+status);
+		
+		if(!"orderNoInvoice".equals(status) && !"pending".equals(status)){
+			pageCis.getParams().put("status", status);
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+		} else if("pending".equals(status)) {
+			pageCis.getParams().put("payment_status", status);
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+		} else {
+			Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+			pageCos.getParams().put("where", "query_no_invoice");
+			pageCos.getParams().put("orderby", "ORDER BY order_create_date DESC");
+			model.addAttribute("pageCos", this.crmService.queryCustomerOrdersByPage(pageCos));
+		}
+		model.addAttribute("status", status);
+		model.addAttribute(status + "Active", "active");
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		
+
+		// BEGIN QUERY SUM BY STATUS
+		Page<CustomerInvoice> pageStatusSum = new Page<CustomerInvoice>();
+		pageStatusSum.getParams().put("status", "paid");
+		model.addAttribute("paidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status", "not_pay_off");
+		model.addAttribute("notPayOffSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status", "unpaid");
+		model.addAttribute("unpaidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("payment_status", "pending");
+		model.addAttribute("pendingSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		
+		Page<CustomerOrder> pageStatusCoSum = new Page<CustomerOrder>();
+		pageStatusCoSum.getParams().put("where", "query_no_invoice");
+		model.addAttribute("orderNoInvoiceSum", this.crmService.queryCustomerOrdersSumByPage(pageStatusCoSum));
+		// END QUERY SUM BY STATUS
+		
+		return "broadband-user/billing/invoice-view";
+	}
 }
