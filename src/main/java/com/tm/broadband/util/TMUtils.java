@@ -390,6 +390,9 @@ public class TMUtils {
 
 	// BEGIN RetrieveMonthAbbrWithDate
 	public static String retrieveMonthAbbrWithDate(Date date){
+		if(date==null){
+			return "";
+		}
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
 		String day = dateArr[2];
 		String finalDateStr = "";

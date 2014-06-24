@@ -547,13 +547,13 @@ public class CustomerController {
 		
 		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
 		
-		CustomerOrder customerOrder = new CustomerOrder();
-		customerOrder.getParams().put("where", "query_status_no_discard_cancel");
-		customerOrder.getParams().put("customer_id", customer.getId());
-		customerOrder.getParams().put("order_status", "discard");
-		customerOrder.getParams().put("order_status_1", "cancel");
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("where", "query_status_no_discard_cancel");
+		coQuery.getParams().put("customer_id", customer.getId());
+		coQuery.getParams().put("order_status", "discard");
+		coQuery.getParams().put("order_status_1", "cancel");
 		
-		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(customerOrder);
+		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(coQuery);
 		customer.setCustomerOrders(customerOrders);
 		
 		customer.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customer.getId(), "unpaid"));
@@ -700,15 +700,24 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/customer/invoice/checkout", method = RequestMethod.POST)
-	public String balanceCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
+	public String balanceCheckout(Model model, 
+			@RequestParam("invoice_id") int invoice_id,
+			HttpServletRequest req, RedirectAttributes attr) {
 		
-		Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
 		
-		System.out.println("customer.getCustomerInvoice().getBalance(): " + customer.getCustomerInvoice().getBalance());
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("id", invoice_id);
+		ciQuery.getParams().put("customer_id", customer.getId());
+		
+		CustomerInvoice ci = this.crmService.queryCustomerInvoice(ciQuery);
+		customer.setCustomerInvoice(ci);
+		
+		System.out.println("customer_id: " + customer.getId() + ", invoice_id: " + invoice_id + ", balance: " + ci.getBalance());
 
 		GenerateRequest gr = new GenerateRequest();
 
-		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerInvoice().getBalance()));
+		gr.setAmountInput(new DecimalFormat("#.00").format(ci.getBalance()));
 		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
@@ -756,12 +765,14 @@ public class CustomerController {
 			customerTransaction.setTransaction_sort("");
 			
 			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setOrder_id(customer.getCustomerInvoice().getOrder_id());
+			customerTransaction.setInvoice_id(customer.getCustomerInvoice().getId());
 			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 			
 			CustomerInvoice customerInvoice = new CustomerInvoice();
 			customerInvoice.setStatus("paid");
-			customerInvoice.setAmount_paid(customer.getCustomerInvoice().getBalance());
-			customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+			customerInvoice.setAmount_paid(customerTransaction.getAmount());
+			customerInvoice.setBalance(TMUtils.bigOperationTwoReminders(customer.getCustomerInvoice().getBalance(), customerInvoice.getAmount_paid(), "sub"));
 			customerInvoice.getParams().put("id", customer.getCustomerInvoice().getId());
 			
 			this.crmService.customerBalance(customerInvoice, customerTransaction);
@@ -820,7 +831,7 @@ public class CustomerController {
         
         HttpHeaders headers = new HttpHeaders();
         // set spring framework media type
-        headers.setContentType( MediaType.parseMediaType( "application/pdf" ) );
+		headers.setContentType(MediaType.parseMediaType("application/pdf"));
         // get file name with file's suffix
         String filename = "Invoice_"+URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
         headers.setContentDispositionFormData( filename, filename );
@@ -909,7 +920,7 @@ public class CustomerController {
 						
 					if (!"".equals(cir.getArea_name())
 							&& lCir.getLetter().equals(String.valueOf(cir.getArea_name().toUpperCase().charAt(0)))) {
-						System.out.println(lCir.getLetter() + ", " + cir.getArea_name().toUpperCase().charAt(0));
+						//System.out.println(lCir.getLetter() + ", " + cir.getArea_name().toUpperCase().charAt(0));
 						lCir.getCirs().add(cir);
 						b = true;
 						break;

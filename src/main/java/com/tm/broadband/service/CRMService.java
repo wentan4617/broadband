@@ -207,7 +207,14 @@ public class CRMService {
 			}
 			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-			cod_hd.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router(Free)");
+			if ("ADSL".equals(plan.getPlan_type())) {
+				cod_hd.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router(Free)");
+			} else if ("VDSL".equals(plan.getPlan_type())) {
+				cod_hd.setDetail_name("TP - LINK 150Mbps Wireless N VDSL2+ Modem Router(Free)");
+			} else if ("UFB".equals(plan.getPlan_type())) {
+				cod_hd.setDetail_name("UFB Modem Router(Free)");
+			}
+			
 			cod_hd.setDetail_price(0d);
 			//cod_hd.setDetail_is_next_pay(0);
 			//cod_hd.setDetail_expired(new Date());
@@ -322,8 +329,9 @@ public class CRMService {
 		ci.setOrder_id(customer.getCustomerOrder().getId());
 		ci.setCreate_date(new Date(System.currentTimeMillis()));
 		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
+		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
 		ci.setAmount_paid(customerTransaction.getAmount());
-		ci.setBalance(ci.getAmount_payable() - ci.getAmount_paid());
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
 		ci.setStatus("paid");
 		ci.setPaid_date(new Date(System.currentTimeMillis()));
 		ci.setPaid_type(customerTransaction.getCard_name());
@@ -605,6 +613,11 @@ public class CRMService {
 	/*
 	 * customer invoice
 	 * */
+	public CustomerInvoice queryCustomerInvoice(CustomerInvoice ci) {
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ci);
+		return cis!=null && cis.size()>0 ? cis.get(0) : null;
+	}
+	
 	public Double queryCustomerInvoicesBalanceByCid(int cid, String status) {
 		return this.ciMapper.selectCustomerInvoicesBalanceByCidAndStatus(cid, status);
 	}
