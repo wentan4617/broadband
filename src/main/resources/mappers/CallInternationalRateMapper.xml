@@ -70,7 +70,7 @@
 	
 	<select id="selectCallInternationalRatesGroupBy" resultType="CallInternationalRate">
 		select 
-			rate_type, area_name, rate_cost 
+			rate_type, area_name,  area_prefix, rate_cost 
 		from tm_call_international_rates
 		GROUP BY rate_type, area_name, rate_cost
 	</select>

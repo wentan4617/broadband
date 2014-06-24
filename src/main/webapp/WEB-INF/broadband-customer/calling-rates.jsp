@@ -57,17 +57,19 @@
 						<thead>
 							<tr>
 								<th>Country name</th>
+								<th>Area Prefix</th>
 								<th>Cents per min rate</th>
 							</tr>
 						</thead>
 						<tbody>
 							<c:forEach var="lCir" items="${letterCirs }">
 								<tr class="active" id="${lCir.letter}">
-									<td colspan="2">${lCir.letter}</td>
+									<td colspan="3">${lCir.letter}</td>
 								</tr>
 								<c:forEach var="cir" items="${lCir.cirs }">
 									<tr>
 										<td>${cir.area_name}</td>
+										<td>${cir.area_prefix}</td>
 										<td>$ ${cir.rate_cost}</td>
 									</tr>
 								</c:forEach>
