@@ -78,10 +78,10 @@
 			</div>
 		</div>
 		<div class="col-md-3 hidden-xs hidden-sm">
-			 <div data-spy="affix" data-offset-top="150"><!-- navbar-example panel panel-default -->
+			 <div data-spy="affix" data-offset-top="100"><!-- navbar-example panel panel-default -->
 				<ul class="pagination" style="margin-top:0;"><!-- nav nav-pills nav-stacked -->
 					<c:forEach var="lCir" items="${letterCirs }" varStatus="item">
-						<li class="${item.first ? 'active' : '' }" >
+						<li>
 							<a href="#${lCir.letter }" style="${item.last ? 'width:80px;height:35px;' : 'width:40px;height:35px;'}">${lCir.letter }</a>
 						</li>
 					</c:forEach>

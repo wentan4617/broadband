@@ -27,7 +27,9 @@ public class RadiusDataUsageImportCalculator {
 	private Job importJob;
 
 	@Autowired
-	public RadiusDataUsageImportCalculator(DataService dataService, JobLauncher launcher, @Qualifier("importRadiusRadacctJob") Job importJob) {
+	public RadiusDataUsageImportCalculator(DataService dataService, 
+			JobLauncher launcher, 
+			@Qualifier("importRadiusRadacctJob") Job importJob) {
 		this.dataService = dataService;
 		this.launcher = launcher;
 		this.importJob = importJob;

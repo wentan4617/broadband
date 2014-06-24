@@ -21,11 +21,11 @@
 				</div>
 				
 				<c:if test="${fn:length(page.results) > 0 }">
-					<table class="table">
+					<table class="table" style="font-size:12px;">
 						<c:forEach var="co" items="${customerSession.customerOrders}">
 							<thead>
 								<tr>
-									<th colspan="7">
+									<th colspan="10">
 										<h4 class="text-success" style="margin:2px;">Order Serial:&nbsp;<small>${co.id}</small> </h4>
 									</th>
 								</tr>
@@ -34,7 +34,9 @@
 									<th>Due Date</th>
 									<th>Reference</th>
 									<th>Amount Payable</th>
+									<th>Total Credit</th>
 									<th>Amount Paid</th>
+									<th>Balance</th>
 									<th>&nbsp;</th>
 									<th>&nbsp;</th>
 								</tr>
@@ -49,9 +51,9 @@
 													<td>&nbsp;</td>
 													<td>${tx.card_name}</td>
 													<td>&nbsp;</td>
-													<td>
-														<strong>NZ$ <fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
-													</td>
+													<td>&nbsp;</td>
+													<td><strong>NZ$ <fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong></td>
+													<td></td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>
 												</tr>
@@ -61,7 +63,7 @@
 											<td>${invoice.create_date_str}</td>
 											<td>
 												&nbsp;
-												<c:if test="${invoice.status=='unpaid' || invoice.status=='not_pay_off'}">
+												<c:if test="${invoice.status == 'unpaid' || invoice.status == 'not_pay_off'}">
 													<strong style="color: red;">${invoice.due_date_str}</strong>
 												</c:if>
 											</td>
@@ -69,27 +71,28 @@
 											<td>
 												<strong>NZ$ <fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td>&nbsp;</td>
 											<td>
-												<c:if test="${(invoice.status=='unpaid' || invoice.status=='not_pay_off')}">
+												<strong>NZ$ <fmt:formatNumber value="${invoice.amount_payable - invoice.final_payable_amount}" type="number" pattern="#,##0.00" /></strong>		
+											</td>
+											<td>&nbsp;</td>
+											<td><strong>NZ$ <fmt:formatNumber value="${invoice.balance}" type="number" pattern="#,##0.00" /></strong></td>
+											<td>
+												<c:if test="${(invoice.status == 'unpaid' || invoice.status == 'not_pay_off')}">
 													<div class="btn-group">
 														<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
 															Make Payment <span class="caret"></span>
 														</button>
-														<ul class="dropdown-menu" role="menu">
-															<li><a href="#" data-balance="${invoice.amount_payable}">Credit Card</a></li>
+														<ul class="dropdown-menu">
+															<li><a href="#" data-id="${invoice.id }" data-balance="${invoice.balance}">Credit Card</a></li>
 														</ul>
 													</div>
 												</c:if>
-												
 											</td>
-											<!-- download icon -->
 											<td>
-												<c:if test="${invoice.invoice_pdf_path!=null}">
+												<c:if test="${invoice.invoice_pdf_path != null}">
 													<a target="_blank"
 														href="${ctx}/broadband-customer/billing/invoice/pdf/download/${invoice.id}"
-														data-toggle="tooltip" data-placement="bottom"
-														data-original-title="download invoice PDF">
+														data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF">
 														<span class="glyphicon glyphicon-cloud-download"></span>
 													</a>
 												</c:if>
@@ -127,6 +130,7 @@
 </div>
 
 <form action="${ctx }/customer/invoice/checkout" method="post" id="balanceForm">
+	<input type="hidden" id="invoice_id" name="invoice_id"/>
 </form>
 
 
@@ -135,6 +139,7 @@
 <script type="text/javascript">
 (function($){
 	$('a[data-balance]').click(function(){
+		$('#invoice_id').val($(this).attr('data-id'));
 		$('#balanceForm').submit();
 	});
 })(jQuery);

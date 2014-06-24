@@ -86,7 +86,7 @@
 							<div class="col-md-3">
 								<select id="plan_sort" class="form-control selectpicker">
 									<option value="">None</option>
-									<option value="CLOTHING" ${plan.plan_sort=='CLOTHING'?'selected="selected"':'' }>CLOTHING</option>
+									<option value="CLOTHED" ${plan.plan_sort=='CLOTHED'?'selected="selected"':'' }>CLOTHED</option>
 									<option value="NAKED" ${plan.plan_sort=='NAKED'?'selected="selected"':'' }>NAKED</option>
 								</select>
 							</div>

@@ -19,7 +19,6 @@ public class DataImportProcessor implements ItemProcessor<RadiusRadacct, Radacct
 
 	public Radacct process(RadiusRadacct rr) {
 		
-		System.out.println(rr.getRadacctid());
 		Radacct acct = new Radacct();
 		
 		//private Long radacctid;
