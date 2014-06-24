@@ -891,35 +891,24 @@ public class CRMService {
 		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
 		
 		// Previous invoice's preparation
-		CustomerInvoice ciPre = new CustomerInvoice();
-		ciPre.getParams().put("customer_id", c.getId());
-		ciPre.getParams().put("order_id", co.getId());
+		CustomerInvoice ciPreQuery = new CustomerInvoice();
+		ciPreQuery.getParams().put("customer_id", c.getId());
+		ciPreQuery.getParams().put("order_id", co.getId());
 		// Previous invoice
 		CustomerInvoice cpi = null;
 		
 		if(isRegenerateInvoice){
-			CustomerInvoice ciCur = new CustomerInvoice();
-			ciCur.getParams().put("where", "by_max_id");
-			ciCur.getParams().put("customer_id", c.getId());
-			ciCur.getParams().put("order_id", co.getId());
-			ci = ciMapper.selectCustomerInvoice(ciCur);
+			CustomerInvoice ciCurQuery = new CustomerInvoice();
+			ciCurQuery.getParams().put("where", "by_max_id");
+			ciCurQuery.getParams().put("customer_id", c.getId());
+			ciCurQuery.getParams().put("order_id", co.getId());
+			ci = ciMapper.selectCustomerInvoice(ciCurQuery);
 			if(ci != null && !"paid".equals(ci.getStatus())){
-				
-//				totalPayableAmouont = ci.getAmount_payable();
-				
-//				// Delete most recent invoice's PDF
-//				File file = new File(ci.getInvoice_pdf_path());
-//				if(file.exists()){
-//					file.delete();
-//				}
-				
-				// Delete most recent invoice's details
-//				ciDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(ci.getId());
-				ciPre.getParams().put("where", "by_second_id");
-				cpi = ciMapper.selectCustomerInvoice(ciPre);
+				ciPreQuery.getParams().put("where", "by_second_id");
+				cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
 			} else if(ci != null) {
-				ciPre.getParams().put("where", "by_max_id");
-				cpi = ciMapper.selectCustomerInvoice(ciPre);
+				ciPreQuery.getParams().put("where", "by_max_id");
+				cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
 				ci = new CustomerInvoice();
 				ci.setCustomer_id(c.getId());
 				ci.setOrder_id(co.getId());
@@ -935,8 +924,8 @@ public class CRMService {
 				ciMapper.insertCustomerInvoice(ci);
 			}
 		} else {
-			ciPre.getParams().put("where", "by_max_id");
-			cpi = ciMapper.selectCustomerInvoice(ciPre);
+			ciPreQuery.getParams().put("where", "by_max_id");
+			cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
 			ci = new CustomerInvoice();
 			ci.setCustomer_id(c.getId());
 			ci.setOrder_id(co.getId());
@@ -950,14 +939,6 @@ public class CRMService {
 		ci.setAmount_payable(ci.getAmount_payable()!=null ? ci.getAmount_payable() : 0d);
 		ci.setBalance(ci.getBalance()!=null ? ci.getBalance() : 0d);
 		ci.getParams().put("id", ci.getId());	// For update invoice use
-		
-//		// If is regenerate current invoice, then execute some cleaning jobs
-//		if(isRegenerateInvoice && cpi != null){
-//			
-//			// Delete most recent invoice
-////			ciMapper.deleteCustomerInvoiceById(cpi.getId());
-//			
-//		}
 		
 		// Current invoice detail
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
@@ -1119,15 +1100,6 @@ public class CRMService {
 				
 			}
 		}
-//		if(!isFirst){
-//			// Add previous invoice's balance
-//			totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, cpi.getBalance());
-//			if(!"paid".equals(cpi.getStatus())){
-//				cpi.getParams().put("id", cpi.getId());
-//				ciMapper.updateCustomerInvoice(cpi);
-//			}
-//		}
-		
 
 		// store company detail begin
 		CompanyDetail companyDetail = companyDetailMapper.selectCompanyDetail();
@@ -1178,11 +1150,6 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		// add sql condition: id
-//		ci.setAmount_paid((Double) map.get("amount_paid"));
-//		ci.setFinal_payable_amount((Double) map.get("final_amount_payable"));
-//		ci.setAmount_payable((Double) map.get("amount_payable"));
-//		ci.setBalance((Double) map.get("balance"));
 		ci.setStatus("unpaid");
 		ciMapper.updateCustomerInvoice(ci);
 
@@ -1203,14 +1170,14 @@ public class CRMService {
 		Customer customer = customerOrder.getCustomer();
 		// current invoice model
 		CustomerInvoice ci = new CustomerInvoice();
-		CustomerInvoice ciCur = new CustomerInvoice();
-		ciCur.getParams().put("customer_id", customer.getId());
-		ciCur.getParams().put("order_id", customerOrder.getId());
+		CustomerInvoice ciCurQuery = new CustomerInvoice();
+		ciCurQuery.getParams().put("customer_id", customer.getId());
+		ciCurQuery.getParams().put("order_id", customerOrder.getId());
 		// previous invoice model
 		CustomerInvoice cpi = new CustomerInvoice();
-		CustomerInvoice ciPre = new CustomerInvoice();
-		ciPre.getParams().put("customer_id", customer.getId());
-		ciPre.getParams().put("order_id", customerOrder.getId());
+		CustomerInvoice ciPreQuery = new CustomerInvoice();
+		ciPreQuery.getParams().put("customer_id", customer.getId());
+		ciPreQuery.getParams().put("order_id", customerOrder.getId());
 		
 		boolean isMostRecentInvoicePaid = false;
 		
@@ -1226,23 +1193,22 @@ public class CRMService {
 			ci.setOrder_id(customerOrder.getId());
 			ci.setCreate_date(invoiceCreateDay);
 			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 10));
-			this.ciMapper.insertCustomerInvoice(ci);
 			ci.setStatus("unpaid");
 			// If Not Regenerate then get most recent invoice as previous invoice
-			ciPre.getParams().put("where", "by_max_id");
-			cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+			ciPreQuery.getParams().put("where", "by_max_id");
+			cpi = this.ciMapper.selectCustomerInvoice(ciPreQuery);
 			this.ciMapper.insertCustomerInvoice(ci);
 		} else {
 			// If Regenerate then get most recent invoice as current invoice
-			ciCur.getParams().put("where", "by_max_id");
-			ci = this.ciMapper.selectCustomerInvoice(ciCur);
+			ciCurQuery.getParams().put("where", "by_max_id");
+			ci = this.ciMapper.selectCustomerInvoice(ciCurQuery);
 			// If Regenerate then get before than most recent invoice as previous invoice
 			if(ci!=null && !"paid".equals(ci.getStatus())){
-				ciPre.getParams().put("where", "by_second_id");
-				cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+				ciPreQuery.getParams().put("where", "by_second_id");
+				cpi = this.ciMapper.selectCustomerInvoice(ciPreQuery);
 			} else if(ci!=null) {
-				ciPre.getParams().put("where", "by_max_id");
-				cpi = this.ciMapper.selectCustomerInvoice(ciPre);
+				ciPreQuery.getParams().put("where", "by_max_id");
+				cpi = this.ciMapper.selectCustomerInvoice(ciPreQuery);
 				isMostRecentInvoicePaid = true;
 				ci = new CustomerInvoice();
 				ci.setCustomer_id(customer.getId());

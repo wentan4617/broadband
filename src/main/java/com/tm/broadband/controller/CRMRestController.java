@@ -36,7 +36,6 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.JSONBean;
-import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
@@ -53,40 +52,46 @@ import com.tm.broadband.validator.mark.CustomerValidatedMark;
 @RestController
 @SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })
 public class CRMRestController {
-	
+
 	private CRMService crmService;
 	private MailerService mailerService;
 	private SystemService systemService;
 	private SmserService smserService;
 
 	@Autowired
-	public CRMRestController(CRMService crmService, MailerService mailerService, SystemService systemService,
+	public CRMRestController(CRMService crmService,
+			MailerService mailerService, SystemService systemService,
 			SmserService smserService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
 	}
-	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
-	public JSONBean<Customer> customerPersonalCreate(Model model, 
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result) {
+	public JSONBean<Customer> customerPersonalCreate(
+			Model model,
+			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer,
+			BindingResult result) {
 
 		return this.returnJsonCustomer(model, customer, result);
 	}
-	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/business/create", method = RequestMethod.POST)
-	public JSONBean<Customer> customerBusinessCreate(Model model, 
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result) {
+	public JSONBean<Customer> customerBusinessCreate(
+			Model model,
+			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer,
+			BindingResult result) {
 
 		return this.returnJsonCustomer(model, customer, result);
 	}
-	
-	private JSONBean<Customer> returnJsonCustomer(Model model, Customer customer, BindingResult result) {
-		
+
+	private JSONBean<Customer> returnJsonCustomer(Model model,
+			Customer customer, BindingResult result) {
+
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
-		
+
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
 			return json;
@@ -101,7 +106,7 @@ public class CRMRestController {
 			json.getErrorMap().put("cellphone", "is already in use");
 			return json;
 		}
-		
+
 		cValid.getParams().put("where", "query_exist_customer_by_email");
 		cValid.getParams().put("email", customer.getEmail());
 		count = this.crmService.queryExistCustomer(cValid);
@@ -110,11 +115,11 @@ public class CRMRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
-		
+
 		customer.setRegister_date(new Date());
 		customer.setActive_date(new Date());
 		customer.setBalance(0d);
-		
+
 		if ("save".equals(customer.getAction())) {
 			this.crmService.createCustomer(customer);
 			json.setUrl("/broadband-user/crm/customer/query/redirect");
@@ -122,38 +127,42 @@ public class CRMRestController {
 			model.addAttribute("customer", customer);
 			json.setUrl("/broadband-user/crm/customer/order/create");
 		}
-		
+
 		return json;
 	}
-	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/personal/edit")
-	public JSONBean<Customer> customerPersonalEdit( Model model,
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
-			SessionStatus status) {
-		
+	public JSONBean<Customer> customerPersonalEdit(
+			Model model,
+			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer,
+			BindingResult result, SessionStatus status) {
+
 		return this.returnJsonCustomerEdit(customer, result, status);
 	}
-	
+
 	@RequestMapping(value = "/broadband-user/crm/customer/business/edit")
-	public JSONBean<Customer> customerBusinessEdit( Model model,
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
-			SessionStatus status) {
-		
+	public JSONBean<Customer> customerBusinessEdit(
+			Model model,
+			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer,
+			BindingResult result, SessionStatus status) {
+
 		return this.returnJsonCustomerEdit(customer, result, status);
 	}
-	
-	private JSONBean<Customer> returnJsonCustomerEdit(Customer customer, BindingResult result, SessionStatus status) {
-		
+
+	private JSONBean<Customer> returnJsonCustomerEdit(Customer customer,
+			BindingResult result, SessionStatus status) {
+
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
-		
+
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
 			return json;
 		}
-		
+
 		Customer cValid = new Customer();
-		cValid.getParams().put("where", "query_exist_not_self_customer_by_mobile");
+		cValid.getParams().put("where",
+				"query_exist_not_self_customer_by_mobile");
 		cValid.getParams().put("cellphone", customer.getCellphone());
 		cValid.getParams().put("id", customer.getId());
 		int count = this.crmService.queryExistCustomer(cValid);
@@ -162,8 +171,9 @@ public class CRMRestController {
 			json.getErrorMap().put("cellphone", "is already in use");
 			return json;
 		}
-		
-		cValid.getParams().put("where", "query_exist_not_self_customer_by_email");
+
+		cValid.getParams().put("where",
+				"query_exist_not_self_customer_by_email");
 		cValid.getParams().put("email", customer.getEmail());
 		count = this.crmService.queryExistCustomer(cValid);
 
@@ -171,39 +181,42 @@ public class CRMRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
-		
+
 		customer.getParams().put("id", customer.getId());
 		this.crmService.editCustomer(customer);
-		
-		//status.setComplete();
-		
-		json.getSuccessMap().put("alert-success", "Edit customer (ID: " + customer.getId() + ") is successful.");
-		
+
+		// status.setComplete();
+
+		json.getSuccessMap().put("alert-success",
+				"Edit customer (ID: " + customer.getId() + ") is successful.");
+
 		return json;
 	}
-	
+
 	// BEGIN DDPay
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay-a2a", method = RequestMethod.POST)
-	public JSONBean<ManualDefrayLog> doDefrayByDDPay(Model model,
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByDDPay(Model model,
 			@RequestParam("process_way") String process_way,
-			ManualDefrayLog manualDefrayLog, BindingResult result,
-			HttpServletRequest req) {
-		
-		JSONBean<ManualDefrayLog> json = new JSONBean<ManualDefrayLog>();
-		
+			@RequestParam("invoice_id") int invoice_id, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
 		Integer customer_id = null;
 		Integer order_id = null;
-		Integer invoice_id = null;
 		Double paid_amount = null;
 		String process_sort = null;
-		
+
 		// BEGIN INVOICE ASSIGNMENT
-		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(manualDefrayLog.getInvoice_id());
+		CustomerInvoice ci = this.crmService
+				.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
-		
-		String redirectUrl = "/manual_defray/redirect/"+ci.getCustomer_id()+"/"+ci.getId()+"/"+ci.getOrder_id()+"/"+process_way+"/"+ci.getBalance();
-		if(ci.getBalance() <= 0d){
-			// If invoice is paid off then no reason for executing the below operations
+
+		String redirectUrl = "/manual_defray/redirect/" + ci.getCustomer_id()
+				+ "/" + ci.getId() + "/" + ci.getOrder_id() + "/" + process_way
+				+ "/" + ci.getBalance();
+		if (ci.getBalance() <= 0d) {
+			// If invoice is paid off then no reason for executing the below
+			// operations
 			json.setUrl(redirectUrl);
 			ci.setStatus("paid");
 			this.crmService.editCustomerInvoice(ci);
@@ -211,9 +224,9 @@ public class CRMRestController {
 		}
 		customer_id = ci.getCustomer_id();
 		order_id = ci.getOrder_id();
-		invoice_id = ci.getId();
-		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
-		
+		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(),
+				ci.getAmount_paid());
+
 		// Assign paid to paid + paid_amount, make this invoice paid off
 		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
 		// Assign balance as 0.0, make this invoice paid off
@@ -221,9 +234,9 @@ public class CRMRestController {
 		// Assign status to paid directly, make this invoice paid off
 		ci.setStatus("paid");
 		// END INVOICE ASSIGNMENT
-		
+
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(ci.getOrder_id())) {
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -234,76 +247,70 @@ public class CRMRestController {
 			process_sort = "plan-topup";
 			break;
 		}
-		
+
+		User userSession = (User) req.getSession().getAttribute("userSession");
+
 		// BEGIN TRANSACTION ASSIGNMENT
 		CustomerTransaction ct = new CustomerTransaction();
 		// Assign invoice's paid amount to transaction's amount
 		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
 		// Assign card_name as ddpay
 		ct.setCard_name(process_way);
 		// Assign transaction's sort as type's return from order by order_id
 		ct.setTransaction_sort(process_sort);
-		// Assign customer_id, order_id, invoice_id to transaction's related fields
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
 		ct.setCustomer_id(customer_id);
 		ct.setOrder_id(order_id);
 		ct.setInvoice_id(invoice_id);
 		// Assign transaction's time as current time
 		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("NZD");
+		ct.setExecutor(userSession.getId());
 		// END TRANSACTION ASSIGNMENT
-		
-		// BEGIN MANUAL DEFRAY LOG ASSIGNMENT
-		User userSession = (User) req.getSession().getAttribute("userSession");
-		ManualDefrayLog mdl = new ManualDefrayLog();
-		
-		mdl.setUser_id(userSession.getId());
-		mdl.setCustomer_id(customer_id);
-		mdl.setOrder_id(order_id);
-		mdl.setInvoice_id(invoice_id);
-		mdl.setEliminate_amount(paid_amount);
-		mdl.setEliminate_way(process_way);
-		mdl.setEliminate_time(new Date());
-		// END MANUAL DEFRAY LOG ASSIGNMENT
-		
+
 		// BEGIN CALL SERVICE LAYER
 		this.crmService.editCustomerInvoice(ci);
 		this.crmService.createCustomerTransaction(ct);
-		this.crmService.createManualDefrayLog(mdl);
 		// END CALL SERVICE LAYER
-		
-		// BEGIN REGENERATE INVOICE PDF
-		this.crmService.createInvoicePDFByInvoiceID(ci.getId());
-		// END REGENERATE INVOICE PDF
 
 		json.setUrl(redirectUrl);
 
-		json.getSuccessMap().put("alert-success", "Related invoice's balance had successfully been paid off!");
-		
+		json.getSuccessMap().put("alert-success",
+				"Related invoice's balance had successfully been paid off!");
+
 		return json;
 	}
+
 	// END DDPay
-	
+
 	// BEGIN Cash
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/cash", method = RequestMethod.POST)
-	public JSONBean<ManualDefrayLog> doDefrayByCash(Model model,
-			ManualDefrayLog manualDefrayLog, BindingResult result,
+	public JSONBean<String> doDefrayByCash(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			@RequestParam("eliminate_amount") double eliminate_amount,
 			HttpServletRequest req) {
-		
-		JSONBean<ManualDefrayLog> json = new JSONBean<ManualDefrayLog>();
-		
+
+		JSONBean<String> json = new JSONBean<String>();
+
 		Integer customer_id = null;
 		Integer order_id = null;
-		Integer invoice_id = null;
 		Double paid_amount = null;
 		String process_way = "Cash";
 		String process_sort = null;
-		
+
 		// BEGIN INVOICE ASSIGNMENT
-		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(manualDefrayLog.getInvoice_id());
+		CustomerInvoice ci = this.crmService
+				.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
-		
-		String redirectUrl = "/manual_defray/redirect/"+ci.getCustomer_id()+"/"+ci.getId()+"/"+ci.getOrder_id()+"/"+process_way+"/"+ci.getBalance();
-		if(ci.getBalance() <= 0d){
-			// If invoice is paid off then no reason for executing the below operations
+
+		String redirectUrl = "/manual_defray/redirect/" + ci.getCustomer_id()
+				+ "/" + ci.getId() + "/" + ci.getOrder_id() + "/" + process_way
+				+ "/" + ci.getBalance();
+		if (ci.getBalance() <= 0d) {
+			// If invoice is paid off then no reason for executing the below
+			// operations
 			json.setUrl(redirectUrl);
 			ci.setStatus("paid");
 			this.crmService.editCustomerInvoice(ci);
@@ -311,32 +318,31 @@ public class CRMRestController {
 		}
 		customer_id = ci.getCustomer_id();
 		order_id = ci.getOrder_id();
-		invoice_id = ci.getId();
-		paid_amount = manualDefrayLog.getEliminate_amount();
-		
-		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getAmount_paid())));
-		ci.setFinal_payable_amount(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getFinal_payable_amount())));
-		
-		System.out.println("paid_amount: "+paid_amount);
-		System.out.println("ci.getAmount_paid(): "+ci.getAmount_paid());
-		System.out.println("ci.getBalance(): "+ci.getBalance());
-		System.out.println("ci.getFinal_payable_amount(): "+ci.getFinal_payable_amount());
-		
-		// Assign (paid plus eliminate amount) to paid, make this invoice paid (off)
+		paid_amount = eliminate_amount;
+
+		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci
+				.getAmount_paid())));
+		ci.setFinal_payable_amount(Double.parseDouble(TMUtils
+				.fillDecimalPeriod(ci.getFinal_payable_amount())));
+
+		// Assign (paid plus eliminate amount) to paid, make this invoice paid
+		// (off)
 		ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), paid_amount));
 		// Assign balance as 0.0, make this invoice paid off
-		
-		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
-		// If balance equals to 0d then paid else not_pay_off, make this invoice paid (off)
-		if(ci.getBalance() <= 0d){
+
+		ci.setBalance(TMUtils.bigOperationTwoReminders(
+				ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		// If balance equals to 0d then paid else not_pay_off, make this invoice
+		// paid (off)
+		if (ci.getBalance() <= 0d) {
 			ci.setStatus("paid");
 		} else {
 			ci.setStatus("not_pay_off");
 		}
 		// END INVOICE ASSIGNMENT
-		
+
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(ci.getOrder_id())) {
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -347,129 +353,142 @@ public class CRMRestController {
 			process_sort = "plan-topup";
 			break;
 		}
-		
+
+		User userSession = (User) req.getSession().getAttribute("userSession");
+
 		// BEGIN TRANSACTION ASSIGNMENT
 		CustomerTransaction ct = new CustomerTransaction();
 		// Assign invoice's paid amount to transaction's amount
 		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
 		// Assign card_name as ddpay
 		ct.setCard_name(process_way);
 		// Assign transaction's sort as type's return from order by order_id
 		ct.setTransaction_sort(process_sort);
-		// Assign customer_id, order_id, invoice_id to transaction's related fields
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
 		ct.setCustomer_id(customer_id);
 		ct.setOrder_id(order_id);
 		ct.setInvoice_id(invoice_id);
 		// Assign transaction's time as current time
 		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("NZD");
+		ct.setExecutor(userSession.getId());
 		// END TRANSACTION ASSIGNMENT
-		
-		// BEGIN MANUAL DEFRAY LOG ASSIGNMENT
-		User userSession = (User) req.getSession().getAttribute("userSession");
-		ManualDefrayLog mdl = new ManualDefrayLog();
-		
-		mdl.setUser_id(userSession.getId());
-		mdl.setCustomer_id(customer_id);
-		mdl.setOrder_id(order_id);
-		mdl.setInvoice_id(invoice_id);
-		mdl.setEliminate_amount(paid_amount);
-		mdl.setEliminate_way(process_way);
-		mdl.setEliminate_time(new Date());
-		// END MANUAL DEFRAY LOG ASSIGNMENT
-		
+
 		// BEGIN CALL SERVICE LAYER
 		this.crmService.editCustomerInvoice(ci);
 		this.crmService.createCustomerTransaction(ct);
-		this.crmService.createManualDefrayLog(mdl);
 		// END CALL SERVICE LAYER
-		
-		// BEGIN REGENERATE INVOICE PDF
-		this.crmService.createInvoicePDFByInvoiceID(ci.getId());
-		// END REGENERATE INVOICE PDF
-		
 
 		json.setUrl(redirectUrl);
 
-		json.getSuccessMap().put("alert-success", "Cash defray had successfully been operates!");
-		
+		json.getSuccessMap().put("alert-success",
+				"Cash defray had successfully been operates!");
+
 		return json;
 	}
+	// BEGIN Cash
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/change-payment-status", method = RequestMethod.POST)
+	public JSONBean<String> doChangePaymentStatus(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerInvoice ci = new CustomerInvoice();
+		ci.setPayment_status("pending");
+		ci.getParams().put("id", invoice_id);
+		this.crmService.editCustomerInvoice(ci);
+
+		json.getSuccessMap().put("alert-success", "Change payment status had successfully been operates!");
+
+		return json;
+	}
+
 	// END Cash
 
 	// Update order status
 	@RequestMapping(value = "/broadband-user/crm/customer/order/status/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderStatusEdit( Model model,
+	public JSONBean<CustomerOrder> doCustomerOrderStatusEdit(Model model,
 			CustomerOrder customerOrder) {
-		
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		CustomerOrder co = customerOrder;
 		co.getParams().put("id", co.getId());
-		
+
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
 
-		json.getSuccessMap().put("alert-success", "Order Status had successfully been saved!");
-		
+		json.getSuccessMap().put("alert-success",
+				"Order Status had successfully been saved!");
+
 		return json;
 	}
 
 	// Update order due date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/due_date/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderDueDateEdit( Model model,
+	public JSONBean<CustomerOrder> doCustomerOrderDueDateEdit(Model model,
 			CustomerOrder customerOrder) {
-		
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		CustomerOrder co = new CustomerOrder();
-		co.setOrder_due(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_due_str()));
+		co.setOrder_due(TMUtils.parseDateYYYYMMDD(customerOrder
+				.getOrder_due_str()));
 		co.getParams().put("id", customerOrder.getId());
-		
+
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
 
-		json.getSuccessMap().put("alert-success", "Order Due Date had successfully been saved!");
-		
+		json.getSuccessMap().put("alert-success",
+				"Order Due Date had successfully been saved!");
+
 		return json;
 	}
 
 	// Update order belongs to
 	@RequestMapping(value = "/broadband-user/crm/customer/order/belongs_to/edit", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderBelonsToEdit( Model model,
+	public JSONBean<String> doCustomerOrderBelonsToEdit(Model model,
 			CustomerOrder customerOrder,
 			@RequestParam("user_name") String user_name) {
-		
+
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = customerOrder;
 		co.getParams().put("id", co.getId());
-		
+
 		this.crmService.editCustomerOrder(co);
 		json.setModel(user_name);
-		
-		json.getSuccessMap().put("alert-success", "Belongs to had successfully been edited!");
-		
+
+		json.getSuccessMap().put("alert-success",
+				"Belongs to had successfully been edited!");
+
 		return json;
 	}
-	
+
 	// Update order PPPoE
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerPPPoEEdit(Model model,
 			CustomerOrder customerOrder) {
-		
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		
+
 		// If loginname is empty
 		String loginName = customerOrder.getPppoe_loginname();
 		// If password is empty
 		String password = customerOrder.getPppoe_password();
-		
+
 		// If any of them is empty
 		boolean anyEmpty = "".equals(loginName) || "".equals(password);
-		
+
 		if (anyEmpty) {
-			if("".equals(loginName)){
-				json.getErrorMap().put(customerOrder.getId()+"_pppoe_loginname_input", "Enter PPPoE login name!");
+			if ("".equals(loginName)) {
+				json.getErrorMap().put(
+						customerOrder.getId() + "_pppoe_loginname_input",
+						"Enter PPPoE login name!");
 			}
-			if("".equals(password)){
-				json.getErrorMap().put(customerOrder.getId()+"_pppoe_password_input", "Enter PPPoE password!");
+			if ("".equals(password)) {
+				json.getErrorMap().put(
+						customerOrder.getId() + "_pppoe_password_input",
+						"Enter PPPoE password!");
 			}
 			return json;
 		}
@@ -477,40 +496,42 @@ public class CRMRestController {
 		co.setPppoe_loginname(loginName);
 		co.setPppoe_password(password);
 		co.getParams().put("id", customerOrder.getId());
-		
+
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
-		json.getSuccessMap().put("alert-success", "PPPoE details had successfully been saved!");
-		
+		json.getSuccessMap().put("alert-success",
+				"PPPoE details had successfully been saved!");
+
 		return json;
 	}
 
 	// Update SV/CVLan & RFS date
 	@RequestMapping(value = "broadband-user/crm/customer/order/save/svcvlanrfsdate", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerRFSDateEdit( Model model,
-			CustomerOrder customerOrder,
-			@RequestParam("way") String way) {
-		
+	public JSONBean<CustomerOrder> doCustomerRFSDateEdit(Model model,
+			CustomerOrder customerOrder, @RequestParam("way") String way) {
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		
+
 		// If SVLan is empty
 		String svLan = customerOrder.getSvlan().trim();
 		// If CVLan is empty
 		String cvLan = customerOrder.getCvlan().trim();
-		
+
 		// If any of them is empty
 		boolean anyLanEmpty = "".equals(svLan) || "".equals(cvLan);
-		
+
 		if (anyLanEmpty) {
-			if("".equals(svLan)){
-				json.getErrorMap().put(customerOrder.getId()+"_svlan_input", "Enter SVLan!");
+			if ("".equals(svLan)) {
+				json.getErrorMap().put(customerOrder.getId() + "_svlan_input",
+						"Enter SVLan!");
 			}
-			if("".equals(cvLan)){
-				json.getErrorMap().put(customerOrder.getId()+"_cvlan_input", "Enter CVLan!");
+			if ("".equals(cvLan)) {
+				json.getErrorMap().put(customerOrder.getId() + "_cvlan_input",
+						"Enter CVLan!");
 			}
 			return json;
 		}
-		
+
 		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		CustomerOrder tempCO = new CustomerOrder();
 		tempCO.getParams().put("id", customerOrder.getId());
@@ -518,47 +539,53 @@ public class CRMRestController {
 		for (CustomerOrderDetail cod : tempCO.getCustomerOrderDetails()) {
 			cods.add(cod);
 		}
-		
-		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
+
+		Customer customer = this.crmService.queryCustomerById(customerOrder
+				.getCustomer_id());
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
+		Notification notification = this.systemService.queryNotificationBySort(
+				"service-installation", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// call mail at value retriever
-		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, cods,  companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customer,
+				customerOrder, cods, companyDetail);
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 		// get sms register template from db
-		notification = this.systemService.queryNotificationBySort("service-installation", "sms");
-		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, cods, companyDetail);
+		notification = this.systemService.queryNotificationBySort(
+				"service-installation", "sms");
+		MailRetriever.mailAtValueRetriever(notification, customer,
+				customerOrder, cods, companyDetail);
 		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-		
-		
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(),
+				notification.getContent());
+
 		CustomerOrder co = new CustomerOrder();
 		co.setSvlan(svLan);
 		co.setCvlan(cvLan);
-		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder.getRfs_date_str()));
+		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder
+				.getRfs_date_str()));
 		co.getParams().put("id", customerOrder.getId());
-		
+
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
-		json.getSuccessMap().put("alert-success", "svlan, cvlan and rfs_date had successfully been updated.");
+		json.getSuccessMap().put("alert-success",
+				"svlan, cvlan and rfs_date had successfully been updated.");
 		return json;
 	}
 
 	// Update service giving date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/service_giving_date", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerServiceGivingDateEdit( Model model,
+	public JSONBean<CustomerOrder> doCustomerServiceGivingDateEdit(Model model,
 			CustomerOrder customerOrder,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
-			@RequestParam("way") String way,
-			HttpServletRequest req) {
-		
+			@RequestParam("way") String way, HttpServletRequest req) {
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		
+
 		// Get user from session
 		User user = (User) req.getSession().getAttribute("userSession");
 		// ProvisionLog to insert
@@ -566,16 +593,19 @@ public class CRMRestController {
 		proLog.setUser_id(user.getId());
 		proLog.setOrder_id_customer(customerOrder.getId());
 		proLog.setOrder_sort("customer-order");
-		
+
 		// CustomerOrder begin
 		CustomerOrder co = new CustomerOrder();
-		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD(customerOrder
+				.getOrder_using_start_str()));
 		co.getParams().put("id", customerOrder.getId());
 		co.setOrder_status("using");
-		
-		if (!"order-topup".equals(customerOrder.getOrder_type()) && !"order-term".equals(customerOrder.getOrder_type())) {
+
+		if (!"order-topup".equals(customerOrder.getOrder_type())
+				&& !"order-term".equals(customerOrder.getOrder_type())) {
 			Calendar calNextInvoiceDay = Calendar.getInstance();
-			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder
+					.getOrder_using_start_str()));
 			// Add plan unit months
 			calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
 			// Go back 15 days
@@ -587,101 +617,133 @@ public class CRMRestController {
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
 			co.setOrder_due(cal.getTime());
 		}
-		
-		if("save".equals(way)){
+
+		if ("save".equals(way)) {
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			// check order status
-			if ("ordering-paid".equals(customerOrder.getOrder_status()) || "order-term".equals(customerOrder.getOrder_type())) {
+			if ("ordering-paid".equals(customerOrder.getOrder_status())
+					|| "order-term".equals(customerOrder.getOrder_type())) {
 
 				// send mailer
-				Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
-				CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-				Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
-				MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
+				Customer customer = this.crmService
+						.queryCustomerById(customerOrder.getCustomer_id());
+				CompanyDetail companyDetail = this.crmService
+						.queryCompanyDetail();
+				Notification notification = this.systemService
+						.queryNotificationBySort("service-giving", "email");
+				MailRetriever.mailAtValueRetriever(notification, customer,
+						customerOrder, companyDetail); // call mail at value
+														// retriever
 				ApplicationEmail applicationEmail = new ApplicationEmail();
 				applicationEmail.setAddressee(customer.getEmail());
 				applicationEmail.setSubject(notification.getTitle());
 				applicationEmail.setContent(notification.getContent());
 				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-				notification = this.systemService.queryNotificationBySort("service-giving", "sms"); // get sms register template from db
-				MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-				
-			} else if ("ordering-pending".equals(customerOrder.getOrder_status()) && !"order-term".equals(customerOrder.getOrder_type())) {
-				
-				Notification notificationEmail = this.systemService.queryNotificationBySort("service-giving", "email");
-				Notification notificationSMS = this.systemService.queryNotificationBySort("service-giving", "sms");
-				this.crmService.createInvoicePDF(customerOrder, notificationEmail, notificationSMS);
-					
+				notification = this.systemService.queryNotificationBySort(
+						"service-giving", "sms"); // get sms register template
+													// from db
+				MailRetriever.mailAtValueRetriever(notification, customer,
+						customerOrder, companyDetail);
+				this.smserService.sendSMSByAsynchronousMode(
+						customer.getCellphone(), notification.getContent()); // send
+																				// sms
+																				// to
+																				// customer's
+																				// mobile
+																				// phone
+
+			} else if ("ordering-pending".equals(customerOrder
+					.getOrder_status())
+					&& !"order-term".equals(customerOrder.getOrder_type())) {
+
+				Notification notificationEmail = this.systemService
+						.queryNotificationBySort("service-giving", "email");
+				Notification notificationSMS = this.systemService
+						.queryNotificationBySort("service-giving", "sms");
+				this.crmService.createInvoicePDF(customerOrder,
+						notificationEmail, notificationSMS);
+
 			}
-			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been saved!");
+			json.getSuccessMap().put("alert-success",
+					"Service Given Date had successlly been saved!");
 		} else {
 			proLog.setProcess_way("editing service giving");
-			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
+			Customer customer = this.crmService.queryCustomerById(customerOrder
+					.getCustomer_id());
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+			Notification notification = this.systemService
+					.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder,  companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer,
+					customerOrder, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+			notification = this.systemService.queryNotificationBySort(
+					"service-giving", "sms");
+			MailRetriever.mailAtValueRetriever(notification, customer,
+					customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
+			this.smserService.sendSMSByAsynchronousMode(
+					customer.getCellphone(), notification.getContent());
+			json.getSuccessMap().put("alert-success",
+					"Service Given Date had successlly been updated!");
 		}
-		
+
 		this.crmService.editCustomerOrder(co, proLog);
-		
+
 		json.setModel(co);
 		return json;
 	}
 
 	// Update optional request
 	@RequestMapping(value = "/broadband-user/crm/customer/order/optional_request/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderOptionalRequestEdit( Model model,
-			CustomerOrder customerOrder) {
-		
+	public JSONBean<CustomerOrder> doCustomerOrderOptionalRequestEdit(
+			Model model, CustomerOrder customerOrder) {
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		
-		if(!"".equals(customerOrder.getOptional_request().trim())){
+
+		if (!"".equals(customerOrder.getOptional_request().trim())) {
 			CustomerOrder co = new CustomerOrder();
 			co.getParams().put("id", customerOrder.getId());
 			co.setOptional_request(customerOrder.getOptional_request());
 			this.crmService.editCustomerOrder(co);
 			json.setModel(co);
-			json.getSuccessMap().put("alert-success", "Optional Request had just been edited!");
+			json.getSuccessMap().put("alert-success",
+					"Optional Request had just been edited!");
 		} else {
-			json.getErrorMap().put("alert-error", "Please input correct Optional Request!");
+			json.getErrorMap().put("alert-error",
+					"Please input correct Optional Request!");
 		}
-		
+
 		return json;
 	}
 
 	// Update broadband asid
 	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderBroadbandASIDEdit( Model model,
-			CustomerOrder customerOrder) {
-		
+	public JSONBean<CustomerOrder> doCustomerOrderBroadbandASIDEdit(
+			Model model, CustomerOrder customerOrder) {
+
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		
-		if(!"".equals(customerOrder.getBroadband_asid().trim())){
+
+		if (!"".equals(customerOrder.getBroadband_asid().trim())) {
 			CustomerOrder co = new CustomerOrder();
 			co.getParams().put("id", customerOrder.getId());
 			co.setBroadband_asid(customerOrder.getBroadband_asid());
 			this.crmService.editCustomerOrder(co);
 			json.setModel(co);
-			json.getSuccessMap().put("alert-success", "Broadband ASID had just been edited!");
+			json.getSuccessMap().put("alert-success",
+					"Broadband ASID had just been edited!");
 		} else {
-			json.getErrorMap().put("alert-error", "Please input correct Broadband ASID!");
+			json.getErrorMap().put("alert-error",
+					"Please input correct Broadband ASID!");
 		}
-		
+
 		return json;
 	}
 
@@ -690,39 +752,42 @@ public class CRMRestController {
 	public Map<String, Object> toCustomerEdit(Model model,
 			@RequestParam("id") int id) {
 
-		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		Customer customer = this.crmService
+				.queryCustomerByIdWithCustomerOrder(id);
 		User user = new User();
 		List<User> users = this.systemService.queryUser(user);
 		user.getParams().put("user_role", "sales");
 		List<User> sales = this.systemService.queryUser(user);
-		
+
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("customer", customer);
 		map.put("users", users);
 		map.put("sales", sales);
-		
+
 		return map;
 	}
 
 	// Update PSTN
 	@RequestMapping(value = "/broadband-user/crm/customer/order/pstn/edit", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderDetailPSTNEdit(Model model
-			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("pstn_number") String pstn_number
-			,RedirectAttributes attr) {
+	public JSONBean<String> doCustomerOrderDetailPSTNEdit(Model model,
+			@RequestParam("order_detail_id") int order_detail_id,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("pstn_number") String pstn_number,
+			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		
-		if(!"".equals(pstn_number.trim())){
+
+		if (!"".equals(pstn_number.trim())) {
 			CustomerOrderDetail cod = new CustomerOrderDetail();
 			cod.getParams().put("id", order_detail_id);
 			cod.setPstn_number(pstn_number);
 			this.crmService.editCustomerOrderDetail(cod);
 			// Update Customer Order Detail PSTN is successful.
-			json.getSuccessMap().put("alert-success", "PSTN number had just been edited!");
+			json.getSuccessMap().put("alert-success",
+					"PSTN number had just been edited!");
 		} else {
-			json.getErrorMap().put("alert-error", "Please input correct PSTN number!");
+			json.getErrorMap().put("alert-error",
+					"Please input correct PSTN number!");
 		}
 
 		return json;
@@ -730,30 +795,37 @@ public class CRMRestController {
 
 	// Add discount
 	@RequestMapping(value = "/broadband-user/crm/customer/order/offer-calling-minutes/save", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderDetailCallingMinutesCreate(Model model
-			,@RequestParam("order_id") int order_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("calling_minutes") String calling_minutes
-			,@RequestParam("calling_country") String calling_country
-			,RedirectAttributes attr
-			,HttpServletRequest req) {
+	public JSONBean<String> doCustomerOrderDetailCallingMinutesCreate(
+			Model model, @RequestParam("order_id") int order_id,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("calling_minutes") String calling_minutes,
+			@RequestParam("calling_country") String calling_country,
+			RedirectAttributes attr, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		
-		if(TMUtils.isNumber(calling_minutes) && !"".trim().equals(calling_country)){
+
+		if (TMUtils.isNumber(calling_minutes)
+				&& !"".trim().equals(calling_country)) {
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
-			customerOrderDetail.setDetail_name(calling_minutes+" minutes free to " + calling_country.split("-")[0]);
+			customerOrderDetail.setDetail_name(calling_minutes
+					+ " minutes free to " + calling_country.split("-")[0]);
 			customerOrderDetail.setDetail_type("present-calling-minutes");
 			customerOrderDetail.setDetail_desc(calling_country);
-			customerOrderDetail.setDetail_unit(Integer.parseInt(calling_minutes));
+			customerOrderDetail.setDetail_unit(Integer
+					.parseInt(calling_minutes));
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
 			// Create Customer Order Detail Discount is successful.
-			json.getSuccessMap().put("alert-success", "Free Calling Minutes had been attached to related order! Order Id: " + order_id);
+			json.getSuccessMap().put(
+					"alert-success",
+					"Free Calling Minutes had been attached to related order! Order Id: "
+							+ order_id);
 		} else {
-			json.getErrorMap().put("alert-error", "Calling Minutes Format Incorrect! Must be digital numbers");
+			json.getErrorMap()
+					.put("alert-error",
+							"Calling Minutes Format Incorrect! Must be digital numbers");
 		}
 
 		return json;
@@ -761,55 +833,63 @@ public class CRMRestController {
 
 	// Remove calling minutes
 	@RequestMapping(value = "/broadband-user/crm/customer/order/present-calling-minutes/remove", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderDetailCallingMinutesRemove(Model model
-			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id
-			,RedirectAttributes attr) {
-		
+	public JSONBean<String> doCustomerOrderDetailCallingMinutesRemove(
+			Model model, @RequestParam("order_detail_id") int order_detail_id,
+			@RequestParam("customer_id") int customer_id,
+			RedirectAttributes attr) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
 		// Remove Customer Order Detail Calling Minutes is successful.
-		json.getSuccessMap().put("alert-success", "Selected Calling Minutes had been detached from related order!");
+		json.getSuccessMap()
+				.put("alert-success",
+						"Selected Calling Minutes had been detached from related order!");
 
 		return json;
 	}
 
 	// Add discount
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/save", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderDetailDiscountCreate(Model model
-			,@RequestParam("order_id") int order_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("detail_name") String detail_name
-			,@RequestParam("detail_price") Double detail_price
-			,@RequestParam("detail_unit") Integer detail_unit
-			,@RequestParam("detail_expired") String detail_expired
-			,@RequestParam("detail_type") String detail_type
-			,RedirectAttributes attr
-			,HttpServletRequest req) {
+	public JSONBean<String> doCustomerOrderDetailDiscountCreate(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("detail_name") String detail_name,
+			@RequestParam("detail_price") Double detail_price,
+			@RequestParam("detail_unit") Integer detail_unit,
+			@RequestParam("detail_expired") String detail_expired,
+			@RequestParam("detail_type") String detail_type,
+			RedirectAttributes attr, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
 		Pattern pat = Pattern.compile(rexp);
 		Matcher mat = pat.matcher(detail_expired);
 		boolean dateType = mat.matches();
-		if(dateType && TMUtils.isDateFormat(detail_expired, "-")){
+		if (dateType && TMUtils.isDateFormat(detail_expired, "-")) {
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
 			customerOrderDetail.setDetail_name(detail_name);
 			customerOrderDetail.setDetail_price(detail_price);
 			customerOrderDetail.setDetail_unit(detail_unit);
-			customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
+			customerOrderDetail.setDetail_expired(TMUtils
+					.parseDateYYYYMMDD(detail_expired));
 			customerOrderDetail.setDetail_type(detail_type);
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
 			// Create Customer Order Detail Discount is successful.
-			String detailType = detail_type.equals("discount") ? "credit" : "debit";
-			json.getSuccessMap().put("alert-success", "New "+ detailType +" had been attached to related order! Order Id: " + order_id);
+			String detailType = detail_type.equals("discount") ? "credit"
+					: "debit";
+			json.getSuccessMap().put(
+					"alert-success",
+					"New " + detailType
+							+ " had been attached to related order! Order Id: "
+							+ order_id);
 		} else {
-			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyy-mm-dd");
+			json.getErrorMap().put("alert-error",
+					"Expiry Date Format Incorrect! Must be yyy-mm-dd");
 		}
 
 		return json;
@@ -817,51 +897,57 @@ public class CRMRestController {
 
 	// Remove discount
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/remove", method = RequestMethod.POST)
-	public JSONBean<String> doCustomerOrderDetailDiscountRemove(Model model
-			,@RequestParam("order_detail_id") int order_detail_id
-			,@RequestParam("customer_id") int customer_id
-			,@RequestParam("detail_type") String detail_type
-			,RedirectAttributes attr) {
-		
+	public JSONBean<String> doCustomerOrderDetailDiscountRemove(Model model,
+			@RequestParam("order_detail_id") int order_detail_id,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("detail_type") String detail_type,
+			RedirectAttributes attr) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
 		// Remove Customer Order Detail Discount is successful.
-		String detailType = "discount".equals(detail_type) ? "Credit" :
-							 "debit".equals(detail_type) ? "Debit" :
-							  "early-termination-debit".equals(detail_type) ? "Early Termination Charge" :
-							   "termination-credit".equals(detail_type) ? "Termination Refund" : detail_type;
-		json.getSuccessMap().put("alert-success", "Selected "+detailType+" had been detached from related order!");
+		String detailType = "discount".equals(detail_type) ? "Credit"
+				: "debit".equals(detail_type) ? "Debit"
+						: "early-termination-debit".equals(detail_type) ? "Early Termination Charge"
+								: "termination-credit".equals(detail_type) ? "Termination Refund"
+										: detail_type;
+		json.getSuccessMap().put(
+				"alert-success",
+				"Selected " + detailType
+						+ " had been detached from related order!");
 
 		return json;
 	}
 
 	// Regenerate invoice PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/generate/{invoiceId}")
-	public JSONBean<String> generateInvoicePDF(Model model
-    		,@PathVariable(value = "invoiceId") int invoiceId){
-		
+	public JSONBean<String> generateInvoicePDF(Model model,
+			@PathVariable(value = "invoiceId") int invoiceId) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
-		json.getSuccessMap().put("alert-success", "Regenerate Invoice Successfully!");
+		json.getSuccessMap().put("alert-success",
+				"Regenerate Invoice Successfully!");
 
 		return json;
 	}
 
 	// Regenerate application form PDF
 	@RequestMapping(value = "/broadband-user/crm/customer/order/application_form/regenerate/{order_id}")
-	public JSONBean<String> regenerateOrderApplicationForm(Model model
-			,@PathVariable("order_id") int order_id) {
-		
+	public JSONBean<String> regenerateOrderApplicationForm(Model model,
+			@PathVariable("order_id") int order_id) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
 
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
 		try {
-			orderPDFPath = new OrderPDFCreator(co.getCustomer(), co, co.getCustomer().getOrganization()).create();
+			orderPDFPath = new OrderPDFCreator(co.getCustomer(), co, co
+					.getCustomer().getOrganization()).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -870,182 +956,223 @@ public class CRMRestController {
 		this.crmService.editCustomerOrder(co);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		// Regenerate order application PDF is successful.
-		json.getSuccessMap().put("alert-success", "Generate New Order Application Successfully!");
+		json.getSuccessMap().put("alert-success",
+				"Generate New Order Application Successfully!");
 
 		return json;
 	}
 
 	// termed manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/termed/manually-generate", method = RequestMethod.POST)
-	public JSONBean<String> doManuallyGenerateTermedOrderInvoice(Model model
-			,@RequestParam("id") int id
-			,@RequestParam("generateType") String generateType
-			,RedirectAttributes attr) {
-		
+	public JSONBean<String> doManuallyGenerateTermedOrderInvoice(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("generateType") String generateType,
+			RedirectAttributes attr) {
+
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
-		
+
 		try {
-			this.crmService.createTermPlanInvoiceByOrder(co, isRegenerateInvoice);
-			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
-		} catch (ParseException e) { e.printStackTrace(); }
-		
-		
-		
+			this.crmService.createTermPlanInvoiceByOrder(co,
+					isRegenerateInvoice);
+			json.getSuccessMap().put("alert-success",
+					"Manually Generate Termed Invoice is successful");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
 		return json;
 	}
 
 	// no term manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/no-term/manually-generate", method = RequestMethod.POST)
-	public JSONBean<String> doManuallyGenerateNoTermOrderInvoice(Model model
-			,@RequestParam("id") int id
-			,@RequestParam("generateType") String generateType
-			,RedirectAttributes attr) {
-		
+	public JSONBean<String> doManuallyGenerateNoTermOrderInvoice(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("generateType") String generateType,
+			RedirectAttributes attr) {
+
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
-		
+
 		try {
-			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
-			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			this.crmService.createInvoicePDFBoth(co, notificationEmail, notificationSMS, isRegenerateInvoice==true ? false : true, isRegenerateInvoice);
-			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
-		} catch (Exception e) { e.printStackTrace(); }
-		
-		
-		
+			Notification notificationEmail = this.systemService
+					.queryNotificationBySort("invoice", "email");
+			Notification notificationSMS = this.systemService
+					.queryNotificationBySort("invoice", "sms");
+			this.crmService.createInvoicePDFBoth(co, notificationEmail,
+					notificationSMS,
+					isRegenerateInvoice == true ? false : true,
+					isRegenerateInvoice);
+			json.getSuccessMap().put("alert-success",
+					"Manually Generate No Term Invoice is successful");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return json;
 	}
 
 	// EarlyTerminationCharge Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/early-termination-charge/invoice/generate", method = RequestMethod.POST)
-	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model
-			,@RequestParam("id") int id
-			,@RequestParam("terminatedDate") String terminatedDate
-			,HttpServletRequest req) {
-		
+	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("terminatedDate") String terminatedDate,
+			HttpServletRequest req) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		User user = (User) req.getSession().getAttribute("userSession");
-		
+
 		try {
-			if(TMUtils.isDateFormat(terminatedDate, "-")){
-				this.crmService.createEarlyTerminationInvoice(id, TMUtils.parseDateYYYYMMDD(terminatedDate), user.getId());
-				json.getSuccessMap().put("alert-success", "Early termination charge invoice had just been generated!");
+			if (TMUtils.isDateFormat(terminatedDate, "-")) {
+				this.crmService
+						.createEarlyTerminationInvoice(id,
+								TMUtils.parseDateYYYYMMDD(terminatedDate),
+								user.getId());
+				json.getSuccessMap()
+						.put("alert-success",
+								"Early termination charge invoice had just been generated!");
 			} else {
-				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+				json.getErrorMap().put("alert-error",
+						"Terminated Date Format Incorrect!");
 			}
-		} catch (ParseException e) { e.printStackTrace(); }
-		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
 		return json;
 	}
 
 	// TerminationRefund Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/termination-credit/invoice/generate", method = RequestMethod.POST)
-	public JSONBean<String> doTerminationRefundInvoice(Model model
-			,@RequestParam("id") int id
-			,@RequestParam("terminatedDate") String terminatedDate
-			,@RequestParam("productName") String productName
-			,@RequestParam("monthlyCharge") Double monthlyCharge
-			,@RequestParam("accountNo") String accountNo
-			,@RequestParam("accountName") String accountName
-			,HttpServletRequest req) {
-		
+	public JSONBean<String> doTerminationRefundInvoice(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("terminatedDate") String terminatedDate,
+			@RequestParam("productName") String productName,
+			@RequestParam("monthlyCharge") Double monthlyCharge,
+			@RequestParam("accountNo") String accountNo,
+			@RequestParam("accountName") String accountName,
+			HttpServletRequest req) {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		User user = (User) req.getSession().getAttribute("userSession");
-		
+
 		try {
-			
-			if(TMUtils.isDateFormat(terminatedDate, "-")){
-				this.crmService.createTerminationRefundInvoice(id, TMUtils.parseDateYYYYMMDD(terminatedDate), user, accountNo, accountName, monthlyCharge, productName);
-				json.getSuccessMap().put("alert-success", "Termination refund invoice had just been generated!");
+
+			if (TMUtils.isDateFormat(terminatedDate, "-")) {
+				this.crmService.createTerminationRefundInvoice(id,
+						TMUtils.parseDateYYYYMMDD(terminatedDate), user,
+						accountNo, accountName, monthlyCharge, productName);
+				json.getSuccessMap().put("alert-success",
+						"Termination refund invoice had just been generated!");
 			} else {
-				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+				json.getErrorMap().put("alert-error",
+						"Terminated Date Format Incorrect!");
 			}
-		} catch (ParseException e) { e.printStackTrace(); }
-		
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
 		return json;
 	}
 
 	// Detail EarlyTerminationCharge Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/early-termination-debit/save", method = RequestMethod.POST)
-	public JSONBean<String> doDetailEarlyTerminationChargeInvoice(Model model
-			,@RequestParam("order_id") int order_id
-			,@RequestParam("terminatedDate") String terminatedDate
-			,@RequestParam("detail_type") String detail_type
-			,HttpServletRequest req) throws ParseException {
-		
+	public JSONBean<String> doDetailEarlyTerminationChargeInvoice(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("terminatedDate") String terminatedDate,
+			@RequestParam("detail_type") String detail_type,
+			HttpServletRequest req) throws ParseException {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		User user = (User) req.getSession().getAttribute("userSession");
-		
-		if(TMUtils.isDateFormat(terminatedDate, "-")){
-			
+
+		if (TMUtils.isDateFormat(terminatedDate, "-")) {
+
 			CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
-			Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(co.getOrder_using_start(), TMUtils.parseDateYYYYMMDD(terminatedDate));
+			Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(
+					co.getOrder_using_start(),
+					TMUtils.parseDateYYYYMMDD(terminatedDate));
 
 			CustomerOrderDetail cod = new CustomerOrderDetail();
 			cod.setOrder_id(order_id);
 			cod.setDetail_name("Early Termination Debit");
-			cod.setDetail_desc("Plan End Date: "+ TMUtils.dateFormatYYYYMMDD((Date) map.get("legal_termination_date")));
-			cod.setDetail_plan_memo(
-					"Termination Charge: "+TMUtils.fillDecimalPeriod(String.valueOf(map.get("charge_amount")))
-					+" Service Given: "+co.getOrder_using_start_str()
-					+" Terminated Date: "+terminatedDate
-					+" Month Between: "+(Integer) map.get("months_between_begin_end")+" month(s)");
+			cod.setDetail_desc("Plan End Date: "
+					+ TMUtils.dateFormatYYYYMMDD((Date) map
+							.get("legal_termination_date")));
+			cod.setDetail_plan_memo("Termination Charge: "
+					+ TMUtils.fillDecimalPeriod(String.valueOf(map
+							.get("charge_amount"))) + " Service Given: "
+					+ co.getOrder_using_start_str() + " Terminated Date: "
+					+ terminatedDate + " Month Between: "
+					+ (Integer) map.get("months_between_begin_end")
+					+ " month(s)");
 			cod.setDetail_price((Double) map.get("charge_amount"));
 			cod.setDetail_type(detail_type);
 			cod.setDetail_unit(1);
 			cod.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(cod);
-			json.getSuccessMap().put("alert-success", "Early termination charge detail had been attached to related order!");
+			json.getSuccessMap()
+					.put("alert-success",
+							"Early termination charge detail had been attached to related order!");
 		} else {
-			json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+			json.getErrorMap().put("alert-error",
+					"Terminated Date Format Incorrect!");
 		}
-		
+
 		return json;
 	}
 
 	// Detail TerminationRefund Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/termination-credit/save", method = RequestMethod.POST)
-	public JSONBean<String> doDetailTerminationRefundInvoice(Model model
-			,@RequestParam("order_id") int order_id
-			,@RequestParam("terminatedDate") String terminatedDate
-			,@RequestParam("detail_type") String detail_type
-			,@RequestParam("monthlyCharge") Double monthlyCharge
-			,HttpServletRequest req) throws ParseException {
-		
+	public JSONBean<String> doDetailTerminationRefundInvoice(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("terminatedDate") String terminatedDate,
+			@RequestParam("detail_type") String detail_type,
+			@RequestParam("monthlyCharge") Double monthlyCharge,
+			HttpServletRequest req) throws ParseException {
+
 		JSONBean<String> json = new JSONBean<String>();
-		
+
 		User user = (User) req.getSession().getAttribute("userSession");
-		
-		if(TMUtils.isDateFormat(terminatedDate, "-")){
-			
-			Map<String, Object> map = TMUtils.terminationRefundCalculations(TMUtils.parseDateYYYYMMDD(terminatedDate), monthlyCharge);
-			
+
+		if (TMUtils.isDateFormat(terminatedDate, "-")) {
+
+			Map<String, Object> map = TMUtils.terminationRefundCalculations(
+					TMUtils.parseDateYYYYMMDD(terminatedDate), monthlyCharge);
+
 			CustomerOrderDetail cod = new CustomerOrderDetail();
 			cod.setOrder_id(order_id);
 			cod.setDetail_name("Termination Credit");
-			cod.setDetail_desc("Residual Day(s): "+ (Integer) map.get("remaining_days"));
-			cod.setDetail_plan_memo(
-					"Total Credit Back: "+TMUtils.fillDecimalPeriod((Double) map.get("refund_amount"))
-					+" Terminated Date: "+terminatedDate
-					+" Month Max Date: "+TMUtils.dateFormatYYYYMMDD((Date) map.get("last_date_of_month")));
+			cod.setDetail_desc("Residual Day(s): "
+					+ (Integer) map.get("remaining_days"));
+			cod.setDetail_plan_memo("Total Credit Back: "
+					+ TMUtils.fillDecimalPeriod((Double) map
+							.get("refund_amount"))
+					+ " Terminated Date: "
+					+ terminatedDate
+					+ " Month Max Date: "
+					+ TMUtils.dateFormatYYYYMMDD((Date) map
+							.get("last_date_of_month")));
 			cod.setDetail_price((Double) map.get("refund_amount"));
 			cod.setDetail_unit(1);
 			cod.setDetail_type(detail_type);
 			cod.setUser_id(user.getId());
 
 			this.crmService.createCustomerOrderDetail(cod);
-			json.getSuccessMap().put("alert-success", "Termination refund detail had been attached to related order!");
+			json.getSuccessMap()
+					.put("alert-success",
+							"Termination refund detail had been attached to related order!");
 		} else {
-			json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
+			json.getErrorMap().put("alert-error",
+					"Terminated Date Format Incorrect!");
 		}
-		
+
 		return json;
 	}
-	
+
 }

@@ -42,6 +42,7 @@ public class CustomerTransaction implements Serializable {
 	private String txnMac;
 	private String transaction_type;
 	private String transaction_sort;
+	private Integer executor;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -275,6 +276,14 @@ public class CustomerTransaction implements Serializable {
 
 	public void setOrder_id(Integer order_id) {
 		this.order_id = order_id;
+	}
+
+	public Integer getExecutor() {
+		return executor;
+	}
+
+	public void setExecutor(Integer executor) {
+		this.executor = executor;
 	}
 
 }

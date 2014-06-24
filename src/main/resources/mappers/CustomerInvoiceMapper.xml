@@ -65,7 +65,8 @@
 		i.`invoice_pdf_path`		as i_invoice_pdf_path,
 		i.`paid_date`				as i_paid_date,
 		i.`paid_type`				as i_paid_type,
-		i.`last_invoice_id`			as i_last_invoice_id
+		i.`last_invoice_id`			as i_last_invoice_id,
+		i.`payment_status`			as i_payment_status
 	</sql>
 	<sql id="customerLastInvoiceColumns">
 		li.`id`							as li_id,
@@ -81,7 +82,8 @@
 		li.`invoice_pdf_path`			as li_invoice_pdf_path,
 		li.`paid_date`					as li_paid_date,
 		li.`paid_type`					as li_paid_type,
-		li.`last_invoice_id`			as li_last_invoice_id
+		li.`last_invoice_id`			as li_last_invoice_id,
+		li.`payment_status`				as li_payment_status
 	</sql>
 	<sql id="customerColumns">
 		c.`id` 				as c_id, 
@@ -213,6 +215,7 @@
 		<result property="paid_date" column="i_paid_date" />
 		<result property="paid_type" column="i_paid_type" />
 		<result property="last_invoice_id" column="i_last_invoice_id" />
+		<result property="payment_status" column="i_payment_status" />
 		
 		<association property="customer" javaType="Customer">
 			<id property="id" column="c_id" />
@@ -288,6 +291,7 @@
 			<result property="paid_date" column="li_paid_date" />
 			<result property="paid_type" column="li_paid_type" />
 			<result property="last_invoice_id" column="li_last_invoice_id" />
+			<result property="payment_status" column="li_payment_status" />
 		</association>
 	</resultMap>
 	
@@ -299,11 +303,11 @@
 		INSERT INTO `tm_customer_invoice`(
 			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
 			`final_payable_amount`, `amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
-			`paid_date`, `paid_type`, `last_invoice_id`) 
+			`paid_date`, `paid_type`, `last_invoice_id`, `payment_status`) 
 		VALUES (
 			#{invoice_serial}, #{customer_id}, #{order_id}, #{create_date}, #{due_date},
 			#{final_payable_amount}, #{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
-			#{paid_date}, #{paid_type}, #{last_invoice_id})
+			#{paid_date}, #{paid_type}, #{last_invoice_id}, #{payment_status})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -327,7 +331,8 @@
 			<if test="invoice_pdf_path != null">`invoice_pdf_path`=#{invoice_pdf_path},</if>
 			<if test="paid_date != null">`paid_date`=#{paid_date},</if>
 			<if test="paid_type != null">`paid_type`=#{paid_type},</if>
-			<if test="last_invoice_id != null">`last_invoice_id`=#{last_invoice_id}</if>
+			<if test="last_invoice_id != null">`last_invoice_id`=#{last_invoice_id},</if>
+			<if test="payment_status != null">`payment_status`=#{payment_status}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
