@@ -16,9 +16,15 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-06-24
+
+* [transaction表添加一个字段，将后台付款时将操作者id存至transaction表](steven)
+* 在Billing模块中开发View Invoice界面，有5个badge：unpaid,pending,paid,order no invoice,not paid off(steven)
+ 
 demand version 1.0.21 2014-06-23
 
-* customer order的invoice的make payment添加一个A2A（Account2Account）选项，原理和DDPay无异，在设置transaction类型时改成Account2Account(steven)
+* [customer order的invoice的make payment添加一个Credit Card选项，原理和DDPay无异，在设置transaction类型时改成Credit Card](steven)
+* [customer order的invoice的make payment添加一个A2A（Account2Account）选项，原理和DDPay无异，在设置transaction类型时改成Account2Account](steven)
 * 客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer(steven)
 
  
@@ -31,7 +37,7 @@ demand version 1.0.21 2014-06-19
 * [DDPay支付没有问题，账单逻辑大改动之后Cash支付会叠加上一张账单的detail，检查为什么会出现这种情况并解决](steven)
 * 每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance(steven)
 * 添加一张tm_customer_service表记录order的一些note，字段包括id,customer_id,user_id,description,create_date(steven)
-* invoice加一个payment_status字段，用来记录该invoice的付款状态，如果billing正在付款的途中则他会将其改变成pending状态，显示在Invoice的status后面(steven)
+* [invoice加一个payment_status字段，用来记录该invoice的付款状态，如果billing正在付款的途中则他会将其改变成pending状态，显示在Invoice的status后面](steven)
 * [检查并调试plan-no-term的invoice生成代码，主要检查final_payable以及total credit的最终值](steven)
 * [检查并调试plan-term的invoice下一次生成账单的代码，重新生成plan-term的invoice功能已完成，所以要确保下一次生成的账单是准确无误的](steven)
  
@@ -52,7 +58,7 @@ demand version 1.0.21 2014-06-17
 * //View Termination Refunde界面添加两个切换已发送和未发送的badge(steven)
 * //View Early Termination Charge界面添加邮件发送功能(steven)
 * //View Early Termination Charge界面添加两个切换已发送和未发送的badge(steven)
-* [order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice](steven)
+* order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice(steven)
  
  
 demand version 1.0.21 2014-06-16
@@ -68,7 +74,7 @@ demand version 1.0.21 2014-06-11
 
 * [检查一下为什么手动出账单没有将order的discount去掉](steven)
 * [做early termination charge之前做好该表的一个参数表，表名为最后加上parameter以区分是该表的参数表](steven)
-* billing模块做一个early termination charge的界面，列出所有的记录，在operation那一列给出一个Send early termination charge email提示的email图标功能(steven)
+* [billing模块做一个early termination charge的界面，列出所有的记录，在operation那一列给出一个Send early termination charge email提示的email图标功能](steven)
 * 新建一张记录email和sms的表，记录所有已发送的email以及sms，记录时将notification的sort插入至该表的sort中(steven)
  
 demand version 1.0.20 2014-06-10

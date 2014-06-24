@@ -167,6 +167,7 @@ public class CRMController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("invoicePage", invoicePage);
 		map.put("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customerId));
+		map.put("users", this.systemService.queryUser(new User()));
 		return map;
 	}
 	

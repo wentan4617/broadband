@@ -870,7 +870,6 @@
 				$('a[data-name="pay_way_by_'+invoice.id+'"]').click(function(){
 					var pay_way = $(this).attr('data-way');
 					$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').attr('data-way', pay_way);
-					console.log(pay_way);
 					if(pay_way == 'ddpay'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use DDPay to Pay Off this invoice?');
 						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
@@ -884,6 +883,14 @@
 						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - your input amount).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Cash to pay (off) this invoice');
 						$('div[data-name="cash_defray_amount_input_'+this.id+'"]').css('display','');
+					} else if(pay_way == 'pending'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Pending for this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will only change the Make Payment button to Pending style.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Pending for this invoice');
+					} else if(pay_way == 'credit-card'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Credit Card to Pay Off this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Credit Card to pay off this invoice');
 					}
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
 					$('#confirmPayWayModal_'+this.id).modal('show');
@@ -897,21 +904,31 @@
 								invoice_id : this.id
 								,process_way : 'DDPay'
 						};
-						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a';
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
 					} else if(pay_way == 'a2a'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'Account2Account'
 						};
-						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a';
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
+					} else if(pay_way == 'credit-card'){
+						var data = {
+								invoice_id : this.id
+								,process_way : 'Credit Card'
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
 					} else if(pay_way == 'cash'){
 						var data = {
 							invoice_id : this.id
 							,eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/cash';
+					} else if(pay_way == 'pending'){
+						var data = {
+								invoice_id : this.id
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/change-payment-status';
 					}
-					
 					$.post(url, data, function(json){
 						$.jsonValidation(json, 'right');
 					}, 'json');

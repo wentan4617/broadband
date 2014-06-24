@@ -38,6 +38,7 @@ public class CustomerInvoice implements Serializable {
 	private Date paid_date;
 	private String paid_type;
 	private Integer last_invoice_id;
+	private String payment_status;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -276,6 +277,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setOrder_id(Integer order_id) {
 		this.order_id = order_id;
+	}
+
+	public String getPayment_status() {
+		return payment_status;
+	}
+
+	public void setPayment_status(String payment_status) {
+		this.payment_status = payment_status;
 	}
 
 }

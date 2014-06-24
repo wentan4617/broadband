@@ -42,9 +42,22 @@
 								<td>&nbsp;</td>
 								<td><strong>-<.= txAmount_paid.toFixed(2) .></strong></td>
 								<td>&nbsp;</td>
-								<td style="text-align:center;"><.= tx.card_name .></td>
-								<td>&nbsp;</td>
-								<td>&nbsp;</td>
+								<td style="text-align:center;"><strong><.= tx.card_name .></strong></td>
+								<. if(tx.executor == null){ .>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								<. } else { .>
+									<.
+										for(var u=0; u<users.length; u++){
+									   		if(users[u].id == tx.executor){
+									.>
+										<td>Executed By</td>
+										<td><.= users[u].user_name .> -<br/><.= users[u].user_role .></td>
+									<.
+									   		}
+										}
+									.>
+								<. } .>
 							</tr>
 		<.
 						}
@@ -79,18 +92,28 @@
 		.>
 					<td>
 						<div class="btn-group dropup">
-							<button type="button" class="btn btn-primary btn-xs" data-name="make_payment_<.= invoice.id .>">Make Payment</button>
-							<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
-								<span class="caret"></span>
-								<span class="sr-only">Toggle Dropdown</span>
-							</button>
+							<. if(invoice.payment_status == 'pending'){ .>
+								<button type="button" class="btn btn-warning btn-xs" data-name="make_payment_<.= invoice.id .>">Pending</button>
+								<button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+							<. } else { .>
+								<button type="button" class="btn btn-primary btn-xs" data-name="make_payment_<.= invoice.id .>">Make Payment</button>
+								<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+							<. } .>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
-								<li><a href="#"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Paypal</a></li>
-								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="a2a" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;Account2Account</a></li>
-								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" style="cursor:pointer;"><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
-								<li><a id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" style="cursor:pointer;"><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+								<li><a href="<.= ctx .>/broadband-user/crm/customer/invoice/payment/credit-card/<.= invoice.id .>"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;DPS</a></li>
+								<li><a href="#"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;Paypal</a></li>
+								<li class="divider"></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="credit-card" ><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="a2a" ><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;Account2Account</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" ><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" ><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+								<li class="divider"></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="pending" ><span class="glyphicon glyphicon-pause"></span>&nbsp;&nbsp;Pending</a></li>
 							</ul>
 						</div>
 					</td>
