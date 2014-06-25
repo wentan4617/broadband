@@ -23,6 +23,7 @@
 				<li><a href="#order_detail" data-toggle="tab"><strong>Order Detail</strong></a></li>
 				<li><a href="#invoice_detail" data-toggle="tab"><strong>Invoice Detail</strong></a></li>
 				<li><a href="#transaction_detail" data-toggle="tab"><strong>Transaction Detail</strong></a></li>
+				<li><a href="#customer_service_record_detail" data-toggle="tab"><strong>Customer Service Record</strong></a></li>
 			</ul>
 
 			<!-- Tab panes -->
@@ -31,6 +32,7 @@
 				<div class="panel-body tab-pane fade" id="order_detail" ></div>
 				<div class="panel-body tab-pane fade" id="invoice_detail"></div>
 				<div class="panel-body tab-pane fade" id="transaction_detail"></div>
+				<div class="panel-body tab-pane fade" id="customer_service_record_detail"></div>
 			</div>
 		</div>
 	</div>
@@ -51,6 +53,10 @@
 <!-- Customer Transaction Detail Template -->
 <script type="text/html" id="transaction_table_tmpl">
 <jsp:include page="customer-transaction-view-page.html" />
+</script>
+<!-- Customer Service Record Detail Template -->
+<script type="text/html" id="customer_service_record_table_tmpl">
+<jsp:include page="customer-service-record-view-page.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />
@@ -814,8 +820,42 @@
 	   		var $table = $('#transaction_detail');
 			$table.html(tmpl('transaction_table_tmpl', json));
 			$table.find('tfoot a').click(function(){
-				$.getInvoicePage($(this).attr('data-pageNo'));
+				$.getTxPage($(this).attr('data-pageNo'));
 			});
+		}, "json");
+	}
+	
+	
+	$.getCcrPage = function(pageNo) {
+		$.get('${ctx}/broadband-user/crm/customer-service-record/view/' + pageNo +'/'+ ${customer.id}, function(json){
+			json.ctx = '${ctx}';
+			json.customer_id = ${customer.id};
+	   		var $table = $('#customer_service_record_detail');
+			$table.html(tmpl('customer_service_record_table_tmpl', json));
+			$table.find('tfoot a').click(function(){
+				$.getCcrPage($(this).attr('data-pageNo'));
+			});
+			
+
+			$('a[data-name="new_service_record_btn"]').click(function(){
+				$('a[data-name="new_service_record_btn"]').button('loading');
+				$('#customerServiceRecordModal').modal('show');
+			});
+			$('a[data-name="customerServiceRecordModalBtn"]').click(function(){
+				var description = $('textarea[data-name="customer_service_record_description"]').val();
+				var data = {
+						customer_id : ${customer.id}
+						,description : description+''
+				};
+				$.post('${ctx}/broadband-user/crm/customer-service-record/create', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#customerServiceRecordModal').on('hidden.bs.modal', function(){
+				$('a[data-name="new_service_record_btn"]').button('reset');
+				$.getCcrPage(pageNo);
+			});
+			
 		}, "json");
 	}
 	
@@ -948,6 +988,7 @@
 	$.getCustomerOrder();
 	$.getInvoicePage(1);
 	$.getTxPage(1);
+	$.getCcrPage(1);
 	
 	
 })(jQuery);

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.CustomerServiceRecordMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="customerServiceRecordColumns">
+		csr.`id` 				as csr_id,
+		csr.`customer_id` 		as csr_customer_id,
+		csr.`user_id` 			as csr_user_id,
+		csr.`description` 		as csr_description,
+		csr.`create_date` 		as csr_create_date
+	</sql>
+	
+	<resultMap type="CustomerServiceRecord" id="customerServiceRecordResultMap">
+		<id property="id" column="csr_id" />
+		<result property="customer_id" column="csr_customer_id" />
+		<result property="user_id" column="csr_user_id" />
+		<result property="description" column="csr_description" />
+		<result property="create_date" column="csr_create_date" />
+	</resultMap>
+	
+	<sql id="customerServiceRecordWhere">
+		<where>
+			<if test="params.id != null">csr.id = #{params.id}</if>
+			<if test="params.customer_id != null">and csr.customer_id = #{params.customer_id}</if>
+			<if test="params.user_id != null">and csr.user_id = #{params.user_id}</if>
+			<if test="params.description != null">and csr.description = #{params.description}</if>
+			<if test="params.create_date != null">and csr.create_date = #{params.create_date}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectCustomerServiceRecord" parameterType="CustomerServiceRecord" resultType="CustomerServiceRecord">
+		select * from tm_customer_service_record as csr
+		<include refid="customerServiceRecordWhere"/>
+	</select>
+	
+	<!-- select customerServiceRecord page -->
+	<select id="selectCustomerServiceRecordsByPage" parameterType="Page" resultMap="customerServiceRecordResultMap">
+		select 
+			<include refid="customerServiceRecordColumns"/>
+			from tm_customer_service_record as csr
+			<include refid="customerServiceRecordWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerServiceRecord amount -->
+	<select id="selectCustomerServiceRecordsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_service_record as csr
+		<include refid="customerServiceRecordWhere"/>
+	</select>
+
+	<!-- select customerServiceRecord by id -->
+	<select id="selectCustomerServiceRecordById" parameterType="int" resultType="CustomerServiceRecord">
+		select * from tm_customer_service_record where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerServiceRecord" parameterType="CustomerServiceRecord" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_service_record`(
+			`customer_id`, `user_id`, `description`, `create_date`
+		) VALUES (
+			#{customer_id}, #{user_id}, #{description}, #{create_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update customerServiceRecord -->
+	<update id="updateCustomerServiceRecord" parameterType="CustomerServiceRecord">
+		update tm_customer_service_record
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="create_date != null">create_date = #{create_date}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteCustomerServiceRecordById" parameterType="int">
+		DELETE FROM tm_customer_service_record WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

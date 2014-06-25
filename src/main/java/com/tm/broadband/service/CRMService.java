@@ -24,6 +24,7 @@ import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
@@ -39,6 +40,7 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
@@ -84,6 +86,7 @@ public class CRMService {
 	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
 	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
 	private TerminationRefundMapper terminationRefundMapper;
+	private CustomerServiceRecordMapper customerServiceRecordMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -110,7 +113,8 @@ public class CRMService {
 			CallInternationalRateMapper callInternationalRateMapper,
 			EarlyTerminationChargeMapper earlyTerminationChargeMapper,
 			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper,
-			TerminationRefundMapper terminationRefundMapper){
+			TerminationRefundMapper terminationRefundMapper,
+			CustomerServiceRecordMapper customerServiceRecordMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -130,6 +134,7 @@ public class CRMService {
 		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
 		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
 		this.terminationRefundMapper = terminationRefundMapper;
+		this.customerServiceRecordMapper = customerServiceRecordMapper;
 	}
 	
 	
@@ -990,9 +995,22 @@ public class CRMService {
 		Double totalCreditBack = 0d;
 		
 		String pstn_number = null;
+		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+
+		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		
 		for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			
+			if("pstn".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
+					&& ("".equals(pstn_number) || pstn_number==null)){
+					pstn_number = cod.getPstn_number();
+					
+				}
+				
+			}
 			
 			if("termination-credit".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
@@ -1012,15 +1030,13 @@ public class CRMService {
 				
 				totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, cod.getDetail_price());
 			}
-			
-			if("pstn".equals(cod.getDetail_type())){
-				
-				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
-					&& ("".equals(pstn_number) || pstn_number==null)){
-					pstn_number = cod.getPstn_number();
-				}
-				
+			if("present-calling-minutes".equals(cod.getDetail_type())){
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cids.add(cid);
+				pcms.add(cod);
 			}
+			
 			System.out.println("isFirst: " + isFirst);
 			// If first invoice then add all order details into invoice details
 			if(isFirst){
@@ -1134,22 +1150,17 @@ public class CRMService {
 		// store company detail begin
 		CompanyDetail companyDetail = companyDetailMapper.selectCompanyDetail();
 		// store company detail end
-
-		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+		
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(c);
 		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
 		
-		
-		// BEGIN IF HAVE PSTN_NUMBER
-		if(!"".equals(pstn_number) && pstn_number!=null){
-			
+		if(!"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalPayableAmouont = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, totalPayableAmouont, customerCallRecordMapper, callInternationalRateMapper);
+				totalPayableAmouont = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalPayableAmouont, customerCallRecordMapper, callInternationalRateMapper);
 			}
 		}
-		// END IF HAVE PSTN_NUMBER
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
@@ -1256,8 +1267,6 @@ public class CRMService {
 			}
 		}
 		// Customer previous invoice
-		System.out.println("ci.getId(): "+ci.getId());
-		System.out.println("cpi.getId(): "+cpi.getId());
 		if (cpi != null && !ci.getId().equals(cpi.getId())) {
 			ci.setLast_invoice_id(cpi.getId());
 			ci.setLastCustomerInvoice(cpi);
@@ -1276,6 +1285,8 @@ public class CRMService {
 		Double totalCreditBack = 0d;
 		
 		String pstn_number = "";
+		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		
 		for (CustomerOrderDetail cod: customerOrderDetails) {
 
@@ -1313,6 +1324,10 @@ public class CRMService {
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cids.add(cid);
+					pcms.add(cod);
 				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-")){
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
@@ -1362,18 +1377,15 @@ public class CRMService {
 				}
 			}
 		}
-
-		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
-		// BEGIN IF HAVE PSTN_NUMBER
-		if(!"".equals(pstn_number) && pstn_number!=null){
-			totalAmountPayable = TMUtils.ccrOperation(pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
+		if(!"".equals(pstn_number.trim())){
+			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
+			
 		}
-		// END IF HAVE PSTN_NUMBER
 
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
@@ -1489,4 +1501,42 @@ public class CRMService {
 	public String queryCustomerDDPayFormPathById(int id){
 		return this.customerOrderMapper.selectCustomerDDPayFormPathById(id);
 	}
+	
+	/**
+	 * BEGIN CustomerServiceRecord
+	 */
+	@Transactional
+	public List<CustomerServiceRecord> queryCustomerServiceRecord(CustomerServiceRecord csr){
+		return this.customerServiceRecordMapper.selectCustomerServiceRecord(csr);
+	}
+
+	@Transactional
+	public Page<CustomerServiceRecord> queryCustomerServiceRecordsByPage(Page<CustomerServiceRecord> page) {
+		page.setTotalRecord(this.customerServiceRecordMapper.selectCustomerServiceRecordsSum(page));
+		page.setResults(this.customerServiceRecordMapper.selectCustomerServiceRecordsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public CustomerServiceRecord queryCustomerServiceRecordById(int id){
+		return this.customerServiceRecordMapper.selectCustomerServiceRecordById(id);
+	}
+
+	@Transactional
+	public void createCustomerServiceRecord(CustomerServiceRecord csr){
+		this.customerServiceRecordMapper.insertCustomerServiceRecord(csr);
+	};
+
+	@Transactional
+	public void editCustomerServiceRecord(CustomerServiceRecord csr){
+		this.customerServiceRecordMapper.updateCustomerServiceRecord(csr);
+	};
+
+	@Transactional
+	public void removeCustomerServiceRecord(CustomerServiceRecord csr){
+		this.customerServiceRecordMapper.deleteCustomerServiceRecord(csr);
+	};
+	/**
+	 * END CustomerServiceRecord
+	 */
 }

@@ -19,7 +19,7 @@ Total Mobile Solution Internet Service Web Project
 demand version 1.0.21 2014-06-24
 
 * [transaction表添加一个字段，将后台付款时将操作者id存至transaction表](steven)
-* 在Billing模块中开发View Invoice界面，有5个badge：unpaid,pending,paid,order no invoice,not paid off(steven)
+* [在Billing模块中开发View Invoice界面，有5个badge：unpaid,pending,not paid off,paid,order no invoice](steven)
  
 demand version 1.0.21 2014-06-23
 
@@ -36,7 +36,7 @@ demand version 1.0.21 2014-06-19
 * [重新生成invoice时如果不是生成新的invoice则保留原invoice的create以及due date](steven))
 * [DDPay支付没有问题，账单逻辑大改动之后Cash支付会叠加上一张账单的detail，检查为什么会出现这种情况并解决](steven)
 * 每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance(steven)
-* 添加一张tm_customer_service表记录order的一些note，字段包括id,customer_id,user_id,description,create_date(steven)
+* [添加一张tm_customer_service_record表记录服务客户的一些note，字段包括id,customer_id,user_id,description,create_date](steven)
 * [invoice加一个payment_status字段，用来记录该invoice的付款状态，如果billing正在付款的途中则他会将其改变成pending状态，显示在Invoice的status后面](steven)
 * [检查并调试plan-no-term的invoice生成代码，主要检查final_payable以及total credit的最终值](steven)
 * [检查并调试plan-term的invoice下一次生成账单的代码，重新生成plan-term的invoice功能已完成，所以要确保下一次生成的账单是准确无误的](steven)
@@ -63,7 +63,7 @@ demand version 1.0.21 2014-06-17
  
 demand version 1.0.21 2014-06-16
 
-* 根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。(steven)
+* [根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。](steven)
  
 demand version 1.0.21 2014-06-13
 

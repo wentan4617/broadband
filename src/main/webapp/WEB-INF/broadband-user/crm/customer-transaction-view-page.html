@@ -1,5 +1,23 @@
 <. if (results != null && results.length > 0) { .>
 	<table class="table">
+	<thead>
+		<tr>
+			<th colspan="11">
+				<!-- In the external page, assign customer_id as obj's attribute -->
+				<h3 class="text-success" style="margin: 2px;"><strong>Customer Id:&nbsp;<small><.= customer_id .></small></strong></h3>
+			</th>
+		</tr>
+		<tr>
+			<th>Transaction Id</th>
+			<th>Type</th>
+			<th>Date</th>
+			<th>Name</th>
+			<th>Sort</th>
+			<th style="text-align:center;">Amount</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
 	<.
 		for (var i = 0, len = results.length; i < len; i++){
 			var tx = results[i];
@@ -11,7 +29,7 @@
 			<td><.= tx.transaction_date_str .></td>
 			<td><.= tx.card_name .></td>
 			<td><.= tx.transaction_sort .></td>
-			<td><.= txAmount.toFixed(2) .></td>
+			<td style="text-align:center;"><.= txAmount.toFixed(2) .></td>
 			<td>&nbsp;</td>
 			</tr>
 	<. } .>
