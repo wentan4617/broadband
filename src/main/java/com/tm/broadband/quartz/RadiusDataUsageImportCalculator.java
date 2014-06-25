@@ -37,12 +37,12 @@ public class RadiusDataUsageImportCalculator {
 	
 	
 	public void doRadiusDataImportCalculator(){
-		System.out.println("runing" + new Date());
+		//System.out.println("runing" + new Date());
 		// delete tm_radacct recode
-		//this.dataService.removeRadacct();
+		this.dataService.removeRadacct();
 		
 		// import data from cyberpark radius
-		/*Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
+		Map<String, JobParameter> parameters = new HashMap<String, JobParameter>();
 		
 		Date date = new Date();
 		parameters.put("run_datetime", new JobParameter(date));
@@ -67,7 +67,7 @@ public class RadiusDataUsageImportCalculator {
 		usage.getParams().put("month", cal.get(Calendar.MONTH) + 1);
 		usage.getParams().put("last_month", cal.get(Calendar.MONTH));
 		
-		dataService.calculatorUsage(usage);*/
+		dataService.calculatorUsage(usage);
 	}
 
 }
