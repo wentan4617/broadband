@@ -1,0 +1,102 @@
+<div class="alert">
+	<!-- Button trigger modal -->
+	<a class="btn btn-success btn-xs xs-btn-width-long pull-right" data-name="new_service_record_btn">
+	  <span class="glyphicon glyphicon-plus"></span> New Service Record
+	</a>
+</div>
+<hr/>
+<.
+	var results = page.results;
+	var totalPage = page.totalPage;
+	var pageNo = page.pageNo;
+.>
+<. if (results != null && results.length > 0) { .>
+	<table class="table">
+	<thead>
+		<tr>
+			<th colspan="11">
+				<!-- In the external page, assign customer_id as obj's attribute -->
+				<h3 class="text-success" style="margin: 2px;"><strong>Customer Id:&nbsp;<small><.= customer_id .></small></strong></h3>
+			</th>
+		</tr>
+		<tr>
+			<th>Service Id</th>
+			<th>Create Date</th>
+			<th>Served By</th>
+			<th style="width:600px;">Description</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<.
+		for (var i = 0, len = results.length; i < len; i++){
+			var ccr = results[i];
+	.>
+			<tr>
+			<td>Service ID# - <.= ccr.id .></td>
+			<td><.= ccr.create_date_str .></td>
+			<td>
+				<. for(var u=0; u<users.length; u++){
+				      if(users[u].id == ccr.user_id){
+				.>
+						<.= users[u].user_name .>
+				<.
+				      }
+				.>
+				<. } .>
+			</td>
+			<td><.= ccr.description .></td>
+			<td>&nbsp;</td>
+			</tr>
+	<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = totalPage; i <= len; i++) {
+	.>
+						<li class="<.= pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<!-- /.modal -->
+<. } else { .>
+	<div class="alert alert-warning">No records have been found.</div>
+<. } .>
+
+<!-- Early termination charge Modal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="customerServiceRecordModal" tabindex="-1" role="dialog" aria-labelledby="customerServiceRecordModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="customerServiceRecordModalLabel">
+						<strong>Create new customer service record</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-12" style="text-align:left;">Request Description: </label><br/>
+						<textarea class="form-control" data-name="customer_service_record_description" rows="5" cols="4" placeholder="description..." ></textarea>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-primary" data-name="customerServiceRecordModalBtn" data-dismiss="modal">Confirm to create new service record</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+</form>

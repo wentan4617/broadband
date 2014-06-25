@@ -34,6 +34,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
@@ -1172,6 +1173,31 @@ public class CRMRestController {
 					"Terminated Date Format Incorrect!");
 		}
 
+		return json;
+	}
+
+	// Create new customer service record
+	@RequestMapping(value = "/broadband-user/crm/customer-service-record/create", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerServiceRecordCreate(Model model
+			,@RequestParam("customer_id") Integer customer_id
+			,@RequestParam("description") String description
+			,HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(!"".equals(description.trim())){
+			CustomerServiceRecord csr = new CustomerServiceRecord();
+			csr.setCustomer_id(customer_id);
+			csr.setDescription(description);
+			User user = (User) req.getSession().getAttribute("userSession");
+			csr.setUser_id(user.getId());
+			csr.setCreate_date(new Date());
+			this.crmService.createCustomerServiceRecord(csr);
+			json.getSuccessMap().put("alert-success", "New Customer Service Record had been attached to related customer!");
+		} else {
+			json.getErrorMap().put("alert-error", "Description Can't Not Be Empty!");
+		}
+		
 		return json;
 	}
 

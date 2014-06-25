@@ -41,6 +41,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
@@ -125,6 +126,24 @@ public class CRMController {
 		model.addAttribute("customer", customer);
 		model.addAttribute("users", users);
 		return "broadband-user/crm/customer";
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer-service-record/view/{pageNo}/{customer_id}")
+	@ResponseBody
+	public Map<String, Object> toCustomerServiceRecord(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("customer_id") int customer_id) {
+
+		Page<CustomerServiceRecord> page = new Page<CustomerServiceRecord>();
+		page.setPageNo(pageNo);
+		page.setPageSize(10);
+		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("customer_id", customer_id);
+		this.crmService.queryCustomerServiceRecordsByPage(page);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("users", this.systemService.queryUser(new User()));
+		map.put("page", page);
+		return map;
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/remove/{id}")
