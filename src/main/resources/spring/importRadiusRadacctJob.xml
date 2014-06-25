@@ -22,7 +22,7 @@
 		<property name="pageSize" value="500" />
 	</bean>
 	
-	<bean name="dataImportProcessor" class="com.tm.broadband.batch.DataImportProcessor" ></bean>
+	<bean name="dataImportProcessor" class="com.tm.broadband.batch.DataImportProcessor" scope="step" />
 	
 	<bean id="dataImportRadacctWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter">
 		<property name="sqlSessionFactory" ref="broadbandSqlSessionFactory" />
