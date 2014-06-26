@@ -172,7 +172,7 @@
 									</li>
 									<li>
 										<label>
-											<form:checkbox path="authArray" value="billing/voucher-record/view" data-type="checkbox_billing" /> View Voucher
+											<form:checkbox path="authArray" value="billing/voucher/view" data-type="checkbox_billing" /> View Voucher
 										</label>
 									</li>
 									<li>
