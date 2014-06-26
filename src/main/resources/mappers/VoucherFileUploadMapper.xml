@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.VoucherFileUploadMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="voucherFileUploadColumns">
+		vfu.`id` 				as vfu_id,
+		vfu.`file_name` 		as vfu_file_name,
+		vfu.`file_path` 		as vfu_file_path,
+		vfu.`status` 			as vfu_status,
+		vfu.`inserted_by` 		as vfu_inserted_by,
+		vfu.`upload_by` 		as vfu_upload_by,
+		vfu.`inserted_date`		as vfu_inserted_date,
+		vfu.`upload_date`		as vfu_upload_date
+	</sql>
+	
+	<resultMap type="VoucherFileUpload" id="voucherFileUploadResultMap">
+		<id property="id" column="vfu_id" />
+		<result property="file_name" column="vfu_file_name" />
+		<result property="file_path" column="vfu_file_path" />
+		<result property="status" column="vfu_status" />
+		<result property="inserted_by" column="vfu_inserted_by" />
+		<result property="upload_by" column="vfu_upload_by" />
+		<result property="inserted_date" column="vfu_inserted_date" />
+		<result property="upload_date" column="vfu_upload_date" />
+	</resultMap>
+	
+	<sql id="voucherFileUploadWhere">
+		<where>
+			<if test="params.id != null">vfu.id = #{params.id}</if>
+			<if test="params.file_name != null">and vfu.file_name = #{params.file_name}</if>
+			<if test="params.file_path != null">and vfu.file_path = #{params.file_path}</if>
+			<if test="params.status != null">and vfu.status = #{params.status}</if>
+			<if test="params.inserted_by != null">and vfu.inserted_by = #{params.inserted_by}</if>
+			<if test="params.upload_by != null">and vfu.upload_by = #{params.upload_by}</if>
+			<if test="params.inserted_date != null">and vfu.inserted_date = #{params.inserted_date}</if>
+			<if test="params.upload_date != null">and vfu.upload_date = #{params.upload_date}</if>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectVoucherFilePathById" parameterType="int" resultType="String">
+		select file_path from tm_voucher_file_upload where id = #{0}
+	</select>
+	
+	<select id="selectVoucherFileUpload" parameterType="VoucherFileUpload" resultType="VoucherFileUpload">
+		select * from tm_voucher_file_upload as vfu
+		<include refid="voucherFileUploadWhere"/>
+	</select>
+	
+	<!-- select voucher page -->
+	<select id="selectVoucherFileUploadsByPage" parameterType="Page" resultMap="voucherFileUploadResultMap">
+		select 
+			<include refid="voucherFileUploadColumns"/>
+			from tm_voucher_file_upload as vfu
+			<include refid="voucherFileUploadWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select voucherFileUpload amount -->
+	<select id="selectVoucherFileUploadsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_voucher_file_upload as vfu
+		<include refid="voucherFileUploadWhere"/>
+	</select>
+
+	<!-- select voucherFileUpload by id -->
+	<select id="selectVoucherFileUploadById" parameterType="int" resultType="VoucherFileUpload">
+		select * from tm_voucher_file_upload where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertVoucherFileUpload" parameterType="VoucherFileUpload" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_voucher_file_upload`(
+			`file_name`, `file_path`, `status`, `inserted_by`, `upload_by`, `inserted_date`, `upload_date`
+		) VALUES (
+			#{file_name}, #{file_path}, #{status}, #{inserted_by}, #{upload_by}, #{inserted_date}, #{upload_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update voucherFileUpload -->
+	<update id="updateVoucherFileUpload" parameterType="VoucherFileUpload">
+		update tm_voucher_file_upload vfu
+		<set>
+			<if test="file_name != null">vfu.file_name = #{file_name},</if>
+			<if test="file_path != null">vfu.file_path = #{file_path},</if>
+			<if test="status != null">vfu.status = #{status},</if>
+			<if test="inserted_by != null">vfu.inserted_by = #{inserted_by},</if>
+			<if test="upload_by != null">vfu.upload_by = #{upload_by},</if>
+			<if test="inserted_date != null">vfu.inserted_date = #{inserted_date},</if>
+			<if test="upload_date != null">vfu.upload_date = #{upload_date}</if>
+		</set>
+		<include refid="voucherFileUploadWhere"/>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteVoucherFileUploadById" parameterType="int">
+		DELETE FROM tm_voucher_file_upload WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

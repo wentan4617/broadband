@@ -369,8 +369,6 @@ public class TMUtils {
 					for (CustomerOrderDetail pcm : pcms) {
 						String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
 						String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
-						System.out.println("cirAreaName: "+cirAreaName);
-						System.out.println("pcmDetailDesc: "+pcmDetailDesc);
 						// If Presented Calling Minute's description contains area_prefix && area_name
 						if(("BANGLADESH".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
 						|| ("MALAYSIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
@@ -452,6 +450,9 @@ public class TMUtils {
 		
 		totalAmountIncl =  bigSub(totalAmountIncl, totalCreditBack);
 		
+		cal = null;
+		ccrTemp = null;
+		ccrsTemp = null;
 		// ADD TOTAL CALL FEE INTO INVOICE
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}

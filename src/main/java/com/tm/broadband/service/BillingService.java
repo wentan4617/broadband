@@ -13,6 +13,9 @@ import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.VoucherBannedListMapper;
+import com.tm.broadband.mapper.VoucherFileUploadMapper;
+import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CallInternationalRate;
@@ -21,6 +24,9 @@ import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.Voucher;
+import com.tm.broadband.model.VoucherBannedList;
+import com.tm.broadband.model.VoucherFileUpload;
 
 @Service
 public class BillingService {
@@ -32,6 +38,9 @@ public class BillingService {
 	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
 	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
 	private TerminationRefundMapper terminationRefundMapper;
+	private VoucherMapper voucherMapper;
+	private VoucherFileUploadMapper voucherFileUploadMapper;
+	private VoucherBannedListMapper voucherBannedListMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
@@ -40,7 +49,10 @@ public class BillingService {
 			,CallInternationalRateMapper callInternationalRateMapper
 			,EarlyTerminationChargeMapper earlyTerminationChargeMapper
 			,EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper
-			,TerminationRefundMapper terminationRefundMapper) {
+			,TerminationRefundMapper terminationRefundMapper
+			,VoucherMapper voucherMapper
+			,VoucherFileUploadMapper voucherFileUploadMapper
+			,VoucherBannedListMapper voucherBannedListMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
@@ -48,6 +60,9 @@ public class BillingService {
 		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
 		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
 		this.terminationRefundMapper = terminationRefundMapper;
+		this.voucherMapper = voucherMapper;
+		this.voucherFileUploadMapper = voucherFileUploadMapper;
+		this.voucherBannedListMapper = voucherBannedListMapper;
 	}
 	
 	public BillingService(){}
@@ -250,4 +265,111 @@ public class BillingService {
 	}
 	// END TerminationRefund
 
+	// BEGIN Voucher
+	@Transactional
+	public Page<Voucher> queryVouchersByPage(Page<Voucher> page) {
+		page.setTotalRecord(this.voucherMapper.selectVouchersSum(page));
+		page.setResults(this.voucherMapper.selectVouchersByPage(page));
+		return page;
+	}
+
+	@Transactional 
+	public List<Voucher> queryVoucher(Voucher v){
+		return this.voucherMapper.selectVoucher(v);
+	}
+	
+	@Transactional
+	public void createVoucher(Voucher v){
+		this.voucherMapper.insertVoucher(v);
+	}
+
+	@Transactional
+	public void removeVoucherBySerialNumber(int serial_number) {
+		this.voucherMapper.deleteVoucherBySerialNumber(serial_number);
+	}
+
+	@Transactional
+	public void editVoucher(Voucher v) {
+		this.voucherMapper.updateVoucher(v);
+	}
+	
+	@Transactional
+	public int queryVouchersSumByPage(Page<Voucher> page) {
+		return this.voucherMapper.selectVouchersSum(page);
+	}
+	// END Voucher
+
+	// BEGIN VoucherFileUpload
+	@Transactional
+	public Page<VoucherFileUpload> queryVoucherFileUploadsByPage(Page<VoucherFileUpload> page) {
+		page.setTotalRecord(this.voucherFileUploadMapper.selectVoucherFileUploadsSum(page));
+		page.setResults(this.voucherFileUploadMapper.selectVoucherFileUploadsByPage(page));
+		return page;
+	}
+
+	@Transactional 
+	public List<VoucherFileUpload> queryVoucherFileUpload(VoucherFileUpload vfu){
+		return this.voucherFileUploadMapper.selectVoucherFileUpload(vfu);
+	}
+	
+	@Transactional
+	public String queryVoucherFileUploadCSVPathById(int id){
+		return this.voucherFileUploadMapper.selectVoucherFilePathById(id);
+	}
+	
+	@Transactional
+	public void createVoucherFileUpload(VoucherFileUpload vfu){
+		this.voucherFileUploadMapper.insertVoucherFileUpload(vfu);
+	}
+
+	@Transactional
+	public void removeVoucherFileUploadBySerialNumber(int id) {
+		this.voucherFileUploadMapper.deleteVoucherFileUploadById(id);
+	}
+
+	@Transactional
+	public void editVoucherFileUpload(VoucherFileUpload vfu) {
+		this.voucherFileUploadMapper.updateVoucherFileUpload(vfu);
+	}
+	
+	@Transactional
+	public int queryVoucherFileUploadsSumByPage(Page<VoucherFileUpload> page) {
+		return this.voucherFileUploadMapper.selectVoucherFileUploadsSum(page);
+	}
+	// END VoucherFileUpload
+
+
+	// BEGIN Voucher
+	@Transactional
+	public Page<VoucherBannedList> queryVoucherBannedListsByPage(Page<VoucherBannedList> page) {
+		page.setTotalRecord(this.voucherBannedListMapper.selectVoucherBannedListsSum(page));
+		page.setResults(this.voucherBannedListMapper.selectVoucherBannedListsByPage(page));
+		return page;
+	}
+
+	@Transactional 
+	public List<VoucherBannedList> queryVoucherBannedList(VoucherBannedList vbl){
+		return this.voucherBannedListMapper.selectVoucherBannedList(vbl);
+	}
+	
+	@Transactional
+	public void createVoucherBannedList(VoucherBannedList vbl){
+		this.voucherBannedListMapper.insertVoucherBannedList(vbl);
+	}
+
+	@Transactional
+	public void removeVoucherBannedListById(int id) {
+		this.voucherBannedListMapper.deleteVoucherBannedListById(id);
+	}
+
+	@Transactional
+	public void editVoucherBannedList(VoucherBannedList vbl) {
+		this.voucherBannedListMapper.updateVoucherBannedList(vbl);
+	}
+	
+	@Transactional
+	public int queryVoucherBannedListsSumByPage(Page<VoucherBannedList> page) {
+		return this.voucherBannedListMapper.selectVoucherBannedListsSum(page);
+	}
+	// END Voucher
 }

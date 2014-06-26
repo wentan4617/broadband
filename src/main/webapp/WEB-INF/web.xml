@@ -182,6 +182,8 @@
 
 		<!-- Billing Module BEGIN -->
 		<url-pattern>/broadband-user/billing/invoice/view/*</url-pattern>
+		<url-pattern>/broadband-user/billing/voucher-record/view/*</url-pattern>
+		<url-pattern>/broadband-user/billing/voucher-file-upload-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/early-termination-charge/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/termination-refund/view/*</url-pattern>
 		<!-- Billing Module END -->

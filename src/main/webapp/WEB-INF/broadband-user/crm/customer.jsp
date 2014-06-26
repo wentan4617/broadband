@@ -865,6 +865,7 @@
 			map.ctx = '${ctx}';
 			map.customer_id = ${customer.id};
 			map.orderIds = orderIds;
+			map.user_role = '${userSession.user_role}';
 	   		var $table = $('#invoice_detail');
 			$table.html(tmpl('invoice_table_tmpl', map));
 			$table.find('tfoot a').click(function(){
@@ -923,15 +924,20 @@
 						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - your input amount).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Cash to pay (off) this invoice');
 						$('div[data-name="cash_defray_amount_input_'+this.id+'"]').css('display','');
+					}else if(pay_way == 'credit-card'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Credit Card to Pay Off this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Credit Card to pay off this invoice');
+					} else if(pay_way == 'voucher'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Voucher to Pay (Off/Not Off) this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - vouchar\'s face value).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Voucher to pay (off) this invoice');
+						$('div[data-name="vouchar_pin_number_input_'+this.id+'"]').css('display','');
 					} else if(pay_way == 'pending'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Pending for this invoice?');
 						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will only change the Make Payment button to Pending style.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Pending for this invoice');
-					} else if(pay_way == 'credit-card'){
-						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Credit Card to Pay Off this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
-						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Credit Card to pay off this invoice');
-					}
+					} 
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
 					$('#confirmPayWayModal_'+this.id).modal('show');
 				});
@@ -963,6 +969,12 @@
 							,eliminate_amount : $('input[name="defray_amount_'+this.id+'"]').val()
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/cash';
+					} else if(pay_way == 'voucher'){
+						var data = {
+							invoice_id : this.id
+							,pin_number : $('input[name="pin_number_'+this.id+'"]').val()
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/voucher';
 					} else if(pay_way == 'pending'){
 						var data = {
 								invoice_id : this.id

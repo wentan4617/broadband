@@ -88,7 +88,8 @@
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
 					<td><strong><.= invoice.status .></strong></td>
 		<. 
-					if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
+					if((invoice.status=='unpaid' || invoice.status=='not_pay_off')
+					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 		.>
 					<td>
 						<div class="btn-group dropup">
@@ -111,7 +112,7 @@
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="a2a" ><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;Account2Account</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" ><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" ><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
-								<li><a href="#"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="voucher" ><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 								<li class="divider"></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="pending" ><span class="glyphicon glyphicon-pause"></span>&nbsp;&nbsp;Pending</a></li>
 							</ul>
@@ -125,7 +126,8 @@
 					}
 					var downloadUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
 					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + customer_id;
-					if(invoice.status=='unpaid' || invoice.status=='not_pay_off'){
+					if((invoice.status=='unpaid' || invoice.status=='not_pay_off')
+					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 						if(invoice.invoice_pdf_path != null){
 		.>
 						<td>
@@ -151,6 +153,7 @@
 		<.
 						}
 					} else {
+						if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){
 		.>
 					<td>
 						<!-- regenerate icon -->
@@ -159,6 +162,11 @@
 						<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 					</td>
 		<.
+						} else {
+		.>
+					<td>&nbsp;</td>
+		<.
+						}
 					}
 		.>
 				</tr>
@@ -207,6 +215,12 @@
 							<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
 							<div class="col-md-6">
 								<input name="defray_amount_<.= invoice.id .>" value="<.= invoiceBalance.toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
+							</div>
+						</div>
+						<div class="form-group" style="display:none;" data-name="vouchar_pin_number_input_<.= invoice.id .>">
+							<label for="pin_number" class="control-label col-md-6">Pin Number:</label>
+							<div class="col-md-6">
+								<input id="pin_number" name="pin_number_<.= invoice.id .>" class="form-control input-sm" type="text" placeholder="Pin Number"/>
 							</div>
 						</div>
 						<br/>

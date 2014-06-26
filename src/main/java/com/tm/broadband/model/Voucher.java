@@ -1,6 +1,8 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Voucher implements Serializable {
 
@@ -10,11 +12,13 @@ public class Voucher implements Serializable {
 	 * TABLE MAPPING PROPERTIES
 	 */
 
-	private Integer id;
-	private String voucher_code;
-	private Double voucher_cost;
-	private Integer voucher_used;
-	private Integer voucher_customer_id;
+	private String serial_number;
+	private String card_number;
+	private Double face_value;
+	private String status;
+	private String comment;
+	private Integer customer_id;
+	private String post_to;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -23,56 +27,60 @@ public class Voucher implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
 
 	/*
 	 * END RELATED PROPERTIES
 	 */
 
-	public Voucher() {
+	public String getCard_number() {
+		return card_number;
 	}
-
-	public Integer getId() {
-		return id;
+	public String getSerial_number() {
+		return serial_number;
 	}
-
-	public void setId(Integer id) {
-		this.id = id;
+	public void setSerial_number(String serial_number) {
+		this.serial_number = serial_number;
 	}
-
-	public String getVoucher_code() {
-		return voucher_code;
+	public void setCard_number(String card_number) {
+		this.card_number = card_number;
 	}
-
-	public void setVoucher_code(String voucher_code) {
-		this.voucher_code = voucher_code;
+	public Double getFace_value() {
+		return face_value;
 	}
-
-	public Double getVoucher_cost() {
-		return voucher_cost;
+	public void setFace_value(Double face_value) {
+		this.face_value = face_value;
 	}
-
-	public void setVoucher_cost(Double voucher_cost) {
-		this.voucher_cost = voucher_cost;
+	public String getStatus() {
+		return status;
 	}
-
-	public Integer getVoucher_used() {
-		return voucher_used;
+	public void setStatus(String status) {
+		this.status = status;
 	}
-
-	public void setVoucher_used(Integer voucher_used) {
-		this.voucher_used = voucher_used;
+	public String getComment() {
+		return comment;
 	}
-
-	public Integer getVoucher_customer_id() {
-		return voucher_customer_id;
+	public void setComment(String comment) {
+		this.comment = comment;
 	}
-
-	public void setVoucher_customer_id(Integer voucher_customer_id) {
-		this.voucher_customer_id = voucher_customer_id;
+	public Integer getCustomer_id() {
+		return customer_id;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
+	}
+	public String getPost_to() {
+		return post_to;
+	}
+	public void setPost_to(String post_to) {
+		this.post_to = post_to;
+	}
+	public Map<String, Object> getParams() {
+		return params;
+	}
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

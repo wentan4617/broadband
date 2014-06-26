@@ -24,11 +24,16 @@ import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.DateUsage;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Voucher;
+import com.tm.broadband.model.VoucherBannedList;
+import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
@@ -53,14 +58,18 @@ public class CustomerRestController {
 	private SmserService smserService;
 	private SystemService systemService;
 	private DataService dataService;
+	private BillingService billingService;
 
 	@Autowired
-	public CustomerRestController(CRMService crmService, MailerService mailerService, SystemService systemService, SmserService smserService, DataService dataService) {
+	public CustomerRestController(CRMService crmService, MailerService mailerService
+			,SystemService systemService, SmserService smserService, DataService dataService
+			,BillingService billingService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.smserService = smserService;
 		this.systemService = systemService;
 		this.dataService = dataService;
+		this.billingService = billingService;
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -365,5 +374,250 @@ public class CustomerRestController {
 		
 	}
 	
+	// BEGIN Voucher
+	@RequestMapping(value = "/customer/invoice/defray/voucher", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByVoucher(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			@RequestParam("pin_number") String pin_number,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		// BEGIN INVOICE ASSIGNMENT
+		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
+		ci.getParams().put("id", ci.getId());
+
+		Integer customer_id = ci.getCustomer_id();
+		Integer order_id = ci.getOrder_id();
+		String process_way = "Voucher";
+		String process_sort = null;
+		// Get order_type
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		case "order-term":
+			process_sort = "plan-term";
+			break;
+		case "order-no-term":
+			process_sort = "plan-no-term";
+			break;
+		case "order-topup":
+			process_sort = "plan-topup";
+			break;
+		}
+		// Determine whether in banned list or not
+		VoucherBannedList vbl = new VoucherBannedList();
+		vbl.getParams().put("customer_id", customer_id);
+		vbl.getParams().put("where", "query_less_equal_date");
+		List<VoucherBannedList> vbls = this.billingService.queryVoucherBannedList(vbl);
+		vbl = vbls!=null && vbls.size()>0 ? vbls.get(0) : null;
+		
+		if(vbl!=null){
+			json.getErrorMap().put("alert-error", "You had been banned for being attempted brute force!");
+			return json;
+		}
+		
+		Voucher v = new Voucher();
+		v.getParams().put("card_number", pin_number);
+		v.getParams().put("status", "unused");
+		List<Voucher> vs = this.billingService.queryVoucher(v);
+		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
+		
+		if(v==null){
+			vbl = null;
+			vbl = new VoucherBannedList();
+			vbl.setCustomer_id(customer_id);
+			vbl.getParams().put("customer_id", customer_id);
+			vbls = this.billingService.queryVoucherBannedList(vbl);
+			// If have attempts or banned record
+			if(vbls!=null && vbls.size()>0){
+				Integer attempts = vbls.get(0).getAttempt_times();
+				// If greater equal to three, then banned!
+				if(attempts >= 2){
+					vbl.setForbad_date(new Date());
+					vbl.setAttempt_times(0);
+					this.billingService.editVoucherBannedList(vbl);
+					json.getErrorMap().put("alert-error", "You have tried 3 times incoorect! You had been banned for being attempted brute force!");
+					return json;
+				// If not greater equal to three, then attempts+1
+				} else {
+					vbl.setAttempt_times(attempts+1);
+					this.billingService.editVoucherBannedList(vbl);
+					json.getErrorMap().put("alert-error", "You have tried "+ (attempts+1) +" times incorrect! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't be affected to your other functions.");
+					return json;
+				}
+			// Else no attempts or banned record
+			} else {
+				vbl.setAttempt_times(1);
+				this.billingService.createVoucherBannedList(vbl);
+			}
+			json.getErrorMap().put("alert-error", "You have tried 1 times incorrect! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't be affected to your other functions.");
+			return json;
+		}
+
+		if (ci.getBalance() <= 0d) {
+			// If invoice is paid off then no reason for executing the below
+			// operations
+			ci.setStatus("paid");
+			this.crmService.editCustomerInvoice(ci);
+			json.getSuccessMap().put("alert-success", "Voucher Haven't been used! We just change the status");
+			return json;
+		}
+		
+		Double paid_amount = 0d;
+		
+		// If voucher is less equal balance
+		if(v.getFace_value() <= ci.getBalance()){
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), v.getFace_value()));
+			ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getBalance(), v.getFace_value(), "sub"));
+			paid_amount = v.getFace_value();
+		// Else voucher is greater than balance
+			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance.");
+		} else {
+			paid_amount = ci.getBalance();
+			Customer c = this.crmService.queryCustomerById(customer_id);
+			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), paid_amount)));
+			c.getParams().put("id", customer_id);
+			this.crmService.editCustomer(c);
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+			ci.setBalance(0d);
+			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Surplus will be add into your credit. Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance and your account credit.");
+		}
+		v.setStatus("used");
+		v.getParams().put("serial_number", v.getSerial_number());
+		process_way+="# - "+v.getCard_number();
+		this.billingService.editVoucher(v);
+
+		// paid (off)
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+		} else {
+			ci.setStatus("not_pay_off");
+		}
+		// END INVOICE ASSIGNMENT
+
+		// BEGIN TRANSACTION ASSIGNMENT
+		CustomerTransaction ct = new CustomerTransaction();
+		// Assign invoice's paid amount to transaction's amount
+		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
+		// Assign card_name as ddpay
+		ct.setCard_name(process_way);
+		// Assign transaction's sort as type's return from order by order_id
+		ct.setTransaction_sort(process_sort);
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
+		ct.setCustomer_id(customer_id);
+		ct.setOrder_id(order_id);
+		ct.setInvoice_id(invoice_id);
+		// Assign transaction's time as current time
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Voucher");
+		// END TRANSACTION ASSIGNMENT
+
+		// BEGIN CALL SERVICE LAYER
+		this.crmService.editCustomerInvoice(ci);
+		this.crmService.createCustomerTransaction(ct);
+		// END CALL SERVICE LAYER
+
+		return json;
+	}
+	// END Voucher
+
+	
+	// BEGIN Voucher
+	@RequestMapping(value = "/customer/account/topup/voucher", method = RequestMethod.POST)
+	public JSONBean<String> doAccountTopupByVoucher(Model model,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("pin_number") String pin_number,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		String process_way = "Voucher";
+		
+		// Determine whether in banned list or not
+		VoucherBannedList vbl = new VoucherBannedList();
+		vbl.getParams().put("customer_id", customer_id);
+		vbl.getParams().put("where", "query_less_equal_date");
+		List<VoucherBannedList> vbls = this.billingService.queryVoucherBannedList(vbl);
+		vbl = vbls!=null && vbls.size()>0 ? vbls.get(0) : null;
+		
+		if(vbl!=null){
+			json.getErrorMap().put("alert-error", "You had been banned for being attempted brute force!");
+			return json;
+		}
+		
+		Voucher v = new Voucher();
+		v.getParams().put("card_number", pin_number);
+		v.getParams().put("status", "unused");
+		List<Voucher> vs = this.billingService.queryVoucher(v);
+		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
+		
+		if(v==null){
+			vbl = null;
+			vbl = new VoucherBannedList();
+			vbl.setCustomer_id(customer_id);
+			vbl.getParams().put("customer_id", customer_id);
+			vbls = this.billingService.queryVoucherBannedList(vbl);
+			// If have attempts or banned record
+			if(vbls!=null && vbls.size()>0){
+				Integer attempts = vbls.get(0).getAttempt_times();
+				// If greater equal to three, then banned!
+				if(attempts >= 2){
+					vbl.setForbad_date(new Date());
+					vbl.setAttempt_times(0);
+					this.billingService.editVoucherBannedList(vbl);
+					json.getErrorMap().put("alert-error", "You have tried 3 times incoorect! You had been banned for being attempted brute force!");
+					return json;
+				// If not greater equal to three, then attempts+1
+				} else {
+					vbl.setAttempt_times(attempts+1);
+					this.billingService.editVoucherBannedList(vbl);
+					json.getErrorMap().put("alert-error", "You have tried "+ (attempts+1) +" times incorrect! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't be affected to your other functions.");
+					return json;
+				}
+			// Else no attempts or banned record
+			} else {
+				vbl.setAttempt_times(1);
+				this.billingService.createVoucherBannedList(vbl);
+			}
+			json.getErrorMap().put("alert-error", "You have tried 1 times incorrect! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't be affected to your other functions.");
+			return json;
+		}
+
+		Customer c = this.crmService.queryCustomerById(customer_id);
+		c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, v.getFace_value()));
+		c.getParams().put("id", customer_id);
+		this.crmService.editCustomer(c);
+		json.getSuccessMap().put("alert-success", "Voucher topup had successfully been operates! Voucher amount had been added into your account credit. Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of your account credit, if no changes please try logout and then logon again.");
+
+		v.setStatus("used");
+		v.getParams().put("serial_number", v.getSerial_number());
+		process_way+="# - "+v.getCard_number();
+		this.billingService.editVoucher(v);
+
+
+		// BEGIN TRANSACTION ASSIGNMENT
+		CustomerTransaction ct = new CustomerTransaction();
+		// Assign invoice's paid amount to transaction's amount
+		ct.setAmount(v.getFace_value());
+		ct.setAmount_settlement(v.getFace_value());
+		// Assign card_name as ddpay
+		ct.setCard_name(process_way);
+		// Assign transaction's sort
+		ct.setTransaction_sort("voucher-topup");
+		// fields
+		ct.setCustomer_id(customer_id);
+		// Assign transaction's time as current time
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Voucher");
+		// END TRANSACTION ASSIGNMENT
+
+		// BEGIN CALL SERVICE LAYER
+		this.crmService.createCustomerTransaction(ct);
+		// END CALL SERVICE LAYER
+
+		return json;
+	}
+	// END Voucher
 
 }

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.VoucherMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="voucherColumns">
+		v.`serial_number` 		as v_serial_number,
+		v.`card_number` 		as v_card_number,
+		v.`face_value` 			as v_face_value,
+		v.`status` 				as v_status,
+		v.`comment` 			as v_comment,
+		v.`customer_id` 		as v_customer_id,
+		v.`post_to`				as v_post_to
+	</sql>
+	
+	<resultMap type="Voucher" id="voucherResultMap">
+		<id property="serial_number" column="v_serial_number" />
+		<result property="card_number" column="v_card_number" />
+		<result property="face_value" column="v_face_value" />
+		<result property="status" column="v_status" />
+		<result property="comment" column="v_comment" />
+		<result property="customer_id" column="v_customer_id" />
+		<result property="post_to" column="v_post_to" />
+	</resultMap>
+	
+	<sql id="voucherWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_posted'">
+					v.post_to IS NOT NULL
+				</when>
+				<when test="params.where == 'query_unposted'">
+					v.post_to IS NULL
+				</when>
+				<otherwise>
+					<if test="params.serial_number != null">v.serial_number = #{params.serial_number}</if>
+					<if test="params.card_number != null">and v.card_number = #{params.card_number}</if>
+					<if test="params.face_value != null">and v.face_value = #{params.face_value}</if>
+					<if test="params.status != null">and v.status = #{params.status}</if>
+					<if test="params.comment != null">and v.comment = #{params.comment}</if>
+					<if test="params.customer_id != null">and v.customer_id = #{params.customer_id}</if>
+					<if test="params.post_to != null">and v.post_to = #{params.post_to}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectVoucher" parameterType="Voucher" resultType="Voucher">
+		select * from tm_voucher as v
+		<include refid="voucherWhere"/>
+	</select>
+	
+	<!-- select voucher page -->
+	<select id="selectVouchersByPage" parameterType="Page" resultMap="voucherResultMap">
+		select 
+			<include refid="voucherColumns"/>
+			from tm_voucher as v
+			<include refid="voucherWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select voucher amount -->
+	<select id="selectVouchersSum" parameterType="Page" resultType="int">
+		select count(*) from tm_voucher as v
+		<include refid="voucherWhere"/>
+	</select>
+
+	<!-- select voucher by id -->
+	<select id="selectVoucherBySerialNumber" parameterType="int" resultType="Voucher">
+		select * from tm_voucher where serial_number = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertVoucher" parameterType="Voucher" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_voucher`(
+			`serial_number`, `card_number`, `face_value`, `status`, `comment`, `customer_id`, `post_to`
+		) VALUES (
+			#{serial_number}, #{card_number}, #{face_value}, #{status}, #{comment}, #{customer_id}, #{post_to}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update voucher -->
+	<update id="updateVoucher" parameterType="Voucher">
+		update tm_voucher v
+		<set>	
+			<if test="serial_number != null">v.serial_number = #{serial_number},</if>
+			<if test="card_number != null">v.card_number = #{card_number},</if>
+			<if test="face_value != null">v.face_value = #{face_value},</if>
+			<if test="status != null">v.status = #{status},</if>
+			<if test="comment != null">v.comment = #{comment},</if>
+			<if test="customer_id != null">v.customer_id = #{customer_id},</if>
+			<if test="post_to != null">v.post_to = #{post_to}</if>
+		</set>
+		<include refid="voucherWhere"/>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteVoucherBySerialNumber" parameterType="int">
+		DELETE FROM tm_voucher WHERE serial_number = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

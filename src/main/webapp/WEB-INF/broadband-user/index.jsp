@@ -84,6 +84,14 @@ hr {
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/billing/invoice/view/1/unpaid">View Invoice</a>
                     	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/voucher/view/1/unused">View Voucher</a>
+                    	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/voucher-file-upload-record/view/1/inactivated">View Voucher File Upload</a>
+                    	</li>
 					</ul>
 					<hr/>
 					<ul class="list-unstyled">

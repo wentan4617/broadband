@@ -40,7 +40,9 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.OrderPDFCreator;
+import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.SmserService;
@@ -58,15 +60,18 @@ public class CRMRestController {
 	private MailerService mailerService;
 	private SystemService systemService;
 	private SmserService smserService;
+	private BillingService billingService;
 
 	@Autowired
 	public CRMRestController(CRMService crmService,
 			MailerService mailerService, SystemService systemService,
-			SmserService smserService) {
+			SmserService smserService
+			,BillingService billingService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
+		this.billingService = billingService;
 	}
 
 	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
@@ -283,7 +288,6 @@ public class CRMRestController {
 
 		return json;
 	}
-
 	// END DDPay
 
 	// BEGIN Cash
@@ -389,6 +393,126 @@ public class CRMRestController {
 
 		return json;
 	}
+	// END Cash
+
+
+	// BEGIN Voucher
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/voucher", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByVoucher(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			@RequestParam("pin_number") String pin_number,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		Integer customer_id = null;
+		Integer order_id = null;
+		String process_way = "Voucher";
+		String process_sort = null;
+		Voucher v = new Voucher();
+		v.getParams().put("card_number", pin_number);
+		v.getParams().put("status", "unused");
+		List<Voucher> vs = this.billingService.queryVoucher(v);
+		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
+		
+		if(v==null){
+			json.getErrorMap().put("alert-error", "We Haven't found this Voucher, or it had been used!");
+			return json;
+		}
+
+		// BEGIN INVOICE ASSIGNMENT
+		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
+		ci.getParams().put("id", ci.getId());
+
+		if (ci.getBalance() <= 0d) {
+			// If invoice is paid off then no reason for executing the below
+			// operations
+			ci.setStatus("paid");
+			this.crmService.editCustomerInvoice(ci);
+			json.getSuccessMap().put("alert-success", "Voucher Haven't been used! We just change the status");
+			return json;
+		}
+		
+		Double paid_amount = 0d;
+		customer_id = ci.getCustomer_id();
+		
+		// If voucher is less equal balance
+		if(v.getFace_value() <= ci.getBalance()){
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), v.getFace_value()));
+			ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getBalance(), v.getFace_value(), "sub"));
+			paid_amount = v.getFace_value();
+		// Else voucher is greater than balance
+			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates!");
+		} else {
+			paid_amount = ci.getBalance();
+			Customer c = new Customer();
+			c.setId(customer_id);
+			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), paid_amount)));
+			this.crmService.editCustomer(c);
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+			ci.setBalance(0d);
+			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Surplus will be add into customer's credit");
+		}
+		v.setStatus("used");
+		v.getParams().put("serial_number", v.getSerial_number());
+		process_way+="# - "+v.getCard_number();
+		this.billingService.editVoucher(v);
+		
+		order_id = ci.getOrder_id();
+
+		// paid (off)
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+		} else {
+			ci.setStatus("not_pay_off");
+		}
+		// END INVOICE ASSIGNMENT
+
+		// Get order_type
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		case "order-term":
+			process_sort = "plan-term";
+			break;
+		case "order-no-term":
+			process_sort = "plan-no-term";
+			break;
+		case "order-topup":
+			process_sort = "plan-topup";
+			break;
+		}
+
+		User userSession = (User) req.getSession().getAttribute("userSession");
+
+		// BEGIN TRANSACTION ASSIGNMENT
+		CustomerTransaction ct = new CustomerTransaction();
+		// Assign invoice's paid amount to transaction's amount
+		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
+		// Assign card_name as ddpay
+		ct.setCard_name(process_way);
+		// Assign transaction's sort as type's return from order by order_id
+		ct.setTransaction_sort(process_sort);
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
+		ct.setCustomer_id(customer_id);
+		ct.setOrder_id(order_id);
+		ct.setInvoice_id(invoice_id);
+		// Assign transaction's time as current time
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Voucher");
+		ct.setExecutor(userSession.getId());
+		// END TRANSACTION ASSIGNMENT
+
+		// BEGIN CALL SERVICE LAYER
+		this.crmService.editCustomerInvoice(ci);
+		this.crmService.createCustomerTransaction(ct);
+		// END CALL SERVICE LAYER
+
+		return json;
+	}
+	// END Voucher
+	
+	
 	// BEGIN Cash
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/change-payment-status", method = RequestMethod.POST)
 	public JSONBean<String> doChangePaymentStatus(Model model,

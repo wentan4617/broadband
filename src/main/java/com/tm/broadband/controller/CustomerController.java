@@ -546,6 +546,7 @@ public class CustomerController {
 		model.addAttribute("home", "active");
 		
 		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+		customer = this.crmService.queryCustomerById(customer.getId());
 		
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("where", "query_status_no_discard_cancel");
@@ -559,6 +560,7 @@ public class CustomerController {
 		customer.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customer.getId(), "unpaid"));
 		
 		model.addAttribute("customerOrders", customerOrders);
+		model.addAttribute("c", customer);
 		
 		return "broadband-customer/customer-home";
 	}

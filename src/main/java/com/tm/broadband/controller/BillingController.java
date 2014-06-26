@@ -6,6 +6,10 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Date;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -16,7 +20,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
@@ -25,9 +31,13 @@ import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.Voucher;
+import com.tm.broadband.model.VoucherFileUpload;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.VoucherRecordUtility;
 
 @Controller
 public class BillingController {
@@ -230,5 +240,181 @@ public class BillingController {
 		// END QUERY SUM BY STATUS
 		
 		return "broadband-user/billing/invoice-view";
+	}
+	
+	@RequestMapping("/broadband-user/billing/voucher-file-upload-record/view/{pageNo}/{status}")
+	public String toVoucherFileUpload(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("status") String status) {
+
+		Page<VoucherFileUpload> page = new Page<VoucherFileUpload>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "ORDER BY upload_date DESC");
+		page.getParams().put("status", status);
+		page = this.billingService.queryVoucherFileUploadsByPage(page);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("status", status);
+		model.addAttribute(status + "Active", "active");
+
+		// BEGIN QUERY SUM BY STATUS
+		Page<VoucherFileUpload> pageStatusSum = new Page<VoucherFileUpload>();
+		pageStatusSum.getParams().put("status", "activated");
+		model.addAttribute("activatedSum", this.billingService.queryVoucherFileUploadsSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status", "inactivated");
+		model.addAttribute("inactivatedSum", this.billingService.queryVoucherFileUploadsSumByPage(pageStatusSum));
+		// END QUERY SUM BY STATUS
+		
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		
+		
+		return "broadband-user/billing/voucher-file-upload-view";
+	}
+	
+	// Upload Call Billing Record CSV
+	@RequestMapping(value = "/broadband-user/billing/voucher-file-upload-record/csv/upload", method = RequestMethod.POST)
+	public String uploadVoucherCSVFile(Model model
+			, @RequestParam("pageNo") int pageNo
+			, @RequestParam("status") String status
+			, @RequestParam("voucher_csv_file") MultipartFile voucher_csv_file
+			, HttpServletRequest req) {
+		
+		String fileName = voucher_csv_file.getOriginalFilename();
+
+		if(!voucher_csv_file.isEmpty()){
+			String save_path = TMUtils.createPath("broadband" + File.separator
+					+ "voucher_csv_file" + File.separator + fileName);
+			try {
+				voucher_csv_file.transferTo(new File(save_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			User user = (User) req.getSession().getAttribute("userSession");
+			VoucherFileUpload vfu = new VoucherFileUpload();
+			vfu.setFile_name(fileName);
+			vfu.setFile_path(save_path);
+			vfu.setStatus("inactivated");
+			vfu.setUpload_by(user.getId());
+			vfu.setUpload_date(new Date());
+			this.billingService.createVoucherFileUpload(vfu);
+		}
+		
+		return "redirect:/broadband-user/billing/voucher-file-upload-record/view/" + pageNo + "/" + status;
+	}
+	
+	// Download Call Billing Record CSV
+	@RequestMapping(value = "/broadband-user/billing/voucher-file-upload-record/csv/download/{voucherFileId}")
+    public ResponseEntity<byte[]> downloadVoucherCSV(Model model
+    		,@PathVariable(value = "voucherFileId") int voucherFileId) throws IOException {
+		String filePath = this.billingService.queryVoucherFileUploadCSVPathById(voucherFileId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".csv", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	// Delete Call Billing Record CSV
+	@RequestMapping(value = "/broadband-user/billing/voucher-file-upload-record/csv/delete", method = RequestMethod.POST)
+	public String deleteBillingFileCSV(Model model
+			, @RequestParam("pageNo") int pageNo
+			, @RequestParam("status") String status
+			, @RequestParam("voucherFileId") Integer voucherFileId
+			, @RequestParam("filePath") String filePath
+			, HttpServletRequest req) {
+		
+		this.billingService.removeVoucherFileUploadBySerialNumber(voucherFileId);
+		
+		File file = new File(filePath);
+		if(file.exists()){
+			file.delete();
+		}
+		
+		return "redirect:/broadband-user/billing/voucher-file-upload-record/view/" + pageNo + "/" + status;
+	}
+	
+	// Insert Call Billing Record CSV into database
+	@RequestMapping(value = "/broadband-user/billing/voucher-file-upload-record/csv/insert", method = RequestMethod.POST)
+	public String insertBillingFileCSVIntoDatabase(Model model
+			, @RequestParam("pageNo") int pageNo
+			, @RequestParam("status") String status
+			, @RequestParam("voucherFileId") String voucherFileId
+			, @RequestParam("filePath") String filePath
+			, HttpServletRequest req) {
+		User user = (User) req.getSession().getAttribute("userSession");
+		VoucherFileUpload vfu = new VoucherFileUpload();
+		vfu.getParams().put("id", voucherFileId);
+		vfu.setInserted_by(user.getId());
+		vfu.setInserted_date(new Date());
+		vfu.setStatus("activated");
+		this.billingService.editVoucherFileUpload(vfu);
+		
+		// Get All data from the CSV file
+		List<Voucher> vs = VoucherRecordUtility.vs(filePath);
+		
+		// Iteratively insert into database
+		for (Voucher v : vs) {
+			v.setStatus("unused");
+			this.billingService.createVoucher(v);
+		}
+		
+		return "redirect:/broadband-user/billing/voucher-file-upload-record/view/" + pageNo + "/" + status;
+	}
+	
+	@RequestMapping("/broadband-user/billing/voucher/view/{pageNo}/{status}")
+	public String toVoucher(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("status") String status) {
+
+		Page<Voucher> page = new Page<Voucher>();
+		page.setPageNo(pageNo);
+		page.setPageSize(500);
+		page.getParams().put("orderby", "ORDER BY serial_number ASC");
+		switch (status) {
+		case "used":
+			page.getParams().put("status", status);		
+			break;
+		case "unused":
+			page.getParams().put("status", status);
+			break;
+		case "posted":
+			page.getParams().put("where", "query_posted");
+			break;
+		case "unpost":
+			page.getParams().put("where", "query_unpost");
+			break;
+		}
+		page = this.billingService.queryVouchersByPage(page);
+		
+		model.addAttribute("page", page);
+		model.addAttribute("status", status);
+		model.addAttribute(status + "Active", "active");
+
+		// BEGIN QUERY SUM BY STATUS
+		Page<Voucher> pageStatusSum = new Page<Voucher>();
+		pageStatusSum.getParams().put("status", "used");
+		model.addAttribute("usedSum", this.billingService.queryVouchersSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status", "unused");
+		model.addAttribute("unusedSum", this.billingService.queryVouchersSumByPage(pageStatusSum));
+		Page<Voucher> pagePostedStatusSum = new Page<Voucher>();
+		pagePostedStatusSum.getParams().put("where", "query_posted");
+		model.addAttribute("postedSum", this.billingService.queryVouchersSumByPage(pagePostedStatusSum));
+		pagePostedStatusSum.getParams().put("where", "query_unpost");
+		model.addAttribute("unpostSum", this.billingService.queryVouchersSumByPage(pagePostedStatusSum));
+		// END QUERY SUM BY STATUS
+		
+		
+		return "broadband-user/billing/voucher-view";
 	}
 }

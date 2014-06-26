@@ -89,6 +89,18 @@
 									View Invoice
 								</a>
 							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/voucher/view/1/unused">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Voucher
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/voucher-file-upload-record/view/1/inactivated">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Voucher File Upload
+								</a>
+							</li>
 							<li class="divider"></li>
 							<li>
 								<a href="${ctx}/broadband-user/billing/early-termination-charge/view/1/unpaid">
