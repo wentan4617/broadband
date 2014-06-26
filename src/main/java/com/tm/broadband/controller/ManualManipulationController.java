@@ -169,11 +169,11 @@ public class ManualManipulationController {
 			, HttpServletRequest req) {
 		
 		Date uploadDate = new Date();
-		String filaName = call_billing_record_csv_file.getOriginalFilename();
+		String fileName = call_billing_record_csv_file.getOriginalFilename();
 
 		if(!call_billing_record_csv_file.isEmpty()){
 			String save_path = TMUtils.createPath("broadband" + File.separator
-					+ "call_billing_record" + File.separator + filaName);
+					+ "call_billing_record" + File.separator + fileName);
 			try {
 				call_billing_record_csv_file.transferTo(new File(save_path));
 			} catch (IllegalStateException | IOException e) {
@@ -185,7 +185,7 @@ public class ManualManipulationController {
 			bfu.setBilling_type(billing_type);												// billing_type
 			bfu.setInserted_database(false);												// inserted_database
 			bfu.setUpload_date(uploadDate);													// upload_date
-			bfu.setUpload_file_name(filaName);	// upload_file_name
+			bfu.setUpload_file_name(fileName);	// upload_file_name
 			User user = (User) req.getSession().getAttribute("userSession");
 			bfu.setUpload_by(user.getId());													// user_id
 			bfu.setStatement_date(CallingRecordUtility.statementDate(save_path));			// statement_date
@@ -219,7 +219,7 @@ public class ManualManipulationController {
 	
 	// Delete Call Billing Record CSV
 	@RequestMapping(value = "/broadband-user/manual-manipulation/call-billing-record/csv/delete", method = RequestMethod.POST)
-	public String uploadBillingFileCSV(Model model
+	public String deleteBillingFileCSV(Model model
 			, @RequestParam("pageNo") int pageNo
 			, @RequestParam("status") String status
 			, @RequestParam("billingFileId") Integer billingFileId

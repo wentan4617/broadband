@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.VoucherBannedListMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="voucherBannedListColumns">
+		vbl.`id` 					as vbl_id,
+		vbl.`customer_id` 			as vbl_customer_id,
+		vbl.`attempt_times` 		as vbl_attempt_times,
+		vbl.`forbad_date` 			as vbl_forbad_date
+	</sql>
+	
+	<resultMap type="VoucherBannedList" id="voucherBannedListResultMap">
+		<id property="id" column="vbl_id" />
+		<result property="customer_id" column="vbl_customer_id" />
+		<result property="attempt_times" column="vbl_attempt_times" />
+		<result property="forbad_date" column="vbl_forbad_date" />
+	</resultMap>
+	
+	<sql id="voucherBannedListWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_less_equal_date'">
+					vbl.customer_id = #{params.customer_id}
+					and date(vbl.forbad_date) &gt;= CURDATE()
+				</when>
+				<otherwise>
+					<if test="params.id != null">vbl.id = #{params.id}</if>
+					<if test="params.customer_id != null">and vbl.customer_id = #{params.customer_id}</if>
+					<if test="params.attempt_times != null">and vbl.attempt_times = #{params.attempt_times}</if>
+					<if test="params.forbad_date != null">and vbl.forbad_date = #{params.forbad_date}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectVoucherBannedList" parameterType="VoucherBannedList" resultType="VoucherBannedList">
+		select * from tm_voucher_banned_list as vbl
+		<include refid="voucherBannedListWhere"/>
+	</select>
+	
+	<!-- select voucherBannedList page -->
+	<select id="selectVoucherBannedListsByPage" parameterType="Page" resultMap="voucherBannedListResultMap">
+		select 
+			<include refid="voucherBannedListColumns"/>
+			from tm_voucher_banned_list as vbl
+			<include refid="voucherBannedListWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select voucherBannedList amount -->
+	<select id="selectVoucherBannedListsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_voucher_banned_list as vbl
+		<include refid="voucherBannedListWhere"/>
+	</select>
+
+	<!-- select voucherBannedList by id -->
+	<select id="selectVoucherBannedListById" parameterType="int" resultType="VoucherBannedList">
+		select * from tm_voucher_banned_list where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+	<insert id="insertVoucherBannedList" parameterType="VoucherBannedList" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_voucher_banned_list`(
+			`customer_id`, `attempt_times`, `forbad_date`
+		) VALUES (
+			#{customer_id}, #{attempt_times}, #{forbad_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+	
+	<!-- update voucherBannedList -->
+	<update id="updateVoucherBannedList" parameterType="VoucherBannedList">
+		update tm_voucher_banned_list vbl
+		<set>
+			<if test="customer_id != null">vbl.customer_id = #{customer_id},</if>
+			<if test="attempt_times != null">vbl.attempt_times = #{attempt_times},</if>
+			<if test="forbad_date != null">vbl.forbad_date = #{forbad_date}</if>
+		</set>
+		<include refid="voucherBannedListWhere"/>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteVoucherBannedListById" parameterType="int">
+		DELETE FROM tm_voucher_banned_list WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>

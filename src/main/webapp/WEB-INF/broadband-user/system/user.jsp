@@ -170,6 +170,16 @@
 											<form:checkbox path="authArray" value="billing/invoice/view" data-type="checkbox_billing" /> View Invoice
 										</label>
 									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="billing/voucher-record/view" data-type="checkbox_billing" /> View Voucher
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="billing/voucher-file-upload-record/view" data-type="checkbox_billing" /> View Voucher File Upload
+										</label>
+									</li>
 								</ul>
 								<hr/>
 								<ul class="list-unstyled">

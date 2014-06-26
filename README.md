@@ -16,6 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-06-26
+
+* 
+* 新建一张tm_voucher_banned_list表，在客户提交卡密时查询该表是否存在该客户记录，如果返回null则继续否则提示“You had been banned for being attempted brute force”，条件为客户id且禁止时间小于今天(steven)
+* 通过banned list验证后，接下来判断输入的pin number是否正确，如果不正确则判断banned list表是否有该用户，如果有则更新尝试次数+1，如果没有则插入该记录，并返回提示“You have x time(s) to try! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't affect your other operations.”(steven)
+* 在voucher表里添加一个post_to字段，用来记录充值卡的配送点，记录配送点时填写配送点以及起始和结束卡号，更新post_to时判断大于等于起始且小于等于结束范围内的卡号(steven)
+ 
 demand version 1.0.21 2014-06-24
 
 * [transaction表添加一个字段，将后台付款时将操作者id存至transaction表](steven)

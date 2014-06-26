@@ -33,11 +33,11 @@
 					<div class="row">
 						<div class="col-md-5">
 							<ul class="list-unstyled personal-info">
-								<li><strong class="text-info">${customerSession.login_name }</strong></li>
-								<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
-								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
-								<li><strong class="text-info">${customerSession.cellphone }</strong></li>
-								<li><strong class="text-info">${customerSession.address }</strong></li>
+								<li><strong class="text-info">${c.login_name }</strong></li>
+								<li><strong class="text-info">${c.first_name }&nbsp;${c.last_name }</strong></li>
+								<li><strong class="text-info"><a href="mailto:#">${c.email }</a></strong></li>
+								<li><strong class="text-info">${c.cellphone }</strong></li>
+								<li><strong class="text-info">${c.address }</strong></li>
 							</ul>
 						</div>
 						<div class="col-md-7">
@@ -48,7 +48,7 @@
 									</strong> 
 									NZ$ 
 									<strong class="text-success">
-										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
+										<fmt:formatNumber value="${c.balance==null?0:c.balance }" type="number" pattern="#,##0.00" />										
 									</strong>
 								</div>
 								<div class="col-md-4">
@@ -57,8 +57,8 @@
 									   		Top Up <span class="caret"></span>
 									  	</button>
 									  	<ul class="dropdown-menu" data-role="menu">
-									    	<li><a href="${ctx }/customer/topup">Credit Card</a></li>
-									    	<li><a href="#">Voucher</a></li>
+									    	<li><a href="${ctx }/customer/topup"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+									    	<li><a href="javascript:void(0);" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 									  	</ul>
 									</div>
 								</div>
@@ -71,7 +71,7 @@
 									</strong> 
 									NZ$ 
 									<strong class="text-success">
-										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
+										<fmt:formatNumber value="${c.customerInvoice.balance==null?0:c.customerInvoice.balance }" type="number" pattern="#,##0.00" />
 									</strong>
 								</div>
 								<div class="col-md-4">
@@ -126,7 +126,73 @@
 	</div>
 </div>
 
+		
+<!-- confirmPayWay Modal -->
+<div class="modal fade" id="confirmPayWayModal" tabindex="-1" role="dialog" aria-labelledby="confirmPayWayModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="confirmPayWayModalLabel">
+					<strong data-name="confirm_payway_modal_title"></strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="pin_number" class="control-label col-md-6">Pin Number:</label>
+					<div class="col-md-6">
+						<input id="pin_number" name="pin_number" class="form-control input-sm" type="text" placeholder="Pin Number"/>
+					</div>
+				</div>
+				<br/>
+				<div class="form-group">
+					<p>
+						<strong data-name="confirm_payway_modal_content"></strong>
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_payway_modal_btn" data-dismiss="modal"></a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
+<script>
+(function($){
+	// BEGIN PayWay
+	$('a[data-name="pay_way_by"]').click(function(){
+		var pay_way = $(this).attr('data-way');
+		$('a[data-name="confirm_payway_modal_btn"]').attr('data-way', pay_way);
+		if(pay_way == 'voucher'){
+			$('strong[data-name="confirm_payway_modal_title"]').html('Topup your accmount credit by voucher?');
+			$('strong[data-name="confirm_payway_modal_content"]').html('Voucher\'s face value will be automatically added into your account\'s credit.<br/>');
+			$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
+		}
+		$('#confirmPayWayModal').modal('show');
+	});
+	// Confirm PayWay
+	$('a[data-name="confirm_payway_modal_btn"]').click(function(){
+		var pay_way = $(this).attr('data-way');
+		var url = '';
+		if(pay_way == 'voucher'){
+			var data = {
+				customer_id : '${c.id}'
+				,pin_number : $('input[name="pin_number"]').val()
+			};
+			url = '${ctx}/customer/account/topup/voucher';
+		}
+		
+		$.post(url, data, function(json){
+			$.jsonValidation(json, 'right');
+		}, 'json');
+	});
+	// END PayWay
+})(jQuery);
+</script>
 <jsp:include page="footer-end.jsp" />

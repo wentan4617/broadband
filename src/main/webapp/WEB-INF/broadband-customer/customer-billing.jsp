@@ -30,13 +30,13 @@
 									</th>
 								</tr>
 								<tr>
-									<th>Date</th>
-									<th>Due Date</th>
+									<th style="width:90px;">Date</th>
+									<th style="width:95px;">Due Date</th>
 									<th>Reference</th>
-									<th>Amount Payable</th>
-									<th>Total Credit</th>
-									<th>Amount Paid</th>
-									<th>Balance</th>
+									<th style="text-align:right">Payable</th>
+									<th style="text-align:right">Total Credit</th>
+									<th style="text-align:right">Paid</th>
+									<th style="text-align:right">Balance</th>
 									<th>&nbsp;</th>
 									<th>&nbsp;</th>
 								</tr>
@@ -52,7 +52,7 @@
 													<td>${tx.card_name}</td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>
-													<td><strong>NZ$ <fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong></td>
+													<td style="text-align:right"><strong>$ <fmt:formatNumber value="${tx.amount}" type="number" pattern="#,##0.00" /></strong></td>
 													<td></td>
 													<td>&nbsp;</td>
 													<td>&nbsp;</td>
@@ -68,22 +68,27 @@
 												</c:if>
 											</td>
 											<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
-											<td>
-												<strong>NZ$ <fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
+											<td style="text-align:right">
+												<strong>$ <fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td>
-												<strong>NZ$ <fmt:formatNumber value="${invoice.amount_payable - invoice.final_payable_amount}" type="number" pattern="#,##0.00" /></strong>		
+											<td style="text-align:right">
+												<strong>$ -<fmt:formatNumber value="${invoice.amount_payable - invoice.final_payable_amount}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td>&nbsp;</td>
-											<td><strong>NZ$ <fmt:formatNumber value="${invoice.balance}" type="number" pattern="#,##0.00" /></strong></td>
+											<td style="text-align:right">
+												<strong>$ -<fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
+											</td>
+											<td style="text-align:right">
+												<strong>$ <fmt:formatNumber value="${invoice.balance}" type="number" pattern="#,##0.00" /></strong>
+											</td>
 											<td>
 												<c:if test="${(invoice.status == 'unpaid' || invoice.status == 'not_pay_off')}">
 													<div class="btn-group">
 														<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
 															Make Payment <span class="caret"></span>
 														</button>
-														<ul class="dropdown-menu">
-															<li><a href="#" data-id="${invoice.id }" data-balance="${invoice.balance}">Credit Card</a></li>
+														<ul class="dropdown-menu" role="menu">
+															<li><a href="#" data-id="${invoice.id }" data-balance="${invoice.balance}"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+															<li><a href="javascript:void(0);" data-id="${invoice.id }" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 														</ul>
 													</div>
 												</c:if>
@@ -133,6 +138,40 @@
 	<input type="hidden" id="invoice_id" name="invoice_id"/>
 </form>
 
+		
+<!-- confirmPayWay Modal -->
+<div class="modal fade" id="confirmPayWayModal" tabindex="-1" role="dialog" aria-labelledby="confirmPayWayModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="confirmPayWayModalLabel">
+					<strong data-name="confirm_payway_modal_title"></strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="pin_number" class="control-label col-md-6">Pin Number:</label>
+					<div class="col-md-6">
+						<input id="pin_number" name="pin_number" class="form-control input-sm" type="text" placeholder="Pin Number"/>
+					</div>
+				</div>
+				<br/>
+				<div class="form-group">
+					<p>
+						<strong data-name="confirm_payway_modal_content"></strong>
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_payway_modal_btn" data-dismiss="modal"></a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
@@ -142,6 +181,37 @@
 		$('#invoice_id').val($(this).attr('data-id'));
 		$('#balanceForm').submit();
 	});
+	// BEGIN PayWay
+	$('a[data-name="pay_way_by"]').click(function(){
+		var pay_way = $(this).attr('data-way');
+		var invoice_id = $(this).attr('data-id');
+		$('a[data-name="confirm_payway_modal_btn"]').attr('data-way', pay_way);
+		$('a[data-name="confirm_payway_modal_btn"]').attr('data-id', invoice_id);
+		if(pay_way == 'voucher'){
+			$('strong[data-name="confirm_payway_modal_title"]').html('Use Voucher to pay this invoice?');
+			$('strong[data-name="confirm_payway_modal_content"]').html('If the voucher\'s face value is greater than invoice\'s balance than the surplus will be automatically add into your account\'s credit.<br/>');
+			$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
+		}
+		$('#confirmPayWayModal').attr('data-id', invoice_id);
+		$('#confirmPayWayModal').modal('show');
+	});
+	// Confirm PayWay
+	$('a[data-name="confirm_payway_modal_btn"]').click(function(){
+		var pay_way = $(this).attr('data-way');
+		var url = '';
+		if(pay_way == 'voucher'){
+			var data = {
+				invoice_id : $(this).attr('data-id')
+				,pin_number : $('input[name="pin_number"]').val()
+			};
+			url = '${ctx}/customer/invoice/defray/voucher';
+		}
+		
+		$.post(url, data, function(json){
+			$.jsonValidation(json, 'right');
+		}, 'json');
+	});
+	// END PayWay
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />
