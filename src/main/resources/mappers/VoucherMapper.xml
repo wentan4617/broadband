@@ -64,7 +64,7 @@
 
 	<!-- SELECT AREA -->
 	
-	<select id="selectVoucher" parameterType="Voucher" resultType="Voucher">
+	<select id="selectVouchers" parameterType="Voucher" resultType="Voucher">
 		select * from tm_voucher as v
 		<include refid="voucherWhere"/>
 	</select>

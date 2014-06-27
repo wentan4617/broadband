@@ -48,6 +48,7 @@ import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
+import com.tm.broadband.validator.mark.OnlinePayByVoucherValidatedMark;
 
 @RestController
 @SessionAttributes(value = { "customer", "orderPlan"})
@@ -418,7 +419,7 @@ public class CustomerRestController {
 		Voucher v = new Voucher();
 		v.getParams().put("card_number", pin_number);
 		v.getParams().put("status", "unused");
-		List<Voucher> vs = this.billingService.queryVoucher(v);
+		List<Voucher> vs = this.billingService.queryVouchers(v);
 		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
 		
 		if(v==null){
@@ -555,7 +556,7 @@ public class CustomerRestController {
 		Voucher v = new Voucher();
 		v.getParams().put("card_number", pin_number);
 		v.getParams().put("status", "unused");
-		List<Voucher> vs = this.billingService.queryVoucher(v);
+		List<Voucher> vs = this.billingService.queryVouchers(v);
 		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
 		
 		if(v==null){
@@ -631,6 +632,34 @@ public class CustomerRestController {
 
 		return json;
 	}
+	
+	
+	@RequestMapping(value="/plans/plan-topup/online-pay-by-voucher", method = RequestMethod.POST)
+	public JSONBean<Voucher> onlinePayByVoucher(
+			@Validated(OnlinePayByVoucherValidatedMark.class) Voucher voucher, BindingResult result, 
+			HttpServletRequest req) {
+		
+		JSONBean<Voucher> json = new JSONBean<Voucher>();
+		json.setModel(voucher);
+		
+		json.setJSONErrorMap(result);
+		
+		if (json.isHasErrors()) return json;
+		
+		voucher.getParams().put("serial_number", voucher.getSerial_number());
+		voucher.getParams().put("card_number", voucher.getCard_number());
+		voucher.getParams().put("status", "unused");
+		
+		Voucher v = this.billingService.queryVoucher(voucher);
+		if (v == null) {
+			json.getErrorMap().put("alert-error", "Voucher is invalid.");
+			return json;
+		}
+		
+		return json;
+	}
+	// END Voucher
+
 	// END Voucher Topup
 
 	// BEGIN Account Credit

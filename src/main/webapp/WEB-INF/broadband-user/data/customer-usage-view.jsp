@@ -28,9 +28,14 @@
 								<button type="button" class="btn btn-default active" data-btn="view-btn" data-type="table">
 									<span class="glyphicon glyphicon-th"></span> Table
 								</button>
-							  	<button type="button" class="btn btn-default" data-btn="view-btn" data-type="chart">
-							  		<span class="glyphicon glyphicon-stats"></span> Chart
+							  	<button type="button" class="btn btn-default" data-btn="view-btn" data-type="line">
+							  		<span class="glyphicon glyphicon-stats"></span> Line
 							  	</button>
+							  	<c:if test="${co.cod.detail_data_flow > 0}">
+								  	<button type="button" class="btn btn-default" data-btn="view-btn" data-type="pie">
+								  		<span class="glyphicon glyphicon-certificate"></span> Pie
+								  	</button>
+							  	</c:if>
 							</div>
 						</div>
 					</div>
@@ -39,7 +44,8 @@
 						<div class="col-md-4"><strong>Plan:</strong>&nbsp;${co.cod.detail_name } </div>
 						<div class="col-md-4">
 							<strong>Data Quotation:</strong>
-							&nbsp;${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 'Unlimited'}</div>
+							&nbsp;${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 'Unlimited'}
+						</div>
 					</div>
 					<hr />
 					<div class="row">
@@ -66,11 +72,13 @@
 				</div>
 				<div class="panel-body">
 					<div id="usage_table"></div>
-					<div id="usage_chart" style="display:none;">
+					<div id="usage_line" style="display:none;">
 						<canvas id="canvas" height="450" width="1100"></canvas>
 					</div>
+					<c:if test="${co.cod.detail_data_flow > 0}">
+						<div id="chart_pie" style="height:300px;" ></div>
+					</c:if>
 				</div>
-				
 			</div>
 			
 		</div>
@@ -85,6 +93,8 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/Chart.min.js"></script>
+<script type="text/javascript" src="http://www.google.com/jsapi"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/chartkick.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
 (function($){
@@ -113,7 +123,7 @@
 			$table.html(tmpl('customer_usage_view_tmpl', obj));
 			
 			var curMonthTotal = Number($('#curMonthTotal').val());
-			var planUsage = Number(${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 9999});
+			var planUsage = Number(${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 999});
 			var usageWidth = Number(curMonthTotal/planUsage);
 			
 			var widthVal = 0;
@@ -176,6 +186,15 @@
 			};
 			//$canvas.get(0).getContext("2d").clearRect(0, 0, 1100, 450);
 			new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, lineChartOptions);
+			
+			if (planUsage != 999) {
+				new Chartkick.PieChart("chart_pie"
+						, [	["Used", curMonthTotal.toFixed(3)]
+	                       	, ["Available", (planUsage - curMonthTotal).toFixed(3)]]
+						, {"colors": ["#d9534f", "#5cb85c"]});
+			}
+			
+			$('#chart_pie').hide();
 	   	});
 	}
 	doUsage('${current_date}'); //${current_date}
@@ -186,11 +205,17 @@
 		
 		var type = $(this).attr('data-type');
 		if (type == 'table') {
-			$('#usage_chart').hide();
 			$('#usage_table').show();
-		} else if (type == 'chart') {
+			$('#usage_line').hide();
+			$('#chart_pie').hide();
+		} else if (type == 'line') {
 			$('#usage_table').hide();
-			$('#usage_chart').show();
+			$('#usage_line').show();
+			$('#chart_pie').hide();
+		} else if (type == 'pie') {
+			$('#usage_table').hide();
+			$('#usage_line').hide();
+			$('#chart_pie').show();
 		}
 	});
 	

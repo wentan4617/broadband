@@ -272,10 +272,16 @@ public class BillingService {
 		page.setResults(this.voucherMapper.selectVouchersByPage(page));
 		return page;
 	}
+	
+	@Transactional 
+	public Voucher queryVoucher(Voucher v){
+		List<Voucher> vouchers = this.voucherMapper.selectVouchers(v);
+		return vouchers != null && vouchers.size() > 0 ? vouchers.get(0) : null;
+	}
 
 	@Transactional 
-	public List<Voucher> queryVoucher(Voucher v){
-		return this.voucherMapper.selectVoucher(v);
+	public List<Voucher> queryVouchers(Voucher v){
+		return this.voucherMapper.selectVouchers(v);
 	}
 	
 	@Transactional

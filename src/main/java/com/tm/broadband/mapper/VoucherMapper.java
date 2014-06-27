@@ -6,17 +6,10 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Voucher;
 
 public interface VoucherMapper {
-
-/**
- * mapping tm_voucher, voucher DAO component
- * 
- * @author Dong Chen
- *
- */
-
+	
 	/* SELECT AREA */
 	
-	List<Voucher> selectVoucher(Voucher v);
+	List<Voucher> selectVouchers(Voucher v);
 	List<Voucher> selectVouchersByPage(Page<Voucher> page);
 	int selectVouchersSum(Page<Voucher> page);
 	Voucher selectVoucherBySerialNumber(int id);

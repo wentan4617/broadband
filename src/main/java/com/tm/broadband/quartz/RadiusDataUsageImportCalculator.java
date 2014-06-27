@@ -37,7 +37,7 @@ public class RadiusDataUsageImportCalculator {
 	
 	
 	public void doRadiusDataImportCalculator(){
-		
+		//System.out.println("runing" + new Date());
 		// delete tm_radacct recode
 		this.dataService.removeRadacct();
 		

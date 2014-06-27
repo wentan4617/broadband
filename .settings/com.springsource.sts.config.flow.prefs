@@ -1,0 +1,2 @@
+//com.springsource.sts.config.flow.coordinates\:http\://www.springframework.org/schema/batch\:/broadband/src/main/resources/spring/importRadiusRadacctJob.xml=<?xml version\="1.0" encoding\="UTF-8"?>\r\n<graph>\r\n<element clazz\="JobModelElement" type\="job">\r\n<structure end\="974" endstart\="968" start\="619" startend\="704"/>\r\n<bounds height\="118" width\="206" x\="15" y\="17"/>\r\n</element>\r\n</graph>
+eclipse.preferences.version=1
