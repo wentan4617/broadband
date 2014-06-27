@@ -14,7 +14,7 @@
 			<jsp:include page="sidebar.jsp" />
 		</div>
 		<div class="col-md-9">
-		
+			
 			<div class="panel panel-success customer-panel-height">
 				<div class="panel-heading">
 					<h4 class="panel-title">View Billing</h4>
@@ -211,6 +211,11 @@
 				,pin_number : $('input[name="pin_number"]').val()
 			};
 			url = '${ctx}/customer/invoice/defray/voucher';
+		} else if(pay_way == 'account-credit'){
+			var data = {
+				invoice_id : $(this).attr('data-id')
+			};
+			url = '${ctx}/customer/invoice/defray/account-credit';
 		}
 		
 		$.post(url, data, function(json){
