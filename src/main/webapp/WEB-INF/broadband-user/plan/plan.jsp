@@ -133,7 +133,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="jackpot_fee" class="control-label col-md-4">Jackpot Installation Fee</label>
+							<label for="jackpot_fee" class="control-label col-md-4">Jackpoint Installation Fee</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<span class="input-group-addon">$</span>

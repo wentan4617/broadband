@@ -19,7 +19,6 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">View Billing</h4>
 				</div>
-				
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table" style="font-size:12px;">
 						<c:forEach var="co" items="${customerSession.customerOrders}">
@@ -89,6 +88,7 @@
 														<ul class="dropdown-menu" role="menu">
 															<li><a href="#" data-id="${invoice.id }" data-balance="${invoice.balance}"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
 															<li><a href="javascript:void(0);" data-id="${invoice.id }" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+															<li><a href="javascript:void(0);" data-id="${invoice.id }" data-name="pay_way_by" data-way="account-credit"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;Account Credit</a></li>
 														</ul>
 													</div>
 												</c:if>
@@ -150,7 +150,7 @@
 				</h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
+				<div class="form-group" data-name="pin_number_input" style="display:none;">
 					<label for="pin_number" class="control-label col-md-6">Pin Number:</label>
 					<div class="col-md-6">
 						<input id="pin_number" name="pin_number" class="form-control input-sm" type="text" placeholder="Pin Number"/>
@@ -189,8 +189,14 @@
 		$('a[data-name="confirm_payway_modal_btn"]').attr('data-id', invoice_id);
 		if(pay_way == 'voucher'){
 			$('strong[data-name="confirm_payway_modal_title"]').html('Use Voucher to pay this invoice?');
-			$('strong[data-name="confirm_payway_modal_content"]').html('If the voucher\'s face value is greater than invoice\'s balance than the surplus will be automatically add into your account\'s credit.<br/>');
+			$('strong[data-name="confirm_payway_modal_content"]').html('If the voucher\'s face value is greater than invoice\'s balance then the surplus will be automatically add into your account\'s credit.<br/>');
 			$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
+			$('div[data-name="pin_number_input"]').css('display', '');
+		} else if(pay_way == 'account-credit'){
+			$('strong[data-name="confirm_payway_modal_title"]').html('Use Your Account Credit to pay this invoice?');
+			$('strong[data-name="confirm_payway_modal_content"]').html('If your account credit is greater than or equal to invoice\'s balance then the surplus will be automatically return back to your account\'s credit. If your account\'s credit is less than the invoice\'s balance then decrease the invoice balance and status will be set not_pay_off.<br/>');
+			$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
+			$('div[data-name="pin_number_input"]').css('display', 'none');
 		}
 		$('#confirmPayWayModal').attr('data-id', invoice_id);
 		$('#confirmPayWayModal').modal('show');

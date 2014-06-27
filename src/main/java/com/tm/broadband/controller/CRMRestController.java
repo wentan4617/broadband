@@ -455,6 +455,7 @@ public class CRMRestController {
 		}
 		v.setStatus("used");
 		v.getParams().put("serial_number", v.getSerial_number());
+		v.setCustomer_id(customer_id);
 		process_way+="# - "+v.getCard_number();
 		this.billingService.editVoucher(v);
 		
