@@ -1155,7 +1155,7 @@ public class CRMService {
 		invoicePDF.setCustomer(c);
 		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
 		
-		if(!"".equals(pstn_number.trim())){
+		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
 				totalPayableAmouont = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalPayableAmouont, customerCallRecordMapper, callInternationalRateMapper);
@@ -1382,7 +1382,7 @@ public class CRMService {
 		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
-		if(!"".equals(pstn_number.trim())){
+		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
 			
 		}

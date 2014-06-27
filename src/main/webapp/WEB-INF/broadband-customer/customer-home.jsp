@@ -33,11 +33,11 @@
 					<div class="row">
 						<div class="col-md-5">
 							<ul class="list-unstyled personal-info">
-								<li><strong class="text-info">${c.login_name }</strong></li>
-								<li><strong class="text-info">${c.first_name }&nbsp;${c.last_name }</strong></li>
-								<li><strong class="text-info"><a href="mailto:#">${c.email }</a></strong></li>
-								<li><strong class="text-info">${c.cellphone }</strong></li>
-								<li><strong class="text-info">${c.address }</strong></li>
+								<li><strong class="text-info">${customerSession.login_name }</strong></li>
+								<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
+								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
+								<li><strong class="text-info">${customerSession.cellphone }</strong></li>
+								<li><strong class="text-info">${customerSession.address }</strong></li>
 							</ul>
 						</div>
 						<div class="col-md-7">
@@ -46,9 +46,9 @@
 									<strong class="text-info">
 										Current Credit:
 									</strong> 
-									NZ$ 
+									<span class="glyphicon glyphicon-star"></span>&nbsp;NZ$ 
 									<strong class="text-success">
-										<fmt:formatNumber value="${c.balance==null?0:c.balance }" type="number" pattern="#,##0.00" />										
+										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
 									</strong>
 								</div>
 								<div class="col-md-4">
@@ -71,7 +71,7 @@
 									</strong> 
 									NZ$ 
 									<strong class="text-success">
-										<fmt:formatNumber value="${c.customerInvoice.balance==null?0:c.customerInvoice.balance }" type="number" pattern="#,##0.00" />
+										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
 									</strong>
 								</div>
 								<div class="col-md-4">
@@ -168,6 +168,7 @@
 	// BEGIN PayWay
 	$('a[data-name="pay_way_by"]').click(function(){
 		var pay_way = $(this).attr('data-way');
+		console.log(pay_way);
 		$('a[data-name="confirm_payway_modal_btn"]').attr('data-way', pay_way);
 		if(pay_way == 'voucher'){
 			$('strong[data-name="confirm_payway_modal_title"]').html('Topup your accmount credit by voucher?');
@@ -182,7 +183,7 @@
 		var url = '';
 		if(pay_way == 'voucher'){
 			var data = {
-				customer_id : '${c.id}'
+				customer_id : '${customerSession.id}'
 				,pin_number : $('input[name="pin_number"]').val()
 			};
 			url = '${ctx}/customer/account/topup/voucher';

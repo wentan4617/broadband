@@ -92,7 +92,7 @@
 					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 		.>
 					<td>
-						<div class="btn-group dropup">
+						<div class="btn-group">
 							<. if(invoice.payment_status == 'pending'){ .>
 								<button type="button" class="btn btn-warning btn-xs" data-name="make_payment_<.= invoice.id .>">Pending</button>
 								<button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-toggle="dropdown">

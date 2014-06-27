@@ -89,7 +89,7 @@ tbody td {text-align:center;}
 										<input type="checkbox" name="checkbox_cis" value="${ci.id}"/>
 									</td>
 									<td>
-										<a href="${ctx }/broadband-user/crm/customer/edit/${ci.customer_id}">${ci.customer_id}</a>
+										<a target="_blank" href="${ctx }/broadband-user/crm/customer/edit/${ci.customer_id}">${ci.customer_id}</a>
 									</td>
 									<td>
 										${ci.order_id }

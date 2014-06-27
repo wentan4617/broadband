@@ -483,6 +483,7 @@ public class CustomerRestController {
 		}
 		v.setStatus("used");
 		v.getParams().put("serial_number", v.getSerial_number());
+		v.setCustomer_id(customer_id);
 		process_way+="# - "+v.getCard_number();
 		this.billingService.editVoucher(v);
 
@@ -517,6 +518,8 @@ public class CustomerRestController {
 		this.crmService.editCustomerInvoice(ci);
 		this.crmService.createCustomerTransaction(ct);
 		// END CALL SERVICE LAYER
+
+		req.getSession().setAttribute("customerSession", this.crmService.queryCustomerById(customer_id));
 
 		return json;
 	}
@@ -592,6 +595,7 @@ public class CustomerRestController {
 
 		v.setStatus("used");
 		v.getParams().put("serial_number", v.getSerial_number());
+		v.setCustomer_id(customer_id);
 		process_way+="# - "+v.getCard_number();
 		this.billingService.editVoucher(v);
 
@@ -615,6 +619,9 @@ public class CustomerRestController {
 		// BEGIN CALL SERVICE LAYER
 		this.crmService.createCustomerTransaction(ct);
 		// END CALL SERVICE LAYER
+
+		req.getSession().setAttribute("customerSession", this.crmService.queryCustomerById(customer_id));
+		
 
 		return json;
 	}
