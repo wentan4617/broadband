@@ -11,9 +11,11 @@
 .topup-list li {
 	padding: 10px 20px;
 }
-.nav-pills>li.active>a, .nav-pills>li.active>a:hover, .nav-pills>li.active>a:focus {
-color: #fff;
-background-color: #7BC3EC;
+.nav-pills>li.active>a, 
+.nav-pills>li.active>a:hover, 
+.nav-pills>li.active>a:focus {
+	color: #fff;
+	background-color: #7BC3EC;
 }
 .home-title-h2 {
 	font-size:30px;
@@ -27,8 +29,6 @@ background-color: #7BC3EC;
 			Top Up Unlimited Naked ADSL Broadband Plan
 		</h2>
 	</div>
-	
-	<%-- <img src="${ctx }/public/bootstrap3/images/topup-plan.png"  class="img-responsive" alt="Broadband Top-Up" > --%>
 	
 	<div class="alert alert-success">
 		<p><strong>Top Up UNAB plan is the new broadband plan concept from CyberPark Limited.</strong></p>
@@ -101,9 +101,8 @@ background-color: #7BC3EC;
 				</div>
 				<div class="col-lg-3">
 					<div class="panel panel-success">
-						<div class="panel-body" style="padding: 0;">
-							<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20"
-								class="btn btn-success btn-block" style="height: 140px;">
+						<div class="panel-body" style="padding: 0;"><!--  -->
+							<a id="join_plan" href="javascript:void(0);" class="btn btn-success btn-block" style="height: 140px;" data-toggle="modal" data-target="#myModal">
 								<span style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1; display:block;">Join</span>
 								<span style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</span>
 							</a>
@@ -147,7 +146,7 @@ background-color: #7BC3EC;
 	</div>
 	<div>
 		<ul>
-			<li>Visit our website www.cyberpark.co.nz and choose “Apply Top-up broadband”</li>
+			<li>Visit our web-site www.cyberpark.co.nz and choose “Apply Top-up broadband”</li>
 			<li>Filling your personal details, like name, address, contact phone number</li>
 			<li>If you are transiting from your current Internet service providers, please accurately fill the details of your current provider and account number. </li>
 			<li>Submit all your details and select the first top-up value (minimum NZ$ 30 for 7 days)</li>
@@ -200,7 +199,7 @@ background-color: #7BC3EC;
 			<li>CyberPark top up plan is based on rechargeable process. All the top up amount will be the credits in Customers’ Cyber Park account.</li>
 			<li>User your own router/modem</li>
 			<li>No term</li>
-			<li>“week” is defined as 7 days after the customer received UNAB service</li>
+			<li>"week" is defined as 7 days after the customer received UNAB service</li>
 			<li>Transfer the existing broadband connection to CyberPark costs NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].transition_fee}" type="number" pattern="#,##0" /></li>
 			<li>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].plan_new_connection_fee}" type="number" pattern="#,##0" /></li>
 			<li>Get a new broadband connection and an new Phone Jack installation and activation charge NZ$ <fmt:formatNumber value="${planTypeMap['ADSL']['plans'][0].jackpot_fee}" type="number" pattern="#,##0" /></li>
@@ -220,6 +219,49 @@ background-color: #7BC3EC;
 </div>
 
 
+<div class="modal fade" id="myModal">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+				</button>
+				<h4 class="modal-title">Choose Pay</h4>
+			</div>
+			<div class="modal-body">
+				<h4>Online Pay By Credit</h4>
+				<hr>
+				<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20" class="btn btn-success btn-lg btn-block">Online Pay By Credit</a>
+				<hr>
+				<h4>Online Pay By Voucher</h4>
+				<hr>
+				<form class="form-horizontal">
+					<div class="form-group">
+						<label for="serial_number" class="col-sm-3 control-label">Card Number</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="serial_number" placeholder="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="card_number" class="col-sm-3 control-label">Pin Number</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="card_number" placeholder="" />
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="col-sm-12">
+							<button type="button" class="btn btn-success btn-lg btn-block">Online Pay By Voucher</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
@@ -227,8 +269,6 @@ background-color: #7BC3EC;
 <script type="text/javascript">
 (function($) {
 	
-	
-
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

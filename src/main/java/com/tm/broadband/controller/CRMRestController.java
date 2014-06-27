@@ -412,7 +412,7 @@ public class CRMRestController {
 		Voucher v = new Voucher();
 		v.getParams().put("card_number", pin_number);
 		v.getParams().put("status", "unused");
-		List<Voucher> vs = this.billingService.queryVoucher(v);
+		List<Voucher> vs = this.billingService.queryVouchers(v);
 		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
 		
 		if(v==null){
