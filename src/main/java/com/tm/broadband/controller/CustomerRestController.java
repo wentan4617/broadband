@@ -463,19 +463,18 @@ public class CustomerRestController {
 			return json;
 		}
 		
-		Double paid_amount = 0d;
+		Double paid_amount = v.getFace_value();
 		
+		Customer c = null;
 		// If voucher is less equal balance
 		if(v.getFace_value() <= ci.getBalance()){
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), v.getFace_value()));
 			ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getBalance(), v.getFace_value(), "sub"));
-			paid_amount = v.getFace_value();
 		// Else voucher is greater than balance
 			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance.");
 		} else {
-			paid_amount = ci.getBalance();
-			Customer c = this.crmService.queryCustomerById(customer_id);
-			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), paid_amount)));
+			c = this.crmService.queryCustomerById(customer_id);
+			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), ci.getBalance())));
 			c.getParams().put("id", customer_id);
 			this.crmService.editCustomer(c);
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
@@ -519,15 +518,19 @@ public class CustomerRestController {
 		this.crmService.editCustomerInvoice(ci);
 		this.crmService.createCustomerTransaction(ct);
 		// END CALL SERVICE LAYER
+		
+		Customer customerSession = (Customer) req.getSession().getAttribute("customerSession");
+		customerSession.setBalance(c!=null ? c.getBalance() : customerSession.getBalance());
+		customerSession.getCustomerInvoice().setBalance(ci.getBalance());
 
-		req.getSession().setAttribute("customerSession", this.crmService.queryCustomerById(customer_id));
+		req.getSession().setAttribute("customerSession", customerSession);
 
 		return json;
 	}
 	// END Voucher
 
 	
-	// BEGIN Voucher
+	// BEGIN Voucher Topup
 	@RequestMapping(value = "/customer/account/topup/voucher", method = RequestMethod.POST)
 	public JSONBean<String> doAccountTopupByVoucher(Model model,
 			@RequestParam("customer_id") int customer_id,
@@ -620,8 +623,11 @@ public class CustomerRestController {
 		// BEGIN CALL SERVICE LAYER
 		this.crmService.createCustomerTransaction(ct);
 		// END CALL SERVICE LAYER
+		
+		Customer customerSession = (Customer) req.getSession().getAttribute("customerSession");
+		customerSession.setBalance(c.getBalance());
 
-		req.getSession().setAttribute("customerSession", this.crmService.queryCustomerById(customer_id));
+		req.getSession().setAttribute("customerSession", customerSession);
 		
 
 		return json;
@@ -654,4 +660,110 @@ public class CustomerRestController {
 	}
 	// END Voucher
 
+	// END Voucher Topup
+
+	// BEGIN Account Credit
+	@RequestMapping(value = "/customer/invoice/defray/account-credit", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByCash(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		Integer customer_id = null;
+		Integer order_id = null;
+		Double paid_amount = null;
+		String process_way = "Account Credit";
+		String process_sort = null;
+
+		// BEGIN INVOICE ASSIGNMENT
+		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
+		ci.getParams().put("id", ci.getId());
+
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+			this.crmService.editCustomerInvoice(ci);
+			return json;
+		}
+		customer_id = ci.getCustomer_id();
+		order_id = ci.getOrder_id();
+		Customer c = this.crmService.queryCustomerById(customer_id);
+		// If account credit greater equal invoice balance
+		if(c.getBalance()<=0){
+			json.getErrorMap().put("alert-error", "Insufficient Fund!");
+			return json;
+		}
+		if(c.getBalance() >= ci.getBalance()){
+			paid_amount = ci.getBalance();
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+			c.setBalance(TMUtils.bigSub(c.getBalance(), ci.getBalance()));
+			ci.setBalance(0d);
+		} else {
+			paid_amount = c.getBalance();
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), c.getBalance()));
+			ci.setBalance(TMUtils.bigSub(ci.getBalance(), c.getBalance()));
+			c.setBalance(0d);
+		}
+		process_way+="# - "+customer_id;
+		c.getParams().put("id", customer_id);
+		this.crmService.editCustomer(c);
+		
+		// If balance equals to 0d then paid else not_pay_off, make this invoice
+		// paid (off)
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+		} else {
+			ci.setStatus("not_pay_off");
+		}
+		// END INVOICE ASSIGNMENT
+
+		// Get order_type
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		case "order-term":
+			process_sort = "plan-term";
+			break;
+		case "order-no-term":
+			process_sort = "plan-no-term";
+			break;
+		case "order-topup":
+			process_sort = "plan-topup";
+			break;
+		}
+
+		// BEGIN TRANSACTION ASSIGNMENT
+		CustomerTransaction ct = new CustomerTransaction();
+		// Assign invoice's paid amount to transaction's amount
+		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
+		// Assign card_name as ddpay
+		ct.setCard_name(process_way);
+		// Assign transaction's sort as type's return from order by order_id
+		ct.setTransaction_sort(process_sort);
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
+		ct.setCustomer_id(customer_id);
+		ct.setOrder_id(order_id);
+		ct.setInvoice_id(invoice_id);
+		// Assign transaction's time as current time
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Account Credit");
+		// END TRANSACTION ASSIGNMENT
+
+		// BEGIN CALL SERVICE LAYER
+		this.crmService.editCustomerInvoice(ci);
+		this.crmService.createCustomerTransaction(ct);
+		// END CALL SERVICE LAYER
+		
+		Customer customerSession = (Customer) req.getSession().getAttribute("customerSession");
+		customerSession.setBalance(c.getBalance());
+		customerSession.getCustomerInvoice().setBalance(ci.getBalance());
+
+		req.getSession().setAttribute("customerSession", customerSession);
+		
+		json.getSuccessMap().put("alert-success", "Account Credit defray had successfully been operates! Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance and your account credit.");
+
+		return json;
+	}
+	// END Account Credit
+	
 }

@@ -23,6 +23,7 @@ demand version 1.0.21 2014-06-27
  
 demand version 1.0.21 2014-06-26
 
+* 前台做一个CyberPark Terminology界面，里面列出所有客户可能不懂的术语，都写在扩展卡里，What is Voucher：描述什么是Voucher。以及其他一些客户可能不明白的术语(kanny)
 * 前台客户进入topup界面选择Join Plan时弹出气泡框显示两个选项：Voucher,Online Defray。选Voucher则弹出填写序号和卡密的输入框，如果到数据库中匹配了则跳转至填写信息页面继续填写客户信息，否则告知该序号卡密组合不匹配，请重试。
 * 在客户登陆时判断如果其存在于tm_voucher_banned_list当中且forbade_date小于当前日期则将其attempt_times置0(steven)
 * 新建一张tm_voucher_banned_list表，在客户提交卡密时查询该表是否存在该客户记录，如果返回null则继续否则提示“You had been banned for being attempted brute force”，条件为客户id且禁止时间小于今天(steven)
@@ -38,7 +39,7 @@ demand version 1.0.21 2014-06-23
 
 * [customer order的invoice的make payment添加一个Credit Card选项，原理和DDPay无异，在设置transaction类型时改成Credit Card](steven)
 * [customer order的invoice的make payment添加一个A2A（Account2Account）选项，原理和DDPay无异，在设置transaction类型时改成Account2Account](steven)
-* 客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer(steven)
+* 客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer，transaction的process _ay是"Account Credit# - "+customer_id，currency_input是"Account Credit"(steven)
 
  
 demand version 1.0.21 2014-06-19

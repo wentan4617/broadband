@@ -433,21 +433,19 @@ public class CRMRestController {
 			return json;
 		}
 		
-		Double paid_amount = 0d;
+		Double paid_amount = v.getFace_value();
 		customer_id = ci.getCustomer_id();
 		
 		// If voucher is less equal balance
 		if(v.getFace_value() <= ci.getBalance()){
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), v.getFace_value()));
 			ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getBalance(), v.getFace_value(), "sub"));
-			paid_amount = v.getFace_value();
 		// Else voucher is greater than balance
 			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates!");
 		} else {
-			paid_amount = ci.getBalance();
 			Customer c = new Customer();
 			c.setId(customer_id);
-			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), paid_amount)));
+			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), ci.getBalance())));
 			this.crmService.editCustomer(c);
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
 			ci.setBalance(0d);
