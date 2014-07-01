@@ -142,7 +142,7 @@ public class SaleController {
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		
 		cod_plan.setDetail_name(plan.getPlan_name());
-		cod_plan.setDetail_desc(plan.getPlan_desc());
+		//cod_plan.setDetail_desc(plan.getPlan_desc());
 		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
 		cod_plan.setDetail_plan_status(plan.getPlan_status());

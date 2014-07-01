@@ -114,13 +114,13 @@
 	<update id="updateVoucher" parameterType="Voucher">
 		update tm_voucher v
 		<set>	
-			<if test="serial_number != null">v.serial_number = #{serial_number},</if>
-			<if test="card_number != null">v.card_number = #{card_number},</if>
-			<if test="face_value != null">v.face_value = #{face_value},</if>
-			<if test="status != null">v.status = #{status},</if>
-			<if test="comment != null">v.comment = #{comment},</if>
-			<if test="customer_id != null">v.customer_id = #{customer_id},</if>
-			<if test="post_to != null">v.post_to = #{post_to}</if>
+			<if test="serial_number != null">serial_number = #{serial_number},</if>
+			<if test="card_number != null">card_number = #{card_number},</if>
+			<if test="face_value != null">face_value = #{face_value},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="comment != null">comment = #{comment},</if>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="post_to != null">post_to = #{post_to}</if>
 		</set>
 		<include refid="voucherWhere"/>
 	</update>

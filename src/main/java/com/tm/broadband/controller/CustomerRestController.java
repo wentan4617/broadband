@@ -642,18 +642,58 @@ public class CustomerRestController {
 		JSONBean<Voucher> json = new JSONBean<Voucher>();
 		json.setModel(voucher);
 		
-		json.setJSONErrorMap(result);
+		json.setJSONErrorMap(result, voucher.getIndex());
 		
 		if (json.isHasErrors()) return json;
 		
 		voucher.getParams().put("serial_number", voucher.getSerial_number());
 		voucher.getParams().put("card_number", voucher.getCard_number());
-		voucher.getParams().put("status", "unused");
+		//voucher.getParams().put("status", "unused");
 		
 		Voucher v = this.billingService.queryVoucher(voucher);
 		if (v == null) {
-			json.getErrorMap().put("alert-error", "Voucher is invalid.");
+			json.getErrorMap().put("serial_number" + voucher.getIndex(), "Incorrect Card Number or Pin Number.");
 			return json;
+		}
+		if ("used".equals(v.getStatus())) {
+			json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been used.");
+			return json;
+		}
+		
+		Customer customer = (Customer) req.getSession().getAttribute("customer");
+		
+		for (Voucher vQuery: customer.getVouchers()) {
+			if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+					&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+				json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been applied.");
+				return json;
+			}
+		}
+		
+		customer.getVouchers().add(v);
+		
+		json.setModel(v);
+		json.getSuccessMap().put("alert-success", "Cyberpark Voucher " + voucher.getSerial_number() + " has been applied.");
+		
+		return json;
+	}
+	
+	@RequestMapping(value="/plans/plan-topup/cancel-voucher-apply", method = RequestMethod.POST)
+	public JSONBean<Voucher> cancelVoucherApply(Voucher voucher, HttpServletRequest req) {
+		
+		JSONBean<Voucher> json = new JSONBean<Voucher>();
+		json.setModel(voucher);
+		
+		Customer customer = (Customer) req.getSession().getAttribute("customer");
+		
+		for (Voucher vQuery: customer.getVouchers()) {
+			if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+					&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+				json.getSuccessMap().put("alert-success", "Voucher Card Number " + voucher.getSerial_number() + " is available.");
+				customer.getVouchers().remove(vQuery);
+				json.setModel(vQuery);
+				break;
+			}
 		}
 		
 		return json;

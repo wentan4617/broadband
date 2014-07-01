@@ -33,6 +33,7 @@ import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
@@ -53,6 +54,7 @@ import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.pdf.TerminationRefundPDFCreator;
@@ -87,6 +89,7 @@ public class CRMService {
 	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
 	private TerminationRefundMapper terminationRefundMapper;
 	private CustomerServiceRecordMapper customerServiceRecordMapper;
+	private VoucherMapper voucherMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -114,7 +117,8 @@ public class CRMService {
 			EarlyTerminationChargeMapper earlyTerminationChargeMapper,
 			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper,
 			TerminationRefundMapper terminationRefundMapper,
-			CustomerServiceRecordMapper customerServiceRecordMapper){
+			CustomerServiceRecordMapper customerServiceRecordMapper,
+			VoucherMapper voucherMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -135,6 +139,7 @@ public class CRMService {
 		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
 		this.terminationRefundMapper = terminationRefundMapper;
 		this.customerServiceRecordMapper = customerServiceRecordMapper;
+		this.voucherMapper = voucherMapper;
 	}
 	
 	
@@ -147,7 +152,7 @@ public class CRMService {
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		cod_plan.setDetail_name(plan.getPlan_name());
-		cod_plan.setDetail_desc(plan.getPlan_desc());
+		//cod_plan.setDetail_desc(plan.getPlan_desc());
 		cod_plan.setDetail_price(plan.getPlan_price() == null ? 0d : plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
 		cod_plan.setDetail_plan_status(plan.getPlan_status());
@@ -311,7 +316,7 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public void registerCustomer(Customer customer, CustomerTransaction customerTransaction) {
+	public void registerCustomer(Customer customer, List<CustomerTransaction> cts) {
 		
 		customer.setRegister_date(new Date());
 		customer.setActive_date(new Date());
@@ -335,11 +340,23 @@ public class CRMService {
 		ci.setCreate_date(new Date(System.currentTimeMillis()));
 		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
 		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
-		ci.setAmount_paid(customerTransaction.getAmount());
+		
+		if (cts != null) {
+			Double amount = 0d;
+			for (CustomerTransaction ct: cts) {
+				amount += ct.getAmount();
+			}
+			
+			if (amount >= ci.getAmount_payable())
+				ci.setAmount_paid(ci.getAmount_payable());
+			else 
+				ci.setAmount_paid(amount);
+		}
+		
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
 		ci.setStatus("paid");
 		ci.setPaid_date(new Date(System.currentTimeMillis()));
-		ci.setPaid_type(customerTransaction.getCard_name());
+		ci.setPaid_type(cts.get(0).getCard_name());
 		
 		this.ciMapper.insertCustomerInvoice(ci);
 		customer.setCustomerInvoice(ci);
@@ -356,12 +373,23 @@ public class CRMService {
 			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
 		
-		customerTransaction.setCustomer_id(customer.getId());
-		customerTransaction.setOrder_id(customer.getCustomerOrder().getId());
-		customerTransaction.setInvoice_id(ci.getId());
-		customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+		if (cts != null) {
+			for (CustomerTransaction ct: cts) {
+				ct.setCustomer_id(customer.getId());
+				ct.setOrder_id(customer.getCustomerOrder().getId());
+				ct.setInvoice_id(ci.getId());
+				ct.setTransaction_date(new Date(System.currentTimeMillis()));
+				this.customerTransactionMapper.insertCustomerTransaction(ct);
+			}
+		}
 		
-		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
+		for (Voucher vQuery: customer.getVouchers()) {
+			vQuery.setStatus("used");
+			vQuery.setCustomer_id(customer.getId());
+			vQuery.getParams().put("serial_number", vQuery.getSerial_number());
+			vQuery.getParams().put("card_number", vQuery.getCard_number());
+			this.voucherMapper.updateVoucher(vQuery);
+		}
 	}
 	
 	@Transactional

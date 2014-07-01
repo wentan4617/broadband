@@ -52,12 +52,10 @@
 			, password: $('#password').val()
 		};
 		$.post('${ctx}/login', data, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
+			if (!$.jsonValidation(json, 'right')) {
 				window.location.href='${ctx}' + json.url;
 			}
-		}, 'json').always(function () {
+		}, 'json').always(function() {
 			$btn.button('reset');
 	    });
 	});

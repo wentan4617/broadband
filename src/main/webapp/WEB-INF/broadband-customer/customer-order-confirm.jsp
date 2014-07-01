@@ -312,10 +312,73 @@
 									</c:when>
 								</c:choose>
 								
+								<tr id="voucherTR" style="display:none;">
+									<td>Voucher Price</td>
+									<td>
+										<strong class="text-danger" id="vPrice"></strong>
+									</td>
+								</tr>
+								<tr id="TAAV" style="display:none;">
+									<td>Total After Appiled Voucher</td>
+									<td>
+										<strong class="text-success" id="TAAVPrice"></strong>
+									</td>
+								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
+				
+				
+				<c:if test="${orderPlan.plan_group == 'plan-no-term' || orderPlan.plan_group == 'plan-topup'}">
+				
+				<hr>
+				<h4 class="text-success">
+					Would you like to add one Cyberpark Voucher ? Please click here
+					<a href="javascript:void(0);" id="addVoucher">
+						<span class="glyphicon glyphicon-plus"></span>
+					</a>
+				</h4>
+				
+				<div id="alertContainer"></div>
+						
+				<div id="tempAlertSuccessContainer" style="display:none;">
+					<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none;">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
+						<span id="text-success"></span>
+					</div>
+				</div>
+				<div id="tempAlertErrorContainer" style="display:none;">
+					<div id="alert-error" class="alert alert-danger alert-dismissable fade in" style="display:none;">
+						<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
+						<span id="text-error"></span>
+					</div>
+				</div>
+						
+				<div id="voucherFormContainer">
+					<c:set var="total_vprice" value="0"></c:set>
+					<c:if test="${fn:length(customer.vouchers) > 0 }">
+						<c:forEach var="v" items="${customer.vouchers }">
+							<c:set var="total_vprice" value="${total_vprice + v.face_value }"></c:set>
+							<div data-index>
+								<hr>
+								<form class="form-inline">
+									<div class="form-group">
+										<label for="serial_number">Voucher Card Number: ${v.serial_number } has been applied.</label>
+									</div>
+									<a href="javascript:void(0);" class="btn btn-success btn-sm" data-voucher-cancel 
+										data-voucher-serial-number="${v.serial_number }"
+										data-voucher-card-number="${v.card_number }"> 
+										<span class="glyphicon glyphicon-remove"></span> Cancel
+									</a>
+								</form>
+							</div>
+						</c:forEach>
+					</c:if>
+				</div>
+				
+				</c:if>
+				
 				<hr>
 				<div class="row">
 					<div class="col-md-12 col-xs-12 col-sm-12">
@@ -404,14 +467,26 @@
   	</div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
+<script type="text/html" id="voucher_form_tmpl">
+<jsp:include page="voucher-form.html" />
+</script>
 
+<script type="text/html" id="voucher_form_result_tmpl">
+<jsp:include page="voucher-form-result.html" />
+</script>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 (function(){
+	
+	var total_vprice = new Number(${total_vprice});
+	var order_price = new Number(${customer.customer_type == 'personal' ? customer.customerOrder.order_total_price : customer.customerOrder.order_total_price * 1.15 });
+	
 	$(':checkbox').iCheck({
 		checkboxClass : 'icheckbox_square-green',
 		radioClass : 'iradio_square-green'
@@ -427,6 +502,76 @@
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}
 	});
+	
+	var i = 0;
+	
+	$('#addVoucher').click(function(){ // 
+		obj = { index: i };
+		$('#voucherFormContainer').append(tmpl('voucher_form_tmpl', obj));
+		$('a[data-index]').off('click').click(function(){ // console.log(1);
+			$(this).closest('div[data-index]').remove();
+		});
+		$('a[data-apply]').off('click').click(function(){ // console.log(parent);
+			var parent = $(this).closest('div[data-index]');
+			var index = $(this).attr('data-index');
+			var voucher = {
+				serial_number: parent.find("#serial_number" + index).val()
+				, card_number: parent.find("#card_number" + index).val()
+				, index: index
+			}; // console.log(voucher);
+			var l = Ladda.create(this);
+		 	l.start();
+		 	$.post('${ctx}/plans/plan-topup/online-pay-by-voucher', voucher, function(json){
+				if (!$.jsonValidation(json, 'top')) {
+					var v = json.model;
+					parent.empty();
+					parent.append(tmpl('voucher_form_result_tmpl', v));
+					cancelVoucher(); 
+					total_vprice += v.face_value; console.log(total_vprice);
+					TAAV();
+				}
+			}).always(function() { l.stop(); });
+		});
+		i++;
+	});
+	
+	function cancelVoucher() {
+		$('a[data-voucher-cancel]').off('click').click(function(){
+			var parent = $(this).closest('div[data-index]');
+			var voucher = {
+				serial_number: $(this).attr('data-voucher-serial-number')
+				, card_number: $(this).attr('data-voucher-card-number')
+			}; // console.log(voucher);
+			var l = Ladda.create(this);
+		 	l.start();
+		 	$.post('${ctx}/plans/plan-topup/cancel-voucher-apply', voucher, function(json){
+		 		if (!$.jsonValidation(json)) {
+		 			var v = json.model;
+		 			parent.remove();
+		 			total_vprice -= v.face_value; console.log(total_vprice);
+		 			TAAV();
+		 		}
+		 	}).always(function() { l.stop(); });
+		});
+	}
+	
+	cancelVoucher();
+	
+	function TAAV() {
+		if (total_vprice > 0) { //console.log('show');
+			var TAAVPrice = (order_price - total_vprice).toFixed(2);
+			$('#vPrice').text('NZ$ -' + total_vprice.toFixed(2));
+			$('#TAAVPrice').text('NZ$ ' + TAAVPrice);
+			$('#TAAV').show();
+			$('#voucherTR').show();
+		} else {
+			$('#TAAV').hide();
+			$('#voucherTR').hide();
+		}
+	}
+	
+	TAAV();
+	
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

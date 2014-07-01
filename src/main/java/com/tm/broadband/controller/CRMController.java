@@ -358,7 +358,7 @@ public class CRMController {
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
 		
 		cod_plan.setDetail_name(customerOrder.getPlan().getPlan_name());
-		cod_plan.setDetail_desc(customerOrder.getPlan().getPlan_desc());
+		//cod_plan.setDetail_desc(customerOrder.getPlan().getPlan_desc());
 		cod_plan.setDetail_price(customerOrder.getPlan().getPlan_price() == null ? 0d : customerOrder.getPlan().getPlan_price());
 		cod_plan.setDetail_data_flow(customerOrder.getPlan().getData_flow());
 		cod_plan.setDetail_plan_status(customerOrder.getPlan().getPlan_status());
