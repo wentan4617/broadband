@@ -1,6 +1,7 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -103,6 +104,8 @@ public class Customer implements Serializable {
 	private CustomerOrder customerOrder = new CustomerOrder();
 	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;
+	private Voucher voucher = new Voucher();
+	private List<Voucher> vouchers = new ArrayList<Voucher>();
 
 	private String id_ck;
 	private String login_name_ck;
@@ -486,6 +489,22 @@ public class Customer implements Serializable {
 
 	public void setIdentity_number(String identity_number) {
 		this.identity_number = identity_number;
+	}
+
+	public Voucher getVoucher() {
+		return voucher;
+	}
+
+	public void setVoucher(Voucher voucher) {
+		this.voucher = voucher;
+	}
+
+	public List<Voucher> getVouchers() {
+		return vouchers;
+	}
+
+	public void setVouchers(List<Voucher> vouchers) {
+		this.vouchers = vouchers;
 	}
 
 	

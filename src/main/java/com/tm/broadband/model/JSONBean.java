@@ -82,4 +82,12 @@ public class JSONBean<T> implements Serializable {
 			this.getErrorMap().put(field.getField(), field.getDefaultMessage());
 		}
 	}
+	
+	public void setJSONErrorMap(BindingResult result, int index) {
+		List<FieldError> fields = result.getFieldErrors();
+		for (FieldError field: fields) {
+			System.out.println(field.getField() + ": " + field.getDefaultMessage() + ", index: " + index);
+			this.getErrorMap().put(field.getField() + String.valueOf(index), field.getDefaultMessage());
+		}
+	}
 }

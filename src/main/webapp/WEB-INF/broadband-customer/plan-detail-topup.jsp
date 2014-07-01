@@ -102,7 +102,7 @@
 				<div class="col-lg-3">
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;"><!--  -->
-							<a id="join_plan" href="javascript:void(0);" class="btn btn-success btn-block" style="height: 140px;" data-toggle="modal" data-target="#myModal">
+							<a id="join_plan" href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20" class="btn btn-success btn-block" style="height: 140px;" >
 								<span style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1; display:block;">Join</span>
 								<span style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</span>
 							</a>
@@ -214,58 +214,11 @@
 	</div>
 	<p>&nbsp;</p>
 	<!-- plan content -->
-
-	<!-- plan content -->
 </div>
 
-
-<div class="modal fade" id="myModal">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal">
-					<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-				</button>
-				<h4 class="modal-title">Choose Pay</h4>
-			</div>
-			<div class="modal-body">
-				<h4>Online Pay By Credit</h4>
-				<hr>
-				<a href="${ctx }/order/${planTypeMap['ADSL']['plans'][0].id}/topup/20" class="btn btn-success btn-lg btn-block">Online Pay By Credit</a>
-				<hr>
-				<h4>Online Pay By Voucher</h4>
-				<hr>
-				<form class="form-horizontal">
-					<div class="form-group">
-						<label for="serial_number" class="col-sm-3 control-label">Card Number</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="serial_number" placeholder="" />
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="card_number" class="col-sm-3 control-label">Pin Number</label>
-						<div class="col-sm-9">
-							<input type="text" class="form-control" id="card_number" placeholder="" />
-						</div>
-					</div>
-					<div class="form-group">
-						<div class="col-sm-12">
-							<button type="button" class="btn btn-success btn-lg btn-block">Online Pay By Voucher</button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-		<!-- /.modal-content -->
-	</div>
-	<!-- /.modal-dialog -->
-</div>
-<!-- /.modal -->
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($) {
 	

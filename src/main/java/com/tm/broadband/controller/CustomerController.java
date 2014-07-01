@@ -44,6 +44,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.Voucher;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
@@ -394,44 +395,102 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/order/checkout", method = RequestMethod.POST)
 	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
-			@ModelAttribute("customer") Customer customer, BindingResult result) { // @Validated(CustomerValidatedMark.class) 
-		
-		if (result.hasErrors()) {
-			TMUtils.printResultErrors(result);
-		}
-
-		GenerateRequest gr = new GenerateRequest();
+			@ModelAttribute("customer") Customer customer,
+			@ModelAttribute("orderPlan") Plan plan
+			) { // @Validated(CustomerValidatedMark.class)  , BindingResult result
 		
 		if ("business".equals(customer.getCustomer_type())) {
 			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
 		}
-
-		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerOrder().getOrder_total_price()));
-		//gr.setAmountInput("1.00");
-		gr.setCurrencyInput("NZD");
-		gr.setTxnType("Purchase");
 		
-		System.out.println(req.getRequestURL().toString());
-		gr.setUrlFail(req.getRequestURL().toString());
-		gr.setUrlSuccess(req.getRequestURL().toString());
+		Double orderTotalPrice = customer.getCustomerOrder().getOrder_total_price();
+		
+		for (Voucher vQuery: customer.getVouchers()) {
+			orderTotalPrice -= vQuery.getFace_value();
+		}
+		
+		String redirectUrl = "";
+		
+		if (orderTotalPrice > 0) {
+			GenerateRequest gr = new GenerateRequest();
 
-		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
-		System.out.println(redirectUrl);
+			gr.setAmountInput(new DecimalFormat("#.00").format(orderTotalPrice));
+			//gr.setAmountInput("1.00");
+			gr.setCurrencyInput("NZD");
+			gr.setTxnType("Purchase");
+			
+			System.out.println(req.getRequestURL().toString());
+			gr.setUrlFail(req.getRequestURL().toString());
+			gr.setUrlSuccess(req.getRequestURL().toString());
+
+			redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+			System.out.println(redirectUrl);
+
+		} else {
+			redirectUrl = "/order/result/success";
+			
+			customer.setStatus("active");
+			customer.setCustomer_type("personal");
+			customer.setUser_name(customer.getLogin_name());
+			customer.setPassword(TMUtils.generateRandomString(6));
+			customer.setBalance(Math.abs(orderTotalPrice));
+			
+			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
+			
+			for (Voucher vQuery: customer.getVouchers()) {
+				CustomerTransaction ctVoucher = new CustomerTransaction();
+				ctVoucher.setAmount(vQuery.getFace_value());
+				ctVoucher.setTransaction_type("purchare");
+				ctVoucher.setTransaction_sort("voucher");
+				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
+				cts.add(ctVoucher);
+			}
+
+			this.crmService.registerCustomer(customer, cts);
+			
+			this.crmService.createInvoicePDFByInvoiceID(cts.get(0).getInvoice_id());
+
+			String filePath = TMUtils.createPath(
+					"broadband" 
+					+ File.separator
+					+ "customers" + File.separator + customer.getId()
+					+ File.separator + "invoice_" + cts.get(0).getInvoice_id() + ".pdf");
+			
+			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+			// call mail at value retriever
+			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("invoice_" + cts.get(0).getInvoice_id() + ".pdf");
+			applicationEmail.setAttachPath(filePath);
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			
+			// get sms register template from db
+			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+
+			Response responseBean = new Response();
+			responseBean.setSuccess("1");
+			attr.addFlashAttribute("responseBean", responseBean);
+
+		}
 
 		return "redirect:" + redirectUrl;
 	}
 
 	@RequestMapping(value = "/order/checkout")
 	public String toSignupPayment(Model model,
-			@ModelAttribute("customer") Customer customer, BindingResult error, //@Validated(CustomerValidatedMark.class) 
+			@ModelAttribute("customer") Customer customer,// BindingResult error, //@Validated(CustomerValidatedMark.class) 
 			@ModelAttribute("orderPlan") Plan plan, RedirectAttributes attr,
 			@RequestParam(value = "result", required = true) String result,
 			SessionStatus status
 			) throws Exception {
-		
-		if (error.hasErrors()) {
-			TMUtils.printResultErrors(error);
-		}
 		
 		String url = "redirect:/order/result/error";
 
@@ -448,7 +507,9 @@ public class CustomerController {
 			customer.setCustomer_type("personal");
 			customer.setUser_name(customer.getLogin_name());
 			customer.setPassword(TMUtils.generateRandomString(6));
-			customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
+			//customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
+			
+			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
 			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
@@ -467,8 +528,19 @@ public class CustomerController {
 			customerTransaction.setTxnMac(responseBean.getTxnMac());
 			customerTransaction.setTransaction_type(responseBean.getTxnType());
 			customerTransaction.setTransaction_sort(plan.getPlan_group());
+			
+			cts.add(customerTransaction);
+			
+			for (Voucher vQuery: customer.getVouchers()) {
+				CustomerTransaction ctVoucher = new CustomerTransaction();
+				ctVoucher.setAmount(vQuery.getFace_value());
+				ctVoucher.setTransaction_type("purchare");
+				ctVoucher.setTransaction_sort("voucher");
+				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
+				cts.add(ctVoucher);
+			}
 
-			this.crmService.registerCustomer(customer, customerTransaction);
+			this.crmService.registerCustomer(customer, cts);
 			
 			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id(), false);
 
@@ -505,6 +577,8 @@ public class CustomerController {
 
 		return url; //"redirect:/order/result";
 	}
+	
+	
 	
 	@RequestMapping(value = "/order/result")
 	public String toOrderResult(SessionStatus status) {
