@@ -132,10 +132,10 @@ public class InvoicePDFCreator extends ITextUtils {
         
         if(totalBalance > 0){
         	// personal plan include GST
-            this.beforeTaxAmount = totalBalance/1.15;
+            this.beforeTaxAmount = TMUtils.bigDivide(totalBalance, 1.15);
             
             // include GST
-            this.taxAmount = totalBalance-totalBalance/1.15;
+            this.taxAmount = TMUtils.bigSub(totalBalance, TMUtils.bigDivide(totalBalance, 1.15));
         } else {
         	this.beforeTaxAmount = totalBalance;
         	this.taxAmount = totalBalance;

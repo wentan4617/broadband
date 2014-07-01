@@ -302,6 +302,7 @@ public class TMUtils {
 			, CallInternationalRateMapper callInternationalRateMapper){
 		
 		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.MONDAY, cal.get(Calendar.MONDAY)-1);
 		
 		

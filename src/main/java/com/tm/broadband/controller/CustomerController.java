@@ -542,7 +542,7 @@ public class CustomerController {
 
 			this.crmService.registerCustomer(customer, cts);
 			
-			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id());
+			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id(), false);
 
 			String filePath = TMUtils.createPath(
 					"broadband" 
@@ -1010,4 +1010,11 @@ public class CustomerController {
 		return "broadband-customer/calling-rates";
 	}
 
+	@RequestMapping(value = "/voucher")
+	public String toVoucherChecking(Model model) {
+		
+		CompanyDetail cd = this.systemService.queryCompanyDetail();
+		model.addAttribute("cyberpark", cd);
+		return "broadband-customer/voucher";
+	}
 }

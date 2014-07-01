@@ -302,7 +302,7 @@ public class CustomerRestController {
 		
 		// if verification does not matched!
 		if (!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
-			json.getErrorMap().put("code", "Verification code does not matched!");
+			json.getErrorMap().put("code", "Authenticode code does not matched!");
 			return json;
 		}
 
@@ -805,5 +805,54 @@ public class CustomerRestController {
 		return json;
 	}
 	// END Account Credit
-	
+
+	// Voucher Checking
+	@RequestMapping(value = "/voucher", method = RequestMethod.POST)
+	public JSONBean<Voucher> doVoucherChecking(Model model
+			, Voucher voucher
+			, @RequestParam("code") String code
+			, HttpServletRequest req) {
+		
+		JSONBean<Voucher> json = new JSONBean<Voucher>();
+		
+		// If contains script> value then this is a script injection
+		if (CheckScriptInjection.isScriptInjection(voucher)) {
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
+			return json;
+		}
+		
+		// if verification does not matched!
+		if (!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
+			json.getErrorMap().put("code", "Authenticode does not matched!");
+			return json;
+		}
+		
+		// if verification does not matched!
+		if ("".equals(voucher.getSerial_number().toString().trim()) && !"".equals(voucher.getCard_number().toString().trim())) {
+			json.getErrorMap().put("serial_number", "Serial Number Is Empty!");
+			return json;
+		} else if ("".equals(voucher.getCard_number().toString().trim()) && !"".equals(voucher.getSerial_number().toString().trim())) {
+			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
+			return json;
+		} else if ("".equals(voucher.getCard_number().toString().trim()) && "".equals(voucher.getSerial_number().toString().trim())) {
+			json.getErrorMap().put("serial_number", "Serial Number Is Empty!");
+			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
+			return json;
+		}
+
+		voucher.getParams().put("serial_number", voucher.getSerial_number());
+		voucher.getParams().put("card_number", voucher.getCard_number());
+		voucher = this.billingService.queryVoucher(voucher);
+		if(voucher==null){
+			json.getErrorMap().put("alert-error", "Combination not matched! Please double check your input details.");
+		} else {
+			if("used".equals(voucher.getStatus())) {
+				json.getErrorMap().put("alert-error", "This voucher had been used already!");
+			} else if("unused".equals(voucher.getStatus())) {
+				json.getSuccessMap().put("alert-success", "Congratulations! This voucher is available!");
+			}
+		}
+		
+		return json;
+	}
 }

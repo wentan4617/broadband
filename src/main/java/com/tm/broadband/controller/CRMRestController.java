@@ -1051,7 +1051,7 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 
-		this.crmService.createInvoicePDFByInvoiceID(invoiceId);
+		this.crmService.createInvoicePDFByInvoiceID(invoiceId, false);
 		json.getSuccessMap().put("alert-success",
 				"Regenerate Invoice Successfully!");
 

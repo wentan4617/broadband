@@ -53,7 +53,7 @@
 		<where>
 			<choose>
 				<when test="params.where == 'query_last_call_records'">
-					<if test="params.last_month != null">ccr.statement_date > #{params.last_month}</if>
+					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
 					<if test="params.record_type != null">and ccr.record_type = #{params.record_type}</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
 				</when>
