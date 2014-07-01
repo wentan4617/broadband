@@ -448,7 +448,7 @@ public class CustomerController {
 
 			this.crmService.registerCustomer(customer, cts);
 			
-			this.crmService.createInvoicePDFByInvoiceID(cts.get(0).getInvoice_id());
+			this.crmService.createInvoicePDFByInvoiceID(cts.get(0).getInvoice_id(), false);
 
 			String filePath = TMUtils.createPath(
 					"broadband" 
