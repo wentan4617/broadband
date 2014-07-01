@@ -16,6 +16,10 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-07-01
+
+* 首页添加一个voucher checking功能，任何人都可以在该界面上检查自己的voucher是否可用(steven)
+ 
 demand version 1.0.21 2014-06-27
 
 * 
@@ -25,8 +29,8 @@ demand version 1.0.21 2014-06-26
 
 * 前台做一个CyberPark Terminology界面，里面列出所有客户可能不懂的术语，都写在扩展卡里，What is Voucher：描述什么是Voucher。以及其他一些客户可能不明白的术语(kanny)
 * 前台客户进入topup界面选择Join Plan时弹出气泡框显示两个选项：Voucher,Online Defray。选Voucher则弹出填写序号和卡密的输入框，如果到数据库中匹配了则跳转至填写信息页面继续填写客户信息，否则告知该序号卡密组合不匹配，请重试。
-* 在客户登陆时判断如果其存在于tm_voucher_banned_list当中且forbade_date小于当前日期则将其attempt_times置0(steven)
-* 新建一张tm_voucher_banned_list表，在客户提交卡密时查询该表是否存在该客户记录，如果返回null则继续否则提示“You had been banned for being attempted brute force”，条件为客户id且禁止时间小于今天(steven)
+* tm_voucher_banned_list表添加一个last_attempts_date字段，在客户登陆时判断如果其last_attempts_date小于当前日期则将其attempt_times置0(steven)
+* [新建一张tm_voucher_banned_list表，在客户提交卡密时查询该表是否存在该客户记录，如果返回null则继续否则提示“You had been banned for being attempted brute force”，条件为客户id且禁止时间小于今天](steven)
 * [通过banned list验证后，接下来判断输入的pin number是否正确，如果不正确则判断banned list表是否有该用户，如果有则更新尝试次数+1，如果没有则插入该记录，并返回提示“You have x time(s) to try! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't affect your other operations.”](steven)
 * [在voucher表里添加一个post_to字段，用来记录充值卡的配送点，记录配送点时填写配送点以及起始和结束卡号，更新post_to时判断大于等于起始且小于等于结束范围内的卡号](steven)
  
@@ -39,7 +43,7 @@ demand version 1.0.21 2014-06-23
 
 * [customer order的invoice的make payment添加一个Credit Card选项，原理和DDPay无异，在设置transaction类型时改成Credit Card](steven)
 * [customer order的invoice的make payment添加一个A2A（Account2Account）选项，原理和DDPay无异，在设置transaction类型时改成Account2Account](steven)
-* 客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer，transaction的process _ay是"Account Credit# - "+customer_id，currency_input是"Account Credit"(steven)
+* [客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer，transaction的process _ay是"Account Credit# - "+customer_id，currency_input是"Account Credit"](steven)
 
  
 demand version 1.0.21 2014-06-19
@@ -49,7 +53,7 @@ demand version 1.0.21 2014-06-19
 * [每个invoice都不叠加上个月invoice的balance](steven)
 * [重新生成invoice时如果不是生成新的invoice则保留原invoice的create以及due date](steven))
 * [DDPay支付没有问题，账单逻辑大改动之后Cash支付会叠加上一张账单的detail，检查为什么会出现这种情况并解决](steven)
-* 每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance(steven)
+* [每月20号定时执行overdue penalty定时器，判断取得invoice due date在前3个月内至1个月之前的所有状态为非paid的账单加一个overdue penalty到detail中并且更新payable及final payable以及balance](steven)
 * [添加一张tm_customer_service_record表记录服务客户的一些note，字段包括id,customer_id,user_id,description,create_date](steven)
 * [invoice加一个payment_status字段，用来记录该invoice的付款状态，如果billing正在付款的途中则他会将其改变成pending状态，显示在Invoice的status后面](steven)
 * [检查并调试plan-no-term的invoice生成代码，主要检查final_payable以及total credit的最终值](steven)
@@ -183,7 +187,7 @@ demand version 1.0.6 2014-04-24
 * 数据库加一个字段，用来限制客户在没有修改随即密码的情况下频繁使用忘记密码功能(kanny)
 * [制作Contact Us动态加载客户在customer的contact us界面新提交的request的功能，客户提交时需要输入验证码](steven)
 * [create customer, company detail的地址框都加上google map auto complete](steven)
-* customer首页下方添加follow us on(twitter, facebook, email, youtube)
+* [customer首页上方添加follow us on(twitter, facebook, g+, instagram, Pinterest)](steven)
 * [重新完善cyberpark首页设计](kanny)
 * [客户忘记密码可以点击forgotten password?来选择是通过email或sms来获取随机密码](steven)
 * [sale模块下单后随机生成密码插入customer属性存入数据库并将该随即密码发送给客户](steven)
@@ -208,7 +212,7 @@ demand version 1.0.5 2014-04-04
 * [sale模块加个列表如果操作的user角色为administrator则将角色为sale的user迭代进下拉菜单，如果为sale角色则屏蔽下拉菜单其只能查看自己的signed和unsigned的order和credit PDF](steven)
 * [修改前端，注册购买页面，用mobile and email代替登入](kanny)
 * [给购买流添加导航](kanny)
-* 更换dps支付页面
+* [更换dps支付页面](kanny)
 * 修改用户登入后所看到的界面
 * [order information界面，添加属性，可以下载签约的PDF](steven)
 

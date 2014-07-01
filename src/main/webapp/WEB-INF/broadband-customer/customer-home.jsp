@@ -171,7 +171,7 @@
 		console.log(pay_way);
 		$('a[data-name="confirm_payway_modal_btn"]').attr('data-way', pay_way);
 		if(pay_way == 'voucher'){
-			$('strong[data-name="confirm_payway_modal_title"]').html('Topup your accmount credit by voucher?');
+			$('strong[data-name="confirm_payway_modal_title"]').html('Topup your account amount credit by voucher?');
 			$('strong[data-name="confirm_payway_modal_content"]').html('Voucher\'s face value will be automatically added into your account\'s credit.<br/>');
 			$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
 		}

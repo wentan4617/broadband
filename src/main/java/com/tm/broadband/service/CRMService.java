@@ -658,7 +658,7 @@ public class CRMService {
 	
 	// manually generating invoice PDF by id
 	@Transactional
-	public void createInvoicePDFByInvoiceID(int invoiceId){
+	public void createInvoicePDFByInvoiceID(int invoiceId, boolean isOverduePenalty){
 		// store company details begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company details end
@@ -672,6 +672,18 @@ public class CRMService {
 		// get customer details from invoice
 		Customer customer = ci.getCustomer();
 		// get necessary models end
+		
+		// If is overdue penalty
+		if(isOverduePenalty){
+			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			cid.setInvoice_id(ci.getId());
+			cid.setInvoice_detail_name("Overdue Penalty");
+			cid.setInvoice_detail_desc("10% of Total Payable Amount");
+			cid.setInvoice_detail_unit(1);
+			cid.setInvoice_detail_price(TMUtils.bigMultiply(ci.getFinal_payable_amount(), 0.1d));
+			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+			ci.getCustomerInvoiceDetails().add(cid);
+		}
 		
 		// initialize invoice's important informations
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
@@ -690,9 +702,10 @@ public class CRMService {
 			e.printStackTrace();
 		}
 		// add sql condition: id
-//		ci.setAmount_paid((Double) map.get("amount_paid"));
-//		ci.setAmount_payable((Double) map.get("amount_payable"));
-//		ci.setBalance((Double) map.get("balance")); 
+		ci.setAmount_paid((Double) map.get("amount_paid"));
+		ci.setAmount_payable((Double) map.get("amount_payable"));
+		ci.setFinal_payable_amount((Double) map.get("final_amount_payable"));
+		ci.setBalance((Double) map.get("balance")); 
 		ci.getParams().put("id", ci.getId());
 		
 		this.ciMapper.updateCustomerInvoice(ci);
@@ -915,6 +928,31 @@ public class CRMService {
 	}
 
 	@Transactional
+	public void createTermPlanInvoiceOverduePenalty() throws ParseException{
+		CustomerInvoice ciTemp = new CustomerInvoice();
+		Calendar beginCal = Calendar.getInstance();
+		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
+		beginCal.set(Calendar.DAY_OF_MONTH, 1);
+		beginCal.set(Calendar.HOUR_OF_DAY, 0);
+		beginCal.set(Calendar.MINUTE, 0);
+		beginCal.set(Calendar.SECOND, 0);
+		Calendar endCal = Calendar.getInstance();
+		endCal.set(Calendar.DAY_OF_MONTH, 1);
+		endCal.set(Calendar.HOUR_OF_DAY, 0);
+		endCal.set(Calendar.MINUTE, 0);
+		endCal.set(Calendar.SECOND, 0);
+		endCal.add(Calendar.DAY_OF_MONTH, -1);
+		ciTemp.getParams().put("where", "by_overdue_penalty");
+		ciTemp.getParams().put("status", "unpaid");
+		ciTemp.getParams().put("begin_date", beginCal.getTime());
+		ciTemp.getParams().put("end_date", endCal.getTime());
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciTemp);
+		for (CustomerInvoice ci : cis) {
+			createInvoicePDFByInvoiceID(ci.getId(), true);
+		}
+	}
+
+	@Transactional
 	public void createTermPlanInvoiceByOrder(CustomerOrder co
 			,boolean isRegenerateInvoice) throws ParseException{
 		
@@ -969,7 +1007,9 @@ public class CRMService {
 			ciMapper.insertCustomerInvoice(ci);
 			// Set id for invoice's update
 		}
-		
+		if(ci!=null && ci.getId()!=null){
+			this.ciDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(ci.getId());
+		}
 		ci.setAmount_paid(ci.getAmount_paid()!=null ? ci.getAmount_paid() : 0d);
 		ci.setAmount_payable(ci.getAmount_payable()!=null ? ci.getAmount_payable() : 0d);
 		ci.setBalance(ci.getBalance()!=null ? ci.getBalance() : 0d);
@@ -1265,6 +1305,9 @@ public class CRMService {
 				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 10));
 				this.ciMapper.insertCustomerInvoice(ci);
 			}
+		}
+		if(ci!=null && ci.getId()!=null){
+			this.ciDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(ci.getId());
 		}
 		// Customer previous invoice
 		if (cpi != null && !ci.getId().equals(cpi.getId())) {

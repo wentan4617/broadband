@@ -623,7 +623,7 @@ public class CRMController {
 			customerInvoice.getParams().put("id", invoice_id);
 			this.crmService.editCustomerInvoice(customerInvoice);
 			
-			this.crmService.createInvoicePDFByInvoiceID(invoice_id);
+			this.crmService.createInvoicePDFByInvoiceID(invoice_id, false);
 			
 			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
