@@ -103,7 +103,8 @@
 		co.`rfs_date`							as co_rfs_date,
 		co.`previous_provider_invoice`			as co_previous_provider_invoice,
 		co.`user_id`							as co_user_id,
-		co.`ddpay_pdf_path`						as co_ddpay_pdf_path
+		co.`ddpay_pdf_path`						as co_ddpay_pdf_path,
+		co.`is_ddpay`							as co_is_ddpay
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -139,6 +140,7 @@
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+		<result property="is_ddpay" column="co_is_ddpay" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -413,6 +415,7 @@
 			<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 			<result property="user_id" column="co_user_id" />
 			<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+			<result property="is_ddpay" column="co_is_ddpay" />
 			
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail" resultMap="CustomerOrderDetailResultMap" />
 		</collection>

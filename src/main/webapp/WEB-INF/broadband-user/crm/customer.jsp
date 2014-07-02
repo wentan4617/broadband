@@ -431,6 +431,29 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_optional_request_edit"]').button('reset');
 					$.getCustomerOrder();
 				});
+				
+				// Get order edit is ddpay Dialog
+				$('a[data-name="'+co[i].id+'_is_ddpay_edit"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="editIsDDPayModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('#editIsDDPayModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="editIsDDPayModalBtn_'+co[i].id+'"]').click(function(){
+					var isDDPay = $('select[data-name="'+this.id+'_is_ddpay_to_selector"]');
+					var data = {
+							'id':this.id
+							,'is_ddpay':isDDPay.val()
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/is_ddpay/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden edit is ddpay dialog
+				$('#editIsDDPayModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_is_ddpay_edit"]').button('reset');
+					$.getCustomerOrder();
+				});
 				/*
 				 *	END customer order area
 				 */

@@ -726,7 +726,8 @@ public class CRMRestController {
 		co.setOrder_status("using");
 
 		if (!"order-topup".equals(customerOrder.getOrder_type())
-				&& !"order-term".equals(customerOrder.getOrder_type())) {
+				&& (!"order-term".equals(customerOrder.getOrder_type())
+					|| "order-term".equals(customerOrder.getOrder_type()) && !customerOrder.getIs_ddpay())) {
 			Calendar calNextInvoiceDay = Calendar.getInstance();
 			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder
 					.getOrder_using_start_str()));
@@ -745,40 +746,22 @@ public class CRMRestController {
 		if ("save".equals(way)) {
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
-			// check order status
-			if ("ordering-paid".equals(customerOrder.getOrder_status())
-					|| "order-term".equals(customerOrder.getOrder_type())) {
+			
+			/* check order status send mailer */
+			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
+			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); /* call mail at value retriever */
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			notification = this.systemService.queryNotificationBySort("service-giving", "sms"); /* get sms register template from db */
+			MailRetriever.mailAtValueRetriever(notification, customer,customerOrder, companyDetail);
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); /* send sms to customer's mobile phone */
 
-				// send mailer
-				Customer customer = this.crmService
-						.queryCustomerById(customerOrder.getCustomer_id());
-				CompanyDetail companyDetail = this.crmService
-						.queryCompanyDetail();
-				Notification notification = this.systemService
-						.queryNotificationBySort("service-giving", "email");
-				MailRetriever.mailAtValueRetriever(notification, customer,
-						customerOrder, companyDetail); // call mail at value
-														// retriever
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(customer.getEmail());
-				applicationEmail.setSubject(notification.getTitle());
-				applicationEmail.setContent(notification.getContent());
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-				notification = this.systemService.queryNotificationBySort(
-						"service-giving", "sms"); // get sms register template
-													// from db
-				MailRetriever.mailAtValueRetriever(notification, customer,
-						customerOrder, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(
-						customer.getCellphone(), notification.getContent()); // send
-																				// sms
-																				// to
-																				// customer's
-																				// mobile
-																				// phone
-
-			} else if ("ordering-pending".equals(customerOrder
-					.getOrder_status())
+			/*else if ("ordering-pending".equals(customerOrder.getOrder_status())
 					&& !"order-term".equals(customerOrder.getOrder_type())) {
 
 				Notification notificationEmail = this.systemService
@@ -788,35 +771,27 @@ public class CRMRestController {
 				this.crmService.createInvoicePDF(customerOrder,
 						notificationEmail, notificationSMS);
 
-			}
-			json.getSuccessMap().put("alert-success",
-					"Service Given Date had successlly been saved!");
+			}*/
+			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been saved!");
 		} else {
 			proLog.setProcess_way("editing service giving");
-			Customer customer = this.crmService.queryCustomerById(customerOrder
-					.getCustomer_id());
+			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-			Notification notification = this.systemService
-					.queryNotificationBySort("service-giving", "email");
+			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer,
-					customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			notification = this.systemService.queryNotificationBySort(
-					"service-giving", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer,
-					customerOrder, companyDetail);
+			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
+			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(
-					customer.getCellphone(), notification.getContent());
-			json.getSuccessMap().put("alert-success",
-					"Service Given Date had successlly been updated!");
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
 		}
 
 		this.crmService.editCustomerOrder(co, proLog);
@@ -844,6 +819,20 @@ public class CRMRestController {
 			json.getErrorMap().put("alert-error",
 					"Please input correct Optional Request!");
 		}
+
+		return json;
+	}
+
+	// Update is ddpay
+	@RequestMapping(value = "/broadband-user/crm/customer/order/is_ddpay/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerOrderIsDDPayEdit(
+			Model model, CustomerOrder co) {
+
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+
+		co.getParams().put("id", co.getId());
+		this.crmService.editCustomerOrder(co);
+		json.getSuccessMap().put("alert-success", "Is DDPay had just been edited!");
 
 		return json;
 	}

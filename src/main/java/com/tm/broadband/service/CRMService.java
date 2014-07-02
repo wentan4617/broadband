@@ -821,7 +821,8 @@ public class CRMService {
 		CustomerOrder coTemp = new CustomerOrder();
 		coTemp.getParams().put("where", "query_term");
 		coTemp.getParams().put("status", "using");
-		coTemp.getParams().put("order_type", "order-term"); 
+		coTemp.getParams().put("order_type", "order-term");
+		coTemp.getParams().put("is_ddpay", true);
 		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
 		
 		for (CustomerOrder co : cos) {
@@ -936,11 +937,13 @@ public class CRMService {
 		// Production environment should edit as shown below
 		// where = query_term
 		// status = using
-		// order_type_term = order-term
+		// order_type = order-term
+		// is_ddpay = false
 		CustomerOrder coTemp = new CustomerOrder();
 		coTemp.getParams().put("where", "query_term");
 		coTemp.getParams().put("status", "using");
-		coTemp.getParams().put("order_type", "order-term"); 
+		coTemp.getParams().put("order_type", "order-term");
+		coTemp.getParams().put("is_ddpay", true);
 		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
 		
 		// If found any order(s)
