@@ -510,7 +510,6 @@ public class CRMController {
 		return url;
 	}
 
-
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create/back")
 	public String toBackOrderCreate(Model model,
 			@ModelAttribute("customerOrder") CustomerOrder customerOrder) {
@@ -519,14 +518,6 @@ public class CRMController {
 		return "broadband-user/crm/order-create";
 	}
 	
-	/**
-	 * @param model
-	 * @param customer
-	 * @param customerOrder
-	 * @param attr
-	 * @param status
-	 * @return
-	 */
 	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
 	public String orderSave(Model model,
 			@ModelAttribute("customer") Customer customer, 
@@ -541,7 +532,36 @@ public class CRMController {
 		User user = (User) req.getSession().getAttribute("userSession");
 		customerOrder.setUser_id(user.getId());
 		
-		this.crmService.saveCustomerOrder(customer, customerOrder);
+		this.crmService.registerCustomerCalling(customer);
+		
+		this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+
+		String filePath = TMUtils.createPath(
+				"broadband" 
+				+ File.separator
+				+ "customers" + File.separator + customer.getId()
+				+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+		
+		Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+		// call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		// binding attachment name & path to email
+		applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+		applicationEmail.setAttachPath(filePath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		// get sms register template from db
+		notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+		// send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+		//status.setComplete();
+		
 		attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
 		status.setComplete();
 		

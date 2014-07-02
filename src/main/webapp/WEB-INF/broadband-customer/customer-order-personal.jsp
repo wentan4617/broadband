@@ -54,15 +54,38 @@
 			<div class="col-md-9 col-sm-12 col-xs-12">
 				
 				<!-- application form -->
+				<c:choose>
+					<c:when test="${orderPlan.plan_group == 'plan-no-term'}">
+						<div class="well well-sm text-danger">
+							All No Term Plans Won't Provide Free Router, 
+							You Can Purchase A Router Which Had Been Listed Below. 
+							You Can Get A Free Router From <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+						</div>
+					</c:when>
+					<c:when test="${orderPlan.plan_group == 'plan-topup'}">
+						<div class="well well-sm text-danger">
+							All Topup Plans Won't Provide Free Router, 
+							You Can Purchase A Router Which Had Been Listed Below. 
+							You Can Get A Free Router From <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+						</div>
+					</c:when>
+					<c:when test="${orderPlan.plan_group == 'plan-term'}">
+						<div class="well well-sm text-danger">
+							All Term Plans Will Provide You A Free Router, 
+							You Don't Need To Choose A Router Which Had Been Listed Below. 
+							We Already Add The Free Router To Your Cart.
+						</div>
+					</c:when>
+				</c:choose>
 				
 				<div class="panel panel-success">
 				
 					<div class="panel-heading">
-						<h4 class="panel-title">
+						<h6 class="panel-title">
 							<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#application">
 								Your Application Form <span class="text-danger hidden-xs hidden-sm">(All Fields Required)</span>
 							</a>
-						</h4>
+						</h6>
 					</div>
 					
 					<div id="application" class="panel-collapse collapse in">

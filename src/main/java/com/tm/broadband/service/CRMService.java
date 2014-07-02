@@ -195,7 +195,12 @@ public class CRMService {
 			
 		} else if ("plan-term".equals(plan.getPlan_group())) {
 			
-			customer.getCustomerOrder().setOrder_status("pending");
+			if ("personal".equals(plan.getPlan_class())) {
+				customer.getCustomerOrder().setOrder_status("paid");
+			} else if ("business".equals(plan.getPlan_class())) {
+				customer.getCustomerOrder().setOrder_status("pending");
+			}
+			
 			
 			customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
 			
@@ -390,6 +395,52 @@ public class CRMService {
 			vQuery.getParams().put("card_number", vQuery.getCard_number());
 			this.voucherMapper.updateVoucher(vQuery);
 		}
+	}
+	
+	public void registerCustomerCalling(Customer customer) {
+		
+		customer.setRegister_date(new Date());
+		customer.setActive_date(new Date());
+		
+		this.customerMapper.insertCustomer(customer);
+		//System.out.println("customer id: " + customer.getId());
+		
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.getOrganization().setCustomer_id(customer.getId());
+			this.organizationMapper.insertOrganization(customer.getOrganization());
+		}
+		
+		customer.getCustomerOrder().setCustomer_id(customer.getId());
+		
+		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
+		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
+		
+		CustomerInvoice ci = new CustomerInvoice();
+		ci.setCustomer_id(customer.getId());
+		ci.setOrder_id(customer.getCustomerOrder().getId());
+		ci.setCreate_date(new Date(System.currentTimeMillis()));
+		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
+		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
+		ci.setAmount_paid(0d);
+		
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
+		ci.setStatus("unpaid");
+		
+		this.ciMapper.insertCustomerInvoice(ci);
+		customer.setCustomerInvoice(ci);
+		
+		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
+			cod.setOrder_id(customer.getCustomerOrder().getId());
+			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
+			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			cid.setInvoice_id(ci.getId());
+			cid.setInvoice_detail_name(cod.getDetail_name());
+			cid.setInvoice_detail_desc(cod.getDetail_desc());
+			cid.setInvoice_detail_price(cod.getDetail_price());
+			cid.setInvoice_detail_unit(cod.getDetail_unit());
+			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+		}
+		
 	}
 	
 	@Transactional
