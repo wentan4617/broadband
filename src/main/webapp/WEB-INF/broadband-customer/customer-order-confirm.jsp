@@ -330,7 +330,9 @@
 				</div>
 				
 				
-				<c:if test="${orderPlan.plan_group == 'plan-no-term' || orderPlan.plan_group == 'plan-topup'}">
+				<c:if test="${orderPlan.plan_group == 'plan-no-term' 
+					|| orderPlan.plan_group == 'plan-topup'
+					|| (orderPlan.plan_group == 'plan-term' && customer.customer_type == 'personal')}">
 				
 				<hr>
 				<h4 class="text-success">
@@ -403,8 +405,8 @@
 					</div>
 					<div class="col-md-2 col-md-offset-8">
 						<c:choose>
-							<c:when test="${orderPlan.plan_group == 'plan-term' }">
-								<c:choose>
+							<c:when test="${orderPlan.plan_group == 'plan-term' && customer.customer_type == 'business'}">
+								<%-- <c:choose>
 									<c:when test="${customer.customer_type == 'personal' }">
 										<form class="form-horizontal" action="${ctx }/order/plan-term/personal/save" method="post" id="orderForm">
 											<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
@@ -414,8 +416,12 @@
 										<form class="form-horizontal" action="${ctx }/order/plan-term/business/save" method="post" id="orderForm">
 											<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
 										</form>
-									</c:when>
-								</c:choose>
+									</c:when> 
+									
+								</c:choose> --%>
+								<form class="form-horizontal" action="${ctx }/order/plan-term/business/save" method="post" id="orderForm">
+									<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
+								</form>
 							</c:when>
 							<c:otherwise>
 								<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">

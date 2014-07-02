@@ -542,13 +542,13 @@ public class CustomerController {
 
 			this.crmService.registerCustomer(customer, cts);
 			
-			this.crmService.createInvoicePDFByInvoiceID(customerTransaction.getInvoice_id(), false);
+			this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
 
 			String filePath = TMUtils.createPath(
 					"broadband" 
 					+ File.separator
 					+ "customers" + File.separator + customer.getId()
-					+ File.separator + "invoice_" + customerTransaction.getInvoice_id() + ".pdf");
+					+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -559,7 +559,7 @@ public class CustomerController {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("invoice_" + customerTransaction.getInvoice_id() + ".pdf");
+			applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
 			applicationEmail.setAttachPath(filePath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
