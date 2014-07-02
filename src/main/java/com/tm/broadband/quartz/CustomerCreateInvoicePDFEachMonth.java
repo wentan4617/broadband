@@ -1,7 +1,7 @@
 package com.tm.broadband.quartz;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -23,17 +23,18 @@ public class CustomerCreateInvoicePDFEachMonth {
 	}
 
 	public void createNextInvoicePDF() throws ParseException {
-            
 
         CustomerOrder customerOrder = new CustomerOrder();
         // only if the order is in using status
+        customerOrder.getParams().put("where", "query_no_term");
         customerOrder.getParams().put("order_status", "using");
         
         // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-10") under testing environment
 		// using new Date() under production environment
-        customerOrder.getParams().put("next_invoice_create_date", new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-10"));
-        customerOrder.getParams().put("order_type", "order-no-term"); 
-        customerOrder.getParams().put("where", "query_no_term"); 
+        customerOrder.getParams().put("next_invoice_create_date", new Date());
+        customerOrder.getParams().put("order_type", "order-no-term");
+        customerOrder.getParams().put("is_ddpay", false);
+        customerOrder.getParams().put("order_term_type", "order-term");
         
         // call Service Method
 		crmService.createNextInvoice(customerOrder);

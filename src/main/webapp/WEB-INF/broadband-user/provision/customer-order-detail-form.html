@@ -10,9 +10,9 @@
 				<th>Plan Type</th>
 				<th>Plan Sort</th>
 				<th>Plan Status</th>
-				<th>Data flow</th>
-				<th>Detail Price</th>
-				<th>Unit</th>
+				<th style="text-align:right;">Data flow</th>
+				<th style="text-align:right;">Detail Price</th>
+				<th style="text-align:right;">Unit</th>
 				<th>Expired</th>
 				<th>&nbsp;</th>
 			</tr>
@@ -49,15 +49,15 @@
 				<td><.=cod.detail_plan_type || ''.></td>
 				<td><.=cod.detail_plan_sort || ''.></td>
 				<td><strong><.=cod.detail_plan_status || ''.></strong></td>
-				<td>
+				<td style="text-align:right;">
 					<. if (cod.detail_data_flow < 0) { .>
 						Unlimited
 					<. } else { .>
 						<.=cod.detail_data_flow || ''.>
 					<. } .>
 				</td>
-				<td><strong><.=cod.detail_price || ''.></strong></td>
-				<td><.=cod.detail_unit || ''.></td>
+				<td style="text-align:right;"><strong><.= cod.detail_type=='discount'||cod.detail_type=='termination-credit' ? '-' : '' .><.= new Number(cod.detail_price).toFixed(2) .></strong></td>
+				<td style="text-align:right;"><.=cod.detail_unit || ''.></td>
 				<td><strong><.=cod.detail_expired_str.></strong></td>
 				<td></td>
 			</tr>

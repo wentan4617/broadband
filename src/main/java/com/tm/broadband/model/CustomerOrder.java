@@ -56,6 +56,7 @@ public class CustomerOrder implements Serializable {
 	private String previous_provider_invoice;
 	private Integer user_id;
 	private String ddpay_pdf_path;
+	private Boolean is_ddpay;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -476,6 +477,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setDdpay_pdf_path(String ddpay_pdf_path) {
 		this.ddpay_pdf_path = ddpay_pdf_path;
+	}
+
+	public Boolean getIs_ddpay() {
+		return is_ddpay;
+	}
+
+	public void setIs_ddpay(Boolean is_ddpay) {
+		this.is_ddpay = is_ddpay;
 	}
 
 }

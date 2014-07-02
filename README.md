@@ -16,9 +16,15 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-07-02
+
+* No Term填写客户信息界面头部加一条提示信息：All No Term Plans Won't Provide Free Router, You Can Purchase A Router Which Had Been Listed Below. You Can Get A Free Router From <a href="termed plan的链接">Here</a>.
+* 更改termed及no term订单的出账逻辑，出termed账单条件是termed且is_ddpay为true，出no term账单条件是no term或termed且is_ddpay为false.(steven)
+* 更改Service Given的termed逻辑，如果termed且is_ddpay为false则按no term的处理.(steven)
+ 
 demand version 1.0.21 2014-07-01
 
-* 首页添加一个voucher checking功能，任何人都可以在该界面上检查自己的voucher是否可用(steven)
+* [首页添加一个voucher checking功能，任何人都可以在该界面上检查自己的voucher是否可用](steven)
  
 demand version 1.0.21 2014-06-27
 

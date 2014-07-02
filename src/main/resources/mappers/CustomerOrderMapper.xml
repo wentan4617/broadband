@@ -104,7 +104,8 @@
 		co.`rfs_date`							as co_rfs_date,
 		co.`previous_provider_invoice`			as co_previous_provider_invoice,
 		co.`user_id`							as co_user_id,
-		co.`ddpay_pdf_path`						as co_ddpay_pdf_path
+		co.`ddpay_pdf_path`						as co_ddpay_pdf_path,
+		co.`is_ddpay`							as co_is_ddpay
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -140,6 +141,7 @@
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+		<result property="is_ddpay" column="co_is_ddpay" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -257,11 +259,20 @@
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})</if>
 					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
+					<if test="params.is_ddpay != null and params.order_term_type == 'order-term'">
+						or (
+								co.is_ddpay=#{params.is_ddpay}
+							and co.order_type=#{params.order_term_type}
+							and co.order_status=#{params.order_status}
+							and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})
+						)
+					</if>
 				</when>
 				<when test="params.where == 'query_term'">
 					<!-- co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now()) -->
 					<if test="params.status != null">and co.order_status=#{params.status}</if>
 					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
+					<if test="params.is_ddpay != null">and co.is_ddpay=#{params.is_ddpay}</if>
 				</when>
 				<when test="params.where == 'query_topup'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
@@ -347,6 +358,7 @@
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+		<result property="is_ddpay" column="co_is_ddpay" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -450,6 +462,7 @@
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+		<result property="is_ddpay" column="co_is_ddpay" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -512,6 +525,7 @@
 		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
+		<result property="is_ddpay" column="co_is_ddpay" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -551,14 +565,16 @@
 			`transition_provider_name`, `transition_account_holder_name`, 
 			`transition_account_number`, `transition_porting_number`, `hardware_post`,
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
-			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`, `rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`) 
+			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
+			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`) 
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
 			#{transition_provider_name}, #{transition_account_holder_name},
 			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
-			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid}, #{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path})
+			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
+			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -602,7 +618,8 @@
 			<if test="rfs_date != null">rfs_date=#{rfs_date},</if>
 			<if test="previous_provider_invoice != null">previous_provider_invoice=#{previous_provider_invoice},</if>
 			<if test="rfs_date != null">user_id=#{user_id},</if>
-			<if test="ddpay_pdf_path != null">ddpay_pdf_path=#{ddpay_pdf_path}</if>
+			<if test="ddpay_pdf_path != null">ddpay_pdf_path=#{ddpay_pdf_path},</if>
+			<if test="is_ddpay != null">is_ddpay=#{is_ddpay}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
