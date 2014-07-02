@@ -727,14 +727,17 @@ public class CRMRestController {
 
 		if (!"order-topup".equals(customerOrder.getOrder_type())
 				&& (!"order-term".equals(customerOrder.getOrder_type())
-					|| "order-term".equals(customerOrder.getOrder_type()) && !customerOrder.getIs_ddpay())) {
+					|| ("order-term".equals(customerOrder.getOrder_type())
+						&& (customerOrder.getIs_ddpay()==null || (customerOrder.getIs_ddpay()!=null && !customerOrder.getIs_ddpay())))
+					   )
+			) {
 			Calendar calNextInvoiceDay = Calendar.getInstance();
 			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder
 					.getOrder_using_start_str()));
 			// Add plan unit months
 			calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
 			// Go back 15 days
-			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -15);
+			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
 			// set next invoice date
 			co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 		} else {
