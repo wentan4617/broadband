@@ -261,7 +261,7 @@
 					<if test="params.order_type != null">and co.order_type=#{params.order_type}</if>
 					<if test="params.is_ddpay != null and params.order_term_type == 'order-term'">
 						or (
-								co.is_ddpay=#{params.is_ddpay}
+								(co.is_ddpay IS NULL or co.is_ddpay=#{params.is_ddpay})
 							and co.order_type=#{params.order_term_type}
 							and co.order_status=#{params.order_status}
 							and date(co.next_invoice_create_date)=date(#{params.next_invoice_create_date})

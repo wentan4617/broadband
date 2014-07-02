@@ -45,7 +45,7 @@
 				</when>
 				<when test="params.where == 'by_overdue_penalty'">
 					<if test="params.status != null">status = #{params.status}</if>
-					<if test="params.begin_date != null and params.end_date != null">and create_date BETWEEN #{params.begin_date} AND #{params.end_date}</if>
+					<if test="params.begin_date != null and params.end_date != null">and due_date BETWEEN #{params.begin_date} AND #{params.end_date}</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>

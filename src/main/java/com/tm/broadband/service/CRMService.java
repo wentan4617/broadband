@@ -1483,7 +1483,7 @@ public class CRMService {
 					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = is_Next_Invoice ? 0 : -15;
+					int nextInvoiceDay = is_Next_Invoice ? 0 : -7;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
 					calNextInvoiceDay.setTime(!is_Next_Invoice 
 								? (customerOrder.getOrder_using_start() != null 
