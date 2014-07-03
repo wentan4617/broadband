@@ -542,7 +542,7 @@ public class CRMController {
 				+ "customers" + File.separator + customer.getId()
 				+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
 		
-		Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 		// call mail at value retriever
@@ -556,7 +556,7 @@ public class CRMController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		// get sms register template from db
-		notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+		notification = this.crmService.queryNotificationBySort("register-post-pay", "sms");
 		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 		// send sms to customer's mobile phone
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
