@@ -3,6 +3,7 @@ package com.tm.broadband.mapper;
 import java.util.List;
 
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.TempDataUsage;
 import com.tm.broadband.model.User;
 
 /**
@@ -24,12 +25,14 @@ public interface RadacctMapper {
 
 	/* SELECT AREA */
 	
-	
+	Long selectMaxCount();
+	List<TempDataUsage> selectDataUsageRecent(Long maxcount);
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */
 	/* INSERT AREA */
 	
+	void insertTempDataUsage(TempDataUsage temp);
 	
 	/* // END INSERT AREA */
 	

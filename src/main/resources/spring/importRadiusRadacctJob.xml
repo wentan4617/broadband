@@ -1,32 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:lang="http://www.springframework.org/schema/lang"
+	xmlns:util="http://www.springframework.org/schema/util"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 		http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd
-		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd">
+		http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
 	<!-- <import resource="application-config.xml"/> -->
 	
 	<job id="importRadiusRadacctJob" xmlns="http://www.springframework.org/schema/batch">
 		<step id="dataExportImportStep" >
 			<tasklet><!-- task-executor="taskExecutor" -->
-				<chunk reader="dataExportRadiusRadacctReader" processor="dataImportProcessor" writer="dataImportRadacctWriter" commit-interval="500"></chunk>
+				<chunk reader="dataExportRadiusRadacctReader" processor="dataImportProcessor" writer="dataImportRadacctWriter" commit-interval="1000"></chunk>
 			</tasklet>
 		</step>
 	</job>
 	
-	<bean id="dataExportRadiusRadacctReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader">
+	<!-- <util:map id="tablesParameters" scope="step">
+		<entry key="_usage_date" value="#{jobParameters['usage_date']}" />
+		<entry key="_maxcount" value="#{jobParameters['count']}" />
+	</util:map> -->
+	
+	<bean id="dataExportRadiusRadacctReader" class="org.mybatis.spring.batch.MyBatisPagingItemReader" >
 		<property name="sqlSessionFactory" ref="radiusSqlSessionFactory" />
 		<property name="queryId" value="selectRadiusRadaccts" />
-		<property name="pageSize" value="500" />
+		<property name="pageSize" value="1000" />
 	</bean>
 	
-	<bean name="dataImportProcessor" class="com.tm.broadband.batch.DataImportProcessor" scope="step" />
+	<bean name="dataImportProcessor" class="com.tm.broadband.batch.DataImportProcessor" scope="step" > 
+		<property name="usage_date" value="#{jobParameters['usage_date']}"/>
+		<property name="maxcount" value="#{jobParameters['maxcount']}"/>
+	</bean>
 	
 	<bean id="dataImportRadacctWriter" class="org.mybatis.spring.batch.MyBatisBatchItemWriter">
 		<property name="sqlSessionFactory" ref="broadbandSqlSessionFactory" />
-  		<property name="statementId" value="insertRadacct" />
+  		<property name="statementId" value="insertTempDateUsage" />
 	</bean>
 	
 </beans>

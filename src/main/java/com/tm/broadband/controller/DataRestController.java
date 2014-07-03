@@ -155,7 +155,12 @@ public class DataRestController {
 				for (DateUsage dateUsage: dateUsages) {
 					//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 					if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
-						dateUsage.setUsage(usage);
+						if (dateUsage.getUsage() != null) {
+							dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
+							dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
+						} else {
+							dateUsage.setUsage(usage);
+						}
 						System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 						break;
 					}

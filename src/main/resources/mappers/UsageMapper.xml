@@ -148,18 +148,8 @@
 	
 	<insert id="insertUsage" parameterType="NetworkUsage">
 		insert tm_network_usage (vlan, upload, download, accounting_date)
-		select 
-			connectinfo_start as vlan,
-			SUM(acctinputoctets) as upload,
-			SUM(acctoutputoctets) as download,
-			DATE(_accttime) as accounting_date
-		from tm_radacct 
-		where year(_accttime) = #{params.year}
-		and (MONTH(_accttime) = #{params.month} or MONTH(_accttime) = #{params.last_month})
-		group by connectinfo_start, DATE(_accttime)
+		values (#{vlan}, #{upload}, #{download}, #{accounting_date})
 	</insert>
-	
-	
 	
 	<!-- // END INSERT AREA -->
 	<!-- =================================================================================== -->

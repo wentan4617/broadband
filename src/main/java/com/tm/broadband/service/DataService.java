@@ -12,6 +12,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.TempDataUsage;
 
 @Service
 public class DataService {
@@ -60,6 +61,29 @@ public class DataService {
 	@Transactional
 	public void removeRadacct() {
 		this.radacctMapper.deleteRadacct();
+	}
+	
+	@Transactional
+	public Long queryMaxCount() {
+		return this.radacctMapper.selectMaxCount();
+	}
+	
+	@Transactional
+	public void insertTempDataUsage(TempDataUsage temp) {
+		this.radacctMapper.insertTempDataUsage(temp);
+	}
+	
+	@Transactional
+	public List<TempDataUsage> queryDataUsageRecent(Long maxcount) {
+		return this.radacctMapper.selectDataUsageRecent(maxcount);
+	}
+	
+	@Transactional
+	public void insertUsage(List<NetworkUsage> usages) {
+		for (NetworkUsage usage: usages) {
+			this.usageMapper.insertUsage(usage);
+			//System.out.println("vlan: " + usage.getVlan() + ", upload: " + usage.getUpload() + ", download: " + usage.getDownload() + ", date: " + usage.getAccounting_date());
+		}
 	}
 
 }
