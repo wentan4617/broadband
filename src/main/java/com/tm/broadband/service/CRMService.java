@@ -1543,21 +1543,21 @@ public class CRMService {
 		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
 		if(!isRegenerate){
-//			// call mail at value retriever
-//			MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
-//			ApplicationEmail applicationEmail = new ApplicationEmail();
-//			applicationEmail.setAddressee(customer.getEmail());
-//			applicationEmail.setSubject(notificationEmail.getTitle());
-//			applicationEmail.setContent(notificationEmail.getContent());
-//			// binding attachment name & path to email
-//			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-//			applicationEmail.setAttachPath((String) map.get("filePath"));
-//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//
-//			// get sms register template from db
-//			MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
-//			// send sms to customer's mobile phone
-//			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
+			// call mail at value retriever
+			MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+			applicationEmail.setAttachPath((String) map.get("filePath"));
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
 		}
 	}
 	

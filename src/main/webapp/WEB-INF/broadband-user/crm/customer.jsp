@@ -656,6 +656,48 @@
 					$.getCustomerOrder();
 				});
 
+				/*
+				 * BEGIN Edit detail
+				 */
+				// Edit Detail modal
+				$('a[data-name="'+co[i].id+'_edit_detail"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="editDetailModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('a[data-name="editDetailModalBtn_'+this.id+'"]').prop('data-id', $(this).attr('data-id'));
+					$('#editDetailModal_'+this.id).prop('data-id', $(this).attr('data-id'));
+					
+					// Original Values
+					$('input[data-name="detail_name_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_name"]').attr('data-val'));
+					$('input[data-name="detail_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_type"]').attr('data-val'));
+					$('input[data-name="detail_plan_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_type"]').attr('data-val'));
+					$('input[data-name="detail_plan_sort_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_sort"]').attr('data-val'));
+					$('input[data-name="detail_price_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_price"]').attr('data-val'));
+					$('#editDetailModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="editDetailModalBtn_'+co[i].id+'"]').click(function(){
+					var data = {
+						'id':$(this).prop('data-id'),
+						'order_id':this.id,
+						'detail_name':$('input[data-name="detail_name_'+this.id+'"]').val(),
+						'detail_type':$('input[data-name="detail_type_'+this.id+'"]').val(),
+						'detail_plan_type':$('input[data-name="detail_plan_type_'+this.id+'"]').val(),
+						'detail_plan_sort':$('input[data-name="detail_plan_sort_'+this.id+'"]').val(),
+						'detail_price':$('input[data-name="detail_price_'+this.id+'"]').val()
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/order/detail/plan/edit', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+				});
+				// Reset button when hidden Edit Detail dialog
+				$('#editDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-id="'+$(this).prop('data-id')+'"]').button('reset');
+					$.getCustomerOrder();
+				});
+				/*
+				 * END Edit detail
+				 */
 				
 				/*
 				 *	BEGIN Remove detail
