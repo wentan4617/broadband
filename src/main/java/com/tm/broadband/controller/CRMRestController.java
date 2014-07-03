@@ -1316,4 +1316,19 @@ public class CRMRestController {
 		return json;
 	}
 
+
+	// Edit detail
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/plan/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailPlanEdit(Model model,
+			CustomerOrderDetail cod,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		cod.getParams().put("id", cod.getId());
+		this.crmService.editCustomerOrderDetail(cod);
+		
+		json.getSuccessMap().put("alert-success", "Plan detail edited successfully!");
+		return json;
+	}
 }

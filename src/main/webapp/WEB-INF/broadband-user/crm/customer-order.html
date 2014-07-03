@@ -651,8 +651,6 @@
 					<th>Detail Type</th>
 					<th>Plan Type</th>
 					<th>Plan Sort</th>
-					<th>Plan Status</th>
-					<th>Data Flow</th>
 					<th class="align-right">Detail Price</th>
 					<th class="align-right">Unit</th>
 					<th class="align-right">Detail Expired</th>
@@ -670,7 +668,7 @@
 											 customerOrderDetail[d].detail_type=='present-calling-minutes' ? 'alert alert-info' :
 											  customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
 											   customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
-								<td>
+								<td data-name="<.= customerOrderDetail[d].id .>_detail_name" data-val="<.= customerOrderDetail[d].detail_name .>" >
 									<.= customerOrderDetail[d].detail_name .>
 				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip'){		.>
 							<br/>
@@ -687,12 +685,10 @@
 						}
 				.>
 							</td>
-							<td><.= customerOrderDetail[d].detail_type .></td>
-							<td><.= customerOrderDetail[d].detail_plan_type .></td>
-							<td><.= customerOrderDetail[d].detail_plan_sort .></td>
-							<td><strong><.= customerOrderDetail[d].detail_plan_status .></strong></td>
-							<td><.= customerOrderDetail[d].detail_data_flow == -1 ? 'Ultimate' : customerOrderDetail[d].detail_data_flow .></td>
-							<td class="align-right">
+							<td data-name="<.= customerOrderDetail[d].id .>_detail_type" data-val="<.= customerOrderDetail[d].detail_type .>" ><.= customerOrderDetail[d].detail_type .></td>
+							<td data-name="<.= customerOrderDetail[d].id .>_detail_plan_type" data-val="<.= customerOrderDetail[d].detail_plan_type .>" ><.= customerOrderDetail[d].detail_plan_type .></td>
+							<td data-name="<.= customerOrderDetail[d].id .>_detail_plan_sort" data-val="<.= customerOrderDetail[d].detail_plan_sort .>" ><.= customerOrderDetail[d].detail_plan_sort .></td>
+							<td data-name="<.= customerOrderDetail[d].id .>_detail_price" data-val="<.= customerOrderDetail[d].detail_price .>" class="align-right">
 								<strong><.= customerOrderDetail[d].detail_type == 'discount' || customerOrderDetail[d].detail_type == 'termination-credit' ? '-' : '' .><.= detailPrice.toFixed(2) .></strong>
 								<.
 									if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
@@ -716,6 +712,18 @@
 							<td class="align-right"><strong><.= customerOrderDetail[d].detail_expired_str .></strong></td>
 							<td>&nbsp;
 								<.
+									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')
+										&&
+										(customerOrderDetail[d].detail_type=='plan-term'
+										|| customerOrderDetail[d].detail_type=='plan-no-term'
+										|| customerOrderDetail[d].detail_type=='plan-topup')
+									){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
+									  	<span class="glyphicon glyphicon-pencil"></span> 
+									</a>
+								<.
+									}
 									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')
 										&&
 										(customerOrderDetail[d].detail_type=='discount'
@@ -1446,6 +1454,60 @@
 		</div>
 		<!-- /.modal -->
 	</form>
+
+	<!-- Edit detail Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editDetailModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDetailModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editDetailModalLabel">
+							<strong>Edit Detail Information</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Name</label>
+							<div class="col-md-9">
+								<input class="form-control input-sm" type="text" data-name="detail_name_<.= customerOrder[i].id .>" placeholder="ADSL,VDSL,UFB, etc." />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Type</label>
+							<div class="col-md-4">
+								<input class="form-control input-sm" type="text" data-name="detail_type_<.= customerOrder[i].id .>" placeholder="plan-xxxxxx" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Plan Type</label>
+							<div class="col-md-4">
+								<input class="form-control input-sm" type="text" data-name="detail_plan_type_<.= customerOrder[i].id .>" placeholder="ADSL,VDSL,UFB, etc." />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Plan Sort</label>
+							<div class="col-md-4">
+								<input class="form-control input-sm" type="text" data-name="detail_plan_sort_<.= customerOrder[i].id .>" placeholder="CLOTHED,NAKED, etc." />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Price</label>
+							<div class="col-md-2">
+								<input class="form-control input-sm" type="text" data-name="detail_price_<.= customerOrder[i].id .>" placeholder="0.0" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="editDetailModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to edit detail</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
 <.
 	}
 .>
