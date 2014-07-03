@@ -278,7 +278,34 @@ public class SaleController {
 		customer.getCustomerOrder().setSale_id(user.getId());
 		customer.getCustomerOrder().setOptional_request(optional_request);
 		
-		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
+		this.crmService.registerCustomerCalling(customer);
+		
+		this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+
+		String filePath = TMUtils.createPath(
+				"broadband" 
+				+ File.separator
+				+ "customers" + File.separator + customer.getId()
+				+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+		
+		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+		// call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		// binding attachment name & path to email
+		applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+		applicationEmail.setAttachPath(filePath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		// get sms register template from db
+		notification = this.crmService.queryNotificationBySort("register-post-pay", "sms");
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+		// send sms to customer's mobile phone
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 		
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
@@ -294,10 +321,10 @@ public class SaleController {
 		this.crmService.editCustomerOrder(co);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
+		//CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		notification = this.systemService.queryNotificationBySort("online-ordering", "email");
 		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
