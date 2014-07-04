@@ -61,6 +61,7 @@ public class DataRestController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
+		//page.getParams().put("order_status", "cancel");
 		//page.getParams().put("orderby", "order by plan_status desc, plan_type");
 		
 		this.dataService.queryDataCustomersByPage(page);

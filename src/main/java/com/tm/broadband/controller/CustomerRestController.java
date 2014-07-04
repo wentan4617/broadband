@@ -329,6 +329,8 @@ public class CustomerRestController {
 		String svlan = co.getSvlan()
 				, cvlan = co.getCvlan();
 		
+		String type = co.getCustomerOrderDetails().get(0).getDetail_plan_type();
+		
 		Calendar c = Calendar.getInstance();
 		
 		String[] date_array = calculator_date.split("-");
@@ -351,8 +353,16 @@ public class CustomerRestController {
 		}
 		
 		NetworkUsage u = new NetworkUsage();
+		String vlan = "";
 		u.getParams().put("where", "query_currentMonth");
-		u.getParams().put("vlan", svlan + cvlan);
+		if ("ADSL".equals(type)) {
+			vlan = "d" + svlan + "/" + String.valueOf(Integer.parseInt(cvlan) + 1600);
+		} else if ("VDSL".equals(type)){
+			vlan = "d" + svlan + "/" + cvlan;
+		} else if ("UFB".equals(type)) {
+			vlan = "u" + svlan + "/" + cvlan;
+		}
+		u.getParams().put("vlan", vlan);
 		u.getParams().put("currentYear", year);
 		u.getParams().put("currentMonth", month);
 		
@@ -363,7 +373,12 @@ public class CustomerRestController {
 				for (DateUsage dateUsage: dateUsages) {
 					//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 					if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
-						dateUsage.setUsage(usage);
+						if (dateUsage.getUsage() != null) {
+							dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
+							dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
+						} else {
+							dateUsage.setUsage(usage);
+						}
 						System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 						break;
 					}

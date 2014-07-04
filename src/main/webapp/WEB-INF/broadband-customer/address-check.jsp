@@ -100,9 +100,9 @@
 	
 	var adslPlans=[], vdslPlans=[], ufbPlans=[];
 	<c:forEach var="type" items="ADSL,VDSL,UFB">
-		<c:set var="plansPromotion" value="${planTypeMap[type]['plansPromotion'] }"></c:set>
-		<c:set var="plans" value="${planTypeMap[type]['plans'] }"></c:set>
-		<c:forEach var="plan" items="${plansPromotion }">
+		<c:set var="plansClothed" value="${planTypeMap[type]['plansClothed'] }"></c:set>
+		<c:set var="plansNaked" value="${planTypeMap[type]['plansNaked'] }"></c:set>
+		<c:forEach var="plan" items="${plansClothed }">
 			var plan = {
 				id: ${plan.id }
 				, plan_name: '${plan.plan_name }'
@@ -113,7 +113,7 @@
 			else if ('${type }'=='VDSL') { vdslPlans.push(plan); } 
 			else if ('${type }'=='UFB') { ufbPlans.push(plan); }
 		</c:forEach>
-		<c:forEach var="plan" items="${plans }">
+		<c:forEach var="plan" items="${plansNaked }">
 			var plan = {
 				id: ${plan.id }
 				, plan_name: '${plan.plan_name }'

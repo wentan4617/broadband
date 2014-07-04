@@ -57,23 +57,35 @@
 				<c:choose>
 					<c:when test="${orderPlan.plan_group == 'plan-no-term'}">
 						<div class="well well-sm text-danger">
-							All No Term Plans Won't Provide Free Router, 
-							You Can Purchase A Router Which Had Been Listed Below. 
-							You Can Get A Free Router From <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+							<p>
+								All No-Term-Plans won't provide free router, 
+								you can purchase a router which had been listed below. 
+							</p>
+							<p>
+								You can get a free router from <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+							</p>
 						</div>
 					</c:when>
 					<c:when test="${orderPlan.plan_group == 'plan-topup'}">
 						<div class="well well-sm text-danger">
-							All Topup Plans Won't Provide Free Router, 
-							You Can Purchase A Router Which Had Been Listed Below. 
-							You Can Get A Free Router From <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+							<p>
+								All Top-Up-Plans won't provide free router, 
+								you can purchase a router which had been listed below. 
+							</p>
+							<p>
+								You can get a free router from <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
+							</p>
 						</div>
 					</c:when>
 					<c:when test="${orderPlan.plan_group == 'plan-term'}">
 						<div class="well well-sm text-danger">
-							All Term Plans Will Provide You A Free Router, 
-							You Don't Need To Choose A Router Which Had Been Listed Below. 
-							We Already Add The Free Router To Your Cart.
+							<p>
+								All Term-Plans will provide you a free router, 
+								You don't need to choose a router which had been listed below. 
+							</p>
+							<p>
+								We already add the free router to your cart.
+							</p>
 						</div>
 					</c:when>
 				</c:choose>
@@ -261,6 +273,29 @@
 					</div>
 				</div>
 				
+				<div class="well well-sm text-danger">
+					<div class="row">
+						<div class="col-md-7">
+							<p>
+								P.S: We've chosen fastway as our logistic supplier.
+							</p>
+							<p>
+								Please take attention to your mailbox, if you are not available to sign the parcel.
+							</p>
+							<p>
+								Please be paticent for your installation. It takes approximately 3 ~ 7 days, thanks.
+							</p>
+						</div>
+						<div class="col-md-5">
+							<a href="http://www.fastway.co.nz" target="_black">
+								<img alt="fastway" src="${ctx }/public/bootstrap3/images/logofastway.jpg" />
+							</a>
+						</div>
+					</div>
+					
+					
+				</div>
+						
 				<!-- hardware -->
 				
 				<c:if test="${fn:length(hardwares) > 0}">
