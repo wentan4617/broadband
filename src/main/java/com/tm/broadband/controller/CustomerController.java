@@ -114,7 +114,8 @@ public class CustomerController {
 		
 		plans = this.planService.queryPlans(plan);
 		
-		this.wiredPlanMap(planTypeMap, plans, true);
+		//this.wiredPlanMap(planTypeMap, plans, true);
+		this.wiredPlanMapBySort(planTypeMap, plans);
 		
 		model.addAttribute("planTypeMap", planTypeMap);
 		
@@ -156,6 +157,7 @@ public class CustomerController {
 		plans = this.planService.queryPlans(plan);
 		
 		this.wiredPlanMap(planTypeMap, plans, false);
+		//this.wiredPlanMapBySort(planTypeMap, plans);
 		
 		model.addAttribute("planTypeMap", planTypeMap);
 		model.addAttribute("selectdType", type);
@@ -167,6 +169,47 @@ public class CustomerController {
 		} 
 
 		return url;
+	}
+	
+	private void wiredPlanMapBySort(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+		if (plans != null) {
+			for (Plan p: plans) {
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = new ArrayList<Plan>();
+						plansClothed.add(p);
+						planMap.put("plansClothed", plansClothed);
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = new ArrayList<Plan>();
+						plansNaked.add(p);
+						planMap.put("plansNaked", plansNaked);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
+				} else {
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = planMap.get("plansClothed");
+						if (plansClothed == null) {
+							plansClothed = new ArrayList<Plan>();
+							plansClothed.add(p);
+							planMap.put("plansClothed", plansClothed);
+						} else {
+							plansClothed.add(p);
+						}
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = planMap.get("plansNaked");
+						if (plansNaked == null) {
+							plansNaked = new ArrayList<Plan>();
+							plansNaked.add(p);
+							planMap.put("plansNaked", plansNaked);
+						} else {
+							plansNaked.add(p);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	private void wiredPlanMap(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans, boolean wiredPromotion) {

@@ -60,14 +60,30 @@
 	<!-- =================================================================================== -->
 	<!-- SELECT AREA -->
 	
-	<select id="selectRadiusRadaccts" resultMap="radiusRadacctResultMap">
+	<!-- <select id="selectRadiusRadaccts" resultMap="radiusRadacctResultMap">
 		select 
 			<include refid="radiusRadacctColumns"/>
 		from radacct as rr
 			<include refid="radiusRadacctWhere" />
 		LIMIT #{_skiprows}, #{_pagesize}
+	</select> -->
+	
+	<select id="selectMaxCount" resultType="Long">
+		select max(maxcount) from tm_temp_data_usage
 	</select>
 	
+	<select id="selectRadiusRadaccts" resultType="com.tm.broadband.batch.domain.RadiusRadacct"><!--  resultMap="radiusRadacctResultMap" -->
+		select 
+			`connectinfo_start`, sum(`acctinputoctets`) as acctinputoctets, sum(`acctoutputoctets`) as acctoutputoctets
+		from radacct
+		group by connectinfo_start having length(trim(connectinfo_start)) > 1
+		LIMIT #{_skiprows}, #{_pagesize}
+	</select>
+	
+	<select id="selectDataUsageRecent" parameterType="int" resultType="TempDataUsage">
+		SELECT `vlan`, sum(`upload`) as upload, sum(`download`) as download FROM `tm_temp_data_usage`
+		WHERE maxcount = #{0} group by `vlan` 
+	</select>
 	<!-- // END SELECT AREA -->
 	
 	<!-- =================================================================================== -->
@@ -83,6 +99,13 @@
 			#{radacctid}, #{username}, #{nasipaddress}, #{nasportid}, #{acctstarttime},
 			#{acctstoptime}, #{acctsessiontime}, #{connectinfo_start}, #{acctinputoctets}, #{acctoutputoctets}, #{calledstationid},
 			#{acctterminatecause}, #{_accttime})
+	</insert>
+	
+	<insert id="insertTempDateUsage" parameterType="TempDataUsage">
+		insert into `tm_temp_data_usage`
+		(`vlan`, `usage_date`, `upload`, `download`, maxcount)
+		values 
+		(#{vlan}, #{usage_date}, #{upload}, #{download}, #{maxcount})
 	</insert>
 	
 	<!-- // END INSERT AREA -->

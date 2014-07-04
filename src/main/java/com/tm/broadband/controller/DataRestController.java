@@ -61,6 +61,7 @@ public class DataRestController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
+		//page.getParams().put("order_status", "cancel");
 		//page.getParams().put("orderby", "order by plan_status desc, plan_type");
 		
 		this.dataService.queryDataCustomersByPage(page);
@@ -155,7 +156,12 @@ public class DataRestController {
 				for (DateUsage dateUsage: dateUsages) {
 					//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 					if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
-						dateUsage.setUsage(usage);
+						if (dateUsage.getUsage() != null) {
+							dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
+							dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
+						} else {
+							dateUsage.setUsage(usage);
+						}
 						System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
 						break;
 					}

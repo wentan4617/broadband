@@ -105,7 +105,7 @@
 			$table.html(tmpl('customer_usage_view_tmpl', obj));
 			
 			var curMonthTotal = Number($('#curMonthTotal').val());
-			var planUsage = Number(${customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow > 0 ? customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow : 9999});
+			var planUsage = Number(${customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow > 0 ? customerSession.customerOrders[0].customerOrderDetails[0].detail_data_flow : 999});
 			var usageWidth = Number(curMonthTotal/planUsage);
 			
 			var widthVal = 0;

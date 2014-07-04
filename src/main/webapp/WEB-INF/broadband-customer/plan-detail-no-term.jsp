@@ -44,7 +44,7 @@
 	</ul>
 	
 	<c:set var="adslPlanMap" value="${planTypeMap['ADSL'] }"></c:set>
-	<c:set var="plans" value="${adslPlanMap['plans'] }"></c:set>
+	<c:set var="plans" value="${adslPlanMap['plansNaked'] }"></c:set>
 	
 	
 	<div class="panel panel-success" id="adslPanel">
