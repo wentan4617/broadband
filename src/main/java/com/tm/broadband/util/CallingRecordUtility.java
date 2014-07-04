@@ -93,7 +93,7 @@ public class CallingRecordUtility {
 					if(arr.length > chargeDateIndex && arr.length >= chargeTimeIndex){
 						String temp = arr[chargeDateIndex]+" "+arr[chargeTimeIndex];
 						if(!"".equals(temp.trim())){
-							ccr.setCharge_date_time(TMUtils.parseDate3YYYYMMDD(temp));
+							ccr.setCharge_date_time(TMUtils.parseDateDDMMYYYYHHMMSS(temp));
 						}
 						
 						// Integer

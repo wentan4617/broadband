@@ -19,6 +19,7 @@ import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
+import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -90,6 +91,7 @@ public class CRMService {
 	private TerminationRefundMapper terminationRefundMapper;
 	private CustomerServiceRecordMapper customerServiceRecordMapper;
 	private VoucherMapper voucherMapper;
+	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -118,7 +120,8 @@ public class CRMService {
 			EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper,
 			TerminationRefundMapper terminationRefundMapper,
 			CustomerServiceRecordMapper customerServiceRecordMapper,
-			VoucherMapper voucherMapper){
+			VoucherMapper voucherMapper,
+			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -140,6 +143,7 @@ public class CRMService {
 		this.terminationRefundMapper = terminationRefundMapper;
 		this.customerServiceRecordMapper = customerServiceRecordMapper;
 		this.voucherMapper = voucherMapper;
+		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
 	}
 	
 	
@@ -1280,7 +1284,7 @@ public class CRMService {
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalPayableAmouont = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalPayableAmouont, customerCallRecordMapper, callInternationalRateMapper);
+				totalPayableAmouont = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalPayableAmouont, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
 			}
 		}
 		
@@ -1508,7 +1512,7 @@ public class CRMService {
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
-			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper);
+			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
 			
 		}
 

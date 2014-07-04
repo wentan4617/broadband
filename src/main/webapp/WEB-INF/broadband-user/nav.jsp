@@ -253,7 +253,7 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted">
+								<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/all">
 									<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
 									Customer Calling Billing
 								</a>

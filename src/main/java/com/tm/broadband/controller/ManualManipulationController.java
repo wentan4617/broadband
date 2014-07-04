@@ -31,6 +31,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
+import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
@@ -39,6 +40,7 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.CallInternationalRateUtility;
 import com.tm.broadband.util.CallingRecordUtility;
+import com.tm.broadband.util.CallingRecordUtility_CallPlus;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -122,35 +124,50 @@ public class ManualManipulationController {
 		return "broadband-user/manual-manipulation/call-international-rate-view";
 	}
 	
-	@RequestMapping("/broadband-user/manual-manipulation/call-billing-record/view/{pageNo}/{status}")
+	@RequestMapping("/broadband-user/manual-manipulation/call-billing-record/view/{pageNo}/{status}/{billing_type}")
 	public String toBillingFileUpload(Model model
 			, @PathVariable("pageNo") int pageNo
-			, @PathVariable("status") String status) {
+			, @PathVariable("status") String status
+			, @PathVariable("billing_type") String billing_type) {
 
 		Page<BillingFileUpload> page = new Page<BillingFileUpload>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("orderby", "ORDER BY statement_date DESC");
+		page.getParams().put("orderby", "ORDER BY upload_date DESC");
 		switch (status) {
 		case "inserted":
-			page.getParams().put("inserted_database", 1);
+			page.getParams().put("inserted_database", true);
 			break;
 		case "notInserted":
-			page.getParams().put("inserted_database", 0);
+			page.getParams().put("inserted_database", false);
+			break;
+		}
+		switch (billing_type) {
+		case "all":
+			break;
+		default:
+			page.getParams().put("billing_type", billing_type);
 			break;
 		}
 		page = this.billingService.queryBillingFileUploadsByPage(page);
 		
 		model.addAttribute("page", page);
 		model.addAttribute("status", status);
-		model.addAttribute(status + "Active", "active");
+		model.addAttribute("billing_type", billing_type);
+		model.addAttribute("all".equals(billing_type) ? (status + "Active") : (billing_type + "InsertedActive"), "active");
 
 		// BEGIN QUERY SUM BY INSERTED_DATABASE
 		Page<BillingFileUpload> pageStatusSum = new Page<BillingFileUpload>();
-		pageStatusSum.getParams().put("inserted_database", 1);
+		pageStatusSum.getParams().put("inserted_database", true);
 		model.addAttribute("insertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
-		pageStatusSum.getParams().put("inserted_database", 0);
+		pageStatusSum.getParams().put("inserted_database", false);
 		model.addAttribute("notInsertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("billing_type", "chorus");
+		pageStatusSum.getParams().put("inserted_database", true);
+		model.addAttribute("chorusInsertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("billing_type", "callplus");
+		pageStatusSum.getParams().put("inserted_database", true);
+		model.addAttribute("callplusInsertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
 		// END QUERY SUM BY INSERTED_DATABASE
 		
 		model.addAttribute("users", this.systemService.queryUser(new User()));
@@ -164,6 +181,7 @@ public class ManualManipulationController {
 	public String uploadBillingFileCSV(Model model
 			, @RequestParam("pageNo") int pageNo
 			, @RequestParam("status") String status
+			, @RequestParam("billingType") String billingType
 			, @RequestParam("billing_type") String billing_type
 			, @RequestParam("call_billing_record_csv_file") MultipartFile call_billing_record_csv_file
 			, HttpServletRequest req) {
@@ -188,11 +206,11 @@ public class ManualManipulationController {
 			bfu.setUpload_file_name(fileName);	// upload_file_name
 			User user = (User) req.getSession().getAttribute("userSession");
 			bfu.setUpload_by(user.getId());													// user_id
-			bfu.setStatement_date(CallingRecordUtility.statementDate(save_path));			// statement_date
+			bfu.setStatement_date("chorus".equals(billing_type) ? CallingRecordUtility.statementDate(save_path) : null);			// statement_date
 			this.billingService.createBillingFileUpload(bfu);
 		}
 		
-		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status;
+		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billingType;
 	}
 	
 	// Download Call Billing Record CSV
@@ -224,6 +242,8 @@ public class ManualManipulationController {
 			, @RequestParam("status") String status
 			, @RequestParam("billingFileId") Integer billingFileId
 			, @RequestParam("filePath") String filePath
+			, @RequestParam("billingType") String billingType
+			, @RequestParam("billing_type") String billing_type
 			, HttpServletRequest req) {
 		
 		this.billingService.removeBillingFileUpload(billingFileId);
@@ -233,7 +253,7 @@ public class ManualManipulationController {
 			file.delete();
 		}
 		
-		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status;
+		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billingType;
 	}
 	
 	// Insert Call Billing Record CSV into database
@@ -244,28 +264,37 @@ public class ManualManipulationController {
 			, @RequestParam("billingFileId") String billingFileId
 			, @RequestParam("statementDate") String statementDate
 			, @RequestParam("filePath") String filePath
+			, @RequestParam("billing_type") String billing_type
 			, HttpServletRequest req) {
-		
-		CustomerCallRecord ccrTemp = new CustomerCallRecord();
-		ccrTemp.getParams().put("statement_date", TMUtils.parseDateYYYYMMDD(statementDate));
-		this.billingService.removeCustomerCallRecord(ccrTemp);
-		
+
 		BillingFileUpload bfu = new BillingFileUpload();
 		bfu.getParams().put("id", billingFileId);
 		bfu.setInserted_database(true);					// assign inserted_database to true which is 1
 		bfu.setInsert_date(new Timestamp(System.currentTimeMillis()));
 		this.billingService.editBillingFileUpload(bfu);
 		
-		// Get All data from the CSV file
-		List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
-		
-		// Iteratively insert into database
-		for (CustomerCallRecord ccr : ccrs) {
-			ccr.setUpload_date(new Date());
-			this.billingService.createCustomerCallRecord(ccr);
+		if("chorus".equals(billing_type)){
+			CustomerCallRecord ccrTemp = new CustomerCallRecord();
+			ccrTemp.getParams().put("statement_date", TMUtils.parseDateYYYYMMDD(statementDate));
+			this.billingService.removeCustomerCallRecord(ccrTemp);
+			
+			// Get All data from the CSV file
+			List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
+			
+			// Iteratively insert into database
+			for (CustomerCallRecord ccr : ccrs) {
+				ccr.setUpload_date(new Date());
+				this.billingService.createCustomerCallRecord(ccr);
+			}
+		} else if("callplus".equals(billing_type)){
+			List<CustomerCallingRecordCallplus> ccrcs = CallingRecordUtility_CallPlus.ccrcs(filePath);
+			
+			for (CustomerCallingRecordCallplus ccrc : ccrcs) {
+				this.billingService.createCustomerCallingRecordCallplus(ccrc);
+			}
 		}
 		
-		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status;
+		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billing_type;
 	}
 	
 	// Insert Call International Rate CSV into database

@@ -16,22 +16,34 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
  
+demand version 1.0.21 2014-07-04
+
+* commission的出法，再商议.(steven)
+* 完善Early Termination Charge界面发送email的功能，重复测试.(steven)
+ 
+demand version 1.0.21 2014-07-03
+
+* [新建一张表，用来代替原来记录Calling Record的表，由于Chorus和CallPlus的字段个数及类型不同，需编写将CallPlus记录导入表的逻辑代码，并调整Chorus导入表的逻辑.](steven)
+* [Calling Record View界面将Chorus和Callplus用badge来完成分开显示.](steven)
+* [由于CallPlus号码存储格式与Chorus有区别，需修改在出账时的区号匹配算法.](steven)
+* 能够更改order状态的地方尽量都保存状态改变操作记录.(steven)
+ 
 demand version 1.0.21 2014-07-02
 
 * [No Term填写客户信息界面头部加一条提示信息：All No Term Plans Won't Provide Free Router, You Can Purchase A Router Which Had Been Listed Below. You Can Get A Free Router From <a href="termed plan的链接">Here</a>.](kanny)
 * [更改termed及no term订单的出账逻辑，出termed账单条件是termed且is_ddpay为true，出no term账单条件是no term或termed且is_ddpay为false.](steven)
 * [更改Service Given的逻辑，如果是termed且is_ddpay为空或者is_ddpay不为空且is_ddpay不为true则给予next_invoice_create_date日期.](steven)
  
-demand version 1.0.21 2014-07-01
+demand version 1.0.72 2014-07-01
 
 * [首页添加一个voucher checking功能，任何人都可以在该界面上检查自己的voucher是否可用](steven)
  
-demand version 1.0.21 2014-06-27
+demand version 1.0.71 2014-06-27
 
 * 
 * [调整customer invoice的Make Payment按钮按下后显示的dropdown位置](steven)
  
-demand version 1.0.21 2014-06-26
+demand version 1.0.70 2014-06-26
 
 * 前台做一个CyberPark Terminology界面，里面列出所有客户可能不懂的术语，都写在扩展卡里，What is Voucher：描述什么是Voucher。以及其他一些客户可能不明白的术语(kanny)
 * 前台客户进入topup界面选择Join Plan时弹出气泡框显示两个选项：Voucher,Online Defray。选Voucher则弹出填写序号和卡密的输入框，如果到数据库中匹配了则跳转至填写信息页面继续填写客户信息，否则告知该序号卡密组合不匹配，请重试。
@@ -40,19 +52,19 @@ demand version 1.0.21 2014-06-26
 * [通过banned list验证后，接下来判断输入的pin number是否正确，如果不正确则判断banned list表是否有该用户，如果有则更新尝试次数+1，如果没有则插入该记录，并返回提示“You have x time(s) to try! If you have tried 3 times incorrect then you will temporarily be blocked into voucher banned list. But this won't affect your other operations.”](steven)
 * [在voucher表里添加一个post_to字段，用来记录充值卡的配送点，记录配送点时填写配送点以及起始和结束卡号，更新post_to时判断大于等于起始且小于等于结束范围内的卡号](steven)
  
-demand version 1.0.21 2014-06-24
+demand version 1.0.61 2014-06-24
 
 * [transaction表添加一个字段，将后台付款时将操作者id存至transaction表](steven)
 * [在Billing模块中开发View Invoice界面，有5个badge：unpaid,pending,not paid off,paid,order no invoice](steven)
  
-demand version 1.0.21 2014-06-23
+demand version 1.0.60 2014-06-23
 
 * [customer order的invoice的make payment添加一个Credit Card选项，原理和DDPay无异，在设置transaction类型时改成Credit Card](steven)
 * [customer order的invoice的make payment添加一个A2A（Account2Account）选项，原理和DDPay无异，在设置transaction类型时改成Account2Account](steven)
 * [客户后台界面的invoice的make payment功能，添加一个Account Credit选项，客人点击后在controller里判断，如果cudtomer的credit不够的话，提示客人不够钱付款，如果钱够的话则将credit减去balance，invoice改变status为paid以及amount_paid的值, balance为0并且更新invoice，剩下的credit覆盖原来的credit并且更新customer，transaction的process _ay是"Account Credit# - "+customer_id，currency_input是"Account Credit"](steven)
 
  
-demand version 1.0.21 2014-06-19
+demand version 1.0.50 2014-06-19
  
 * [点击Regenerate most recent invoice按钮时，后台判断最新账单是否已付款，如果未付则逻辑不变，如果状态为paid并且create_date不是当月则生成新的账单并且不包含当月plan的月租费](steven)
 * [修改DDPay的逻辑,将按payable付款改成按balance付款](steven)
@@ -66,7 +78,7 @@ demand version 1.0.21 2014-06-19
 * [检查并调试plan-term的invoice下一次生成账单的代码，重新生成plan-term的invoice功能已完成，所以要确保下一次生成的账单是准确无误的](steven)
  
  
-demand version 1.0.21 2014-06-18
+demand version 1.0.40 2014-06-18
 
 * [customer invoice表添加一个final_payable_amount，存储用discount抵消后的最终应付金额](steven)
 * [invoice PDF的recent transaction里的布局做个调整，添加一行总discount的detail，以及一行final_payable_amount的detail](steven)
@@ -76,7 +88,7 @@ demand version 1.0.21 2014-06-18
 * [在生成invoice的时候判断并计算early-termination-charge以及termination-refund类型的invoice detail](steven)
 * [优化页面Header部分的Description以及Keywords内容，改进搜索引擎优化效果](steven)
  
-demand version 1.0.21 2014-06-17
+demand version 1.0.31 2014-06-17
 
 * //View Termination Refunde界面添加邮件发送功能(steven)
 * //View Termination Refunde界面添加两个切换已发送和未发送的badge(steven)
@@ -85,11 +97,11 @@ demand version 1.0.21 2014-06-17
 * order表添加一个termination_date字段，customer order切换至cancel状态时根据service given日期和手动记录的termination date相差月数自动出Early Termination Charge Invoice(steven)
  
  
-demand version 1.0.21 2014-06-16
+demand version 1.0.30 2014-06-16
 
 * [根据Keith给的资料，在计算拨打记录到invoice时加入判断，判断该区号的国家是否存在（座机，手机同费用）的列表中，如果存在则费率表中该国家的手机以及座机分钟数都可以用赠送的分钟数来抵消，否则只能抵消该国家的非Mobile的分钟数。](steven)
  
-demand version 1.0.21 2014-06-13
+demand version 1.0.22 2014-06-13
 
 * [给order detail加discount时记录user_id，记录是谁给的discount](steven)
 * [regenerate invoice PDF时保持之前的invoice_id和create_date以及due_date](steven)

@@ -23,11 +23,17 @@
 				<div id="collapseOne" class="panel-collapse collapse in">
 					<div class="panel-body">
 						<div class="btn-group btn-group">
-							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted" class="btn btn-default ${insertedActive }">
-								Already Insert&nbsp;<span class="badge">${insertedSum}</span>
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/all" class="btn btn-default ${insertedActive }">
+								All Inserted&nbsp;<span class="badge">${insertedSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/notInserted" class="btn btn-default ${notInsertedActive }">
-								Haven't Insert&nbsp;<span class="badge">${notInsertedSum}</span>
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/notInserted/all" class="btn btn-default ${notInsertedActive }">
+								All Haven't&nbsp;<span class="badge">${notInsertedSum}</span>
+							</a>
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/chorus" class="btn btn-default ${chorusInsertedActive }">
+								Chorus Inserted&nbsp;<span class="badge">${chorusInsertedSum}</span>
+							</a>
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/callplus" class="btn btn-default ${callplusInsertedActive }">
+								Callplus Inserted&nbsp;<span class="badge">${callplusInsertedSum}</span>
 							</a>
 						</div>
 					</div>
@@ -49,11 +55,12 @@
 						<thead >
 							<tr>
 								<th><input type="checkbox" id="checkbox_callBillingRecords_top" /></th>
-								<th>Data Insert Date</th>
+								<c:if test="${insertedActive=='active'}">
+									<th>Data Insert Date</th>
+								</c:if>
 								<th>CSV Upload Date</th>
-								<th>Statement Date (In csv call record)</th>
-								<th>Upload File Name</th>
-								<th>Inserted</th>
+								<th>File Name</th>
+								<th>Is Inserted</th>
 								<th>Upload By</th>
 								<th>Billing Type</th>
 								<th>Operation</th>
@@ -65,14 +72,13 @@
 									<td>
 										<input type="checkbox" name="checkbox_callBillingRecords" value="${callBillingRecord.id}"/>
 									</td>
-									<td>
-										${callBillingRecord.insert_date_str }
-									</td>
+									<c:if test="${insertedActive=='active'}">
+										<td>
+											${callBillingRecord.insert_date_str }
+										</td>
+									</c:if>
 									<td>
 										${callBillingRecord.upload_date_str }
-									</td>
-									<td>
-										${callBillingRecord.statement_date_str }
 									</td>
 									<td>
 										${callBillingRecord.upload_file_name}
@@ -92,8 +98,8 @@
 									</td>
 									<td style="font-size:20px;">
 										<a target="_blank" href="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/download/${callBillingRecord.id }" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Call Billing Record CSV"></a>
-										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-play" style="font-size:20px;" data-name="insertBillingFile" data-id="${callBillingRecord.id }" data-date="${callBillingRecord.statement_date_str }" data-path="${callBillingRecord.upload_path}" data-toggle="tooltip" data-placement="bottom" data-original-title="Insert Records Into Database"></a>
-										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-trash" style="font-size:20px;" data-name="deleteBillingFile" data-id="${callBillingRecord.id }" data-path="${callBillingRecord.upload_path}" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete record and CSV file"></a>
+										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-play" style="font-size:20px;" data-name="insertBillingFile" data-id="${callBillingRecord.id }" data-date="${callBillingRecord.statement_date_str }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Insert Records Into Database"></a>
+										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-trash" style="font-size:20px;" data-name="deleteBillingFile" data-id="${callBillingRecord.id }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete record and CSV file"></a>
 									</td>
 								</tr>
 							</c:forEach>
@@ -125,8 +131,9 @@
 
 <!-- Upload Call Billing Record Modal -->
 <form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/upload" method="post" enctype="multipart/form-data">
-	<input type="hidden" name="pageNo" value="${page.pageNo}" />
-	<input type="hidden" name="status" value="${status}" />
+	<input type="hidden" name="pageNo" value="1" />
+	<input type="hidden" name="status" value="notInserted" />
+	<input type="hidden" name="billingType" value="all" />
 	<div class="modal fade" id="uploadCallBillingRecordCSVModal" tabindex="-1" role="dialog" aria-labelledby="uploadCallBillingRecordCSVModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -170,6 +177,8 @@
 	<input type="hidden" name="status" value="${status}" />
 	<input type="hidden" name="billingFileId" />
 	<input type="hidden" name="filePath" />
+	<input type="hidden" name="billingType" value="${billing_type}" />
+	<input type="hidden" name="billing_type" />
 	<div class="modal fade" id="deleteCallBillingRecordCSVModal" tabindex="-1" role="dialog" aria-labelledby="deleteCallBillingRecordCSVModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -198,10 +207,11 @@
 <!-- Insert Call Billing Record Modal -->
 <form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/insert" method="post">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
-	<input type="hidden" name="status" value="${status}" />
+	<input type="hidden" name="status" value="insert" />
 	<input type="hidden" name="billingFileId" />
 	<input type="hidden" name="statementDate" />
 	<input type="hidden" name="filePath" />
+	<input type="hidden" name="billing_type" />
 	<div class="modal fade" id="insertCallBillingRecordCSVModal" tabindex="-1" role="dialog" aria-labelledby="insertCallBillingRecordCSVModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -250,6 +260,7 @@
 	$('a[data-name="deleteBillingFile"]').click(function(){
 		$('input[name="billingFileId"]').val($(this).attr('data-id'));
 		$('input[name="filePath"]').val($(this).attr('data-path'));
+		$('input[name="billing_type"]').val($(this).attr('data-type'));
 		$('#deleteCallBillingRecordCSVModal').modal('show');
 	});
 	
@@ -257,6 +268,7 @@
 		$('input[name="billingFileId"]').val($(this).attr('data-id'));
 		$('input[name="statementDate"]').val($(this).attr('data-date'));
 		$('input[name="filePath"]').val($(this).attr('data-path'));
+		$('input[name="billing_type"]').val($(this).attr('data-type'));
 		$('#insertCallBillingRecordCSVModal').modal('show');
 	});
 

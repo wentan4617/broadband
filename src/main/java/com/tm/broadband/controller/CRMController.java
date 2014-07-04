@@ -697,6 +697,7 @@ public class CRMController {
 			, @RequestParam("customer_id") Integer customer_id
 			, @RequestParam("previous_provider_invoice_path") MultipartFile previous_provider_invoice_path
 			, @RequestParam("application_form_path") MultipartFile application_form_path
+			, @RequestParam("credit_card_form_path") MultipartFile credit_card_form_path
 			, @RequestParam("ddpay_form_path") MultipartFile ddpay_form_path
 			, HttpServletRequest req) {
 		
@@ -729,6 +730,20 @@ public class CRMController {
 			}
 			
 			co.setOrder_pdf_path(order_path);
+			isFile = true ;
+		}
+		if(!credit_card_form_path.isEmpty()){
+			String order_path = TMUtils.createPath("broadband" + File.separator
+					+ "customers" + File.separator + customer_id
+					+ File.separator + "credit_card_" + order_id
+					+ ".pdf");
+			try {
+				credit_card_form_path.transferTo(new File(order_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			
+			co.setCredit_pdf_path(order_path);
 			isFile = true ;
 		}
 		if(!ddpay_form_path.isEmpty()){

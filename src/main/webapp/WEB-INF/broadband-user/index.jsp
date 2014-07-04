@@ -254,7 +254,7 @@ hr {
                     <ul class="list-unstyled">
 						<li>
                     		<span class="glyphicon glyphicon-earphone" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/manual-manipulation/call-billing-record/view/1/inserted">Customer Calling Billing</a>
+                    		<a href="${ctx }/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/all">Customer Calling Billing</a>
                     	</li>
 						<li>
                     		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
