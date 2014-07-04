@@ -1,11 +1,9 @@
 package com.tm.broadband.util;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
-import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCallingRecordCallplus;
 
 
 public class StevenTest {
@@ -21,20 +19,26 @@ public class StevenTest {
 //			System.out.println(v.getComment());
 //		}
 
-		Calendar beginCal = Calendar.getInstance();
-		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
-		beginCal.set(Calendar.DAY_OF_MONTH, 1);
-		beginCal.set(Calendar.HOUR_OF_DAY, 0);
-		beginCal.set(Calendar.MINUTE, 0);
-		beginCal.set(Calendar.SECOND, 0);
-		System.out.println(beginCal.getTime());
+//		Calendar beginCal = Calendar.getInstance();
+//		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
+//		beginCal.set(Calendar.DAY_OF_MONTH, 1);
+//		beginCal.set(Calendar.HOUR_OF_DAY, 0);
+//		beginCal.set(Calendar.MINUTE, 0);
+//		beginCal.set(Calendar.SECOND, 0);
+//		System.out.println(beginCal.getTime());
+//
+//		Calendar endCal = Calendar.getInstance();
+//		endCal.set(Calendar.DAY_OF_MONTH, 1);
+//		endCal.add(Calendar.DAY_OF_MONTH, -1);
+//		endCal.set(Calendar.HOUR_OF_DAY, 0);
+//		endCal.set(Calendar.MINUTE, 0);
+//		endCal.set(Calendar.SECOND, 0);
+//		System.out.println(endCal.getTime());
 
-		Calendar endCal = Calendar.getInstance();
-		endCal.set(Calendar.DAY_OF_MONTH, 1);
-		endCal.add(Calendar.DAY_OF_MONTH, -1);
-		endCal.set(Calendar.HOUR_OF_DAY, 0);
-		endCal.set(Calendar.MINUTE, 0);
-		endCal.set(Calendar.SECOND, 0);
-		System.out.println(endCal.getTime());
+		String filePath = TMUtils.createPath("CallPlus Calling Record June2014 90445601.csv");
+		List<CustomerCallingRecordCallplus> ccrs = CallingRecordUtility_CallPlus.ccrcs(filePath);
+		for (CustomerCallingRecordCallplus ccr : ccrs) {
+			System.out.println(ccr.getDate_str());
+		}
 	}
 }

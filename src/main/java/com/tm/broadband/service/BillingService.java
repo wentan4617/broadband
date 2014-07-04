@@ -10,6 +10,7 @@ import com.tm.broadband.mapper.BillingFileUploadMapper;
 import com.tm.broadband.mapper.CallChargeRateMapper;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
+import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
@@ -20,6 +21,7 @@ import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
+import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
@@ -41,6 +43,7 @@ public class BillingService {
 	private VoucherMapper voucherMapper;
 	private VoucherFileUploadMapper voucherFileUploadMapper;
 	private VoucherBannedListMapper voucherBannedListMapper;
+	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
@@ -52,7 +55,8 @@ public class BillingService {
 			,TerminationRefundMapper terminationRefundMapper
 			,VoucherMapper voucherMapper
 			,VoucherFileUploadMapper voucherFileUploadMapper
-			,VoucherBannedListMapper voucherBannedListMapper) {
+			,VoucherBannedListMapper voucherBannedListMapper
+			,CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
@@ -63,6 +67,7 @@ public class BillingService {
 		this.voucherMapper = voucherMapper;
 		this.voucherFileUploadMapper = voucherFileUploadMapper;
 		this.voucherBannedListMapper = voucherBannedListMapper;
+		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
 	}
 	
 	public BillingService(){}
@@ -114,7 +119,19 @@ public class BillingService {
 		this.customerCallRecordMapper.deleteCustomerCallRecord(ccr);
 	}
 	// END CustomerCallRecord
+
 	
+	// BEGIN CustomerCallRecordCallplus
+	@Transactional
+	public void createCustomerCallingRecordCallplus(CustomerCallingRecordCallplus ccrc) {
+		this.customerCallingRecordCallplusMapper.insertCustomerCallingRecordCallplus(ccrc);
+	}
+
+	@Transactional
+	public void removeCustomerCallingRecordCallplus(CustomerCallingRecordCallplus ccrc) {
+		this.customerCallingRecordCallplusMapper.deleteCustomerCallingRecordCallplus(ccrc);
+	}
+	// END CustomerCallRecordCallplus
 	
 	
 	// BEGIN CallChargeRate

@@ -27,22 +27,22 @@
 	font-weight:bold;
 }
 
+.input-xs{
+	height:33px;
+}
+
 </style>
 
 <!-- orders -->
-<.
-	var customerOrder = customer.customerOrders;
+<.  var customerOrder = customer.customerOrders;
 	for(var i=0; i < customerOrder.length; i++){
-	var order_total_price = new Number(customerOrder[i].order_total_price);
-.>
+	var order_total_price = new Number(customerOrder[i].order_total_price); .>
 	<form class="form-horizontal" action="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload" enctype="multipart/form-data" method="post">
 		<input type="hidden" name="order_id" value="<.= customerOrder[i].id .>"/>
 		<input type="hidden" name="customer_id" value="<.= customer.id .>"/>
 	
 		<h4 class="text-success">Order Information</h4>
-		<.
-			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){
-		.>
+		<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
 			<br/>
 			<strong>Termed Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
@@ -53,12 +53,7 @@
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
 				Termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
-		<.
-			}
-		.>
-		<.
-			if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-no-term'){
-		.>
+		<. } if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-no-term'){ .>
 			<br/>
 			<strong>No-Term Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_no_term_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
@@ -66,413 +61,358 @@
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
 				Termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
-		<.
-			}
-		.>
+		<. } .>
 		<hr/>
 		
-		<div class="row">
-			<div class="col-md-6">
-				<div class="form-group">
-					<label class="control-label col-md-6">Order ID</label>
-					<div class="col-md-6">
-						<p class="form-control-static"><.= customerOrder[i].id .></p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Create Date</label>
-					<div class="col-md-6">
-						<p class="form-control-static strong"><.= customerOrder[i].order_create_date_str .></p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Status</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_order_status" data-val="<.= customerOrder[i].order_status .>" class="form-control-static strong">
-							<.= customerOrder[i].order_status .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Type</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_order_type" data-val="<.= customerOrder[i].order_type .>" class="form-control-static">
-							<.= customerOrder[i].order_type .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Broadband Type</label>
-					<div class="col-md-6">
-						<p class="form-control-static"><.= customerOrder[i].order_broadband_type .></p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Total Price</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_order_total_price" data-val="<.= customerOrder[i].order_total_price .>" class="form-control-static strong">
-							$ <.= order_total_price.toFixed(2) .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Order Due</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_order_due" data-val="<.= customerOrder[i].order_due_str .>" class="form-control-static strong">
-							<.= customerOrder[i].order_due_str .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">PSTN Amount</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_pstn_count" data-val="<.= customerOrder[i].pstn_count .>" class="form-control-static">
-							<.= customerOrder[i].pstn_count .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">PSTN Rental Amount</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_pstn_rental_amount" data-val="<.= customerOrder[i].pstn_rental_amount .>" class="form-control-static">
-							<.= customerOrder[i].pstn_rental_amount .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Term Period</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_term_period" data-val="<.= customerOrder[i].term_period .>" class="form-control-static ">
-							<.= customerOrder[i].term_period .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Transition Provider Name</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_transition_provider_name" class="form-control-static">
-							<.= customerOrder[i].transition_provider_name .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Transition Account Holder</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_transition_account_holder_name" class="form-control-static">
-							<.= customerOrder[i].transition_account_holder_name .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Transition Account Number</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_transition_account_number" class="form-control-static">
-							<.= customerOrder[i].transition_account_number .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Transition Telephone Number</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_transition_porting_number" class="form-control-static">
-							<.= customerOrder[i].transition_porting_number .>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Previous Provider Invoice</label>
-					<div class="col-md-6">
-					<.
-						if(customerOrder[i].previous_provider_invoice == null || customerOrder[i].previous_provider_invoice == ''){
-					.>
-  							<p class="form-control-static">No Previous Provider Invoice PDF</p>
-					<.
-						} else {
-					.>
-							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download previous provider's invoice PDF"></a></p>
-					<.
-						}
-					.>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Download Application Form</label>
-					<div class="col-md-6">
-						<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
-					<.
-						if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){
-					.>
-  							&nbsp;No Application Form PDF
-					<.
-						} else {
-					.>
-							&nbsp;<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download application form's PDF"></a>
-					<.
-						}
-					.>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Download Credit Card Form</label>
-					<div class="col-md-6">
-					<.
-						if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){
-					.>
-  							<p class="form-control-static">No Credit Card Form PDF</p>
-					<.
-						} else {
-					.>
-							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download credit card form's PDF"></a></p>
-					<.
-						}
-					.>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Download DDPay Form</label>
-					<div class="col-md-6">
-					<.
-						if(customerOrder[i].ddpay_pdf_path == null || customerOrder[i].ddpay_pdf_path == ''){
-					.>
-  							<p class="form-control-static">No DDPay Form PDF</p>
-					<.
-						} else {
-					.>
-							<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ddpay/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download ddpay form's PDF"></a></p>
-					<.
-						}
-					.>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">This Order Belongs To</label>
-					<div class="col-md-6">
-						<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
-						<.
-							for(var u=0; u<users.length; u++){
-								if(users[u].id == customerOrder[i].user_id || users[u].id == customerOrder[i].sale_id){
-						.>
-									<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
-						<.
-								}
-							}
-						.>
-						</p>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Optional Request</label>
-					<div class="col-md-6">
-						<.
-							if(customerOrder[i].optional_request == '' || customerOrder[i].optional_request == null){
-						.>
-  							<p class="form-control-static">No Request</p>
-						<.
-							} else {
-						.>
-							<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Additional Request" style="font-size:20px;">
-							  <span class="glyphicon glyphicon-registration-mark"></span>
-							</a>
-						<.
-							}
-						.>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">Is DDPay</label>
-					<div class="col-md-6">
-						<.
-							if(customerOrder[i].is_ddpay == null || customerOrder[i].is_ddpay == false){
-						.>
-  							<p class="form-control-static">No</p>
-						<.
-							} else {
-						.>
-  							<p class="form-control-static">Yes</p>
-						<.
-							}
-						.>
-					</div>
-				</div>
+		<!-- BEGIN ORDER INFO -->
+		<!-- BEGIN Order Id -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order ID</label>
+			<div class="col-md-3">
+				<p class="form-control-static"><.= customerOrder[i].id .></p>
 			</div>
-			<div class="col-md-6">
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<select data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
-							<.
-								var status = ['paid','pending','ordering-paid','ordering-pending','using','cancel','discard'];
-								for(var s=0; s<status.length; s++){
-									if(customerOrder[i].order_status == status[s]){
-							.>
-										<option value="<.= status[s] .>" selected="selected"><.= status[s] .></option>
-							<.
-									} else {
-							.>
-										<option value="<.= status[s] .>"><.= status[s] .></option>
-							<.
-									}
-								}
-							.>
-						</select>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_status_edit">Update Order Status</a>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<div class="input-group date" id="<.= customerOrder[i].id .>_order_due_datepicker">
-							<strong><input data-val="<.= customerOrder[i].order_due_str .>" data-name="<.= customerOrder[i].id .>_order_due_input_picker" class="form-control input-sm" placeholder="Order Due Date" style="height:26px; padding:0 10px;"/></strong>
-							<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_due_input_btn" >Update Order Due</a>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<input type="file" name="previous_provider_invoice_path" class="form-control" placeholder="File Path" />
-					</div>
-					<div class="col-md-6">
-						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Pre Invoice</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<input type="file" name="application_form_path" class="form-control" placeholder="File Path" />
-					</div>
-					<div class="col-md-6">
-						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload Apply Form</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<input type="file" name="ddpay_form_path" class="form-control" placeholder="File Path" />
-					</div>
-					<div class="col-md-6">
-						<button type="submit" class="btn btn-success btn-xs pull-right xs-btn-width" >Upload DDPay Form</button>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
-							<.
-								for(var u=0; u<sales.length; u++){
-									if(sales[u] == customerOrder[i].sale_id){
-							.>
-								<option value="<.= sales[u].id .>" selected="selected"><.= sales[u].user_name .></option>
-							<.
-									} else {
-							.>
-								<option value="<.= sales[u].id .>"><.= sales[u].user_name .></option>
-							<.
-									}
-								}
-							.>
-						</select>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_order_belongs_to_edit" >Update Submitted By</a>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">&nbsp;</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label col-md-6">&nbsp;</label>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_optional_request_edit" >Update Request</a>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-md-6">
-						<select data-name="<.= customerOrder[i].id .>_is_ddpay_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-sm" style="height:26px; padding:0 10px;">
-							<.
-								var isDDPays = [true, false];
-								var isDDPayNames = ['Yes', 'No'];
-								for(var d=0; d<isDDPays.length; d++){
-									if(isDDPays[d] == customerOrder[i].is_ddpay){
-							.>
-										<option value="<.= isDDPays[d] .>" selected="selected"><.= isDDPayNames[d] .></option>
-							<.
-									} else {
-							.>
-										<option value="<.= isDDPays[d] .>"><.= isDDPayNames[d] .></option>
-							<.
-									}
-								}
-							.>
-						</select>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_is_ddpay_edit" >Change Is DDPay</a>
-					</div>
-				</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Order Id -->
+		<!-- BEGIN Order Create Date -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Create Date</label>
+			<div class="col-md-3">
+				<p class="form-control-static strong"><.= customerOrder[i].order_create_date_str .></p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Order Create Date -->
+		<!-- BEGIN Order Status -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Status</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_order_status" data-val="<.= customerOrder[i].order_status .>" class="form-control-static strong">
+					<.= customerOrder[i].order_status .>
+				</p>
+			</div>
+			<div class="col-md-3">
+				<select data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-xs">
+					<.
+						var status = ['paid','pending','ordering-paid','ordering-pending','using','cancel','discard'];
+						for(var s=0; s<status.length; s++){
+							if(customerOrder[i].order_status == status[s]){
+					.>
+								<option value="<.= status[s] .>" selected="selected"><.= status[s] .></option>
+					<.
+							} else {
+					.>
+								<option value="<.= status[s] .>"><.= status[s] .></option>
+					<.
+							}
+						}
+					.>
+				</select>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_status_edit">Update Order Status</a>
 			</div>
 		</div>
+		<!-- END Order Status -->
+		<!-- BEGIN Order Type -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Type</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_order_type" data-val="<.= customerOrder[i].order_type .>" class="form-control-static">
+					<.= customerOrder[i].order_type .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Order Type -->
+		<!-- BEGIN Order Broadband Type -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Broadband Type</label>
+			<div class="col-md-3">
+				<p class="form-control-static"><.= customerOrder[i].order_broadband_type .></p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Order Broadband Type -->
+		<!-- BEGIN Order Total Price -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Total Price</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_order_total_price" data-val="<.= customerOrder[i].order_total_price .>" class="form-control-static strong">
+					$ <.= order_total_price.toFixed(2) .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Order Total Price -->
+		<!-- BEGIN Order Due -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Order Due</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_order_due" data-val="<.= customerOrder[i].order_due_str .>" class="form-control-static strong">
+					<.= customerOrder[i].order_due_str .>
+				</p>
+			</div>
+			<div class="col-md-3">
+				<div class="input-group date" id="<.= customerOrder[i].id .>_order_due_datepicker">
+					<strong><input data-val="<.= customerOrder[i].order_due_str .>" data-name="<.= customerOrder[i].id .>_order_due_input_picker" class="form-control input-xs" placeholder="Order Due Date"/></strong>
+					<span class="input-group-addon input-xs"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_due_input_btn" >Update Order Due</a>
+			</div>
+		</div>
+		<!-- END Order Due -->
+		<!-- BEGIN PSTN Amount -->
+		<div class="form-group">
+			<label class="control-label col-md-3">PSTN Amount</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_pstn_count" data-val="<.= customerOrder[i].pstn_count .>" class="form-control-static">
+					<.= customerOrder[i].pstn_count .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END PSTN Amount -->
+		<!-- BEGIN PSTN Rental Amount -->
+		<div class="form-group">
+			<label class="control-label col-md-3">PSTN Rental Amount</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_pstn_rental_amount" data-val="<.= customerOrder[i].pstn_rental_amount .>" class="form-control-static">
+					<.= customerOrder[i].pstn_rental_amount .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END PSTN Rental Amount -->
+		<!-- BEGIN Term Period -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Term Period</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_term_period" data-val="<.= customerOrder[i].term_period .>" class="form-control-static ">
+					<.= customerOrder[i].term_period .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Term Period -->
+		<!-- BEGIN Transition Provider Name -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Transition Provider Name</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_transition_provider_name" class="form-control-static">
+					<.= customerOrder[i].transition_provider_name .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Transition Provider Name -->
+		<!-- BEGIN Transition Account Holder -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Transition Account Holder</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_transition_account_holder_name" class="form-control-static">
+					<.= customerOrder[i].transition_account_holder_name .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Transition Account Holder -->
+		<!-- BEGIN Transition Account Number -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Transition Account Number</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_transition_account_number" class="form-control-static">
+					<.= customerOrder[i].transition_account_number .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Transition Account Number -->
+		<!-- BEGIN Transition Telephone Number -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Transition Telephone Number</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_transition_porting_number" class="form-control-static">
+					<.= customerOrder[i].transition_porting_number .>
+				</p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Transition Telephone Number -->
+		<!-- BEGIN Previous Provider Invoice -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Previous Provider Invoice</label>
+			<div class="col-md-3">
+			<. if(customerOrder[i].previous_provider_invoice == null || customerOrder[i].previous_provider_invoice == ''){ .>
+				<p class="form-control-static">No Previous Provider Invoice PDF</p>
+			<. } else { .>
+				<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download previous provider's invoice PDF"></a></p>
+			<. } .>
+			</div>
+			<div class="col-md-3">
+				<input type="file" name="previous_provider_invoice_path" class="form-control input-xs" placeholder="File Path" />
+			</div>
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Pre Invoice</button>
+			</div>
+		</div>
+		<!-- END Previous Provider Invoice -->
+		<!-- BEGIN Download Application Form -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Download Application Form</label>
+			<div class="col-md-3">
+				<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
+			<. if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){ .>
+					&nbsp;No Application Form PDF
+			<. } else { .>
+					&nbsp;<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/pdf/download/<.= customerOrder[i].id .>" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download application form's PDF"></a>
+			<. } .>
+				</p>
+			</div>
+			<div class="col-md-3">
+				<input type="file" name="application_form_path" class="form-control input-xs" placeholder="File Path" />
+			</div>
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Apply Form</button>
+			</div>
+		</div>
+		<!-- END Download Application Form -->
+		<!-- BEGIN Download Credit Card Form -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Download Credit Card Form</label>
+			<div class="col-md-3">
+			<. if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){ .>
+				<p class="form-control-static">No Credit Card Form PDF</p>
+			<. } else { .>
+				<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download credit card form's PDF"></a></p>
+			<. } .>
+			</div>
+			<div class="col-md-3">
+				<input type="file" name="credit_card_form_path" class="form-control input-xs" placeholder="File Path" />
+			</div>
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Credit Card Form</button>
+			</div>
+		</div>
+		<!-- END Download Credit Card Form -->
+		<!-- BEGIN Download DDPay Form -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Download DDPay Form</label>
+			<div class="col-md-3">
+			<. if(customerOrder[i].ddpay_pdf_path == null || customerOrder[i].ddpay_pdf_path == ''){ .>
+						<p class="form-control-static">No DDPay Form PDF</p>
+			<. } else { .>
+				<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ddpay/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download ddpay form's PDF"></a></p>
+			<. } .>
+			</div>
+			<div class="col-md-3">
+				<input type="file" name="ddpay_form_path" class="form-control input-xs" placeholder="File Path" />
+			</div>
+			<div class="col-md-3">
+				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload DDPay Form</button>
+			</div>
+		</div>
+		<!-- END Download DDPay Form -->
+		<!-- BEGIN This Order Belongs To -->
+		<div class="form-group">
+			<label class="control-label col-md-3">This Order Belongs To</label>
+			<div class="col-md-3">
+				<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
+				<. for(var u=0; u<users.length; u++){
+						if(users[u].id == customerOrder[i].user_id || users[u].id == customerOrder[i].sale_id){ .>
+							<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
+				<. 		} 
+					} .>
+				</p>
+			</div>
+			<div class="col-md-3">
+				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
+				<. for(var u=0; u<sales.length; u++){
+						if(sales[u] == customerOrder[i].sale_id){ .>
+					<option value="<.= sales[u].id .>" selected="selected"><.= sales[u].user_name .></option>
+				<. 		} else { .>
+					<option value="<.= sales[u].id .>"><.= sales[u].user_name .></option>
+				<. 		}
+					} .>
+				</select>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_belongs_to_edit" >Update Submitted By</a>
+			</div>
+		</div>
+		<!-- END This Order Belongs To -->
+		<!-- BEGIN Optional Request -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Optional Request</label>
+			<div class="col-md-3">
+			<. if(customerOrder[i].optional_request == '' || customerOrder[i].optional_request == null){ .>
+					<p class="form-control-static">No Request</p>
+			<. } else { .>
+				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_order_optional_request" data-toggle="tooltip" data-placement="bottom" data-original-title="View Additional Request" style="font-size:20px;">
+				  <span class="glyphicon glyphicon-registration-mark"></span>
+				</a>
+			<. } .>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_optional_request_edit" >Update Request</a>
+			</div>
+		</div>
+		<!-- END Optional Request -->
+		<!-- BEGIN Is DDPay -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Is DDPay</label>
+			<div class="col-md-3">
+				<.
+					if(customerOrder[i].is_ddpay == null || customerOrder[i].is_ddpay == false){
+				.>
+							<p class="form-control-static">No</p>
+				<.
+					} else {
+				.>
+							<p class="form-control-static">Yes</p>
+				<.
+					}
+				.>
+			</div>
+			<div class="col-md-3">
+				<select data-name="<.= customerOrder[i].id .>_is_ddpay_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
+				<.  var isDDPays = [true, false];
+					var isDDPayNames = ['Yes', 'No'];
+					for(var d=0; d<isDDPays.length; d++){
+						if(isDDPays[d] == customerOrder[i].is_ddpay){ .>
+					<option value="<.= isDDPays[d] .>" selected="selected"><.= isDDPayNames[d] .></option>
+				<. 		} else { .>
+					<option value="<.= isDDPays[d] .>"><.= isDDPayNames[d] .></option>
+				<. 		}
+					} .>
+				</select>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_is_ddpay_edit" >Change Is DDPay</a>
+			</div>
+		</div>
+		<!-- END Is DDPay -->
+		<!-- END ORDER INFO -->
+		
+		
+		
+		
+		
 		
 		<!-- pppoe -->
 		<hr />
@@ -923,9 +863,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8 text-warning">Update order status?</label>
-					</div>
+					<p>
+						Update order status?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderStatusModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order status</a>
@@ -948,9 +888,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8 text-warning">Update order due date?</label>
-					</div>
+					<p>
+						Update order due date?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderDueDateModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order due date</a>
@@ -973,9 +913,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8 text-warning">Update Order Belongs To?</label>
-					</div>
+					<p>
+						Update Order Belongs To?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderBelongsToModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order belongs to</a>
@@ -999,11 +939,7 @@
 						</h4>
 					</div>
 					<div class="modal-body">
-						<div class="form-group">
-							<div class="col-md-12">
-								<p class="form-control-static" data-name="<.= customerOrder[i].id .>_order_optional_request_p"><.= customerOrder[i].optional_request .></p>
-							</div>
-						</div>
+						<p class="form-control-static" data-name="<.= customerOrder[i].id .>_order_optional_request_p"><.= customerOrder[i].optional_request .></p>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -1053,9 +989,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">Update PPPoE Info?</label>
-					</div>
+					<p>
+						Update PPPoE Info?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-success" data-name="pppoe_edit_modal_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Update PPPoE</a>
@@ -1078,12 +1014,10 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<p>
-							Save SV/CVLan &amp; RFS Date? This operation will send a sms message to customer cellphone directly!<br/><br/>
-							This message will content RFS date which is the one set by you recently!
-						</p>
-					</div>
+					<p>
+						Save SV/CVLan &amp; RFS Date? This operation will send a sms message to customer cellphone directly!<br/><br/>
+						This message will content RFS date which is the one set by you recently!
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-success" data-name="svcvlan_rfs_date_save_<.= customerOrder[i].id .>" data-dismiss="modal">Save SV/CVLan &amp; RFS Date</a>
@@ -1106,9 +1040,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">Save Service Giving Date?</label>
-					</div>
+					<p>
+						Save Service Giving Date?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-success" data-name="service_giving_save_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to save Service Giving Date</a>
@@ -1131,11 +1065,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">
-							Could not save these changes!<br />Please double check this order status!!!
-						</label>
-					</div>
+					<p>
+						Could not save these changes!<br />Please double check this order status!!!
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">Close</a>
@@ -1158,9 +1090,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">Save Broadband ASID?</label>
-					</div>
+					<p>
+						Save Broadband ASID?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a href="javascript:void(0);" class="btn btn-success" data-name="saveBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update Broadband ASID</a>
@@ -1213,11 +1145,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">
-							Are you sure you want to remove this detail?
-						</label>
-					</div>
+					<p>
+						Are you sure you want to remove this detail?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" data-name="removeDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Detail</a>
@@ -1412,11 +1342,9 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<div class="form-group">
-						<label class="control-label col-md-8">
-							Are you sure want to remove this presented calling minutes?
-						</label>
-					</div>
+					<p>
+						Are you sure want to remove this presented calling minutes?
+					</p>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" data-name="removeCallingMinutesModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Calling Minutes</a>

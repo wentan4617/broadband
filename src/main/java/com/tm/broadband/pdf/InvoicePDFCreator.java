@@ -374,7 +374,7 @@ public class InvoicePDFCreator extends ITextUtils {
         	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(TMUtils.bigSub(lastAmountPayable, lastFinalAmountPayable))).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
             
             // LAST INVOICE PAID CASE
-        	addCol(transactionTable, this.getLastCustomerInvoice().getPaid_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
+        	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getLastCustomerInvoice().getPaid_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getLastCustomerInvoice().getPaid_type() != null ? this.getLastCustomerInvoice().getPaid_type() : "Amount Paid").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
         	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPaid))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
 
@@ -405,7 +405,7 @@ public class InvoicePDFCreator extends ITextUtils {
         	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(this.totalCreditBack)).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
         	
             // CURRENT INVOICE PAID CASE
-        	addCol(transactionTable, this.getCurrentCustomerInvoice().getPaid_date_str()).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
+        	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getPaid_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getCurrentCustomerInvoice().getPaid_type() != null ? this.getCurrentCustomerInvoice().getPaid_type() : "Amount Paid").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
         	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(this.getCurrentCustomerInvoice().getAmount_paid())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
             
@@ -472,7 +472,7 @@ public class InvoicePDFCreator extends ITextUtils {
 		Integer colspan = 3;
         PdfPTable dueNotificationTable = newTable().columns(colspan).widthPercentage(98F).o();
         addEmptyCol(dueNotificationTable, 24F, colspan);
-        addCol(dueNotificationTable, "Title overdue penalty:").colspan(colspan).font(ITextFont.arial_bold_green_10).alignH("l").o();
+        addCol(dueNotificationTable, "Overdue Penalty:").colspan(colspan).font(ITextFont.arial_bold_green_10).alignH("l").o();
         addCol(dueNotificationTable, "10% percent of your total amount every month.").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
         addCol(dueNotificationTable, "(Overdue: 30 days after your invoice due date, overdue payment must be paid in 90 days after due date.)").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
         

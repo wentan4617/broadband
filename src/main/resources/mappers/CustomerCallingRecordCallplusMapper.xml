@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+
+<mapper namespace="com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper">
+
+	<!-- DEFINITION AREA -->
+	
+	<sql id="customerCallingRecordCallplusColumns">
+		ccrc.`id` 						as ccrc_id,
+		ccrc.`date` 					as ccrc_date,
+		ccrc.`length` 					as ccrc_length,
+		ccrc.`description` 				as ccrc_description,
+		ccrc.`charged_fee` 				as ccrc_charged_fee,
+		ccrc.`original_number` 			as ccrc_original_number,
+		ccrc.`destination_number` 		as ccrc_destination_number,
+		ccrc.`type` 					as ccrc_type
+	</sql>
+	
+	<resultMap type="CustomerCallingRecordCallplus" id="customerCallingRecordCallplusResultMap">
+		<id property="id" column="ccrc_id" />
+		<result property="date" column="ccrc_date" />
+		<result property="length" column="ccrc_length" />
+		<result property="description" column="ccrc_description" />
+		<result property="charged_fee" column="ccrc_charged_fee" />
+		<result property="original_number" column="ccrc_original_number" />
+		<result property="destination_number" column="ccrc_destination_number" />
+		<result property="type" column="ccrc_type" />
+	</resultMap>
+	
+	<sql id="customerCallingRecordCallplusWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_last_calling_records'">
+					<if test="params.last_month != null">ccrc.date >= #{params.last_month}</if>
+					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">ccrc.id = #{params.id}</if>
+					<if test="params.date != null">and ccrc.date = #{params.date}</if>
+					<if test="params.length != null">and ccrc.length = #{params.length}</if>
+					<if test="params.description != null">and ccrc.description = #{params.description}</if>
+					<if test="params.charged_fee != null">and ccrc.charged_fee = #{params.charged_fee}</if>
+					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
+					<if test="params.destination_number != null">and ccrc.destination_number = #{params.destination_number}</if>
+					<if test="params.type != null">and ccrc.type = #{params.type}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	<!-- // DEFINITION AREA -->
+	
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+	
+	<select id="selectCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus" resultType="CustomerCallingRecordCallplus">
+		select * from tm_customer_calling_record_callplus as ccrc
+		<include refid="customerCallingRecordCallplusWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+	</select>
+	
+	<!-- select customerCallingRecordCallplus page -->
+	<select id="selectCustomerCallingRecordCallplussByPage" parameterType="Page" resultMap="customerCallingRecordCallplusResultMap">
+		select 
+			<include refid="customerCallingRecordCallplusColumns"/>
+			from tm_customer_calling_record_callplus as ccrc
+			<include refid="customerCallingRecordCallplusWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerCallingRecordCallplus amount -->
+	<select id="selectCustomerCallingRecordCallplussSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_calling_record_callplus as ccrc
+		<include refid="customerCallingRecordCallplusWhere"/>
+	</select>
+
+	<!-- select customerCallingRecordCallplus by id -->
+	<select id="selectCustomerCallingRecordCallplusById" parameterType="int" resultType="CustomerCallingRecordCallplus">
+		select * from tm_customer_calling_record_callplus where id = #{0}
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_calling_record_callplus`(
+			`id`, `date`, `length`, `description`, `charged_fee`, `original_number`, `destination_number`, `type`
+		) VALUES (
+			#{id},#{date},#{length},#{description},#{charged_fee},#{original_number},#{destination_number},#{type}
+		)	
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+	
+	<!-- UPDATE AREA -->
+
+	<!-- update customerCallingRecordCallplus -->
+	<update id="updateCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus">
+		update tm_customer_calling_record_callplus
+		<set>
+			<if test="date != null">date = #{date},</if>
+			<if test="length != null">length = #{length},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="charged_fee != null">charged_fee = #{charged_fee},</if>
+			<if test="original_number != null">original_number = #{original_number},</if>
+			<if test="destination_number != null">destination_number = #{destination_number},</if>
+			<if test="type != null">type = #{type}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus">
+		DELETE FROM tm_customer_calling_record_callplus
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.date != null">and date = #{params.date}</if>
+			<if test="params.length != null">and length = #{params.length}</if>
+			<if test="params.description != null">and description = #{params.description}</if>
+			<if test="params.charged_fee != null">and charged_fee = #{params.charged_fee}</if>
+			<if test="params.original_number != null">and original_number = #{params.original_number}</if>
+			<if test="params.destination_number != null">and destination_number = #{params.destination_number}</if>
+			<if test="params.type != null">and type = #{params.type}</if>
+		</where>
+	</delete>
+	
+	<!-- // END DELETE AREA -->
+
+</mapper>
