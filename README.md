@@ -18,7 +18,7 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.6.0 2014-07-07
 
-* 
+* 编写发给provision和accountant的短信模版.(steven)
 * 基于application form的PDF模版，衍生出两种新模版：Ordering Form，Receipt(steven)
 * 后台order界面顶部添加两个按钮：View Ordering Form，View Receipt.(steven)
 * 添加一个字段next_invoice_create_date_flag，定位每个月的当天，取出order后根据该日期减7天存入next_invoice_create_date.(steven)
@@ -26,7 +26,7 @@ demand version 1.6.0 2014-07-07
 * 更改prepay下单后的email模版内容.(steven)
 * 编写Service Given时选择unpaid的email模版，提醒客户从他余额里.(steven)
 * 点Save Service Given的时候，如果不是DDPay或是No Term的order则设置其next_invoice_create_date的同时在该字段日期上加7天赋给next_invoice_create_date_flag.(steven)
-* 点Save Service Given的时候，弹出气泡框，选择invoice paid则逻辑不变，如果选择invoice unpaid则通过余额来抵消账单然后通知客户你的.(steven)
+* 点Save Service Given的时候，弹出气泡框，选择invoice paid则逻辑不变，如果选择invoice unpaid则通过余额来抵消账单然后通知客户你的账单余额已通过账户余额抵消了.(steven)
 * 前台选plan时选非一个月的plan则提示他该plan的discount有多少个percentage.(kanny)
 * 在前台下单点击checkout时弹出一个气泡，里面有两个按钮：pay by dps，bank deposit(I'll do it by myself, in 3 working days).(kanny)
 * 前台下订单所扣款项数额不立即抵消账单，而是存储在客户的credit里，等到Service Given给完才会用客户credit余额抵消账单.(kanny)
