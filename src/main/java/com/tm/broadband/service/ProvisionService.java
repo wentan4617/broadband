@@ -17,6 +17,12 @@ import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 
+/**
+ * Provision service
+ * 
+ * @author Cook1fan
+ * 
+ */
 @Service
 public class ProvisionService {
 	

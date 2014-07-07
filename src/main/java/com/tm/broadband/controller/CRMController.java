@@ -45,6 +45,7 @@ import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
@@ -228,6 +229,8 @@ public class CRMController {
 		inv.setId(invoiceId);
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
+		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
+		customer.setOrganization(org);
 		MailRetriever.mailAtValueRetriever(notification, customer, inv, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -245,6 +248,14 @@ public class CRMController {
 		
 		// send mail
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		filePath = null;
+		customer = null;
+		notification = null;
+		inv = null;
+		company = null;
+		org = null;
+		applicationEmail = null;
 		
 		return "broadband-user/progress-accomplished";
 	}
@@ -545,6 +556,8 @@ public class CRMController {
 		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+		customer.setOrganization(org);
 		// call mail at value retriever
 		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
 		applicationEmail.setAddressee(customer.getEmail());
@@ -564,6 +577,12 @@ public class CRMController {
 		
 		attr.addFlashAttribute("success", "Create Customer " + customer.getLogin_name() + " is successful.");
 		status.setComplete();
+		
+		user = null;
+		notification = null;
+		applicationEmail = null;
+		companyDetail = null;
+		org = null;
 		
 		return "redirect:/broadband-user/crm/customer/query/1";
 	}
@@ -648,6 +667,8 @@ public class CRMController {
 			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+			Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+			customer.setOrganization(org);
 			// call mail at value retriever
 			MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
 			applicationEmail.setAddressee(customer.getEmail());
@@ -662,11 +683,22 @@ public class CRMController {
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+			
+			notification = null;
+			applicationEmail = null;
+			companyDetail = null;
+			org = null;
+			
 		} else {
 			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
 		}
 		
-		return "redirect:/broadband-user/crm/customer/edit/"+customer.getId();
+		responseBean = null;
+		customerInvoice = null;
+		Integer customerId = customer.getId();
+		customer = null;
+		
+		return "redirect:/broadband-user/crm/customer/edit/"+customerId;
 	}
 
 	/**

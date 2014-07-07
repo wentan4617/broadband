@@ -30,6 +30,7 @@ public class CustomerOrder implements Serializable {
 	private String order_status;
 	private Date order_using_start;
 	private Date next_invoice_create_date;
+	private Date next_invoice_create_date_flag;
 	private String order_type;
 	@NotEmpty(groups = { CustomerOrderValidatedMark.class })
 	private String order_broadband_type;
@@ -69,6 +70,7 @@ public class CustomerOrder implements Serializable {
 	private String order_create_date_str;
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
+	private String next_invoice_create_date_flag_str;
 	private String rfs_date_str;
 	private String order_due_str;
 	private Customer customer;
@@ -485,6 +487,23 @@ public class CustomerOrder implements Serializable {
 
 	public void setIs_ddpay(Boolean is_ddpay) {
 		this.is_ddpay = is_ddpay;
+	}
+
+	public Date getNext_invoice_create_date_flag() {
+		return next_invoice_create_date_flag;
+	}
+
+	public void setNext_invoice_create_date_flag(Date next_invoice_create_date_flag) {
+		this.next_invoice_create_date_flag = next_invoice_create_date_flag;
+	}
+
+	public String getNext_invoice_create_date_flag_str() {
+		return next_invoice_create_date_flag_str;
+	}
+
+	public void setNext_invoice_create_date_flag_str(
+			String next_invoice_create_date_flag_str) {
+		this.next_invoice_create_date_flag_str = next_invoice_create_date_flag_str;
 	}
 
 }

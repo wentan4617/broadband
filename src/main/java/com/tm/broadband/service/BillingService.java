@@ -30,6 +30,12 @@ import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.model.VoucherFileUpload;
 
+/**
+ * Billing service
+ * 
+ * @author Don Chen
+ * 
+ */
 @Service
 public class BillingService {
 	
@@ -222,7 +228,7 @@ public class BillingService {
 		this.earlyTerminationChargeMapper.updateEarlyTerminationCharge(etc);
 	}
 	@Transactional
-	public String selectEarlyTerminationChargePDFPathById(int id){
+	public String queryEarlyTerminationChargePDFPathById(int id){
 		return this.earlyTerminationChargeMapper.selectEarlyTerminationChargePDFPathById(id);
 	}
 	
@@ -272,7 +278,7 @@ public class BillingService {
 		this.terminationRefundMapper.updateTerminationRefund(tr);
 	}
 	@Transactional
-	public String selectTerminationRefundPDFPathById(int id){
+	public String queryTerminationRefundPDFPathById(int id){
 		return this.terminationRefundMapper.selectTerminationRefundPDFPathById(id);
 	}
 	

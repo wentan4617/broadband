@@ -100,6 +100,12 @@ tbody td {text-align:center;}
 										</c:forEach>
 									</td>
 									<td>
+										<c:if test="${status == 'unpaid'}">
+											<a target="_blank" href="${ctx}/broadband-user/billing/termination_refund/pdf/send/${terminationRefund.id }/${terminationRefund.customer_id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Send Termination Refund To Customer's Email" style="font-size:20px;">
+												<span class="glyphicon glyphicon-send"></span>
+											</a>
+											&nbsp;
+										</c:if>
 										<a target="_blank" href="${ctx }/broadband-user/termination-refund/pdf/download/${terminationRefund.id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Termination Refund PDF" style="font-size:20px;">
 										  <span class="glyphicon glyphicon-floppy-save"></span>
 										</a>&nbsp;

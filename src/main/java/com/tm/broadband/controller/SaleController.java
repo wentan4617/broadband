@@ -40,6 +40,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
@@ -291,6 +292,10 @@ public class SaleController {
 		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+		
+		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+		customer.setOrganization(org);
+		
 		// call mail at value retriever
 		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
 		applicationEmail.setAddressee(customer.getEmail());
@@ -334,6 +339,13 @@ public class SaleController {
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		status.setComplete();
+		
+		user = null;
+		notification = null;
+		applicationEmail = null;
+		companyDetail = null;
+		org = null;
+		co = null;
 		
 		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId() + "/" + customer.getCustomerOrder().getId();
 	}

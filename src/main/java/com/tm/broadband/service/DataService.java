@@ -14,6 +14,12 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.TempDataUsage;
 
+/**
+ * Data service
+ * 
+ * @author Cook1fan
+ * 
+ */
 @Service
 public class DataService {
 	
