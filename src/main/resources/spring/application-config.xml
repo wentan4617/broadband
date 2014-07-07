@@ -158,7 +158,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0-59/20 * * * * ?"></property>
+		<property name="cronExpression" value="0 30 12 * * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every noon 12:30 -->
