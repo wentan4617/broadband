@@ -39,7 +39,9 @@
 			<p class="text-success" style="font-weight: bold;">Bundles:</p>
 			<ul style="padding-left: 20px;">
 				<li class="text-danger" style="font-weight: bold;"><.=plan.term_period.> Months Terms</li>
+				<. if (plan.pstn_count > 0) {.>
 				<li class="text-danger" style="font-weight: bold;"><.=plan.pstn_count.> Home Phone Line</li>
+				<. } .>
 				<li class="text-danger" style="font-weight: bold;">1 Free Router</li>
 			</ul>
 			<hr style="margin:0"/>

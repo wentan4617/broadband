@@ -36,18 +36,21 @@ public class DataRestController {
 		String[] date = calculator_date.split("-");
 		int year = Integer.parseInt(date[0]);
 		int month = Integer.parseInt(date[1]);
-		int last_month = Integer.parseInt(date[1]) - 1;
 		
 		JSONBean<NetworkUsage> json = new JSONBean<NetworkUsage>();
 		
 		NetworkUsage usage = new NetworkUsage();
-		usage.getParams().put("year", year);
-		usage.getParams().put("month", month);
-		usage.getParams().put("last_month", last_month);
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month - 1);
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		usage.getParams().put("where", "delete_usage");
+		usage.getParams().put("accounting_date", TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 		
 		dataService.calculatorUsage(usage);
 		
-		json.getSuccessMap().put("alert-success", year + "-" + last_month + ", " + year + "-" + month + " Network Usage have been update.");
+		json.getSuccessMap().put("alert-success", "Processed.");
 		
 		return json;
 	}

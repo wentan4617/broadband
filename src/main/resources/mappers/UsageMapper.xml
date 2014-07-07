@@ -83,6 +83,9 @@
 					<if test="params.currentYear != null">and year(u.accounting_date) = #{params.currentYear}</if>
 					<if test="params.currentMonth != null">and month(u.accounting_date) = #{params.currentMonth}</if>
 				</when>
+				<when test="params.where == 'delete_usage'">
+					<if test="params.accounting_date != null">accounting_date &gt; #{params.accounting_date}</if>
+				</when>
 				<otherwise>
 					<if test="params.id != null">and co.id = #{params.id}</if>
 				</otherwise>
@@ -166,8 +169,7 @@
 	
 	<delete id="deleteUsage" parameterType="NetworkUsage">
 		delete from tm_network_usage
-		where year(accounting_date) = #{params.year}
-		and (MONTH(accounting_date) = #{params.month} or MONTH(accounting_date) = #{params.last_month})
+		<include refid="usageWhere"/>
 	</delete>
 	
 	<!-- // END DELETE AREA -->

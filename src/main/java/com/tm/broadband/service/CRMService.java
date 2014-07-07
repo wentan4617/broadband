@@ -205,25 +205,7 @@ public class CRMService {
 				customer.getCustomerOrder().setOrder_status("pending");
 			}
 			
-			
 			customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price() * plan.getPlan_prepay_months());
-			
-			// add plan free pstn
-			for (int i = 0; i < plan.getPstn_count(); i++) {
-				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-				if ("personal".equals(plan.getPlan_class())) {
-					cod_pstn.setDetail_name("Home Phone Line");
-				} else if ("business".equals(plan.getPlan_class())) {
-					cod_pstn.setDetail_name("Business Phone Line");
-				}
-				cod_pstn.setDetail_price(0d);
-				//cod_pstn.setDetail_is_next_pay(0);
-				//cod_pstn.setDetail_expired(new Date());
-				cod_pstn.setDetail_type("pstn");
-				cod_pstn.setDetail_unit(1);
-				cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
-				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
-			}
 			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
 			if ("ADSL".equals(plan.getPlan_type())) {
@@ -301,6 +283,23 @@ public class CRMService {
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_jackpot);
 		} 
+		
+		// add plan free pstn
+		for (int i = 0; i < plan.getPstn_count(); i++) {
+			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+			if ("personal".equals(plan.getPlan_class())) {
+				cod_pstn.setDetail_name("Home Phone Line");
+			} else if ("business".equals(plan.getPlan_class())) {
+				cod_pstn.setDetail_name("Business Phone Line");
+			}
+			cod_pstn.setDetail_price(0d);
+			//cod_pstn.setDetail_is_next_pay(0);
+			//cod_pstn.setDetail_expired(new Date());
+			cod_pstn.setDetail_type("pstn");
+			cod_pstn.setDetail_unit(1);
+			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
+			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
+		}
 		
 		for (Hardware chd: customer.getCustomerOrder().getHardwares()) {
 		
