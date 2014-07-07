@@ -64,9 +64,9 @@ import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 
 /**
- * CRM Module service
+ * CRM service
  * 
- * @author Cook1fan
+ * @author Cook1fan, Don Chen
  * 
  */
 @Service
@@ -839,14 +839,16 @@ public class CRMService {
 		
 		Notification topupNotificationEmailTemp = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
 		Notification topupNotificationSMSTemp = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		
 		for (CustomerOrder customerOrder : topupCustomerOrders) {
-			CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 			Customer c = customerOrder.getCustomer();
 			Notification topupNotificationEmail = new Notification(topupNotificationEmailTemp.getTitle(), topupNotificationEmailTemp.getContent());
 			Notification topupNotificationSMS = new Notification(topupNotificationSMSTemp.getTitle(), topupNotificationSMSTemp.getContent());
 
 			// call mail at value retriever
+			Organization org = this.organizationMapper.selectOrganizationByCustomerId(c.getId());
+			c.setOrganization(org);
 			MailRetriever.mailAtValueRetriever(topupNotificationEmail, c, customerOrder, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
@@ -859,6 +861,11 @@ public class CRMService {
 			MailRetriever.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMS.getContent());
+			
+			c = null;
+			topupNotificationEmail = null;
+			topupNotificationSMS = null;
+			org = null;
 		}
 		// END TOPUP NOTIFICATION
 		
@@ -891,6 +898,8 @@ public class CRMService {
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 			
 			// call mail at value retriever
+			Organization org = this.organizationMapper.selectOrganizationByCustomerId(co.getCustomer().getId());
+			co.getCustomer().setOrganization(org);
 			MailRetriever.mailAtValueRetriever(notificationEmail, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(co.getCustomer().getEmail());
@@ -905,6 +914,11 @@ public class CRMService {
 			MailRetriever.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMS.getContent());
+			
+			notificationEmail = null;
+			notificationSMS = null;
+			ci = null;
+			org = null;
 		}
 	}
 
@@ -1486,25 +1500,30 @@ public class CRMService {
 					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = is_Next_Invoice ? 0 : -7;
+					int nextInvoiceDay = -7;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
 					calNextInvoiceDay.setTime(!is_Next_Invoice 
 								? (customerOrder.getOrder_using_start() != null 
 								? customerOrder.getOrder_using_start() 
 								: new Date()) 
-						: customerOrder.getNext_invoice_create_date());
+						: customerOrder.getNext_invoice_create_date_flag());
 					calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+					// update customer order's next invoice create day flag begin
+					customerOrder.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+					// update customer order's next invoice create day flag end
 
+					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
 					// update customer order's next invoice create day begin
 					customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+					// update customer order's next invoice create day end
+					
 					customerOrder.getParams().put("id", customerOrder.getId());
 					
 					this.customerOrderMapper.updateCustomerOrder(customerOrder);
-					// update customer order's next invoice create day end
 				}
 			}
 		}
+		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
@@ -1547,7 +1566,8 @@ public class CRMService {
 
 		if(!isRegenerate){
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notificationEmail, customer, customerOrder, ci, companyDetail);
+			customer.setOrganization(org);
+			MailRetriever.mailAtValueRetriever(notificationEmail, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notificationEmail.getTitle());

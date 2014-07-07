@@ -31,6 +31,7 @@ import com.tm.broadband.model.DateUsage;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.service.BillingService;
@@ -158,6 +159,9 @@ public class CustomerRestController {
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
 			
+			Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+			customer.setOrganization(org);
+			
 			String msg = "";
 
 			if("email".equals(customer.getType())){
@@ -179,7 +183,14 @@ public class CustomerRestController {
 			
 			json.getSuccessMap().put("alert-success", msg);
 			
+			companyDetail = null;
+			notification = null;
+			org = null;
+			
 		}
+		
+		customerSession = null;
+		
 		return json;
 	}
 	

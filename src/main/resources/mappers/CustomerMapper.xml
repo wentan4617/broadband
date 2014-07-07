@@ -79,6 +79,7 @@
 		co.`order_status` 						as co_order_status, 
 		co.`order_using_start` 					as co_order_using_start,
 		co.`next_invoice_create_date` 			as co_next_invoice_create_date,
+		co.`next_invoice_create_date_flag` 		as co_next_invoice_create_date_flag,
 		co.`order_type` 						as co_order_type,
 		co.`order_broadband_type` 				as co_order_broadband_type,
 		co.`svlan`	 							as co_svlan,
@@ -115,6 +116,7 @@
 		<result property="order_status" column="co_order_status" />
 		<result property="order_using_start" column="co_order_using_start" />
 		<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
+		<result property="next_invoice_create_date_flag" column="co_next_invoice_create_date_flag" />
 		<result property="order_type" column="co_order_type" />
 		<result property="order_broadband_type" column="co_order_broadband_type" />
 		<result property="svlan" column="co_svlan" />
@@ -390,6 +392,7 @@
 			<result property="order_status" column="co_order_status" />
 			<result property="order_using_start" column="co_order_using_start" />
 			<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
+			<result property="next_invoice_create_date_flag" column="co_next_invoice_create_date_flag" />
 			<result property="order_type" column="co_order_type" />
 			<result property="order_broadband_type" column="co_order_broadband_type" />
 			<result property="svlan" column="co_svlan" />

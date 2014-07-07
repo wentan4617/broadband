@@ -38,6 +38,7 @@ import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
@@ -670,6 +671,9 @@ public class CRMRestController {
 		Notification notification = this.systemService.queryNotificationBySort(
 				"service-installation", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
+		
+		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+		customer.setOrganization(org);
 		// call mail at value retriever
 		MailRetriever.mailAtValueRetriever(notification, customer,
 				customerOrder, cods, companyDetail);
@@ -698,6 +702,16 @@ public class CRMRestController {
 		json.setModel(co);
 		json.getSuccessMap().put("alert-success",
 				"svlan, cvlan and rfs_date had successfully been updated.");
+		
+		cods = null;
+		tempCO = null;
+		customer = null;
+		companyDetail = null;
+		notification = null;
+		applicationEmail = null;
+		co = null;
+		
+		
 		return json;
 	}
 
@@ -709,7 +723,7 @@ public class CRMRestController {
 			@RequestParam("way") String way, HttpServletRequest req) {
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-
+		
 		// Get user from session
 		User user = (User) req.getSession().getAttribute("userSession");
 		// ProvisionLog to insert
@@ -745,14 +759,16 @@ public class CRMRestController {
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
 			co.setOrder_due(cal.getTime());
 		}
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
+		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+		customer.setOrganization(org);
 
 		if ("save".equals(way)) {
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			
 			/* check order status send mailer */
-			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
-			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); /* call mail at value retriever */
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -778,8 +794,6 @@ public class CRMRestController {
 			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been saved!");
 		} else {
 			proLog.setProcess_way("editing service giving");
-			Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
-			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
@@ -800,6 +814,14 @@ public class CRMRestController {
 		this.crmService.editCustomerOrder(co, proLog);
 
 		json.setModel(co);
+		
+		user = null;
+		proLog = null;
+		co = null;
+		companyDetail = null;
+		customer = null;
+		org = null;
+		
 		return json;
 	}
 

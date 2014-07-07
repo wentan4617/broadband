@@ -105,9 +105,16 @@ tbody td {text-align:center;}
 										</c:forEach>
 									</td>
 									<td>
+										<c:if test="${status == 'unpaid'}">
+											<a target="_blank" href="${ctx}/broadband-user/billing/early_termination_charge/pdf/send/${earlyTerminationCharge.id }/${earlyTerminationCharge.customer_id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Send Early Termination To Customer's Email" style="font-size:20px;">
+												<span class="glyphicon glyphicon-send"></span>
+											</a>
+											&nbsp;
+										</c:if>
 										<a target="_blank" href="${ctx }/broadband-user/early-termination-charge/pdf/download/${earlyTerminationCharge.id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Early Termination Charge PDF" style="font-size:20px;">
 										  <span class="glyphicon glyphicon-floppy-save"></span>
-										</a>&nbsp;
+										</a>
+										&nbsp;
 										<c:if test="${status == 'unpaid'}">
 											<a target="_blank" id="${earlyTerminationCharge.id }" data-name="change_status" data-type="unpaid" href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="Switch This Record's Status to Paid" style="font-size:20px;">
 											  <span class="glyphicon glyphicon-off"></span>

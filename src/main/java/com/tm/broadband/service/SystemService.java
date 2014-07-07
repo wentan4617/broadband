@@ -19,6 +19,12 @@ import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 
+/**
+ * System service
+ * 
+ * @author Don Chen, Cook1fan
+ * 
+ */
 @Service
 public class SystemService {
 

@@ -19,6 +19,12 @@ import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.TempDataUsage;
 import com.tm.broadband.util.TMUtils;
 
+/**
+ * Data service
+ * 
+ * @author Cook1fan
+ * 
+ */
 @Service
 public class DataService {
 	
