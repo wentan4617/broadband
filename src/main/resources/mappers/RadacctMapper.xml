@@ -72,6 +72,14 @@
 		select max(maxcount) from tm_temp_data_usage
 	</select>
 	
+	<select id="selectMaxCountMinByDate" resultType="Long">
+		select min(maxcount) from tm_temp_data_usage where usage_date &gt; #{0}
+	</select>
+	
+	<select id="selectMaxCountMaxByDate" resultType="Long">
+		select max(maxcount) from tm_temp_data_usage where usage_date &gt; #{0}
+	</select>
+	
 	<select id="selectRadiusRadaccts" resultType="com.tm.broadband.batch.domain.RadiusRadacct"><!--  resultMap="radiusRadacctResultMap" -->
 		select 
 			`connectinfo_start`, sum(`acctinputoctets`) as acctinputoctets, sum(`acctoutputoctets`) as acctoutputoctets
@@ -81,8 +89,8 @@
 	</select>
 	
 	<select id="selectDataUsageRecent" parameterType="int" resultType="TempDataUsage">
-		SELECT `vlan`, sum(`upload`) as upload, sum(`download`) as download FROM `tm_temp_data_usage`
-		WHERE maxcount = #{0} group by `vlan` 
+		SELECT `vlan`, usage_date, sum(`upload`) as upload, sum(`download`) as download FROM `tm_temp_data_usage`
+		WHERE maxcount = #{0} group by `vlan`, usage_date
 	</select>
 	<!-- // END SELECT AREA -->
 	

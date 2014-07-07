@@ -404,22 +404,6 @@ public class CRMController {
 			
 			customerOrder.setOrder_total_price(customerOrder.getPlan().getPlan_price() * customerOrder.getPlan().getPlan_prepay_months());
 			
-			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-			if ("personal".equals(customerOrder.getPlan().getPlan_class())) {
-				cod_pstn.setDetail_name("Home Phone Line");
-			} else if ("business".equals(customerOrder.getPlan().getPlan_class())) {
-				cod_pstn.setDetail_name("Business Phone Line");
-			}
-			
-			cod_pstn.setDetail_price(0d);
-			//cod_pstn.setDetail_is_next_pay(0);
-			//cod_pstn.setDetail_expired(new Date());
-			cod_pstn.setDetail_type("pstn");
-			cod_pstn.setDetail_unit(1);
-			cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
-			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
 			if ("ADSL".equals(customerOrder.getPlan().getPlan_type())) {
 				cod_hd.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router(Free)");
@@ -478,6 +462,23 @@ public class CRMController {
 			cod_jackpot.setDetail_unit(1);
 			
 			customerOrder.getCustomerOrderDetails().add(cod_jackpot);
+		}
+		
+		// add plan free pstn
+		for (int i = 0; i < customerOrder.getPlan().getPstn_count(); i++) {
+			CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+			if ("personal".equals(customerOrder.getPlan().getPlan_class())) {
+				cod_pstn.setDetail_name("Home Phone Line");
+			} else if ("business".equals(customerOrder.getPlan().getPlan_class())) {
+				cod_pstn.setDetail_name("Business Phone Line");
+			}
+			cod_pstn.setDetail_price(0d);
+			//cod_pstn.setDetail_is_next_pay(0);
+			//cod_pstn.setDetail_expired(new Date());
+			cod_pstn.setDetail_type("pstn");
+			cod_pstn.setDetail_unit(1);
+			cod_pstn.setPstn_number(customerOrder.getTransition_porting_number());
+			customerOrder.getCustomerOrderDetails().add(cod_pstn);
 		}
 		
 		if (customerOrder.getCustomerOrderDetails() != null) {

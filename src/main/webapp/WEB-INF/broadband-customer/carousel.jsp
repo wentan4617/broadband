@@ -33,7 +33,6 @@
 				<img src="${ctx }/public/bootstrap3/images/plan-4-sm.png" class="hidden-lg hidden-md" alt="VDSL is faster than ADSL" />
 			</a>
 		</div>
-		
 	</div>
 	<a class="left carousel-control" href="#cyberparkCarousel" data-slide="prev">
 		<span class="glyphicon glyphicon-chevron-left"></span>

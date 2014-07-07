@@ -178,7 +178,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateTermPlanInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0 0 3 7 * ?"></property>
+		<property name="cronExpression" value="0 0 3 8 * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every month's 7th 3:00 a.m. -->
@@ -219,7 +219,7 @@
 	<!-- trigger -->
 	<bean id="radiusDataUsageImportCalculatorTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="radiusDataUsageImportCalculatorJob" />
-		<property name="cronExpression" value="0 0-59/45 * * * ?"></property>
+		<property name="cronExpression" value="0 45 * * * ?"></property>
 		<!-- 0 0-59/45 * * * ? -->
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->

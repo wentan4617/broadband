@@ -86,7 +86,7 @@ public class CustomerController {
 		this.billingService = billingService;
 	}
 
-	@RequestMapping(value = {"", "/home" })
+	@RequestMapping(value = { "", "/home" })
 	public String home(Model model) {
 		model.addAttribute("nofollow", "nofollow");
 		return "broadband-customer/home";
@@ -285,6 +285,11 @@ public class CustomerController {
 		Plan plan = new Plan();
 		plan.getParams().put("id", id);
 		plan = this.planService.queryPlan(plan);
+		if (plan.getId() == 26) {
+			plan.getTopup().setTopup_fee(20d);
+		} else if (plan.getId() == 53) {
+			plan.getTopup().setTopup_fee(30d);
+		}
 		model.addAttribute("orderPlan", plan);
 		
 		Hardware hardware = new Hardware();
@@ -302,7 +307,7 @@ public class CustomerController {
 		return url;
 	}
 	
-	@RequestMapping("/order/{id}/topup/{amount}")
+	/*@RequestMapping("/order/{id}/topup/{amount}")
 	public String orderPlanTopup(Model model, 
 			@PathVariable("id") int id,
 			@PathVariable("amount") Double amount) {
@@ -310,18 +315,10 @@ public class CustomerController {
 		Plan plan = new Plan();
 		plan.getParams().put("id", id);
 		plan = this.planService.queryPlan(plan);
-		if ("ADSL".equals(plan.getPlan_type())) {
-			if (amount == 20d || amount == 50d || amount == 100d || amount == 150d || amount == 200d) {
-				plan.getTopup().setTopup_fee(amount);
-			} else {
-				plan.getTopup().setTopup_fee(20d);
-			}
-		} else if ("VDSL".equals(plan.getPlan_type())) {
-			if (amount == 30d || amount == 60d || amount == 110d || amount == 160d || amount == 200d) {
-				plan.getTopup().setTopup_fee(amount);
-			} else {
-				plan.getTopup().setTopup_fee(30d);
-			}
+		if (plan.getId() == 26) {
+			plan.getTopup().setTopup_fee(amount);
+		} else if (plan.getId() == 53) {
+			plan.getTopup().setTopup_fee(amount);
 		}
 		
 		model.addAttribute("orderPlan", plan);
@@ -339,7 +336,7 @@ public class CustomerController {
 		}
 		
 		return url;
-	}
+	}*/
 
 	@RequestMapping(value = "/order/personal/confirm")
 	public String orderPersonalConfirm(Model model,

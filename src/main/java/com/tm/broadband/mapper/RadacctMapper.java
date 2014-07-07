@@ -26,6 +26,8 @@ public interface RadacctMapper {
 	/* SELECT AREA */
 	
 	Long selectMaxCount();
+	Long selectMaxCountMinByDate(String date);
+	Long selectMaxCountMaxByDate(String date);
 	List<TempDataUsage> selectDataUsageRecent(Long maxcount);
 	
 	/* // END SELECT AREA */
