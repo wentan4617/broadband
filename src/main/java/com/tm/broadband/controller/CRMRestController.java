@@ -42,7 +42,7 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
-import com.tm.broadband.pdf.OrderPDFCreator;
+import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
@@ -1086,7 +1086,7 @@ public class CRMRestController {
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
 		try {
-			orderPDFPath = new OrderPDFCreator(co.getCustomer(), co, co
+			orderPDFPath = new ApplicationPDFCreator(co.getCustomer(), co, co
 					.getCustomer().getOrganization()).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
