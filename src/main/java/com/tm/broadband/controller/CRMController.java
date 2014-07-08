@@ -845,11 +845,55 @@ public class CRMController {
         return response;
     }
 	
-	// download customer credit form PDF directly
+	// download customer ddpay form PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ddpay/pdf/download/{orderId}")
     public ResponseEntity<byte[]> downloadDDPayFormPDF(Model model
     		,@PathVariable(value = "orderId") int orderId) throws IOException {
 		String filePath = this.crmService.queryCustomerDDPayFormPathById(orderId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	// download customer ordering form PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/ordering-form/pdf/download/{orderId}")
+    public ResponseEntity<byte[]> downloadOrderingFormPDF(Model model
+    		,@PathVariable(value = "orderId") int orderId) throws IOException {
+		String filePath = this.crmService.queryCustomerOrderingFormPathById(orderId);
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+	
+	// download customer receipt PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/receipt/pdf/download/{orderId}")
+    public ResponseEntity<byte[]> downloadReceiptPDF(Model model
+    		,@PathVariable(value = "orderId") int orderId) throws IOException {
+		String filePath = this.crmService.queryCustomerReceiptFormPathById(orderId);
 		
 		// get file path
         Path path = Paths.get(filePath);

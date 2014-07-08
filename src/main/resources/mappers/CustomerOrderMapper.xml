@@ -566,6 +566,16 @@
 		SELECT previous_provider_invoice FROM `tm_customer_order` WHERE id=#{0}
 	</select>
 	
+	<!-- select customer ordering form path by id -->
+	<select id="selectCustomerOrderingFormPathById" parameterType="int" resultType="String">
+		SELECT ordering_form_pdf_path FROM `tm_customer_order` WHERE id=#{0}
+	</select>
+	
+	<!-- select receipt path by id -->
+	<select id="selectCustomerReceiptPathById" parameterType="int" resultType="String">
+		SELECT receipt_pdf_path FROM `tm_customer_order` WHERE id=#{0}
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	
 	<!-- =================================================================================== -->
