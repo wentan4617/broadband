@@ -81,8 +81,9 @@ public class DataRestController {
 		
 		List<CustomerOrder> cos = page.getResults();
 		if (cos != null && usages != null) {
-			String vlan = "", svlan = "", cvlan = "", type = "";
+			
 			for (CustomerOrder co: cos) {
+				String vlan = "", svlan = "", cvlan = "", type = "";
 				svlan = co.getSvlan() != null ? co.getSvlan().toLowerCase() : "";
 				cvlan = co.getCvlan() != null ? co.getCvlan().toLowerCase() : "";
 				type = co.getCod().getDetail_plan_type();
@@ -97,7 +98,8 @@ public class DataRestController {
 				}
 				
 				for (NetworkUsage u : usages) {
-					if (u.getVlan() != null && vlan.equals(u.getVlan().toLowerCase())) {
+					//System.out.println(co.getId() + "," + u.getVlan() + "," + vlan);
+					if (u.getVlan() != null && !"".equals(vlan) && vlan.equals(u.getVlan().toLowerCase())) {
 						co.setUsage(u);
 						break;
 					}
