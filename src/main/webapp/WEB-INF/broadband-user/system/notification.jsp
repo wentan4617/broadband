@@ -41,6 +41,7 @@
 									<form:option value="payment">Payment</form:option>
 									<form:option value="topup-notification">Topup Notification</form:option>
 									<form:option value="service-giving">Service Giving</form:option>
+									<form:option value="service-giving-paid">Service Giving Paid</form:option>
 									<form:option value="service-installation">Service Installation</form:option>
 									<form:option value="service-terminating">Service Terminating</form:option>
 									<form:option value="online-ordering">Online Ordering</form:option>

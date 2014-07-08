@@ -552,6 +552,7 @@
 					if(order_status.attr('data-val')=='ordering-paid' || order_status.attr('data-val')=='ordering-pending' || order_status.attr('data-val')=='using'){
 						$('a[data-name="service_giving_save_'+this.id+'"]').prop('id', this.id);
 						$('a[data-name="service_giving_save_'+this.id+'"]').attr('data-way', $(this).attr('data-way'));
+						$('a[data-name="service_giving_save_'+this.id+'"]').attr('data-pay-status', $(this).attr('data-pay-status'));
 						$('#saveServiceGivingModal_'+this.id).modal('show');	// click Save Order then performing Ajax action
 					// else show denied modal
 					} else {
@@ -572,7 +573,9 @@
 							,'order_status':order_status.attr('data-val')
 							,'order_type':order_type
 							,'way':$(this).attr('data-way')
+							,'pay_status':$(this).attr('data-pay-status')+''
 					};
+					console.log(data);
 					var order_using_start = $('#'+this.id+'_order_using_start');
 					var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
 					$.post('${ctx}/broadband-user/crm/customer/order/service_giving_date', data, function(json){
@@ -672,6 +675,7 @@
 					$('input[data-name="detail_plan_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_type"]').attr('data-val'));
 					$('input[data-name="detail_plan_sort_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_sort"]').attr('data-val'));
 					$('input[data-name="detail_price_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_price"]').attr('data-val'));
+					$('input[data-name="data_flow_'+this.id+'"]').val($('span[data-name="'+$(this).attr('data-id')+'_data_flow"]').attr('data-val'));
 					$('#editDetailModal_'+this.id).modal('show');
 				});
 				// Submit to rest controller
@@ -683,7 +687,8 @@
 						'detail_type':$('input[data-name="detail_type_'+this.id+'"]').val(),
 						'detail_plan_type':$('input[data-name="detail_plan_type_'+this.id+'"]').val(),
 						'detail_plan_sort':$('input[data-name="detail_plan_sort_'+this.id+'"]').val(),
-						'detail_price':$('input[data-name="detail_price_'+this.id+'"]').val()
+						'detail_price':$('input[data-name="detail_price_'+this.id+'"]').val(),
+						'detail_data_flow':$('input[data-name="data_flow_'+this.id+'"]').val()
 					};
 					
 					$.post('${ctx}/broadband-user/crm/customer/order/detail/plan/edit', data, function(json){

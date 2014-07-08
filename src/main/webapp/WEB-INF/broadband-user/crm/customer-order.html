@@ -546,12 +546,25 @@
 				<div class="form-group">
 					<div class="col-md-6">&nbsp;</div>
 					<div class="col-md-6">
+					<. if(customerOrder[i].order_using_start == null){ .>
+						<div class="btn-group pull-right">
+							<button type="button" class="btn btn-primary btn-xs xs-btn-width-long">Save Service Giving</button>
+							<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu" role="menu">
+								<li><a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_service_giving_save" data-way="save" data-pay-status="paid" data-toggle="tooltip" data-placement="right" data-original-title="Pay invoice with account credit and give service"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Service With Invoice</a></li>
+								<li><a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_service_giving_save" data-way="save" data-pay-status="unpaid" data-toggle="tooltip" data-placement="right" data-original-title="No invoice generation action, service given only"><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp;&nbsp;Service Only</a></li>
+							</ul>
+						</div>
+					<. } else { .>
 						<a id="<.= customerOrder[i].id .>"
-						class="btn btn-xs btn-block xs-btn-width-longer pull-right <.= customerOrder[i].order_using_start != null ? 'btn-danger' : 'btn-success' .>"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right btn-danger"
 						data-name="<.= customerOrder[i].id .>_service_giving_save"
-						data-way="<.= customerOrder[i].order_using_start != null ? 'update' : 'save' .>">
-							<.= customerOrder[i].order_using_start != null ? 'Update Service Giving' : 'Save Service Giving' .>
+						data-way="update">
+							Update Service Giving
 						</a>
+					<. } .>
 					</div>
 				</div>
 			</div>
@@ -634,6 +647,7 @@
 									if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 								.>
 									<span style="display:none;" data-name="<.= customerOrder[i].id .>_detail_plan_monthly_price" data-val="<.= detailPrice.toFixed(2) .>"></span>
+									<span style="display:none;" data-name="<.= customerOrderDetail[d].id .>_data_flow" data-val="<.= customerOrderDetail[d].detail_data_flow .>"></span>
 								<.
 									}
 								.>
@@ -1423,6 +1437,12 @@
 							<label class="control-label col-md-3">Detail Price</label>
 							<div class="col-md-2">
 								<input class="form-control input-sm" type="text" data-name="detail_price_<.= customerOrder[i].id .>" placeholder="0.0" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Data Flow</label>
+							<div class="col-md-2">
+								<input class="form-control input-sm" type="text" data-name="data_flow_<.= customerOrder[i].id .>" placeholder="0.0" />
 							</div>
 						</div>
 					</div>

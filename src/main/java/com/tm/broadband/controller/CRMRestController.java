@@ -720,7 +720,9 @@ public class CRMRestController {
 	public JSONBean<CustomerOrder> doCustomerServiceGivingDateEdit(Model model,
 			CustomerOrder customerOrder,
 			@RequestParam("order_detail_unit") Integer order_detail_unit,
-			@RequestParam("way") String way, HttpServletRequest req) {
+			@RequestParam("way") String way,
+			@RequestParam("pay_status") String pay_status,
+			HttpServletRequest req) {
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
@@ -770,15 +772,21 @@ public class CRMRestController {
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			
+			String attachPath = "";
+			String emailSort = "service-giving";
+			if("paid".equals(pay_status)){
+				emailSort = "service-giving-paid";
+			}
 			/* check order status send mailer */
-			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
+			Notification notification = this.systemService.queryNotificationBySort(emailSort, "email");
 			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); /* call mail at value retriever */
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
+			applicationEmail.setAttachPath(attachPath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			notification = this.systemService.queryNotificationBySort("service-giving", "sms"); /* get sms register template from db */
+			notification = this.systemService.queryNotificationBySort(emailSort, "sms"); /* get sms register template from db */
 			MailRetriever.mailAtValueRetriever(notification, customer,customerOrder, companyDetail);
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); /* send sms to customer's mobile phone */
 
