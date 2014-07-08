@@ -168,8 +168,7 @@ public class CRMRestController {
 		}
 
 		Customer cValid = new Customer();
-		cValid.getParams().put("where",
-				"query_exist_not_self_customer_by_mobile");
+		cValid.getParams().put("where", "query_exist_not_self_customer_by_mobile");
 		cValid.getParams().put("cellphone", customer.getCellphone());
 		cValid.getParams().put("id", customer.getId());
 		int count = this.crmService.queryExistCustomer(cValid);
@@ -179,8 +178,7 @@ public class CRMRestController {
 			return json;
 		}
 
-		cValid.getParams().put("where",
-				"query_exist_not_self_customer_by_email");
+		cValid.getParams().put("where", "query_exist_not_self_customer_by_email");
 		cValid.getParams().put("email", customer.getEmail());
 		count = this.crmService.queryExistCustomer(cValid);
 
@@ -194,8 +192,7 @@ public class CRMRestController {
 
 		// status.setComplete();
 
-		json.getSuccessMap().put("alert-success",
-				"Edit customer (ID: " + customer.getId() + ") is successful.");
+		json.getSuccessMap().put("alert-success", "Edit customer (ID: " + customer.getId() + ") is successful.");
 
 		return json;
 	}
@@ -326,18 +323,15 @@ public class CRMRestController {
 		order_id = ci.getOrder_id();
 		paid_amount = eliminate_amount;
 
-		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci
-				.getAmount_paid())));
-		ci.setFinal_payable_amount(Double.parseDouble(TMUtils
-				.fillDecimalPeriod(ci.getFinal_payable_amount())));
+		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getAmount_paid())));
+		ci.setFinal_payable_amount(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getFinal_payable_amount())));
 
 		// Assign (paid plus eliminate amount) to paid, make this invoice paid
 		// (off)
 		ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), paid_amount));
 		// Assign balance as 0.0, make this invoice paid off
 
-		ci.setBalance(TMUtils.bigOperationTwoReminders(
-				ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 		// If balance equals to 0d then paid else not_pay_off, make this invoice
 		// paid (off)
 		if (ci.getBalance() <= 0d) {
@@ -389,8 +383,7 @@ public class CRMRestController {
 
 		json.setUrl(redirectUrl);
 
-		json.getSuccessMap().put("alert-success",
-				"Cash defray had successfully been operates!");
+		json.getSuccessMap().put("alert-success", "Cash defray had successfully been operates!");
 
 		return json;
 	}
@@ -538,11 +531,15 @@ public class CRMRestController {
 			CustomerOrder customerOrder) {
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-		CustomerOrder co = customerOrder;
-		co.getParams().put("id", co.getId());
+		
+		System.out.println("order_id: " + customerOrder.getId());
+		System.out.println("customer_id: " + customerOrder.getCustomer_id());
+		System.out.println("status : " + customerOrder.getOrder_status());
+		
+		customerOrder.getParams().put("id", customerOrder.getId());
 
-		this.crmService.editCustomerOrder(co);
-		json.setModel(co);
+		this.crmService.editCustomerOrder(customerOrder);
+		json.setModel(customerOrder);
 
 		json.getSuccessMap().put("alert-success",
 				"Order Status had successfully been saved!");
@@ -557,15 +554,13 @@ public class CRMRestController {
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		CustomerOrder co = new CustomerOrder();
-		co.setOrder_due(TMUtils.parseDateYYYYMMDD(customerOrder
-				.getOrder_due_str()));
+		co.setOrder_due(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_due_str()));
 		co.getParams().put("id", customerOrder.getId());
 
 		this.crmService.editCustomerOrder(co);
 		json.setModel(co);
 
-		json.getSuccessMap().put("alert-success",
-				"Order Due Date had successfully been saved!");
+		json.getSuccessMap().put("alert-success", "Order Due Date had successfully been saved!");
 
 		return json;
 	}
@@ -583,8 +578,7 @@ public class CRMRestController {
 		this.crmService.editCustomerOrder(co);
 		json.setModel(user_name);
 
-		json.getSuccessMap().put("alert-success",
-				"Belongs to had successfully been edited!");
+		json.getSuccessMap().put("alert-success", "Belongs to had successfully been edited!");
 
 		return json;
 	}

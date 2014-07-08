@@ -431,7 +431,7 @@
 										</button>
 										<ul class="dropdown-menu" >
 											<li><a href="javascript:void(0);" id="online_payment">Online Payment</a></li>
-											<li><a href="javascript:void(0);" id="bank_depoist">Bank Depoist</a></li>
+											<li><a href="javascript:void(0);" id="bank_depoist">Bank Deposit</a></li>
 										</ul>
 									</div>
 								</form>
