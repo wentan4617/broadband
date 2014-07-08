@@ -40,6 +40,8 @@ public interface CustomerOrderMapper {
 	String selectCustomerCreditFilePathById(int id);
 	String selectCustomerDDPayFormPathById(int id);
 	String selectCustomerPreviousProviderInvoiceFilePathById(int id);
+	String selectCustomerOrderingFormPathById(int id);
+	String selectCustomerReceiptPathById(int id);
 	
 	/* // END SELECT AREA */
 	

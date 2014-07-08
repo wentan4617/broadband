@@ -1705,6 +1705,16 @@ public class CRMService {
 	public String queryCustomerDDPayFormPathById(int id){
 		return this.customerOrderMapper.selectCustomerDDPayFormPathById(id);
 	}
+
+	@Transactional 
+	public String queryCustomerOrderingFormPathById(int id){
+		return this.customerOrderMapper.selectCustomerOrderingFormPathById(id);
+	}
+
+	@Transactional 
+	public String queryCustomerReceiptFormPathById(int id){
+		return this.customerOrderMapper.selectCustomerReceiptPathById(id);
+	}
 	
 	/**
 	 * BEGIN CustomerServiceRecord
