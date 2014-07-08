@@ -425,7 +425,16 @@
 							</c:when>
 							<c:otherwise>
 								<form class="form-horizontal" action="${ctx }/order/checkout" method="post" id="checkoutForm">
-									<button type="submit"  class="btn btn-success btn-lg btn-block" data-id="checkoutForm">Checkout</button>
+									<!-- <button type="submit"  class="btn btn-success btn-lg btn-block" data-id="checkoutForm">Checkout</button> -->
+									<div class="btn-group dropup btn-block">
+										<button type="button" class="btn btn-success btn-lg btn-block dropdown-toggle" data-toggle="dropdown">
+											Checkout <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" >
+											<li><a href="javascript:void(0);" id="online_payment">Online Payment</a></li>
+											<li><a href="javascript:void(0);" id="bank_depoist">Bank Depoist</a></li>
+										</ul>
+									</div>
 								</form>
 							</c:otherwise>
 						</c:choose>
@@ -498,12 +507,9 @@
 		radioClass : 'iradio_square-green'
 	});
 	
-	$('button[type="submit"]').click(function(e){
-		e.preventDefault();
-		var b = $('#termckb').prop('checked');
-		if (b) {
-			var form_id = $(this).attr('data-id');
-			$('#' + form_id).submit();
+	$('#online_payment').click(function(){
+		if ($('#termckb').prop('checked')) {
+			$('#checkoutForm').submit();
 		} else {
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}
