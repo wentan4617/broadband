@@ -444,14 +444,19 @@ public class CustomerController {
 		}
 		
 		Double orderTotalPrice = customer.getCustomerOrder().getOrder_total_price();
+		Double vprice = 0d;
 		
 		for (Voucher vQuery: customer.getVouchers()) {
 			orderTotalPrice -= vQuery.getFace_value();
+			vprice += vQuery.getFace_value();
 		}
 		
 		String redirectUrl = "";
 		
 		if (orderTotalPrice > 0) {
+			
+			customer.setBalance(vprice + orderTotalPrice);
+			
 			GenerateRequest gr = new GenerateRequest();
 
 			gr.setAmountInput(new DecimalFormat("#.00").format(orderTotalPrice));
@@ -473,7 +478,7 @@ public class CustomerController {
 			customer.setCustomer_type("personal");
 			customer.setUser_name(customer.getLogin_name());
 			customer.setPassword(TMUtils.generateRandomString(6));
-			customer.setBalance(Math.abs(orderTotalPrice));
+			customer.setBalance(Math.abs(vprice));
 			
 			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 			
@@ -582,7 +587,7 @@ public class CustomerController {
 				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
 				cts.add(ctVoucher);
 			}
-
+			
 			this.crmService.registerCustomer(customer, cts);
 			
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);

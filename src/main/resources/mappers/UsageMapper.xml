@@ -20,6 +20,7 @@
 		, co.svlan 			as co_svlan
 		, co.cvlan 			as co_cvlan
 		, co.order_status	as co_order_status
+		, co.broadband_asid as co_broadband_asid
 		
 		, c.id 				as c_id
 		, c.first_name 		as c_first_name
@@ -44,6 +45,7 @@
 		<result property="svlan" column="co_svlan"/>
 		<result property="cvlan" column="co_cvlan"/>
 		<result property="order_status" column="co_order_status"/>
+		<result property="broadband_asid" column="co_broadband_asid"/>
 		
 		<association property="customer" column="c_id" javaType="Customer">
 			<id property="id" column="c_id"/>

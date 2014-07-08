@@ -417,7 +417,6 @@
 											<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
 										</form>
 									</c:when> 
-									
 								</c:choose> --%>
 								<form class="form-horizontal" action="${ctx }/order/plan-term/business/save" method="post" id="orderForm">
 									<button type="submit" class="btn btn-success btn-lg btn-block" data-id="orderForm">Submit Order</button>
@@ -510,6 +509,16 @@
 	$('#online_payment').click(function(){
 		if ($('#termckb').prop('checked')) {
 			$('#checkoutForm').submit();
+		} else {
+			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
+		}
+	});
+	
+	$('#bank_depoist').click(function(){
+		if ($('#termckb').prop('checked')) {
+			var $form = $('#checkoutForm');
+			$form.attr('action', '${ctx }/order/plan-term/personal/save');
+			$form.submit();
 		} else {
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}

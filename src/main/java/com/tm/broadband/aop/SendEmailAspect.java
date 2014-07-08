@@ -44,6 +44,8 @@ public class SendEmailAspect {
 	public void sendEmailAfterOrderTerm(JoinPoint jp) {
 		Object [] objs = jp.getArgs();
 		Customer customer = (Customer)objs[1];
+		
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
 		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
@@ -51,6 +53,8 @@ public class SendEmailAspect {
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
 		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
