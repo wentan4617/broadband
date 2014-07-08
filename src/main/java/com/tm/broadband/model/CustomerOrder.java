@@ -58,6 +58,8 @@ public class CustomerOrder implements Serializable {
 	private Integer user_id;
 	private String ddpay_pdf_path;
 	private Boolean is_ddpay;
+	private String ordering_form_pdf_path;
+	private String receipt_pdf_path;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -504,6 +506,22 @@ public class CustomerOrder implements Serializable {
 	public void setNext_invoice_create_date_flag_str(
 			String next_invoice_create_date_flag_str) {
 		this.next_invoice_create_date_flag_str = next_invoice_create_date_flag_str;
+	}
+
+	public String getOrdering_form_pdf_path() {
+		return ordering_form_pdf_path;
+	}
+
+	public void setOrdering_form_pdf_path(String ordering_form_pdf_path) {
+		this.ordering_form_pdf_path = ordering_form_pdf_path;
+	}
+
+	public String getReceipt_pdf_path() {
+		return receipt_pdf_path;
+	}
+
+	public void setReceipt_pdf_path(String receipt_pdf_path) {
+		this.receipt_pdf_path = receipt_pdf_path;
 	}
 
 }
