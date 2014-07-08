@@ -5,7 +5,7 @@
 		</h4>
 	</div>
 	<div class="panel-body">
-		<form class="form-horizontal" role="form">
+		<form class="form-horizontal" >
 			<div class="form-group">
 				<label class="col-md-6 control-label">Customer ID:</label>
 				<div class="col-md-6">
@@ -18,12 +18,17 @@
 					<p class="form-control-static"><.=customer_type .></p>
 				</div>
 			</div>
+			
+			<. if (identity_type) {.>
+			
 			<div class="form-group">
 				<label class="col-md-6 control-label"><.=identity_type.></label>
 				<div class="col-md-6">
 					<p class="form-control-static"><.=identity_number .></p>
 				</div>
 			</div>
+			
+			<.}.>
 			
 			<. if(customer_type == 'personal') { .>
 			
