@@ -488,13 +488,16 @@ public class CustomerController {
 
 			this.crmService.registerCustomer(customer, cts);
 			
-			this.crmService.createInvoicePDFByInvoiceID(cts.get(0).getInvoice_id(), false);
+			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
+			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+			
+			//this.crmService.createInvoicePDFByInvoiceID(cts.get(0).getInvoice_id(), false);
 
-			String filePath = TMUtils.createPath(
+			/*String filePath = TMUtils.createPath(
 					"broadband" 
 					+ File.separator
 					+ "customers" + File.separator + customer.getId()
-					+ File.separator + "invoice_" + cts.get(0).getInvoice_id() + ".pdf");
+					+ File.separator + "invoice_" + cts.get(0).getInvoice_id() + ".pdf");*/
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -505,8 +508,8 @@ public class CustomerController {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("invoice_" + cts.get(0).getInvoice_id() + ".pdf");
-			applicationEmail.setAttachPath(filePath);
+			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+			applicationEmail.setAttachPath(receiptPath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 			// get sms register template from db
@@ -582,13 +585,16 @@ public class CustomerController {
 
 			this.crmService.registerCustomer(customer, cts);
 			
-			this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
+			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+			
+			/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
 
 			String filePath = TMUtils.createPath(
 					"broadband" 
 					+ File.separator
 					+ "customers" + File.separator + customer.getId()
-					+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+					+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");*/
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -599,8 +605,8 @@ public class CustomerController {
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
-			applicationEmail.setAttachPath(filePath);
+			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+			applicationEmail.setAttachPath(receiptPath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 			// get sms register template from db

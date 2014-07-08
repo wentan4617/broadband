@@ -6,13 +6,9 @@ public class ApplicationEmail implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
-	/** �ռ��� **/
 	private String addressee;
-	/** ���͸� **/
 	private String cc;
-	/** �ʼ����� **/
 	private String subject;
-	/** �ʼ����� **/
 	private String content;
 	// attach path
 	private String attachPath;
