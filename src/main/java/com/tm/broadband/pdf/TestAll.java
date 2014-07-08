@@ -2,20 +2,17 @@ package com.tm.broadband.pdf;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.DocumentException;
-import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Organization;
-import com.tm.broadband.model.TerminationRefund;
-import com.tm.broadband.model.User;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
 
@@ -353,32 +350,32 @@ public class TestAll {
 
 //		EarlyTerminationChargePDFCreator etcPDFCreator = new EarlyTerminationChargePDFCreator();
 		
-		CompanyDetail cd = new CompanyDetail();
-		Customer c = new Customer();
-		Organization org = new Organization();
-		CustomerOrder co = new CustomerOrder();
-//		EarlyTerminationCharge etc = new EarlyTerminationCharge();
-		
-		cd.setName("CyberPark Limited");
-		cd.setBilling_address("PO Box 41547, St Lukes, Auckland 1346, New Zealand");
-		cd.setTelephone("0800 2 CYBER (29237)");
-		cd.setDomain("www.cyberpark.co.nz");
-		cd.setGst_registration_number("113-460-148");
-		cd.setBank_name("ANZ");
-		cd.setBank_account_name("CyberPark Limited");
-		cd.setBank_account_number("06-0709-0444426-00");
-		
-		c.setId(600000);
-		c.setCustomer_type("personal");
-		c.setTitle("Mr");
-		c.setFirst_name("DONG");
-		c.setLast_name("CHEN");
-		c.setAddress("898 New North Road, Mount Albert, Auckland 1025");
-		
-		org.setOrg_name("Triniti of Silver NZ Ltd");
-		
-		co.setId(700000);
-		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD("2014-01-10"));
+//		CompanyDetail cd = new CompanyDetail();
+//		Customer c = new Customer();
+//		Organization org = new Organization();
+//		CustomerOrder co = new CustomerOrder();
+////		EarlyTerminationCharge etc = new EarlyTerminationCharge();
+//		
+//		cd.setName("CyberPark Limited");
+//		cd.setBilling_address("PO Box 41547, St Lukes, Auckland 1346, New Zealand");
+//		cd.setTelephone("0800 2 CYBER (29237)");
+//		cd.setDomain("www.cyberpark.co.nz");
+//		cd.setGst_registration_number("113-460-148");
+//		cd.setBank_name("ANZ");
+//		cd.setBank_account_name("CyberPark Limited");
+//		cd.setBank_account_number("06-0709-0444426-00");
+//		
+//		c.setId(600000);
+//		c.setCustomer_type("personal");
+//		c.setTitle("Mr");
+//		c.setFirst_name("DONG");
+//		c.setLast_name("CHEN");
+//		c.setAddress("898 New North Road, Mount Albert, Auckland 1025");
+//		
+//		org.setOrg_name("Triniti of Silver NZ Ltd");
+//		
+//		co.setId(700000);
+//		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD("2014-01-10"));
 		
 //		etc.setId(200000);
 //		etc.setCustomer_id(c.getId());
@@ -410,30 +407,116 @@ public class TestAll {
 		
 		
 		
-		Map<String, Object> map = TMUtils.terminationRefundCalculations(TMUtils.parseDateYYYYMMDD("2014-06-10"), 109d);
+//		Map<String, Object> map = TMUtils.terminationRefundCalculations(TMUtils.parseDateYYYYMMDD("2014-06-10"), 109d);
+//		
+//		TerminationRefund tr = new TerminationRefund();
+//		tr.setId(300000);
+//		tr.setCreate_date(new Date());
+//		tr.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-06-10"));
+//		tr.setProduct_name("ADSL + PSTN - Office Advisor $109 + GST, 150GB");
+//		tr.setProduct_monthly_price(109d);
+//		tr.setRefund_amount((Double) map.get("refund_amount"));
+//		tr.setRefund_bank_account_number("05-12345-09876-009");
+//		tr.setRefund_bank_account_name("COOK");
+//		tr.setDays_between_end_last((Integer) map.get("remaining_days"));
+//		
+//		User u = new User();
+//		u.setId(10);
+//		u.setUser_role("accountant");
+//		
+//		TerminationRefundPDFCreator trPDFCreator = new TerminationRefundPDFCreator();
+//		trPDFCreator.setCd(cd);
+//		trPDFCreator.setEtr(tr);
+//		trPDFCreator.setOrg(org);
+//		trPDFCreator.setC(c);
+//		trPDFCreator.setU(u);
+////		System.out.println(trPDFCreator.create());
+
 		
-		TerminationRefund tr = new TerminationRefund();
-		tr.setId(300000);
-		tr.setCreate_date(new Date());
-		tr.setTermination_date(TMUtils.parseDateYYYYMMDD("2014-06-10"));
-		tr.setProduct_name("ADSL + PSTN - Office Advisor $109 + GST, 150GB");
-		tr.setProduct_monthly_price(109d);
-		tr.setRefund_amount((Double) map.get("refund_amount"));
-		tr.setRefund_bank_account_number("05-12345-09876-009");
-		tr.setRefund_bank_account_name("COOK");
-		tr.setDays_between_end_last((Integer) map.get("remaining_days"));
+		/**
+		 * BEGIN TEST OrderPDFCreator
+		 */
+		Customer c = new Customer();
+		Organization org = new Organization();
+		CustomerOrder co = new CustomerOrder();
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		
-		User u = new User();
-		u.setId(10);
-		u.setUser_role("accountant");
+		// CUSTOMER type
+		c.setCustomer_type("business");
+		// ORDER Broadband Type
+		// Necessary if broadband type is transition
+		co.setOrder_broadband_type("transition");
+		co.setTransition_provider_name("Telecom");
+		co.setTransition_account_holder_name("David Li");
+		co.setTransition_account_number("1234 4321 1234 4321");
+		co.setTransition_porting_number("9876 6789 9876 6789");
 		
-		TerminationRefundPDFCreator trPDFCreator = new TerminationRefundPDFCreator();
-		trPDFCreator.setCd(cd);
-		trPDFCreator.setEtr(tr);
-		trPDFCreator.setOrg(org);
-		trPDFCreator.setC(c);
-		trPDFCreator.setU(u);
-//		System.out.println(trPDFCreator.create());
+		// set customer
+		c.setId(600089);
+		c.setTitle("Mr");
+		c.setLogin_name("steven1989930");
+		c.setFirst_name("Dong");
+		c.setLast_name("Chen");
+		c.setEmail("davidli@gmail.com");
+		c.setCellphone("021 1234567");
+		c.setPhone("021 1234567");
+		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
+		c.setDriver_licence("5a. DM670646     5b. 241");
+		c.setPassport("G4041765");
+		c.setCountry("New Zealand");
+		
+		// set org
+		org.setOrg_name("CyberPark");
+		org.setOrg_type("NZ Incoporated Company");
+		org.setOrg_trading_name("NZ Limited");
+		org.setOrg_register_no("NZ19876542");
+		org.setOrg_incoporate_date(new Date());
+		org.setHolder_name("Steve");
+		org.setHolder_job_title("Manager");
+		org.setHolder_phone("0210210213");
+		org.setHolder_email("Steve@gmail.com");
+
+		// set order detail
+		// SET PLAN DETAIL
+		cod.setDetail_name("ADSL Naked 150 GB Plan");
+		cod.setDetail_type("plan-term");
+		cod.setDetail_price(89.0d);
+		cod.setDetail_data_flow(100L);
+		cod.setDetail_term_period(24);
+		cod.setDetail_unit(3);
+		cods.add(cod);
+		// SET ADD ON DETAIL
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("Broadband New Connection");
+		cod.setDetail_type("new-connection");
+		cod.setDetail_price(99.0d);
+		cod.setDetail_unit(1);
+		cods.add(cod);
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+		cod.setDetail_type("hardware-router");
+		cod.setDetail_price(49.0d);
+		cod.setDetail_unit(2);
+		cods.add(cod);
+		
+		// set order
+		co.setId(60005);
+		co.setOrder_create_date(new Date());
+		co.setCustomerOrderDetails(cods);
+		
+		// call OrderPDFCreator
+		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
+		oPDFCreator.setCustomer(c);
+		oPDFCreator.setOrg(org);
+		oPDFCreator.setCustomerOrder(co);
+		
+		// create order PDF
+		System.out.println(oPDFCreator.create());
+		/**
+		 * END TEST OrderPDFCreator
+		 */
 		
 	}
 

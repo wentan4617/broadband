@@ -25,11 +25,11 @@ import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
 
 /** 
-* Generates Order PDF
+* Generates Ordering PDF
 * 
 * @author DONG CHEN
 */ 
-public class OrderPDFCreator extends ITextUtils {
+public class OrderingPDFCreator extends ITextUtils {
 	private Customer customer;
 	private Organization org;
 	private CustomerOrder customerOrder;
@@ -57,9 +57,9 @@ public class OrderPDFCreator extends ITextUtils {
 	// END Order Detail Differentiations Variables
 	// END Temporary Variables
 	
-	public OrderPDFCreator(){}
+	public OrderingPDFCreator(){}
 	
-	public OrderPDFCreator(Customer customer, CustomerOrder customerOrder, Organization org){
+	public OrderingPDFCreator(Customer customer, CustomerOrder customerOrder, Organization org){
 		this.setCustomer(customer);
 		this.setCustomerOrder(customerOrder);
 		this.setOrg(org);
@@ -106,10 +106,10 @@ public class OrderPDFCreator extends ITextUtils {
 //      PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(inputFile));
         // END If Merge PDF First Part
         
-		// Output PDF Path, e.g.: application_60089.pdf
+		// Output PDF Path, e.g.: ordering_form_600089.pdf
 		String outputFile = TMUtils.createPath("broadband" + File.separator
 				+ "customers" + File.separator + this.customer.getId()
-				+ File.separator + "application_" + this.customerOrder.getId()
+				+ File.separator + "ordering_form_" + this.customerOrder.getId()
 				+ ".pdf");
         
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
@@ -119,6 +119,8 @@ public class OrderPDFCreator extends ITextUtils {
         
     	// company_logo
     	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 108.75F, 51.00000000000001F, 32F, 762F);
+    	
+        setGlobalBorderWidth(0);
     	
         // set order PDF title table
 		document.add(createOrderPDFTitleTable());
@@ -141,6 +143,7 @@ public class OrderPDFCreator extends ITextUtils {
 		document.add(createOrderDetailTable());
 		
 		// set FIRST PAGE bottom texts
+		// Bottom
 		addText(writer, "Print from www.cyberpark.co.nz", ITextFont.arial_normal_10, 190F, 26F);
 		addText(writer, "0800 2 CYBER (29237)", ITextFont.arial_normal_10, 360F, 26F);
     	// two-dimensional_code
@@ -180,12 +183,12 @@ public class OrderPDFCreator extends ITextUtils {
         PdfPTable orderPDFTitleTable = newTable().columns(14).widthPercentage(102F).o();
     	
     	// BEGIN ORDER CONFIRMATION AREA PADDING TOP
-        addEmptyCol(orderPDFTitleTable, 1F, 14);
+        addEmptyCol(orderPDFTitleTable, 20F, 14);
     	// END ORDER CONFIRMATION AREA PADDING TOP
 
         // BEGIN ORDER CONFIRMATION TITLE
-        addPDFTitle(orderPDFTitleTable, "BROADBAND APPLICATION", ITextFont.arial_colored_bold_23, 4F, 0, PdfPCell.ALIGN_RIGHT, 14);
-        addPDFTitle(orderPDFTitleTable, "CONFIRMATION", ITextFont.arial_colored_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
+        addPDFTitle(orderPDFTitleTable, "ORDERING FORM", ITextFont.arial_colored_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
+//        addPDFTitle(orderPDFTitleTable, "CONFIRMATION", ITextFont.arial_colored_bold_23, 22F, PdfPCell.BOTTOM, PdfPCell.ALIGN_RIGHT, 14);
         // END ORDER CONFIRMATION TITLE
         
 		return orderPDFTitleTable;
@@ -582,8 +585,36 @@ public class OrderPDFCreator extends ITextUtils {
         addLineCol(orderDetailTable, 3, borderColor, 1F);
     	// END SEPARATOR
         
+        PdfPTable innerTable = newTable().columns(27).widthPercentage(100F).o();
+        addCol(innerTable, "Pay By Bank Deposit:").colspan(7).font(ITextFont.arial_normal_8).o();
+        addCol(innerTable, "Please put your Ordering No.").colspan(9).font(ITextFont.arial_bold_8).o();
+        addCol(innerTable, String.valueOf(this.getCustomerOrder().getId())).colspan(3).font(ITextFont.arial_colored_normal_8).o();
+        addCol(innerTable, "in the reference").colspan(8).font(ITextFont.arial_bold_8).o();
+        
+        addCol(innerTable, "Bank:").colspan(7).font(ITextFont.arial_normal_8).o();
+        addCol(innerTable, "ANZ").colspan(20).font(ITextFont.arial_bold_8).o();
+        
+        addCol(innerTable, "Name of Account:").colspan(7).font(ITextFont.arial_normal_8).o();
+        addCol(innerTable, "Cyberpark Limited").colspan(20).font(ITextFont.arial_bold_8).o();
+        
+        addCol(innerTable, "Account Number:").colspan(7).font(ITextFont.arial_normal_8).o();
+        addCol(innerTable, "06-0709-0444426-00").colspan(20).font(ITextFont.arial_bold_8).o();
+        addCol(innerTable, "Your ordering form will be hold for 5 working days.").colspan(27).paddingV(10F).font(ITextFont.arial_bold_red_10).o();
+        
+//        addCol(innerTable, "Cheques payable to:").colspan(2).font(ITextFont.arial_normal_8).o();
+//        addCol(innerTable, "Please write your Ordering No. on the back of your cheque").colspan(6).font(ITextFont.arial_bold_8).o();
+//        
+//        addCol(innerTable, "Post to:").colspan(2).indent(14F).font(ITextFont.arial_normal_8).o();
+//        addCol(innerTable, "Cyberpark Limited").colspan(6).font(ITextFont.arial_bold_8).o();
+//        
+//        addCol(innerTable, "").colspan(2).o();
+//        addCol(innerTable, "P.O.Box 41547 St Lukes, Auckland").colspan(6).font(ITextFont.arial_bold_8).o();
+        
+        addTableInCol(orderDetailTable, innerTable).rowspan(3).colspan(7).border(0).o();
+        
+//        addCol(orderDetailTable, "asdad ").rowspan(3).colspan(7).border(0).o();
+        
         // BEGIN TOTAL BEFORE GST
-        addEmptyCol(orderDetailTable, 7);
         addCol(orderDetailTable, "Total before GST", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END TOTAL BEFORE GST
@@ -591,21 +622,18 @@ public class OrderPDFCreator extends ITextUtils {
         if(this.getCustomer().getCustomer_type().equals("business")){
             
             // BEGIN GST
-            addEmptyCol(orderDetailTable, 7);
             addCol(orderDetailTable, "GST at " + this.businessGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             // END GST
         } else {
             
             // BEGIN GST
-            addEmptyCol(orderDetailTable, 7);
             addCol(orderDetailTable, "GST at " + this.personalGST, 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(gst)), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
             // END GST
         }
         
         // BEGIN ORDER TOTAL
-        addEmptyCol(orderDetailTable, 7);
         addCol(orderDetailTable, "Order Total", 2, 0F, ITextFont.arial_bold_12, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(totalPrice)), 1, 0F, ITextFont.arial_bold_10, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END ORDER TOTAL

@@ -106,7 +106,9 @@
 		co.`previous_provider_invoice`			as co_previous_provider_invoice,
 		co.`user_id`							as co_user_id,
 		co.`ddpay_pdf_path`						as co_ddpay_pdf_path,
-		co.`is_ddpay`							as co_is_ddpay
+		co.`is_ddpay`							as co_is_ddpay,
+		co.`ordering_form_pdf_path`				as co_ordering_form_pdf_path,
+		co.`receipt_pdf_path`					as co_receipt_pdf_path
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -144,6 +146,8 @@
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 		<result property="is_ddpay" column="co_is_ddpay" />
+		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
+		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -362,6 +366,8 @@
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 		<result property="is_ddpay" column="co_is_ddpay" />
+		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
+		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -467,6 +473,8 @@
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 		<result property="is_ddpay" column="co_is_ddpay" />
+		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
+		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -531,6 +539,8 @@
 		<result property="user_id" column="co_user_id" />
 		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
 		<result property="is_ddpay" column="co_is_ddpay" />
+		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
+		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -571,7 +581,8 @@
 			`transition_account_number`, `transition_porting_number`, `hardware_post`,
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
-			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`) 
+			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
+			`receipt_pdf_path`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
@@ -579,7 +590,8 @@
 			#{transition_account_number}, #{transition_porting_number}, #{hardware_post},
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
-			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay})
+			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
+			#{receipt_pdf_path})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -625,7 +637,9 @@
 			<if test="previous_provider_invoice != null">previous_provider_invoice=#{previous_provider_invoice},</if>
 			<if test="rfs_date != null">user_id=#{user_id},</if>
 			<if test="ddpay_pdf_path != null">ddpay_pdf_path=#{ddpay_pdf_path},</if>
-			<if test="is_ddpay != null">is_ddpay=#{is_ddpay}</if>
+			<if test="is_ddpay != null">is_ddpay=#{is_ddpay},</if>
+			<if test="ordering_form_pdf_path != null">ordering_form_pdf_path=#{ordering_form_pdf_path},</if>
+			<if test="receipt_pdf_path != null">receipt_pdf_path=#{receipt_pdf_path}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

@@ -45,7 +45,7 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
 import com.tm.broadband.pdf.CreditPDFCreator;
-import com.tm.broadband.pdf.OrderPDFCreator;
+import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
@@ -315,7 +315,7 @@ public class SaleController {
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
 		try {
-			orderPDFPath = new OrderPDFCreator(customer, customer.getCustomerOrder(), customer.getOrganization()).create();
+			orderPDFPath = new ApplicationPDFCreator(customer, customer.getCustomerOrder(), customer.getOrganization()).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
