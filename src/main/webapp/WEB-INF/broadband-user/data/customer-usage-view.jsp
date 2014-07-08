@@ -135,8 +135,8 @@
 			
 			$('#usageProgress').attr('style', 'width:' + widthVal + '%');
 			
-			console.log('widthVal: ' + widthVal);
-			console.log('usageWidth: ' + usageWidth);
+			//console.log('widthVal: ' + widthVal);
+			//console.log('usageWidth: ' + usageWidth);
 			
 			if (widthVal < 50) { console.log('progress-bar-success');
 				$('#usageProgress').addClass('progress-bar-success');
