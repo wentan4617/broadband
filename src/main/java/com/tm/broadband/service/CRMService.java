@@ -750,14 +750,18 @@ public class CRMService {
 		oPDFCreator.setOrg(c.getOrganization());
 		oPDFCreator.setCustomerOrder(c.getCustomerOrder());
 		
+		String pdfPath = "";
 		try {
-			return oPDFCreator.create();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			pdfPath = oPDFCreator.create();
+		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", c.getCustomerOrder().getId());
+		co.setOrdering_form_pdf_path(pdfPath);
+		this.customerOrderMapper.updateCustomerOrder(co);
+		
+		return pdfPath;
 	}
 	/**
 	 * END createOrderingForm
@@ -772,15 +776,19 @@ public class CRMService {
 		rPDFCreator.setCustomer(c);
 		rPDFCreator.setOrg(c.getOrganization());
 		rPDFCreator.setCustomerOrder(c.getCustomerOrder());
-		
+
+		String pdfPath = "";
 		try {
-			return rPDFCreator.create();
-		} catch (DocumentException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			pdfPath = rPDFCreator.create();
+		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		return null;
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", c.getCustomerOrder().getId());
+		co.setReceipt_pdf_path(pdfPath);
+		this.customerOrderMapper.updateCustomerOrder(co);
+		
+		return pdfPath;
 	}
 	/**
 	 * END createReceipt
