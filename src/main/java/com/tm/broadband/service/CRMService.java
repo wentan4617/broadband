@@ -58,6 +58,8 @@ import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.pdf.OrderingPDFCreator;
+import com.tm.broadband.pdf.ReceiptPDFCreator;
 import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.MailRetriever;
@@ -737,6 +739,52 @@ public class CRMService {
 	/*
 	 * end customer invoice
 	 * */
+	
+	/**
+	 * BEGIN createOrderingForm
+	 */
+	public String createOrderingFormPDFByDetails(Customer c){
+		// call OrderPDFCreator
+		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
+		oPDFCreator.setCustomer(c);
+		oPDFCreator.setOrg(c.getOrganization());
+		oPDFCreator.setCustomerOrder(c.getCustomerOrder());
+		
+		try {
+			return oPDFCreator.create();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * END createOrderingForm
+	 */
+
+	/**
+	 * BEGIN createReceipt
+	 */
+	public String createReceiptPDFByDetails(Customer c){
+		// call OrderPDFCreator
+		ReceiptPDFCreator rPDFCreator = new ReceiptPDFCreator();
+		rPDFCreator.setCustomer(c);
+		rPDFCreator.setOrg(c.getOrganization());
+		rPDFCreator.setCustomerOrder(c.getCustomerOrder());
+		
+		try {
+			return rPDFCreator.create();
+		} catch (DocumentException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	/**
+	 * END createReceipt
+	 */
 	
 	// manually generating invoice PDF by id
 	@Transactional
