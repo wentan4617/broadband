@@ -344,14 +344,14 @@ public class CRMService {
 		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
 		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
 		
-		CustomerInvoice ci = new CustomerInvoice();
+		/*CustomerInvoice ci = new CustomerInvoice();
 		ci.setCustomer_id(customer.getId());
 		ci.setOrder_id(customer.getCustomerOrder().getId());
 		ci.setCreate_date(new Date(System.currentTimeMillis()));
 		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
-		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
+		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());*/
 		
-		if (cts != null) {
+		/*if (cts != null) {
 			Double amount = 0d;
 			for (CustomerTransaction ct: cts) {
 				amount += ct.getAmount();
@@ -369,17 +369,17 @@ public class CRMService {
 		ci.setPaid_type(cts.get(0).getCard_name());
 		
 		this.ciMapper.insertCustomerInvoice(ci);
-		customer.setCustomerInvoice(ci);
+		customer.setCustomerInvoice(ci);*/
 		
 		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
 			cod.setOrder_id(customer.getCustomerOrder().getId());
 			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			cid.setInvoice_id(ci.getId());
+			/*cid.setInvoice_id(ci.getId());
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_desc(cod.getDetail_desc());
 			cid.setInvoice_detail_price(cod.getDetail_price());
-			cid.setInvoice_detail_unit(cod.getDetail_unit());
+			cid.setInvoice_detail_unit(cod.getDetail_unit());*/
 			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
 		
@@ -387,7 +387,7 @@ public class CRMService {
 			for (CustomerTransaction ct: cts) {
 				ct.setCustomer_id(customer.getId());
 				ct.setOrder_id(customer.getCustomerOrder().getId());
-				ct.setInvoice_id(ci.getId());
+				//ct.setInvoice_id(ci.getId());
 				ct.setTransaction_date(new Date(System.currentTimeMillis()));
 				this.customerTransactionMapper.insertCustomerTransaction(ct);
 			}
