@@ -153,7 +153,7 @@ public class CRMService {
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setOrder_create_date(new Date());
-		customer.getCustomerOrder().setOrder_status("paid");
+		//customer.getCustomerOrder().setOrder_status("paid");
 		customer.getCustomerOrder().setOrder_type(plan.getPlan_group().replace("plan", "order"));
 
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
@@ -413,6 +413,7 @@ public class CRMService {
 		if ("business".equals(customer.getCustomer_type())) {
 			customer.getOrganization().setCustomer_id(customer.getId());
 			this.organizationMapper.insertOrganization(customer.getOrganization());
+			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
 		}
 		
 		customer.getCustomerOrder().setCustomer_id(customer.getId());
@@ -420,7 +421,7 @@ public class CRMService {
 		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
 		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
 		
-		CustomerInvoice ci = new CustomerInvoice();
+		/*CustomerInvoice ci = new CustomerInvoice();
 		ci.setCustomer_id(customer.getId());
 		ci.setOrder_id(customer.getCustomerOrder().getId());
 		ci.setCreate_date(new Date(System.currentTimeMillis()));
@@ -432,18 +433,18 @@ public class CRMService {
 		ci.setStatus("unpaid");
 		
 		this.ciMapper.insertCustomerInvoice(ci);
-		customer.setCustomerInvoice(ci);
+		customer.setCustomerInvoice(ci);*/
 		
 		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
 			cod.setOrder_id(customer.getCustomerOrder().getId());
 			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
-			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			cid.setInvoice_id(ci.getId());
+			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			//cid.setInvoice_id(ci.getId());
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_desc(cod.getDetail_desc());
 			cid.setInvoice_detail_price(cod.getDetail_price());
 			cid.setInvoice_detail_unit(cod.getDetail_unit());
-			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
 		}
 		
 	}

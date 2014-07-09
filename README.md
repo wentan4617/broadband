@@ -15,6 +15,11 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+ 
+demand version 1.6.1 2014-07-09
+
+* 给order设置多个状态属性，这是一个非常重要的需求。
+* 给查询流量，添加查询功能，统计每天总流量
 
 demand version 1.6.0 2014-07-07
 

@@ -282,10 +282,23 @@
 						<hr/>
 						<div class="row">
 							<div class="col-md-2">
-								<a href="${ctx}/broadband-user/crm/customer/order/create/back" class="btn btn-success btn-lg btn-block" >Back</a>
+								<!-- /broadband-user/crm/customer/order/create/back -->
+								<a href="${ctx}/broadband-user/crm/customer/order/create" class="btn btn-success btn-lg btn-block" >Back</a>
 							</div>
 							<div class="col-md-2 col-md-offset-8">
-								<a href="${ctx}/broadband-user/crm/customer/order/confirm/save" class="btn btn-success btn-lg btn-block" >Save Order</a>
+								<%-- <a href="${ctx}/broadband-user/crm/customer/order/confirm/save" class="btn btn-success btn-lg btn-block" >Save Order</a> --%>
+								
+								<div class="btn-group dropup btn-block">
+									<button type="button" class="btn btn-success btn-lg btn-block dropdown-toggle" data-toggle="dropdown">
+										Checkout <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" >
+										<li><a href="javascript:void(0);" id="online_payment">Online Payment</a></li>
+										<li><a href="${ctx}/broadband-user/crm/customer/order/confirm/save" id="bank_depoist">Bank Deposit</a></li>
+									</ul>
+								</div>
+								<form action="${ctx }/broadband-user/crm/customer/order/checkout" method="post" id="checkoutForm">
+								</form>
 								<%-- <form class="form-horizontal" action="${ctx }/order/submit" method="post">
 									<button type="submit" class="btn btn-success btn-lg pull-right">Checkout</button>
 								</form> --%>
@@ -304,8 +317,9 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
-	
-
+	$('#online_payment').click(function(){
+		$('#checkoutForm').submit();
+	});
 })(jQuery);
 </script>
 <jsp:include page="../footer-end.jsp" />
