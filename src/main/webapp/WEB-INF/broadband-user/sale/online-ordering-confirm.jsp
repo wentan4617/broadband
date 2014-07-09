@@ -285,7 +285,18 @@
 								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block" >Back</a>
 							</div>
 							<div class="col-sm-3 col-sm-offset-6 col-md-2 col-md-offset-8">
-								<a  class="btn btn-success btn-lg btn-block" data-toggle="modal" data-target="#save_order_model" >Save Order</a>
+								
+								<!-- <div class="btn-group dropup btn-block">
+									<button type="button" class="btn btn-success btn-lg btn-block dropdown-toggle" data-toggle="dropdown">
+										Checkout <span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu" >
+										<li><a href="javascript:void(0);" id="online_payment">Online Payment</a></li>
+										<li><a data-toggle="modal" data-target="#save_order_model" id="bank_depoist">Bank Deposit</a></li>
+									</ul>
+								</div> -->
+								
+								<a  class="btn btn-success btn-lg btn-block"  data-toggle="modal" data-target="#save_order_model"  >Bank Deposit</a>
 							</div>
 						</div>
 						

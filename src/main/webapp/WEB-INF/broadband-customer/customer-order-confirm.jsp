@@ -569,7 +569,7 @@
 		 		if (!$.jsonValidation(json)) {
 		 			var v = json.model;
 		 			parent.remove();
-		 			total_vprice -= v.face_value; console.log(total_vprice);
+		 			total_vprice -= v.face_value; //console.log(total_vprice);
 		 			TAAV();
 		 		}
 		 	}).always(function() { l.stop(); });

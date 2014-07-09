@@ -281,7 +281,22 @@ public class SaleController {
 		
 		this.crmService.registerCustomerCalling(customer);
 		
-		this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachPath(orderingPath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
+		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+		
+		/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
 
 		String filePath = TMUtils.createPath(
 				"broadband" 
@@ -337,15 +352,15 @@ public class SaleController {
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
 		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-		
+*/		
 		status.setComplete();
 		
 		user = null;
 		notification = null;
 		applicationEmail = null;
 		companyDetail = null;
-		org = null;
-		co = null;
+		/*org = null;
+		co = null;*/
 		
 		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId() + "/" + customer.getCustomerOrder().getId();
 	}

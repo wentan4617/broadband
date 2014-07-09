@@ -392,6 +392,7 @@ public class CustomerController {
 		customer.setPassword(TMUtils.generateRandomString(6));
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
+		customer.getCustomerOrder().setOrder_status("pending");
 		
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
@@ -491,6 +492,7 @@ public class CustomerController {
 				cts.add(ctVoucher);
 			}
 
+			customer.getCustomerOrder().setOrder_status("paid");
 			this.crmService.registerCustomer(customer, cts);
 			
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
@@ -588,6 +590,7 @@ public class CustomerController {
 				cts.add(ctVoucher);
 			}
 			
+			customer.getCustomerOrder().setOrder_status("paid");
 			this.crmService.registerCustomer(customer, cts);
 			
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
