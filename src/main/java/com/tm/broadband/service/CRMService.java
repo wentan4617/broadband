@@ -720,6 +720,10 @@ public class CRMService {
 	/*
 	 * customer invoice
 	 * */
+	public void createCustomerInvoice(CustomerInvoice ci){
+		this.ciMapper.insertCustomerInvoice(ci);
+	}
+	
 	public CustomerInvoice queryCustomerInvoice(CustomerInvoice ci) {
 		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ci);
 		return cis!=null && cis.size()>0 ? cis.get(0) : null;
@@ -1187,7 +1191,7 @@ public class CRMService {
 				co.getOrder_using_start() != null ? TMUtils.isSameMonth(co.getOrder_using_start(), new Date()) : false;
 
 		// Calculate invoice's payable amount
-		Double totalPayableAmouont = 0d;
+		Double totalAmountPayable = 0d;
 		Double totalCreditBack = 0d;
 		
 		String pstn_number = null;
@@ -1224,7 +1228,7 @@ public class CRMService {
 				cid.setInvoice_detail_desc(cod.getDetail_desc());
 				cids.add(cid);
 				
-				totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, cod.getDetail_price());
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 			}
 			if("present-calling-minutes".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
@@ -1252,7 +1256,7 @@ public class CRMService {
 						cid.setInvoice_detail_price((Double)resultMap.get("totalPrice"));
 						
 						// Add remaining price into payable amount
-						totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, (Double)resultMap.get("totalPrice"));
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, (Double)resultMap.get("totalPrice"));
 						cids.add(cid);
 						
 						// If is not served in current month, then add plan-term type detail into invoice detail
@@ -1265,7 +1269,7 @@ public class CRMService {
 							cid.setInvoice_detail_price(cod.getDetail_price());
 							
 							// Add monthly price into payable amount
-							totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, cod.getDetail_price());
+							totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 							cids.add(cid);
 						}
 					}
@@ -1291,7 +1295,7 @@ public class CRMService {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					
 					// Payable amount plus ( detail price times detail unit )
-					totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
 				}
 				
@@ -1313,7 +1317,7 @@ public class CRMService {
 						cid.setInvoice_detail_price(cod.getDetail_price());
 						
 						// Add monthly price into payable amount
-						totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, cod.getDetail_price());
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 						cids.add(cid);
 					}
 
@@ -1336,7 +1340,7 @@ public class CRMService {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 
 					// Payable amount plus ( detail price times detail unit )
-					totalPayableAmouont = TMUtils.bigAdd(totalPayableAmouont, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
 				}
 				
@@ -1354,17 +1358,17 @@ public class CRMService {
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalPayableAmouont = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalPayableAmouont, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
+				totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
 			}
 		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
-		totalPayableAmouont = Double.parseDouble(TMUtils.fillDecimalPeriod(totalPayableAmouont));
+		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
 		
 		// Set current invoice's payable amount
-		ci.setAmount_payable(totalPayableAmouont);
-		ci.setFinal_payable_amount(TMUtils.bigSub(totalPayableAmouont, totalCreditBack));
+		ci.setAmount_payable("personal".toUpperCase().equals(c.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 
 		// Iteratively inserting invoice detail(s) into tm_invoice_detail table
@@ -1590,8 +1594,11 @@ public class CRMService {
 			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
 			
 		}
+		
+		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
+		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
 
-		ci.setAmount_payable(totalAmountPayable);
+		ci.setAmount_payable("personal".toUpperCase().equals(customer.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		// balance = final payable - paid
@@ -1644,6 +1651,10 @@ public class CRMService {
 	/**
 	 * BEGIN CustomerOrderDetail
 	 */
+	
+	public List<CustomerOrderDetail> queryCustomerOrderDetailsByOrderId(int order_id){
+		return this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(order_id);
+	}
 	
 	public String queryCustomerOrderDetailGroupByOrderId(int order_id) {
 		List<CustomerOrderDetail> customerOrderDetails = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(order_id);
@@ -1754,4 +1765,147 @@ public class CRMService {
 	/**
 	 * END CustomerServiceRecord
 	 */
+	
+	/**
+	 * BEGIN CustomerServiceGivenPaid
+	 */
+	@Transactional
+	public String serviceGivenPaid(Customer c, Organization org, CustomerOrder co, CompanyDetail cd, User u){
+		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(co.getId());
+		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+		
+		
+		Double totalCreditBack = 0d;
+		Double totalAmountPayable = 0d;
+		
+		for (CustomerOrderDetail cod : cods) {
+			
+			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			cid.setInvoice_detail_name(cod.getDetail_name());
+			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
+			
+			if ("discount".equals(cod.getDetail_type())
+					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+				
+				cid.setInvoice_detail_discount(cod.getDetail_price());
+				// decrease amountPayable
+				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cid.getInvoice_detail_discount(), cid.getInvoice_detail_unit()));
+				// add invoice detail to list
+				cids.add(cid);
+				// else if detail type is discount then this discount is expired
+				// and will not be add to the invoice detail list
+			} else if ("debit".equals(cod.getDetail_type())
+					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+				
+				cid.setInvoice_detail_price(cod.getDetail_price());
+				// decrease amountPayable
+				totalAmountPayable = TMUtils.bigSub(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit()));
+				// add invoice detail to list
+				cids.add(cid);
+				// else if detail type is discount then this discount is expired
+				// and will not be add to the invoice detail list
+			} else if (!"discount".equals(cod.getDetail_type())) {
+				if(cod.getDetail_type()!=null && "termination-credit".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_discount(cod.getDetail_price());
+					cid.setInvoice_detail_desc(cod.getDetail_desc());
+					cids.add(cid);
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cids.add(cid);
+				} else {
+					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+					cid.setInvoice_detail_unit(cod.getDetail_unit() != null  ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					// increase amountPayable
+					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+					// add invoice detail to list
+					cids.add(cid);
+				}
+			}
+		}
+		
+		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
+		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
+		
+		// IF customer's account credit is greater than final payable amount
+		if(c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
+			return null;
+		}
+		
+		CustomerInvoice ci = new CustomerInvoice();
+		ci.setCustomer_id(c.getId());
+		ci.setOrder_id(co.getId());
+		ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
+		ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 10));
+		this.ciMapper.insertCustomerInvoice(ci);
+		
+		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+		invoicePDF.setCompanyDetail(cd);
+		invoicePDF.setCustomer(c);
+		invoicePDF.setOrg(org);
+		invoicePDF.setCurrentCustomerInvoice(ci);
+
+		ci.setAmount_payable("personal".toUpperCase().equals(c.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
+		ci.setAmount_paid(c.getBalance()>=ci.getFinal_payable_amount() ? ci.getFinal_payable_amount() : ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
+		// balance = final payable - paid
+		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
+		// Add cids into ci
+		ci.setCustomerInvoiceDetails(cids);
+		ci.setStatus(c.getBalance()>=ci.getFinal_payable_amount() ? "paid" : "unpaid");
+
+		// If customer's account credit is greater than invoice's final payable amount, then paid off the invoice
+		if(c.getBalance()>=ci.getFinal_payable_amount()){
+			// BEGIN TRANSACTION ASSIGNMENT
+			CustomerTransaction ct = new CustomerTransaction();
+			// Assign invoice's paid amount to transaction's amount
+			ct.setAmount(ci.getAmount_paid());
+			ct.setAmount_settlement(ci.getAmount_paid());
+			// Assign card_name as ddpay
+			ct.setCard_name("account-credit");
+			// Assign transaction's sort as type's return from order by order_id
+			ct.setTransaction_sort(co.getOrder_type());
+			// Assign customer_id, order_id, invoice_id to transaction's related
+			// fields
+			ct.setCustomer_id(c.getId());
+			ct.setOrder_id(co.getId());
+			ct.setInvoice_id(ci.getId());
+			// Assign transaction's time as current time
+			ct.setTransaction_date(new Date());
+			ct.setCurrency_input("NZD");
+			ct.setExecutor(u.getId());
+			this.customerTransactionMapper.insertCustomerTransaction(ct);
+		}
+
+		// If customer's account credit is greater than invoice's final payable amount, then account credit = account credit - invoice's final payable amount
+		c.setBalance(c.getBalance()>=ci.getFinal_payable_amount() ? TMUtils.bigSub(c.getBalance(), ci.getFinal_payable_amount()) : c.getBalance());
+		
+		// Add cids into db
+		for (CustomerInvoiceDetail cid : cids) {
+			cid.setInvoice_id(ci.getId());
+			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+		}
+
+		// Set file path
+		String filePath = null;
+		try {
+			filePath = (String) invoicePDF.create().get("filePath");
+			// generate invoice PDF
+			ci.setInvoice_pdf_path(filePath);
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		ci.getParams().put("id", ci.getId());
+		this.ciMapper.updateCustomerInvoice(ci);
+		c.getParams().put("id", c.getId());
+		this.customerMapper.updateCustomer(c);
+		
+		
+		return filePath;
+	}
+	
 }

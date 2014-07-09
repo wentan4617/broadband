@@ -558,16 +558,22 @@
 					<div class="col-md-6">&nbsp;</div>
 					<div class="col-md-6">
 					<. if(customerOrder[i].order_using_start == null){ .>
-						<div class="btn-group pull-right">
+						<div class="btn-group pull-right" data-name="<.= customerOrder[i].id .>_service_giving_save_btn_group">
 							<button type="button" class="btn btn-primary btn-xs xs-btn-width-long">Save Service Giving</button>
 							<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu">
-								<li><a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_service_giving_save" data-way="save" data-pay-status="paid" data-toggle="tooltip" data-placement="right" data-original-title="Pay invoice with account credit and give service"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Service With Invoice</a></li>
+								<li><a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_service_giving_save" data-way="save" data-pay-status="paid" data-toggle="tooltip" data-placement="right" data-original-title="Pay invoice by account credit and service given"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;&nbsp;Service With Invoice</a></li>
 								<li><a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_service_giving_save" data-way="save" data-pay-status="unpaid" data-toggle="tooltip" data-placement="right" data-original-title="No invoice generation action, service given only"><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp;&nbsp;Service Only</a></li>
 							</ul>
 						</div>
+						<a id="<.= customerOrder[i].id .>" style="display:none;"
+						class="btn btn-xs btn-block xs-btn-width-longer pull-right btn-danger"
+						data-name="<.= customerOrder[i].id .>_service_giving_save"
+						data-way="update">
+							Update Service Giving
+						</a>
 					<. } else { .>
 						<a id="<.= customerOrder[i].id .>"
 						class="btn btn-xs btn-block xs-btn-width-longer pull-right btn-danger"

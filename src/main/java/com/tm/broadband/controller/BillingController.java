@@ -224,6 +224,8 @@ public class BillingController {
 			model.addAttribute("pageCis", pageCis);
 		} else {
 			Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+			pageCos.setPageNo(pageNo);
+			pageCos.setPageSize(30);
 			pageCos.getParams().put("where", "query_no_invoice");
 			pageCos.getParams().put("orderby", "ORDER BY order_create_date DESC");
 			model.addAttribute("pageCos", this.crmService.queryCustomerOrdersByPage(pageCos));

@@ -40,7 +40,7 @@ public class TMUtils {
 	private final static SimpleDateFormat date2Format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	private final static SimpleDateFormat date3Format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 	private final static DecimalFormat numberFormat = new DecimalFormat("0.00");
-	private final static DecimalFormat timeFormat = new DecimalFormat("00.00");
+	public final static DecimalFormat timeFormat = new DecimalFormat("00.00");
 	private final static String[] pwds = { "1", "5", "9", "8", "7", "6", "4", "3",
 		"2", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a",
 		"s", "d", "f", "g", "h", "j", "k", "l", "z", "x", "c", "v",

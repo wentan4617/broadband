@@ -312,7 +312,7 @@ public class InvoicePDFCreator extends ITextUtils {
         
         String customerName = null;
 //        String customerTitle = null;
-        if("business".equals(customer.getCustomer_type())){
+        if("business".toUpperCase().equals(customer.getCustomer_type().toUpperCase())){
         	customerName = org.getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
