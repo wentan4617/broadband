@@ -16,20 +16,28 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.6.5 2014-07-10
+
+* order界面顶部添加一个按钮：pay off this order，若客户不是DPS的方式下单，当accountant收到客户的款项则需要点击该按钮。作用是将该order的应付金额转成customer的account credit，并将order状态改为paid，以供Service Given时Service With Invoice按钮扣除account credit之用.(steven)
+
+demand version 1.6.0 2014-07-08
+
+* 10号需要手动发账单邮件的order：700087，700088，700089，700090，700091，700093。这些是早期签下的order，我,Gavin于08-07-2014将其全部录入CyberPark后台管理系统.(steven)
+
 demand version 1.6.0 2014-07-07
 
 * 编写发给provision和accountant的短信模版.(steven)
 * 编写Service Given时选择unpaid的email模版.(steven)
 * [基于application form的PDF模版，衍生出两种新模版：Ordering Form，Receipt](steven)
-* 后台order界面顶部添加两个按钮：View Ordering Form，View Receipt.(steven)
+* [后台order界面顶部添加两个按钮：Download Ordering Form，Download Ordering Receipt.](steven)
 * [添加一个字段next_invoice_create_date_flag，定位每个月的当天，取出order后根据该日期减7天存入next_invoice_create_date.](steven)
 * [修改出no term和no ddpay的invoice的next invoice create date不减7天.](steven)
 * 更改prepay下单后的email模版内容.(steven)
-* 点Save Service Given的时候，如果不是DDPay并且是termed的order或者是No Term的order则设置其next_invoice_create_date的同时在该字段日期上加7天赋给next_invoice_create_date_flag.(steven)
-* 点Save Service Given的时候，弹出气泡框，选择order paid则逻辑不变，如果选择order unpaid则通过余额来抵消账单然后通知客户你的账单余额已通过账户余额抵消了.(steven)
+* [点Save Service Given的时候，如果不是DDPay并且是termed的order或者是No Term的order则设置next_invoice_create_date_flag为服务开通日+1个月，并且设置next_invoice_create_date为服务开通日+1个月零7天.](steven)
+* [点Save Service Given的时候，弹出按钮组，选择Service Only则逻辑不变，若选择Service With Invoice则通过余额来抵消账单然后通知客户你的账单余额已通过账户余额抵消了.](steven)
 * 前台选plan时选非一个月的plan则提示他该plan的discount有多少个percentage.(kanny)
-* 在前台下单点击checkout时弹出一个气泡，里面有两个按钮：pay by dps，bank deposit(I'll do it by myself, in 3 working days).(kanny)
-* 前台下订单所扣款项数额不立即抵消账单，而是存储在客户的credit里，等到Service Given给完才会用客户credit余额抵消账单.(kanny)
+* 在前台下单点击checkout时弹出一个气泡，里面有两个按钮：pay by dps，bank deposit(I'll do it by myself, in 5 working days).(kanny)
+* [前台下订单所扣款项数额不立即抵消账单，而是存储在客户的credit里，等到Service Given给完才会用客户credit余额抵消账单.](kanny)
 * 下订单时发送短信给provision和accountant.(kanny)
 
 demand version 1.5.1 2014-07-05

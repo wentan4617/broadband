@@ -575,24 +575,33 @@
 							,'way':$(this).attr('data-way')
 							,'pay_status':$(this).attr('data-pay-status')+''
 					};
-					console.log(data);
-					var order_using_start = $('#'+this.id+'_order_using_start');
-					var order_next_invoice_create_date = $('#'+this.id+'_next_invoice_create_date');
+					
 					$.post('${ctx}/broadband-user/crm/customer/order/service_giving_date', data, function(json){
 						$.jsonValidation(json, 'left');
+						
+						if(json.model){
+							$('#'+json.model.id+'_order_using_start').html(json.model.order_using_start_str);
+							$('#'+json.model.id+'_next_invoice_create_date').html(json.model.next_invoice_create_date_str);
+							$('#'+json.model.id+'_service_giving_save').css('display', '');
+							$('#'+json.model.id+'_service_giving_save_btn_group').css('display', 'none');
+						}
+						
 					}, "json");
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
+					
+					
 					$.getCustomerOrder();
 					$.getInvoicePage(1);
+					$.getCustomerInfo();
+					$.getTxPage(1);
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveServiceGivingDeniedModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
-					$.getCustomerOrder();
-					$.getInvoicePage(1);
 				});
 				/*
 				 *	END customer order Service Giving Date area
@@ -650,7 +659,7 @@
 							,'pstn_number':pstn_number
 					};
 					$.post('${ctx}/broadband-user/crm/customer/order/pstn/edit', data, function(json){
-						$.jsonValidation(json, 'left');
+						$.jsonValidation(json, 'left');						
 					}, "json");
 				});
 				// Reset button when hidden order pstn dialog

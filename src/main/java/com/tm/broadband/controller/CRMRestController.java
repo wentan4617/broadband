@@ -529,6 +529,8 @@ public class CRMRestController {
 	@RequestMapping(value = "/broadband-user/crm/customer/order/status/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerOrderStatusEdit(Model model,
 			CustomerOrder customerOrder) {
+		
+		
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
@@ -536,10 +538,12 @@ public class CRMRestController {
 		System.out.println("customer_id: " + customerOrder.getCustomer_id());
 		System.out.println("status : " + customerOrder.getOrder_status());
 		
-		customerOrder.getParams().put("id", customerOrder.getId());
+		CustomerOrder co = new CustomerOrder();
+		co.setOrder_status(customerOrder.getOrder_status());
+		co.getParams().put("id", customerOrder.getId());
 
-		this.crmService.editCustomerOrder(customerOrder);
-		json.setModel(customerOrder);
+		this.crmService.editCustomerOrder(co);
+		json.setModel(co);
 
 		json.getSuccessMap().put("alert-success",
 				"Order Status had successfully been saved!");
@@ -742,8 +746,7 @@ public class CRMRestController {
 						|| (customerOrder.getIs_ddpay()!=null
 							&& !customerOrder.getIs_ddpay()))))) {
 			Calendar calNextInvoiceDay = Calendar.getInstance();
-			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder
-					.getOrder_using_start_str()));
+			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 			// Add plan unit months
 			calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
 			// Set next invoice create date flag
@@ -766,20 +769,44 @@ public class CRMRestController {
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			
-			String attachPath = "";
+			String attachPath = null;
 			String emailSort = "service-giving";
+			
 			if("paid".equals(pay_status)){
-				emailSort = "service-giving-paid";
+				User userSession = (User) req.getSession().getAttribute("userSession");
+				attachPath = this.crmService.serviceGivenPaid(customer, org, customerOrder, companyDetail, userSession);
+				
+				// If customer account credit insufficient
+				if(attachPath==null){
+					
+					user = null;
+					proLog = null;
+					co = null;
+					companyDetail = null;
+					customer = null;
+					org = null;
+					
+					json.getErrorMap().put("alert-error", "Insufficient Customer Account Credit, Service Given Date can not be settled!");
+					
+					return json;
+					
+				} else {
+					
+					emailSort = "service-giving-paid";
+				}
 			}
+			
 			/* check order status send mailer */
 			Notification notification = this.systemService.queryNotificationBySort(emailSort, "email");
-			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); /* call mail at value retriever */
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			applicationEmail.setAttachPath(attachPath);
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); /* call mail at value retriever */
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			applicationEmail.setAddressee(customer.getEmail());
+//			applicationEmail.setSubject(notification.getTitle());
+//			applicationEmail.setContent(notification.getContent());
+//			if("paid".equals(pay_status) && attachPath!=null){
+//				applicationEmail.setAttachPath(attachPath);
+//			}
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			notification = this.systemService.queryNotificationBySort(emailSort, "sms"); /* get sms register template from db */
 			MailRetriever.mailAtValueRetriever(notification, customer,customerOrder, companyDetail);
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); /* send sms to customer's mobile phone */
@@ -795,7 +822,7 @@ public class CRMRestController {
 						notificationEmail, notificationSMS);
 
 			}*/
-			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been saved!");
+			json.getSuccessMap().put("alert-success", "Service Given Date successfully settled!");
 		} else {
 			proLog.setProcess_way("editing service giving");
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
@@ -812,12 +839,12 @@ public class CRMRestController {
 			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-			json.getSuccessMap().put("alert-success", "Service Given Date had successlly been updated!");
+			json.getSuccessMap().put("alert-success", "Service Given Date successfully settled!");
 		}
 
 		this.crmService.editCustomerOrder(co, proLog);
 
-		json.setModel(co);
+		json.setModel(customerOrder);
 		
 		user = null;
 		proLog = null;
