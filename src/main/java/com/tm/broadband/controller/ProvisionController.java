@@ -50,62 +50,114 @@ public class ProvisionController {
 		page.getParams().put("where", "query_order_status");
 		page.getParams().put("orderby", "order by co.id desc");
 		page.getParams().put("status", "active");
-		if (order_status.equals("ordering")) {
-			page.getParams().put("order_status", order_status + "-paid");
-			page.getParams().put("order_status_1", order_status + "-pending");
-		} else {
-			page.getParams().put("order_status", order_status);
-		}
+		page.getParams().put("order_status", order_status);
 		
 		this.provisionService.queryCustomerOrdersByPage(page);
 		model.addAttribute("page", page);
 		
+		// New Order
 		if ("pending".equals(order_status)) {
 			model.addAttribute("pendingActive", "active");
-			model.addAttribute("panelheading", "Order Pending Customers View");
+			model.addAttribute("panelheading", "New Order &gt; Pending");
 		} else if ("paid".equals(order_status)) {
 			model.addAttribute("paidActive", "active");
-			model.addAttribute("panelheading", "Order Paid Customers View");
-		} else if ("ordering".equals(order_status)) {
-			model.addAttribute("orderingActive", "active");
-			model.addAttribute("panelheading", "Order Ordering Customers View");
-		} else if ("using".equals(order_status)) {
+			model.addAttribute("panelheading", "New Order &gt; Paid");
+		} else if ("pending-warning".equals(order_status)) {
+			model.addAttribute("pendingWarningActive", "active");
+			model.addAttribute("panelheading", "New Order &gt; Pending Warning");
+		} 
+		
+		// Provision
+		else if ("ordering-pending".equals(order_status)) {
+			model.addAttribute("orderingPendingActive", "active");
+			model.addAttribute("panelheading", "Provision &gt; Ordering Pending");
+		} else if ("ordering-paid".equals(order_status)) {
+			model.addAttribute("orderingPaidActive", "active");
+			model.addAttribute("panelheading", "Provision &gt; Ordering Paid");
+		} else if ("rfs".equals(order_status)) {
+			model.addAttribute("rfsActive", "active");
+			model.addAttribute("panelheading", "Provision &gt; RFS");
+		} 
+		
+		// In Service
+		else if ("using".equals(order_status)) {
 			model.addAttribute("usingActive", "active");
-			model.addAttribute("panelheading", "Order Using Customers View");
-		} else if ("cancel".equals(order_status)) {
-			model.addAttribute("cancelActive", "active");
-			model.addAttribute("panelheading", "Order Cancel Customers View");
-		} else if ("discard".equals(order_status)) {
-			model.addAttribute("discardActive", "active");
-			model.addAttribute("panelheading", "Order Discard Customers View");
+			model.addAttribute("panelheading", "In Service &gt; Using");
+		} 
+		
+		// Suspension
+		else if ("overflow".equals(order_status)) {
+			model.addAttribute("overflowActive", "active");
+			model.addAttribute("panelheading", "Suspension &gt; Over Flow");
+		} else if ("suspension".equals(order_status)) {
+			model.addAttribute("suspendedActive", "active");
+			model.addAttribute("panelheading", "Suspension &gt; Suspended");
+		} 
+		
+		// Disconnect
+		else if ("waiting-for-disconnect".equals(order_status)) {
+			model.addAttribute("waitingForDisconnectActive", "active");
+			model.addAttribute("panelheading", "Disconnect &gt; Waiting For Disconnect");
+		} else if ("disconnected".equals(order_status)) {
+			model.addAttribute("disconnectedActive", "active");
+			model.addAttribute("panelheading", "Disconnect &gt; Disconnected");
+		}
+		
+		// Void Order
+		else if ("void".equals(order_status)) {
+			model.addAttribute("voidActive", "active");
+			model.addAttribute("panelheading", "Void Order &gt; Void");
 		}
 		
 		Page<CustomerOrder> p = new Page<CustomerOrder>();
 		p.getParams().put("where", "query_order_status");
 		p.getParams().put("status", "active");
+		
+		// New Order
 		p.getParams().put("order_status", "pending");
 		model.addAttribute("pendingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
 		p.getParams().put("order_status", "paid");
 		model.addAttribute("paidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
-		p.getParams().put("order_status", "ordering-pending");
-		p.getParams().put("order_status_1", "ordering-paid");
-		model.addAttribute("orderingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
-		p.getParams().remove("order_status_1");
+		p.getParams().put("order_status", "pending-warning");
+		model.addAttribute("pendingWarningSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
+		// Provision
+		p.getParams().put("order_status", "ordering-pending");
+		model.addAttribute("orderingPendingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		p.getParams().put("order_status", "ordering-paid");
+		model.addAttribute("orderingPaidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		p.getParams().put("order_status", "rfs");
+		model.addAttribute("rfsSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		// In Service
 		p.getParams().put("order_status", "using");
 		model.addAttribute("usingSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
-		p.getParams().put("order_status", "cancel");
-		model.addAttribute("cancelSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		// Suspension
+		p.getParams().put("order_status", "overflow");
+		model.addAttribute("overflowSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
-		p.getParams().put("order_status", "discard");
-		model.addAttribute("discardSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		p.getParams().put("order_status", "suspended");
+		model.addAttribute("suspendedSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		// Disconnect
+		p.getParams().put("order_status", "waiting-for-disconnect");
+		model.addAttribute("waitingForDisconnectSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		p.getParams().put("order_status", "disconnected");
+		model.addAttribute("disconnectedSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		// Void Order
+		
+		p.getParams().put("order_status", "void");
+		model.addAttribute("voidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
 		model.addAttribute("order_status", order_status);
 		
-
 		return "broadband-user/provision/provision-view";
 	}
 	
