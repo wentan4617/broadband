@@ -75,6 +75,13 @@
 									Create Business Customer
 								</a>
 							</li>
+							<li class="divider"></li>
+							<li>
+								<a href="${ctx}/broadband-user/crm/customer-service-record/view/1">
+									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+									View Customer Service Record
+								</a>
+							</li>
 							<!-- <li class="divider"></li> -->
 						</ul>
 					</li>

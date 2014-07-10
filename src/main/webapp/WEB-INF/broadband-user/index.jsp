@@ -69,6 +69,13 @@ hr {
                     		<a href="${ctx }/broadband-user/crm/customer/business/create">Create Business Customer</a>
 						</li>
                     </ul>
+                    <hr/>
+					<ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/crm/customer-service-record/view/1">View Customer Service Record</a>
+						</li>
+					</ul>
 			  	</div>
 			</div>
         </div>

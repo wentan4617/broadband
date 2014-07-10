@@ -4,6 +4,11 @@
 	  <span class="glyphicon glyphicon-plus"></span> New Service Record
 	</a>
 </div>
+<style>
+	td{
+		overflow-x:hidden;
+	}
+</style>
 <hr/>
 <.
 	var results = page.results;
@@ -23,7 +28,7 @@
 			<th>Service Id</th>
 			<th>Create Date</th>
 			<th>Served By</th>
-			<th style="width:600px;">Description</th>
+			<th>Description</th>
 			<th>&nbsp;</th>
 		</tr>
 	</thead>
@@ -45,7 +50,7 @@
 				.>
 				<. } .>
 			</td>
-			<td><.= ccr.description .></td>
+			<td style="width:600px;"><p style="width:600px;"><.= ccr.description .></p></td>
 			<td>&nbsp;</td>
 			</tr>
 	<. } .>
@@ -88,7 +93,9 @@
 				<div class="modal-body">
 					<div class="form-group">
 						<label class="control-label col-md-12" style="text-align:left;">Request Description: </label><br/>
-						<textarea class="form-control" data-name="customer_service_record_description" rows="5" cols="4" placeholder="description..." ></textarea>
+						<p class="form-control-static col-md-12">
+							<textarea class="form-control" data-name="customer_service_record_description" rows="5" placeholder="description..." ></textarea>
+						</p>
 					</div>
 				</div>
 				<div class="modal-footer">
