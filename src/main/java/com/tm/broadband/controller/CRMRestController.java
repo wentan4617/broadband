@@ -1369,7 +1369,6 @@ public class CRMRestController {
 		return json;
 	}
 
-
 	// Edit detail
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/plan/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPlanEdit(Model model,
@@ -1382,6 +1381,62 @@ public class CRMRestController {
 		this.crmService.editCustomerOrderDetail(cod);
 		
 		json.getSuccessMap().put("alert-success", "Plan detail edited successfully!");
+		return json;
+	}
+
+	// Edit detail
+	@RequestMapping(value = "/broadband-user/crm/customer/order/pay-off/receipt", method = RequestMethod.POST)
+	public JSONBean<String> doPayOffOrder(Model model,
+			@RequestParam("id") Integer id,
+			@RequestParam("customerId") Integer customerId,
+			@RequestParam("paid_amount") Double paid_amount,
+			@RequestParam("order_pay_way") String order_pay_way,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
+		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(customerId);
+		c.setCustomerOrder(c.getCustomerOrders().get(0));
+		c.setOrganization(org);
+		
+		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
+		
+		CustomerOrder co = new CustomerOrder();
+		co.setReceipt_pdf_path(receiptPath);
+		if("pending".equals(c.getCustomerOrder().getOrder_status())){
+			co.setOrder_status("paid");
+		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
+			co.setOrder_status("ordering-paid");
+		}
+		
+		Customer customer = new Customer();
+		customer.setBalance(TMUtils.bigAdd(c.getBalance()==null ? 0d : c.getBalance(), paid_amount));
+		customer.getParams().put("id", c.getId());
+		this.crmService.editCustomer(customer);
+		
+		CustomerTransaction ct = new CustomerTransaction();
+		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
+		ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account-2-Account");
+		ct.setTransaction_date(new Date());
+		ct.setCustomer_id(customerId);
+		ct.setOrder_id(c.getCustomerOrder().getId());
+		ct.setTransaction_type("Ordering Form Defrayment");
+		ct.setTransaction_sort(c.getCustomerOrder().getOrder_type());
+		this.crmService.createCustomerTransaction(ct);
+		
+		ProvisionLog pl = new ProvisionLog();
+		User user = (User) req.getSession().getAttribute("userSession");
+		pl.setUser_id(user.getId());
+		pl.setProcess_datetime(new Date());
+		pl.setOrder_sort("customer-order");
+		pl.setOrder_id_customer(id);
+		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status());
+		co.getParams().put("id", id);
+		this.crmService.editCustomerOrder(co, pl);
+		
+		json.getSuccessMap().put("alert-success", "Order paid off succeccfully!");
 		return json;
 	}
 }

@@ -179,6 +179,38 @@
 				/*
 				 *	BEGIN customer order area
 				 */
+
+				// Pay off this order
+				// Get Pay off this order Dialog
+				$('a[data-name="'+co[i].id+'_pay_off_order"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					var total_price =  new Number($('#'+this.id+'_order_total_price').attr('data-val'));
+					$('input[data-name="paid_amount_'+this.id+'"]').val(total_price.toFixed(2));
+					$('#payOffOrderModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="payOffOrderModalBtn_'+co[i].id+'"]').click(function(){
+					var paid_amount = $('input[data-name="paid_amount_'+this.id+'"]').val();
+					var order_pay_way = $('select[data-name="order_pay_way_'+this.id+'"]').val();
+
+					var data = {
+						'id':this.id
+						,'customerId':'${customer.id}'
+						,'paid_amount':paid_amount
+						,'order_pay_way':order_pay_way
+					};
+					$.post('${ctx}/broadband-user/crm/customer/order/pay-off/receipt', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+				});
+				// Reset button when hidden regenerate most recent invoice dialog
+				$('#payOffOrderModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+					$.getCustomerInfo();
+					$.getTxPage(1);
+					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
+				});
+				
 				// Regenerate most recent invoice
 				// Get regenerate most recent invoice Dialog
 				var orderStatusCheck = $('#'+co[i].id+'_order_status');
@@ -588,18 +620,17 @@
 						
 					}, "json");
 				});
-				// Reset button when hidden order PPPoE dialog
+				// Reset button when hidden order Service Giving dialog
 				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
-					
 					
 					$.getCustomerOrder();
 					$.getInvoicePage(1);
 					$.getCustomerInfo();
 					$.getTxPage(1);
 				});
-				// Reset button when hidden order PPPoE dialog
+				// Reset button when hidden order Service Giving dialog
 				$('#saveServiceGivingDeniedModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
 				});
