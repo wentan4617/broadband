@@ -12,7 +12,7 @@
 	<div class="row">
 		<div class="col-md-12">
 
-			<jsp:include page="provision-query.jsp" />
+			<%-- <jsp:include page="provision-query.jsp" /> --%>
 
 			<div class="panel panel-success">
 				<div class="panel-heading">
@@ -55,6 +55,117 @@
 
 				</div>
 				
+				<div class="panel-body">
+					<div class="btn-group">
+					
+						<!-- New Order -->
+						<div class="btn-group">
+							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${pendingActive } ${paidActive } ${pendingWarningActive } dropdown-toggle" data-toggle="dropdown">
+								New Order
+								<span class="badge">${pendingSum+paidSum }</span>
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+					      		<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/pending" data-name="queryBtn" >
+										Pending <span class="badge">${pendingSum }</span>
+									</a>
+								</li>
+						      	<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/paid" data-name="queryBtn" >
+										Paid <span class="badge">${paidSum }</span>
+									</a>
+								</li>
+								<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/pending-warning" data-name="queryBtn" >
+										Pending Warning <span class="badge">${pendingWarningSum }</span>
+									</a>
+								</li>
+						    </ul>
+						</div>
+						
+						<!-- Provision -->
+						<div class="btn-group">
+							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${orderingPendingActive } ${orderingPaidActive } ${rfsActive } dropdown-toggle" data-toggle="dropdown">
+								Provision
+								<span class="badge">${orderingPendingSum + orderingPaidSum + rfsSum}</span>
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+					      		<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-paid" data-name="queryBtn" >
+										Ordering Pending <span class="badge">${orderingPendingSum }</span>
+									</a>
+								</li>
+						      	<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-paid" data-name="queryBtn" >
+										Ordering Paid <span class="badge">${orderingPaidSum }</span>
+									</a>
+								</li>
+								<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/rfs" data-name="queryBtn" >
+										RFS <span class="badge">${rfsSum }</span>
+									</a>
+								</li>
+						    </ul>
+						</div>
+						
+						<!-- In Service -->
+						<a href="${ctx }/broadband-user/provision/customer/view/1/using" data-name="queryBtn" class="btn btn-default ${usingActive }">
+							In Service <span class="badge">${usingSum }</span>
+						</a>
+						
+						<!-- Suspension -->
+						<div class="btn-group">
+							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${overflowActive } ${suspendedActive } dropdown-toggle" data-toggle="dropdown">
+								Suspension
+								<span class="badge">${overflowSum + suspendedSum}</span>
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+					      		<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/overflow" data-name="queryBtn" >
+										Over Flow <span class="badge">${overflowSum }</span>
+									</a>
+								</li>
+						      	<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/suspended" data-name="queryBtn" >
+										Suspended <span class="badge">${suspendedSum }</span>
+									</a>
+								</li>
+						    </ul>
+						</div>
+						
+						<!-- Disconnect -->
+						<div class="btn-group">
+							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${waitingForDisconnectActive } ${disconnectedActive } dropdown-toggle" data-toggle="dropdown">
+								Disconnect
+								<span class="badge">${waitingForDisconnectSum + disconnectedSum}</span>
+								<span class="caret"></span>
+							</a>
+							<ul class="dropdown-menu">
+					      		<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/waiting-for-disconnect" data-name="queryBtn" >
+										Waiting For Disconnect <span class="badge">${waitingForDisconnectSum }</span>
+									</a>
+								</li>
+						      	<li>
+									<a href="${ctx }/broadband-user/provision/customer/view/1/disconnected" data-name="queryBtn" >
+										Disconnected <span class="badge">${disconnectedSum }</span>
+									</a>
+								</li>
+						    </ul>
+						</div>
+						
+						<!-- Void Order -->
+						<a href="${ctx }/broadband-user/provision/customer/view/1/void" data-name="queryBtn" class="btn btn-default ${voidActive }">
+							Void Order <span class="badge">${voidSum }</span>
+						</a>
+						
+					</div>
+				</div>
+				
+				<hr>
 				
 				<c:if test="${fn:length(page.results) > 0 }">
 					<form id="provisionForm" action="${ctx }/broadband-user/provision/customer/order/status" method="post">
