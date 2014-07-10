@@ -18,7 +18,7 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.6.5 2014-07-10
 
-* 
+* [编写客户服务录列表页，按服务记录创建日期降序排列.](steven)
 * [order界面顶部添加一个按钮：Pay Off This Order，若客户不是DPS的方式下单，当accountant收到客户的款项则需要点击该按钮。作用是将该order的应付金额转成customer的account credit，并将order状态改为paid，以供Service Given时Service With Invoice按钮扣除account credit之用.](steven)
 * 由于ccr结构变得异常复杂，尝试穿插编写过滤掉所有residential的local call的逻辑代码.(steven)
 * 由于ccr结构变得异常复杂，尝试穿插编写赠送national call minutes的逻辑代码.(steven)
@@ -30,7 +30,7 @@ demand version 1.6.1 2014-07-09
 
 demand version 1.6.0 2014-07-08
 
-* 10号需要手动发账单邮件的order：700087，700088，700089，700090，700091，700093。这些是早期签下的order，我,Gavin于08-07-2014将其全部录入CyberPark后台管理系统.(steven)
+* [10号需要手动发账单邮件的order：700087，700088，700089，700090，700091，700093。这些是早期签下的order，我,Gavin于08-07-2014将其全部录入CyberPark后台管理系统.](steven)
 
 demand version 1.6.0 2014-07-07
 

@@ -109,7 +109,11 @@
 			<div class="col-md-3">
 				<select data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-xs">
 					<.
-						var status = ['paid','pending','ordering-paid','ordering-pending','using','cancel','discard'];
+						var status = [
+							'pending','pending-warning','paid','ordering-pending','ordering-paid',
+							'rfs','using','overflow','suspended','waiting-for-disconnect','disconnected',
+							'void'
+						];
 						for(var s=0; s<status.length; s++){
 							if(customerOrder[i].order_status == status[s]){
 					.>
@@ -829,7 +833,7 @@
 							If terminated date greater than service given month + 6 then charge 99NZD, otherwise charge 199NZD
 						</p>
 						<hr/>
-						<div class="form-group col-md-12">
+						<div class="form-group">
 							<label class="control-label col-md-6">Terminated Date</label>
 							<div class="col-md-6">
 								<input class="form-control input-sm" type="text" data-name="early_terminated_charge_date_<.= customerOrder[i].id .>" placeholder="yyyy-mm-dd" />

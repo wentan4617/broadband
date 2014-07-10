@@ -528,25 +528,29 @@ public class CRMRestController {
 	// Update order status
 	@RequestMapping(value = "/broadband-user/crm/customer/order/status/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerOrderStatusEdit(Model model,
-			CustomerOrder customerOrder) {
+			@RequestParam("id") Integer id,
+			@RequestParam("order_status") String order_status,
+			@RequestParam("old_order_status") String old_order_status,
+			HttpServletRequest req) {
 		
-		
-
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
-		System.out.println("order_id: " + customerOrder.getId());
-		System.out.println("customer_id: " + customerOrder.getCustomer_id());
-		System.out.println("status : " + customerOrder.getOrder_status());
+		ProvisionLog pl = new ProvisionLog();
+		User user = (User) req.getSession().getAttribute("userSession");
+		pl.setUser_id(user.getId());
+		pl.setProcess_datetime(new Date());
+		pl.setOrder_sort("customer-order");
+		pl.setOrder_id_customer(id);
+		pl.setProcess_way(this.crmService.queryCustomerOrderById(id).getOrder_status()+" to "+order_status);
 		
 		CustomerOrder co = new CustomerOrder();
-		co.setOrder_status(customerOrder.getOrder_status());
-		co.getParams().put("id", customerOrder.getId());
-
-		this.crmService.editCustomerOrder(co);
+		co.setOrder_status(order_status);
+		co.getParams().put("id", id);
+		
+		this.crmService.editCustomerOrder(co, pl);
 		json.setModel(co);
 
-		json.getSuccessMap().put("alert-success",
-				"Order Status had successfully been saved!");
+		json.getSuccessMap().put("alert-success", "Order Status Changed!");
 
 		return json;
 	}

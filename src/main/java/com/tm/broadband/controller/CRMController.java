@@ -49,7 +49,6 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
-import com.tm.broadband.model.Voucher;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
@@ -118,10 +117,15 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/edit/{id}")
-	public String toCustomerEdit(Model model, @PathVariable(value = "id") int id) {
+	public String toCustomerEdit(Model model, @PathVariable(value = "id") int id,
+			RedirectAttributes attr) {
 		
 		model.addAttribute("panelheading", "Customer Edit");
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		if(customer==null){
+			attr.addFlashAttribute("error", "Customer Not Exist!");
+			return "redirect:/broadband-user/crm/customer-service-record/view/1";
+		}
 		User user = new User();
 		user.getParams().put("user_role", "sales");
 		List<User> users = this.systemService.queryUser(user);
@@ -1064,5 +1068,17 @@ public class CRMController {
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
         return response;
     }
+
+	@RequestMapping("/broadband-user/crm/customer-service-record/view/{pageNo}")
+	public String customerServiceRecordView(Model model, @PathVariable("pageNo") int pageNo) {
+		
+		Page<CustomerServiceRecord> page = new Page<CustomerServiceRecord>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by create_date desc");
+		this.crmService.queryCustomerServiceRecordsByPage(page);
+		model.addAttribute("page", page);
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		return "broadband-user/crm/customer-service-record-view";
+	}
 
 }

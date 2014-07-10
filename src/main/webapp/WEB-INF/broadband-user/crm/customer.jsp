@@ -292,7 +292,14 @@
 
 				// Early Termination Charge modal
 				// Get Early Termination Charge Dialog
-				if(orderStatusCheck.attr('data-val') != 'cancel'){
+				if(orderStatusCheck.attr('data-val') == 'suspended'
+				 ||orderStatusCheck.attr('data-val') == 'waiting-for-disconnect'
+				 ||orderStatusCheck.attr('data-val') == 'disconnected'
+				 ||orderStatusCheck.attr('data-val') == 'void'
+				 ||orderStatusCheck.attr('data-val') == 'stop'
+				 ||orderStatusCheck.attr('data-val') == 'cancel'
+				 ||orderStatusCheck.attr('data-val') == 'discard'){
+				} else {
 					$('a[data-name="'+co[i].id+'_early_termination_charge"]').attr('disabled', 'disabled');
 					$('a[data-name="'+co[i].id+'_termination_refund"]').attr('disabled', 'disabled');
 				}
@@ -359,9 +366,11 @@
 				// Submit to rest controller
 				$('a[data-name="editOrderStatusModalBtn_'+co[i].id+'"]').click(function(){
 					var orderStatus = $('select[data-name="'+this.id+'_order_status_selector"]');
+					var oldOrderStatus = $('#'+this.id+'_order_status');
 					var data = {
 							'id':this.id
 							,'order_status':orderStatus.val()
+							,'old_order_status':oldOrderStatus.val()
 					};
 					var order_status = $('#'+this.id+'_order_status');
 					$.post('${ctx}/broadband-user/crm/customer/order/status/edit', data, function(json){
