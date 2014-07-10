@@ -1024,7 +1024,8 @@ public class CRMController {
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ordering-form/pdf/download/{orderId}")
     public ResponseEntity<byte[]> downloadOrderingFormPDF(Model model
     		,@PathVariable(value = "orderId") int orderId) throws IOException {
-		String filePath = this.crmService.queryCustomerOrderingFormPathById(orderId);
+		
+    	String filePath = this.crmService.queryCustomerOrderingFormPathById(orderId);
 		
 		// get file path
         Path path = Paths.get(filePath);

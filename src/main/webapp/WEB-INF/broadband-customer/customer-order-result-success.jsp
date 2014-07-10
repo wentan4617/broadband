@@ -11,6 +11,9 @@
 		<div class="alert alert-success alert-dismissable">
 			<h1>Congratulations ! ! !</h1>
 			<p>Your plan application has been sent to our system, our customer service staff will immediately get in touch with you.</p>
+			<p class="text-danger">
+				Please check your email. Your receipt or ordering form will send your email.
+			</p>
 			<p>
 				Now you can log on to CyberPark Customer Home, <a href="${ctx }/login"> please click here. </a>
 			</p>
@@ -23,6 +26,7 @@
 			</p>
 		</div>
 	</c:if>
+	
 </div>
 
 

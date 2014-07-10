@@ -78,6 +78,31 @@
 									<a href="${ctx }/customer/billing/1" class="btn btn-success btn-block" >View Invoice</a>
 								</div>
 							</div>
+							<hr/>
+							<div class="row">
+								<div class="col-md-6">
+									<c:if test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
+										<a target="_blank" href="${ctx }/customer/home/ordering-form/pdf/download" class="btn btn-success">
+											<span class="glyphicon glyphicon-floppy-save"></span> Download Ordering Form
+										</a>
+									</c:if>
+								</div>
+								<div class="col-md-4">
+									<c:choose>
+										<c:when test="${customerSession.customerOrders[0].receipt_pdf_path != null && customerSession.customerOrders[0].receipt_pdf_path != '' }">
+											<a target="_blank" href="${ctx }/customer/home/receipt/pdf/download" class="btn btn-success">
+												<span class="glyphicon glyphicon-floppy-save"></span> Download Ordering Receipt
+											</a>
+										</c:when>
+										<c:otherwise>
+											<form action="${ctx }/customer/ordering-form/checkout" method="post" id="orderingForm">
+												<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
+											</form>
+										</c:otherwise>
+									</c:choose>
+									
+								</div>
+							</div>
 						</div>
 					</div>
 					
@@ -160,6 +185,8 @@
 	<!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

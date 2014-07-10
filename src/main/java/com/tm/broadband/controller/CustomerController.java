@@ -637,7 +637,7 @@ public class CustomerController {
 	@RequestMapping(value = "/order/result")
 	public String toOrderResult(SessionStatus status) {
 		status.setComplete();
-		return "broadband-customer/customer-order-result";
+		return "broadband-customer/customer-order-result-success";
 	}
 	
 	@RequestMapping(value = "/order/result/success")
@@ -792,8 +792,10 @@ public class CustomerController {
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
-			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
-			customer.getParams().put("id", customer.getId());
+			Customer c = new Customer();
+			
+			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.getParams().put("id", customer.getId());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
 			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
@@ -816,7 +818,7 @@ public class CustomerController {
 			customerTransaction.setCustomer_id(customer.getId());
 			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 			
-			this.crmService.customerTopup(customer, customerTransaction);
+			this.crmService.customerTopup(c, customerTransaction);
 			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
 			
 		} else {
@@ -1070,5 +1072,150 @@ public class CustomerController {
 		CompanyDetail cd = this.systemService.queryCompanyDetail();
 		model.addAttribute("cyberpark", cd);
 		return "broadband-customer/voucher";
+	}
+	
+	// download customer ordering form PDF directly
+	@RequestMapping(value = "/customer/home/ordering-form/pdf/download")
+    public ResponseEntity<byte[]> downloadOrderingFormPDF(Model model, HttpServletRequest req) throws IOException {
+		
+    	Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+    	
+    	String filePath = this.crmService.queryCustomerOrderingFormPathById(customer.getCustomerOrders().get(0).getId());
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
+    
+    // download customer receipt PDF directly
+ 	@RequestMapping(value = "/customer/home/receipt/pdf/download")
+ 	public ResponseEntity<byte[]> downloadReceiptPDF(Model model, HttpServletRequest req) throws IOException {
+ 		
+ 		Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+ 		
+ 		String filePath = this.crmService.queryCustomerReceiptFormPathById(customer.getCustomerOrders().get(0).getId());
+ 		
+ 		// get file path
+         Path path = Paths.get(filePath);
+         byte[] contents = null;
+         // transfer file contents to bytes
+         contents = Files.readAllBytes( path );
+         
+         HttpHeaders headers = new HttpHeaders();
+         // set spring framework media type
+         headers.setContentType(MediaType.parseMediaType("application/pdf"));
+         // get file name with file's suffix
+         String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+         headers.setContentDispositionFormData( filename, filename );
+         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+         return response;
+     }
+    
+    @RequestMapping(value = "/customer/ordering-form/checkout", method = RequestMethod.POST)
+	public String orderingFormCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
+    	
+    	Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+
+		GenerateRequest gr = new GenerateRequest();
+
+		gr.setAmountInput(new DecimalFormat("#.00").format(customer.getCustomerOrders().get(0).getOrder_total_price()));
+		//gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+		
+		System.out.println(req.getRequestURL().toString());
+		gr.setUrlFail(req.getRequestURL().toString());
+		gr.setUrlSuccess(req.getRequestURL().toString());
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/customer/ordering-form/checkout")
+	public String toOrderingFormSuccess(Model model,
+			@RequestParam(value = "result", required = true) String result,
+			RedirectAttributes attr, HttpServletRequest request
+			) throws Exception {
+		
+		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+
+		Response responseBean = null;
+
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			Customer c = new Customer();
+			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.getParams().put("id", customer.getId());
+
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setTransaction_sort("");
+			
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			
+			
+			this.crmService.customerTopup(c, customerTransaction);
+			
+			customer.setCustomerOrder(customer.getCustomerOrders().get(0));
+			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
+			
+			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+			// call mail at value retriever
+			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setSubject(notification.getTitle());
+			applicationEmail.setContent(notification.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+			applicationEmail.setAttachPath(receiptPath);
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			
+			// get sms register template from db
+			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			
+			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
+			
+		} else {
+			
+			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
+		}
+
+		return "redirect:/customer/home";
 	}
 }
