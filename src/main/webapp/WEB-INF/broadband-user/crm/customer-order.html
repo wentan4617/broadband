@@ -45,12 +45,14 @@
 		<. if((customerOrder[i].ordering_form_pdf_path!=null && customerOrder[i].ordering_form_pdf_path!='')
 			  ||(customerOrder[i].receipt_pdf_path!=null && customerOrder[i].receipt_pdf_path!='')){ .>
 			<br/>
-		<. if(customerOrder[i].ordering_form_pdf_path!=null && customerOrder[i].ordering_form_pdf_path!=''){ .>
-			<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ordering-form/pdf/download/<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save" style="font-size:20px;"></span>&nbsp;&nbsp;Download Ordering Form</a>&nbsp;&nbsp;
-		<. } .>
-		<. if(customerOrder[i].receipt_pdf_path!=null && customerOrder[i].receipt_pdf_path!=''){ .>
-			<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/receipt/pdf/download/<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save" style="font-size:20px;"></span>&nbsp;&nbsp;Download Ordering Receipt</a>&nbsp;&nbsp;
-		<. } .>
+			<. if(customerOrder[i].ordering_form_pdf_path!=null && customerOrder[i].ordering_form_pdf_path!=''){ .>
+			<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ordering-form/pdf/download/<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Download Ordering Form</a>&nbsp;&nbsp;
+			<. } .>
+			<. if(customerOrder[i].receipt_pdf_path!=null && customerOrder[i].receipt_pdf_path!=''){ .>
+			<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/receipt/pdf/download/<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Download Ordering Receipt</a>&nbsp;&nbsp;
+			<. } else if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') { .>
+			<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-xs btn-primary xs-btn-width-long" data-name="<.= customerOrder[i].id .>_pay_off_order"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Pay Off This Order</a>&nbsp;&nbsp;
+			<. } .>
 			<br/>
 		<. } .>
 		<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
@@ -767,6 +769,46 @@
 		</table>
 		
 	</form>
+
+	<!-- Pay Off Order Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="payOffOrderModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="payOffOrderModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="payOffOrderModalLabel">
+							<strong>Pay off this order</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-6">Paid Amount</label>
+							<div class="col-md-4">
+								<input class="form-control input-sm" type="text" data-name="paid_amount_<.= customerOrder[i].id .>" placeholder="0.00" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-6">Pay Way</label>
+							<div class="col-md-4">
+								<select class="form-control input-sm" data-name="order_pay_way_<.= customerOrder[i].id .>">
+									<option value="account-2-account">A2A</option>
+									<option value="cash">Cash</option>
+								</select>
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="payOffOrderModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to pay off this order</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
 
 	<!-- Early termination charge Modal -->
 	<form class="form-horizontal">

@@ -15,15 +15,18 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+
+demand version 1.6.5 2014-07-10
+
+* 
+* [order界面顶部添加一个按钮：Pay Off This Order，若客户不是DPS的方式下单，当accountant收到客户的款项则需要点击该按钮。作用是将该order的应付金额转成customer的account credit，并将order状态改为paid，以供Service Given时Service With Invoice按钮扣除account credit之用.](steven)
+* 由于ccr结构变得异常复杂，尝试穿插编写过滤掉所有residential的local call的逻辑代码.(steven)
+* 由于ccr结构变得异常复杂，尝试穿插编写赠送national call minutes的逻辑代码.(steven)
  
 demand version 1.6.1 2014-07-09
 
 * 给order设置多个状态属性，这是一个非常重要的需求。
 * 给查询流量，添加查询功能，统计每天总流量
-
-demand version 1.6.5 2014-07-10
-
-* order界面顶部添加一个按钮：pay off this order，若客户不是DPS的方式下单，当accountant收到客户的款项则需要点击该按钮。作用是将该order的应付金额转成customer的account credit，并将order状态改为paid，以供Service Given时Service With Invoice按钮扣除account credit之用.(steven)
 
 demand version 1.6.0 2014-07-08
 
