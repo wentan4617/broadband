@@ -93,7 +93,7 @@
 							</a>
 							<ul class="dropdown-menu">
 					      		<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-paid" data-name="queryBtn" >
+									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-pending" data-name="queryBtn" >
 										Ordering Pending <span class="badge">${orderingPendingSum }</span>
 									</a>
 								</li>

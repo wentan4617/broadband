@@ -30,7 +30,13 @@
 			<td>
 				<a href="<.=ctx.>/broadband-user/data/customer/usage/view/<.=co.id.>" target="_blank"><.=co.id.></a>
 			</td>
-			<td><.=co.order_status.></td>
+			<td>
+			<. if (co.order_status == 'using') { .>
+				In Service
+			<.} else {.>
+				<.=co.order_status.>
+			<.}.>
+			</td>
 			<td><.=((co.svlan || '') + '/' + (co.cvlan || '')).></td>
 			<td><.=co.customer.id.></td>
 			<td>
@@ -62,11 +68,11 @@
 		<tr>
 			<td colspan="20">
 				<ul class="pagination">
-					<. for (var i=1; i <= totalPage; i++) { .>
-						<li class="<.=pageNo == i ? 'active' : ''.>">
-							<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
-						</li>
-					<. }.>
+				<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+				<. }.>
 				</ul>
 			</td>
 		</tr>
@@ -75,4 +81,8 @@
 	
 </table>
 
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
 <.}.>

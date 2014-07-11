@@ -56,15 +56,18 @@ public class DataRestController {
 	}
 	
 	
-	@RequestMapping("/broadband-user/data/customer/view/{pageNo}/{calculator_date}")
+	@RequestMapping("/broadband-user/data/customer/view/{pageNo}/{calculator_date}/{status}")
 	public Page<CustomerOrder> doDataCustomerView(
 			@PathVariable("pageNo") int pageNo,
-			@PathVariable("calculator_date") String calculator_date){
+			@PathVariable("calculator_date") String calculator_date,
+			@PathVariable("status") String status){
 		
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		//page.getParams().put("order_status", "cancel");
+		
+		if (!"".equals(status) && !"all".equals(status))
+			page.getParams().put("order_status", status);
 		//page.getParams().put("orderby", "order by plan_status desc, plan_type");
 		
 		this.dataService.queryDataCustomersByPage(page);

@@ -89,7 +89,7 @@ public class ProvisionController {
 		else if ("overflow".equals(order_status)) {
 			model.addAttribute("overflowActive", "active");
 			model.addAttribute("panelheading", "Suspension &gt; Over Flow");
-		} else if ("suspension".equals(order_status)) {
+		} else if ("suspended".equals(order_status)) {
 			model.addAttribute("suspendedActive", "active");
 			model.addAttribute("panelheading", "Suspension &gt; Suspended");
 		} 

@@ -73,7 +73,7 @@
 				<div class="panel-body">
 					<div id="usage_table"></div>
 					<div id="usage_line" style="display:none;">
-						<canvas id="canvas" height="450" width="1100"></canvas>
+						<%-- <canvas id="canvas" height="450" width="1100"></canvas> --%>
 					</div>
 					<c:if test="${co.cod.detail_data_flow > 0}">
 						<div id="chart_pie" style="height:300px;" ></div>
@@ -114,7 +114,7 @@
 	function doUsage(date) {
 		var url = '${ctx}/broadband-user/data/customer/usage/view/' + svlan + '/' + cvlan + '/' + type + '/' + date;
 		$.get(url, function(list){ console.log(list);
-			dateUsages = list;
+			//dateUsages = list;
 			var obj = {
 				list: list
 				, ctx: '${ctx}'
@@ -161,7 +161,7 @@
 					var curDayTotal = upload + download;
 					tempData = Number(curDayTotal);
 					maxData = tempData > maxData ? tempData : maxData;
-					dataArray.push(Number(curDayTotal));
+					dataArray.push(Number(curDayTotal).toFixed(3));
 				} else {
 					dataArray.push(0);
 				}
@@ -182,10 +182,13 @@
 				scaleOverride: true // 如果我们想要一个硬编码的规模与覆盖, false
 				, scaleSteps: 10 // 纵轴步数, null
 				, scaleStepWidth: (maxData/10).toFixed(3) // 纵轴数字间隔, null
-				, scaleStartValue : 0 // 纵轴起始值, null
+				, scaleStartValue: 0 // 纵轴起始值, null
 			};
-			//$canvas.get(0).getContext("2d").clearRect(0, 0, 1100, 450);
-			new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, lineChartOptions);
+			
+			$('#usage_line').empty();
+			var $canvas = $('<canvas id="canvas" height="450" width="1100"></canvas>');
+			$canvas.appendTo('#usage_line');
+			new Chart($canvas.get(0).getContext("2d")).Line(lineChartData, lineChartOptions);
 			
 			if (planUsage != 999) {
 				new Chartkick.PieChart("chart_pie"

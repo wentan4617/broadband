@@ -22,7 +22,7 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="input-group date">
 						  		<input type="text" id="calculator_date" name="calculator_date" class="form-control" data-error-field />
 						  		<span class="input-group-addon">
@@ -30,8 +30,68 @@
 						  		</span>
 							</div>
 						</div>
+						<div class="col-md-10">
+							<div class="btn-group">
+							
+								<!-- In Service -->
+								<a href="javascript:void(0);" data-group="in-service" data-sub="in-service" data-name="queryBtn" data-status="using" class="btn btn-default active">
+									In Service <span class="badge"></span>
+								</a>
+					
+								<!-- Suspension -->
+								<div class="btn-group">
+									<a href="javascript:void(0);" data-group="suspension" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+										Suspension
+										<span class="badge"></span>
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+							      		<li>
+											<a href="javascript:void(0);" data-name="queryBtn" data-sub="suspension" data-status="overflow">
+												Over Flow <span class="badge"></span>
+											</a>
+										</li>
+								      	<li>
+											<a href="javascript:void(0);" data-name="queryBtn" data-sub="suspension" data-status="suspended">
+												Suspended <span class="badge"></span>
+											</a>
+										</li>
+								    </ul>
+								</div>
+								
+								<!-- Disconnect -->
+								<div class="btn-group">
+									<a href="javascript:void(0);" data-group="disconnect" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+										Disconnect
+										<span class="badge"></span>
+										<span class="caret"></span>
+									</a>
+									<ul class="dropdown-menu">
+							      		<li>
+											<a href="javascript:void(0);" data-name="queryBtn" data-sub="disconnect" data-status="waiting-for-disconnect">
+												Waiting For Disconnect <span class="badge"></span>
+											</a>
+										</li>
+								      	<li>
+											<a href="javascript:void(0);" data-name="queryBtn" data-sub="disconnect" data-status="disconnected">
+												Disconnected <span class="badge"></span>
+											</a>
+										</li>
+								    </ul>
+								</div>
+								
+								<!-- All -->
+								<a href="javascript:void(0);" data-name="queryBtn" data-group="all" data-sub="all" data-status="all" class="btn btn-default">
+									All <span class="badge"></span>
+								</a>
+							
+							</div>
+						</div>
 					</div> 
 				</div>
+				
+				<hr>
+				
 				<div id="dataCustomer-table"></div>
 				
 			</div>
@@ -51,26 +111,35 @@
 <script type="text/javascript">
 (function($){
 	
+	var g_status = 'using';
+	
 	$('.input-group.date').datepicker({
 	    format: "yyyy-mm", 
 	    minViewMode: 1,
 	    autoclose: true
 	}).datepicker('setDate', new Date()).on('changeDate', function(e){ //console.log(e.format());
-		doPage(1, e.format());
+		doPage(1, e.format(), g_status);
 	});
 	
-	function doPage(pageNo, date) { console.log(date);
-		$.get('${ctx}/broadband-user/data/customer/view/' + pageNo + "/" + date, function(page){ console.log(page);
+	$('a[data-name="queryBtn"]').click(function(){
+		g_status = $(this).attr('data-status');
+		doPage(1, $('#calculator_date').val(), g_status);
+		$('a[data-group]').removeClass('active');
+		var sub = $(this).attr('data-sub');
+		$('a[data-group="' + sub + '"]').addClass('active');
+	});
+	
+	function doPage(pageNo, date, status) { //console.log(date);
+		$.get('${ctx}/broadband-user/data/customer/view/' + pageNo + "/" + date + "/" + status, function(page){ //console.log(page);
 			page.ctx = '${ctx}';
 	   		var $table = $('#dataCustomer-table');
 			$table.html(tmpl('dataCustomer_table_tmpl', page));
 			$table.find('tfoot a').click(function(){
-				doPage($(this).attr('data-pageNo'), $('#calculator_date').val());
+				doPage($(this).attr('data-pageNo'), $('#calculator_date').val(), g_status);
 			});
-			//$('a[data-toggle="tooltip"]').tooltip();
 	   	});
 	}
-	doPage(1, '${current_date}');
+	doPage(1, '${current_date}', g_status);
 	
 })(jQuery);
 </script>
