@@ -16,6 +16,14 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.6.6 2014-07-11
+
+* Chorus拨打账单分析并根据里面的Juristiction字段来出各个地域的拨打话费.(steven)
+* Chorus的Business Local Call是AccountName为SME ACCOUNT且RecordType为T3的记录，需要计算到CallingRecord里.(steven)
+* 做个定时器，取出所有pending-warning状态且order_create_date为4天前的order，将order状态改为void，并且提示客户由下单5天还未付款，该订单已被void.(steven)
+* [做个定时器，取出所有pending状态且order_create_date为2天前的order，将order状态改为pending-warning，并且发送一封附带ordering form的提醒邮件.](steven)
+* 点击RFS Date的时候改变order状态为rfs.(steven)
+
 demand version 1.6.5 2014-07-10
 
 * [编写客户服务录列表页，按服务记录创建日期降序排列.](steven)

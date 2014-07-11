@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.tm.broadband.service.CRMService;
 
 /** 
-* Automatically Generating Next Invoices With PDF When Given Date Match next_invoice_date
+* Automatically Generating Next Termed Invoices With PDF
 * 
 * @author DON CHEN
 */ 

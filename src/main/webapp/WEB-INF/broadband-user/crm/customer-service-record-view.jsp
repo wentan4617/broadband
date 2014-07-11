@@ -7,11 +7,6 @@
 
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
-<style>
-	td{
-		overflow-x:hidden;
-	}
-</style>
 
 <div class="container">
 	<div class="row">
@@ -51,7 +46,7 @@
 										</c:forEach>
 									</td>
 									<td>
-										<p style="width:600px;" data-name="csr_desc_${csr.id}" data-desc="${csr.description }">
+										<p style="width:600px;overflow-x:hidden;" data-name="csr_desc_${csr.id}" data-desc="${csr.description }">
 											<a href="javascript:void(0);" id="${csr.id}" data-name="csr_desc_${csr.id}">${csr.description }</a>
 										</p>
 									</td>

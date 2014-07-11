@@ -579,7 +579,7 @@ public class OrderingPDFCreator extends ITextUtils {
         
         addCol(innerTable, "Account Number:").colspan(7).font(ITextFont.arial_normal_8).o();
         addCol(innerTable, "06-0709-0444426-00").colspan(20).font(ITextFont.arial_bold_8).o();
-        addCol(innerTable, "Your ordering form will be hold for 5 working days.").colspan(27).paddingV(10F).font(ITextFont.arial_bold_red_10).o();
+        addCol(innerTable, "Your ordering form will be hold for 7 days.\r\n( 5 working days include 2 weekend days )").colspan(27).paddingV(10F).font(ITextFont.arial_bold_red_10).o();
         
 //        addCol(innerTable, "Cheques payable to:").colspan(2).font(ITextFont.arial_normal_8).o();
 //        addCol(innerTable, "Please write your Ordering No. on the back of your cheque").colspan(6).font(ITextFont.arial_bold_8).o();

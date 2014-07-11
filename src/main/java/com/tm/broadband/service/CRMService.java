@@ -1908,4 +1908,77 @@ public class CRMService {
 		return filePath;
 	}
 	
+	// Check Pending Order
+	@Transactional 
+	public void checkPendingOrder(CustomerOrder customerOrderParam) throws ParseException{
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-warning-notice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-warning-notice", "sms");
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
+		
+		CompanyDetail cd = this.queryCompanyDetail();
+
+		for (CustomerOrder co : cos) {
+			CustomerOrder customerOrder = new CustomerOrder();
+			customerOrder.setOrder_status("pending-warning");
+			customerOrder.getParams().put("id", co.getId());
+			this.editCustomerOrder(customerOrder);
+			
+			Customer c = co.getCustomer();
+			
+			MailRetriever.mailAtValueRetriever(notificationEmail, c,  customerOrder, cd);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
+			// binding attachment name & path to email
+			if(co.getOrdering_form_pdf_path()!=null && !"".equals(co.getOrdering_form_pdf_path())){
+				applicationEmail.setAttachName("ordering_form_" + co.getId() + ".pdf");
+				applicationEmail.setAttachPath(co.getOrdering_form_pdf_path());
+			} else {
+				CustomerInvoice ciQuery = new CustomerInvoice();
+				ciQuery.getParams().put("order_id", co.getId());
+				CustomerInvoice ci = this.queryCustomerInvoice(ciQuery);
+				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+			}
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			MailRetriever.mailAtValueRetriever(notificationSMS, c, customerOrder, cd);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMS.getContent());
+		}
+	}
+	
+	// Check Pending Warning Order
+	@Transactional 
+	public void checkPendingWarningOrder(CustomerOrder customerOrderParam) throws ParseException{
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-void-notice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-void-notice", "sms");
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
+		
+		CompanyDetail cd = this.queryCompanyDetail();
+
+		for (CustomerOrder co : cos) {
+			CustomerOrder customerOrder = new CustomerOrder();
+			customerOrder.setOrder_status("void");
+			customerOrder.getParams().put("id", co.getId());
+			this.editCustomerOrder(customerOrder);
+			
+			Customer c = co.getCustomer();
+			
+			MailRetriever.mailAtValueRetriever(notificationEmail, c,  customerOrder, cd);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setSubject(notificationEmail.getTitle());
+			applicationEmail.setContent(notificationEmail.getContent());
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			MailRetriever.mailAtValueRetriever(notificationSMS, c, customerOrder, cd);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMS.getContent());
+		}
+	}
+	
 }
