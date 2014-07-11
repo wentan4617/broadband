@@ -33,7 +33,7 @@ demand version 1.6.5 2014-07-10
  
 demand version 1.6.1 2014-07-09
 
-* 给order设置多个状态属性，这是一个非常重要的需求。
+* [给order设置多个状态属性，这是一个非常重要的需求。](kanny)
 * 给查询流量，添加查询功能，统计每天总流量
 
 demand version 1.6.0 2014-07-08
@@ -52,7 +52,7 @@ demand version 1.6.0 2014-07-07
 * [点Save Service Given的时候，如果不是DDPay并且是termed的order或者是No Term的order则设置next_invoice_create_date_flag为服务开通日+1个月，并且设置next_invoice_create_date为服务开通日+1个月零7天.](steven)
 * [点Save Service Given的时候，弹出按钮组，选择Service Only则逻辑不变，若选择Service With Invoice则通过余额来抵消账单然后通知客户你的账单余额已通过账户余额抵消了.](steven)
 * 前台选plan时选非一个月的plan则提示他该plan的discount有多少个percentage.(kanny)
-* 在前台下单点击checkout时弹出一个气泡，里面有两个按钮：pay by dps，bank deposit(I'll do it by myself, in 5 working days).(kanny)
+* [在前台下单点击checkout时弹出一个气泡，里面有两个按钮：pay by dps，bank deposit(I'll do it by myself, in 5 working days).](kanny)
 * [前台下订单所扣款项数额不立即抵消账单，而是存储在客户的credit里，等到Service Given给完才会用客户credit余额抵消账单.](kanny)
 * 下订单时发送短信给provision和accountant.(kanny)
 

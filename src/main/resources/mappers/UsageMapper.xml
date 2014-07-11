@@ -90,6 +90,7 @@
 				</when>
 				<otherwise>
 					<if test="params.id != null">and co.id = #{params.id}</if>
+					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
 				</otherwise>
 			</choose>
 			

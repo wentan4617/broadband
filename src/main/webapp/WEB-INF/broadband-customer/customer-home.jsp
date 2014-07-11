@@ -9,7 +9,7 @@
 
 <style>
 .personal-info li{
-	padding:5px 40px;
+	padding:5px 0;
 }
 </style>
 <div class="container">
@@ -31,8 +31,8 @@
 						</h3>
 					</div>
 					<div class="row">
-						<div class="col-md-5">
-							<ul class="list-unstyled personal-info">
+						<div class="col-md-12">
+							<ul class="list-unstyled personal-info" style="font-size:18px;">
 								<li><strong class="text-info">${customerSession.login_name }</strong></li>
 								<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
 								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
@@ -40,69 +40,77 @@
 								<li><strong class="text-info">${customerSession.address }</strong></li>
 							</ul>
 						</div>
-						<div class="col-md-7">
-							<div class="row">
-								<div class="col-md-6">
-									<strong class="text-info">
-										Current Credit:
-									</strong> 
-									<span class="glyphicon glyphicon-star"></span>&nbsp;NZ$ 
-									<strong class="text-success">
-										<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
-									</strong>
-								</div>
-								<div class="col-md-4">
-									<div class="btn-group">
-										<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown">
-									   		Top Up <span class="caret"></span>
-									  	</button>
-									  	<ul class="dropdown-menu" data-role="menu">
-									    	<li><a href="${ctx }/customer/topup"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
-									    	<li><a href="javascript:void(0);" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
-									  	</ul>
-									</div>
-								</div>
+					</div>
+					
+					<hr/>
+					<div class="page-header" style="margin-top: 0;">
+						<h3 class="text-success">
+							Account Information 
+						</h3>
+					</div>
+					
+					<div class="row">
+						<div class="col-md-4">
+							<strong class="text-info"> Current Credit: </strong> 
+							<span class="glyphicon glyphicon-star"></span> NZ$ 
+							<strong class="text-success">
+								<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
+							</strong>
+						</div>
+						<div class="col-md-3">
+							<div class="btn-group btn-block">
+								<button type="button" class="btn btn-success btn-block dropdown-toggle" data-toggle="dropdown">
+							   		Top Up <span class="caret"></span>
+							  	</button>
+							  	<ul class="dropdown-menu" data-role="menu">
+							    	<li><a href="${ctx }/customer/topup"><span class="glyphicon glyphicon-credit-card"></span> Credit Card</a></li>
+							    	<li><a href="javascript:void(0);" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span> Voucher</a></li>
+							  	</ul>
 							</div>
-							<hr/>
-							<div class="row">
-								<div class="col-md-6">
-									<strong class="text-info">
-										Invoice Balance:
-									</strong> 
-									NZ$ 
-									<strong class="text-success">
-										<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
-									</strong>
-								</div>
-								<div class="col-md-4">
-									<a href="${ctx }/customer/billing/1" class="btn btn-success btn-block" >View Invoice</a>
-								</div>
-							</div>
-							<hr/>
-							<div class="row">
-								<div class="col-md-6">
-									<c:if test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
-										<a target="_blank" href="${ctx }/customer/home/ordering-form/pdf/download" class="btn btn-success">
-											<span class="glyphicon glyphicon-floppy-save"></span> Download Ordering Form
-										</a>
-									</c:if>
-								</div>
-								<div class="col-md-4">
-									<c:choose>
-										<c:when test="${customerSession.customerOrders[0].receipt_pdf_path != null && customerSession.customerOrders[0].receipt_pdf_path != '' }">
-											<a target="_blank" href="${ctx }/customer/home/receipt/pdf/download" class="btn btn-success">
-												<span class="glyphicon glyphicon-floppy-save"></span> Download Ordering Receipt
-											</a>
-										</c:when>
-										<c:otherwise>
-											<form action="${ctx }/customer/ordering-form/checkout" method="post" id="orderingForm">
-												<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
-											</form>
-										</c:otherwise>
-									</c:choose>
-									
-								</div>
-							</div>
+						</div>
+					</div>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-md-4">
+							<strong class="text-info">Invoice Balance: </strong> NZ$ 
+							<strong class="text-success">
+								<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
+							</strong>
+						</div>
+						<div class="col-md-3">
+							<a href="${ctx }/customer/billing/1" class="btn btn-success btn-block" >View Invoice</a>
+						</div>
+					</div>
+					<div class="row" style="margin-top:10px;">
+						<div class="col-md-4">
+							<c:if test="${(customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '') 
+								&& (customerSession.customerOrders[0].receipt_pdf_path == null || customerSession.customerOrders[0].receipt_pdf_path == '') }">
+							
+								<strong class="text-info">Ordering Form Balance: </strong> NZ$ 
+								<strong class="text-success">
+									<fmt:formatNumber value="${customerSession.customerOrders[0].order_total_price }" type="number" pattern="#,##0.00" />
+								</strong>
+							</c:if>
+						</div>
+						<div class="col-md-3">
+							<c:if test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
+								<a target="_blank" href="${ctx }/customer/home/ordering-form/pdf/download" class="btn btn-success btn-block">
+									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Form
+								</a>
+							</c:if>
+						</div>
+						<div class="col-md-3">
+							<c:choose>
+								<c:when test="${customerSession.customerOrders[0].receipt_pdf_path != null && customerSession.customerOrders[0].receipt_pdf_path != '' }">
+									<a target="_blank" href="${ctx }/customer/home/receipt/pdf/download" class="btn btn-success btn-block">
+										<span class="glyphicon glyphicon-floppy-save"></span> Ordering Receipt
+									</a>
+								</c:when>
+								<c:when test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
+									<form action="${ctx }/customer/ordering-form/checkout" method="post" id="orderingForm">
+										<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
+									</form>
+								</c:when>
+							</c:choose>
 						</div>
 					</div>
 					

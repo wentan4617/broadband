@@ -62,8 +62,8 @@
 				</div>
 				<div class="panel-body">
 					<div id="usage_table"></div>
-					<div id="usage_chart" style="display:none;" class="hidden-xs hidden-sm">
-						<canvas id="canvas" height="300" width="810"></canvas>
+					<div id="usage_line" style="display:none;" class="hidden-xs hidden-sm">
+						<%-- <canvas id="canvas" height="300" width="810"></canvas> --%>
 					</div>
 				</div>
 				
@@ -143,7 +143,7 @@
 					var curDayTotal = upload + download;
 					tempData = Number(curDayTotal);
 					maxData = tempData > maxData ? tempData : maxData;
-					dataArray.push(Number(curDayTotal));
+					dataArray.push(Number(curDayTotal).toFixed(3));
 				} else {
 					dataArray.push(0);
 				}
@@ -166,8 +166,11 @@
 				, scaleStepWidth: (maxData/10).toFixed(3) // 
 				, scaleStartValue : 0 //
 			};
-			//$canvas.get(0).getContext("2d").clearRect(0, 0, 1100, 450);
-			new Chart(document.getElementById("canvas").getContext("2d")).Line(lineChartData, lineChartOptions);
+			
+			$('#usage_line').empty();
+			var $canvas = $('<canvas id="canvas" height="300" width="810"></canvas>');
+			$canvas.appendTo('#usage_line');
+			new Chart($canvas.get(0).getContext("2d")).Line(lineChartData, lineChartOptions);
 	   	});
 	}
 	doUsage('${current_date}'); //${current_date}
@@ -178,11 +181,11 @@
 		
 		var type = $(this).attr('data-type');
 		if (type == 'table') {
-			$('#usage_chart').hide();
+			$('#usage_line').hide();
 			$('#usage_table').show();
 		} else if (type == 'chart') {
 			$('#usage_table').hide();
-			$('#usage_chart').show();
+			$('#usage_line').show();
 		}
 	});
 	
