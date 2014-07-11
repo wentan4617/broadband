@@ -1,9 +1,8 @@
 package com.tm.broadband.util;
 
 import java.text.ParseException;
-import java.util.List;
-
-import com.tm.broadband.model.CustomerCallingRecordCallplus;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class StevenTest {
@@ -35,10 +34,15 @@ public class StevenTest {
 //		endCal.set(Calendar.SECOND, 0);
 //		System.out.println(endCal.getTime());
 
-		String filePath = TMUtils.createPath("CallPlus Calling Record June2014 90445601.csv");
-		List<CustomerCallingRecordCallplus> ccrs = CallingRecordUtility_CallPlus.ccrcs(filePath);
-		for (CustomerCallingRecordCallplus ccr : ccrs) {
-			System.out.println(ccr.getDate_str());
-		}
+//		String filePath = TMUtils.createPath("CallPlus Calling Record June2014 90445601.csv");
+//		List<CustomerCallingRecordCallplus> ccrs = CallingRecordUtility_CallPlus.ccrcs(filePath);
+//		for (CustomerCallingRecordCallplus ccr : ccrs) {
+//			System.out.println(ccr.getDate_str());
+//		}
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(new Date());
+		cal.add(Calendar.DAY_OF_MONTH, -7);
+		System.out.println(cal.getTime());
 	}
 }

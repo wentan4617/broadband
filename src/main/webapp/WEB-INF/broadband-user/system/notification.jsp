@@ -48,6 +48,8 @@
 									<form:option value="forgotten-password">Forgotten Password</form:option>
 									<form:option value="contact-us-response">Contact Us Response</form:option>
 									<form:option value="early-termination-charge">Early Termination Charge</form:option>
+									<form:option value="order-warning-notice">Order Warning Notice</form:option>
+									<form:option value="order-void-notice">Order Void Notice</form:option>
 								</form:select>
 							</div>
 						</div>

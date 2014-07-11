@@ -178,7 +178,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateTermPlanInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0 0 3 10 * ?"></property>
+		<property name="cronExpression" value="0 0 3 7 * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every month's 7th 3:00 a.m. -->
@@ -246,8 +246,28 @@
 	</bean>
 	<!-- END customerCreateTermPlanInvoiceOverduePenaltyEachMonthPDF -->
 	
+	<!-- BEGIN customerCheckPendingOrderEachThreeDays -->
+	<!-- normal business Bean -->
+	<bean name="customerCheckPendingOrderEachThreeDays" class="com.tm.broadband.quartz.CustomerCheckPendingOrderEachThreeDays" />
+	<!-- assignment -->
+	<bean id="customerCheckPendingOrderEachThreeDaysJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerCheckPendingOrderEachThreeDays" />
+		<property name="targetMethod" value="checkPendingOrderPDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerCheckPendingOrderEachThreeDaysTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerCheckPendingOrderEachThreeDaysJob" />
+		<property name="cronExpression" value="0 0 0 * * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every day's 0:00 a.m. -->
+		<!-- 0 0 0 * * ? -->
+	</bean>
+	<!-- END customerCheckPendingOrderEachThreeDays -->
+	
 	<!-- plan -->
-	<!-- <bean name="testScheduler"
+	<bean name="testScheduler"
 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
@@ -256,6 +276,7 @@
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
 				<ref bean="customerCreateTermPlanInvoiceOverduePenaltyEachMonthTrigger" />
+				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
@@ -263,7 +284,7 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean> -->
+	</bean>
 	
 	<!-- <import resource="aop-config.xml"/> -->
 
