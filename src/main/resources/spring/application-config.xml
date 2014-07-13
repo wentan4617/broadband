@@ -287,8 +287,7 @@
 	<!-- END customerCheckPendingWarningOrderEachFiveDays -->
 	
 	<!-- plan -->
-	<bean name="testScheduler"
-		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
