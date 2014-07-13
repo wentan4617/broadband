@@ -26,6 +26,7 @@
 			<if test="params.auth != null">and auth = #{params.auth}</if>
 			<if test="params.cellphone != null">and cellphone = #{params.cellphone}</if>
 			<if test="params.email != null">and email = #{params.email}</if>
+			<if test="params.is_provision != null">and is_provision = #{params.is_provision}</if>
 		</where>
 	</sql>
 	<!-- // DEFINITION AREA -->
@@ -82,8 +83,8 @@
 	<!-- INSERT AREA -->
 	
 	<insert id="insertUser" parameterType="User">
-		insert into tm_user(login_name,password,user_name,user_role,memo,auth,cellphone,email)
-		values(#{login_name},#{password},#{user_name},#{user_role},#{memo},#{auth},#{cellphone},#{email})
+		insert into tm_user(login_name,password,user_name,user_role,memo,auth,cellphone,email,is_provision)
+		values(#{login_name},#{password},#{user_name},#{user_role},#{memo},#{auth},#{cellphone},#{email},#{is_provision})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -101,6 +102,7 @@
 			<if test="memo != null">`memo`=#{memo},</if>
 			<if test="auth != null">`auth`=#{auth},</if>
 			<if test="cellphone != null">`cellphone`=#{cellphone},</if>
+			<if test="is_provision != null">`is_provision`=#{is_provision},</if>
 			<if test="email != null">`email`=#{email}</if>
 		</set>
 		<where>
