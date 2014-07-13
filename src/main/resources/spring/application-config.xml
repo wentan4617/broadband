@@ -266,6 +266,26 @@
 	</bean>
 	<!-- END customerCheckPendingOrderEachThreeDays -->
 	
+	<!-- BEGIN customerCheckPendingWarningOrderEachFiveDays -->
+	<!-- normal business Bean -->
+	<bean name="customerCheckPendingWarningOrderEachFiveDays" class="com.tm.broadband.quartz.CustomerCheckPendingWarningOrderEachFiveDays" />
+	<!-- assignment -->
+	<bean id="customerCheckPendingWarningOrderEachFiveDaysJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerCheckPendingWarningOrderEachFiveDays" />
+		<property name="targetMethod" value="checkPendingWarningOrderPDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerCheckPendingWarningOrderEachFiveDaysTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerCheckPendingWarningOrderEachFiveDaysJob" />
+		<property name="cronExpression" value="0 0 0 * * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every day's 0:00 a.m. -->
+		<!-- 0 0 0 * * ? -->
+	</bean>
+	<!-- END customerCheckPendingWarningOrderEachFiveDays -->
+	
 	<!-- plan -->
 	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -276,6 +296,7 @@
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
 				<ref bean="customerCreateTermPlanInvoiceOverduePenaltyEachMonthTrigger" />
 				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />
+				<ref bean="customerCheckPendingWarningOrderEachFiveDaysTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
