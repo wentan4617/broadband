@@ -16,6 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.6.7 2014-07-13
+
+* 将receipt，application form，ordering form等各种pdf模版的日期从yyyy-MM-dd格式改为dd(th)-MM-yyyy.(steven)
+* 编写CyberPark系统各种操作文档.(steven)
+* 编写客户DPS方式下单后台Provision和Accountant完整操作流程.(steven)
+* 编写客户Bank Deposit下单后台Provision和Accountant完整操作流程.(steven)
+
 demand version 1.6.6 2014-07-11
 
 * Chorus拨打账单分析并根据里面的Juristiction字段来出各个地域的拨打话费.(steven)
