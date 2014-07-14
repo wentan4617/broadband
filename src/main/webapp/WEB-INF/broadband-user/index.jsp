@@ -245,7 +245,7 @@ hr {
 		<div class="col-md-3">
 			<div class="panel panel-success">
 		  		<div class="panel-heading">
-		  			<h3 class="panel-title"><strong class="text-success">Manual Manipulation</strong></h3>
+		  			<h3 class="panel-title"><strong class="text-success">Manual</strong></h3>
 		  		</div>
 			  	<div class="panel-body">
 			  		<p>These are substitutes for automatic execute program.</p>
