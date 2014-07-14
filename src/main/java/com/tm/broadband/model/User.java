@@ -37,7 +37,7 @@ public class User implements Serializable {
 	private String auth;
 	private String cellphone;
 	private String email;
-	private String is_provision;
+	private Boolean is_provision;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -149,11 +149,11 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	public String getIs_provision() {
+	public Boolean getIs_provision() {
 		return is_provision;
 	}
 
-	public void setIs_provision(String is_provision) {
+	public void setIs_provision(Boolean is_provision) {
 		this.is_provision = is_provision;
 	}
 

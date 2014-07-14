@@ -77,8 +77,18 @@ public class SystemService {
 			auth += user.getAuthArray()[i];
 			if (i < len - 1) auth += ",";
 		}
+		user.setIs_provision(user.getIs_provision() != null ? true : false);
 		user.setAuth(auth);
 		this.userMapper.updateUser(user);
+	}
+
+	@Transactional
+	public void editUsers(List<User> user) {
+		
+		for (User u : user) {
+			this.userMapper.updateUser(u);
+		}
+		
 	}
 
 	@Transactional

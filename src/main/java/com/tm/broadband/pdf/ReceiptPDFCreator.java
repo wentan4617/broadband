@@ -207,7 +207,7 @@ public class ReceiptPDFCreator extends ITextUtils {
         addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
         addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         addCol(customerBasicInfoTable, "Order Date", 2, 0F, ITextFont.arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomerOrder().getOrder_create_date()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCustomerOrder().getOrder_create_date()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         // END CUSTOMER BASIC INFORMATION
     	
     	// BEGIN CUSTOMER BASIC INFO PADDING BOTTOM
@@ -260,7 +260,7 @@ public class ReceiptPDFCreator extends ITextUtils {
         	addCol(customerInfoTable, "Email", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, this.getCustomer().getEmail(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Date of Birth", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getCustomer().getBirth()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCustomer().getBirth()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Driver License No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, this.getCustomer().getDriver_licence(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Passport No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
@@ -281,7 +281,7 @@ public class ReceiptPDFCreator extends ITextUtils {
         	addCol(customerInfoTable, "Registration No.", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, this.getOrg().getOrg_register_no(), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Date Incoporated", 3, labelIndent, ITextFont.arial_bold_10, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.dateFormatYYYYMMDD(this.getOrg().getOrg_incoporate_date()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getOrg().getOrg_incoporate_date()), 7, contentIndent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
 
         	// BEGIN CUSTOMER INFO AREA ENDING PADDING BOTTOM
             addEmptyCol(customerInfoTable, 8F, 10);

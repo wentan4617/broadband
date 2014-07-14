@@ -637,7 +637,8 @@ public class CRMRestController {
 	// Update SV/CVLan & RFS date
 	@RequestMapping(value = "broadband-user/crm/customer/order/save/svcvlanrfsdate", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerRFSDateEdit(Model model,
-			CustomerOrder customerOrder, @RequestParam("way") String way) {
+			CustomerOrder customerOrder, @RequestParam("way") String way,
+			HttpServletRequest req) {
 
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 
@@ -694,15 +695,25 @@ public class CRMRestController {
 		// send sms to customer's mobile phone
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(),
 				notification.getContent());
+		
+		// Provision record
+		ProvisionLog pl = new ProvisionLog();
+		User user = (User) req.getSession().getAttribute("userSession");
+		pl.setUser_id(user.getId());
+		pl.setProcess_datetime(new Date());
+		pl.setOrder_sort("customer-order");
+		pl.setOrder_id_customer(customerOrder.getId());
+		pl.setProcess_way(this.crmService.queryCustomerOrderById(customerOrder.getId()).getOrder_status()+" to rfs");
 
 		CustomerOrder co = new CustomerOrder();
 		co.setSvlan(svLan);
 		co.setCvlan(cvLan);
 		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder
 				.getRfs_date_str()));
+		co.setOrder_status("rfs");
 		co.getParams().put("id", customerOrder.getId());
 
-		this.crmService.editCustomerOrder(co);
+		this.crmService.editCustomerOrder(co, pl);
 		json.setModel(co);
 		json.getSuccessMap().put("alert-success",
 				"svlan, cvlan and rfs_date had successfully been updated.");

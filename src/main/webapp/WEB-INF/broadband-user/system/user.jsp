@@ -75,6 +75,12 @@
 								<form:errors path="cellphone" cssErrorClass="error"/>
 							</p>
 						</div>
+						<div class="form-group">
+							<label for="is_provision" class="control-label col-md-4">Provision Notice</label>
+							<div class="col-md-3">
+								<input type="checkbox" name="is_provision" ${user.is_provision ? 'checked="checked"' : ''} />
+							</div>
+						</div>
 						<hr/>
 						<h4>User Authentication</h4>
 						<div class="form-group" data-module="administrator">
@@ -406,6 +412,7 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript">
 (function($){
+	
 	$('input[data-name="checkbox_all"]').click(function(){
 		var b = $(this).prop("checked");
 		var type = $(this).attr("data-type");

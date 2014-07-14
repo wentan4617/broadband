@@ -50,6 +50,7 @@
 									<form:option value="early-termination-charge">Early Termination Charge</form:option>
 									<form:option value="order-warning-notice">Order Warning Notice</form:option>
 									<form:option value="order-void-notice">Order Void Notice</form:option>
+									<form:option value="provision-notice">Provision Notice</form:option>
 								</form:select>
 							</div>
 						</div>
