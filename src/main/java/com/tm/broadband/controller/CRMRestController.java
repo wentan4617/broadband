@@ -39,6 +39,8 @@ import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
+import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
@@ -54,7 +56,7 @@ import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @RestController
-@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })
+@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })//
 public class CRMRestController {
 
 	private CRMService crmService;
@@ -1304,8 +1306,7 @@ public class CRMRestController {
 					.put("alert-success",
 							"Early termination charge detail had been attached to related order!");
 		} else {
-			json.getErrorMap().put("alert-error",
-					"Terminated Date Format Incorrect!");
+			json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
 		}
 
 		return json;
@@ -1326,34 +1327,27 @@ public class CRMRestController {
 
 		if (TMUtils.isDateFormat(terminatedDate, "-")) {
 
-			Map<String, Object> map = TMUtils.terminationRefundCalculations(
-					TMUtils.parseDateYYYYMMDD(terminatedDate), monthlyCharge);
+			Map<String, Object> map = TMUtils.terminationRefundCalculations(TMUtils.parseDateYYYYMMDD(terminatedDate), monthlyCharge);
 
 			CustomerOrderDetail cod = new CustomerOrderDetail();
 			cod.setOrder_id(order_id);
 			cod.setDetail_name("Termination Credit");
-			cod.setDetail_desc("Residual Day(s): "
-					+ (Integer) map.get("remaining_days"));
+			cod.setDetail_desc("Residual Day(s): " + (Integer) map.get("remaining_days"));
 			cod.setDetail_plan_memo("Total Credit Back: "
-					+ TMUtils.fillDecimalPeriod((Double) map
-							.get("refund_amount"))
+					+ TMUtils.fillDecimalPeriod((Double) map.get("refund_amount"))
 					+ " Terminated Date: "
 					+ terminatedDate
 					+ " Month Max Date: "
-					+ TMUtils.dateFormatYYYYMMDD((Date) map
-							.get("last_date_of_month")));
+					+ TMUtils.dateFormatYYYYMMDD((Date) map.get("last_date_of_month")));
 			cod.setDetail_price((Double) map.get("refund_amount"));
 			cod.setDetail_unit(1);
 			cod.setDetail_type(detail_type);
 			cod.setUser_id(user.getId());
 
 			this.crmService.createCustomerOrderDetail(cod);
-			json.getSuccessMap()
-					.put("alert-success",
-							"Termination refund detail had been attached to related order!");
+			json.getSuccessMap().put("alert-success", "Termination refund detail had been attached to related order!");
 		} else {
-			json.getErrorMap().put("alert-error",
-					"Terminated Date Format Incorrect!");
+			json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
 		}
 
 		return json;
@@ -1453,5 +1447,22 @@ public class CRMRestController {
 		
 		json.getSuccessMap().put("alert-success", "Order paid off succeccfully!");
 		return json;
+	}
+	
+	@RequestMapping("/broadband-user/crm/customer/view/{pageNo}")
+	public Page<Customer> doCustomerView(@PathVariable("pageNo") int pageNo, Customer customerQuery, SessionStatus status) {
+		
+		Page<Customer> page = new Page<Customer>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by register_date desc");
+		if (customerQuery != null) {
+			page.getParams().put("id", customerQuery.getId());
+			page.getParams().put("cellphone", customerQuery.getCellphone());
+			page.getParams().put("email", customerQuery.getEmail());
+		}
+		this.crmService.queryCustomersByPage(page);
+		status.setComplete();
+		return page;
 	}
 }

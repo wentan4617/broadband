@@ -9,16 +9,9 @@
 <jsp:include page="../alert.jsp" />
 
 <div class="container">
-	<div class="page-header">
-		<h1>
-			Sales List
-		</h1>
-	</div>
-	
-	<!--  -->
 	<div class="row">
 		<div class="col-md-12">
-			<div class="panel panel-default">
+			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">Sales View</h4>
 				</div>
@@ -30,7 +23,7 @@
 								<th>Sales Id</th>
 								<th>Login Account</th>
 								<th>Name</th>
-								<th>Cellphone</th>
+								<th>Cell phone</th>
 								<th>Email</th>
 								<th>&nbsp;</th>
 							</tr>

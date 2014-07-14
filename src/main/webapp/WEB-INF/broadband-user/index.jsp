@@ -58,7 +58,7 @@ hr {
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-                    		<a href="${ctx }/broadband-user/crm/customer/view/1">View Customer</a>
+                    		<a href="${ctx }/broadband-user/crm/customer/view">View Customer</a>
                     	</li>
 						<li>
                     		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
@@ -106,9 +106,7 @@ hr {
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/billing/early-termination-charge/view/1/unpaid">View Early Termination Charge</a>
                     	</li>
-					</ul>
-					<ul class="list-unstyled">
-						<li>
+                    	<li>
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/billing/termination-refund/view/1/unpaid">View Termination Refund</a>
                     	</li>
@@ -275,5 +273,4 @@ hr {
 </div>
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/holder.js"></script>
 <jsp:include page="footer-end.jsp" />

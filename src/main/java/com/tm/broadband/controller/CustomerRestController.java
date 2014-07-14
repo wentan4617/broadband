@@ -50,6 +50,7 @@ import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.OnlinePayByVoucherValidatedMark;
+import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
 @SessionAttributes(value = { "customer", "orderPlan"})
@@ -241,7 +242,9 @@ public class CustomerRestController {
 
 	@RequestMapping(value = "/order/personal", method = RequestMethod.POST)
 	public JSONBean<Customer> doOrderPersonal(Model model,
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
+			@Validated(value = { CustomerValidatedMark.class,
+					TransitionCustomerOrderValidatedMark.class }) @RequestBody Customer customer,
+			BindingResult result,
 			HttpServletRequest req) {
 
 		model.addAttribute("customer", customer);
@@ -253,7 +256,9 @@ public class CustomerRestController {
 	
 	@RequestMapping(value = "/order/business", method = RequestMethod.POST)
 	public JSONBean<Customer> doOrderBusiness(Model model,
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result, 
+			@Validated(value = { CustomerOrganizationValidatedMark.class,
+					TransitionCustomerOrderValidatedMark.class }) @RequestBody Customer customer,
+			BindingResult result,
 			HttpServletRequest req) {
 
 		model.addAttribute("customer", customer);
@@ -269,16 +274,21 @@ public class CustomerRestController {
 		json.setModel(customer);
 		
 		// If contains script> value then this is a script injection
-		if(CheckScriptInjection.isScriptInjection(customer)){
+		if (CheckScriptInjection.isScriptInjection(customer)) {
 			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
 		
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
+			if (!"transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				json.getErrorMap().remove("customerOrder.transition_provider_name");
+				json.getErrorMap().remove("customerOrder.transition_account_number");
+				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
+			}
 			return json;
 		}
-
+		
 		Customer cValid = new Customer();
 		cValid.getParams().put("where", "query_exist_customer_by_mobile");
 		cValid.getParams().put("cellphone", customer.getCellphone());
