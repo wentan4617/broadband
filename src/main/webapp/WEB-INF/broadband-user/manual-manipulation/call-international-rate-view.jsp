@@ -24,10 +24,9 @@
 					</h4>
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					<table class="table" style="font-size:12px;">
+					<table class="table">
 						<thead >
 							<tr>
-								<th><input type="checkbox" id="checkbox_callInternationalRates_top" /></th>
 								<th>Area Prefix</th>
 								<th>Rate Type</th>
 								<th>Area Name</th>
@@ -37,9 +36,6 @@
 						<tbody>
 							<c:forEach var="callInternationalRate" items="${page.results }">
 								<tr>
-									<td>
-										<input type="checkbox" name="checkbox_callInternationalRates" value="${callInternationalRate.id}"/>
-									</td>
 									<td>
 										${callInternationalRate.area_prefix }
 									</td>

@@ -40,19 +40,20 @@
 					.tooltip({
 						html: true
 						, placement: (input_placement || placement)
-						, title: '<h6 class="text-danger">' + json.errorMap[key] + '</h6>'
+						, title: '<span class="text-danger">' + json.errorMap[key] + '</span>'
 						, trigger: 'manual'
 					})
 					.tooltip('show')
 					.closest('div.form-group')
 					.addClass('has-error');
 				
-				var nextDiv = $input.next('div');
-				var ele_arrow = nextDiv.find('.tooltip-arrow');
-				var ele_inner = nextDiv.find('.tooltip-inner');
+				var ele_tooltip = $input.next('div'); 
+				var ele_arrow = ele_tooltip.find('.tooltip-arrow');
+				var ele_inner = ele_tooltip.find('.tooltip-inner');
 				ele_arrow.css('border-' + (input_placement || placement) + '-color', '#f2dede');
 				ele_inner.css('background-color', '#f2dede');
 				if ((input_placement || placement) == 'right') {
+					ele_arrow.css('top', '6.62%');
 					ele_arrow.css('margin-top', '5px');
 					ele_inner.css('width', '200px');
 				}

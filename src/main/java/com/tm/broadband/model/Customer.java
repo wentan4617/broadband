@@ -101,6 +101,7 @@ public class Customer implements Serializable {
 	// one customer may be get more orders
 	@Valid
 	private Organization organization = new Organization();
+	@Valid
 	private CustomerOrder customerOrder = new CustomerOrder();
 	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;

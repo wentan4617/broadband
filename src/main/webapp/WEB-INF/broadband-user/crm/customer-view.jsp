@@ -11,114 +11,74 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-		
-			<jsp:include page="customer-query.jsp" />
-		
-		
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">Customer View</h4>
 				</div>
-				<c:if test="${fn:length(page.results) > 0 }">
-					<table class="table" style="font-size:12px;">
-						<thead>
-							<tr>
-								<th><input type="checkbox" id="checkbox_customer_top" /></th>
-								<th>Customer</th>
-								<th>Type</th>
-								<th>Address</th>
-								<th>Email</th>
-								<th>Mobile</th>
-								<th>Status</th>
-								<th>Reg On</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="customer" items="${page.results }">
-								<tr>
-									<td>
-										<input type="checkbox" name="checkbox_customer" value="${customer.id}"/>
-									</td>
-									<td>
-										<a href="${ctx }/broadband-user/crm/customer/edit/${customer.id}">
-											<c:choose>
-												<c:when test="${customer.customer_type == 'personal' }">
-													${customer.first_name } ${customer.last_name }
-												</c:when>
-												<c:when test="${customer.customer_type == 'business' }">
-													${customer.organization.org_name == null ? customer.id : customer.organization.org_name}
-												</c:when>
-											</c:choose>
-										</a>
-									</td>
-									<td>${customer.customer_type }</td>
-									<td>${customer.address }</td>
-									<td>${customer.email }</td>
-									<td>${customer.cellphone }</td>
-									<td>${customer.status}</td>
-									<td>${customer.register_date_str }</td>
-								</tr>
-							</c:forEach>
-						</tbody>
-						<tfoot>
-						<tr>
-							<td colspan="11">
-								<ul class="pagination">
-									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
-										<li class="${page.pageNo == num ? 'active' : ''}">
-											<a href="${ctx}/broadband-user/crm/customer/view/${num}">${num}</a>
-										</li>
-									</c:forEach>
-								</ul>
-							</td>
-						</tr>
-					</tfoot>
-					</table>
-				</c:if>
-				<c:if test="${fn:length(page.results) <= 0 }">
-					<div class="panel-body">
-						<div class="alert alert-warning">No records have been found.</div>
-					</div>
-				</c:if>
+				<jsp:include page="customer-query.html" />
+				<hr>
+				<div id="customer-view"></div>
 			</div>
 		</div>
 	</div>
 </div>
+
+<script type="text/html" id="customer_view_tmpl">
+<jsp:include page="customer-view-page.html" />
+</script>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
 (function($){
-	$('#checkbox_customer_top').click(function(){
-		var b = $(this).prop("checked");
-		if (b) {
-			$('input[name="checkbox_customer"]').prop("checked", true);
-		} else {
-			$('input[name="checkbox_customer"]').prop("checked", false);
-		}
-	});
+	
+	function doPage(pageNo, customer, btn) { console.log(btn);
+		btn && btn.button('loading');
+		$.get('${ctx}/broadband-user/crm/customer/view/' + pageNo, customer, function(page){ //console.log(page);
+			page.ctx = '${ctx}';
+	   		var $div = $('#customer-view');
+	   		$div.html(tmpl('customer_view_tmpl', page));
+	   		$div.find('tfoot a').click(function(){
+				doPage($(this).attr('data-pageNo'), customer);
+			});
+	   		
+	   		$('#checkbox_customer_top').click(function(){
+	   			var b = $(this).prop("checked");
+	   			if (b) $('input[name="checkbox_customer"]').prop("checked", true);
+	   			else $('input[name="checkbox_customer"]').prop("checked", false);
+	   		});
+	   	}, 'json').always(function(){
+	   		btn && btn.button('reset');
+	   	});
+	}
+	doPage(1, null);
 	
 	$('input[data-role="query"]').each(function(){
-		var id = $(this).attr('data-id');
+		var id = $(this).attr('data-id'); //console.log(id);
 		var val = $(this).prop("checked");
-		//console.log(id);
-		if (val) {
-			$('#' + id).prop("disabled", "");
-		} else {
-			$('#' + id).prop("disabled", "disabled");
-		}
+		if (val) $('#' + id).prop("disabled", "");
+		else $('#' + id).prop("disabled", "disabled"); 
 	});
 	
 	$('input[data-role="query"]').click(function(){
 		var id = $(this).attr('data-id');
 		var val = $(this).prop("checked");
-		//console.log(id);
-		if (val) {
-			$('#' + id).prop("disabled", "");
-		} else {
-			
-			$('#' + id).prop("disabled", "disabled");
-		}
-		
+		if (val) $('#' + id).prop("disabled", "");
+		else $('#' + id).prop("disabled", "disabled");
+	}); 
+	
+	$('#query').click(function(e){
+		e.preventDefault();
+		var customer = {};
+		$('input[data-role="query"]').each(function(){
+			var val = $(this).prop("checked");
+			if (val) {
+				var field = $(this).attr('data-id');
+				customer[field] = $('#' + field).val();
+			} 
+		}); console.log(customer);
+		doPage(1, customer, $(this));
 	});
 })(jQuery);
 </script>

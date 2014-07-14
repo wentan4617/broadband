@@ -9,10 +9,13 @@ import java.util.Map;
 
 import javax.validation.Valid;
 
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
+import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 public class CustomerOrder implements Serializable {
 
@@ -36,8 +39,14 @@ public class CustomerOrder implements Serializable {
 	private String order_broadband_type;
 	private String svlan;
 	private String cvlan;
+	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_provider_name;
+	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_holder_name;
+	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_number;
 	private String transition_porting_number;
 	private Integer hardware_post;
