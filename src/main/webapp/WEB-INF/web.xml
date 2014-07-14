@@ -154,6 +154,7 @@
 		<url-pattern>/broadband-user/data/*</url-pattern>
 		<url-pattern>/broadband-user/system/*</url-pattern>
 		<url-pattern>/broadband-user/sale/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/*</url-pattern>
 	</filter-mapping>
 
 	<!-- user auth filter -->

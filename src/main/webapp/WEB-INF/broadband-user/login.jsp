@@ -20,7 +20,7 @@
 							<label for="password">Password</label>
 							<input type="password" id="password" class="form-control" data-error-field/>
 						</div>
-						<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="signin-btn">Login</button>
+						<button type="submit" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="signin-btn">Login</button>
 					</form>
 				</div>
 			</div>
@@ -31,14 +31,9 @@
 <jsp:include page="script.jsp" />
 <script type="text/javascript">
 (function($){
-	$(document).keypress(function(e){
-		if ($('#loginForm input:focus').length > 0 && event.keyCode == 13) {
-			$('#signin-btn').trigger('click');
-		}
-	});
 	
-	$('#signin-btn').on("click", function(){
-		
+	$('#signin-btn').on("click", function(e){
+		e.preventDefault();
 		var $btn = $(this);
 		$btn.button('loading');
 		var data = {
@@ -46,15 +41,10 @@
 			, password: $('#password').val()
 		};
 		$.post('${ctx}/broadband-user/login', data, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
-				window.location.href='${ctx}' + json.url;
-			}
-		}, 'json').always(function () {
-			$btn.button('reset');
-	    });
+			if (!$.jsonValidation(json, 'right')) window.location.href='${ctx}' + json.url;
+		}, 'json').always(function () { $btn.button('reset'); });
 	});
+	
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

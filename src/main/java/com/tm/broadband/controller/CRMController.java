@@ -63,7 +63,7 @@ import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
 
 @Controller
-@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })
+@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })//
 public class CRMController {
 
 	private CRMService crmService;
@@ -83,36 +83,8 @@ public class CRMController {
 		this.smserService = smserService;
 	}
 
-	@RequestMapping("/broadband-user/crm/customer/view/{pageNo}")
-	public String customerView(Model model, @PathVariable("pageNo") int pageNo) {
-		
-		Page<Customer> page = new Page<Customer>();
-		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by register_date desc");
-		this.crmService.queryCustomersByPage(page);
-		model.addAttribute("page", page);
-		model.addAttribute("customerQuery", new Customer());
-		return "broadband-user/crm/customer-view";
-	}
-
-	@RequestMapping("/broadband-user/crm/customer/query/{pageNo}")
-	public String customerQuery(Model model, 
-			@PathVariable("pageNo") int pageNo,
-			@ModelAttribute("customerQuery") Customer customer, RedirectAttributes attr) {
-		
-		Page<Customer> page = new Page<Customer>();
-		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by register_date desc");
-		page.getParams().put("id", customer.getId());
-		page.getParams().put("login_name", customer.getLogin_name());
-		page.getParams().put("phone", customer.getPhone());
-		page.getParams().put("cellphone", customer.getCellphone());
-		page.getParams().put("email", customer.getEmail());
-		page.getParams().put("svlan", customer.getCustomerOrder().getSvlan());
-		page.getParams().put("cvlan", customer.getCustomerOrder().getCvlan());
-		
-		this.crmService.queryCustomersByPage(page);
-		model.addAttribute("page", page);
+	@RequestMapping("/broadband-user/crm/customer/view")
+	public String toCustomerView() {
 		return "broadband-user/crm/customer-view";
 	}
 	

@@ -191,19 +191,19 @@
 								<div class="form-group">
 									<label class="control-label col-md-4">Current Provider</label>
 									<div class="col-md-4">
-										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
+										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-4">Account Holder</label>
 									<div class="col-md-4">
-										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" />
+										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
 									<label class="control-label col-md-4">Current Account Number</label>
 									<div class="col-md-4">
-										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" />
+										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">

@@ -287,7 +287,7 @@
 	<!-- END customerCheckPendingWarningOrderEachFiveDays -->
 	
 	<!-- plan -->
-	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<!-- <bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
@@ -304,7 +304,7 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- <import resource="aop-config.xml"/> -->
 

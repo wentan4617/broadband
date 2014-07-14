@@ -31,7 +31,16 @@
 		</h1>
 	</div>
 	
-	<div class="alert alert-info">
+	<div class="alert alert-success">
+		<p style="font-weight: bold">
+			Pay-in-Advance Local Call only.
+		</p>
+		<p style="font-weight: bold">
+			All our Broadband plans are Pay-in-Advance. For the home phone line, it will be local call only. 
+		</p>
+		<p style="font-weight: bold">
+			All the toll call will not be allowed.
+		</p>
 		<p>
 			We offer the best value and price personal broadband plans to you. 
 			We can offer more values and better price telecommunication plans to you.

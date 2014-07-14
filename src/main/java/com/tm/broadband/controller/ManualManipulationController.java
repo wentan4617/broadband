@@ -74,7 +74,7 @@ public class ManualManipulationController {
 
 		Page<ManualManipulationRecord> page = new Page<ManualManipulationRecord>();
 		page.setPageNo(pageNo);
-		page.setPageSize(30);
+		page.setPageSize(50);
 		page.getParams().put("orderby", "ORDER BY manipulation_time DESC");
 		page.getParams().put("manipulation_type", manipulation_type);
 		this.systemService.queryManualManipulationRecordsByPage(page);
@@ -115,7 +115,7 @@ public class ManualManipulationController {
 
 		Page<CallInternationalRate> page = new Page<CallInternationalRate>();
 		page.setPageNo(pageNo);
-		page.setPageSize(30);
+		page.setPageSize(50);
 		page.getParams().put("orderby", "ORDER BY rate_type");
 		page = this.billingService.queryCallInternationalRatesByPage(page);
 		
