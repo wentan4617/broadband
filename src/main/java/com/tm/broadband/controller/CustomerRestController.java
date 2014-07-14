@@ -160,8 +160,11 @@ public class CustomerRestController {
 			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 			Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
 			
-			Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-			customer.setOrganization(org);
+			if("business".toUpperCase().equals(customer.getType().toUpperCase())){
+				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+				customer.setOrganization(org);
+				org = null;
+			}
 			
 			String msg = "";
 
@@ -186,7 +189,6 @@ public class CustomerRestController {
 			
 			companyDetail = null;
 			notification = null;
-			org = null;
 			
 		}
 		
