@@ -16,12 +16,18 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.6.8 2014-07-14
+
+* 更正View Online Orders界面列表的显示样式以及Optional Request的modal显示内容.(steven)
+* [user views interface add **Set Operation**, add **Provision Notice** option when click Yes then *is_provision* is true, else false.](steven)
+* [user interface add **Provision Notice** checkbox, **checked** means true, unchecked means false.](steven)
+
 demand version 1.6.7 2014-07-13
 
-* 将receipt，application form，ordering form等各种pdf模版的日期从yyyy-MM-dd格式改为dd(th)-MM-yyyy.(steven)
-* 编写CyberPark系统各种操作文档.(steven)
-* 编写客户DPS方式下单后台Provision和Accountant完整操作流程.(steven)
-* 编写客户Bank Deposit下单后台Provision和Accountant完整操作流程.(steven)
+* [Changing all PDF's date format from yyyy-MM-dd style to dd(th)-MM-yyyy.](steven)
+* [Writing various operating documents for CyberPark Management System.](steven)
+* Writing whole operating process from customer DPS ordering to provision and accountant.(steven)
+* Writing whole operating process from customer Bank Deposit ordering to provision and accountant.(steven)
 
 demand version 1.6.6 2014-07-11
 
@@ -29,14 +35,14 @@ demand version 1.6.6 2014-07-11
 * Chorus的Business Local Call是AccountName为SME ACCOUNT且RecordType为T3的记录，需要计算到CallingRecord里.(steven)
 * 做个定时器，取出所有pending-warning状态且order_create_date为4天前的order，将order状态改为void，并且提示客户由下单5天还未付款，该订单已被void.(steven)
 * [做个定时器，取出所有pending状态且order_create_date为2天前的order，将order状态改为pending-warning，并且发送一封附带ordering form的提醒邮件.](steven)
-* 点击RFS Date的时候改变order状态为rfs.(steven)
+* [change *order_status* to *rfs* while changing the **RFS Date**.](steven)
 
 demand version 1.6.5 2014-07-10
 
 * [编写客户服务录列表页，按服务记录创建日期降序排列.](steven)
 * [order界面顶部添加一个按钮：Pay Off This Order，若客户不是DPS的方式下单，当accountant收到客户的款项则需要点击该按钮。作用是将该order的应付金额转成customer的account credit，并将order状态改为paid，以供Service Given时Service With Invoice按钮扣除account credit之用.](steven)
-* 由于ccr结构变得异常复杂，尝试穿插编写过滤掉所有residential的local call的逻辑代码.(steven)
-* 由于ccr结构变得异常复杂，尝试穿插编写赠送national call minutes的逻辑代码.(steven)
+* [According to the complexity of **ccr**'s structure, try interweave filtering *residential*'s **local call** logic structure.](steven)
+* [According to the complexity of **ccr**'s structure, try interweave presenting **national calling minutes** logic structure.](steven)
  
 demand version 1.6.1 2014-07-09
 
@@ -49,13 +55,13 @@ demand version 1.6.0 2014-07-08
 
 demand version 1.6.0 2014-07-07
 
-* 编写发给provision和accountant的短信模版.(steven)
-* 编写Service Given时选择unpaid的email模版.(steven)
+* [create *sms template* for *provision* and *accountant* team.](steven)
+* [create *unpaid email template* for **Service Given** action.](steven)
 * [基于application form的PDF模版，衍生出两种新模版：Ordering Form，Receipt](steven)
 * [后台order界面顶部添加两个按钮：Download Ordering Form，Download Ordering Receipt.](steven)
 * [添加一个字段next_invoice_create_date_flag，定位每个月的当天，取出order后根据该日期减7天存入next_invoice_create_date.](steven)
 * [修改出no term和no ddpay的invoice的next invoice create date不减7天.](steven)
-* 更改prepay下单后的email模版内容.(steven)
+* [modify *prepay* **Ordering** action's *email template contents*.](steven)
 * [点Save Service Given的时候，如果不是DDPay并且是termed的order或者是No Term的order则设置next_invoice_create_date_flag为服务开通日+1个月，并且设置next_invoice_create_date为服务开通日+1个月零7天.](steven)
 * [点Save Service Given的时候，弹出按钮组，选择Service Only则逻辑不变，若选择Service With Invoice则通过余额来抵消账单然后通知客户你的账单余额已通过账户余额抵消了.](steven)
 * 前台选plan时选非一个月的plan则提示他该plan的discount有多少个percentage.(kanny)

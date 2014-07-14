@@ -156,9 +156,9 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // CARTOON
-		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"cartoon_done.png");
-		cartoon.scaleAbsolute(80f, 40.5f);
-		cartoon.setAbsolutePosition(50, 165);
+		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"company_logo.png");
+		cartoon.scaleAbsolute(100f, 46f);
+		cartoon.setAbsolutePosition(30, 170);
 		writer.getDirectContent().addImage(cartoon);
 		
 		{	// createPaymentSlip

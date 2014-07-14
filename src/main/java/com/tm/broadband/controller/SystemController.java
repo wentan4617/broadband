@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CompanyDetail;
@@ -23,6 +24,7 @@ import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.RegisterCustomer;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
@@ -408,6 +410,31 @@ public class SystemController {
 		
 		
 		return "broadband-user/system/customer-register-chart";
+	}
+	
+	@RequestMapping(value = "/broadband-user/user/is-provision", method = RequestMethod.POST)
+	public String deletePlans(
+			Model model,
+			@RequestParam(value = "checkbox_users", required = false) String[] user_ids,
+			@RequestParam("is_provision") Boolean is_provision,
+			HttpServletRequest req, RedirectAttributes attr) {
+
+		if (user_ids == null) {
+			attr.addFlashAttribute("error", "Please choose one user at least.");
+			return "redirect:/broadband-user/system/user/view/1";
+		} else {
+			List<User> users = new ArrayList<User>();
+			for (String id: user_ids) {
+				User user = new User();
+				user.setIs_provision(is_provision);
+				user.getParams().put("id", Integer.parseInt(id));
+				users.add(user);
+			}
+			this.systemService.editUsers(users);
+		}
+		
+		attr.addFlashAttribute("success", "Delete selected user(s) successfully!");
+		return "redirect:/broadband-user/system/user/view/1";
 	}
 	
 }

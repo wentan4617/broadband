@@ -8,11 +8,31 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+.btn {
+	padding: 0 12px;
+}
+.bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
+	margin-bottom: 0;
+}
+</style>
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-success">
-				<div class="panel-heading"><h4 class="panel-title">User View</h4></div>
+				<div class="panel-heading">
+					<h4 class="panel-title">User View
+						<div class="pull-right">
+							<select id="select_operations" name="user-provision-notice" class="selectpicker" multiple title="Set Operation">
+							    <optgroup label="Provision Notice">
+							      	<option value="true">Yes</option>
+							      	<option value="false">No</option>
+							    </optgroup>
+							</select>
+						</div>
+					</h4>
+				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table">
 						<thead >
@@ -23,10 +43,13 @@
 								<th>User Name</th>
 								<th>User Role</th>
 								<th>Memo</th>
+								<th>Provision Notice</th>
 								<th>&nbsp;</th>
 							</tr>
 						</thead>
 						<tbody>
+							<form id="userForm" method="post">
+							<input name="is_provision" type="hidden" />
 							<c:forEach var="user" items="${page.results }">
 								<tr class="">
 									<td>
@@ -49,9 +72,13 @@
 									<td>
 										${user.memo }
 									</td>
+									<td>
+										<span ${user.is_provision ? 'class="glyphicon glyphicon-ok"' : '' }></span>
+									</td>
 									<td>&nbsp;</td>
 								</tr>
 							</c:forEach>
+							</form>
 						</tbody>
 						<tfoot>
 						<tr>
@@ -79,8 +106,12 @@
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
+	
+	$('.selectpicker').selectpicker();
+	
 	$('#checkbox_users_top').click(function(){
 		var b = $(this).prop("checked");
 		if (b) {
@@ -88,6 +119,12 @@
 		} else {
 			$('input[name="checkbox_users"]').prop("checked", false);
 		}
+	});
+	
+	$('select[name="user-provision-notice"]').change(function(){
+		$('input[name="is_provision"]').val(this.value);
+		$('#userForm').attr('action', '${ctx }/broadband-user/user/is-provision');
+		$('#userForm').submit();
 	});
 })(jQuery);
 </script>
