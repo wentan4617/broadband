@@ -349,11 +349,16 @@
 			<label class="control-label col-md-3">This Order Belongs To</label>
 			<div class="col-md-3">
 				<p class="form-control-static" id="<.= customerOrder[i].id .>_order_belongs_to">
-				<. for(var u=0; u<users.length; u++){
-						if(users[u].id == customerOrder[i].user_id || users[u].id == customerOrder[i].sale_id){ .>
-							<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
-				<. 		} 
-					} .>
+				<.	if((customerOrder[i].user_id==null || customerOrder[i].user_id=='')
+						&& (customerOrder[i].sale_id==null || customerOrder[i].sale_id=='')){ .>
+					<strong>ordering online</strong>
+				<.	} else { .>
+				<. 		for(var u=0; u<users.length; u++){
+							if(users[u].id == customerOrder[i].user_id || users[u].id == customerOrder[i].sale_id){ .>
+								<.=  users[u].user_name .>&nbsp;-&nbsp;<strong><.=  users[u].user_role .></strong>
+				<.			} .>
+				<.		} .>
+				<.	} .>
 				</p>
 			</div>
 			<div class="col-md-3">
