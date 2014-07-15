@@ -40,12 +40,10 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
 import com.tm.broadband.pdf.CreditPDFCreator;
-import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
@@ -684,7 +682,7 @@ public class SaleController {
 		
 		this.saleService.queryOrdersByPage(page);
 		model.addAttribute("page", page);
-		model.addAttribute("users", this.saleService.queryUsersWhoseIdExistInOrder());
+		model.addAttribute("salesUsers", this.saleService.queryUsersWhoseIdExistInOrder());
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE
@@ -738,7 +736,7 @@ public class SaleController {
 		
 		this.saleService.queryOrdersByPage(page);
 		model.addAttribute("page", page);
-		model.addAttribute("users", this.saleService.queryUsersWhoseIdExistInOrder());
+		model.addAttribute("salesUsers", this.saleService.queryUsersWhoseIdExistInOrder());
 		model.addAttribute("sale_id", sale_id);
 
 		// BEGIN QUERY SUM BY SIGNATURE

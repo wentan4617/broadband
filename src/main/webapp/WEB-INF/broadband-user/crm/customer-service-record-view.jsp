@@ -60,7 +60,7 @@
 								<ul class="pagination">
 									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 										<li class="${page.pageNo == num ? 'active' : ''}">
-											<a href="${ctx}/broadband-user/crm/customer/view/${num}">${num}</a>
+											<a href="${ctx}/broadband-user/crm/customer-service-record/view/${num}">${num}</a>
 										</li>
 									</c:forEach>
 								</ul>

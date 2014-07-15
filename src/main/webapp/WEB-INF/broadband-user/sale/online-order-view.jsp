@@ -8,6 +8,12 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+th, td{
+	text-align:center;
+}
+</style>
+
 <div class="container">
 	<div class="page-header">
 		<h1>
@@ -73,7 +79,7 @@
 								<th>Order Status</th>
 								<th>Order Type</th>
 								<th>Broadband Type</th>
-								<th>Total Price (Inc GST)($)</th>
+								<th style="text-align:right;">Total Price (Inc GST)($)</th>
 								<th>Signature</th>
 								<th>Sales Name</th>
 								<th>Operations</th>
@@ -97,7 +103,7 @@
 									<td>
 										${order.order_broadband_type }
 									</td>
-									<td>
+									<td style="text-align:right;">
 										<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,#00.00" />
 										
 									</td>
@@ -123,7 +129,7 @@
 										<a href="javascript:void;" data-name="upload_previous_provider_invoice_pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Previous Provider Invoice"></a>&nbsp;
 										
 										<!-- If got additional requests -->
-										<c:if test="${order.optional_request != null}">
+										<c:if test="${order.optional_request != null && order.optional_request != ''}">
 											<a href="javascript:void;" data-name="optional_request_btn" data-optional-request="${order.optional_request }" class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="Sales's Optional Request"></a>&nbsp;
 										</c:if>
 									</td>
@@ -132,7 +138,7 @@
 						</tbody>
 						<tfoot>
 						<tr>
-							<td colspan="11">
+							<td colspan="11" style="text-align:left;">
 								<ul class="pagination">
 									<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 										<li class="${page.pageNo == num ? 'active' : ''}">
@@ -230,12 +236,7 @@
 				<h4 class="modal-title" id="optionalRequestModalLabel">Additional Request: </h4>
 			</div>
 			<div class="modal-body">
-				<div class="form-group">
-					<div class="col-md-12">
-						<p class="form-control-static" data-name="optional_request_p">
-						</p>
-					</div>
-				</div>
+				<p class="form-control-static" data-name="optional_request_p"></p>
 			</div>
 		</div>
 	</div>

@@ -94,7 +94,7 @@
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}//broadband-user/billing/voucher/view/${num}/${status}">${num}</a>
+												<a href="${ctx}/broadband-user/billing/voucher/view/${num}/${status}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>

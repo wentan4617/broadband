@@ -16,6 +16,14 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.7.1 2014-07-15
+
+* 所有order为无ddpay的最近一张invoice为unpaid且invoice生成日期为-4天的所有账单发短信提醒用户续费，生成日期为-9天的所有账单发短信告知用户该order将会在明天变成suspended状态.(steven)
+* 如果belongs to为空则显示online.(steven)
+* RFS Date为空时对应的Save按钮变为红色，否则显示绿色.(steven)
+* 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
+* 添加一个界面，查看各种日期下invoice的统计数字.(steven)
+
 demand version 1.6.8 2014-07-14
 
 * 更正View Online Orders界面列表的显示样式以及Optional Request的modal显示内容.(steven)
@@ -252,7 +260,7 @@ demand version 1.1.5 2014-05-12
  
 * [invoice重构代码，so important!](steven)
 * [sales模块在线下单功能，在确认生成order PDF浮窗里添加一个optional_request输入框，提交sales额外请求。](steven)
-* customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(待定...)
+* [customer order 界面加一个功能，添加new installation按钮，点击可以为该order增加金额(用添加Debit替代...)](steven)
 
 demand version 1.1.4 2014-05-06
  
@@ -274,7 +282,7 @@ demand version 1.1.2 2014-04-21
 
 * [company_detail创建多种类型的T&C字段，至少4个，然后每一个T&C在一个可以折叠的panel里便于修改](steven)
 * [完成personal plan-term的页面](kanny)
-* 重构后台创建customer页面(kanny)
+* [重构后台创建customer页面](kanny)
 * [重构sale签约界面](kanny)
 * [完善各种界面的连接](kanny)
 * [完善各种T&C排版和布局](kanny)
@@ -291,7 +299,7 @@ demand version 1.1.0 2014-04-04
 * [修改前端，注册购买页面，用mobile and email代替登入](kanny)
 * [给购买流添加导航](kanny)
 * [更换dps支付页面](kanny)
-* 修改用户登入后所看到的界面
+* [修改用户登入后所看到的界面](kanny)
 * [order information界面，添加属性，可以下载签约的PDF](steven)
 
 demand version 1.0.9 2014-04-04
