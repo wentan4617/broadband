@@ -949,8 +949,7 @@ public class CustomerController {
 	
 	// download invoice PDF directly
 	@RequestMapping(value = "/broadband-customer/billing/invoice/pdf/download/{invoiceId}")
-    public ResponseEntity<byte[]> downloadInvoicePDF(Model model
-    		,@PathVariable(value = "invoiceId") int invoiceId) throws IOException {
+    public ResponseEntity<byte[]> downloadInvoicePDF(Model model , @PathVariable(value = "invoiceId") int invoiceId) throws IOException {
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
 		
 		// get file path
@@ -1184,8 +1183,10 @@ public class CustomerController {
 			customerTransaction.setCustomer_id(customer.getId());
 			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
 			
-			
-			this.crmService.customerTopup(c, customerTransaction);
+			CustomerOrder order = new CustomerOrder();
+			order.setOrder_status("paid");
+			order.getParams().put("id", customer.getCustomerOrders().get(0).getId());
+			this.crmService.customerOrderingForm(c, order, customerTransaction);
 			
 			customer.setCustomerOrder(customer.getCustomerOrders().get(0));
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);

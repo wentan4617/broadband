@@ -32,13 +32,13 @@
 	</div>
 	
 	<div class="alert alert-success">
-		<p style="font-weight: bold">
-			Pay-in-Advance Local Call only.
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
+			Pay-in-Advance, Local Call only.
 		</p>
-		<p style="font-weight: bold">
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
 			All our Broadband plans are Pay-in-Advance. For the home phone line, it will be local call only. 
 		</p>
-		<p style="font-weight: bold">
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
 			All the toll call will not be allowed.
 		</p>
 		<p>

@@ -84,7 +84,8 @@ public class CRMController {
 	}
 
 	@RequestMapping("/broadband-user/crm/customer/view")
-	public String toCustomerView() {
+	public String toCustomerView(SessionStatus status) {
+		status.setComplete();
 		return "broadband-user/crm/customer-view";
 	}
 	
@@ -125,11 +126,11 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/remove/{id}")
-	public String customerRemove(Model model,
-			@PathVariable(value = "id") int id, RedirectAttributes attr) {
+	public String customerRemove(@PathVariable(value = "id") int id, RedirectAttributes attr, SessionStatus status) {
 		this.crmService.removeCustomer(id);
 		attr.addFlashAttribute("success", "Remove customer is successful.");
-		return "redirect:/broadband-user/crm/customer/query/1";
+		status.setComplete();
+		return "redirect:/broadband-user/crm/customer/view";
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/transaction/view/{pageNo}/{customerId}")
