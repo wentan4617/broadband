@@ -249,7 +249,7 @@
 					<c:if test="${userSession.user_role != 'sales' }">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Manual Manipulation <b class="caret"></b>
+							Manual <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li>

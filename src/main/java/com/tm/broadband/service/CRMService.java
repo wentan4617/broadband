@@ -479,6 +479,13 @@ public class CRMService {
 	}
 	
 	@Transactional
+	public void customerOrderingForm(Customer customer, CustomerOrder order, CustomerTransaction customerTransaction) {
+		this.customerMapper.updateCustomer(customer);
+		this.customerOrderMapper.updateCustomerOrder(order);
+		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
+	}
+	
+	@Transactional
 	public void customerBalance(CustomerInvoice ci, CustomerTransaction customerTransaction) {
 		this.ciMapper.updateCustomerInvoice(ci);
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);

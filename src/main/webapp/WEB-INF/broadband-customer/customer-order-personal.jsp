@@ -188,6 +188,15 @@
 								<h4 class="text-success">Transition Information</h4>
 								<hr/>
 								
+								<div class="well">
+									<p>
+										Please ensure the information you provided is correct; Otherwise, your order may be cancelled automatically.
+									</p>
+									<p>
+										If you need to amend the information your provided, feel free to contact us.
+									</p>
+								</div>
+								
 								<div class="form-group">
 									<label class="control-label col-md-4">Current Provider</label>
 									<div class="col-md-4">
