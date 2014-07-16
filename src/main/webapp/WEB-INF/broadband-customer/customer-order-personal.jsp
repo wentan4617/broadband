@@ -216,7 +216,7 @@
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Telephone Number</label>
+									<label class="control-label col-md-4">Porting Home Land-Line Number</label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
 									</div>
