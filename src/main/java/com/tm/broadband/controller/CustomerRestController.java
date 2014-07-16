@@ -133,7 +133,7 @@ public class CustomerRestController {
 			return json;
 		}
 		
-		if("email".equals(customer.getType())){
+		if ("email".equals(customer.getType())){
 			
 			customer.getParams().put("where", "query_forgotten_password_email");
 			customer.setEmail(customer.getLogin_name());
@@ -168,7 +168,7 @@ public class CustomerRestController {
 			
 			String msg = "";
 
-			if("email".equals(customer.getType())){
+			if ("email".equals(customer.getType())){
 				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
 				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
 				ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -177,7 +177,7 @@ public class CustomerRestController {
 				applicationEmail.setContent(notification.getContent());
 				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 				customer.getParams().put("email", customer.getLogin_name());
-			} else if("cellphone".equals(customer.getType())){
+			} else if ("cellphone".equals(customer.getType())){
 				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
 				notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
 				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
@@ -286,7 +286,8 @@ public class CustomerRestController {
 				json.getErrorMap().remove("customerOrder.transition_account_number");
 				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
 			}
-			return json;
+			
+			if (json.isHasErrors()) return json;
 		}
 		
 		Customer cValid = new Customer();

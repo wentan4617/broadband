@@ -266,7 +266,7 @@ public class CRMController {
 	public String redirectPlanView(RedirectAttributes attr, SessionStatus status) {
 		attr.addFlashAttribute("success", "Create Customer is successful.");
 		status.setComplete();
-		return "redirect:/broadband-user/crm/customer/query/1";
+		return "redirect:/broadband-user/crm/customer/view";
 	}
 	
 
@@ -285,13 +285,13 @@ public class CRMController {
 		model.addAttribute("customerOrder", new CustomerOrder());
 		
 		Plan plan = new Plan();
-		plan.getParams().put("plan_status", "selling");
+		//plan.getParams().put("plan_status", "active");
 		plan.getParams().put("orderby", "order by plan_type");
 		List<Plan> plans = this.planService.queryPlans(plan);
 		model.addAttribute("plans", plans);
 
 		Hardware hardware = new Hardware();
-		hardware.getParams().put("hardware_status", "selling");
+		//hardware.getParams().put("hardware_status", "active");
 		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		model.addAttribute("hardwares", hardwares);
 
@@ -584,7 +584,13 @@ public class CRMController {
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());*/
 		//status.setComplete();
 		
-		attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+		if ("personal".equals(customer.getCustomer_type())) {
+			attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+		} else if ("business".equals(customer.getCustomer_type())){
+			attr.addFlashAttribute("success", "Create Customer " + customer.getOrganization().getOrg_name() + " is successful.");
+		}
+		
+		
 		status.setComplete();
 		
 		user = null;
@@ -593,7 +599,7 @@ public class CRMController {
 		companyDetail = null;
 		/*org = null;*/
 		
-		return "redirect:/broadband-user/crm/customer/query/1";
+		return "redirect:/broadband-user/crm/customer/view";
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/checkout", method = RequestMethod.POST)
@@ -647,7 +653,7 @@ public class CRMController {
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
-			url = "redirect:/broadband-user/crm/customer/query/1";
+			url = "redirect:/broadband-user/crm/customer/view";
 			
 			customer.setStatus("active");
 			customer.setUser_name(customer.getLogin_name());
@@ -709,7 +715,11 @@ public class CRMController {
 			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-			attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+			if ("personal".equals(customer.getCustomer_type())) {
+				attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+			} else if ("business".equals(customer.getCustomer_type())){
+				attr.addFlashAttribute("success", "Create Customer " + customer.getOrganization().getOrg_name() + " is successful.");
+			}
 			status.setComplete();
 		} else {
 			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
