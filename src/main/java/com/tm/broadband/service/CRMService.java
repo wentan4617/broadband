@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1985,6 +1986,19 @@ public class CRMService {
 			MailRetriever.mailAtValueRetriever(notificationSMS, c, customerOrder, cd);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMS.getContent());
+		}
+	}
+	
+	// Check Pending Warning Order
+	@Transactional 
+	public void checkInvoiceAfterDueNotice() throws ParseException{
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-void-notice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-void-notice", "sms");
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("where", "query_most_unpaid_invoice");
+		ciQuery.getParams().put("status", "unpaid");
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciQuery);
+		for (CustomerInvoice ci : cis) {
 		}
 	}
 	

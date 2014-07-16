@@ -60,6 +60,8 @@ public class InvoicePDFCreator extends ITextUtils {
 	private Double totalPayableAmount = 0d;
 	private Double totalFinalPayableAmount = 0d;
 	
+    boolean isBusiness = false;
+	
 	private String pstn_number = "";
 	
 	public InvoicePDFCreator(){}
@@ -123,19 +125,24 @@ public class InvoicePDFCreator extends ITextUtils {
 		}
         // END CustomerInvoiceDetails
         
+        // If is business customer
+        isBusiness = "business".toUpperCase().equals(customer.getCustomer_type().toUpperCase());
+        
+        totalPayableAmount = isBusiness ? TMUtils.bigMultiply(totalPayableAmount, 1.15) : totalPayableAmount;
+        
         // BEGIN ASSIGN FINAL VALUES
         this.totalFinalPayableAmount = TMUtils.bigSub(totalPayableAmount, totalCreditBack);
         // END ASSIGN FINAL VALUES
         
 
         totalBalance = TMUtils.bigSub(totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid());
-        
+
         if(totalBalance > 0){
         	// personal plan include GST
             this.beforeTaxAmount = TMUtils.bigDivide(totalBalance, 1.15);
             
             // include GST
-            this.taxAmount = TMUtils.bigSub(totalBalance, TMUtils.bigDivide(totalBalance, 1.15));
+            this.taxAmount = TMUtils.bigMultiply(beforeTaxAmount, 0.15);
         } else {
         	this.beforeTaxAmount = totalBalance;
         	this.taxAmount = totalBalance;
@@ -397,7 +404,7 @@ public class InvoicePDFCreator extends ITextUtils {
             // CURRENT INVOICE PAYABLE CASE
         	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getCreate_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, "Current Invoice Total").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ " + TMUtils.fillDecimalPeriod(this.getCurrentCustomerInvoice().getAmount_payable())).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        	addCol(transactionTable, "$ " + TMUtils.fillDecimalPeriod(this.totalPayableAmount)).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
             
             // CURRENT INVOICE DISCOUNT CASE
         	addCol(transactionTable, "").colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
@@ -417,10 +424,10 @@ public class InvoicePDFCreator extends ITextUtils {
             // CURRENT INVOICE TOTAL AMOUNT
         	if(TMUtils.bigSub(this.getCurrentCustomerInvoice().getFinal_payable_amount(), this.getCurrentCustomerInvoice().getAmount_paid()) <= 0d){
             	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
-            	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.getCurrentCustomerInvoice().getFinal_payable_amount(), this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+            	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	} else {
             	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_red_10).alignH("r").o();
-            	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.getCurrentCustomerInvoice().getFinal_payable_amount(), this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_red_10).alignH("r").o();
+            	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_red_10).alignH("r").o();
         	}
         	addEmptyCol(transactionTable, 10F, colspan);
             
@@ -603,14 +610,17 @@ public class InvoicePDFCreator extends ITextUtils {
         // FIRST ROW BEGIN
         addEmptyCol(invoiceDetailsTable, 14F, 7);
         addCol(invoiceDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
-        Double totalBeforeGST = totalPrice/1.15;
+        
+        totalPrice = isBusiness ? TMUtils.bigMultiply(totalPrice, 1.15) : totalPrice;
+        
+        Double totalBeforeGST = TMUtils.bigDivide(totalPrice, 1.15);
         // fill decimal, keep 2 decimals
         addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBeforeGST))).font(ITextFont.arial_normal_8).alignH("r").o();
         // FIRST ROW END
         // SECOND ROW BEGIN
         addEmptyCol(invoiceDetailsTable, 14F, 7);
         addCol(invoiceDetailsTable, "GST at 15%").colspan(2).font(ITextFont.arial_normal_8).o();
-        Double totalGST = totalPrice-totalPrice/1.15;
+        Double totalGST = TMUtils.bigMultiply(totalBeforeGST, 0.15);
         // fill decimal, keep 2 decimals
         addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalGST))).font(ITextFont.arial_normal_8).alignH("r").o();
         // SECOND ROW END

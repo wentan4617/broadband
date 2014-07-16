@@ -67,17 +67,17 @@
 												</c:if>
 											</td>
 											<td>Invoice#&nbsp;-&nbsp;${invoice.id}</td>
-											<td style="text-align:right">
+											<td style="text-align:right;">
 												<strong>$ <fmt:formatNumber value="${invoice.amount_payable}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td style="text-align:right">
+											<td style="text-align:right;">
 												<strong>$ -<fmt:formatNumber value="${invoice.amount_payable - invoice.final_payable_amount}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td style="text-align:right">
+											<td style="text-align:right;">
 												<strong>$ -<fmt:formatNumber value="${invoice.amount_paid}" type="number" pattern="#,##0.00" /></strong>
 											</td>
-											<td style="text-align:right">
-												<strong>$ <fmt:formatNumber value="${invoice.balance}" type="number" pattern="#,##0.00" /></strong>
+											<td style="text-align:right; color:red;">
+												<strong>$&nbsp;(&nbsp;<fmt:formatNumber value="${invoice.balance}" type="number" pattern="#,##0.00" />&nbsp;)&nbsp;</strong>
 											</td>
 											<td>
 												<c:if test="${(invoice.status == 'unpaid' || invoice.status == 'not_pay_off')}">
