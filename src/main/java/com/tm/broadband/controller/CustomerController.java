@@ -15,6 +15,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -390,6 +391,7 @@ public class CustomerController {
 		}
 		
 		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
@@ -416,6 +418,7 @@ public class CustomerController {
 		}
 		
 		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		
@@ -479,6 +482,7 @@ public class CustomerController {
 			customer.setCustomer_type("personal");
 			customer.setUser_name(customer.getLogin_name());
 			customer.setPassword(TMUtils.generateRandomString(6));
+			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
 			customer.setBalance(Math.abs(vprice));
 			
 			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
@@ -557,6 +561,7 @@ public class CustomerController {
 			customer.setCustomer_type("personal");
 			customer.setUser_name(customer.getLogin_name());
 			customer.setPassword(TMUtils.generateRandomString(6));
+			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
 			//customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
 			
 			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();

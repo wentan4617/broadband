@@ -73,7 +73,7 @@
 						<div class="col-md-4">
 							<strong class="text-info">Invoice Balance: </strong> NZ$ 
 							<strong class="text-success">
-								<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />
+								&nbsp;(&nbsp;<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />&nbsp;)&nbsp;
 							</strong>
 						</div>
 						<div class="col-md-3">

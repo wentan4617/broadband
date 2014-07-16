@@ -20,6 +20,7 @@
 		c.`id` 				as c_id, 
 		c.`login_name` 		as c_login_name, 
 		c.`password` 		as c_password,
+		c.`md5_password` 	as c_md5_password,
 		c.`user_name` 		as c_user_name, 
 		c.`first_name` 		as c_first_name, 
 		c.`last_name` 		as c_last_name, 
@@ -46,6 +47,7 @@
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
 		<result property="password" column="c_password" />
+		<result property="md5_password" column="c_md5_password" />
 		<result property="user_name" column="c_user_name" />
 		<result property="first_name" column="c_first_name" />
 		<result property="last_name" column="c_last_name" />

@@ -132,14 +132,14 @@ public class TestAll {
 //		c.setFirst_name("DONG");
 //		c.setLast_name("CHEN");
 //		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
-//		c.setCustomer_type("personal");
+//		c.setCustomer_type("business");
 //		
-//		lci.setAmount_paid(0d);
-//		lci.setAmount_payable(89d);
-//		lci.setBalance(89d);
-//		lci.setCreate_date(new Date());
-//		lci.setPaid_date(new Date());
-//		lci.setPaid_type("MASTER CARD");
+////		lci.setAmount_paid(0d);
+////		lci.setAmount_payable(89d);
+////		lci.setBalance(89d);
+////		lci.setCreate_date(new Date());
+////		lci.setPaid_date(new Date());
+////		lci.setPaid_type("MASTER CARD");
 //		
 //		ci.setId(700098);
 //		ci.setCreate_date(new Date());
@@ -157,11 +157,11 @@ public class TestAll {
 //		cid.setInvoice_detail_price(89.0d);
 //		cid.setInvoice_detail_unit(3);
 //		cids.add(cid);
-//		cid = new CustomerInvoiceDetail();
-//		cid.setInvoice_detail_name("discount $30");
-//		cid.setInvoice_detail_discount(30d);
-//		cid.setInvoice_detail_unit(1);
-//		cids.add(cid);
+////		cid = new CustomerInvoiceDetail();
+////		cid.setInvoice_detail_name("discount $30");
+////		cid.setInvoice_detail_discount(30d);
+////		cid.setInvoice_detail_unit(1);
+////		cids.add(cid);
 //		ci.setCustomerInvoiceDetails(cids);
 //		
 //		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
@@ -490,12 +490,12 @@ public class TestAll {
 		cod.setDetail_unit(3);
 		cods.add(cod);
 		// SET ADD ON DETAIL
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("Broadband New Connection");
-		cod.setDetail_type("new-connection");
-		cod.setDetail_price(99.0d);
-		cod.setDetail_unit(1);
-		cods.add(cod);
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Broadband New Connection");
+//		cod.setDetail_type("new-connection");
+//		cod.setDetail_price(99.0d);
+//		cod.setDetail_unit(1);
+//		cods.add(cod);
 		cod = new CustomerOrderDetail();
 		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
 		cod.setDetail_type("hardware-router");
@@ -509,7 +509,7 @@ public class TestAll {
 		co.setCustomerOrderDetails(cods);
 		
 		// call OrderPDFCreator
-		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
+		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
 		oPDFCreator.setCustomer(c);
 		oPDFCreator.setOrg(org);
 		oPDFCreator.setCustomerOrder(co);

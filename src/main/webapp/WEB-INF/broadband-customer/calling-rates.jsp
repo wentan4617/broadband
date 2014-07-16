@@ -50,7 +50,8 @@
 		<div class="col-md-9 col-xs-12 col-sm-12">
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h4 class="panel-title">International Calling Rates</h4>
+					<h4 class="panel-title">International Calling Rates</h4><br/>
+					<span style="color:black;">&nbsp;(&nbsp;For Business Customer Only&nbsp;)&nbsp;</span>
 				</div>
 				<c:if test="${fn:length(letterCirs) > 0}">
 					<table class="table table-bordered">

@@ -21,6 +21,7 @@
 		c.`id` 				as c_id, 
 		c.`login_name` 		as c_login_name, 
 		c.`password` 		as c_password,
+		c.`md5_password` 	as md5_password,
 		c.`user_name` 		as c_user_name, 
 		c.`first_name` 		as c_first_name, 
 		c.`last_name` 		as c_last_name, 
@@ -47,6 +48,7 @@
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
 		<result property="password" column="c_password" />
+		<result property="md5_password" column="c_md5_password" />
 		<result property="user_name" column="c_user_name" />
 		<result property="first_name" column="c_first_name" />
 		<result property="last_name" column="c_last_name" />
@@ -310,6 +312,7 @@
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
 		<result property="password" column="c_password" />
+		<result property="md5_password" column="c_md5_password" />
 		<result property="user_name" column="c_user_name" />
 		<result property="first_name" column="c_first_name" />
 		<result property="last_name" column="c_last_name" />
@@ -363,6 +366,7 @@
 		<id property="id" column="c_id" />
 		<result property="login_name" column="c_login_name" />
 		<result property="password" column="c_password" />
+		<result property="md5_password" column="c_md5_password" />
 		<result property="user_name" column="c_user_name" />
 		<result property="first_name" column="c_first_name" />
 		<result property="last_name" column="c_last_name" />
@@ -444,13 +448,13 @@
 	<!-- when customer register or administrator create customer, insert customer  information -->
 	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer`(
-		`login_name`, `password`, `user_name`, `first_name`, `last_name`,
+		`login_name`, `password`, `md5_password`, `user_name`, `first_name`, `last_name`,
 		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`,
 		`register_date`, `active_date`, `balance`, 
 		`title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`,
 		`identity_type`, `identity_number`)
 		VALUES (
-		#{login_name}, #{password}, #{user_name}, #{first_name}, #{last_name}, 
+		#{login_name}, #{password}, #{md5_password}, #{user_name}, #{first_name}, #{last_name}, 
 		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post},
 		#{register_date}, #{active_date}, #{balance},
 		#{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type},
@@ -478,6 +482,7 @@
 		<set>
 			<if test="login_name != null">login_name = #{login_name},</if>
 			<if test="password != null">password = #{password},</if>
+			<if test="md5_password != null">md5_password = #{md5_password},</if>
 			<if test="user_name != null">user_name = #{user_name},</if>
 			<if test="first_name != null">first_name = #{first_name},</if>
 			<if test="last_name != null">last_name = #{last_name},</if>

@@ -96,7 +96,7 @@
 			            </li>
 			            <li>
 			            	<a href="${ctx }/home-phone-calling-rates" >
-	            				Home Phone Calling Rates
+	            				Business Calling Rates
 							</a>
 			            </li>
 			            <li>

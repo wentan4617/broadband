@@ -12,6 +12,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -266,6 +267,7 @@ public class SaleController {
 			RedirectAttributes attr, SessionStatus status, HttpServletRequest req) {
 		
 		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");

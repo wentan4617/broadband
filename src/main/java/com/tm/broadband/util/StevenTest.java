@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.apache.commons.codec.digest.DigestUtils;
+
 
 public class StevenTest {
 	
@@ -40,9 +42,11 @@ public class StevenTest {
 //			System.out.println(ccr.getDate_str());
 //		}
 		
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(new Date());
-		cal.add(Calendar.DAY_OF_MONTH, -7);
-		System.out.println(cal.getTime());
+//		Calendar cal = Calendar.getInstance();
+//		cal.setTime(new Date());
+//		cal.add(Calendar.DAY_OF_MONTH, -7);
+//		System.out.println(cal.getTime());
+		
+		System.out.println(DigestUtils.md5Hex("cyberpark123z"));
 	}
 }

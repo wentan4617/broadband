@@ -16,17 +16,45 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.7.2 2014-07-16
+
+###Important Level (High)
+* [customer后台所有invoice的balance都用括号扩住并加红.](steven)
+* [tm_customer表加一个md5_password字段，在前台，后台，sales下单，客户修改密码，我们后台帮客户修改密码时用DigestUtils.md5Hex("")方法加密customer密码后并存入该字段.](steven)
+* invoice和ordering online邮件模版里分别添加一个链接：invoice的是(域名/customer/home/客户id/加密后的登录密码+3位随机字符串)，ordering online的是(域名/customer/billing/1/客户id/加密后的登录密码+3位随机字符串)，点击后传入的客户id与customer的id匹配及去掉后3位随机字符串的加密密码与md5_password匹配则跳转至customer登录后的相应界面，否则跳转至登录页.(steven)
+
+###Important Level (Medium)
+* 添加一个重新生成Ordering Form的按钮，点击确认后根据order的detail重新生成该Ordering Form.(steven)
+* Add Detail里添加两个选项：Plan和Item，Plan需要写name, type, plan type, plan sort, price, flow，Item有几种：Broadband New Connection, Hardware(steven)
+* invoice列表的Make Payment添加一个Avoid This Invoice选项，点击确认后该账单status变为void状态.(steven)
+
+###Important Level (Normal)
+* 发invoice的email使用新添加的accounts@cyberpark.co.nz邮箱，发faulty回复邮件使用provision@cyberpark.co.nz邮箱.(steven)
+* 后台留言板添加发短信和发邮件功能，将David给的回复模版加入可选模版.(steven)
+* 目前Contact-Us和内部人员后台留言的选项有:fualty, billing, hardware issue, application, booking appointment.(steven)
+* 添加一个内部人员留言表，记录打电话客户的cellphone, email, name，都是非必填，description必填，再加个customer_id字段显示时根据该字段区分New Customer和Existing Customer(steven)
+* 在Customer Service Record界面点击添加Service Record时选择@后面列出所有非sales的用户，将选定的用户id迭代记录到mention字段中，在这之前user的id要全部改成以1000开头以防模糊匹配出多条类似id的用户.(steven)
+* 添加一个Mentioned About Me，tm_customer_service_record表的mention字段储存@到的所有user的id.(steven)
+
+
 demand version 1.7.1 2014-07-15
 
-* 所有order为无ddpay的最近一张invoice为unpaid且invoice生成日期为-4天的所有账单发短信提醒用户续费，生成日期为-9天的所有账单发短信告知用户该order将会在明天变成suspended状态.(steven)
-* 如果belongs to为空则显示online.(steven)
-* RFS Date为空时对应的Save按钮变为红色，否则显示绿色.(steven)
+###Important Level (High)
+* 所有order为无ddpay的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信提醒用户续费，逾期日期为-3天的所有账单发短信告知用户该order已变成suspended状态.(steven)
 * 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
+
+
+###Important Level (Medium)
 * 添加一个界面，查看各种日期下invoice的统计数字.(steven)
+
+
+###Important Level (Normal)
+* [RFS Date为空时对应的Save按钮变为红色，否则显示绿色.](steven)
+* [如果belongs to为空则显示online.](steven)
 
 demand version 1.6.8 2014-07-14
 
-* 更正View Online Orders界面列表的显示样式以及Optional Request的modal显示内容.(steven)
+* [更正View Online Orders界面列表的显示样式以及Optional Request的modal显示内容.](steven)
 * [user views interface add **Set Operation**, add **Provision Notice** option when click Yes then *is_provision* is true, else false.](steven)
 * [user interface add **Provision Notice** checkbox, **checked** means true, unchecked means false.](steven)
 

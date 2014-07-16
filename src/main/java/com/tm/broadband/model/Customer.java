@@ -42,6 +42,7 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class })
 	@Length(min = 6, max = 20, groups = { CustomerLoginValidatedMark.class, ChangePasswordValidatedMark.class })
 	private String password;
+	private String md5_password;
 	private String user_name;
 	@NotEmpty(groups = { CustomerValidatedMark.class })
 	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
@@ -506,6 +507,14 @@ public class Customer implements Serializable {
 
 	public void setVouchers(List<Voucher> vouchers) {
 		this.vouchers = vouchers;
+	}
+
+	public String getMd5_password() {
+		return md5_password;
+	}
+
+	public void setMd5_password(String md5_password) {
+		this.md5_password = md5_password;
 	}
 
 	
