@@ -73,7 +73,7 @@
 							<hr/>
 							
 							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Business Address</label>
+								<label for="address" class="control-label col-md-4">Business Address <span class="text-danger">(*)</span></label>
 								<div class="col-md-8">
 									<c:choose>
 										<c:when test="${customer.address!=null&&customer.serviceAvailable}">
@@ -93,13 +93,13 @@
 							<hr/>
 							
 							<div class="form-group">
-								<label for="cellphone" class="control-label col-md-4">Business Mobile</label>
+								<label for="cellphone" class="control-label col-md-4">Business Mobile <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="cellphone" name="cellphone" value="${customer.cellphone }"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="email" class="control-label col-md-4">Business Email</label>
+								<label for="email" class="control-label col-md-4">Business Email <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 								</div>
@@ -154,19 +154,19 @@
 								<hr/>
 								
 								<div class="form-group">
-									<label  class="control-label col-md-4">Current Provider</label>
+									<label  class="control-label col-md-4">Current Provider <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control"/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label  class="control-label col-md-4">Account Holder</label>
+									<label  class="control-label col-md-4">Account Holder Name <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" />
 									</div>
 								</div>
 								<div class="form-group">
-									<label  class="control-label col-md-4">Current Account Number</label>
+									<label  class="control-label col-md-4">Current Account Number <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" />
 									</div>

@@ -108,7 +108,7 @@
 							<hr/>
 							
 							<div class="form-group">
-								<label for="address" class="control-label col-md-4">Your Address</label>
+								<label for="address" class="control-label col-md-4">Your Address <span class="text-danger">(*)</span></label>
 								<div class="col-md-8">
 									<c:choose>
 										<c:when test="${customer.address!=null&&customer.serviceAvailable}">
@@ -128,13 +128,13 @@
 							<hr/>
 							
 							<div class="form-group">
-								<label for="cellphone" class="control-label col-md-4">Your Mobile</label>
+								<label for="cellphone" class="control-label col-md-4">Your Mobile <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="cellphone" name="cellphone" value="${customer.cellphone }"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="email" class="control-label col-md-4">Your Email</label>
+								<label for="email" class="control-label col-md-4">Your Email <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="email" name="email" value="${customer.email }" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 								</div>
@@ -198,19 +198,19 @@
 								</div>
 								
 								<div class="form-group">
-									<label class="control-label col-md-4">Current Provider</label>
+									<label class="control-label col-md-4">Current Provider <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Account Holder</label>
+									<label class="control-label col-md-4">Account Holder Name <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Current Account Number</label>
+									<label class="control-label col-md-4">Current Account Number <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" data-error-field/>
 									</div>
@@ -242,13 +242,13 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="first_name" class="control-label col-md-4">First name</label>
+								<label for="first_name" class="control-label col-md-4">First name <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="first_name" name="first_name" value="${customer.first_name }" class="form-control" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="last_name" class="control-label col-md-4">Last name</label>
+								<label for="last_name" class="control-label col-md-4">Last name <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="last_name" name="last_name" value="${customer.last_name }" class="form-control" data-error-field />
 								</div>
@@ -272,7 +272,7 @@
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="identity_number" class="control-label col-md-4">Identity Number</label>
+								<label for="identity_number" class="control-label col-md-4">Identity Number <span class="text-danger">(*)</span></label>
 								<div class="col-md-4">
 									<input type="text" id="identity_number" name="identity_number" value="${customer.identity_number }" class="form-control" data-error-field />
 								</div>
