@@ -9,7 +9,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1127,6 +1126,8 @@ public class CRMService {
 		// BEGIN get usable beans
 		// Customer
 		Customer c = co.getCustomer();
+		boolean isBusiness = "business".toUpperCase().equals(c.getCustomer_type().toUpperCase());
+		
 		// Current invoice
 		CustomerInvoice ci = new CustomerInvoice();
 		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
@@ -1366,16 +1367,16 @@ public class CRMService {
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
+				totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
 			}
 		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
-		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
+		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// Set current invoice's payable amount
-		ci.setAmount_payable("personal".toUpperCase().equals(c.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 
@@ -1417,6 +1418,9 @@ public class CRMService {
 		// store company detail end
 
 		Customer customer = customerOrder.getCustomer();
+
+		boolean isBusiness = "business".toUpperCase().equals(customer.getCustomer_type().toUpperCase());
+		
 		// current invoice model
 		CustomerInvoice ci = new CustomerInvoice();
 		CustomerInvoice ciCurQuery = new CustomerInvoice();
@@ -1599,14 +1603,14 @@ public class CRMService {
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
-			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper);
+			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
 			
 		}
 		
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
-		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
+		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 
-		ci.setAmount_payable("personal".toUpperCase().equals(customer.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		// balance = final payable - paid

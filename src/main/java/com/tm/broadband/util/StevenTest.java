@@ -46,7 +46,12 @@ public class StevenTest {
 //		cal.setTime(new Date());
 //		cal.add(Calendar.DAY_OF_MONTH, -7);
 //		System.out.println(cal.getTime());
-		
-		System.out.println(DigestUtils.md5Hex("cyberpark123z"));
+		// Second Encode
+		String secondEncode = TMUtils.generateRandomString(3)+DigestUtils.md5Hex("cyberpark123z")+TMUtils.generateRandomString(3);
+		System.out.println(secondEncode.length());
+		System.out.println(secondEncode);
+		// Second Decode
+		String secondDecode = secondEncode.substring(3, secondEncode.length()-3);
+		System.out.println(secondDecode);
 	}
 }

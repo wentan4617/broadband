@@ -589,7 +589,7 @@ public class InvoicePDFCreator extends ITextUtils {
 			if(cid.getInvoice_detail_discount() == null){
 				// sub total
 				addCol(invoiceDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
-				totalPrice = TMUtils.bigAdd(totalPrice, subTotal);
+				totalPrice = TMUtils.bigAdd(totalPrice, isBusiness ? TMUtils.bigMultiply(subTotal, 1.15) : subTotal);
 			} else {
 				// sub total
 				addCol(invoiceDetailsTable, "-"+TMUtils.fillDecimalPeriod(String.valueOf(subTotal))).font(ITextFont.arial_normal_7).alignH("r").o();
@@ -610,8 +610,6 @@ public class InvoicePDFCreator extends ITextUtils {
         // FIRST ROW BEGIN
         addEmptyCol(invoiceDetailsTable, 14F, 7);
         addCol(invoiceDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
-        
-        totalPrice = isBusiness ? TMUtils.bigMultiply(totalPrice, 1.15) : totalPrice;
         
         Double totalBeforeGST = TMUtils.bigDivide(totalPrice, 1.15);
         // fill decimal, keep 2 decimals
@@ -661,6 +659,10 @@ public class InvoicePDFCreator extends ITextUtils {
             addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
             totalCallFee += ccr.getAmount_incl();
 		}
+        
+        totalCallFee = isBusiness ? TMUtils.bigMultiply(totalCallFee, 1.15) : totalCallFee;
+        
+        
         addEmptyCol(callRecordDetailsTable, 20F, 11);
         
         // PRODUCT(S) END
@@ -677,6 +679,7 @@ public class InvoicePDFCreator extends ITextUtils {
         // FIRST ROW BEGIN
         addEmptyCol(callRecordDetailsTable, 14F, 7);
         addCol(callRecordDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
+        
         Double totalBeforeGST = totalCallFee/1.15;
         // fill decimal, keep 2 decimals
         addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBeforeGST))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
@@ -696,7 +699,7 @@ public class InvoicePDFCreator extends ITextUtils {
         
         // TOTAL AMOUNT BEGIN
         addEmptyCol(callRecordDetailsTable, 7);
-        addCol(callRecordDetailsTable, "Invoice Total").colspan(2).font(ITextFont.arial_bold_8).o();
+        addCol(callRecordDetailsTable, "Calling Charge").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalCallFee))).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         // TOTAL AMOUNT END
         

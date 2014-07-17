@@ -1352,10 +1352,22 @@
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="control-label col-md-4">Calling Country</label>
+							<label class="control-label col-md-4">Calling Type</label>
 							<div class="col-md-6">
 								<select data-name="<.= customerOrder[i].id .>_calling_country" class="form-control input-sm" style="height:26px; padding:0 10px;">
+										
+										<option disabled="disabled"></option>
+										<option disabled="disabled">--- Domestic ---</option>
+										<option value="local">Local</option>
+										<option value="national">National</option>
+										<option value="mobile">Mobile</option>
+										
+										
+										<option disabled="disabled"></option>
+										<option disabled="disabled">--- International ---</option>
+										<option value="international">International (Mobile + Fixed line)</option>
 								
+										<option disabled="disabled"></option>
 										<option disabled="disabled">--- Mobile + Fixed line ---</option>
 										<option value="Bangladesh-both" >Bangladesh</option>
 										<option value="Malaysia-both" >Malaysia</option>
