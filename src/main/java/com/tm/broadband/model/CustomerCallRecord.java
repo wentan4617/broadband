@@ -27,6 +27,7 @@ public class CustomerCallRecord implements Serializable {
 	private String billing_description;
 	private Double amount_excl;
 	private Double amount_incl;
+	private String juristiction;
 	private String phone_called;
 	private Date upload_date;
 
@@ -164,6 +165,14 @@ public class CustomerCallRecord implements Serializable {
 
 	public void setFormated_duration(String formated_duration) {
 		this.formated_duration = formated_duration;
+	}
+
+	public String getJuristiction() {
+		return juristiction;
+	}
+
+	public void setJuristiction(String juristiction) {
+		this.juristiction = juristiction;
 	}
 
 }

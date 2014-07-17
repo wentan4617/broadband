@@ -31,6 +31,7 @@
 		ccr.`amount_excl` 			as ccr_amount_excl,
 		ccr.`amount_incl` 			as ccr_amount_incl,
 		ccr.`phone_called` 			as ccr_phone_called,
+		ccr.`juristiction` 			as ccr_juristiction,
 		ccr.`upload_date` 			as ccr_upload_date
 	</sql>
 	
@@ -46,6 +47,7 @@
 		<result property="amount_excl" column="ccr_amount_excl" />
 		<result property="amount_incl" column="ccr_amount_incl" />
 		<result property="phone_called" column="ccr_phone_called" />
+		<result property="juristiction" column="ccr_juristiction" />
 		<result property="upload_date" column="ccr_upload_date" />
 	</resultMap>
 	
@@ -54,7 +56,7 @@
 			<choose>
 				<when test="params.where == 'query_last_call_records'">
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
-					<if test="params.record_type != null">and ccr.record_type = #{params.record_type}</if>
+					<if test="params.record_type != null">and (ccr.record_type='T1' or ccr.record_type='T3')</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
 				</when>
 				<otherwise>
@@ -69,6 +71,7 @@
 					<if test="params.amount_excl != null">and ccr.amount_excl = #{params.amount_excl}</if>
 					<if test="params.amount_incl != null">and ccr.amount_incl = #{params.amount_incl}</if>
 					<if test="params.phone_called != null">and ccr.phone_called = #{params.phone_called}</if>
+					<if test="params.juristiction != null">and ccr.juristiction = #{params.juristiction}</if>
 					<if test="params.upload_date != null">and ccr.upload_date = #{params.upload_date}</if>
 				</otherwise>
 			</choose>
@@ -116,10 +119,10 @@
 	<insert id="insertCustomerCallRecord" parameterType="CustomerCallRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_call_record`(
 			`statement_date`, `record_type`, `clear_service_id`, `charge_date_time`, `duration`, `oot_id`, `billing_description`
-			, `amount_excl`, `amount_incl`, `phone_called`, `upload_date`
+			, `amount_excl`, `amount_incl`, `phone_called`, `juristiction`, `upload_date`
 		) VALUES (
 			#{statement_date},#{record_type},#{clear_service_id},#{charge_date_time},#{duration},#{oot_id},#{billing_description}
-			,#{amount_excl},#{amount_incl},#{phone_called},#{upload_date}
+			,#{amount_excl},#{amount_incl},#{phone_called},#{juristiction},#{upload_date}
 		)	
 	</insert>
 
@@ -143,6 +146,7 @@
 			<if test="amount_excl != null">amount_excl = #{amount_excl},</if>
 			<if test="amount_incl != null">amount_incl = #{amount_incl},</if>
 			<if test="phone_called != null">phone_called = #{phone_called},</if>
+			<if test="juristiction != null">juristiction = #{juristiction},</if>
 			<if test="upload_date != null">upload_date = #{upload_date}</if>
 		</set>
 		<where>
@@ -170,6 +174,7 @@
 			<if test="params.amount_excl != null">and amount_excl = #{params.amount_excl}</if>
 			<if test="params.amount_incl != null">and amount_incl = #{params.amount_incl}</if>
 			<if test="params.phone_called != null">and phone_called = #{params.phone_called}</if>
+			<if test="params.juristiction != null">and juristiction = #{params.juristiction}</if>
 			<if test="params.upload_date != null">and upload_date = #{params.upload_date}</if>
 		</where>
 	</delete>

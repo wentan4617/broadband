@@ -302,7 +302,8 @@ public class TMUtils {
 			, InvoicePDFCreator invoicePDF, Double totalPayableAmouont
 			, CustomerCallRecordMapper customerCallRecordMapper
 			, CallInternationalRateMapper callInternationalRateMapper
-			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper){
+			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper
+			, String customerType){
 		
 		Calendar lastMonthFirst = Calendar.getInstance(Locale.CHINA);
 		lastMonthFirst.set(Calendar.DAY_OF_MONTH, 1);
@@ -318,12 +319,14 @@ public class TMUtils {
 		// Total credit back
 		Double totalCreditBack = 0d;
 		
+		String callType = "";
+		
 		// BEGIN Chorus Style Calling Record
 		CustomerCallRecord ccrTemp = new CustomerCallRecord();
 		ccrTemp.getParams().put("where", "query_last_call_records");
 		ccrTemp.getParams().put("orderby", "ORDER BY charge_date_time ASC");
 		ccrTemp.getParams().put("last_month", lastMonthFirst.getTime());
-		ccrTemp.getParams().put("record_type", "T1");
+		ccrTemp.getParams().put("record_type", "T1,T3");
 		// PRODUCTION MODE CHANGE TO pstn_number
 		ccrTemp.getParams().put("clear_service_id", //96272424
 				TMUtils.formatPhoneNumber(pstn_number)
@@ -332,6 +335,11 @@ public class TMUtils {
 
 		// ITERATIVELY ADD ALL CALL CHARGES
 		for (CustomerCallRecord ccr : ccrsTemp) {
+
+			// Residential local call free
+			if("personal".equals(customerType.toLowerCase()) && "L".equals(ccr.getJuristiction())){
+				continue;
+			}
 			
 			// BEGIN Rate Operation
 //			boolean is0900 = false; boolean isFax = false;
@@ -340,32 +348,37 @@ public class TMUtils {
 //			boolean isNational = false; boolean isBusinessLocal = false;
 			
 			CallInternationalRate cir = new CallInternationalRate();
-			String areaCode = ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-"));
-			if("7".equals(areaCode) 
-			&& ("KATIKATI".equals(ccr.getBilling_description())
-			   || "HAMILTON".equals(ccr.getBilling_description())
-			   || "TAURANGA".equals(ccr.getBilling_description())
-			   || "OPOTIKI".equals(ccr.getBilling_description()))){
-				cir.getParams().put("rate_type", "Domestic");
-			} else if("27".equals(areaCode)
-			&& ("OTH NETWRK".equals(ccr.getBilling_description())
-			   || "MOBILE".equals(ccr.getBilling_description()))){
-				cir.getParams().put("rate_type", "NZ Mobile");
+			switch (ccr.getJuristiction()) {
+			case "O":	/* OTH NETWORK & Mobile */
+				callType = "mobile";
+				cir.getParams().put("area_prefix", "2");
+				break;
+			case "L":	/* Local (Auckland) */
+				callType = "local";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "N":	/* National */
+				callType = "national";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "I":	/* International */
+				callType = "international";
+				cir.getParams().put("area_prefix", ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
+				break;
 			}
-			cir.getParams().put("area_prefix", areaCode);
 			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
-			boolean isInternational = cirs!=null && cirs.size()>0 ? true : false;
+			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
 //			if(is0900){} if(isFax){}
 //			if(isMobile){ costPerMinute = 0.19d ; }
 //			if(isNational){} if(isBusinessLocal){}
-			if(isInternational){ costPerMinute = cirs.get(0).getRate_cost(); }
+			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
 			// DURATION/SECONDS
 			Double duration = Double.parseDouble(fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
-				isInternational){
+					isOnRate){
 
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
 				if(isReminder(String.valueOf(duration))){
@@ -374,12 +387,12 @@ public class TMUtils {
 				}
 
 				// Process Present Calling Minutes
-				Map<String, Object> map = processPresentCallingMinutes(pcms
+				totalCreditBack = processPresentCallingMinutes(pcms
 						,cirs
 						,duration
 						,totalCreditBack
-						,costPerMinute);
-				totalCreditBack = (Double) map.get("credit");
+						,costPerMinute
+						,callType);
 				
 				ccr.setAmount_incl(TMUtils.bigMultiply(duration, costPerMinute));
 				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, TMUtils.bigMultiply(duration, costPerMinute));
@@ -407,33 +420,44 @@ public class TMUtils {
 
 		
 		for (CustomerCallingRecordCallplus ccrc : ccrcs) {
+
+			// Residential local call free
+			if("personal".equals(customerType.toLowerCase()) && "L".equals(ccrc.getType())){
+				continue;
+			}
+			
 			CallInternationalRate cir = new CallInternationalRate();
 			switch (ccrc.getType()) {
 			case "M":	/* Mobile */
+				callType = "mobile";
 				cir.getParams().put("area_prefix", "2");
 				break;
 			case "MG":	/* Mobile Gsm */
+				callType = "mobile";
 				cir.getParams().put("area_prefix", "2");
 				break;
 			case "L":	/* Local (Auckland) */
+				callType = "local";
 				cir.getParams().put("area_prefix", "3");
 				break;
 			case "S":	/* Domestic */
+				callType = "national";
 				cir.getParams().put("area_prefix", "3");
 				break;
 			case "I":	/* International */
+				callType = "international";
 				cir.getParams().put("area_name", ccrc.getDescription());
 				break;
 			}
 			
 			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
-			boolean isInternational = cirs!=null && cirs.size()>0 ? true : false;
+			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
 //			if(is0900){} if(isFax){}
 //			if(isMobile){ costPerMinute = 0.19d ; }
 //			if(isNational){} if(isBusinessLocal){}
-			if(isInternational){ costPerMinute = cirs.get(0).getRate_cost(); }
+			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
 			// duration = length / 60
 			Double duration = Double.parseDouble(fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccrc.getLength(), 60d))));
@@ -446,7 +470,7 @@ public class TMUtils {
 			ccr.setAmount_incl(ccrc.getCharged_fee());
 
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
-				isInternational){
+					isOnRate){
 
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
 				if(isReminder(String.valueOf(duration))){
@@ -455,12 +479,12 @@ public class TMUtils {
 				}
 				
 				// Process Present Calling Minutes
-				Map<String, Object> map = processPresentCallingMinutes(pcms
+				totalCreditBack = processPresentCallingMinutes(pcms
 						,cirs
 						,duration
 						,totalCreditBack
-						,costPerMinute);
-				totalCreditBack = (Double) map.get("credit");
+						,costPerMinute
+						,callType);
 				
 				ccr.setAmount_incl(TMUtils.bigMultiply(duration, costPerMinute));
 				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, TMUtils.bigMultiply(duration, costPerMinute));
@@ -500,12 +524,12 @@ public class TMUtils {
 	}
 	// END CustomerCallRecord OPERATION
 	
-	public static Map<String, Object> processPresentCallingMinutes(List<CustomerOrderDetail> pcms
+	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
 			,List<CallInternationalRate> cirs
 			,Double duration
 			,Double totalCreditBack
-			,Double costPerMinute){
-		Map<String, Object> map = new HashMap<String, Object>();
+			,Double costPerMinute
+			,String callType){
 		
 		// BEGIN PresentCallingMinutes
 		if(pcms!=null && pcms.size()>0){
@@ -513,64 +537,77 @@ public class TMUtils {
 			for (CustomerOrderDetail pcm : pcms) {
 				String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
 				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
-				// If Presented Calling Minute's description contains area_prefix && area_name
-				if(("BANGLADESH".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("MALAYSIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("CAMBODIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("SINGAPORE".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("CANADA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("KOREA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("CHINA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("USA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("HONG KONG".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("VIETNAM".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
-				|| ("INDIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))){
-					// If Present Minutes greater than duration
-					if(pcm.getDetail_unit() >= duration){
-						// Decrease Present Minutes
-						pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
-						// Replace old one to new one
-						Collections.replaceAll(pcms, pcms.get(index), pcm);
+				
+				// Specific callType
+				if(pcmDetailDesc.equals(callType.toUpperCase())){
+					
+					System.out.println("pcmDetailDesc: "+pcmDetailDesc);
+					System.out.println("callType.toUpperCase(): "+callType.toUpperCase());
+					System.out.println("duration: "+duration);
+					System.out.println("costPerMinute: "+costPerMinute);
+					System.out.println("index: "+index);
+					System.out.println("totalCreditBack: "+totalCreditBack);
+					System.out.println("pcm.getDetail_unit(): "+pcm.getDetail_unit());
+					
+					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
+					index++;
+					
+				// Specific countries
+				} else {
+					if(("BANGLADESH".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("MALAYSIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("CAMBODIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("SINGAPORE".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("CANADA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("KOREA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("CHINA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("USA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("HONG KONG".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("VIETNAM".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))
+					|| ("INDIA".equals(cirAreaName) && pcmDetailDesc.contains(cirAreaName.split(" ")[0]))){
+						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
 						index++;
-						totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
-					} else {
-						// Duration equals to duration subtract detail_unit
-						duration = TMUtils.bigOperationTwoReminders(duration, pcm.getDetail_unit().doubleValue(), "sub");
-						// Decrease Present Minutes
-						pcm.setDetail_unit(0);
-						// Replace old one to new one
-						Collections.replaceAll(pcms, pcms.get(index), pcm);
+					} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
+							&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
+							&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
+						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
 						index++;
-						totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
-					}
-				} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
-						&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
-						&& !cirAreaName.contains("MOBILE")){
-					// If Present Minutes greater than duration
-					if(pcm.getDetail_unit() >= duration){
-						// Decrease Present Minutes
-						pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
-						// Replace old one to new one
-						Collections.replaceAll(pcms, pcms.get(index), pcm);
-						index++;
-						totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
-					} else {
-						// Duration equals to duration subtract detail_unit
-						duration = TMUtils.bigOperationTwoReminders(duration, pcm.getDetail_unit().doubleValue(), "sub");
-						// Decrease Present Minutes
-						pcm.setDetail_unit(0);
-						// Replace old one to new one
-						Collections.replaceAll(pcms, pcms.get(index), pcm);
-						index++;
-						totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
 					}
 				}
+				
 			}
 		}
 		// END PresentCallingMinutes
-		map.put("credit", totalCreditBack);
-		return map;
+		return totalCreditBack;
 	}
+
+		public static Double getCallingTotalCreditBack(List<CustomerOrderDetail> pcms
+				,CustomerOrderDetail pcm
+				,List<CallInternationalRate> cirs
+				,Double duration
+				,Double totalCreditBack
+				,Double costPerMinute
+				,Integer index){
+			
+			// If got sufficient given minutes
+			if(pcm.getDetail_unit() > 0){
+				// If Present Minutes greater than duration
+				if(pcm.getDetail_unit() >= duration){
+					// Decrease Present Minutes
+					pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
+					// Replace old one to new one
+					Collections.replaceAll(pcms, pcms.get(index), pcm);
+					totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
+				} else {
+					totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
+					// Decrease Present Minutes
+					pcm.setDetail_unit(0);
+					// Replace old one to new one
+					Collections.replaceAll(pcms, pcms.get(index), pcm);
+				}
+			}
+			return totalCreditBack;
+		}
 	
 	
 	public static int judgeDay(int year, int month) {

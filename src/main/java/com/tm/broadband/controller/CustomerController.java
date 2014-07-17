@@ -673,6 +673,56 @@ public class CustomerController {
 		return "redirect:/customer/home";
 	}
 
+	@RequestMapping("/login/{type}/{customer_id}/{md5_password}")
+	public String loginBilling(Model model,
+			RedirectAttributes attr,
+			@PathVariable("type") String type,
+			@PathVariable("customer_id") Integer customer_id,
+			@PathVariable("md5_password") String md5_password,
+			HttpServletRequest req) {
+		
+		Customer c = new Customer();
+		c.getParams().put("where", "when_login_by_id_md5pass");
+		c.getParams().put("id", customer_id);
+		c.getParams().put("md5_password", md5_password.substring(3, md5_password.length()-3));
+		c.getParams().put("status", "active");
+		Customer customerSession = this.crmService.queryCustomerWhenLogin(c);
+		
+		System.out.println(customerSession);
+		
+		if(customerSession==null){
+			System.out.println("SESSION IS NULL");
+			return "redirect:/login";
+		} else {
+			System.out.println("SESSION IS NOT NULL");
+			req.getSession().setAttribute("customerSession", customerSession);
+		}
+
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("where", "query_status_no_discard_cancel");
+		coQuery.getParams().put("customer_id", customer_id);
+		coQuery.getParams().put("order_status", "discard");
+		coQuery.getParams().put("order_status_1", "cancel");
+		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(coQuery);
+		customerSession.setCustomerOrders(customerOrders);
+		
+		if("home".equals(type)){
+			
+			model.addAttribute("success", "Welcome to CyberTech Customer Home.");
+			
+			customerSession.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customer_id, "unpaid"));
+			
+			model.addAttribute("customerOrders", customerOrders);
+			
+			return "broadband-customer/customer-home";
+		}
+		
+		attr.addFlashAttribute("success", "Welcome to CyberTech Customer Billing.");
+		
+		return "redirect:/customer/billing/1";
+	}
+
 	@RequestMapping(value = "/customer/home")
 	public String customerHome(Model model, HttpServletRequest req) {
 		

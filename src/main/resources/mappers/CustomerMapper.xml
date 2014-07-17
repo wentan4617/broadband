@@ -21,7 +21,7 @@
 		c.`id` 				as c_id, 
 		c.`login_name` 		as c_login_name, 
 		c.`password` 		as c_password,
-		c.`md5_password` 	as md5_password,
+		c.`md5_password` 	as c_md5_password,
 		c.`user_name` 		as c_user_name, 
 		c.`first_name` 		as c_first_name, 
 		c.`last_name` 		as c_last_name, 
@@ -237,6 +237,11 @@
 				<when test="params.where == 'when_login'">
 					(c.cellphone = #{params.cellphone} or c.email = #{params.email})
 					and c.password = #{params.password}
+					and c.status = #{params.status}
+				</when>
+				<when test="params.where == 'when_login_by_id_md5pass'">
+					c.id = #{params.id}
+					and c.md5_password = #{params.md5_password}
 					and c.status = #{params.status}
 				</when>
 				<when test="params.where =='query_forgotten_password_email'">

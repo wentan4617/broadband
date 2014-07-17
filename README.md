@@ -16,12 +16,20 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.8.1 2014-07-17
+
+###Important Level (High)
+* [添加赠送Local，National，Mobile，International的拨打分钟数.](steven)
+* [参照Callplus拨打记录的出法根据juristiction字段出Chorus准确的拨打记录.](steven)
+* [将Chorus账单的Juristiction也记录到tm_customer_call_record表中，L,O,N,I分别代表Local,OTH NETWORK, National, International.](steven)
+
+
 demand version 1.7.2 2014-07-16
 
 ###Important Level (High)
 * [customer后台所有invoice的balance都用括号扩住并加红.](steven)
 * [tm_customer表加一个md5_password字段，在前台，后台，sales下单，客户修改密码，我们后台帮客户修改密码时用DigestUtils.md5Hex("")方法加密customer密码后并存入该字段.](steven)
-* invoice和ordering online邮件模版里分别添加一个链接：invoice的是(域名/customer/home/客户id/加密后的登录密码+3位随机字符串)，ordering online的是(域名/customer/billing/1/客户id/加密后的登录密码+3位随机字符串)，点击后传入的客户id与customer的id匹配及去掉后3位随机字符串的加密密码与md5_password匹配则跳转至customer登录后的相应界面，否则跳转至登录页.(steven)
+* [invoice和ordering online邮件模版里分别添加一个链接：ordering online的是(域名/customer/home/客户id/加密后的登录密码+3位随机字符串)，invoice的是(域名/customer/billing/1/客户id/加密后的登录密码+3位随机字符串)，点击后传入的客户id与customer的id匹配及去掉后3位随机字符串的加密密码与md5_password匹配则跳转至customer登录后的相应界面，否则跳转至登录页.](steven)
 
 ###Important Level (Medium)
 * 添加一个重新生成Ordering Form的按钮，点击确认后根据order的detail重新生成该Ordering Form.(steven)
@@ -43,20 +51,19 @@ demand version 1.7.1 2014-07-15
 * 所有order为无ddpay的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信提醒用户续费，逾期日期为-3天的所有账单发短信告知用户该order已变成suspended状态.(steven)
 * 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
 
-
 ###Important Level (Medium)
 * 添加一个界面，查看各种日期下invoice的统计数字.(steven)
-
 
 ###Important Level (Normal)
 * [RFS Date为空时对应的Save按钮变为红色，否则显示绿色.](steven)
 * [如果belongs to为空则显示online.](steven)
 
+
 demand version 1.6.8 2014-07-14
 
 * [更正View Online Orders界面列表的显示样式以及Optional Request的modal显示内容.](steven)
-* [user views interface add **Set Operation**, add **Provision Notice** option when click Yes then *is_provision* is true, else false.](steven)
-* [user interface add **Provision Notice** checkbox, **checked** means true, unchecked means false.](steven)
+* [user views page add **Set Operation**, add **Provision Notice** option when click Yes then *is_provision* is true, else false.](steven)
+* [user page add **Provision Notice** checkbox, **checked** means true, unchecked means false.](steven)
 
 demand version 1.6.7 2014-07-13
 
@@ -67,9 +74,9 @@ demand version 1.6.7 2014-07-13
 
 demand version 1.6.6 2014-07-11
 
-* Chorus拨打账单分析并根据里面的Juristiction字段来出各个地域的拨打话费.(steven)
-* Chorus的Business Local Call是AccountName为SME ACCOUNT且RecordType为T3的记录，需要计算到CallingRecord里.(steven)
-* 做个定时器，取出所有pending-warning状态且order_create_date为4天前的order，将order状态改为void，并且提示客户由下单5天还未付款，该订单已被void.(steven)
+* [Chorus拨打账单分析并根据里面的Juristiction字段来出各个地域的拨打话费.](steven)
+* [Chorus的Business Local Call是AccountName为SME ACCOUNT且RecordType为T3的记录，需要计算到CallingRecord里.](steven)
+* [做个定时器，取出所有pending-warning状态且order_create_date为4天前的order，将order状态改为void，并且提示客户由下单5天还未付款，该订单已被void.](steven)
 * [做个定时器，取出所有pending状态且order_create_date为2天前的order，将order状态改为pending-warning，并且发送一封附带ordering form的提醒邮件.](steven)
 * [change *order_status* to *rfs* while changing the **RFS Date**.](steven)
 

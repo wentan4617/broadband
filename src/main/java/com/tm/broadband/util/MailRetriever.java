@@ -62,6 +62,7 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_id>", String.valueOf(preventNull(cus.getId()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_login_name>", preventNull(cus.getLogin_name())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
+			noti.setTitle(noti.getTitle().replaceAll("@<customer_md5_password>", preventNull(TMUtils.generateRandomString(3)+cus.getMd5_password()+TMUtils.generateRandomString(3))));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
 			if("business".equals(cus.getCustomer_type())){
 				noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));
@@ -88,6 +89,7 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<customer_id>", String.valueOf(preventNull(cus.getId()))));
 			noti.setContent(noti.getContent().replaceAll("@<customer_login_name>", preventNull(cus.getLogin_name())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
+			noti.setContent(noti.getContent().replaceAll("@<customer_md5_password>", preventNull(TMUtils.generateRandomString(3)+cus.getMd5_password()+TMUtils.generateRandomString(3))));
 			noti.setContent(noti.getContent().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
 			if("business".equals(cus.getCustomer_type())){
 				noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));

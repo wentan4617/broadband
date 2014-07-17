@@ -21,6 +21,7 @@ public class CallingRecordUtility {
 	private static Integer billingDescriptionIndex		= 19;
 	private static Integer amountExclIndex				= 24;
 	private static Integer amountInclIndex				= 25;
+	private static Integer juristictionIndex			= 27;
 	private static Integer phoneCallIndex				= 29;
 	
 	// Get calling records
@@ -84,7 +85,7 @@ public class CallingRecordUtility {
 				// String
 				if(arr.length > clearServiceIdIndex){
 		        	String number = arr[clearServiceIdIndex];
-		        	if(number.length() > 0 && "T1".equals(arr[recordTypeIndex])){
+		        	if(number.length() > 0){
 		        		number = number.substring(0, number.length()-1);
 		        	}
 					ccr.setClear_service_id(number);
@@ -121,10 +122,18 @@ public class CallingRecordUtility {
 											if(arr[amountInclIndex] != null && !"".equals(arr[amountInclIndex].trim())){
 												ccr.setAmount_incl(Double.parseDouble(arr[amountInclIndex]));
 											}
-											
+
 											// String
-											if(arr.length > phoneCallIndex){
-												ccr.setPhone_called(arr[phoneCallIndex]);
+											if(arr.length > juristictionIndex){
+												if(arr[juristictionIndex] != null && !"".equals(arr[juristictionIndex].trim())){
+													ccr.setJuristiction(arr[juristictionIndex]);
+												}
+												
+												// String
+												if(arr.length > phoneCallIndex){
+													ccr.setPhone_called(arr[phoneCallIndex]);
+												}
+												
 											}
 										}
 									}
