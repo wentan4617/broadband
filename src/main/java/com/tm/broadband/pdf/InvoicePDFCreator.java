@@ -639,45 +639,47 @@ public class InvoicePDFCreator extends ITextUtils {
 	}
 	
 	private PdfPTable createCallRecordDetails(){
-        PdfPTable callRecordDetailsTable = newTable().columns(11).widthPercentage(98F).o();
-        addEmptyCol(callRecordDetailsTable, 160F, 11);
-        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(11).font(ITextFont.arial_bold_12).paddingTo("b", 4F).o();
-        addEmptyCol(callRecordDetailsTable, 10F, 11);
-        addCol(callRecordDetailsTable, "Date").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("l").o();
-        addCol(callRecordDetailsTable, "Phone Number").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
-        addCol(callRecordDetailsTable, "Destination").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("l").o();
+        PdfPTable callRecordDetailsTable = newTable().columns(14).widthPercentage(98F).o();
+        addEmptyCol(callRecordDetailsTable, 160F, 14);
+        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(14).font(ITextFont.arial_bold_12).paddingTo("b", 4F).o();
+        addEmptyCol(callRecordDetailsTable, 10F, 14);
+        addCol(callRecordDetailsTable, "Date").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("c").o();
+        addCol(callRecordDetailsTable, "Phone Number").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addCol(callRecordDetailsTable, "Destination").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
+        addCol(callRecordDetailsTable, "Call Type").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
         addCol(callRecordDetailsTable, "Duration").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
-        addCol(callRecordDetailsTable, "Sub Total").colspan(1).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
-        addEmptyCol(callRecordDetailsTable, 6F, 11);
+        addCol(callRecordDetailsTable, "Sub Total").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("r").o();
+        addEmptyCol(callRecordDetailsTable, 6F, 14);
         
         Double totalCallFee = 0d;
         for (CustomerCallRecord ccr : this.ccrs) {
-            addCol(callRecordDetailsTable, TMUtils.retrieveMonthAbbrWithDate(ccr.getCharge_date_time())).colspan(3).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("l").o();
-            addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
-            addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("l").o();
+            addCol(callRecordDetailsTable, TMUtils.retrieveMonthAbbrWithDate(ccr.getCharge_date_time())).colspan(2).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
+            addCol(callRecordDetailsTable, ccr.getCallType()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
             addCol(callRecordDetailsTable, String.valueOf(ccr.getFormated_duration())).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
-            addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(1).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
             totalCallFee += ccr.getAmount_incl();
 		}
         
         totalCallFee = isBusiness ? TMUtils.bigMultiply(totalCallFee, 1.15) : totalCallFee;
         
         
-        addEmptyCol(callRecordDetailsTable, 20F, 11);
+        addEmptyCol(callRecordDetailsTable, 20F, 14);
         
         // PRODUCT(S) END
         
         // #####SEPARATOR BEGIN
-        addCol(callRecordDetailsTable, " ").colspan(11).fixedHeight(8F).border("b", 1F).o();
+        addCol(callRecordDetailsTable, " ").colspan(14).fixedHeight(8F).border("b", 1F).o();
         // #####SEPARATOR END
         
         // TOTAL BEGIN
         // #####EMTRY SPACE BEGIN
-        addEmptyCol(callRecordDetailsTable, 11);
+        addEmptyCol(callRecordDetailsTable, 14);
         // #####EMTRY SPACE END
         
         // FIRST ROW BEGIN
-        addEmptyCol(callRecordDetailsTable, 14F, 7);
+        addEmptyCol(callRecordDetailsTable, 14F, 10);
         addCol(callRecordDetailsTable, "Total before GST").colspan(2).font(ITextFont.arial_normal_8).o();
         
         Double totalBeforeGST = totalCallFee/1.15;
@@ -685,7 +687,7 @@ public class InvoicePDFCreator extends ITextUtils {
         addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBeforeGST))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
         // FIRST ROW END
         // SECOND ROW BEGIN
-        addEmptyCol(callRecordDetailsTable, 14F, 7);
+        addEmptyCol(callRecordDetailsTable, 14F, 10);
         addCol(callRecordDetailsTable, "GST at 15%").colspan(2).font(ITextFont.arial_normal_8).o();
         Double totalGST = totalCallFee - totalCallFee/1.15;
         // fill decimal, keep 2 decimals
@@ -693,12 +695,12 @@ public class InvoicePDFCreator extends ITextUtils {
         // SECOND ROW END
         
         // SEPARATOR BEGIN
-        addEmptyCol(callRecordDetailsTable, 4F, 7);
+        addEmptyCol(callRecordDetailsTable, 4F, 10);
         addCol(callRecordDetailsTable, " ").colspan(4).borderWidth("b", 1F).fixedHeight(4F).o();
         // SEPARATOR END
         
         // TOTAL AMOUNT BEGIN
-        addEmptyCol(callRecordDetailsTable, 7);
+        addEmptyCol(callRecordDetailsTable, 10);
         addCol(callRecordDetailsTable, "Calling Charge").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(totalCallFee))).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         // TOTAL AMOUNT END

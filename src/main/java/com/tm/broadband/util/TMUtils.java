@@ -60,6 +60,10 @@ public class TMUtils {
 		return str;
 	}
 	
+	public static String strCapital(String str){
+		return str.substring(0, 1).toUpperCase().concat(str.substring(1));
+	}
+	
 	public static String getCustomerOrderSerial(String login_name) {
 		
 		Calendar cal = Calendar.getInstance();
@@ -377,6 +381,9 @@ public class TMUtils {
 			
 			// DURATION/SECONDS
 			Double duration = Double.parseDouble(fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
+			
+			ccr.setCallType(strCapital(callType));
+			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate){
 
@@ -467,6 +474,7 @@ public class TMUtils {
 			ccr.setCharge_date_time(ccrc.getDate());
 			ccr.setPhone_called(ccrc.getDestination_number());
 			ccr.setBilling_description(ccrc.getDescription());
+			ccr.setCallType(strCapital(callType));
 			ccr.setAmount_incl(ccrc.getCharged_fee());
 
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
@@ -540,14 +548,6 @@ public class TMUtils {
 				
 				// Specific callType
 				if(pcmDetailDesc.equals(callType.toUpperCase())){
-					
-					System.out.println("pcmDetailDesc: "+pcmDetailDesc);
-					System.out.println("callType.toUpperCase(): "+callType.toUpperCase());
-					System.out.println("duration: "+duration);
-					System.out.println("costPerMinute: "+costPerMinute);
-					System.out.println("index: "+index);
-					System.out.println("totalCreditBack: "+totalCreditBack);
-					System.out.println("pcm.getDetail_unit(): "+pcm.getDetail_unit());
 					
 					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
 					index++;

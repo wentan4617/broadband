@@ -214,12 +214,17 @@ public class BillingController {
 		pageCis.getParams().put("orderby", "ORDER BY create_date DESC");
 		System.out.println("status: "+status);
 		
-		if(!"orderNoInvoice".equals(status) && !"pending".equals(status)){
+		if(!"orderNoInvoice".equals(status) && !"pending".equals(status) && !"unpaid".equals(status)){
 			pageCis.getParams().put("status", status);
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 		} else if("pending".equals(status)) {
 			pageCis.getParams().put("payment_status", status);
+			pageCis.getParams().put("status", "unpaid");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+		} else if("unpaid".equals(status)){
+			pageCis.getParams().put("where", "by_unpaid_non_pending");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 		} else {

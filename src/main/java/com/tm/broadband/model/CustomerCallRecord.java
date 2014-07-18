@@ -40,6 +40,8 @@ public class CustomerCallRecord implements Serializable {
 	 * RELATED PROPERTIES
 	 */
 	
+	private String callType;
+	
 	private String formated_duration;
 	
 	private String charge_date_time_str;
@@ -173,6 +175,14 @@ public class CustomerCallRecord implements Serializable {
 
 	public void setJuristiction(String juristiction) {
 		this.juristiction = juristiction;
+	}
+
+	public String getCallType() {
+		return callType;
+	}
+
+	public void setCallType(String callType) {
+		this.callType = callType;
 	}
 
 }
