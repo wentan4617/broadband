@@ -16,6 +16,12 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.8.2 2014-07-18
+
+* [term和no-term的invoice里plan的description日期都从(账单生成日+5天-1月+1天)到(账单生成日+5天).](steven)
+* [账单里plan的description填写该plan所收取费用的服务起始和终止日期.](steven)
+
+
 demand version 1.8.1 2014-07-17
 
 ###Important Level (High)
@@ -48,7 +54,7 @@ demand version 1.7.2 2014-07-16
 demand version 1.7.1 2014-07-15
 
 ###Important Level (High)
-* 所有order为无ddpay的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信提醒用户续费，逾期日期为-3天的所有账单发短信告知用户该order已变成suspended状态.(steven)
+* 所有order的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信告知用户该order已变成suspended状态.(steven)
 * 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
 
 ###Important Level (Medium)
