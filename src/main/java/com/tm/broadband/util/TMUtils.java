@@ -30,7 +30,8 @@ import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.JSONBean;
-import com.tm.broadband.model.RegisterCustomer;
+import com.tm.broadband.model.StatisticBilling;
+import com.tm.broadband.model.StatisticCustomer;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 
 public class TMUtils {
@@ -50,14 +51,14 @@ public class TMUtils {
 	}
 	
 	public static String generateRandomString(int range) {
-		String str = "";
+		StringBuffer str = new StringBuffer();
 		Random random = new Random();
 		int i = 0;
 		while (i < range) {
-			str += pwds[random.nextInt(36)];
+			str.append(pwds[random.nextInt(36)]);
 			i++;
 		}
-		return str;
+		return str.toString();
 	}
 	
 	public static String strCapital(String str){
@@ -198,11 +199,11 @@ public class TMUtils {
 	 * Methods from Calendar BEGIN
 	 * @param registerCustomers
 	 */
-	public static void thisWeekDateForRegisterStatistic(List<RegisterCustomer> registerCustomers) {
+	public static void thisWeekDateForRegisterStatistic(List<StatisticCustomer> registerCustomers) {
 		Calendar cal = Calendar.getInstance(Locale.CHINA);
 		cal.setFirstDayOfWeek(Calendar.MONDAY); // Monday as first day
 		
-		RegisterCustomer statistic = new RegisterCustomer();
+		StatisticCustomer statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Mon. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -210,7 +211,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 		
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Tues. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -218,7 +219,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Wed. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -226,7 +227,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Thur. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -234,7 +235,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Fri. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -242,7 +243,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Sat. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -250,7 +251,7 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 
 		statistic = null;
-		statistic = new RegisterCustomer();
+		statistic = new StatisticCustomer();
 		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
 		statistic.setRegisterDate(cal.getTime());
 		statistic.setRegisterWeekDate_str("Sun. "+TMUtils.dateFormatYYYYMMDD(statistic.getRegisterDate()));
@@ -258,22 +259,101 @@ public class TMUtils {
 		registerCustomers.add(statistic);
 	}
 	
-	public static void thisMonthDateForRegisterStatistic(int year, int month, List<RegisterCustomer> registerCustomers) {
+	public static void thisMonthDateForRegisterStatistic(int year, int month, List<StatisticCustomer> registerCustomers) {
 		Calendar c = Calendar.getInstance(Locale.CHINA);
 		c.set(Calendar.DAY_OF_MONTH, 1); // set date
 		c.set(Calendar.YEAR, year);
 		c.set(Calendar.MONTH, month - 1);
 		int maxDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
 		
-		RegisterCustomer statistic = null;
+		StatisticCustomer statistic = null;
 		for (int i = 0; i < maxDay; i++) {
-			statistic = new RegisterCustomer();
+			statistic = new StatisticCustomer();
 			c.set(Calendar.DAY_OF_MONTH, i+1);
 			statistic.setRegisterDate(c.getTime());
 			statistic.setRegisterCount(0);
 			registerCustomers.add(statistic);
 		}
 	}
+	
+	// Billing
+	public static void thisWeekBillingStatistic(List<StatisticBilling> statisticBilling) {
+		Calendar cal = Calendar.getInstance(Locale.CHINA);
+		cal.setFirstDayOfWeek(Calendar.MONDAY); // Monday as first day
+		
+		StatisticBilling statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Mon. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+		
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.TUESDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Tues. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.WEDNESDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Wed. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.THURSDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Thur. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.FRIDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Fri. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Sat. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+
+		statistic = null;
+		statistic = new StatisticBilling();
+		cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+		statistic.setBillingDate(cal.getTime());
+		statistic.setBillingWeekDate_str("Sun. "+TMUtils.dateFormatYYYYMMDD(statistic.getBillingDate()));
+		statistic.setBillingAmount(0d);
+		statisticBilling.add(statistic);
+	}
+	
+	public static void thisMonthDateForBillingStatistic(int year, int month, List<StatisticBilling> statisticBilling) {
+		Calendar c = Calendar.getInstance(Locale.CHINA);
+		c.set(Calendar.DAY_OF_MONTH, 1); // set date
+		c.set(Calendar.YEAR, year);
+		c.set(Calendar.MONTH, month - 1);
+		int maxDay = c.getActualMaximum(Calendar.DAY_OF_MONTH);
+		
+		StatisticBilling statistic = null;
+		for (int i = 0; i < maxDay; i++) {
+			statistic = new StatisticBilling();
+			c.set(Calendar.DAY_OF_MONTH, i+1);
+			statistic.setBillingDate(c.getTime());
+			statistic.setBillingAmount(0d);
+			statisticBilling.add(statistic);
+		}
+	}
+	
 	/**
 	 * Methods from Calendar END
 	 */
@@ -625,27 +705,27 @@ public class TMUtils {
 		}
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
 		String day = dateArr[2];
-		String finalDateStr = "";
+		StringBuffer finalDateStrBuff = new StringBuffer();
 		if(Integer.parseInt(day) < 10){
-			finalDateStr = day.charAt(1)+"th ";
+			finalDateStrBuff.append(day.charAt(1)+"th ");
 		} else {
-			finalDateStr = day+"th ";
+			finalDateStrBuff.append(day+"th ");
 		}
 		switch (dateArr[1]) {
-		case "01": finalDateStr += "Jan "; break;
-		case "02": finalDateStr += "Feb "; break;
-		case "03": finalDateStr += "Mar "; break;
-		case "04": finalDateStr += "Apr "; break;
-		case "05": finalDateStr += "May "; break;
-		case "06": finalDateStr += "Jun "; break;
-		case "07": finalDateStr += "Jul "; break;
-		case "08": finalDateStr += "Aug "; break;
-		case "09": finalDateStr += "Sep "; break;
-		case "10": finalDateStr += "Oct "; break;
-		case "11": finalDateStr += "Nov "; break;
-		case "12": finalDateStr += "Dec "; break;
+		case "01": finalDateStrBuff.append("Jan "); break;
+		case "02": finalDateStrBuff.append("Feb "); break;
+		case "03": finalDateStrBuff.append("Mar "); break;
+		case "04": finalDateStrBuff.append("Apr "); break;
+		case "05": finalDateStrBuff.append("May "); break;
+		case "06": finalDateStrBuff.append("Jun "); break;
+		case "07": finalDateStrBuff.append("Jul "); break;
+		case "08": finalDateStrBuff.append("Aug "); break;
+		case "09": finalDateStrBuff.append("Sep "); break;
+		case "10": finalDateStrBuff.append("Oct "); break;
+		case "11": finalDateStrBuff.append("Nov "); break;
+		case "12": finalDateStrBuff.append("Dec "); break;
 		}
-		return finalDateStr += dateArr[0];
+		return finalDateStrBuff.append(dateArr[0]).toString();
 	}
 	// END RetrieveMonthAbbrWithDate
 	

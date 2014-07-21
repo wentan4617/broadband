@@ -12,18 +12,18 @@
 			<div class="panel panel-default">
 				<div class="panel-heading"><h4 class="panel-title">${panelheading}</h4></div>
 				<div class="panel-body">
-					<h3>Monthly Statistic</h3>
+					<h3>Monthly Transaction Statistics - Total Monthly Income:&nbsp;<strong><span id="total_monthly_income" class="text-success"></span></strong></h3>
 						<div class="input-group date col-md-2">
 							<input id="year_month_input"
 								class="form-control" placeholder="Start Date" value="${yearMonth}"/>
 								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
 						</div>
 					<hr/>
-					<canvas id="canvasMonth" height="300" width="1100"></canvas>
+					<canvas id="canvasMonth" height="350" width="1100"></canvas>
 					<hr/>
-					<h3>Weekly Statistic</h3>
+					<h3>Weekly Transaction Statistics - Total Weekly Income:&nbsp;<strong><span id="total_weekly_income" class="text-success"></span></strong></h3>
 					<hr/>
-					<canvas id="canvasWeek" height="300" width="1100"></canvas>
+					<canvas id="canvasWeek" height="350" width="1100"></canvas>
 				</div>
 			</div>
 		</div>
@@ -43,9 +43,9 @@
 		scaleOverride : true
 		//** 如果为硬编码模式 **
 		//Number - 硬编码模式下每一步的跨度
-		,scaleSteps : 6
+		,scaleSteps : 15
 		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 3
+		,scaleStepWidth : 100
 		//Number - 起始值
 		,scaleStartValue : 0
 		//Number - XY轴线宽度
@@ -58,9 +58,9 @@
 		scaleOverride : true
 		//** 如果为硬编码模式 **
 		//Number - 硬编码模式下每一步的跨度
-		,scaleSteps : 6
+		,scaleSteps : 15
 		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 3
+		,scaleStepWidth : 100
 		//Number - 起始值
 		,scaleStartValue : 0
 		//Number - XY轴线宽度
@@ -73,12 +73,20 @@
 	, weekLabelArray = []
 	, weekMaxNum = 0;
 	
-	<c:forEach var="weekRegisterStatistic" items="${weekRegisterStatistics}">
-		weekLabelArray.push('${weekRegisterStatistic.registerWeekDate_str}');
-		weekDataArray.push(${weekRegisterStatistic.registerCount});
-		var weekTempNum = ${weekRegisterStatistic.registerCount};
+	<c:forEach var="weekPaidStatistic" items="${weekPaidStatistics}">
+		weekLabelArray.push('${weekPaidStatistic.billingWeekDate_str}');
+		weekDataArray.push(${weekPaidStatistic.billingAmount});
+		var weekTempNum = ${weekPaidStatistic.billingAmount};
 		weekMaxNum = weekTempNum > weekMaxNum ? weekTempNum : weekMaxNum;
 	</c:forEach>
+	
+	if(weekDataArray.length > 0){
+		var totalWeekIncome = 0;
+		for(var i=0; i<weekDataArray.length; i++){
+			totalWeekIncome += weekDataArray[i];
+		}
+		$('#total_weekly_income').html('( '+new Number(totalWeekIncome).toFixed(2)+' )');
+	}
 	
 	var weekLineChartData = {
 		labels : weekLabelArray,
@@ -93,12 +101,20 @@
 	, monthLabelArray = []
 	, monthMaxNum = 0;
 	
-	<c:forEach var="monthRegisterStatistic" items="${monthRegisterStatistics}">
-		monthLabelArray.push('${monthRegisterStatistic.registerMonthDate_str}'.substring(8));
-		monthDataArray.push(${monthRegisterStatistic.registerCount});
-		var monthTempNum = ${monthRegisterStatistic.registerCount};
+	<c:forEach var="monthBillingTransaction" items="${monthBillingTransactions}">
+		monthLabelArray.push('${monthBillingTransaction.billingMonthDate_str}'.substring(8));
+		monthDataArray.push(${monthBillingTransaction.billingAmount});
+		var monthTempNum = ${monthBillingTransaction.billingAmount};
 		monthMaxNum = monthTempNum > monthMaxNum ? monthTempNum : monthMaxNum;
 	</c:forEach>
+	
+	if(monthDataArray.length > 0){
+		var totalMonthIncome = 0;
+		for(var i=0; i<monthDataArray.length; i++){
+			totalMonthIncome += monthDataArray[i];
+		}
+		$('#total_monthly_income').html('( '+new Number(totalMonthIncome).toFixed(2)+' )');
+	}
 	
 	var monthLineChartData = {
 		labels : monthLabelArray,

@@ -154,7 +154,6 @@ th, td{
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<form id="orderForm" action="" method="post" style="display:none;">
-						<input type="hidden" name="sale_id"/>
 					</form>
 					<div class="panel-body">
 						<div class="alert alert-warning">No records have been found.</div>
@@ -260,9 +259,8 @@ th, td{
 	
 	$('#select_user').change(function(){
 		var $this = $(this);
-		var val = this.value;
-		$('input[name="sale_id"]').val(val);
-		$('#orderForm').prop('action', '${ctx}/broadband-user/sale/online/ordering/view/by_sales_id');
+		var sales_id = this.value;
+		$('#orderForm').prop('action', '${ctx}/broadband-user/sale/online/ordering/view/by/'+sales_id);
 		$('#orderForm').submit();
 	});
 	

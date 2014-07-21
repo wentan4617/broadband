@@ -1,5 +1,6 @@
 package com.tm.broadband.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import com.tm.broadband.mapper.CallChargeRateMapper;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
+import com.tm.broadband.mapper.CustomerInvoiceMapper;
+import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
@@ -22,6 +25,8 @@ import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerCallingRecordCallplus;
+import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
@@ -50,6 +55,8 @@ public class BillingService {
 	private VoucherFileUploadMapper voucherFileUploadMapper;
 	private VoucherBannedListMapper voucherBannedListMapper;
 	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
+	private CustomerTransactionMapper ctMapper;
+	private CustomerInvoiceMapper ciMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
@@ -62,7 +69,9 @@ public class BillingService {
 			,VoucherMapper voucherMapper
 			,VoucherFileUploadMapper voucherFileUploadMapper
 			,VoucherBannedListMapper voucherBannedListMapper
-			,CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper) {
+			,CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
+			CustomerInvoiceMapper ciMapper,
+			CustomerTransactionMapper ctMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
@@ -74,6 +83,8 @@ public class BillingService {
 		this.voucherFileUploadMapper = voucherFileUploadMapper;
 		this.voucherBannedListMapper = voucherBannedListMapper;
 		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
+		this.ctMapper = ctMapper;
+		this.ciMapper = ciMapper;
 	}
 	
 	public BillingService(){}
@@ -401,4 +412,24 @@ public class BillingService {
 		return this.voucherBannedListMapper.selectVoucherBannedListsSum(page);
 	}
 	// END Voucher
+	
+	/**
+	 * Chart Services BEGIN
+	 */
+	
+	// Billing Transaction Statistic
+	@Transactional
+	public List<CustomerTransaction> queryCustomerTransactionsByTransactionDate(Date start, Date end){
+		return this.ctMapper.selectCustomerTransactionsByTransactionDate(start, end);
+	}
+	
+	// Billing Invoice Statistic
+	@Transactional
+	public List<CustomerInvoice> queryCustomerInvoicesByCreateDate(CustomerInvoice ci){
+		return this.ciMapper.selectCustomerInvoicesByCreateDate(ci);
+	}
+	
+	/**
+	 * Chart Services END
+	 */
 }

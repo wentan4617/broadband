@@ -72,6 +72,10 @@
 		limit 0, 1
 	</select>
 	
+	<select id="selectCustomerTransactionsByTransactionDate" parameterType="Date" resultType="CustomerTransaction">
+		select * from tm_customer_transaction where CONVERT(transaction_date, DATE) between CONVERT(#{0}, DATE) and CONVERT(#{1}, DATE)
+	</select>
+	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->

@@ -178,6 +178,16 @@
 									</li>
 									<li>
 										<label>
+											<form:checkbox path="authArray" value="billing/chart/transaction-statistic" data-type="checkbox_billing" /> Chart(Transaction)
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="billing/chart/invoice-statistic" data-type="checkbox_billing" /> Chart(Invoice)
+										</label>
+									</li>
+									<li>
+										<label>
 											<form:checkbox path="authArray" value="billing/voucher/view" data-type="checkbox_billing" /> View Voucher
 										</label>
 									</li>

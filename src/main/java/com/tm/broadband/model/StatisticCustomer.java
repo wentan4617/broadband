@@ -5,7 +5,7 @@ import java.util.Date;
 
 import com.tm.broadband.util.TMUtils;
 
-public class RegisterCustomer implements Serializable {
+public class StatisticCustomer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 

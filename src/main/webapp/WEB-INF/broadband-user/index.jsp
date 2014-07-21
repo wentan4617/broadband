@@ -92,6 +92,17 @@ hr {
                     		<a href="${ctx }/broadband-user/billing/invoice/view/1/unpaid">View Invoice</a>
                     	</li>
 						<li>
+                    		<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/chart/transaction-statistic/0">Chart(Transaction)</a>
+                    	</li>
+						<li>
+                    		<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/billing/chart/invoice-statistic/0">Chart(Invoice)</a>
+                    	</li>
+					</ul>
+					<hr/>
+					<ul class="list-unstyled">
+						<li>
                     		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/billing/voucher/view/1/unused">View Voucher</a>
                     	</li>
@@ -140,7 +151,7 @@ hr {
 							<div class="btn-group">
 	                    		<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
 	                    		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">
-	                    			View Contact Us&nbsp;&nbsp;<span class="badge">${newContactUsSum}</span>
+	                    			View Contact Us&nbsp;&nbsp;<span class="badge" style="background:red;">${newContactUsSum}</span>
 	                    		</a>
 	                    	</div>
                     	</li>

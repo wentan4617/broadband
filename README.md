@@ -16,6 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.8.3 2014-07-21
+
+* [在Provision列表里判断如果order状态是rfs则显示RFS Date.](steven)
+* [Add Chart(Invoice) page to view every month's paid_amount, balance, credit, void balance's statistics.](steven)
+* [Add Chart(Transaction) page to view every month and most recent week transaction's statistics.](steven)
+* [修改sales的online ordering list切换其他sales的url传参方式，将通过parameter传参改为通过url传参.](steven)
+
 demand version 1.8.2 2014-07-18
 
 * [term和no-term的invoice里plan的description日期都从(账单生成日+5天-1月+1天)到(账单生成日+5天).](steven)
@@ -40,7 +47,7 @@ demand version 1.7.2 2014-07-16
 ###Important Level (Medium)
 * 添加一个重新生成Ordering Form的按钮，点击确认后根据order的detail重新生成该Ordering Form.(steven)
 * Add Detail里添加两个选项：Plan和Item，Plan需要写name, type, plan type, plan sort, price, flow，Item有几种：Broadband New Connection, Hardware(steven)
-* invoice列表的Make Payment添加一个Avoid This Invoice选项，点击确认后该账单status变为void状态.(steven)
+* [invoice列表的Make Payment添加一个Avoid This Invoice选项，点击确认后该账单status变为void状态.](steven)
 
 ###Important Level (Normal)
 * 发invoice的email使用新添加的accounts@cyberpark.co.nz邮箱，发faulty回复邮件使用provision@cyberpark.co.nz邮箱.(steven)
@@ -54,11 +61,11 @@ demand version 1.7.2 2014-07-16
 demand version 1.7.1 2014-07-15
 
 ###Important Level (High)
-* 所有order的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信告知用户该order已变成suspended状态.(steven)
+* 所有order的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信告知用户该付款了，并且将order状态变成suspended.(steven)
 * 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
 
 ###Important Level (Medium)
-* 添加一个界面，查看各种日期下invoice的统计数字.(steven)
+* [添加一个界面，查看各种月份下invoice各数值的统计数据.](steven)
 
 ###Important Level (Normal)
 * [RFS Date为空时对应的Save按钮变为红色，否则显示绿色.](steven)
