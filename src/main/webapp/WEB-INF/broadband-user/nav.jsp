@@ -97,6 +97,19 @@
 								</a>
 							</li>
 							<li>
+								<a href="${ctx}/broadband-user/billing/chart/transaction-statistic/0">
+									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+									Chart(Transaction)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/chart/invoice-statistic/0">
+									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+									Chart(Invoice)
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
 								<a href="${ctx}/broadband-user/billing/voucher/view/1/unused">
 									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
 									View Voucher

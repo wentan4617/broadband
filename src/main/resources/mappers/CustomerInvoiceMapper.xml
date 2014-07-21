@@ -19,9 +19,16 @@
 	<sql id="pageWhere">
 		<where>
 			<choose>
-				<when test="params.where == 'by_unpaid_non_pending'">
-					and status='unpaid'
-					and payment_status IS NULL
+				<when test="params.where == 'non_pending'">
+					payment_status IS NULL
+					<if test="params.id != null">and id = #{params.id}</if>
+					<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
+					<if test="params.order_id != null">and order_id = #{params.order_id}</if>
+					<if test="params.status != null">and status = #{params.status}</if>
+				</when>
+				<when test="params.where == 'pending'">
+					<if test="params.status1 != null">and (status = #{params.status1} or status = #{params.status2})</if>
+					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
@@ -322,6 +329,12 @@
 			<result property="payment_status" column="li_payment_status" />
 		</association>
 	</resultMap>
+	
+	<select id="selectCustomerInvoicesByCreateDate" parameterType="CustomerInvoice" resultType="CustomerInvoice">
+		select * from tm_customer_invoice where CONVERT(create_date, DATE) between CONVERT(#{params.start_date}, DATE) and CONVERT(#{params.end_date}, DATE)
+		<if test="params.status != null">and status=#{params.status}</if>
+		<if test="params.status1 != null">and (status=#{params.status1} or status=#{params.status2})</if>
+	</select>
 	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->

@@ -40,7 +40,6 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
@@ -508,24 +507,49 @@ public class CRMRestController {
 	// END Voucher
 	
 	
-	// BEGIN Cash
+	// BEGIN ChangePaymentStatus
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/change-payment-status", method = RequestMethod.POST)
 	public JSONBean<String> doChangePaymentStatus(Model model,
 			@RequestParam("invoice_id") int invoice_id,
 			HttpServletRequest req) {
 
+
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerInvoice ci = new CustomerInvoice();
+		CustomerInvoice ciTemp = this.crmService.queryCustomerInvoiceById(invoice_id);
+		if("void".equals(ciTemp.getStatus())){
+			ci.setStatus(ciTemp.getAmount_paid()>0 ? "not_pay_off" : "unpaid");
+		}
 		ci.setPayment_status("pending");
 		ci.getParams().put("id", invoice_id);
 		this.crmService.editCustomerInvoice(ci);
 
-		json.getSuccessMap().put("alert-success", "Change payment status had successfully been operates!");
+		json.getSuccessMap().put("alert-success", "Change payment status had successfully been operated!");
 
 		return json;
 	}
 
-	// END Cash
+	// END ChangePaymentStatus
+	
+	
+	// BEGIN ChangeStatus
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/change-status", method = RequestMethod.POST)
+	public JSONBean<String> doInvoiceChangeStatus(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerInvoice ci = new CustomerInvoice();
+		ci.setStatus("void");
+		ci.getParams().put("id", invoice_id);
+		this.crmService.editCustomerInvoice(ci);
+
+		json.getSuccessMap().put("alert-success", "Change status had successfully been operated!");
+
+		return json;
+	}
+
+	// END ChangeStatus
 
 	// Update order status
 	@RequestMapping(value = "/broadband-user/crm/customer/order/status/edit", method = RequestMethod.POST)

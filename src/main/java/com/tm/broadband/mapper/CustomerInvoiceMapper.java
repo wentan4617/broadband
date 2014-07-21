@@ -37,6 +37,8 @@ public interface CustomerInvoiceMapper {
 	CustomerInvoice selectInvoiceWithLastInvoiceIdById(int id);
 	Double selectCustomerInvoicesBalanceByCidAndStatus(int cid, String status);
 	
+	List<CustomerInvoice> selectCustomerInvoicesByCreateDate(CustomerInvoice ci);
+	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */

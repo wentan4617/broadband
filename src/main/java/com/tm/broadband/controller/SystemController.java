@@ -25,7 +25,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.RegisterCustomer;
+import com.tm.broadband.model.StatisticCustomer;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
@@ -339,7 +339,7 @@ public class SystemController {
 		/**
 		 * WEEK STATISTIC BEGIN
 		 */
-		List<RegisterCustomer> weekRegisterStatistics = new ArrayList<RegisterCustomer>();
+		List<StatisticCustomer> weekRegisterStatistics = new ArrayList<StatisticCustomer>();
 		TMUtils.thisWeekDateForRegisterStatistic(weekRegisterStatistics);
 		
 		List<Customer> weekCustomers = this.systemService.queryCustomersByRegisterDate(
@@ -348,7 +348,7 @@ public class SystemController {
 				// sunday
 				,weekRegisterStatistics.get(weekRegisterStatistics.size()-1).getRegisterDate()
 			);
-		for (RegisterCustomer registerCustomer : weekRegisterStatistics) {
+		for (StatisticCustomer registerCustomer : weekRegisterStatistics) {
 			for (Customer customer : weekCustomers) {
 				if(TMUtils.dateFormatYYYYMMDD(registerCustomer.getRegisterDate())
 						.equals(TMUtils.dateFormatYYYYMMDD(customer.getRegister_date()))){
@@ -382,7 +382,7 @@ public class SystemController {
 			month = Integer.parseInt(temp[1]);
 		}
 		
-		List<RegisterCustomer> monthRegisterStatistics = new ArrayList<RegisterCustomer>();
+		List<StatisticCustomer> monthRegisterStatistics = new ArrayList<StatisticCustomer>();
 		TMUtils.thisMonthDateForRegisterStatistic(year, month, monthRegisterStatistics);
 		List<Customer> monthCustomers = this.systemService.queryCustomersByRegisterDate(
 				// first date of month
@@ -390,7 +390,7 @@ public class SystemController {
 				// last date of month
 				,monthRegisterStatistics.get(monthRegisterStatistics.size()-1).getRegisterDate()
 			);
-		for (RegisterCustomer registerCustomer : monthRegisterStatistics) {
+		for (StatisticCustomer registerCustomer : monthRegisterStatistics) {
 			for (Customer customer : monthCustomers) {
 				
 				// if registerCustomer's register date(filtered monthly dates) equals to customer's register date

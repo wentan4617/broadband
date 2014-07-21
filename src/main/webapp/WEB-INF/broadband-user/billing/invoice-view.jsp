@@ -42,6 +42,9 @@ tbody td {text-align:center;}
 							<a href="${ctx}/broadband-user/billing/invoice/view/1/pending" class="btn btn-default ${pendingActive }">
 								Pending&nbsp;<span class="badge">${pendingSum}</span>
 							</a>
+							<a href="${ctx}/broadband-user/billing/invoice/view/1/void" class="btn btn-default ${voidActive }">
+								Void&nbsp;<span class="badge">${voidSum}</span>
+							</a>
 							<a href="${ctx}/broadband-user/billing/invoice/view/1/paid" class="btn btn-default ${paidActive }">
 								Paid&nbsp;<span class="badge">${paidSum}</span>
 							</a>

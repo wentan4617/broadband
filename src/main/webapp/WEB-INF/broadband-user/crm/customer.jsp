@@ -590,7 +590,10 @@
 					$btn = $(this); $btn.button('loading');
 					var order_status = $('#'+this.id+'_order_status');
 					// if status is ordering then show save modal
-					if(order_status.attr('data-val')=='ordering-paid' || order_status.attr('data-val')=='ordering-pending' || order_status.attr('data-val')=='using'){
+					if(order_status.attr('data-val')=='ordering-paid'
+					|| order_status.attr('data-val')=='ordering-pending'
+					|| order_status.attr('data-val')=='using'
+					|| order_status.attr('data-val')=='rfs'){
 						$('a[data-name="service_giving_save_'+this.id+'"]').prop('id', this.id);
 						$('a[data-name="service_giving_save_'+this.id+'"]').attr('data-way', $(this).attr('data-way'));
 						$('a[data-name="service_giving_save_'+this.id+'"]').attr('data-pay-status', $(this).attr('data-pay-status'));
@@ -1056,6 +1059,10 @@
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Pending for this invoice?');
 						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will only change the Make Payment button to Pending style.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Pending for this invoice');
+					} else if(pay_way == 'void'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Avoid for this invoice?');
+						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will change Invoice\'s status to void.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Avoid for this invoice');
 					} 
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
 					$('#confirmPayWayModal_'+this.id).modal('show');
@@ -1099,6 +1106,11 @@
 								invoice_id : this.id
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/change-payment-status';
+					} else if(pay_way == 'void'){
+						var data = {
+								invoice_id : this.id
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/change-status';
 					}
 					$.post(url, data, function(json){
 						$.jsonValidation(json, 'right');

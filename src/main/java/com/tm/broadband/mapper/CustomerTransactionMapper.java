@@ -1,5 +1,6 @@
 package com.tm.broadband.mapper;
 
+import java.util.Date;
 import java.util.List;
 
 import com.tm.broadband.model.CustomerTransaction;
@@ -31,6 +32,8 @@ public interface CustomerTransactionMapper {
 	List<CustomerTransaction> selectCustomerTransactionsByCustomerId(int id);
 	
 	CustomerTransaction selectCustomerTransaction(CustomerTransaction customerTransaction);
+	
+	List<CustomerTransaction> selectCustomerTransactionsByTransactionDate(Date start, Date end);
 	
 	/* // END SELECT AREA */
 	

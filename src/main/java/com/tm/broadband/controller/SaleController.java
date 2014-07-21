@@ -104,6 +104,13 @@ public class SaleController {
 		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		model.addAttribute("hardwares", hardwares);
 		
+		// Recycle
+		customer = null;
+		plans = null;
+		plan = null;
+		hardware = null;
+		hardwares = null;
+		
 		return "broadband-user/sale/online-ordering";
 	}
 	
@@ -115,14 +122,17 @@ public class SaleController {
 		plan = this.planService.queryPlan(plan);
 		model.addAttribute("orderPlan", plan);
 		
-		String url = "";
+		StringBuffer url = new StringBuffer();
 		if ("personal".equals(plan.getPlan_class())) {
-			url = "broadband-user/sale/online-ordering-personal-info";
+			url.append("broadband-user/sale/online-ordering-personal-info");
 		} else if ("business".equals(plan.getPlan_class())) {
-			url = "broadband-user/sale/online-ordering-business-info";
+			url.append("broadband-user/sale/online-ordering-business-info");
 		}
 		
-		return url;
+		// Recycle
+		plan = null;
+		
+		return url.toString();
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/confirm")
@@ -176,6 +186,9 @@ public class SaleController {
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_trans);
 				
+				// Recycle
+				cod_trans = null;
+				
 			} else if ("new-connection".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
 				customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() + plan.getPlan_new_connection_fee());
@@ -188,6 +201,9 @@ public class SaleController {
 				cod_conn.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_conn);
+				
+				// Recycle
+				cod_conn = null;
 
 			} else if ("jackpot".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				
@@ -201,6 +217,9 @@ public class SaleController {
 				cod_jackpot.setDetail_unit(1);
 				
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_jackpot);
+				
+				// Recycle
+				cod_jackpot = null;
 				
 			}
 			
@@ -219,6 +238,9 @@ public class SaleController {
 				cod_pstn.setDetail_unit(1);
 				cod_pstn.setPstn_number(customer.getCustomerOrder().getTransition_porting_number());
 				customer.getCustomerOrder().getCustomerOrderDetails().add(cod_pstn);
+				
+				// Recycle
+				cod_pstn = null;
 			}
 			
 			CustomerOrderDetail cod_hd = new CustomerOrderDetail();
@@ -237,6 +259,9 @@ public class SaleController {
 			cod_hd.setDetail_type("hardware-router");
 			
 			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_hd);
+			
+			// Recycle
+			cod_hd = null;
 		}
 		
 		if (cods != null) {
@@ -254,6 +279,10 @@ public class SaleController {
 				}
 			}
 		}
+		
+		// Recycle
+		cod_plan = null;
+		
 		
 		return "broadband-user/sale/online-ordering-confirm";
 	}
@@ -358,6 +387,7 @@ public class SaleController {
 		user = null;
 		notification = null;
 		applicationEmail = null;
+		orderingPath = null;
 		companyDetail = null;
 		/*org = null;
 		co = null;*/
@@ -402,6 +432,11 @@ public class SaleController {
 
 		model.addAttribute("months", months);
 		model.addAttribute("years", years);
+		
+		// Recycle
+		years = null;
+		months = null;
+		
 		return "broadband-user/sale/online-ordering-credit";
 	}
 	
@@ -424,6 +459,12 @@ public class SaleController {
         String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
         headers.setContentDispositionFormData( filename, filename );
         ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        
+        // Recycle
+        path = null;
+        contents = null;
+        headers = null;
+        
         return response;
     }
 	
@@ -467,6 +508,11 @@ public class SaleController {
 		this.crmService.editCustomerOrder(co);
 		// END CREDIT PDF
 		
+		// Recycle
+		co = null;
+		cPDFCreator = null;
+		creditPDFPath = null;
+		
 		
 		return "redirect:/broadband-user/sale/online-ordering-upload-result/"+customer_id+"/"+order_id;
 	}
@@ -491,8 +537,13 @@ public class SaleController {
 		model.addAttribute("customerOrder", co);
 
 		User user = (User) req.getSession().getAttribute("userSession");
+		Integer userId = user.getId();
 		
-		return "redirect:/broadband-user/sale/online/ordering/view/"+1+"/"+user.getId();
+		// Recycle
+		co = null;
+		user = null;
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/"+1+"/"+userId;
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload")
@@ -504,6 +555,7 @@ public class SaleController {
 			, HttpServletRequest req) {
 
 		User user = (User) req.getSession().getAttribute("userSession");
+		Integer userId = user.getId();
 		if(!order_pdf_path.isEmpty() && !credit_pdf_path.isEmpty()){
 			String order_path = TMUtils.createPath("broadband" + File.separator
 					+ "customers" + File.separator + customer_id
@@ -526,9 +578,17 @@ public class SaleController {
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);
+			
+			// Recycle
+			order_path = null;
+			credit_path = null;
+			co = null;
 		}
 		
-		return "redirect:/broadband-user/sale/online/ordering/view/1/" + user.getId();
+		// Recycle
+		user = null;
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + userId;
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/upload-single")
@@ -557,6 +617,10 @@ public class SaleController {
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);
+			
+			// Recycle
+			order_path = null;
+			co = null;
 		}
 		if(!credit_pdf_path.isEmpty()){
 			String credit_path = TMUtils.createPath("broadband" + File.separator
@@ -574,6 +638,10 @@ public class SaleController {
 			co.getParams().put("id", order_id);
 			co.setSignature("signed");
 			this.crmService.editCustomerOrder(co);
+			
+			// Recycle
+			credit_path = null;
+			co = null;
 		}
 		
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
@@ -603,6 +671,10 @@ public class SaleController {
 			co.setPrevious_provider_invoice(order_path);
 			co.getParams().put("id", order_id);
 			this.crmService.editCustomerOrder(co);
+			
+			// Recycle
+			order_path = null;
+			co = null;
 		}
 		
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
@@ -653,13 +725,18 @@ public class SaleController {
 		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
 		// END QUERY SUM BY SIGNATURE
 		
+		// Recycle
+		page = null;
+		salesUsers = null;
+		pageSignatureSum = null;
+		
 		return "broadband-user/sale/online-order-view";
 	}
 	
-	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/by_sales_id")
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/view/by/{sale_id}")
 	public String onlineOrderViewBySalesId(Model model
 			,HttpServletRequest req
-			,@RequestParam("sale_id") Integer sale_id) {
+			,@PathVariable("sale_id") Integer sale_id) {
 
 		model.addAttribute("bothActive", "active");
 
@@ -697,6 +774,10 @@ public class SaleController {
 		this.saleService.queryOrdersSumByPage(pageSignatureSum);
 		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
 		// END QUERY SUM BY SIGNATURE
+		
+		//Recycle
+		page = null;
+		pageSignatureSum = null;
 		
 		return "broadband-user/sale/online-order-view";
 	}
@@ -751,6 +832,10 @@ public class SaleController {
 		this.saleService.queryOrdersSumByPage(pageSignatureSum);
 		model.addAttribute("unsignedSum", pageSignatureSum.getTotalRecord());
 		// END QUERY SUM BY SIGNATURE
+		
+		// Recycle
+		page = null;
+		pageSignatureSum = null;
 		
 		return "broadband-user/sale/online-order-view";
 	}

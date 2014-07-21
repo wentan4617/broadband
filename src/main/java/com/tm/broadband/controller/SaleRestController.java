@@ -81,6 +81,10 @@ public class SaleRestController {
 			return json;
 		}
 		json.setUrl("/broadband-user/sale/online/ordering/order/confirm");
+		
+		// Recycle
+		cValid = null;
+		
 		return json;
 	}
 	

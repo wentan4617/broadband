@@ -180,6 +180,9 @@
 									<th>Customer Name</th>
 									<th>Price ($)</th>
 									<th>Create Date</th>
+									<c:if test="${rfsActive!=null}">
+										<th>RFS Date</th>
+									</c:if>
 									<th>Status</th>
 									<th>Type</th>
 									<th>Broadband Type</th>
@@ -213,6 +216,9 @@
 											</c:if>
 										</td>
 										<td><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+										<c:if test="${rfsActive!=null}">
+											<td><fmt:formatDate value="${order.rfs_date }" type="both" pattern="yyyy-MM-dd" /></td>
+										</c:if>
 										<td>${order.order_status }</td>
 										<td>${order.order_type }</td>
 										<td>${order.order_broadband_type }</td>
