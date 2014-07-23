@@ -76,6 +76,15 @@ hr {
                     		<a href="${ctx }/broadband-user/crm/customer-service-record/view/1">View Customer Service Record</a>
 						</li>
 					</ul>
+                    <hr/>
+					<ul class="list-unstyled">
+						<li>
+                    		<span class="glyphicon glyphicon-bell" style="padding-right:10px;"></span>
+                    		<a href="${ctx }/broadband-user/crm/ticket/view/1/public">
+                    			View Ticket&nbsp;&nbsp;<span class="badge" style="background:red;">0</span>
+                    		</a>
+						</li>
+					</ul>
 			  	</div>
 			</div>
         </div>

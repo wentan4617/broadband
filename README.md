@@ -16,6 +16,28 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.8.5 2014-07-23
+
+* Call restrict with no Directory Access nat Res, Caller Display Monthly Charge per line Res, Call waiting nat Res, Faxability Monthly Rental Res, Smart Bundle package.(steven)
+* ticket发布时at的列表有这些权限列表：accountant,provision-team,administrator,system-developer.(steven)
+
+demand version 1.8.5 2014-07-22
+
+###Important Level (High)
+* CyberPark后台主页添加一个ticket发布界面列出所有公共及受保护的published message，包含的badge: public(谁都能看见), protected(指定的人能看见).(steven)
+* ticket发布界面添加一个发布按钮，点击后弹出一个modal，可以选择发送protected还是public，如果是protected则选中的user才会看到，如果是public则所有用户都能看到，选中用户所看到的该message为高亮显示.(steven)
+* 迭代输出ticket时判断如果session的user_id存在于not_yet_viewer的字符串中，则高亮显示.(steven)
+* 新增topup出账单逻辑，plan的钱是service given开始7天，第6天发下一个7天的账单，due date是1天，due date一到则订单suspended.(steven)
+* 将显示Transaction图表的逻辑多加过滤，使数据更精准，只取card_name为Visa,Cash,Account2Account,DDPay,Credit Card,MasterCard的Transaction记录.(steven)
+
+###Important Level (Medium)
+* 在CRM的customer info界面添加一个按钮：New Ordering，点击后可以选择plan重新下新订单.(kanny)
+* 所有用户类型的order如果账单到期则suspended该order.(steven)
+* 将invoice状态显示的badge的Pending改为Processing.(steven)
+* 显示invoice的controller里头的pending都要改成processing.(steven)
+* 将customer invoice界面Make Payment的pending选项改成processing，customer脚本界面的make payment的pending也改成processing，数据库invoice的payment_status的pending也统一改成processing.(steven)
+
+
 demand version 1.8.3 2014-07-21
 
 * [在Provision列表里判断如果order状态是rfs则显示RFS Date.](steven)
@@ -62,7 +84,7 @@ demand version 1.7.1 2014-07-15
 
 ###Important Level (High)
 * 所有order的最近一张invoice为unpaid且invoice逾期日期为当天的所有账单发短信告知用户该付款了，并且将order状态变成suspended.(steven)
-* 添加一个界面，tickets系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
+* 添加一个界面，ticket系统，可以更改，有状态，类型，如果存在该用户，则让其选择并关联上，可以追加答案，类似customer service record.(steven)
 
 ###Important Level (Medium)
 * [添加一个界面，查看各种月份下invoice各数值的统计数据.](steven)

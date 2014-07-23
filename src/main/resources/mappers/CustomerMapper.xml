@@ -266,6 +266,16 @@
 				<when test="params.where == 'query_exist_not_self_customer_by_email'">
 					<if test="params.email != null">c.email = #{params.email} and c.id != #{params.id}</if>
 				</when>
+				<when test="params.where == 'query_exist_customer_by_keyword'">
+					<if test="params.keyword != null">
+						c.id = #{params.keyword}
+						or lower(c.email) = lower(#{params.keyword})
+						or c.phone = #{params.keyword}
+						or c.cellphone = #{params.keyword}
+						or lower(c.first_name) = lower(#{params.keyword})
+						or lower(c.last_name) = lower(#{params.keyword})
+					</if>
+				</when>
 				<otherwise>
 					<if test="params.status != null">c.status LIKE CONCAT('%', '${params.status}', '%')</if>
 					<if test="params.id != null">or c.id LIKE CONCAT('%', '${params.id}', '%')</if>
@@ -288,6 +298,11 @@
 	<!-- SELECT AREA -->
 	
 	<select id="selectCustomer" parameterType="Customer" resultType="Customer">
+		select * from tm_customer as c
+		<include refid="customerWhere"/>
+	</select>
+	
+	<select id="selectCustomers" parameterType="Customer" resultType="Customer">
 		select * from tm_customer as c
 		<include refid="customerWhere"/>
 	</select>

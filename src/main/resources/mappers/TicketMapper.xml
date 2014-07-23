@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TicketMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="ticketColumns">
+		t.`id`				as t_id,
+		t.`customer_id`				as t_customer_id,
+		t.`user_id`				as t_user_id,
+		t.`cellphone`				as t_cellphone,
+		t.`email`				as t_email,
+		t.`first_name`				as t_first_name,
+		t.`last_name`				as t_last_name,
+		t.`description`				as t_description,
+		t.`publish_type`				as t_publish_type,
+		t.`protected_viewer`				as t_protected_viewer,
+		t.`not_yet_viewer`				as t_not_yet_viewer,
+		t.`viewed_viewer`				as t_viewed_viewer,
+		t.`create_date`				as t_create_date,
+		t.`existing_customer`				as t_existing_customer
+	</sql>
+
+	<resultMap type="Ticket" id="ticketResultMap">
+		<id property="id" column="t_id" />
+		<result property="customer_id" column="t_customer_id" />
+		<result property="user_id" column="t_user_id" />
+		<result property="cellphone" column="t_cellphone" />
+		<result property="email" column="t_email" />
+		<result property="first_name" column="t_first_name" />
+		<result property="last_name" column="t_last_name" />
+		<result property="description" column="t_description" />
+		<result property="publish_type" column="t_publish_type" />
+		<result property="protected_viewer" column="t_protected_viewer" />
+		<result property="not_yet_viewer" column="t_not_yet_viewer" />
+		<result property="viewed_viewer" column="t_viewed_viewer" />
+		<result property="create_date" column="t_create_date" />
+		<result property="existing_customer" column="t_existing_customer" />
+	</resultMap>
+
+	<sql id="ticketWhere">
+		<where>
+			<if test="params.id != null">t.id = #{params.id}</if>
+			<if test="params.customer_id != null">and t.customer_id = #{params.customer_id}</if>
+			<if test="params.user_id != null">and t.user_id = #{params.user_id}</if>
+			<if test="params.cellphone != null">and t.cellphone = #{params.cellphone}</if>
+			<if test="params.email != null">and t.email = #{params.email}</if>
+			<if test="params.first_name != null">and t.first_name = #{params.first_name}</if>
+			<if test="params.last_name != null">and t.last_name = #{params.last_name}</if>
+			<if test="params.description != null">and t.description = #{params.description}</if>
+			<if test="params.publish_type != null">and t.publish_type = #{params.publish_type}</if>
+			<if test="params.protected_viewer != null">and t.protected_viewer = #{params.protected_viewer}</if>
+			<if test="params.not_yet_viewer != null">and t.not_yet_viewer = #{params.not_yet_viewer}</if>
+			<if test="params.viewed_viewer != null">and t.viewed_viewer = #{params.viewed_viewer}</if>
+			<if test="params.create_date != null">and t.create_date = #{params.create_date}</if>
+			<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTicket" parameterType="Ticket" resultType="Ticket">
+		select * from tm_ticket as t
+		<include refid="ticketWhere"/>
+	</select>
+
+	<!-- select ticket page -->
+	<select id="selectTicketsByPage" parameterType="Page" resultMap="ticketResultMap">
+		select 
+			<include refid="ticketColumns"/>
+			from tm_ticket as t
+			<include refid="ticketWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select ticket amount -->
+	<select id="selectTicketsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_ticket as t
+		<include refid="ticketWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTicket" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_ticket`(
+			`id`, `customer_id`, `user_id`, `cellphone`, `email`, 
+			`first_name`, `last_name`, `description`, `publish_type`, `protected_viewer`, 
+			`not_yet_viewer`, `viewed_viewer`, `create_date`, `existing_customer`
+		) VALUES (
+			#{id}, #{customer_id}, #{user_id}, #{cellphone}, #{email}, 
+			#{first_name}, #{last_name}, #{description}, #{publish_type}, #{protected_viewer}, 
+			#{not_yet_viewer}, #{viewed_viewer}, #{create_date}, #{existing_customer}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update ticket -->
+	<update id="updateTicket" parameterType="Ticket">
+		update tm_ticket
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="cellphone != null">cellphone = #{cellphone},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="publish_type != null">publish_type = #{publish_type},</if>
+			<if test="protected_viewer != null">protected_viewer = #{protected_viewer},</if>
+			<if test="not_yet_viewer != null">not_yet_viewer = #{not_yet_viewer},</if>
+			<if test="viewed_viewer != null">viewed_viewer = #{viewed_viewer},</if>
+			<if test="create_date != null">create_date = #{create_date},</if>
+			<if test="existing_customer != null">existing_customer = #{existing_customer}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTicketById" parameterType="int">
+		DELETE FROM tm_ticket WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

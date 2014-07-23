@@ -1489,4 +1489,51 @@ public class CRMRestController {
 		status.setComplete();
 		return page;
 	}
+	
+	// Ticket
+	// Check Customer Existence
+	@RequestMapping(value = "broadband-user/crm/ticket/check-customer-existence", method = RequestMethod.POST)
+	public JSONBean<Customer> doCheckCustomerExistence(Model model,
+			@RequestParam("keyword") String keyword,
+			HttpServletRequest req) {
+
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		
+		if("".equals(keyword.trim())){
+			json.getErrorMap().put("customerNull", "Please input something and check again!");
+			return json;
+		}
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("where", "query_exist_customer_by_keyword");
+		cQuery.getParams().put("keyword", keyword);
+		List<Customer> cs = this.crmService.queryCustomers(cQuery);
+		
+		if(cs==null || cs.size()<=0){
+			json.getErrorMap().put("customerNull", "Couldn't get customer's essential details by provided keyword!");
+		} else {
+			json.getSuccessMap().put("customerNotNull", "Got this customer's essential details!");
+			
+			Customer c = cs.get(0);
+			
+			// If Business Customer
+			if(!"personal".equals(c.getCustomer_type())){
+				Organization org = this.crmService.queryOrganizationByCustomerId(c.getId());
+				if(org.getHolder_name().contains(" ")){
+					c.setFirst_name(org.getHolder_name().split(" ")[0]);
+					c.setLast_name(org.getHolder_name().split(" ")[1]);
+				} else {
+					c.setLast_name(org.getHolder_name());
+				}
+				
+				if(!"".equals(org.getHolder_email().trim())){
+					c.setEmail(org.getHolder_email());
+				}
+			}
+			
+			json.setModel(c);
+		}
+		
+		return json;
+	}
 }
