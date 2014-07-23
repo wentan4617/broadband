@@ -3,14 +3,14 @@ package com.tm.broadband.mapper;
 import java.util.List;
 
 import com.tm.broadband.model.CustomerCredit;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 
 /**
  * mapping tm_customer_invoice
  * 
  * @author DON CHEN
-
+ *
+ */
 
 /* SELECT AREA *//* // END SELECT AREA */
 /* =================================================================================== */

@@ -35,6 +35,7 @@ import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.TicketMapper;
 import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
@@ -55,6 +56,7 @@ import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
@@ -95,6 +97,7 @@ public class CRMService {
 	private CustomerServiceRecordMapper customerServiceRecordMapper;
 	private VoucherMapper voucherMapper;
 	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
+	private TicketMapper ticketMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -124,7 +127,8 @@ public class CRMService {
 			TerminationRefundMapper terminationRefundMapper,
 			CustomerServiceRecordMapper customerServiceRecordMapper,
 			VoucherMapper voucherMapper,
-			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper){
+			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
+			TicketMapper ticketMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -147,6 +151,7 @@ public class CRMService {
 		this.customerServiceRecordMapper = customerServiceRecordMapper;
 		this.voucherMapper = voucherMapper;
 		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
+		this.ticketMapper = ticketMapper;
 	}
 	
 	
@@ -500,6 +505,11 @@ public class CRMService {
 	@Transactional
 	public Customer queryCustomer(Customer customer) {
 		return this.customerMapper.selectCustomer(customer);
+	}
+
+	@Transactional
+	public List<Customer> queryCustomers(Customer customer) {
+		return this.customerMapper.selectCustomers(customer);
 	}
 
 	@Transactional
@@ -906,36 +916,40 @@ public class CRMService {
 		List<CustomerOrder> topupCustomerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(topupCustomerOrder);
 		
 		
-		Notification topupNotificationEmailTemp = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
-		Notification topupNotificationSMSTemp = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
+		Notification topupNotificationEmail = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
+		Notification topupNotificationSMS = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		
 		for (CustomerOrder customerOrder : topupCustomerOrders) {
 			Customer c = customerOrder.getCustomer();
-			Notification topupNotificationEmail = new Notification(topupNotificationEmailTemp.getTitle(), topupNotificationEmailTemp.getContent());
-			Notification topupNotificationSMS = new Notification(topupNotificationSMSTemp.getTitle(), topupNotificationSMSTemp.getContent());
+			
+			// Prevent template pollution
+			Notification topupNotificationEmailFinal = new Notification(topupNotificationEmail.getTitle(), topupNotificationEmail.getContent());
+			Notification topupNotificationSMSFinal = new Notification(topupNotificationSMS.getTitle(), topupNotificationSMS.getContent());
 
 			// call mail at value retriever
 			Organization org = this.organizationMapper.selectOrganizationByCustomerId(c.getId());
 			c.setOrganization(org);
-			MailRetriever.mailAtValueRetriever(topupNotificationEmail, c, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(topupNotificationEmailFinal, c, customerOrder, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
-			applicationEmail.setSubject(topupNotificationEmail.getTitle());
-			applicationEmail.setContent(topupNotificationEmail.getContent());
+			applicationEmail.setSubject(topupNotificationEmailFinal.getTitle());
+			applicationEmail.setContent(topupNotificationEmailFinal.getContent());
 			// binding attachment name & path to email
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(topupNotificationSMS, c, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(topupNotificationSMSFinal, c, customerOrder, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMS.getContent());
-			
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMSFinal.getContent());
+
+			topupNotificationEmailFinal = null;
+			topupNotificationSMSFinal = null;
 			c = null;
-			topupNotificationEmail = null;
-			topupNotificationSMS = null;
 			org = null;
 		}
+		topupNotificationEmail = null;
+		topupNotificationSMS = null;
 		// END TOPUP NOTIFICATION
 		
 	}
@@ -943,8 +957,8 @@ public class CRMService {
 	@Transactional 
 	public void sendTermPlanInvoicePDF() {
 		
-		Notification notificationEmailTemp = this.notificationMapper.selectNotificationBySort("invoice", "email");
-		Notification notificationSMSTemp = this.notificationMapper.selectNotificationBySort("invoice", "sms");
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 		
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		
@@ -957,8 +971,10 @@ public class CRMService {
 		
 		for (CustomerOrder co : cos) {
 			
-			Notification notificationEmail = new Notification(notificationEmailTemp.getTitle(), notificationEmailTemp.getContent());
-			Notification notificationSMS = new Notification(notificationSMSTemp.getTitle(), notificationSMSTemp.getContent());
+			// Prevent template pollution
+			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
+			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
+			
 			
 			CustomerInvoice ci = new CustomerInvoice();
 			ci.getParams().put("where", "by_max_id");
@@ -969,26 +985,29 @@ public class CRMService {
 			// call mail at value retriever
 			Organization org = this.organizationMapper.selectOrganizationByCustomerId(co.getCustomer().getId());
 			co.getCustomer().setOrganization(org);
-			MailRetriever.mailAtValueRetriever(notificationEmail, co.getCustomer(), co, ci, companyDetail);
+
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(co.getCustomer().getEmail());
-			applicationEmail.setSubject(notificationEmail.getTitle());
-			applicationEmail.setContent(notificationEmail.getContent());
+			applicationEmail.setSubject(notificationEmailFinal.getTitle());
+			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
 			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
 			applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMS, co.getCustomer(), co, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, co.getCustomer(), co, ci, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMS.getContent());
+			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMSFinal.getContent());
 			
-			notificationEmail = null;
-			notificationSMS = null;
+			notificationEmailFinal = null;
+			notificationSMSFinal = null;
 			ci = null;
 			org = null;
 		}
+		notificationEmail = null;
+		notificationSMS = null;
 	}
 
 	@Transactional
@@ -1446,8 +1465,8 @@ public class CRMService {
 	
 	@Transactional
 	public void createInvoicePDFBoth(CustomerOrder customerOrder
-			,Notification notificationEmail
-			,Notification notificationSMS, Boolean is_Next_Invoice, boolean isRegenerate){
+			,Notification notificationEmailFinal
+			,Notification notificationSMSFinal, Boolean is_Next_Invoice, boolean isRegenerate){
 		// store company detail begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
@@ -1712,22 +1731,23 @@ public class CRMService {
 		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
 		if(!isRegenerate){
+			
 			// call mail at value retriever
 			customer.setOrganization(org);
-			MailRetriever.mailAtValueRetriever(notificationEmail, customer,  customerOrder, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notificationEmail.getTitle());
-			applicationEmail.setContent(notificationEmail.getContent());
+			applicationEmail.setSubject(notificationEmailFinal.getTitle());
+			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
 			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
 			applicationEmail.setAttachPath((String) map.get("filePath"));
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMS, customer, customerOrder, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customer, customerOrder, ci, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMS.getContent());
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
 	
@@ -2020,12 +2040,16 @@ public class CRMService {
 			this.editCustomerOrder(customerOrder);
 			
 			Customer c = co.getCustomer();
+
+			// Prevent template pollution
+			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
+			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmail, c,  customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c,  customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
-			applicationEmail.setSubject(notificationEmail.getTitle());
-			applicationEmail.setContent(notificationEmail.getContent());
+			applicationEmail.setSubject(notificationEmailFinal.getTitle());
+			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
 			if(co.getOrdering_form_pdf_path()!=null && !"".equals(co.getOrdering_form_pdf_path())){
 				applicationEmail.setAttachName("ordering_form_" + co.getId() + ".pdf");
@@ -2040,9 +2064,9 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMS, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMS.getContent());
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
 	
@@ -2062,20 +2086,57 @@ public class CRMService {
 			this.editCustomerOrder(customerOrder);
 			
 			Customer c = co.getCustomer();
+
+			// Prevent template pollution
+			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
+			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmail, c,  customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c,  customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
-			applicationEmail.setSubject(notificationEmail.getTitle());
-			applicationEmail.setContent(notificationEmail.getContent());
+			applicationEmail.setSubject(notificationEmailFinal.getTitle());
+			applicationEmail.setContent(notificationEmailFinal.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMS, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMS.getContent());
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
+	
+	@Transactional
+	public List<Ticket> queryTicket(Ticket t){
+		return this.ticketMapper.selectTicket(t);
+	}
+	
+	@Transactional
+	public void createTicket(Ticket t){
+		this.ticketMapper.insertTicket(t);
+	}
+	
+	@Transactional
+	public void editTicket(Ticket t){
+		this.ticketMapper.updateTicket(t);
+	}
+	
+	@Transactional
+	public Page<Ticket> queryTicketsByPage(Page<Ticket> page){
+		page.setTotalRecord(this.ticketMapper.selectTicketsSum(page));
+		page.setResults(this.ticketMapper.selectTicketsByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public void removeTicketById(int id){
+		this.ticketMapper.deleteTicketById(id);
+	}
+	
+	@Transactional
+	public int queryTicketsBySum(Page<Ticket> page){
+		return this.ticketMapper.selectTicketsSum(page);
+	}
+	
 	
 	// Check Pending Warning Order
 	@Transactional 
@@ -2087,6 +2148,11 @@ public class CRMService {
 		ciQuery.getParams().put("status", "unpaid");
 		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciQuery);
 		for (CustomerInvoice ci : cis) {
+			
+			// Prevent template pollution
+			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
+			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
+			
 		}
 	}
 	

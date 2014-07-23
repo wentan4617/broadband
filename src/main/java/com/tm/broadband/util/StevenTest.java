@@ -1,10 +1,6 @@
 package com.tm.broadband.util;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-
-import org.apache.commons.codec.digest.DigestUtils;
 
 
 public class StevenTest {
@@ -47,11 +43,20 @@ public class StevenTest {
 //		cal.add(Calendar.DAY_OF_MONTH, -7);
 //		System.out.println(cal.getTime());
 		// Second Encode
-		String secondEncode = TMUtils.generateRandomString(3)+DigestUtils.md5Hex("cyberpark123z")+TMUtils.generateRandomString(3);
-		System.out.println(secondEncode.length());
-		System.out.println(secondEncode);
-		// Second Decode
-		String secondDecode = secondEncode.substring(3, secondEncode.length()-3);
-		System.out.println(secondDecode);
+//		String secondEncode = TMUtils.generateRandomString(3)+DigestUtils.md5Hex("cyberpark123z")+TMUtils.generateRandomString(3);
+//		System.out.println(secondEncode.length());
+//		System.out.println(secondEncode);
+//		// Second Decode
+//		String secondDecode = secondEncode.substring(3, secondEncode.length()-3);
+//		System.out.println(secondDecode);
+		
+		
+		SimpleMapperCreator smc = new SimpleMapperCreator();
+		smc.setAuthor("StevenChen");
+		smc.setModel("Ticket");
+		smc.setTable("tm_ticket");
+		smc.initial();
+		
+		
 	}
 }
