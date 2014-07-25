@@ -1952,8 +1952,8 @@ public class CRMService {
 		CustomerInvoice ci = new CustomerInvoice();
 		ci.setCustomer_id(c.getId());
 		ci.setOrder_id(co.getId());
-		ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
-		ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 10));
+		ci.setCreate_date(TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str()));
+		ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 7));
 		this.ciMapper.insertCustomerInvoice(ci);
 		
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
