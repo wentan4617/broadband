@@ -208,14 +208,14 @@ public class InvoicePDFCreator extends ITextUtils {
 	        addCol(paymentSlipTable, "Total amount due before").rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date_str()).rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(32F).o();
 	        // input box begin
-	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBalance))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
+	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(totalCreditBack>this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
 	        // input box end
 	        addCol(paymentSlipTable, "Bank: "+this.getCompanyDetail().getBank_name()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        addCol(paymentSlipTable, "Name of Account: "+this.getCompanyDetail().getBank_account_name()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        addCol(paymentSlipTable, "Total amount due after").rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date_str()).rowspan(2).font(ITextFont.arial_normal_white_8).bgColor(totleChequeAmountBGColor).paddingTo("t", 8F).indent(32F).o();
 	        // input box begin
-	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(totalBalance))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
+	        addCol(paymentSlipTable, TMUtils.fillDecimalPeriod(String.valueOf(totalCreditBack>this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance))).rowspan(2).font(ITextFont.arial_normal_8).bgColor(BaseColor.WHITE).borderColor(totleChequeAmountBGColor).borderZoom(8F).alignH("r").o();
 	        // input box end
 	        addCol(paymentSlipTable, "Account Number: "+this.getCompanyDetail().getBank_account_number()).colspan(2).font(ITextFont.arial_normal_8).indent(4F).o();
 	        
