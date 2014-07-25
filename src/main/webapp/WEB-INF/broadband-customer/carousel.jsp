@@ -11,8 +11,8 @@
 	<div class="carousel-inner">
 		<div class="item active" >
 			<a href="${ctx }/plans/plan-topup/personal" target="_blank"><!-- class="img-responsive" -->
-				<img src="${ctx }/public/bootstrap3/images/plan-1-lg.jpg" class="hidden-xs hidden-sm" alt="Broadband Top-Up" />
-				<img src="${ctx }/public/bootstrap3/images/plan-1-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/topup725-lg.jpg" class="hidden-xs hidden-sm" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/topup725-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		<div class="item" >
@@ -23,14 +23,14 @@
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/personal/ufb/promotion" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/plan-3-lg.jpg" class="hidden-xs hidden-sm" alt="ADSL is a fast broadband plan">
-				<img src="${ctx }/public/bootstrap3/images/plan-3-sm.png" class="hidden-lg hidden-md" alt="ADSL is a fast broadband plan" />
+				<img src="${ctx }/public/bootstrap3/images/plan-3-lg.jpg" class="hidden-xs hidden-sm" alt="Personal UFB Promotion">
+				<img src="${ctx }/public/bootstrap3/images/plan-3-sm.png" class="hidden-lg hidden-md" alt="Personal UFB Promotion" />
 			</a>
 		</div>
 		<div class="item" >
 			<a href="${ctx }/plans/plan-term/business/adsl/promotion" target="_blank">
-				<img src="${ctx }/public/bootstrap3/images/plan-4-lg.jpg" class="hidden-xs hidden-sm" alt="VDSL is faster than ADSL">
-				<img src="${ctx }/public/bootstrap3/images/plan-4-sm.png" class="hidden-lg hidden-md" alt="VDSL is faster than ADSL" />
+				<img src="${ctx }/public/bootstrap3/images/business725-lg.jpg" class="hidden-xs hidden-sm" alt="Business ADSL Promotion">
+				<img src="${ctx }/public/bootstrap3/images/business725-sm.jpg" class="hidden-lg hidden-md" alt="Business ADSL Promotion" />
 			</a>
 		</div>
 	</div>
