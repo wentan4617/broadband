@@ -16,7 +16,20 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
-demand version 1.8.5 2014-07-23
+demand version 1.9.2 2014-07-25
+
+* CRM的customer列表界面添加筛选功能，可以指定显示ADSL,VDSL,UFB等宽带类型的客户.(steven)
+* Ticket列表界面添加筛选功能，可以指定显示发布类型是publilc还是protect，客户是existed还是new，Ticket的类型是faulty还是billing还是其他.(steven)
+
+demand version 1.9.0 2014-07-24
+
+* ticket发布时所需属性，几种情况:-
+    情况一，现有用户: customer_id, user_id, cellphone, email, first_name, last_name, ticket_type, publish_type, description, not_yet_viewer字符串集合, existing_customer, create_date, 
+    情况二，新用户: 没有customer_id
+    情况三，发布类型为protected：protected_viewer字符串集合
+    
+
+demand version 1.8.7 2014-07-23
 
 * Call restrict with no Directory Access nat Res, Caller Display Monthly Charge per line Res, Call waiting nat Res, Faxability Monthly Rental Res, Smart Bundle package.(steven)
 * ticket发布时at的列表有这些权限列表：accountant,provision-team,administrator,system-developer.(steven)

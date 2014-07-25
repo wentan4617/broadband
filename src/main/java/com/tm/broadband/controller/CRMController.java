@@ -1067,43 +1067,10 @@ public class CRMController {
 		model.addAttribute("users", this.systemService.queryUser(new User()));
 		return "broadband-user/crm/customer-service-record-view";
 	}
-
-	@RequestMapping("/broadband-user/crm/ticket/view/{pageNo}/{publish_type}")
-	public String ticketView(Model model
-			, @PathVariable("pageNo") int pageNo
-			, @PathVariable("publish_type") String publish_type
-			, HttpServletRequest req) {
-		
-		User user = (User) req.getSession().getAttribute("userSession");
-		
-		Page<Ticket> page = new Page<Ticket>();
-		page.setPageNo(pageNo);
-		page.getParams().put("orderby", "order by create_date desc");
-		if("public".equals(publish_type)){
-			page.getParams().put("where", "query_by_public");
-			model.addAttribute("publicActive", "active");
-		} else if("protected".equals(publish_type)){
-			page.getParams().put("where", "query_by_protected");
-			page.getParams().put("protected_viewer", user.getId());
-			model.addAttribute("protectedActive", "active");
-		}
-		this.crmService.queryTicketsByPage(page);
-		model.addAttribute("page", page);
-		
-		Page<Ticket> pageSum = new Page<Ticket>();
-		pageSum.getParams().put("where", "query_by_public");
-		model.addAttribute("publicSum", this.crmService.queryTicketsBySum(pageSum));
-		pageSum = new Page<Ticket>();
-		pageSum.getParams().put("where", "query_by_protected");
-		pageSum.getParams().put("protected_viewer", user.getId());
-		model.addAttribute("protectedSum", this.crmService.queryTicketsBySum(pageSum));
-		
+	
+	@RequestMapping(value = "/broadband-user/crm/ticket/view")
+	public String toPlanView(Model model) {
 		model.addAttribute("users", this.systemService.queryUser(new User()));
-		
-		Ticket t = new Ticket();
-		t.setExisting_customer(true);
-		model.addAttribute("ticket", t);
-		
 		return "broadband-user/crm/ticket-view";
 	}
 

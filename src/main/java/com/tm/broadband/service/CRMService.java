@@ -1922,13 +1922,11 @@ public class CRMService {
 					
 					if("plan-term".equals(cod.getDetail_type()) || "plan-no-term".equals(cod.getDetail_type())){
 						Calendar cal = Calendar.getInstance();
-						Date endTo = null;
-						Date startFrom = null;
-						cal.setTime(new Date());
+						Date startFrom = TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str());
+						cal.setTime(TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str()));
 						cal.add(Calendar.MONTH, cod.getDetail_unit());
 						cal.add(Calendar.DAY_OF_MONTH, -1);
-						startFrom = new Date();
-						endTo = cal.getTime();
+						Date endTo = cal.getTime();
 						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
 					}
 					
@@ -1946,7 +1944,7 @@ public class CRMService {
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
 		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
 		
-		// IF customer's account credit is greater than final payable amount
+		// IF customer's account credit is less than final payable amount
 		if(c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
 			return null;
 		}
@@ -1965,8 +1963,9 @@ public class CRMService {
 		invoicePDF.setCurrentCustomerInvoice(ci);
 
 		ci.setAmount_payable("personal".toUpperCase().equals(c.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
-		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
-		ci.setAmount_paid(c.getBalance()>=ci.getFinal_payable_amount() ? ci.getFinal_payable_amount() : ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
+		ci.setFinal_payable_amount(TMUtils.bigSub(ci.getAmount_payable(), totalCreditBack));
+		Double amount_paid = c.getBalance()>=ci.getFinal_payable_amount() ? ci.getFinal_payable_amount() : ci.getAmount_paid() == null ? 0d : ci.getAmount_paid();
+		ci.setAmount_paid(amount_paid<=0 ? 0 : amount_paid);
 		// balance = final payable - paid
 		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
 		// Add cids into ci

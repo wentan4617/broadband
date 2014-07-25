@@ -41,6 +41,7 @@ import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
+import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.ApplicationPDFCreator;
@@ -796,6 +797,7 @@ public class CRMRestController {
 			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
 			// set next invoice date
 			co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 		} else {
 			Calendar cal = Calendar.getInstance();
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
@@ -1534,6 +1536,129 @@ public class CRMRestController {
 			json.setModel(c);
 		}
 		
+		return json;
+	}
+
+	@RequestMapping("/broadband-user/crm/ticket/view/{pageNo}")
+	public Page<Ticket> ticketView(Model model
+			, @PathVariable("pageNo") int pageNo
+			, HttpServletRequest req) {
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		Page<Ticket> page = new Page<Ticket>();
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("where", "query_by_public_protected");
+		page.getParams().put("public_protected", "public_protected");
+		page.getParams().put("protected_viewer", user.getId());
+		
+		Ticket ticket = (Ticket) req.getSession().getAttribute("ticketFilter");
+		if(ticket!=null){
+			if(!"".equals(ticket.getPublish_type())){
+				page.getParams().remove("public_protected");
+				if("public".equals(ticket.getPublish_type())){
+					page.getParams().put("public", "public");
+				}
+				if("protected".equals(ticket.getPublish_type())){
+					page.getParams().put("protected", "protected");
+				}
+			}
+			if(!"".equals(ticket.getTicket_type())){
+				page.getParams().put("ticket_type", ticket.getTicket_type());
+			}
+			page.getParams().put("existing_customer", ticket.isExisting_customer());
+		}
+		
+		this.crmService.queryTicketsByPage(page);
+		List<Ticket> ts = new ArrayList<Ticket>();
+		for (Ticket t : page.getResults()) {
+			if(t.getNot_yet_viewer().contains(user.getId().toString())){
+				t.setMentioned(true);
+			}
+			ts.add(t);
+		}
+		page.setResults(ts);
+		
+		return page;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/ticket/view/filter")
+	public void doPlanViewFilter(Model model, Ticket ticket
+			,HttpServletRequest req) {
+		req.getSession().setAttribute("ticketFilter", ticket);
+	}
+
+	@RequestMapping(value="/broadband-user/crm/ticket/create", method=RequestMethod.POST)
+	public JSONBean<Customer> doTicketCreate(Model model
+			, @RequestBody Ticket ticket
+			, HttpServletRequest req) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		String first_name = ticket.getFirst_name();
+		String last_name = ticket.getLast_name();
+		String cellphone = ticket.getCellphone();
+		String email = ticket.getEmail();
+		String description = ticket.getDescription();
+		
+		if(("".equals(first_name.trim()) && "".equals(last_name.trim()))
+		|| ("".equals(cellphone.trim()) && "".equals(email.trim()))
+		|| "".equals(description.trim())
+		|| (!"public".equals(ticket.getPublish_type()) && ticket.getUseridArray().length<=0)){
+			if("".equals(first_name.trim()) && "".equals(last_name.trim())){
+				json.getErrorMap().put("emptyContactName", "At least one of the name field!");
+			}
+			if("".equals(cellphone.trim()) && "".equals(email.trim())){
+				json.getErrorMap().put("emptyContactDetail", "At least one of the contact field!");
+			}
+			if("".equals(description.trim())){
+				json.getErrorMap().put("emptyDescription", "Please describe customer's request(s)!");
+			}
+			if((!"public".equals(ticket.getPublish_type()) && ticket.getUseridArray().length<=0)){
+				json.getErrorMap().put("emptyUseridArray", "Please select one or more users!");
+			}
+			return json;
+		}
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		ticket.setUser_id(user.getId());
+		
+		StringBuffer not_yet_viewerBuff = new StringBuffer();
+		
+		if("public".equals(ticket.getPublish_type())){
+			List<User> users = this.systemService.queryUser(new User());
+			for (int i = 0; i < users.size(); i++) {
+				not_yet_viewerBuff.append(users.get(i).getId());
+				if(i < users.size()-1){
+					not_yet_viewerBuff.append(",");
+				}
+			}
+		} else {
+			StringBuffer protected_viewerBuff = new StringBuffer();
+			
+			for (int i = 0; i < ticket.getUseridArray().length; i++) {
+				not_yet_viewerBuff.append(ticket.getUseridArray()[i]);
+				protected_viewerBuff.append(ticket.getUseridArray()[i]);
+				if(i < ticket.getUseridArray().length-1){
+					not_yet_viewerBuff.append(",");
+					protected_viewerBuff.append(",");
+				}
+			}
+			
+			ticket.setProtected_viewer(protected_viewerBuff.toString());
+			
+			protected_viewerBuff = null;
+		}
+		
+		ticket.setNot_yet_viewer(not_yet_viewerBuff.toString());
+		
+		ticket.setCreate_date(new Date());
+		this.crmService.createTicket(ticket);
+		
+		json.setUrl("/broadband-user/crm/ticket/view");
+		
+		not_yet_viewerBuff = null;
+		user = null;
 		return json;
 	}
 }

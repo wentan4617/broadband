@@ -84,7 +84,7 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/crm/ticket/view/1/public">
+								<a href="${ctx}/broadband-user/crm/ticket/view">
 									<span class="glyphicon glyphicon-bell" style="padding-right:10px;"></span>
 									View Ticket
 								</a>

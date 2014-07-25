@@ -3,6 +3,8 @@ package com.tm.broadband.model;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.tm.broadband.util.TMUtils;
+
 public class Ticket implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -15,6 +17,7 @@ public class Ticket implements Serializable {
 	private String first_name;
 	private String last_name;
 	private String description;
+	private String ticket_type;
 	private String publish_type;
 	private String protected_viewer;
 	private String not_yet_viewer;
@@ -28,15 +31,26 @@ public class Ticket implements Serializable {
 	
 	private boolean mentioned;
 	
-	private String[] useridArray;
+	private Integer[] useridArray;
 	
 	private String keyword;
+	
+	private String create_date_str;
 	
 	/*
 	 * END RELATED PROPERTIES
 	 */
 
 
+
+	public String getCreate_date_str() {
+		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDD(this.getCreate_date()));
+		return create_date_str;
+	}
+
+	public void setCreate_date_str(String create_date_str) {
+		this.create_date_str = create_date_str;
+	}
 
 	public boolean isMentioned() {
 		return mentioned;
@@ -46,12 +60,20 @@ public class Ticket implements Serializable {
 		this.mentioned = mentioned;
 	}
 
-	public String[] getUseridArray() {
+	public Integer[] getUseridArray() {
 		return useridArray;
 	}
 
-	public void setUseridArray(String[] useridArray) {
+	public void setUseridArray(Integer[] useridArray) {
 		this.useridArray = useridArray;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 	public Integer getId() {
@@ -166,12 +188,12 @@ public class Ticket implements Serializable {
 		this.existing_customer = existing_customer;
 	}
 
-	public String getKeyword() {
-		return keyword;
+	public String getTicket_type() {
+		return ticket_type;
 	}
 
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
+	public void setTicket_type(String ticket_type) {
+		this.ticket_type = ticket_type;
 	}
 
 }

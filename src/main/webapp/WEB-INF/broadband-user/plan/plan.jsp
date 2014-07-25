@@ -39,7 +39,7 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months Amount</label>
+							<label for="plan_prepay_months" class="control-label col-md-4">Prepay Months (Qty)</label>
 							<div class="col-md-3">
 								<div class="input-group">
 									<input type="text" value="${plan.plan_prepay_months}" id="plan_prepay_months" class="form-control" />
@@ -153,13 +153,13 @@
 						</div>
 						
 						<div class="form-group">
-							<label for="pstn_count" class="control-label col-md-4">PSTN Amount</label>
+							<label for="pstn_count" class="control-label col-md-4">PSTN (Qty)</label>
 							<div class="col-md-3">
 								<input type="text" value="${plan.pstn_count}" id="pstn_count" class="form-control" />
 							</div>
 						</div>
 						
-						<div class="form-group">
+						<%-- <div class="form-group">
 							<label for="pstn_rental_amount" class="control-label col-md-4">PSTN Rental Amount</label>
 							<div class="col-md-3">
 								<div class="input-group">
@@ -167,7 +167,7 @@
 									<input type="text" value="${plan.pstn_rental_amount}" id="pstn_rental_amount" class="form-control" />
 								</div>
 							</div>
-						</div>
+						</div> --%>
 						
 						<div class="form-group">
 							<label for="plan_status" class="control-label col-md-4">Status</label>

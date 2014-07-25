@@ -628,6 +628,8 @@
 							$('#'+json.model.id+'_next_invoice_create_date').html(json.model.next_invoice_create_date_str);
 							$('#'+json.model.id+'_service_giving_save').css('display', '');
 							$('#'+json.model.id+'_service_giving_save_btn_group').css('display', 'none');
+							$.getCustomerOrder();
+							$.getInvoicePage(1);
 						}
 						
 					}, "json");
