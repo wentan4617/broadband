@@ -171,11 +171,11 @@
 												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
 											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
 										</li>
-										<li>
+										<%-- <li>
 											<input type="radio" name="order_broadband_type" 
 												${customer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
 											&nbsp; <strong>Get a new broadband connection and an new Phone Jack installation and activation charge NZ$ <fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></strong>
-										</li>
+										</li> --%>
 									</ul>
 								</div>
 							</div>

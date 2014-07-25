@@ -366,7 +366,9 @@ public class InvoicePDFCreator extends ITextUtils {
         Double lastAmountPaid = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getAmount_paid()!=null ? this.getLastCustomerInvoice().getAmount_paid() : 0.0;
         
         // account filtering of last invoice end
-        
+
+    	Double amount_paid = this.getCurrentCustomerInvoice().getAmount_paid();
+    	
         // if last invoice isn't null then go into <if statement>, otherwise only Opening Balance appears
         if(this.getLastCustomerInvoice()!=null){
         	
@@ -383,7 +385,7 @@ public class InvoicePDFCreator extends ITextUtils {
             // LAST INVOICE PAID CASE
         	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getLastCustomerInvoice().getPaid_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getLastCustomerInvoice().getPaid_type() != null ? this.getLastCustomerInvoice().getPaid_type() : "Amount Paid").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPaid))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(String.valueOf(lastAmountPaid <=0 ? 0 : lastAmountPaid))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
 
             // LAST INVOICE SEPARATOR LINE
         	addEmptyCol(transactionTable, 7);
@@ -414,15 +416,18 @@ public class InvoicePDFCreator extends ITextUtils {
             // CURRENT INVOICE PAID CASE
         	addCol(transactionTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getPaid_date())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).o();
         	addCol(transactionTable, this.getCurrentCustomerInvoice().getPaid_type() != null ? this.getCurrentCustomerInvoice().getPaid_type() : "Amount Paid").colspan(colspan/2).font(ITextFont.arial_normal_8).o();
-        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(this.getCurrentCustomerInvoice().getAmount_paid())).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
+        	addCol(transactionTable, "$ -" + TMUtils.fillDecimalPeriod(amount_paid<=0 ? 0 : amount_paid)).colspan(2).font(ITextFont.arial_normal_8).indent(10F).alignH("r").o();
             
             // CURRENT INVOICE SEPARATOR LINE
         	addEmptyCol(transactionTable, 7);
         	addCol(transactionTable, " ").border("b", 1F).o();
             addEmptyCol(transactionTable, 2F, colspan);
-
+            
             // CURRENT INVOICE TOTAL AMOUNT
-        	if(TMUtils.bigSub(this.getCurrentCustomerInvoice().getFinal_payable_amount(), this.getCurrentCustomerInvoice().getAmount_paid()) <= 0d){
+            if(totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable()) {
+            	addCol(transactionTable, "Remaining Credit").colspan(6).font(ITextFont.arial_bold_green_10).alignH("r").o();
+            	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_green_10).alignH("r").o();
+        	} else if(TMUtils.bigSub(this.getCurrentCustomerInvoice().getFinal_payable_amount(), amount_paid) <= 0d){
             	addCol(transactionTable, "Opening Balance").colspan(6).font(ITextFont.arial_bold_10).alignH("r").o();
             	addCol(transactionTable, "$ "+ TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid())))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         	} else {
@@ -448,15 +453,15 @@ public class InvoicePDFCreator extends ITextUtils {
         // INVOICE SUMMARY FIRST ROW
         addCol(invoiceSummaryTable, "Net charges").colspan(6).font(ITextFont.arial_normal_8).paddingTo("t", 10F).indent(10F).o();
         
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(beforeTaxAmount))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("t", 10F).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(beforeTaxAmount<=0 ? 0 : beforeTaxAmount))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("t", 10F).alignH("r").o();
 
         // INVOICE SUMMARY SECOND ROW
         addCol(invoiceSummaryTable, "GST at 15%").colspan(6).font(ITextFont.arial_normal_8).indent(10F).o();
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(taxAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(taxAmount<=0 ? 0 : taxAmount))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
 
         // INVOICE SUMMARY THIRD ROW
         addCol(invoiceSummaryTable, "Total charges (please see Invoice Details page)").colspan(6).font(ITextFont.arial_normal_8).indent(10F).o();
-        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(totalBalance))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+        addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(totalBalance<=0 ? 0 : totalBalance))).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
         
         // Empty ROW
         addEmptyCol(invoiceSummaryTable, 30F, colspan);
@@ -469,7 +474,7 @@ public class InvoicePDFCreator extends ITextUtils {
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
     	addCol(invoiceSummaryTable, "Current Invoice Total Due on").colspan(4).font(ITextFont.arial_normal_10).alignH("r").o();
     	addCol(invoiceSummaryTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(totalBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         
         return invoiceSummaryTable;
 	}
