@@ -51,12 +51,11 @@ public class StevenTest {
 //		System.out.println(secondDecode);
 		
 		
-		SimpleMapperCreator smc = new SimpleMapperCreator();
-		smc.setAuthor("StevenChen");
-		smc.setModel("Ticket");
-		smc.setTable("tm_ticket");
-		smc.initial();
-		
+//		SimpleMapperCreator smc = new SimpleMapperCreator();
+//		smc.setAuthor("StevenChen");
+//		smc.setModel("Ticket");
+//		smc.setTable("tm_ticket");
+//		smc.initial();
 		
 	}
 }

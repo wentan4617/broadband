@@ -81,7 +81,7 @@ hr {
 						<li>
                     		<span class="glyphicon glyphicon-bell" style="padding-right:10px;"></span>
                     		<a href="${ctx }/broadband-user/crm/ticket/view">
-                    			View Ticket&nbsp;&nbsp;<span class="badge" style="background:red;">0</span>
+                    			View Ticket&nbsp;&nbsp;<span class="badge" style="background:red;">${existingSum+newSum}</span>
                     		</a>
 						</li>
 					</ul>

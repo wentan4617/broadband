@@ -32,31 +32,45 @@ tbody td {text-align:center;}
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						Ticket View
-						<div class="btn-group btn-group">
-							<a href="javascript:void(0);" data-name="existing_customer_btn" data-bool="true" class="btn btn-default">
-								Existing Customer&nbsp;<span class="badge">${existingSum}</span>
-							</a>
-							<a href="javascript:void(0);" data-name="existing_customer_btn" data-bool="false" class="btn btn-default">
-								New Customer&nbsp;<span class="badge">${newSum}</span>
-							</a>
+						<div class="btn-group btn-group-sm">
+							<button data-name="existing_customer_btn" data-bool="true" class="btn btn-default" style="pointer-events:none;">
+								<strong>Total New Tickets</strong>&nbsp;<span class="badge">${existingSum+newSum}</span>
+							</button>
+							<button data-name="existing_customer_btn" data-bool="true" class="btn btn-default" style="pointer-events:none;">
+								<strong>Existed Customer</strong>&nbsp;<span class="badge">${existingSum}</span>
+							</button>
+							<button data-name="existing_customer_btn" data-bool="false" class="btn btn-default" style="pointer-events:none;">
+								<strong>New Customer</strong>&nbsp;<span class="badge">${newSum}</span>
+							</button>
 						</div>
 						<div class="pull-right">
 							<select id="filter_operations" class="selectpicker" multiple title="Filter Operation">
+							    <optgroup label="Filtering Ticket Type">
+							    	<option value="faulty" data-type="ticket-type">Faulty</option>
+							      	<option value="billing" data-type="ticket-type">Billing</option>
+							      	<option value="hardware-issue" data-type="ticket-type">Hardware Issue</option>
+							      	<option value="application" data-type="ticket-type">Application</option>
+							      	<option value="booking-appointment" data-type="ticket-type">Booking Appointment</option>
+							    </optgroup>
 							    <optgroup label="Filtering Publish Type">
 							    	<option value="public" data-type="publish-type">Public</option>
 							      	<option value="protected" data-type="publish-type">Protected</option>
 							    </optgroup>
 							    <optgroup label="Filtering Customer Type">
-							    	<option value="true" data-type="existing-customer">Existing Customer</option>
-							      	<option value="false" data-type="existing-customer">New Customer</option>
+							    	<option value="true" data-type="existing-customer-str">Existing Customer</option>
+							      	<option value="false" data-type="existing-customer-str">New Customer</option>
 							    </optgroup>
-							    <optgroup label="Filtering Ticket Type">
-							    	<option value="fualty" data-type="ticket-type">Faulty</option>
-							      	<option value="billing" data-type="ticket-type">Billing</option>
-							      	<option value="hardware-issue" data-type="ticket-type">Hardware Issue</option>
-							      	<option value="application" data-type="ticket-type">Application</option>
-							      	<option value="booking-appointment" data-type="ticket-type">Booking Appointment</option>
+							    <optgroup label="Filtering Ticket Status">
+							    	<option value="1" data-type="ticket-status">New Ticket</option>
+							    	<option value="0" data-type="ticket-status">Old Ticket</option>
+							    </optgroup>
+							    <optgroup label="Filtering Who's Ticket">
+							    	<option value="1" data-type="my-id">My Published Ticket</option>
+							    	<option value="0" data-type="my-id">Others Published Ticket</option>
+							    </optgroup>
+							    <optgroup label="Filtering Has Commented">
+							    	<option value="true" data-type="commented-str">Commented</option>
+							    	<option value="false" data-type="commented-str">No Comments</option>
 							    </optgroup>
 							</select>
 							<button class="btn btn-success btn-xs" data-name="publish_ticket" data-toggle="tooltip" data-placement="bottom" data-original-title="PUBLISH A NEW TICKET">
@@ -121,7 +135,7 @@ tbody td {text-align:center;}
 													</label>
 												</li>
 												<c:forEach var="u" items="${users}">
-													<c:if test="${u.user_role=='accountant'}">
+													<c:if test="${u.user_role=='accountant' && u.id!=userSession.id}">
 														<li>
 															<label>
 																<input type="checkbox" name="useridArray" value="${u.id}" data-type="checkbox_accountant" />&nbsp;${u.user_name}
@@ -142,7 +156,7 @@ tbody td {text-align:center;}
 													</label>
 												</li>
 												<c:forEach var="u" items="${users}">
-													<c:if test="${u.user_role=='provision-team'}">
+													<c:if test="${u.user_role=='provision-team' && u.id!=userSession.id}">
 														<li>
 															<label>
 																<input type="checkbox" name="useridArray" value="${u.id}" data-type="checkbox_provision" />&nbsp;${u.user_name}
@@ -163,7 +177,7 @@ tbody td {text-align:center;}
 													</label>
 												</li>
 												<c:forEach var="u" items="${users}">
-													<c:if test="${u.user_role=='administrator'}">
+													<c:if test="${u.user_role=='administrator' && u.id!=userSession.id}">
 														<li>
 															<label>
 																<input type="checkbox" name="useridArray" value="${u.id}" data-type="checkbox_administrator" />&nbsp;${u.user_name}
@@ -184,7 +198,7 @@ tbody td {text-align:center;}
 													</label>
 												</li>
 												<c:forEach var="u" items="${users}">
-													<c:if test="${u.user_role=='system-developer'}">
+													<c:if test="${u.user_role=='system-developer' && u.id!=userSession.id}">
 														<li>
 															<label>
 																<input type="checkbox" name="useridArray" value="${u.id}" data-type="checkbox_developer" />&nbsp;${u.user_name}
@@ -288,7 +302,7 @@ tbody td {text-align:center;}
 										</div>
 										<div class="form-group col-md-6">
 											<select id="ticket_type" class="control-label" style="padding:4px 0; width:300px;">
-												<option value="fualty">Fualty</option>
+												<option value="faulty">Faulty</option>
 												<option value="billing">Billing</option>
 												<option value="hardware-issue">Hardware Issue</option>
 												<option value="application">Application</option>
@@ -340,10 +354,19 @@ tbody td {text-align:center;}
 		$.get('${ctx}/broadband-user/crm/ticket/view/' + pageNo, function(page){ //console.log(page);
 		
 			page.ctx = '${ctx}';
+			page.users = [];
+			
+			<c:forEach var="u" items="${users}">
+				var u = new Object();
+				u.id = '${u.id}';
+				u.user_name = '${u.user_name}';
+				page.users.push(u);
+			</c:forEach>
+			
 	   		var $table = $('#ticket-table');
 			$table.html(tmpl('ticket_table_tmpl', page));
 			$table.find('tfoot a').click(function(){
-				doPage($(this).attr('data-pageNo'), '${existingActive ? "true" : "false"}');
+				doPage($(this).attr('data-pageNo'));
 			});
 			
 			$('#checkbox_ts_top').click(function(){
@@ -352,7 +375,16 @@ tbody td {text-align:center;}
 				else $('input[name="checkbox_ts"]').prop("checked", false);
 			});
 			
-			$('a[data-toggle="tooltip"]').tooltip();
+			$('span[data-toggle="tooltip"]').tooltip();
+			
+			$('a[data-name="viewTicketBtn"]').click(function(){
+				var id = $(this).attr('data-id');
+				var tr = $('#afterClickViewTicketBtn_'+id);
+				tr.removeClass('danger warning');
+				tr.css({'fontSize':'12px', 'fontWeight':'normal'});
+				
+				window.location.href='${ctx}/broadband-user/crm/ticket/edit/'+id;
+			});
 			
 			
 	   	});
@@ -363,8 +395,11 @@ tbody td {text-align:center;}
 		var $this = $(this);
 		var ticket = {				
 			publish_type: $this.find('option[data-type="publish-type"]:selected').val() || null
-			, existing_customer: $this.find('option[data-type="existing-customer"]:selected').val() || true
+			, existing_customer_str: $this.find('option[data-type="existing-customer-str"]:selected').val() || null
 			, ticket_type: $this.find('option[data-type="ticket-type"]:selected').val() || null
+			, not_yet_viewer: $this.find('option[data-type="ticket-status"]:selected').val() || null
+			, user_id: $this.find('option[data-type="my-id"]:selected').val() || null
+			, commented_str: $this.find('option[data-type="commented-str"]:selected').val() || null
 		};
 		console.log(ticket);
 		
@@ -375,8 +410,11 @@ tbody td {text-align:center;}
 	
 	$('#filter_operations').find('option').each(function(){
 		if (this.value == '${ticketFilter.publish_type}' 
-			|| this.value == '${ticketFilter.existing_customer}'
-			|| this.value == '${ticketFilter.ticket_type}' ) {
+			|| this.value == '${ticketFilter.existing_customer_str}'
+			|| this.value == '${ticketFilter.ticket_type}'
+			|| this.value == '${ticketFilter.not_yet_viewer}'
+			|| this.value == '${ticketFilter.user_id}'
+			|| this.value == '${ticketFilter.commented_str}' ) {
 			$(this).attr("selected", "selected");
 			$('.selectpicker').selectpicker('refresh');
 		}

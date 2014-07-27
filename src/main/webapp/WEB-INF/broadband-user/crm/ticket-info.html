@@ -1,0 +1,219 @@
+<!-- Customer Basic Details -->
+
+<form class="form-horizontal">
+	<h4 class="text-success">Ticket Details
+	</h4>
+	<hr/>
+	<div class="form-group">
+		<label for="cellphone" class="control-label col-md-2">Publish Type</label>
+		<div class="col-md-2">
+			<p class="form-control-static">
+				<span class="badge">
+					<.= publish_type=='public' ? 'Public' : 'Protected' .>
+				</span>
+			</p>
+		</div>
+		<label for="cellphone" class="control-label col-md-2">Ticket Type</label>
+		<div class="col-md-3">
+			<p class="form-control-static">
+				<span class="badge" style="background:<.=ticket_type=='faulty' ? 'red' :
+														 ticket_type=='billing' ? '#d3bb30' :
+														 ticket_type=='hardware-issue' ? '#a5a5a5' :
+														 ticket_type=='application' ? '#5bc0de' :
+														 ticket_type=='booking-appointment' ? '#428bca' : '' .>;">
+					<.= ticket_type .>
+				</span>
+			</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="cellphone" class="control-label col-md-2">Published By</label>
+		<div class="col-md-2">
+			<p class="form-control-static">
+<.
+				for(var i=0; i<users.length; i++){
+					if(users[i].id==user_id){
+.>
+				<.= users[i].user_name .>
+<.
+					}
+				}
+.>
+			</p>
+		</div>
+		<label for="cellphone" class="control-label col-md-2">Create Date</label>
+		<div class="col-md-2">
+			<p class="form-control-static"><.= create_date_str .></p>
+		</div>
+	</div>
+	<div class="form-group">
+<.
+		if(protected_viewer){
+.>
+		<label class="control-label col-md-2">Protected User</label>
+		<div class="col-md-10">
+			<p class="form-control-static">
+<.				var protectedViewers = protected_viewer.split(','); .>
+<.					for(var i=0; i<protectedViewers.length; i++){ .>
+<.						for(var u=0; u<users.length; u++){ .>
+<.							if(users[u].id==protectedViewers[i]){ .>
+
+				<span class="badge" style="background:#5cb85c;"><.= users[u].user_name .></span>
+<.
+							}
+						}
+					}
+.>
+			</p>
+		</div>
+		<. } .>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">Not Yet Viewed User</label>
+		<div class="col-md-10">
+			<p class="form-control-static">
+<.					var notYetViewViewers = not_yet_viewer.split(','); .>
+<.					for(var i=0; i<notYetViewViewers.length; i++){ .>
+<.						for(var u=0; u<users.length; u++){ .>
+<.							if(users[u].id==notYetViewViewers[i]){ .>
+
+				<span class="badge" style="background:#5cb85c;"><.= users[u].user_name .></span>
+<.
+							}
+						}
+					}
+.>
+			</p>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-md-2">Viewed User</label>
+		<div class="col-md-10">
+			<p class="form-control-static">
+<.				var viewedViewers = viewed_viewer.split(','); .>
+					
+<.					for(var i=0; i<viewedViewers.length; i++){ .>
+<.						for(var u=0; u<users.length; u++){ .>
+<.							if(users[u].id==viewedViewers[i]){ .>
+
+				<span class="badge" style="background:#c8c8c8;"><.= users[u].user_name .></span>
+<.
+							}
+						}
+					}
+.>
+			</p>
+		</div>
+	</div>
+
+	<!-- customer detail -->
+	<hr/>
+	<h4 class="text-success">Customer Detail</h4>
+	<hr/>
+			
+	<div class="form-group">
+		<label for="first_name" class="control-label col-md-2">Customer Id</label>
+		<div class="col-md-2">
+			<p class="form-control-static"><.= customer_id .></p>
+		</div>
+	</div>	
+	<div class="form-group">
+		<label for="first_name" class="control-label col-md-2">First Name</label>
+		<div class="col-md-2">
+			<input type="text" id="first_name" class="form-control input-sm" value="<.= first_name .>" data-error-field />
+		</div>
+		<label for="last_name" class="control-label col-md-2">Last Name</label>
+		<div class="col-md-3">
+			<input type="text" id="last_name" class="form-control input-sm" value="<.= last_name .>" data-error-field/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="cellphone" class="control-label col-md-2">Mobile</label>
+		<div class="col-md-2">
+			<input type="text" id="cellphone" class="form-control input-sm" value="<.= cellphone .>" data-error-field />
+		</div>
+		<label for="email" class="control-label col-md-2">Email</label>
+		<div class="col-md-4">
+			<input type="text" id="email" class="form-control input-sm" value="<.= email .>" data-error-field/>
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="description" class="control-label col-md-2">Description</label>
+		<div class="col-md-8">
+			<textarea id="description" class="form-control" rows="8" style="resize:none;" data-error-field><.= description .></textarea>
+		</div>
+	</div>
+	
+	
+	<!-- button -->
+	<hr/>
+	<div class="form-group">
+		<div class="col-md-4"></div>
+		<div class="col-md-3">
+			<a href="javascript:void(0);" class="btn btn-success btn-xs btn-block" id="updateTicketBtn">Update Ticket</a>
+		</div>
+		<div class="col-md-4">
+			<. if(user_role == 'system-developer'){ .>
+				<a class="btn btn-danger btn-xs btn-block" id="deleteTicketBtn">Delete ticket and related comments</a>
+			<. } .>
+		</div>
+	</div>
+</form>
+
+<!-- Edit Ticket Modal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="editTicketModal" tabindex="-1" role="dialog" aria-labelledby="editTicketModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="editTicketModalLabel">
+						<strong class="text-danger">Edit Ticket</strong>
+					</h3>
+				</div>
+				<div class="modal-body">
+					<p>This operation is irreversible, will cover old datum!</p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" id="editTicketBtn" class="btn btn-warning btn-xs" data-dismiss="modal">Edit</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+<!-- Delete Ticket Modal -->
+<form action="<.= ctx .>/broadband-user/crm/ticket/remove" class="form-horizontal" method="post">
+	<input type="hidden" name="id" value="<.= id .>" />
+	<div class="modal fade" id="deleteTicketModal" tabindex="-1" role="dialog" aria-labelledby="deleteTicketModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h3 class="modal-title" id="deleteTicketModalLabel">
+						<strong class="text-danger">Delete Ticket ( Permanent!!! )</strong>
+					</h3>
+				</div>
+				<div class="modal-body">
+					<p class="text-right">
+						<strong class="text-danger">
+							This operation is irreversible, be seriously careful!<br /> 
+							Info related with this ticket will be disappeared!<br />
+						</strong> 
+					</p>
+					<p class="text-right">
+						<strong>
+							ticket informations<br /> 
+							ticket comments<br />
+						</strong>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button class="btn btn-warning btn-xs">Delete</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+

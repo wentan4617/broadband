@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TicketCommentMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="ticketCommentColumns">
+		tc.`id`				as tc_id,
+		tc.`ticket_id`				as tc_ticket_id,
+		tc.`user_id`				as tc_user_id,
+		tc.`content`				as tc_content,
+		tc.`create_date`				as tc_create_date
+	</sql>
+
+	<resultMap type="TicketComment" id="ticketCommentResultMap">
+		<id property="id" column="tc_id" />
+		<result property="ticket_id" column="tc_ticket_id" />
+		<result property="user_id" column="tc_user_id" />
+		<result property="content" column="tc_content" />
+		<result property="create_date" column="tc_create_date" />
+	</resultMap>
+
+	<sql id="ticketCommentWhere">
+		<where>
+			<if test="params.id != null">tc.id = #{params.id}</if>
+			<if test="params.ticket_id != null">and tc.ticket_id = #{params.ticket_id}</if>
+			<if test="params.user_id != null">and tc.user_id = #{params.user_id}</if>
+			<if test="params.content != null">and tc.content = #{params.content}</if>
+			<if test="params.create_date != null">and tc.create_date = #{params.create_date}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTicketComment" parameterType="TicketComment" resultType="TicketComment">
+		select * from tm_ticket_comment as tc
+		<include refid="ticketCommentWhere"/>
+	</select>
+
+	<!-- select ticketComment page -->
+	<select id="selectTicketCommentsByPage" parameterType="Page" resultMap="ticketCommentResultMap">
+		select 
+			<include refid="ticketCommentColumns"/>
+			from tm_ticket_comment as tc
+			<include refid="ticketCommentWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select ticketComment amount -->
+	<select id="selectTicketCommentsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_ticket_comment as tc
+		<include refid="ticketCommentWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTicketComment" parameterType="TicketComment" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_ticket_comment`(
+			`id`, `ticket_id`, `user_id`, `content`, `create_date`
+		) VALUES (
+			#{id}, #{ticket_id}, #{user_id}, #{content}, #{create_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update ticketComment -->
+	<update id="updateTicketComment" parameterType="TicketComment">
+		update tm_ticket_comment
+		<set>
+			<if test="ticket_id != null">ticket_id = #{ticket_id},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="content != null">content = #{content},</if>
+			<if test="create_date != null">create_date = #{create_date}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTicketCommentById" parameterType="int">
+		DELETE FROM tm_ticket_comment WHERE id = #{0}
+	</delete>
+	
+	<delete id="deleteTicketCommentByTicketId" parameterType="int">
+		DELETE FROM tm_ticket_comment WHERE ticket_id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

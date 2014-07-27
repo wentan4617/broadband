@@ -24,10 +24,9 @@ import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.StatisticCustomer;
+import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
-import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.ProvisionService;
 import com.tm.broadband.service.SystemService;
@@ -48,14 +47,15 @@ public class SystemController {
 
 	private SystemService systemService;
 	private ProvisionService provisionService;
+	private CRMService crmService;
 
 	@Autowired
 	public SystemController(SystemService systemService,
-			BillingService billingService, 
-			CRMService crmService,
-			ProvisionService provisionService) {
+			ProvisionService provisionService,
+			CRMService crmService) {
 		this.systemService = systemService;
 		this.provisionService = provisionService;
+		this.crmService = crmService;
 	}
 
 	/*
@@ -75,13 +75,28 @@ public class SystemController {
 	}
 
 	@RequestMapping(value = "/broadband-user/index")
-	public String userIndex(Model model) {
+	public String userIndex(Model model,
+			HttpServletRequest req) {
 
 		// BEGIN QUERY SUM BY CONTACT US STATUS
 		Page<ContactUs> pageContactUsStatusSum = new Page<ContactUs>();
 		pageContactUsStatusSum.getParams().put("status", "new");
 		model.addAttribute("newContactUsSum", this.provisionService.queryContactUssSumByPage(pageContactUsStatusSum));
 		// END QUERY SUM BY CONTACT US STATUS
+		
+
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		Page<Ticket> pageSum = new Page<Ticket>();
+		pageSum.getParams().put("where", "query_by_public_protected");
+		pageSum.getParams().put("public_protected", "public_protected");
+		pageSum.getParams().put("protected_viewer", user.getId());
+		pageSum.getParams().put("not_yet_viewer", user.getId());
+		pageSum.getParams().put("existing_customer", true);
+		req.getSession().setAttribute("existingSum", this.crmService.queryTicketsBySum(pageSum));
+		pageSum.getParams().put("existing_customer", false);
+		req.getSession().setAttribute("newSum", this.crmService.queryTicketsBySum(pageSum));
+		
 		
 		return "broadband-user/index";
 	}
