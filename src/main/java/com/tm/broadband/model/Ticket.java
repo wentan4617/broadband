@@ -2,6 +2,8 @@ package com.tm.broadband.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.tm.broadband.util.TMUtils;
 
@@ -24,6 +26,7 @@ public class Ticket implements Serializable {
 	private String viewed_viewer;
 	private Date create_date;
 	private boolean existing_customer;
+	private boolean commented;
 
 	/*
 	 * RELATED PROPERTIES
@@ -31,50 +34,24 @@ public class Ticket implements Serializable {
 	
 	private boolean mentioned;
 	
+	private boolean myTicket;
+	
 	private Integer[] useridArray;
 	
 	private String keyword;
 	
 	private String create_date_str;
 	
+	private String existing_customer_str;
+
+	private String commented_str;
+	
+	private Map<String, Object> params = new HashMap<String, Object>();
+	
 	/*
 	 * END RELATED PROPERTIES
 	 */
 
-
-
-	public String getCreate_date_str() {
-		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDD(this.getCreate_date()));
-		return create_date_str;
-	}
-
-	public void setCreate_date_str(String create_date_str) {
-		this.create_date_str = create_date_str;
-	}
-
-	public boolean isMentioned() {
-		return mentioned;
-	}
-
-	public void setMentioned(boolean mentioned) {
-		this.mentioned = mentioned;
-	}
-
-	public Integer[] getUseridArray() {
-		return useridArray;
-	}
-
-	public void setUseridArray(Integer[] useridArray) {
-		this.useridArray = useridArray;
-	}
-
-	public String getKeyword() {
-		return keyword;
-	}
-
-	public void setKeyword(String keyword) {
-		this.keyword = keyword;
-	}
 
 	public Integer getId() {
 		return id;
@@ -140,6 +117,14 @@ public class Ticket implements Serializable {
 		this.description = description;
 	}
 
+	public String getTicket_type() {
+		return ticket_type;
+	}
+
+	public void setTicket_type(String ticket_type) {
+		this.ticket_type = ticket_type;
+	}
+
 	public String getPublish_type() {
 		return publish_type;
 	}
@@ -188,12 +173,78 @@ public class Ticket implements Serializable {
 		this.existing_customer = existing_customer;
 	}
 
-	public String getTicket_type() {
-		return ticket_type;
+	public boolean isCommented() {
+		return commented;
 	}
 
-	public void setTicket_type(String ticket_type) {
-		this.ticket_type = ticket_type;
+	public void setCommented(boolean commented) {
+		this.commented = commented;
 	}
+
+	public boolean isMentioned() {
+		return mentioned;
+	}
+
+	public void setMentioned(boolean mentioned) {
+		this.mentioned = mentioned;
+	}
+
+	public boolean isMyTicket() {
+		return myTicket;
+	}
+
+	public void setMyTicket(boolean myTicket) {
+		this.myTicket = myTicket;
+	}
+
+	public Integer[] getUseridArray() {
+		return useridArray;
+	}
+
+	public void setUseridArray(Integer[] useridArray) {
+		this.useridArray = useridArray;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
+	}
+
+	public String getCreate_date_str() {
+		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(this.getCreate_date()));
+		return create_date_str;
+	}
+
+	public void setCreate_date_str(String create_date_str) {
+		this.create_date_str = create_date_str;
+	}
+
+	public String getExisting_customer_str() {
+		return existing_customer_str;
+	}
+
+	public void setExisting_customer_str(String existing_customer_str) {
+		this.existing_customer_str = existing_customer_str;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public String getCommented_str() {
+		return commented_str;
+	}
+
+	public void setCommented_str(String commented_str) {
+		this.commented_str = commented_str;
+	}
+
 
 }

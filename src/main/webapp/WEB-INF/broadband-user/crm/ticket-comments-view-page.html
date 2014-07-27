@@ -1,0 +1,126 @@
+<div class="alert">
+	<!-- Button trigger modal -->
+	<a class="btn btn-success btn-xs xs-btn-width-long pull-right" data-name="new_comment_btn">
+	  <span class="glyphicon glyphicon-plus"></span> New Comment
+	</a>
+</div>
+<hr/>
+<. if (results != null && results.length > 0) { .>
+	<table class="table">
+	<thead>
+		<tr>
+			<th colspan="11">
+				<!-- In the external page, assign ticket_id as obj's attribute -->
+				<h3 class="text-success" style="margin: 2px;"><strong>Ticket Id:&nbsp;<small><.= ticket_id .></small></strong></h3>
+			</th>
+		</tr>
+		<tr>
+			<th>Create Date</th>
+			<th>Content</th>
+			<th style="text-align:center;">Written By</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<.
+		for (var i = 0, len = results.length; i < len; i++){
+			var tc = results[i];
+	.>
+			<tr>
+			<td><.= tc.create_date_str .></td>
+			<td style="overflow-x:hidden;"><p style="width:500px;"><.= tc.content .></p></td>
+			<td style="text-align:center;">
+				<. for(var u=0; u<users.length; u++){
+				      if(users[u].id == tc.user_id){
+				.>
+						<.= users[u].user_name .>
+				<.
+				      }
+				.>
+				<. } .>
+			</td>
+			<td><a href="javascript:void(0);" data-name="view_comment_btn" data-content="<.= tc.content .>"><span class="glyphicon glyphicon-search"></span></a></td>
+			</tr>
+	<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = totalPage; i <= len; i++) {
+	.>
+						<li class="<.= pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<!-- /.modal -->
+<. } else { .>
+	<div class="alert alert-warning">No records have been found.</div>
+<. } .>
+
+<!-- Ticket comment create Modal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="ticketCommentModal" tabindex="-1" role="dialog" aria-labelledby="ticketCommentModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="ticketCommentModalLabel">
+						<strong>Create new ticket comment</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-12" style="text-align:left;">Comment Content: </label><br/>
+						<p class="form-control-static col-md-12">
+							<textarea class="form-control" data-name="comment_content" rows="5" placeholder="Content..." ></textarea>
+						</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-primary" data-name="ticketCommentModalBtn" data-dismiss="modal">Confirm to create new comment</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+</form>
+
+<!-- Ticket comment view Modal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="ticketCommentViewModal" tabindex="-1" role="dialog" aria-labelledby="ticketCommentViewModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="ticketCommentViewModalLabel">
+						<strong>Ticket comment</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-12" style="text-align:left;">Comment Content: </label><br/>
+						<p class="form-control-static col-md-12">
+							<textarea class="form-control" id="comment_content" rows="8" disabled ></textarea>
+						</p>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-primary" data-dismiss="modal">Close</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+</form>

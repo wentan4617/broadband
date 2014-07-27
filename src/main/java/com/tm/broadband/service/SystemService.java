@@ -97,6 +97,11 @@ public class SystemService {
 	}
 
 	@Transactional
+	public List<User> queryUser() {
+		return this.userMapper.selectUser(new User());
+	}
+
+	@Transactional
 	public List<User> queryUser(User user) {
 		return this.userMapper.selectUser(user);
 	}

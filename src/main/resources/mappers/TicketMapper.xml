@@ -31,7 +31,8 @@
 		t.`not_yet_viewer`				as t_not_yet_viewer,
 		t.`viewed_viewer`				as t_viewed_viewer,
 		t.`create_date`				as t_create_date,
-		t.`existing_customer`				as t_existing_customer
+		t.`existing_customer`				as t_existing_customer,
+		t.`commented`				as t_commented
 	</sql>
 
 	<resultMap type="Ticket" id="ticketResultMap">
@@ -50,6 +51,7 @@
 		<result property="viewed_viewer" column="t_viewed_viewer" />
 		<result property="create_date" column="t_create_date" />
 		<result property="existing_customer" column="t_existing_customer" />
+		<result property="commented" column="t_commented" />
 	</resultMap>
 
 	<sql id="ticketWhere">
@@ -57,10 +59,12 @@
 			<choose>
 				<when test="params.where!=null and params.where=='query_by_public_protected'">
 					<if test="params.public_protected != null">
-						t.publish_type = 'public'
-						or (
-							t.publish_type = 'protected'
-							and t.protected_viewer LIKE CONCAT('%', '${params.protected_viewer}', '%')
+						(
+							t.publish_type = 'public'
+							or (
+								t.publish_type = 'protected'
+								and t.protected_viewer LIKE CONCAT('%', '${params.protected_viewer}', '%')
+							)
 						)
 					</if>
 					<if test="params.public != null">and t.publish_type = #{params.public}</if>
@@ -68,8 +72,14 @@
 						and t.publish_type = #{params.protected}
 						and t.protected_viewer LIKE CONCAT('%', '${params.protected_viewer}', '%')
 					</if>
-					<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
 					<if test="params.ticket_type != null">and t.ticket_type = #{params.ticket_type}</if>
+					<if test="params.not_yet_viewer != null">and t.not_yet_viewer LIKE CONCAT('%', '${params.not_yet_viewer}', '%')</if>
+					<if test="params.viewed_viewer != null">and t.viewed_viewer LIKE CONCAT('%', '${params.viewed_viewer}', '%')</if>
+					<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
+					<if test="params.commented != null">and t.commented = #{params.commented}</if>
+					<if test="params.or_user_id != null">or t.user_id = #{params.or_user_id}</if>
+					<if test="params.user_id != null">and t.user_id = #{params.user_id}</if>
+					<if test="params.not_user_id != null">and t.user_id != #{params.not_user_id}</if>
 				</when>
 				<when test="params.where!=null and params.where=='query_by_public'">
 					t.publish_type = 'public'
@@ -96,6 +106,7 @@
 					<if test="params.viewed_viewer != null">and t.viewed_viewer = #{params.viewed_viewer}</if>
 					<if test="params.create_date != null">and t.create_date = #{params.create_date}</if>
 					<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
+					<if test="params.commented != null">and t.commented = #{params.commented}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -138,11 +149,13 @@
 		INSERT INTO `tm_ticket`(
 			`id`, `customer_id`, `user_id`, `cellphone`, `email`, 
 			`first_name`, `last_name`, `description`, `ticket_type`, `publish_type`, 
-			`protected_viewer`, `not_yet_viewer`, `viewed_viewer`, `create_date`, `existing_customer`
+			`protected_viewer`, `not_yet_viewer`, `viewed_viewer`, `create_date`, `existing_customer`, 
+			`commented`
 		) VALUES (
 			#{id}, #{customer_id}, #{user_id}, #{cellphone}, #{email}, 
 			#{first_name}, #{last_name}, #{description}, #{ticket_type}, #{publish_type}, 
-			#{protected_viewer}, #{not_yet_viewer}, #{viewed_viewer}, #{create_date}, #{existing_customer}
+			#{protected_viewer}, #{not_yet_viewer}, #{viewed_viewer}, #{create_date}, #{existing_customer}, 
+			#{commented}
 		)
 	</insert>
 
@@ -169,7 +182,8 @@
 			<if test="not_yet_viewer != null">not_yet_viewer = #{not_yet_viewer},</if>
 			<if test="viewed_viewer != null">viewed_viewer = #{viewed_viewer},</if>
 			<if test="create_date != null">create_date = #{create_date},</if>
-			<if test="existing_customer != null">existing_customer = #{existing_customer}</if>
+			<if test="existing_customer != null">existing_customer = #{existing_customer},</if>
+			<if test="commented != null">commented = #{commented}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>

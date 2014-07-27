@@ -1069,9 +1069,78 @@ public class CRMController {
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/ticket/view")
-	public String toPlanView(Model model) {
+	public String toTicketView(Model model,
+			HttpServletRequest req) {
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		Page<Ticket> pageSum = new Page<Ticket>();
+		pageSum.getParams().put("where", "query_by_public_protected");
+		pageSum.getParams().put("public_protected", "public_protected");
+		pageSum.getParams().put("protected_viewer", user.getId());
+		pageSum.getParams().put("not_yet_viewer", user.getId());
+		pageSum.getParams().put("existing_customer", true);
+		req.getSession().setAttribute("existingSum", this.crmService.queryTicketsBySum(pageSum));
+		pageSum.getParams().put("existing_customer", false);
+		req.getSession().setAttribute("newSum", this.crmService.queryTicketsBySum(pageSum));
 		model.addAttribute("users", this.systemService.queryUser(new User()));
 		return "broadband-user/crm/ticket-view";
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/ticket/edit/{id}")
+	public String toTicketEdit(Model model
+			, @PathVariable(value = "id") int id,
+			RedirectAttributes attr,
+			HttpServletRequest req) {
+		
+		model.addAttribute("panelheading", "Ticket Edit");
+		Ticket tQuery = new Ticket();
+		tQuery.getParams().put("id", id);		
+		Ticket ticket = this.crmService.queryTicket(tQuery).get(0);
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		// If contains current user's id then rub off
+		if(ticket.getNot_yet_viewer().contains(user.getId().toString())){
+			String[] userIds = ticket.getNot_yet_viewer().split(",");
+			StringBuffer userIdsBuff = new StringBuffer();
+			for (int i = 0; i < userIds.length; i++) {
+				if(!userIds[i].equals(user.getId().toString())){
+					userIdsBuff.append(userIds[i]);
+				}
+				if(!userIds[i].equals(user.getId().toString()) && i < userIds.length-1){
+					userIdsBuff.append(",");
+				}
+			}
+			if(ticket.getViewed_viewer()!=null || "".equals(ticket.getViewed_viewer())){
+				ticket.setViewed_viewer(ticket.getViewed_viewer()+","+user.getId().toString());
+			} else {
+				ticket.setViewed_viewer(user.getId().toString());
+			}
+			ticket.setNot_yet_viewer(userIdsBuff.toString());
+			ticket.getParams().put("id", id);
+			this.crmService.editTicket(ticket);
+		}
+		
+		
+		List<User> users = this.systemService.queryUser();
+		model.addAttribute("ticket", ticket);
+		model.addAttribute("users", users);
+		
+		return "broadband-user/crm/ticket";
+	}
+
+	@RequestMapping(value="/broadband-user/crm/ticket/remove", method=RequestMethod.POST)
+	public String doTicketRemove(Model model,
+			@RequestParam("id") Integer id,
+			RedirectAttributes attr){
+		
+		this.crmService.removeTicketById(id);
+		this.crmService.removeTicketCommentByTicketId(id);
+		
+		attr.addFlashAttribute("success", "Successfully removed specific ticket!");
+		
+		return "redirect:/broadband-user/crm/ticket/view";
 	}
 
 }

@@ -35,6 +35,7 @@ import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.TicketCommentMapper;
 import com.tm.broadband.mapper.TicketMapper;
 import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
@@ -57,6 +58,7 @@ import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.Ticket;
+import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
@@ -98,6 +100,7 @@ public class CRMService {
 	private VoucherMapper voucherMapper;
 	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
 	private TicketMapper ticketMapper;
+	private TicketCommentMapper ticketCommentMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -128,7 +131,8 @@ public class CRMService {
 			CustomerServiceRecordMapper customerServiceRecordMapper,
 			VoucherMapper voucherMapper,
 			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
-			TicketMapper ticketMapper){
+			TicketMapper ticketMapper,
+			TicketCommentMapper ticketCommentMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -152,6 +156,7 @@ public class CRMService {
 		this.voucherMapper = voucherMapper;
 		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
 		this.ticketMapper = ticketMapper;
+		this.ticketCommentMapper = ticketCommentMapper;
 	}
 	
 	
@@ -2104,6 +2109,9 @@ public class CRMService {
 		}
 	}
 	
+	/**
+	 * BEGIN Ticket
+	 */
 	@Transactional
 	public List<Ticket> queryTicket(Ticket t){
 		return this.ticketMapper.selectTicket(t);
@@ -2135,7 +2143,54 @@ public class CRMService {
 	public int queryTicketsBySum(Page<Ticket> page){
 		return this.ticketMapper.selectTicketsSum(page);
 	}
+
+	/**
+	 * END Ticket
+	 */
 	
+	/**
+	 * BEGIN TicketComment
+	 */
+	@Transactional
+	public List<TicketComment> queryTicketComment(TicketComment tc){
+		return this.ticketCommentMapper.selectTicketComment(tc);
+	}
+	
+	@Transactional
+	public void createTicketComment(TicketComment tc){
+		this.ticketCommentMapper.insertTicketComment(tc);
+	}
+	
+	@Transactional
+	public void editTicketComment(TicketComment tc){
+		this.ticketCommentMapper.updateTicketComment(tc);
+	}
+	
+	@Transactional
+	public Page<TicketComment> queryTicketCommentsByPage(Page<TicketComment> page){
+		page.setTotalRecord(this.ticketCommentMapper.selectTicketCommentsSum(page));
+		page.setResults(this.ticketCommentMapper.selectTicketCommentsByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public void removeTicketCommentById(int id){
+		this.ticketCommentMapper.deleteTicketCommentById(id);
+	}
+	
+	@Transactional
+	public void removeTicketCommentByTicketId(int id){
+		this.ticketCommentMapper.deleteTicketCommentByTicketId(id);
+	}
+	
+	@Transactional
+	public int queryTicketCommentsBySum(Page<TicketComment> page){
+		return this.ticketCommentMapper.selectTicketCommentsSum(page);
+	}
+
+	/**
+	 * END TicketComment
+	 */
 	
 	// Check Pending Warning Order
 	@Transactional 

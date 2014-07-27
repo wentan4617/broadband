@@ -3,44 +3,73 @@
 	<thead >
 		<tr>
 			<th><input type="checkbox" id="checkbox_ts_top" /></th>
+			<th>Publish Type</th>
 			<th>Customer Id</th>
-			<th>User Id</th>
+			<th>Customer Name</th>
 			<th>Cellphone</th>
-			<th>Email</th>
-			<th>Name</th>
 			<th>Create Date</th>
+			<th>Publisher</th>
+			<th>Ticket Status</th>
 			<th>Operations</th>
 		</tr>
 	</thead>
 	<tbody>
 	<. for (var i=0; i < results.length; i++) { 
 		var t = results[i];
+			if(t.mentioned){
 	.>
-			<tr class="<.= t.mentioned==true ? 'danger': '' .>" >
+			<tr id="afterClickViewTicketBtn_<.= t.id .>" class="<.= t.existing_customer ? 'danger' : 'warning' .>" style="font-size:1.1em; font-weight:bold;" >
+	<.
+			} else {
+	.>
+			<tr>
+	<.
+			}
+	.>
 				<td>
 					<input type="checkbox" name="checkbox_ts" value="<.= t.id .>"/>
+				</td>
+				<td style="font-size:14px;">
+					<span data-toggle="tooltip" data-placement="left" data-original-title="<.= t.publish_type .>"
+						  class="glyphicon glyphicon-<.= t.publish_type=='public' ? 'globe' : 'user' .>"></span>&nbsp;
+					<span data-toggle="tooltip" data-placement="left" data-original-title="<.= t.ticket_type .>"
+						  class="glyphicon glyphicon-<.= t.ticket_type=='faulty' ? 'warning-sign' :
+														 t.ticket_type=='billing' ? 'usd' :
+														 t.ticket_type=='hardware-issue' ? 'hdd' :
+														 t.ticket_type=='application' ? 'tasks' :
+														 t.ticket_type=='booking-appointment' ? 'phone-alt' : ''.>"></span>
 				</td>
 				<td>
 					<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/edit/<.= t.customer_id .>"><.= t.customer_id .></a>
 				</td>
 				<td>
-					<.= t.user_id .>
+					<.= t.first_name .>&nbsp;<.= t.last_name .>
 				</td>
 				<td>
 					<.= t.cellphone .>
 				</td>
 				<td>
-					<.= t.email .>
-				</td>
-				<td>
-					<.= t.first_name .>&nbsp;<.= t.last_name .>
-				</td>
-				<td>
 					<.= t.create_date_str .>
 				</td>
 				<td>
-					<a href="javascript:void(0);" id="<.= t.id .>" data-name="view-ticket" style="font-size:20px;">
-						<span class="glyphicon glyphicon-search"></span>
+					<. for (var u=0; u < users.length; u++) {
+							if(t.user_id==users[u].id){
+					.>
+							<.= users[u].user_name .>
+					<.
+							}
+						} 
+					.>
+				</td>
+				<td style="font-size:14px;">
+					<span data-toggle="tooltip" data-placement="left" data-original-title="<.= t.viewed_viewer ? 'Someone viewed' : 'No one views' .>"
+						  class="glyphicon glyphicon-<.= t.viewed_viewer ? 'eye-open' : 'eye-close' .>"></span>&nbsp;
+					<span data-toggle="tooltip" data-placement="left" data-original-title="<.= t.commented ? 'Someone left comments' : 'No one leaves comments' .>"
+						  class="glyphicon glyphicon-<.= t.commented ? 'comment' : 'unchecked' .>"></span>
+				</td>
+				<td>
+					<a href="javascript:void(0);" data-name="viewTicketBtn" data-id="<.= t.id .>" style="font-size:20px;">
+						<span class="glyphicon glyphicon-search" data-toggle="tooltip" data-placement="left" data-original-title="View more details, adding comments."></span>
 					</a>
 				</td>
 			</tr>
@@ -61,7 +90,7 @@
 	</tfoot>
 </table>
 
-<!-- View Ticket Modal -->
+<!-- Delete Ticket Modal -->
 <form class="form-horizontal">
 	<div class="modal fade" id="viewTicketModal" tabindex="-1" role="dialog" aria-labelledby="viewTicketModalLabel" aria-hidden="true">
 		<div class="modal-dialog" style="width:1200px;">

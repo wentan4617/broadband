@@ -42,6 +42,7 @@ import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.Ticket;
+import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.ApplicationPDFCreator;
@@ -964,8 +965,7 @@ public class CRMRestController {
 	public Map<String, Object> toCustomerEdit(Model model,
 			@RequestParam("id") int id) {
 
-		Customer customer = this.crmService
-				.queryCustomerByIdWithCustomerOrder(id);
+		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
 		User user = new User();
 		List<User> users = this.systemService.queryUser(user);
 		user.getParams().put("user_role", "sales");
@@ -1548,26 +1548,64 @@ public class CRMRestController {
 		
 		Page<Ticket> page = new Page<Ticket>();
 		page.setPageNo(pageNo);
+		page.setPageSize(30);
 		page.getParams().put("orderby", "order by create_date desc");
 		page.getParams().put("where", "query_by_public_protected");
 		page.getParams().put("public_protected", "public_protected");
 		page.getParams().put("protected_viewer", user.getId());
+		page.getParams().put("or_user_id", user.getId());
 		
 		Ticket ticket = (Ticket) req.getSession().getAttribute("ticketFilter");
+		
 		if(ticket!=null){
-			if(!"".equals(ticket.getPublish_type())){
+			
+			boolean userId = ticket.getUser_id()!=null;
+			boolean publishType = !"".equals(ticket.getPublish_type());
+			boolean ticketType = !"".equals(ticket.getTicket_type());
+			boolean ticketStatus = !"".equals(ticket.getNot_yet_viewer());
+			boolean existingCustomer = !"".equals(ticket.getExisting_customer_str());
+			boolean commented = !"".equals(ticket.getCommented_str());
+			
+			if(userId || publishType || ticketType || ticketStatus || existingCustomer || commented){
+				page.getParams().remove("or_user_id");
+			}
+			
+			if(userId){
+				page.getParams().remove("public_protected");
+				page.getParams().remove("protected_viewer");
+				if(ticket.getUser_id()==1){
+					page.getParams().put("user_id", user.getId());
+				} else {
+					page.getParams().put("not_user_id", user.getId());
+				}
+			}
+			if(publishType){
 				page.getParams().remove("public_protected");
 				if("public".equals(ticket.getPublish_type())){
 					page.getParams().put("public", "public");
 				}
-				if("protected".equals(ticket.getPublish_type())){
+				if("protected".equals(ticket.getPublish_type()) && userId){
+					page.getParams().put("protected", "protected");
+				} else if("protected".equals(ticket.getPublish_type())) {
 					page.getParams().put("protected", "protected");
 				}
 			}
-			if(!"".equals(ticket.getTicket_type())){
+			if(ticketType){
 				page.getParams().put("ticket_type", ticket.getTicket_type());
 			}
-			page.getParams().put("existing_customer", ticket.isExisting_customer());
+			if(ticketStatus){
+				if("1".equals(ticket.getNot_yet_viewer())){
+					page.getParams().put("not_yet_viewer", user.getId());
+				} else {
+					page.getParams().put("viewed_viewer", user.getId());
+				}
+			}
+			if(existingCustomer){
+				page.getParams().put("existing_customer", "true".equals(ticket.getExisting_customer_str()) ? true : false);
+			}
+			if(commented){
+				page.getParams().put("commented", "true".equals(ticket.getCommented_str()) ? true : false);
+			}
 		}
 		
 		this.crmService.queryTicketsByPage(page);
@@ -1576,9 +1614,15 @@ public class CRMRestController {
 			if(t.getNot_yet_viewer().contains(user.getId().toString())){
 				t.setMentioned(true);
 			}
+			if(t.getUser_id().equals(user.getId())){
+				t.setMyTicket(true);
+			}
 			ts.add(t);
 		}
 		page.setResults(ts);
+		
+		user = null;
+		ticket = null;
 		
 		return page;
 	}
@@ -1628,6 +1672,9 @@ public class CRMRestController {
 		if("public".equals(ticket.getPublish_type())){
 			List<User> users = this.systemService.queryUser(new User());
 			for (int i = 0; i < users.size(); i++) {
+				if("sales".equals(users.get(i).getUser_role())){
+					continue;
+				}
 				not_yet_viewerBuff.append(users.get(i).getId());
 				if(i < users.size()-1){
 					not_yet_viewerBuff.append(",");
@@ -1635,6 +1682,8 @@ public class CRMRestController {
 			}
 		} else {
 			StringBuffer protected_viewerBuff = new StringBuffer();
+			
+			protected_viewerBuff.append(user.getId()+",");
 			
 			for (int i = 0; i < ticket.getUseridArray().length; i++) {
 				not_yet_viewerBuff.append(ticket.getUseridArray()[i]);
@@ -1653,12 +1702,118 @@ public class CRMRestController {
 		ticket.setNot_yet_viewer(not_yet_viewerBuff.toString());
 		
 		ticket.setCreate_date(new Date());
+		ticket.setCommented(false);
+
+		ticket.setCustomer_id(ticket.isExisting_customer() ? ticket.getCustomer_id() : null);
+		
 		this.crmService.createTicket(ticket);
 		
 		json.setUrl("/broadband-user/crm/ticket/view");
 		
 		not_yet_viewerBuff = null;
 		user = null;
+		return json;
+	}
+
+	// Update ticket info
+	@RequestMapping(value = "/broadband-user/crm/ticket/edit")
+	public Map<String, Object> toTicketEdit(Model model,
+			@RequestParam("id") int id) {
+
+		Ticket tQuery = new Ticket();
+		tQuery.getParams().put("id", id);
+		Ticket ticket = this.crmService.queryTicket(tQuery).get(0);
+
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("ticket", ticket);
+
+		return map;
+	}
+
+	// Update ticket info
+	@RequestMapping(value = "/broadband-user/crm/ticket/comment/view")
+	public Page<TicketComment> toTicketCommentView(Model model,
+			@RequestParam("ticket_id") int ticket_id,
+			@RequestParam("pageNo") int pageNo) {
+
+		Page<TicketComment> page = new Page<TicketComment>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("ticket_id", ticket_id);
+		this.crmService.queryTicketCommentsByPage(page);
+
+		return page;
+	}
+
+	@RequestMapping(value="/broadband-user/crm/ticket/comment/create", method=RequestMethod.POST)
+	public JSONBean<TicketComment> doTicketCommentCreate(Model model,
+			@RequestParam("ticket_id") int ticket_id,
+			@RequestParam("content") String content,
+			HttpServletRequest req) {
+		
+		JSONBean<TicketComment> json = new JSONBean<TicketComment>();
+		
+		if(!"".equals(content.trim())){
+			TicketComment tc = new TicketComment();
+			tc.setTicket_id(ticket_id);
+			tc.setContent(content);
+			User user = (User) req.getSession().getAttribute("userSession");
+			tc.setUser_id(user.getId());
+			tc.setCreate_date(new Date());
+			this.crmService.createTicketComment(tc);
+			
+			Ticket t = new Ticket();
+			t.setCommented(true);
+			t.getParams().put("id", ticket_id);
+			this.crmService.editTicket(t);
+			json.getSuccessMap().put("alert-success", "New Comment had been attached to related ticket!");
+			
+			tc = null;
+			user = null;
+		} else {
+			json.getErrorMap().put("alert-error", "Conetnt can't not be empty!");
+		}
+		
+		
+		
+		return json;
+		
+	}
+
+	@RequestMapping(value="/broadband-user/crm/ticket/edit", method=RequestMethod.POST)
+	public JSONBean<Ticket> doTicketEdit(Model model,
+			Ticket ticket){
+		
+		JSONBean<Ticket> json = new JSONBean<Ticket>();
+		
+		boolean isError = false;
+		
+		if("".equals(ticket.getFirst_name()) && "".equals(ticket.getLast_name())){
+			json.getErrorMap().put("first_name", "At least fill one name!");
+			json.getErrorMap().put("last_name", "At least fill one name!");
+			isError = true;
+		}
+		if("".equals(ticket.getCellphone()) && "".equals(ticket.getEmail())){
+			json.getErrorMap().put("cellphone", "At least fill one contact detail!");
+			json.getErrorMap().put("email", "At least fill one contact details!");
+			isError = true;
+		}
+		if("".equals(ticket.getDescription())){
+			json.getErrorMap().put("description", "Can't be left empty!");
+			isError = true;
+		}
+		
+		if(isError){
+			return json;
+		} else {
+			ticket.getParams().put("id", ticket.getId());
+			this.crmService.editTicket(ticket);
+			json.getSuccessMap().put("alert-success", "Successfully modified ticket details!");
+		}
+		
+		json.setModel(ticket);
+		
 		return json;
 	}
 }
