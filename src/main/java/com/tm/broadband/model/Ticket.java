@@ -5,8 +5,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.tm.broadband.util.TMUtils;
-
 public class Ticket implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -23,6 +21,7 @@ public class Ticket implements Serializable {
 	private String publish_type;
 	private String protected_viewer;
 	private String not_yet_viewer;
+	private String not_yet_review_comment_viewer;
 	private String viewed_viewer;
 	private Date create_date;
 	private boolean existing_customer;
@@ -33,6 +32,8 @@ public class Ticket implements Serializable {
 	 */
 	
 	private boolean mentioned;
+	
+	private boolean notYetReview;
 	
 	private boolean myTicket;
 	
@@ -149,6 +150,15 @@ public class Ticket implements Serializable {
 		this.not_yet_viewer = not_yet_viewer;
 	}
 
+	public String getNot_yet_review_comment_viewer() {
+		return not_yet_review_comment_viewer;
+	}
+
+	public void setNot_yet_review_comment_viewer(
+			String not_yet_review_comment_viewer) {
+		this.not_yet_review_comment_viewer = not_yet_review_comment_viewer;
+	}
+
 	public String getViewed_viewer() {
 		return viewed_viewer;
 	}
@@ -214,7 +224,6 @@ public class Ticket implements Serializable {
 	}
 
 	public String getCreate_date_str() {
-		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(this.getCreate_date()));
 		return create_date_str;
 	}
 
@@ -230,14 +239,6 @@ public class Ticket implements Serializable {
 		this.existing_customer_str = existing_customer_str;
 	}
 
-	public Map<String, Object> getParams() {
-		return params;
-	}
-
-	public void setParams(Map<String, Object> params) {
-		this.params = params;
-	}
-
 	public String getCommented_str() {
 		return commented_str;
 	}
@@ -246,5 +247,20 @@ public class Ticket implements Serializable {
 		this.commented_str = commented_str;
 	}
 
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
+	}
+
+	public boolean isNotYetReview() {
+		return notYetReview;
+	}
+
+	public void setNotYetReview(boolean notYetReview) {
+		this.notYetReview = notYetReview;
+	}
 
 }

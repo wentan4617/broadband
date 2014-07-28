@@ -91,7 +91,7 @@ public class SystemController {
 		pageSum.getParams().put("where", "query_by_public_protected");
 		pageSum.getParams().put("public_protected", "public_protected");
 		pageSum.getParams().put("protected_viewer", user.getId());
-		pageSum.getParams().put("not_yet_viewer", user.getId());
+		pageSum.getParams().put("double_not_yet_viewer", user.getId());
 		pageSum.getParams().put("existing_customer", true);
 		req.getSession().setAttribute("existingSum", this.crmService.queryTicketsBySum(pageSum));
 		pageSum.getParams().put("existing_customer", false);

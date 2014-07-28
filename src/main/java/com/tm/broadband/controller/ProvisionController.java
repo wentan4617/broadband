@@ -2,6 +2,8 @@ package com.tm.broadband.controller;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -19,9 +21,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.ProvisionService;
 import com.tm.broadband.service.SystemService;
@@ -32,12 +36,15 @@ public class ProvisionController {
 	private ProvisionService provisionService;
 	private MailerService mailerService;
 	private SystemService systemService;
+	private CRMService crmService;
 
 	@Autowired
-	public ProvisionController(ProvisionService provisionService, MailerService mailerService, SystemService systemService) {
+	public ProvisionController(ProvisionService provisionService, MailerService mailerService, SystemService systemService,
+			CRMService crmService) {
 		this.provisionService = provisionService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
+		this.crmService = crmService;
 	}
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/view/{pageNo}/{order_status}")
@@ -53,6 +60,19 @@ public class ProvisionController {
 		page.getParams().put("order_status", order_status);
 		
 		this.provisionService.queryCustomerOrdersByPage(page);
+		
+		List<CustomerOrder> cos = page.getResults();
+		for (int i=0; i<cos.size(); i++) {
+			List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetailsByOrderId(cos.get(i).getId());
+			for (CustomerOrderDetail cod : cods) {
+				if(cod.getDetail_plan_group()!=null && cod.getDetail_plan_group().contains("plan")){
+					CustomerOrder coTemp = cos.get(i);
+					coTemp.setOrder_total_price(cod.getDetail_price());
+					Collections.replaceAll(cos, cos.get(i), coTemp);
+				}
+			}
+		}
+		page.setResults(cos);
 		model.addAttribute("page", page);
 		
 		// New Order

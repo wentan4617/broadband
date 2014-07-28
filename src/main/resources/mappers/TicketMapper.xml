@@ -29,6 +29,7 @@
 		t.`publish_type`				as t_publish_type,
 		t.`protected_viewer`				as t_protected_viewer,
 		t.`not_yet_viewer`				as t_not_yet_viewer,
+		t.`not_yet_review_comment_viewer`				as t_not_yet_review_comment_viewer,
 		t.`viewed_viewer`				as t_viewed_viewer,
 		t.`create_date`				as t_create_date,
 		t.`existing_customer`				as t_existing_customer,
@@ -48,6 +49,7 @@
 		<result property="publish_type" column="t_publish_type" />
 		<result property="protected_viewer" column="t_protected_viewer" />
 		<result property="not_yet_viewer" column="t_not_yet_viewer" />
+		<result property="not_yet_review_comment_viewer" column="t_not_yet_review_comment_viewer" />
 		<result property="viewed_viewer" column="t_viewed_viewer" />
 		<result property="create_date" column="t_create_date" />
 		<result property="existing_customer" column="t_existing_customer" />
@@ -74,6 +76,13 @@
 					</if>
 					<if test="params.ticket_type != null">and t.ticket_type = #{params.ticket_type}</if>
 					<if test="params.not_yet_viewer != null">and t.not_yet_viewer LIKE CONCAT('%', '${params.not_yet_viewer}', '%')</if>
+					<if test="params.not_yet_review_comment_viewer != null">and t.not_yet_review_comment_viewer LIKE CONCAT('%', '${params.not_yet_review_comment_viewer}', '%')</if>
+					<if test="params.double_not_yet_viewer != null">
+						and (
+							t.not_yet_viewer LIKE CONCAT('%', '${params.double_not_yet_viewer}', '%')
+							or t.not_yet_review_comment_viewer LIKE CONCAT('%', '${params.double_not_yet_viewer}', '%')
+						)
+					</if>
 					<if test="params.viewed_viewer != null">and t.viewed_viewer LIKE CONCAT('%', '${params.viewed_viewer}', '%')</if>
 					<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
 					<if test="params.commented != null">and t.commented = #{params.commented}</if>
@@ -103,6 +112,7 @@
 					<if test="params.publish_type != null">and t.publish_type = #{params.publish_type}</if>
 					<if test="params.protected_viewer != null">and t.protected_viewer = #{params.protected_viewer}</if>
 					<if test="params.not_yet_viewer != null">and t.not_yet_viewer = #{params.not_yet_viewer}</if>
+					<if test="params.not_yet_review_comment_viewer != null">and t.not_yet_review_comment_viewer = #{params.not_yet_review_comment_viewer}</if>
 					<if test="params.viewed_viewer != null">and t.viewed_viewer = #{params.viewed_viewer}</if>
 					<if test="params.create_date != null">and t.create_date = #{params.create_date}</if>
 					<if test="params.existing_customer != null">and t.existing_customer = #{params.existing_customer}</if>
@@ -111,6 +121,7 @@
 			</choose>
 		</where>
 	</sql>
+
 
 	<!-- // DEFINITION AREA -->
 
@@ -149,13 +160,13 @@
 		INSERT INTO `tm_ticket`(
 			`id`, `customer_id`, `user_id`, `cellphone`, `email`, 
 			`first_name`, `last_name`, `description`, `ticket_type`, `publish_type`, 
-			`protected_viewer`, `not_yet_viewer`, `viewed_viewer`, `create_date`, `existing_customer`, 
-			`commented`
+			`protected_viewer`, `not_yet_viewer`, `not_yet_review_comment_viewer`, `viewed_viewer`, `create_date`, 
+			`existing_customer`, `commented`
 		) VALUES (
 			#{id}, #{customer_id}, #{user_id}, #{cellphone}, #{email}, 
 			#{first_name}, #{last_name}, #{description}, #{ticket_type}, #{publish_type}, 
-			#{protected_viewer}, #{not_yet_viewer}, #{viewed_viewer}, #{create_date}, #{existing_customer}, 
-			#{commented}
+			#{protected_viewer}, #{not_yet_viewer}, #{not_yet_review_comment_viewer}, #{viewed_viewer}, #{create_date}, 
+			#{existing_customer}, #{commented}
 		)
 	</insert>
 
@@ -180,6 +191,7 @@
 			<if test="publish_type != null">publish_type = #{publish_type},</if>
 			<if test="protected_viewer != null">protected_viewer = #{protected_viewer},</if>
 			<if test="not_yet_viewer != null">not_yet_viewer = #{not_yet_viewer},</if>
+			<if test="not_yet_review_comment_viewer != null">not_yet_review_comment_viewer = #{not_yet_review_comment_viewer},</if>
 			<if test="viewed_viewer != null">viewed_viewer = #{viewed_viewer},</if>
 			<if test="create_date != null">create_date = #{create_date},</if>
 			<if test="existing_customer != null">existing_customer = #{existing_customer},</if>

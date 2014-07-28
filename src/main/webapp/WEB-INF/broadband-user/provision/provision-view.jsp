@@ -178,8 +178,8 @@
 									<th><input type="checkbox" id="checkbox_orders_top" /></th>
 									<th>Order ID</th>
 									<th>Customer Name</th>
-									<th>Price ($)</th>
-									<th>Create Date</th>
+									<th style="text-align:right;">Plan Price ($)</th>
+									<th style="text-align:center;">Create Date</th>
 									<c:if test="${rfsActive!=null}">
 										<th>RFS Date</th>
 									</c:if>
@@ -210,12 +210,12 @@
 												</c:choose>
 											</a>				
 										</td>
-										<td>
+										<td style="text-align:right;">
 											<c:if test="${order.order_total_price != null }">
 												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,##0.00" />
 											</c:if>
 										</td>
-										<td><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+										<td style="text-align:center;"><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
 										<c:if test="${rfsActive!=null}">
 											<td><fmt:formatDate value="${order.rfs_date }" type="both" pattern="yyyy-MM-dd" /></td>
 										</c:if>

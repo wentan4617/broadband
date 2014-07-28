@@ -112,6 +112,7 @@
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="a2a" ><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;Account2Account</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" ><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" ><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cyberpark-credit" ><span class="glyphicon glyphicon-star-empty"></span>&nbsp;&nbsp;CyberPark Credit</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="voucher" ><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 								<li class="divider"></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="pending" ><span class="glyphicon glyphicon-pause"></span>&nbsp;&nbsp;Pending</a></li>
@@ -255,8 +256,8 @@
 						</div>
 						<br/>
 						<div class="form-group">
-							<p>
-								<strong data-name="confirm_payway_modal_content_<.= invoice.id .>"></strong>
+							<p data-name="confirm_payway_modal_content_<.= invoice.id .>">
+								<strong></strong>
 							</p>
 						</div>
 					</div>

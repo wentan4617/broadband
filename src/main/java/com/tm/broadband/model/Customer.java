@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -124,6 +123,8 @@ public class Customer implements Serializable {
 	private String action;
 	
 	private boolean serviceAvailable;
+	
+	private String pstn;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -515,6 +516,14 @@ public class Customer implements Serializable {
 
 	public void setMd5_password(String md5_password) {
 		this.md5_password = md5_password;
+	}
+
+	public String getPstn() {
+		return pstn;
+	}
+
+	public void setPstn(String pstn) {
+		this.pstn = pstn;
 	}
 
 	
