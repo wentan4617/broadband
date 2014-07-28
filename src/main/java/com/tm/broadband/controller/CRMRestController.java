@@ -201,7 +201,7 @@ public class CRMRestController {
 	}
 
 	// BEGIN DDPay
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card", method = RequestMethod.POST)
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit", method = RequestMethod.POST)
 	public JSONBean<String> doDefrayByDDPay(Model model,
 			@RequestParam("process_way") String process_way,
 			@RequestParam("invoice_id") int invoice_id, HttpServletRequest req) {
@@ -214,8 +214,7 @@ public class CRMRestController {
 		String process_sort = null;
 
 		// BEGIN INVOICE ASSIGNMENT
-		CustomerInvoice ci = this.crmService
-				.queryCustomerInvoiceById(invoice_id);
+		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
 
 		String redirectUrl = "/manual_defray/redirect/" + ci.getCustomer_id()
@@ -231,8 +230,7 @@ public class CRMRestController {
 		}
 		customer_id = ci.getCustomer_id();
 		order_id = ci.getOrder_id();
-		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(),
-				ci.getAmount_paid());
+		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
 
 		// Assign paid to paid + paid_amount, make this invoice paid off
 		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
@@ -286,6 +284,9 @@ public class CRMRestController {
 
 		json.getSuccessMap().put("alert-success",
 				"Related invoice's balance had successfully been paid off!");
+		
+		ct = null;
+		ci = null;
 
 		return json;
 	}
@@ -1486,6 +1487,8 @@ public class CRMRestController {
 			page.getParams().put("id", customerQuery.getId());
 			page.getParams().put("cellphone", customerQuery.getCellphone());
 			page.getParams().put("email", customerQuery.getEmail());
+			page.getParams().put("address", customerQuery.getAddress());
+			page.getParams().put("pstn", customerQuery.getPstn());
 		}
 		this.crmService.queryCustomersByPage(page);
 		status.setComplete();
@@ -1571,8 +1574,6 @@ public class CRMRestController {
 			}
 			
 			if(userId){
-				page.getParams().remove("public_protected");
-				page.getParams().remove("protected_viewer");
 				if(ticket.getUser_id()==1){
 					page.getParams().put("user_id", user.getId());
 				} else {
@@ -1611,7 +1612,12 @@ public class CRMRestController {
 		this.crmService.queryTicketsByPage(page);
 		List<Ticket> ts = new ArrayList<Ticket>();
 		for (Ticket t : page.getResults()) {
-			if(t.getNot_yet_viewer().contains(user.getId().toString())){
+			if(t.getNot_yet_review_comment_viewer()!=null
+			   && t.getNot_yet_review_comment_viewer().contains(user.getId().toString())){
+				t.setNotYetReview(true);
+			}
+			if(t.getNot_yet_viewer()!=null
+			   && t.getNot_yet_viewer().contains(user.getId().toString())){
 				t.setMentioned(true);
 			}
 			if(t.getUser_id().equals(user.getId())){
@@ -1755,6 +1761,7 @@ public class CRMRestController {
 		JSONBean<TicketComment> json = new JSONBean<TicketComment>();
 		
 		if(!"".equals(content.trim())){
+			
 			TicketComment tc = new TicketComment();
 			tc.setTicket_id(ticket_id);
 			tc.setContent(content);
@@ -1763,10 +1770,32 @@ public class CRMRestController {
 			tc.setCreate_date(new Date());
 			this.crmService.createTicketComment(tc);
 			
+			// Reverse all viewed to not yet view
 			Ticket t = new Ticket();
-			t.setCommented(true);
 			t.getParams().put("id", ticket_id);
-			this.crmService.editTicket(t);
+			t = this.crmService.queryTicket(t).get(0);
+		
+			if(t.getViewed_viewer()!=null && !"".equals(t.getViewed_viewer())){
+				String viewed[] = t.getViewed_viewer().split(",");
+				List<String> finalUserIds = new ArrayList<String>();
+				for (int i = 0; i < viewed.length; i++) {
+					if(!user.getId().toString().equals(viewed[i])){
+						finalUserIds.add(viewed[i]);
+					}
+				}
+				StringBuffer finalNotYetReviewCommentBuff = new StringBuffer();
+				for (int i = 0; i < finalUserIds.size(); i++) {
+					finalNotYetReviewCommentBuff.append(finalUserIds.get(i));
+					if(i<finalUserIds.size()-1){
+						finalNotYetReviewCommentBuff.append(",");
+					}
+				}
+				t.setNot_yet_review_comment_viewer(finalNotYetReviewCommentBuff.toString());
+				t.setCommented(true);
+				t.getParams().put("id", ticket_id);
+				this.crmService.editTicket(t);
+			}
+			
 			json.getSuccessMap().put("alert-success", "New Comment had been attached to related ticket!");
 			
 			tc = null;

@@ -16,33 +16,40 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 1.9.5 2014-07-28
+
+* 下单时判断如果该地址存在于disconnected并且服务使用日期小于4个月的一律额外收取Reconnention Fee.(steven)
+* 客户列表界面多加几个字段的查询，可以通过PSTN和地址查询该用户Detail，将customer id字段放到后面，mobile放首个字段.(steven)
+* Ticket的Existing查询客户加多一个PSTN字段.(steven)
+* 只有Weekly Topup的才能使用Voucher充值.(steven)
+* [将Provision显示的价格从order的price改成monthly pay.](steven)
+* 在后台顶部导航的用户名旁边显示个Message，显示Message的数目.(steven)
+* [后台invoice的Make Payment新增一个CyberPark Credit.](steven)
+
 demand version 1.9.2 2014-07-25
 
 * CRM的customer列表界面添加筛选功能，可以指定显示ADSL,VDSL,UFB等宽带类型的客户.(steven)
-* Ticket列表界面添加筛选功能，可以指定显示发布类型是publilc还是protect，客户是existed还是new，Ticket的类型是faulty还是billing还是其他.(steven)
+* [Ticket列表界面添加筛选功能，可以指定显示发布类型是publilc还是protect，客户是existed还是new，Ticket的类型是faulty还是billing还是其他.](steven)
 
 demand version 1.9.0 2014-07-24
 
-* ticket发布时所需属性，几种情况:-
-    情况一，现有用户: customer_id, user_id, cellphone, email, first_name, last_name, ticket_type, publish_type, description, not_yet_viewer字符串集合, existing_customer, create_date, 
-    情况二，新用户: 没有customer_id
-    情况三，发布类型为protected：protected_viewer字符串集合
+* [ticket发布时所需属性，几种情况:- 情况一，现有用户: customer_id, user_id, cellphone, email, first_name, last_name, ticket_type, publish_type, description, not_yet_viewer字符串集合, existing_customer, create_date. 情况二，新用户: 没有customer_id. 情况三，发布类型为protected：protected_viewer字符串集合](steven)
     
 
 demand version 1.8.7 2014-07-23
 
 * Call restrict with no Directory Access nat Res, Caller Display Monthly Charge per line Res, Call waiting nat Res, Faxability Monthly Rental Res, Smart Bundle package.(steven)
-* ticket发布时at的列表有这些权限列表：accountant,provision-team,administrator,system-developer.(steven)
+* [ticket发布时at的列表有这些权限列表：accountant,provision-team,administrator,system-developer.](steven)
 
 demand version 1.8.5 2014-07-22
 
 ###Important Level (High)
-* CyberPark后台主页添加一个ticket发布界面列出所有公共及受保护的published message，包含的badge: public(谁都能看见), protected(指定的人能看见).(steven)
-* ticket发布界面添加一个发布按钮，点击后弹出一个modal，可以选择发送protected还是public，如果是protected则选中的user才会看到，如果是public则所有用户都能看到，选中用户所看到的该message为高亮显示.(steven)
-* 迭代输出ticket时判断如果session的user_id存在于not_yet_viewer的字符串中，则高亮显示.(steven)
+* [CyberPark后台主页添加一个ticket发布界面列出所有公共及受保护的published message，包含的badge: public(谁都能看见), protected(指定的人能看见).](steven)
+* [ticket发布界面添加一个发布按钮，点击后弹出一个modal，可以选择发送protected还是public，如果是protected则选中的user才会看到，如果是public则所有用户都能看到，选中用户所看到的该message为高亮显示.](steven)
+* [迭代输出ticket时判断如果session的user_id存在于not_yet_viewer的字符串中，则高亮显示.](steven)
 * 新增topup出账单逻辑，plan的钱是service given开始7天，第6天发下一个7天的账单，due date是1天，due date一到则订单suspended.(steven)
 * 将显示Transaction图表的逻辑多加过滤，使数据更精准，只取card_name为Visa,Cash,Account2Account,DDPay,Credit Card,MasterCard的Transaction记录.(steven)
-
+00
 ###Important Level (Medium)
 * 在CRM的customer info界面添加一个按钮：New Ordering，点击后可以选择plan重新下新订单.(kanny)
 * 所有用户类型的order如果账单到期则suspended该order.(steven)

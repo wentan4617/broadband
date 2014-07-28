@@ -5,7 +5,7 @@
 	</h4>
 	<hr/>
 	<div class="form-group">
-		<label for="cellphone" class="control-label col-md-2">Publish Type</label>
+		<label class="control-label col-md-2">Publish Type</label>
 		<div class="col-md-2">
 			<p class="form-control-static">
 				<span class="badge">
@@ -13,21 +13,22 @@
 				</span>
 			</p>
 		</div>
-		<label for="cellphone" class="control-label col-md-2">Ticket Type</label>
+		<label class="control-label col-md-2">Ticket Type</label>
 		<div class="col-md-3">
 			<p class="form-control-static">
 				<span class="badge" style="background:<.=ticket_type=='faulty' ? 'red' :
 														 ticket_type=='billing' ? '#d3bb30' :
 														 ticket_type=='hardware-issue' ? '#a5a5a5' :
 														 ticket_type=='application' ? '#5bc0de' :
-														 ticket_type=='booking-appointment' ? '#428bca' : '' .>;">
+														 ticket_type=='booking-appointment' ? '#428bca' :
+														 ticket_type=='announcement' ? '#a57158' : '' .>;">
 					<.= ticket_type .>
 				</span>
 			</p>
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="cellphone" class="control-label col-md-2">Published By</label>
+		<label class="control-label col-md-2">Published By</label>
 		<div class="col-md-2">
 			<p class="form-control-static">
 <.
@@ -41,7 +42,7 @@
 .>
 			</p>
 		</div>
-		<label for="cellphone" class="control-label col-md-2">Create Date</label>
+		<label class="control-label col-md-2">Create Date</label>
 		<div class="col-md-2">
 			<p class="form-control-static"><.= create_date_str .></p>
 		</div>
@@ -50,10 +51,10 @@
 <.
 		if(protected_viewer){
 .>
-		<label class="control-label col-md-2">Protected User</label>
+		<label class="control-label col-md-2">Protected Viewer</label>
 		<div class="col-md-10">
 			<p class="form-control-static">
-<.				var protectedViewers = protected_viewer.split(','); .>
+<.			var protectedViewers = protected_viewer.split(','); .>
 <.					for(var i=0; i<protectedViewers.length; i++){ .>
 <.						for(var u=0; u<users.length; u++){ .>
 <.							if(users[u].id==protectedViewers[i]){ .>
@@ -66,10 +67,13 @@
 .>
 			</p>
 		</div>
-		<. } .>
+<.
+		}
+		if(not_yet_viewer){
+.>
 	</div>
 	<div class="form-group">
-		<label class="control-label col-md-2">Not Yet Viewed User</label>
+		<label class="control-label col-md-2">Who Hasn't View</label>
 		<div class="col-md-10">
 			<p class="form-control-static">
 <.					var notYetViewViewers = not_yet_viewer.split(','); .>
@@ -85,9 +89,13 @@
 .>
 			</p>
 		</div>
+<.
+		}
+		if(viewed_viewer){
+.>
 	</div>
 	<div class="form-group">
-		<label class="control-label col-md-2">Viewed User</label>
+		<label class="control-label col-md-2">Who Viewed</label>
 		<div class="col-md-10">
 			<p class="form-control-static">
 <.				var viewedViewers = viewed_viewer.split(','); .>
@@ -104,19 +112,37 @@
 .>
 			</p>
 		</div>
+<.
+		}
+.>
 	</div>
 
 	<!-- customer detail -->
 	<hr/>
 	<h4 class="text-success">Customer Detail</h4>
 	<hr/>
-			
 	<div class="form-group">
-		<label for="first_name" class="control-label col-md-2">Customer Id</label>
+		<label class="control-label col-md-2">Customer Type</label>
+		<div class="col-md-2">
+			<p class="form-control-static">
+				<span class="badge">
+					<.= customer_id ? 'Existing' : 'New' .>
+				</span>
+			</p>
+		</div>
+	</div>
+<.
+		if(customer_id){
+.>
+	<div class="form-group">
+		<label class="control-label col-md-2">Customer Id</label>
 		<div class="col-md-2">
 			<p class="form-control-static"><.= customer_id .></p>
 		</div>
-	</div>	
+	</div>
+<.
+		}
+.>
 	<div class="form-group">
 		<label for="first_name" class="control-label col-md-2">First Name</label>
 		<div class="col-md-2">

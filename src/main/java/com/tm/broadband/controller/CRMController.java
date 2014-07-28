@@ -1078,7 +1078,7 @@ public class CRMController {
 		pageSum.getParams().put("where", "query_by_public_protected");
 		pageSum.getParams().put("public_protected", "public_protected");
 		pageSum.getParams().put("protected_viewer", user.getId());
-		pageSum.getParams().put("not_yet_viewer", user.getId());
+		pageSum.getParams().put("double_not_yet_viewer", user.getId());
 		pageSum.getParams().put("existing_customer", true);
 		req.getSession().setAttribute("existingSum", this.crmService.queryTicketsBySum(pageSum));
 		pageSum.getParams().put("existing_customer", false);
@@ -1100,19 +1100,24 @@ public class CRMController {
 		
 		User user = (User) req.getSession().getAttribute("userSession");
 		
-		// If contains current user's id then rub off
-		if(ticket.getNot_yet_viewer().contains(user.getId().toString())){
+		// If Not Yet View Ticket contains current user's id then rub off
+		if(ticket.getNot_yet_viewer()!=null
+		   && ticket.getNot_yet_viewer().contains(user.getId().toString())){
 			String[] userIds = ticket.getNot_yet_viewer().split(",");
-			StringBuffer userIdsBuff = new StringBuffer();
+			List<String> finalUserIds = new ArrayList<String>();
 			for (int i = 0; i < userIds.length; i++) {
 				if(!userIds[i].equals(user.getId().toString())){
-					userIdsBuff.append(userIds[i]);
+					finalUserIds.add(userIds[i]);
 				}
-				if(!userIds[i].equals(user.getId().toString()) && i < userIds.length-1){
+			}
+			StringBuffer userIdsBuff = new StringBuffer();
+			for (int i = 0; i < finalUserIds.size(); i++) {
+				userIdsBuff.append(finalUserIds.get(i));
+				if(i < finalUserIds.size()-1){
 					userIdsBuff.append(",");
 				}
 			}
-			if(ticket.getViewed_viewer()!=null || "".equals(ticket.getViewed_viewer())){
+			if(ticket.getViewed_viewer()!=null && !"".equals(ticket.getViewed_viewer().trim())){
 				ticket.setViewed_viewer(ticket.getViewed_viewer()+","+user.getId().toString());
 			} else {
 				ticket.setViewed_viewer(user.getId().toString());
@@ -1120,6 +1125,28 @@ public class CRMController {
 			ticket.setNot_yet_viewer(userIdsBuff.toString());
 			ticket.getParams().put("id", id);
 			this.crmService.editTicket(ticket);
+		} else {
+			// If Not Yet View Ticket Comments contains current user's id then rub off
+			if(ticket.getNot_yet_review_comment_viewer()!=null
+			   && ticket.getNot_yet_review_comment_viewer().contains(user.getId().toString())){
+				String[] userIds = ticket.getNot_yet_review_comment_viewer().split(",");
+				List<String> finalUserIds = new ArrayList<String>();
+				for (int i = 0; i < userIds.length; i++) {
+					if(!userIds[i].equals(user.getId().toString())){
+						finalUserIds.add(userIds[i]);
+					}
+				}
+				StringBuffer userIdsBuff = new StringBuffer();
+				for (int i = 0; i < finalUserIds.size(); i++) {
+					userIdsBuff.append(finalUserIds.get(i));
+					if(i < finalUserIds.size()-1){
+						userIdsBuff.append(",");
+					}
+				}
+				ticket.setNot_yet_review_comment_viewer(userIdsBuff.toString());
+				ticket.getParams().put("id", id);
+				this.crmService.editTicket(ticket);
+			}
 		}
 		
 		

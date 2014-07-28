@@ -1037,33 +1037,37 @@
 					$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').attr('data-way', pay_way);
 					if(pay_way == 'ddpay'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use DDPay to Pay Off this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use DDPay to pay off this invoice');
 					} else if(pay_way == 'a2a'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use A2A to Pay Off this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use A2A to pay off this invoice');
 					} else if(pay_way == 'cash'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Cash to Pay (Off/Not Off) this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - your input amount).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - your input amount).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Cash to pay (off) this invoice');
 						$('div[data-name="cash_defray_amount_input_'+this.id+'"]').css('display','');
 					}else if(pay_way == 'credit-card'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Credit Card to Pay Off this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Credit Card to pay off this invoice');
+					} else if(pay_way == 'cyberpark-credit'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Give a CyberPark Credit for this invoice?');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to zero.<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to give credit');
 					} else if(pay_way == 'voucher'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Voucher to Pay (Off/Not Off) this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - vouchar\'s face value).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will assign invoice\'s balance to (balance - vouchar\'s face value).<br/><br/>And this operation will store your identity and manipulate time into database as a record.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Voucher to pay (off) this invoice');
 						$('div[data-name="vouchar_pin_number_input_'+this.id+'"]').css('display','');
 					} else if(pay_way == 'pending'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Pending for this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will only change the Make Payment button to Pending style.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will only change the Make Payment button to Pending style.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Pending for this invoice');
 					} else if(pay_way == 'void'){
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Avoid for this invoice?');
-						$('strong[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will change Invoice\'s status to void.<br/>');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will change Invoice\'s status to void.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Avoid for this invoice');
 					} 
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
@@ -1078,19 +1082,25 @@
 								invoice_id : this.id
 								,process_way : 'DDPay'
 						};
-						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'a2a'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'Account2Account'
 						};
-						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'credit-card'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'Credit Card'
 						};
-						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay-a2a-credit-card';
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
+					} else if(pay_way == 'cyberpark-credit'){
+						var data = {
+								invoice_id : this.id
+								,process_way : 'CyberPark Credit'
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'cash'){
 						var data = {
 							invoice_id : this.id

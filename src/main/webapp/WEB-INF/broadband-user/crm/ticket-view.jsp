@@ -51,6 +51,7 @@ tbody td {text-align:center;}
 							      	<option value="hardware-issue" data-type="ticket-type">Hardware Issue</option>
 							      	<option value="application" data-type="ticket-type">Application</option>
 							      	<option value="booking-appointment" data-type="ticket-type">Booking Appointment</option>
+							      	<option value="announcement" data-type="ticket-type">Announcement</option>
 							    </optgroup>
 							    <optgroup label="Filtering Publish Type">
 							    	<option value="public" data-type="publish-type">Public</option>
@@ -307,6 +308,7 @@ tbody td {text-align:center;}
 												<option value="hardware-issue">Hardware Issue</option>
 												<option value="application">Application</option>
 												<option value="booking-appointment">Booking Appointment</option>
+												<option value="announcement">Announcement</option>
 											</select>
 										</div>
 									</div>
@@ -380,7 +382,7 @@ tbody td {text-align:center;}
 			$('a[data-name="viewTicketBtn"]').click(function(){
 				var id = $(this).attr('data-id');
 				var tr = $('#afterClickViewTicketBtn_'+id);
-				tr.removeClass('danger warning');
+				tr.removeClass('danger warning info');
 				tr.css({'fontSize':'12px', 'fontWeight':'normal'});
 				
 				window.location.href='${ctx}/broadband-user/crm/ticket/edit/'+id;

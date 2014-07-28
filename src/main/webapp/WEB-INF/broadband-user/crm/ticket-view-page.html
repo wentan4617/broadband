@@ -20,7 +20,11 @@
 	.>
 			<tr id="afterClickViewTicketBtn_<.= t.id .>" class="<.= t.existing_customer ? 'danger' : 'warning' .>" style="font-size:1.1em; font-weight:bold;" >
 	<.
-			} else {
+			} else if(t.notYetReview) {
+	.>
+			<tr id="afterClickViewTicketBtn_<.= t.id .>" class="info" style="font-size:1.1em; font-weight:bold;" >
+	<.
+			} else  {
 	.>
 			<tr>
 	<.
@@ -37,7 +41,8 @@
 														 t.ticket_type=='billing' ? 'usd' :
 														 t.ticket_type=='hardware-issue' ? 'hdd' :
 														 t.ticket_type=='application' ? 'tasks' :
-														 t.ticket_type=='booking-appointment' ? 'phone-alt' : ''.>"></span>
+														 t.ticket_type=='booking-appointment' ? 'phone-alt' :
+														 t.ticket_type=='announcement' ? 'bullhorn' : ''.>"></span>
 				</td>
 				<td>
 					<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/edit/<.= t.customer_id .>"><.= t.customer_id .></a>
