@@ -21,6 +21,8 @@ public class CustomerCallRecord implements Serializable {
 	private Date statement_date;
 	private String record_type;
 	private String clear_service_id;
+	private Date date_from;
+	private Date date_to;
 	private Date charge_date_time;
 	private Integer duration;
 	private String oot_id;
@@ -30,6 +32,7 @@ public class CustomerCallRecord implements Serializable {
 	private String juristiction;
 	private String phone_called;
 	private Date upload_date;
+	private Boolean used;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -78,6 +81,22 @@ public class CustomerCallRecord implements Serializable {
 
 	public void setClear_service_id(String clear_service_id) {
 		this.clear_service_id = clear_service_id;
+	}
+
+	public Date getDate_from() {
+		return date_from;
+	}
+
+	public void setDate_from(Date date_from) {
+		this.date_from = date_from;
+	}
+
+	public Date getDate_to() {
+		return date_to;
+	}
+
+	public void setDate_to(Date date_to) {
+		this.date_to = date_to;
 	}
 
 	public Date getCharge_date_time() {
@@ -183,6 +202,14 @@ public class CustomerCallRecord implements Serializable {
 
 	public void setCallType(String callType) {
 		this.callType = callType;
+	}
+
+	public Boolean getUsed() {
+		return used;
+	}
+
+	public void setUsed(Boolean used) {
+		this.used = used;
 	}
 
 }

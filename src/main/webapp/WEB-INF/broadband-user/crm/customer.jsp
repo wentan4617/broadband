@@ -260,6 +260,26 @@
 					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'order-no-term');
 					$('#generateOrderInvoiceModal_'+this.id).modal('show');
 				});
+				$('a[data-name="'+co[i].id+'_regenerate_topup_invoice"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Regenerate Most Recent Topup Invoice');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('This action will remove all the details related to this order\'s most recent invoice. And will regenerate that invoice with it\'s PDF based on order\'s details. Do you want to regenerate this order\'s most recent invoice immediately?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to regenerate invoice!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'order-topup');
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
+				$('a[data-name="'+co[i].id+'_generate_topup_invoice"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Generate Next Topup Invoice');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('This action will generate first(if there is no invoice(s)...) or next invoice for this order. Do you want to generate this order\'s first or next invoice immediately?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to generate invoice!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'order-topup');
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
 				// Submit to rest controller
 				$('a[data-name="generateOrderInvoiceModalBtn_'+co[i].id+'"]').click(function(){
 					var generateType = $(this).attr('data-type');
@@ -272,8 +292,10 @@
 					var url = '';
 					if(orderType=='order-term'){
 						url = '${ctx}/broadband-user/crm/customer/order/invoice/termed/manually-generate';
-					} else {
+					} else if(orderType=='order-no-term'){
 						url = '${ctx}/broadband-user/crm/customer/order/invoice/no-term/manually-generate';
+					} else if(orderType=='order-topup'){
+						url = '${ctx}/broadband-user/crm/customer/order/invoice/topup/manually-generate';
 					}
 					
 					$.post(url, data, function(json){
@@ -287,6 +309,7 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_manually_generate_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_no_term_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_no_term_invoice"]').button('reset');
+					$('a[data-name="'+$(this).attr('data-id')+'_generate_topup_invoice"]').button('reset');
 				});
 				
 

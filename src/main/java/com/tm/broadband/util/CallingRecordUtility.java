@@ -14,6 +14,8 @@ public class CallingRecordUtility {
 	private static Integer statementDateIndex 			= 0;
 	private static Integer recordTypeIndex 				= 5;
 	private static Integer clearServiceIdIndex 			= 8;
+	private static Integer dateFromIndex				= 10;
+	private static Integer dateToIndex					= 11;
 	private static Integer chargeDateIndex				= 12;
 	private static Integer chargeTimeIndex				= 13;
 	private static Integer durationIndex				= 15;
@@ -44,7 +46,7 @@ public class CallingRecordUtility {
 		return ccrs;
 	}
 	
-	// Get statemnent date
+	// Get statement date
 	public static Date statementDate(String csvPath){
 		Date statementDate = null;
 
@@ -90,50 +92,66 @@ public class CallingRecordUtility {
 		        	}
 					ccr.setClear_service_id(number);
 					
-					// Datetime
-					if(arr.length > chargeDateIndex && arr.length >= chargeTimeIndex){
-						String temp = arr[chargeDateIndex]+" "+arr[chargeTimeIndex];
-						if(!"".equals(temp.trim())){
-							ccr.setCharge_date_time(TMUtils.parseDateDDMMYYYYHHMMSS(temp));
+					// Date
+					if(arr.length > dateFromIndex){
+						String dateFrom = arr[dateFromIndex];
+						if(!"".equals(dateFrom.trim())){
+							ccr.setDate_from(TMUtils.parseDate1YYYYMMDD(dateFrom));
 						}
 						
-						// Integer
-						if(arr.length > durationIndex){
-							if(arr[durationIndex] != null && !"".equals(arr[durationIndex].trim())){
-								ccr.setDuration(Integer.parseInt(arr[durationIndex]));
+						// Date
+						if(arr.length > dateToIndex){
+							String dateTo = arr[dateToIndex];
+							if(!"".equals(dateTo.trim())){
+								ccr.setDate_to(TMUtils.parseDate1YYYYMMDD(dateTo));
 							}
-							
-							// String
-							if(arr.length > ootIdIndex){
-								ccr.setOot_id(arr[ootIdIndex]);
+					
+							// Date & Time
+							if(arr.length > chargeDateIndex && arr.length >= chargeTimeIndex){
+								String temp = arr[chargeDateIndex]+" "+arr[chargeTimeIndex];
+								if(!"".equals(temp.trim())){
+									ccr.setCharge_date_time(TMUtils.parseDateDDMMYYYYHHMMSS(temp));
+								}
 								
-								// String
-								if(arr.length > billingDescriptionIndex){
-									ccr.setBilling_description(arr[billingDescriptionIndex]);
+								// Integer
+								if(arr.length > durationIndex){
+									if(arr[durationIndex] != null && !"".equals(arr[durationIndex].trim())){
+										ccr.setDuration(Integer.parseInt(arr[durationIndex]));
+									}
 									
-									// Double
-									if(arr.length > amountExclIndex){
-										if(arr[amountExclIndex] != null && !"".equals(arr[amountExclIndex].trim())){
-											ccr.setAmount_excl(Double.parseDouble(arr[amountExclIndex]));
-										}
+									// String
+									if(arr.length > ootIdIndex){
+										ccr.setOot_id(arr[ootIdIndex]);
 										
-										// Double
-										if(arr.length > amountInclIndex){
-											if(arr[amountInclIndex] != null && !"".equals(arr[amountInclIndex].trim())){
-												ccr.setAmount_incl(Double.parseDouble(arr[amountInclIndex]));
-											}
-
-											// String
-											if(arr.length > juristictionIndex){
-												if(arr[juristictionIndex] != null && !"".equals(arr[juristictionIndex].trim())){
-													ccr.setJuristiction(arr[juristictionIndex]);
+										// String
+										if(arr.length > billingDescriptionIndex){
+											ccr.setBilling_description(arr[billingDescriptionIndex]);
+											
+											// Double
+											if(arr.length > amountExclIndex){
+												if(arr[amountExclIndex] != null && !"".equals(arr[amountExclIndex].trim())){
+													ccr.setAmount_excl(Double.parseDouble(arr[amountExclIndex]));
 												}
 												
-												// String
-												if(arr.length > phoneCallIndex){
-													ccr.setPhone_called(arr[phoneCallIndex]);
+												// Double
+												if(arr.length > amountInclIndex){
+													if(arr[amountInclIndex] != null && !"".equals(arr[amountInclIndex].trim())){
+														ccr.setAmount_incl(Double.parseDouble(arr[amountInclIndex]));
+													}
+		
+													// String
+													if(arr.length > juristictionIndex){
+														if(arr[juristictionIndex] != null && !"".equals(arr[juristictionIndex].trim())){
+															ccr.setJuristiction(arr[juristictionIndex]);
+														}
+														
+														// String
+														if(arr.length > phoneCallIndex){
+															ccr.setPhone_called(arr[phoneCallIndex]);
+														}
+														
+													}
 												}
-												
 											}
 										}
 									}

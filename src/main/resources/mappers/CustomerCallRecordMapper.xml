@@ -20,19 +20,22 @@
 	
 	
 	<sql id="customerCallRecordColumns">
-		ccr.`id` 					as ccr_id, 
-		ccr.`statement_date` 		as ccr_statement_date, 
+		ccr.`id` 					as ccr_id,
+		ccr.`statement_date` 		as ccr_statement_date,
 		ccr.`record_type` 			as ccr_record_type,
-		ccr.`clear_service_id` 		as ccr_clear_service_id, 
-		ccr.`charge_date_time` 		as ccr_charge_date_time, 
-		ccr.`duration` 				as ccr_duration, 
-		ccr.`oot_id` 				as ccr_oot_id, 
+		ccr.`clear_service_id` 		as ccr_clear_service_id,
+		ccr.`date_from` 			as ccr_date_from,
+		ccr.`date_to` 				as ccr_date_to,
+		ccr.`charge_date_time` 		as ccr_charge_date_time,
+		ccr.`duration` 				as ccr_duration,
+		ccr.`oot_id` 				as ccr_oot_id,
 		ccr.`billing_description` 	as ccr_billing_description,
 		ccr.`amount_excl` 			as ccr_amount_excl,
 		ccr.`amount_incl` 			as ccr_amount_incl,
 		ccr.`phone_called` 			as ccr_phone_called,
 		ccr.`juristiction` 			as ccr_juristiction,
-		ccr.`upload_date` 			as ccr_upload_date
+		ccr.`upload_date` 			as ccr_upload_date,
+		ccr.`used` 					as ccr_used
 	</sql>
 	
 	<resultMap type="CustomerCallRecord" id="customerCallRecordResultMap">
@@ -40,6 +43,8 @@
 		<result property="statement_date" column="ccr_statement_date" />
 		<result property="record_type" column="ccr_record_type" />
 		<result property="clear_service_id" column="ccr_clear_service_id" />
+		<result property="date_from" column="ccr_date_from" />
+		<result property="date_to" column="ccr_date_to" />
 		<result property="charge_date_time" column="ccr_charge_date_time" />
 		<result property="duration" column="ccr_duration" />
 		<result property="oot_id" column="ccr_oot_id" />
@@ -49,6 +54,7 @@
 		<result property="phone_called" column="ccr_phone_called" />
 		<result property="juristiction" column="ccr_juristiction" />
 		<result property="upload_date" column="ccr_upload_date" />
+		<result property="used" column="ccr_used" />
 	</resultMap>
 	
 	<sql id="customerCallRecordWhere">
@@ -59,11 +65,16 @@
 					<if test="params.record_type != null">and (ccr.record_type='T1' or ccr.record_type='T3')</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
 				</when>
+				<when test="params.where == 'query_unused_rental_records'">
+					ccr.used=#{params.used} AND ccr.clear_service_id = #{params.clear_service_id}
+				</when>
 				<otherwise>
 					<if test="params.id != null">ccr.id = #{params.id}</if>
 					<if test="params.statement_date != null">and ccr.statement_date = #{params.statement_date}</if>
 					<if test="params.record_type != null">and ccr.record_type = #{params.record_type}</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
+					<if test="params.date_from != null">and ccr.date_from = #{params.date_from}</if>
+					<if test="params.date_to != null">and ccr.date_to = #{params.date_to}</if>
 					<if test="params.charge_date_time != null">and ccr.charge_date_time = #{params.charge_date_time}</if>
 					<if test="params.duration != null">and ccr.duration = #{params.duration}</if>
 					<if test="params.oot_id != null">and ccr.oot_id = #{params.oot_id}</if>
@@ -73,6 +84,7 @@
 					<if test="params.phone_called != null">and ccr.phone_called = #{params.phone_called}</if>
 					<if test="params.juristiction != null">and ccr.juristiction = #{params.juristiction}</if>
 					<if test="params.upload_date != null">and ccr.upload_date = #{params.upload_date}</if>
+					<if test="params.used != null">and ccr.used = #{params.used}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -118,11 +130,13 @@
 
 	<insert id="insertCustomerCallRecord" parameterType="CustomerCallRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_call_record`(
-			`statement_date`, `record_type`, `clear_service_id`, `charge_date_time`, `duration`, `oot_id`, `billing_description`
-			, `amount_excl`, `amount_incl`, `phone_called`, `juristiction`, `upload_date`
+			`statement_date`, `record_type`, `clear_service_id`, `date_from`, `date_to`, `charge_date_time`
+			, `duration`, `oot_id`, `billing_description`
+			, `amount_excl`, `amount_incl`, `phone_called`, `juristiction`, `upload_date`, `used`
 		) VALUES (
-			#{statement_date},#{record_type},#{clear_service_id},#{charge_date_time},#{duration},#{oot_id},#{billing_description}
-			,#{amount_excl},#{amount_incl},#{phone_called},#{juristiction},#{upload_date}
+			#{statement_date},#{record_type},#{clear_service_id},#{date_from},#{date_to},#{charge_date_time}
+			,#{duration},#{oot_id},#{billing_description}
+			,#{amount_excl},#{amount_incl},#{phone_called},#{juristiction},#{upload_date},#{used}
 		)	
 	</insert>
 
@@ -139,6 +153,8 @@
 			<if test="statement_date != null">statement_date = #{statement_date},</if>
 			<if test="record_type != null">record_type = #{record_type},</if>
 			<if test="clear_service_id != null">clear_service_id = #{clear_service_id},</if>
+			<if test="date_from != null">date_from = #{date_from},</if>
+			<if test="date_to != null">date_to = #{date_to},</if>
 			<if test="charge_date_time != null">charge_date_time = #{charge_date_time},</if>
 			<if test="duration != null">duration = #{duration},</if>
 			<if test="oot_id != null">oot_id = #{oot_id},</if>
@@ -147,7 +163,8 @@
 			<if test="amount_incl != null">amount_incl = #{amount_incl},</if>
 			<if test="phone_called != null">phone_called = #{phone_called},</if>
 			<if test="juristiction != null">juristiction = #{juristiction},</if>
-			<if test="upload_date != null">upload_date = #{upload_date}</if>
+			<if test="upload_date != null">upload_date = #{upload_date},</if>
+			<if test="used != null">used = #{used}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
@@ -167,6 +184,8 @@
 			<if test="params.statement_date != null">and statement_date = #{params.statement_date}</if>
 			<if test="params.record_type != null">and record_type = #{params.record_type}</if>
 			<if test="params.clear_service_id != null">and clear_service_id = #{params.clear_service_id}</if>
+			<if test="params.date_from != null">and date_from = #{params.date_from}</if>
+			<if test="params.date_to != null">and date_to = #{params.date_to}</if>
 			<if test="params.charge_date_time != null">and charge_date_time = #{params.charge_date_time}</if>
 			<if test="params.duration != null">and duration = #{params.duration}</if>
 			<if test="params.oot_id != null">and oot_id = #{params.oot_id}</if>
@@ -176,6 +195,7 @@
 			<if test="params.phone_called != null">and phone_called = #{params.phone_called}</if>
 			<if test="params.juristiction != null">and juristiction = #{params.juristiction}</if>
 			<if test="params.upload_date != null">and upload_date = #{params.upload_date}</if>
+			<if test="params.used != null">and used = #{params.used}</if>
 		</where>
 	</delete>
 	

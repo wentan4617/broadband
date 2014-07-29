@@ -385,14 +385,14 @@ public class CRMController {
 			
 			customerOrder.setOrder_total_price(customerOrder.getPlan().getTopup().getTopup_fee());
 			
-			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
-			cod_topup.setDetail_name("Broadband Top-Up");
-			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
-			cod_topup.setDetail_type("topup");
-			//cod_topup.setDetail_is_next_pay(0);
-			cod_topup.setDetail_unit(1);
-			
-			customerOrder.getCustomerOrderDetails().add(cod_topup);
+//			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+//			cod_topup.setDetail_name("Broadband Top-Up");
+//			cod_topup.setDetail_price(customerOrder.getPlan().getTopup().getTopup_fee());
+//			cod_topup.setDetail_type("topup");
+//			//cod_topup.setDetail_is_next_pay(0);
+//			cod_topup.setDetail_unit(1);
+//			
+//			customerOrder.getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(customerOrder.getPlan().getPlan_group())) {
 			

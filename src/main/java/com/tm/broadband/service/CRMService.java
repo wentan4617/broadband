@@ -193,15 +193,15 @@ public class CRMService {
 			
 			customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
 			
-			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
-			cod_topup.setDetail_name("Broadband Top-Up");
-			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
-			cod_topup.setDetail_type("topup");
-			//cod_topup.setDetail_is_next_pay(0);
-			//cod_topup.setDetail_expired(new Date());
-			cod_topup.setDetail_unit(1);
-			
-			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
+//			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
+//			cod_topup.setDetail_name("Broadband Top-Up");
+//			cod_topup.setDetail_price(plan.getTopup().getTopup_fee());
+//			cod_topup.setDetail_type("topup");
+//			//cod_topup.setDetail_is_next_pay(0);
+//			//cod_topup.setDetail_expired(new Date());
+//			cod_topup.setDetail_unit(1);
+//			
+//			customer.getCustomerOrder().getCustomerOrderDetails().add(cod_topup);
 			
 		} else if ("plan-no-term".equals(plan.getPlan_group())) {
 			
@@ -1093,6 +1093,350 @@ public class CRMService {
 	}
 
 	@Transactional
+	public void createTermPlanInvoiceOverduePenalty() throws ParseException{
+		CustomerInvoice ciTemp = new CustomerInvoice();
+		Calendar beginCal = Calendar.getInstance();
+		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
+		beginCal.set(Calendar.DAY_OF_MONTH, 1);
+		beginCal.set(Calendar.HOUR_OF_DAY, 0);
+		beginCal.set(Calendar.MINUTE, 0);
+		beginCal.set(Calendar.SECOND, 0);
+		Calendar endCal = Calendar.getInstance();
+		endCal.set(Calendar.DAY_OF_MONTH, 1);
+		endCal.set(Calendar.HOUR_OF_DAY, 0);
+		endCal.set(Calendar.MINUTE, 0);
+		endCal.set(Calendar.SECOND, 0);
+		endCal.add(Calendar.DAY_OF_MONTH, -1);
+		ciTemp.getParams().put("where", "by_overdue_penalty");
+		ciTemp.getParams().put("status", "unpaid");
+		ciTemp.getParams().put("begin_date", beginCal.getTime());
+		ciTemp.getParams().put("end_date", endCal.getTime());
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciTemp);
+		for (CustomerInvoice ci : cis) {
+			createInvoicePDFByInvoiceID(ci.getId(), true);
+		}
+	}
+
+	@Transactional
+	public void createTopupPlanInvoice() throws ParseException{
+		
+		// Production environment should edit as shown below
+		// status = using
+		// order_type = order-topup
+		// next_invoice_create_date = new Date()
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("order_status", "using");
+		coQuery.getParams().put("order_type", "order-topup");
+		coQuery.getParams().put("next_invoice_create_date", new Date());
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coQuery);
+		
+		// If found any order(s)
+		if(cos.size() > 0){
+			
+			Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
+			Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
+			
+			boolean isRegenerateInvoice = false;
+			
+			for (CustomerOrder co : cos) {
+				createTopupPlanInvoiceByOrder(co
+						, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
+						, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
+						, isRegenerateInvoice);
+			}
+		}
+	}
+	
+	@Transactional
+	public void createTopupPlanInvoiceByOrder(CustomerOrder co,
+			Notification notificationEmailFinal,
+			Notification notificationSMSFinal,
+			boolean isRegenerateInvoice) throws ParseException{
+		
+		Customer c = co.getCustomer();
+		
+		// Current invoice
+		CustomerInvoice ci = new CustomerInvoice();
+		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
+		
+		// Previous invoice's preparation
+		CustomerInvoice ciPreQuery = new CustomerInvoice();
+		ciPreQuery.getParams().put("customer_id", c.getId());
+		ciPreQuery.getParams().put("order_id", co.getId());
+		// Previous invoice
+		CustomerInvoice cpi = null;
+		
+		if(isRegenerateInvoice){
+			CustomerInvoice ciCurQuery = new CustomerInvoice();
+			ciCurQuery.getParams().put("where", "by_max_id");
+			ciCurQuery.getParams().put("customer_id", c.getId());
+			ciCurQuery.getParams().put("order_id", co.getId());
+			ci = ciMapper.selectCustomerInvoice(ciCurQuery);
+			if(ci != null && !"paid".equals(ci.getStatus())){
+				ciPreQuery.getParams().put("where", "by_second_id");
+				cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
+			} else if(ci != null) {
+				ciPreQuery.getParams().put("where", "by_max_id");
+				cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
+				ci = new CustomerInvoice();
+				ci.setCustomer_id(c.getId());
+				ci.setOrder_id(co.getId());
+				ci.setCreate_date(new Date());
+				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
+				System.out.println("due_date_ci_!null: "+ci.getDue_date());
+				ciMapper.insertCustomerInvoice(ci);
+			} else if(ci == null){
+				ci = new CustomerInvoice();
+				ci.setCustomer_id(c.getId());
+				ci.setOrder_id(co.getId());
+				ci.setCreate_date(new Date());
+				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
+				System.out.println("due_date_ci_null: "+ci.getDue_date());
+				ciMapper.insertCustomerInvoice(ci);
+			}
+		} else {
+			ciPreQuery.getParams().put("where", "by_max_id");
+			cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
+			ci = new CustomerInvoice();
+			ci.setCustomer_id(c.getId());
+			ci.setOrder_id(co.getId());
+			ci.setCreate_date(new Date());
+			ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
+			System.out.println("!regenerate: "+ci.getDue_date());
+			ciMapper.insertCustomerInvoice(ci);
+			// Set id for invoice's update
+		}
+		
+		// Delete all invoice's details
+		if(ci!=null && ci.getId()!=null){
+			this.ciDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(ci.getId());
+		}
+		ci.setAmount_paid(ci.getAmount_paid()!=null ? ci.getAmount_paid() : 0d);
+		ci.setAmount_payable(ci.getAmount_payable()!=null ? ci.getAmount_payable() : 0d);
+		ci.setBalance(ci.getBalance()!=null ? ci.getBalance() : 0d);
+		ci.getParams().put("id", ci.getId());	// For update invoice use
+
+		boolean isFirst = //true;
+				cpi == null ? true : false;
+
+		// Calculate invoice's payable amount
+		Double totalAmountPayable = 0d;
+		Double totalCreditBack = 0d;
+		
+		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+		
+		String pstn_number = null;
+		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+
+		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+		
+		for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
+			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			
+			if("pstn".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))
+					&& ("".equals(pstn_number) || pstn_number==null)){
+					pstn_number = cod.getPstn_number();
+					
+				}
+				
+			}
+			
+			if(isFirst){
+				
+				if("plan-topup".equals(cod.getDetail_type())){
+					
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					Calendar cal = Calendar.getInstance(Locale.CHINA);
+					cal.setTime(co.getOrder_using_start());
+					cal.add(Calendar.WEEK_OF_MONTH, 1);
+					cal.add(Calendar.DAY_OF_WEEK, -1);
+					Date startFrom = co.getOrder_using_start();
+					Date endTo = cal.getTime();
+					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					cid.setInvoice_detail_price(cod.getDetail_price());
+					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					
+					cids.add(cid);
+					
+					Double subTotalPrice = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
+					
+				} else {
+					if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+						
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_discount(cod.getDetail_price());
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						
+						cids.add(cid);
+						
+						Double subTotalCredit = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit());
+						
+						totalCreditBack = TMUtils.bigAdd(totalCreditBack, subTotalCredit);
+						
+					} else {
+
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_price(cod.getDetail_price());
+						cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						
+						cids.add(cid);
+						
+						Double subTotalPrice = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
+						
+					}
+				}
+				
+			} else {
+				
+				if("plan-topup".equals(cod.getDetail_type())){
+					
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					Calendar cal = Calendar.getInstance(Locale.CHINA);
+					cal.setTime(co.getNext_invoice_create_date());
+					cal.add(Calendar.WEEK_OF_MONTH, 1);
+					cal.add(Calendar.DAY_OF_WEEK, -1);
+					Date startFrom = co.getNext_invoice_create_date();
+					Date endTo = cal.getTime();
+					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					cid.setInvoice_detail_price(cod.getDetail_price());
+					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					
+					cids.add(cid);
+					
+					Double subTotalPrice = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
+					
+				} else {
+					if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+						
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_discount(cod.getDetail_price());
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						
+						cids.add(cid);
+						
+						Double subTotalCredit = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit());
+						
+						totalCreditBack = TMUtils.bigAdd(totalCreditBack, subTotalCredit);
+						
+					} else if(cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_price(cod.getDetail_price());
+						cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						
+						cids.add(cid);
+						
+						Double subTotalPrice = TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
+						
+					}
+				}
+			}
+			
+			if("plan-topup".equals(cod.getDetail_type())){
+				
+				int nextInvoiceWeek = 1;
+				int nextInvoiceDay = -2;
+				Calendar calNextInvoiceDay = Calendar.getInstance();
+				calNextInvoiceDay.setTime(co.getNext_invoice_create_date_flag());
+				calNextInvoiceDay.add(Calendar.WEEK_OF_MONTH, nextInvoiceWeek);
+				// update customer order's next invoice create day flag begin
+				co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+				// update customer order's next invoice create day flag end
+
+				calNextInvoiceDay.add(Calendar.DAY_OF_WEEK, nextInvoiceDay);
+				// update customer order's next invoice create day begin
+				co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+				// update customer order's next invoice create day end
+				
+				co.getParams().put("id", co.getId());
+				
+				this.customerOrderMapper.updateCustomerOrder(co);
+				
+			}
+		}
+
+		// store company detail begin
+		CompanyDetail companyDetail = companyDetailMapper.selectCompanyDetail();
+		// store company detail end
+		
+		invoicePDF.setCompanyDetail(companyDetail);
+		invoicePDF.setCustomer(c);
+		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+		
+		if(pstn_number!=null && !"".equals(pstn_number.trim())){
+				
+			totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			
+			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+		}
+		
+		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
+		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
+//		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
+		
+		// Set current invoice's payable amount
+		ci.setAmount_payable(totalAmountPayable);
+		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
+		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+
+		// Iteratively inserting invoice detail(s) into tm_invoice_detail table
+		for (CustomerInvoiceDetail cid : cids) {
+			cid.setInvoice_id(ci.getId());
+			ciDetailMapper.insertCustomerInvoiceDetail(cid);
+		}
+		
+		// Set invoice details into 
+		ci.setCustomerInvoiceDetails(cids);
+
+		invoicePDF.setCurrentCustomerInvoice(ci);
+
+		// set file path
+		Map<String, Object> map = null;
+		try {
+			map = invoicePDF.create();
+			// generate invoice PDF
+			ci.setInvoice_pdf_path((String) map.get("filePath"));
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		ci.setStatus("unpaid");
+		ciMapper.updateCustomerInvoice(ci);
+
+		// Deleting repeated invoices
+		ciMapper.deleteCustomerInvoiceByRepeat();
+
+		if(!isRegenerateInvoice){
+			
+			// call mail at value retriever
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c,  co, ci, companyDetail);
+			ApplicationEmail applicationEmail = new ApplicationEmail();
+			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setSubject(notificationEmailFinal.getTitle());
+			applicationEmail.setContent(notificationEmailFinal.getContent());
+			// binding attachment name & path to email
+			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+			applicationEmail.setAttachPath((String) map.get("filePath"));
+			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+			// get sms register template from db
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, co, ci, companyDetail);
+			// send sms to customer's mobile phone
+			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
+		}
+		
+	}
+
+	@Transactional
 	public void createTermPlanInvoice() throws ParseException{
 		
 		// Production environment should edit as shown below
@@ -1116,31 +1460,6 @@ public class CRMService {
 				createTermPlanInvoiceByOrder(co
 						, isRegenerateInvoice);
 			}
-		}
-	}
-
-	@Transactional
-	public void createTermPlanInvoiceOverduePenalty() throws ParseException{
-		CustomerInvoice ciTemp = new CustomerInvoice();
-		Calendar beginCal = Calendar.getInstance();
-		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
-		beginCal.set(Calendar.DAY_OF_MONTH, 1);
-		beginCal.set(Calendar.HOUR_OF_DAY, 0);
-		beginCal.set(Calendar.MINUTE, 0);
-		beginCal.set(Calendar.SECOND, 0);
-		Calendar endCal = Calendar.getInstance();
-		endCal.set(Calendar.DAY_OF_MONTH, 1);
-		endCal.set(Calendar.HOUR_OF_DAY, 0);
-		endCal.set(Calendar.MINUTE, 0);
-		endCal.set(Calendar.SECOND, 0);
-		endCal.add(Calendar.DAY_OF_MONTH, -1);
-		ciTemp.getParams().put("where", "by_overdue_penalty");
-		ciTemp.getParams().put("status", "unpaid");
-		ciTemp.getParams().put("begin_date", beginCal.getTime());
-		ciTemp.getParams().put("end_date", endCal.getTime());
-		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciTemp);
-		for (CustomerInvoice ci : cis) {
-			createInvoicePDFByInvoiceID(ci.getId(), true);
 		}
 	}
 
@@ -1413,6 +1732,32 @@ public class CRMService {
 				}
 				
 			}
+			
+			if ("plan-term".equals(cod.getDetail_type())) {
+				
+				// if is next invoice then plus one month else plus unit month(s)
+				int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
+				int nextInvoiceDay = -6;
+				Calendar calNextInvoiceDay = Calendar.getInstance();
+				calNextInvoiceDay.setTime(!isFirst 
+							? (co.getOrder_using_start() != null 
+							? co.getOrder_using_start() 
+							: new Date()) 
+					: co.getNext_invoice_create_date_flag());
+				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+				// update customer order's next invoice create day flag begin
+				co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+				// update customer order's next invoice create day flag end
+
+				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+				// update customer order's next invoice create day begin
+				co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+				// update customer order's next invoice create day end
+				
+				co.getParams().put("id", co.getId());
+				
+				this.customerOrderMapper.updateCustomerOrder(co);
+			}
 		}
 
 		// store company detail begin
@@ -1425,6 +1770,8 @@ public class CRMService {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
+				
+				totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 				
 				totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
 			}
@@ -1668,7 +2015,7 @@ public class CRMService {
 					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = -5;
+					int nextInvoiceDay = -6;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
 					calNextInvoiceDay.setTime(!is_Next_Invoice 
 								? (customerOrder.getOrder_using_start() != null 
@@ -1698,6 +2045,9 @@ public class CRMService {
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
+			
+			totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			
 			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
 			
 		}
@@ -1931,6 +2281,13 @@ public class CRMService {
 						cal.setTime(TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str()));
 						cal.add(Calendar.MONTH, cod.getDetail_unit());
 						cal.add(Calendar.DAY_OF_MONTH, -1);
+						Date endTo = cal.getTime();
+						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					} else if("plan-topup".equals(cod.getDetail_type())){
+						Calendar cal = Calendar.getInstance();
+						Date startFrom = TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str());
+						cal.setTime(TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str()));
+						cal.add(Calendar.WEEK_OF_MONTH, 1);
 						Date endTo = cal.getTime();
 						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
 					}

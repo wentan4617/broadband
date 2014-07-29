@@ -71,7 +71,9 @@ public class ReceiptPDFCreator extends ITextUtils {
 		if(this.getCustomerOrder().getCustomerOrderDetails().size()>0){
 			List<CustomerOrderDetail> cods = this.getCustomerOrder().getCustomerOrderDetails();
 			for (CustomerOrderDetail  cod: cods) {
-				if(cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-term")){
+				if(cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-term")
+				|| cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-no-term")
+				|| cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-topup")){
 					// SAVE PLAN
 					codPlans.add(cod);
 				} else {
@@ -409,21 +411,25 @@ public class ReceiptPDFCreator extends ITextUtils {
         /**
          * BEGIN PLAN LIST
          */
-        // BEGIN PLAN ROW HEADER
-        addCol(orderDetailTable, "PLAN", 5, firstColIndent, ITextFont.arial_bold_10, titlePaddingTop, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(orderDetailTable, "Data", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Term", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
-        addCol(orderDetailTable, "Monthly", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
-        addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
-        addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
-        // END PLAN ROW HEADER
 
         // BEGIN PLAN ROW COLUMN
         if(this.getCodPlans().size()>0){
+            
+            String chargeBy = "plan-topup".equals(this.getCodPlans().get(0).getDetail_plan_group()) ? "Weekly" : "Monthly";
+	        	
+	        // BEGIN PLAN ROW HEADER
+	        addCol(orderDetailTable, "PLAN", 5, firstColIndent, ITextFont.arial_bold_10, titlePaddingTop, 0F, PdfPCell.ALIGN_LEFT);
+	        addCol(orderDetailTable, "Data", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+	        addCol(orderDetailTable, "Term", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
+	        addCol(orderDetailTable, chargeBy, 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+	        addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+	        addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
+	        addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+	        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+	        addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_10, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
+	        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+	        // END PLAN ROW HEADER
+	        
             for (CustomerOrderDetail cod : this.getCodPlans()) {
             	
             	// BEGIN PREVENT NULL POINTER EXCEPTION
@@ -440,11 +446,13 @@ public class ReceiptPDFCreator extends ITextUtils {
                 
                 // INCREASE TOTAL PRICE
                 totalPrice += price.multiply(unit).doubleValue();
+                
+                String terms = "plan-topup".equals(cod.getDetail_plan_group()) ? " weeks" : " months";
 
                 // BEGIN PLAN ROWS
                 addCol(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT);
                 addCol(orderDetailTable, cod.getDetail_data_flow() < 0 ? "Ultimate" : cod.getDetail_data_flow()+"GB", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
-                addCol(orderDetailTable, cod.getDetail_term_period()+" months", 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
+                addCol(orderDetailTable, cod.getDetail_term_period()+terms, 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER);
                 addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 addCol(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
                 addCol(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(price.multiply(unit).doubleValue()))), 1, 0F, ITextFont.arial_normal_10, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_RIGHT);
