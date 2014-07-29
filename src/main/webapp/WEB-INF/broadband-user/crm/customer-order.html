@@ -54,8 +54,7 @@
 			<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-xs btn-primary xs-btn-width-long" data-name="<.= customerOrder[i].id .>_pay_off_order"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Pay Off This Order</a>&nbsp;&nbsp;
 			<. } .>
 			<br/>
-		<. } .>
-		<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
+		<. } if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
 			<br/>
 			<strong>Termed Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
@@ -74,6 +73,11 @@
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_termination_refund" data-type="termination_refund">
 				Termination refund&nbsp;&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>
 			</a>
+		<. } if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-topup'){ .>
+			<br/>
+			<strong>Topup Order's Operations:</strong><br/><br/>
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_topup_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_generate_topup_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
 		<. } .>
 		<hr/>
 		

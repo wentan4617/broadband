@@ -381,8 +381,47 @@ public class TMUtils {
 	}
 	
 	// BEGIN CustomerCallRecord OPERATION
+	public static Double ccrRentalOperation(String pstn_number
+			, List<CustomerInvoiceDetail> cids, Double totalAmountPayable
+			, CustomerCallRecordMapper customerCallRecordMapper){
+		
+		Double totalAmountIncl = 0d;
+		
+		CustomerCallRecord ccrQuery = new CustomerCallRecord();
+		ccrQuery.getParams().put("where", "query_unused_rental_records");
+		ccrQuery.getParams().put("clear_service_id", 
+				TMUtils.formatPhoneNumber(pstn_number)
+		);
+		ccrQuery.getParams().put("used", false);
+		List<CustomerCallRecord> ccrs = customerCallRecordMapper.selectCustomerCallRecord(ccrQuery);
+		
+		if(ccrs!=null && ccrs.size()>0){
+			for (CustomerCallRecord ccr : ccrs) {
+				
+				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+				cid.setInvoice_detail_name(ccr.getBilling_description());
+				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
+				cid.setInvoice_detail_price(ccr.getAmount_incl());
+				cid.setInvoice_detail_unit(1);
+				
+				cids.add(cid);
+				
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
+			}
+			
+			CustomerCallRecord ccr = new CustomerCallRecord();
+			ccr.setUsed(true);
+			ccr.getParams().put("clear_service_id", pstn_number);
+			ccr.getParams().put("used", false);
+			customerCallRecordMapper.updateCustomerCallRecord(ccr);
+		}
+		
+		return TMUtils.bigAdd(totalAmountPayable, totalAmountIncl);
+	}
+	
+	// BEGIN CustomerCallRecord OPERATION
 	public static Double ccrOperation(List<CustomerOrderDetail> pcms
-			,String pstn_number, List<CustomerInvoiceDetail> cids
+			, String pstn_number, List<CustomerInvoiceDetail> cids
 			, InvoicePDFCreator invoicePDF, Double totalPayableAmouont
 			, CustomerCallRecordMapper customerCallRecordMapper
 			, CallInternationalRateMapper callInternationalRateMapper
@@ -661,33 +700,33 @@ public class TMUtils {
 		return totalCreditBack;
 	}
 
-		public static Double getCallingTotalCreditBack(List<CustomerOrderDetail> pcms
-				,CustomerOrderDetail pcm
-				,List<CallInternationalRate> cirs
-				,Double duration
-				,Double totalCreditBack
-				,Double costPerMinute
-				,Integer index){
-			
-			// If got sufficient given minutes
-			if(pcm.getDetail_unit() > 0){
-				// If Present Minutes greater than duration
-				if(pcm.getDetail_unit() >= duration){
-					// Decrease Present Minutes
-					pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
-					// Replace old one to new one
-					Collections.replaceAll(pcms, pcms.get(index), pcm);
-					totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
-				} else {
-					totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
-					// Decrease Present Minutes
-					pcm.setDetail_unit(0);
-					// Replace old one to new one
-					Collections.replaceAll(pcms, pcms.get(index), pcm);
-				}
+	public static Double getCallingTotalCreditBack(List<CustomerOrderDetail> pcms
+			,CustomerOrderDetail pcm
+			,List<CallInternationalRate> cirs
+			,Double duration
+			,Double totalCreditBack
+			,Double costPerMinute
+			,Integer index){
+		
+		// If got sufficient given minutes
+		if(pcm.getDetail_unit() > 0){
+			// If Present Minutes greater than duration
+			if(pcm.getDetail_unit() >= duration){
+				// Decrease Present Minutes
+				pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
+				// Replace old one to new one
+				Collections.replaceAll(pcms, pcms.get(index), pcm);
+				totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
+			} else {
+				totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
+				// Decrease Present Minutes
+				pcm.setDetail_unit(0);
+				// Replace old one to new one
+				Collections.replaceAll(pcms, pcms.get(index), pcm);
 			}
-			return totalCreditBack;
 		}
+		return totalCreditBack;
+	}
 	
 	
 	public static int judgeDay(int year, int month) {

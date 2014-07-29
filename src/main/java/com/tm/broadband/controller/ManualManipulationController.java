@@ -283,6 +283,25 @@ public class ManualManipulationController {
 			
 			// Iteratively insert into database
 			for (CustomerCallRecord ccr : ccrs) {
+				if(ccr.getBilling_description()!=null){
+					switch (ccr.getBilling_description()) {
+					case "Call restrict with no Directory Access nat Res":
+						ccr.setUsed(false);
+						break;
+					case "Caller Display Monthly Charge per line Res":
+						ccr.setUsed(false);
+						break;
+					case "Call waiting nat Res":
+						ccr.setUsed(false);
+						break;
+					case "Faxability Monthly Rental Res":
+						ccr.setUsed(false);
+						break;
+					case "Smart Bundle package":
+						ccr.setUsed(false);
+						break;
+					}
+				}
 				ccr.setUpload_date(new Date());
 				this.billingService.createCustomerCallRecord(ccr);
 			}

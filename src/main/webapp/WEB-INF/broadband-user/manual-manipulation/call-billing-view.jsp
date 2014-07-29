@@ -223,7 +223,7 @@
 				</div>
 				<div class="modal-body">
 					<p>
-						Sure to insert the related CSV file's data into database?
+						Sure to insert the related CSV file's data into database? This will rewrite the same statement date datum!!!
 					</p>
 				</div>
 				<div class="modal-footer">

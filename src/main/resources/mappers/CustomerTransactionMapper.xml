@@ -73,7 +73,9 @@
 	</select>
 	
 	<select id="selectCustomerTransactionsByTransactionDate" parameterType="Date" resultType="CustomerTransaction">
-		select * from tm_customer_transaction where CONVERT(transaction_date, DATE) between CONVERT(#{0}, DATE) and CONVERT(#{1}, DATE)
+		select * from tm_customer_transaction
+		where CONVERT(transaction_date, DATE) between CONVERT(#{0}, DATE) and CONVERT(#{1}, DATE)
+		and card_name IN ('Visa','Cash','Account2Account','DDPay','Credit Card','MasterCard')
 	</select>
 	
 	<!-- // END SELECT AREA -->

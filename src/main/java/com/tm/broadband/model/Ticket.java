@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.tm.broadband.util.TMUtils;
+
 public class Ticket implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -224,6 +226,7 @@ public class Ticket implements Serializable {
 	}
 
 	public String getCreate_date_str() {
+		this.setCreate_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(this.getCreate_date()));
 		return create_date_str;
 	}
 

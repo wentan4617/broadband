@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -784,11 +785,11 @@ public class CRMRestController {
 		co.setOrder_status("using");
 
 		if (!"order-topup".equals(customerOrder.getOrder_type())
-			&& (!"order-term".equals(customerOrder.getOrder_type())
-				|| ("order-term".equals(customerOrder.getOrder_type())
-					&& (customerOrder.getIs_ddpay()==null
-						|| (customerOrder.getIs_ddpay()!=null
-							&& !customerOrder.getIs_ddpay()))))) {
+		&& (!"order-term".equals(customerOrder.getOrder_type())
+		|| ("order-term".equals(customerOrder.getOrder_type())
+		&& (customerOrder.getIs_ddpay()==null
+			|| (customerOrder.getIs_ddpay()!=null && !customerOrder.getIs_ddpay()))))) {
+			
 			Calendar calNextInvoiceDay = Calendar.getInstance();
 			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 			// Add plan unit months
@@ -800,10 +801,17 @@ public class CRMRestController {
 			// set next invoice date
 			co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-		} else {
-			Calendar cal = Calendar.getInstance();
+		} else if("order-topup".equals(customerOrder.getOrder_type())) {
+			Calendar cal = Calendar.getInstance(Locale.CHINA);
+			cal.setTime(new Date());
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
-			co.setOrder_due(cal.getTime());
+			cal.add(Calendar.DAY_OF_WEEK, -1);
+			// Set next invoice create date flag
+			co.setNext_invoice_create_date_flag(cal.getTime());
+			// Minus 1 days
+			cal.add(Calendar.DAY_OF_WEEK, -2);
+			// set next invoice date
+			co.setNext_invoice_create_date(cal.getTime());
 		}
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
@@ -1227,6 +1235,33 @@ public class CRMRestController {
 		return json;
 	}
 
+	// termed manually-generate
+	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/topup/manually-generate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateTopupOrderInvoice(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("generateType") String generateType,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		boolean isRegenerateInvoice = "regenerate".equals(generateType);
+
+		try {
+			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
+			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
+			this.crmService.createTopupPlanInvoiceByOrder(co
+					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
+					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
+					, isRegenerateInvoice);
+			
+			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return json;
+	}
+
 	// EarlyTerminationCharge Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/early-termination-charge/invoice/generate", method = RequestMethod.POST)
 	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model,
@@ -1440,7 +1475,9 @@ public class CRMRestController {
 		
 		CustomerOrder co = new CustomerOrder();
 		co.setReceipt_pdf_path(receiptPath);
-		if("pending".equals(c.getCustomerOrder().getOrder_status())){
+		if("pending".equals(c.getCustomerOrder().getOrder_status())
+		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
+		  || "void".equals(c.getCustomerOrder().getOrder_status())){
 			co.setOrder_status("paid");
 		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
 			co.setOrder_status("ordering-paid");
@@ -1454,7 +1491,7 @@ public class CRMRestController {
 		CustomerTransaction ct = new CustomerTransaction();
 		ct.setAmount(paid_amount);
 		ct.setAmount_settlement(paid_amount);
-		ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account-2-Account");
+		ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account2Account");
 		ct.setTransaction_date(new Date());
 		ct.setCustomer_id(customerId);
 		ct.setOrder_id(c.getCustomerOrder().getId());
