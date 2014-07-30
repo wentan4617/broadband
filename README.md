@@ -5,6 +5,7 @@ Total Mobile Solution Internet Service Web Project
 
 ###Specification
 
+* 多次提交数据库的操作尽量都封装进一个Service方法
 * 编写测试文档（测试数据填写规范），测试行程表（测试时间段，例如11，1，3，5点各测一轮），上报测试结果
 * 所有表单提交的controller方法，如果是要页面跳转的都要redirect.
 * Naming Conventions
@@ -15,6 +16,15 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+
+demand version 1.9.9 2014-07-30
+
+* [分别复审term和no term出账时plan描述所记录的服务开通至终止日期是否准确，调整term及no term非第一张invoice的plan desc里显示的服务开通至终止日期.](steven)
+* [复审Service Given时topup出账plan desc服务开通至终止日期.](steven)
+* 开发invoice的年度统计，柱状显示每个月的invoice支付额.(steven)
+* 开发transaction的年度统计，柱状显示每个月的transaction交易额.(steven)
+* 尝试将所有图表都做成局部刷新，然后将相关的年月统计合并到单个页面以选项卡来区分开.(steven)
+* customer order界面status选择disconnect时下方显示隐藏的
 
 demand version 1.9.8 2014-07-29
 
@@ -31,7 +41,7 @@ demand version 1.9.5 2014-07-28
 * Ticket的Existing查询客户加多一个PSTN字段.(steven)
 * 只有Weekly Topup的才能使用Voucher充值.(steven)
 * [将Provision显示的价格从order的price改成monthly pay.](steven)
-* 在后台顶部导航的用户名旁边显示个Message，显示Message的数目.(steven)
+* 在后台顶部导航的用户名旁边显示个Message，实时更新Message的数量.(steven)
 * [后台invoice的Make Payment新增一个CyberPark Credit.](steven)
 
 demand version 1.9.2 2014-07-25

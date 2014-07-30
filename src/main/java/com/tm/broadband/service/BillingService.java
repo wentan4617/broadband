@@ -1,5 +1,6 @@
 package com.tm.broadband.service;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
@@ -34,6 +35,9 @@ import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.model.VoucherFileUpload;
+import com.tm.broadband.util.CallingRecordUtility;
+import com.tm.broadband.util.CallingRecordUtility_CallPlus;
+import com.tm.broadband.util.TMUtils;
 
 /**
  * Billing service
@@ -432,4 +436,60 @@ public class BillingService {
 	/**
 	 * Chart Services END
 	 */
+	
+	/**
+	 * insert customer call record
+	 */
+	@Transactional
+	public void insertCustomerCallRecord(String billingFileId
+			, String billing_type
+			, String statementDate
+			, String filePath){
+
+		BillingFileUpload bfu = new BillingFileUpload();
+		bfu.getParams().put("id", billingFileId);
+		bfu.setInserted_database(true);					// assign inserted_database to true which is 1
+		bfu.setInsert_date(new Timestamp(System.currentTimeMillis()));
+		this.billingFileUploadMapper.updateBillingFileUpload(bfu);
+		
+		if("chorus".equals(billing_type)){
+			CustomerCallRecord ccrTemp = new CustomerCallRecord();
+			ccrTemp.getParams().put("statement_date", TMUtils.parseDateYYYYMMDD(statementDate));
+			this.customerCallRecordMapper.deleteCustomerCallRecord(ccrTemp);
+			
+			// Get All data from the CSV file
+			List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
+			
+			// Iteratively insert into database
+			for (CustomerCallRecord ccr : ccrs) {
+				if(ccr.getBilling_description()!=null){
+					switch (ccr.getBilling_description()) {
+					case "Call restrict with no Directory Access nat Res":
+						ccr.setUsed(false);
+						break;
+					case "Caller Display Monthly Charge per line Res":
+						ccr.setUsed(false);
+						break;
+					case "Call waiting nat Res":
+						ccr.setUsed(false);
+						break;
+					case "Faxability Monthly Rental Res":
+						ccr.setUsed(false);
+						break;
+					case "Smart Bundle package":
+						ccr.setUsed(false);
+						break;
+					}
+				}
+				ccr.setUpload_date(new Date());
+				this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
+			}
+		} else if("callplus".equals(billing_type)){
+			List<CustomerCallingRecordCallplus> ccrcs = CallingRecordUtility_CallPlus.ccrcs(filePath);
+			
+			for (CustomerCallingRecordCallplus ccrc : ccrcs) {
+				this.customerCallingRecordCallplusMapper.insertCustomerCallingRecordCallplus(ccrc);
+			}
+		}
+	}
 }

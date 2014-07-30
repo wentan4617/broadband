@@ -162,8 +162,10 @@
 						<. }.>
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk" style="font-size:22px;"></span></a>&nbsp;
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 							<!-- send icon -->
 							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="font-size:22px;"><span class="glyphicon glyphicon-send"></span></a>
+						<. }.>
 						</td>
 		<.
 						} else {
@@ -175,14 +177,16 @@
 						<. }.>
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 							<!-- send icon -->
 							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-name="send_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-send"></span></a>
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-hdd"></span></a>
+						<. }.>
 						</td>
 		<.
 						}
 					} else {
-						if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){
+						if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant' || user_role=='provision-team'){
 		.>
 					<td>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>

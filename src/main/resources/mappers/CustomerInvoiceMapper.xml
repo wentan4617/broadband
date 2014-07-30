@@ -395,7 +395,7 @@
 		DELETE FROM `tm_customer_invoice` WHERE id NOT IN (
 		    SELECT a.id FROM (
 		    	SELECT id FROM `tm_customer_invoice` 
-				GROUP BY customer_id, create_date,amount_payable, status
+				GROUP BY customer_id, order_id, create_date, amount_payable, status
 		    ) a
 		)
 	</delete>

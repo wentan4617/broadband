@@ -306,6 +306,26 @@
 	</bean>
 	<!-- END customerInvoiceAfterDueNotice -->
 	
+	<!-- BEGIN createNextTopupPlanInvoicePDF -->
+	<!-- normal business Bean -->
+	<bean name="customerCreateTopupPlanInvoicePDFEachMonth" class="com.tm.broadband.quartz.CustomerCreateTopupPlanInvoicePDFEachMonth" />
+	<!-- assignment -->
+	<bean id="customerCreateTopupPlanInvoicePDFEachMonthJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerCreateTopupPlanInvoicePDFEachMonth" />
+		<property name="targetMethod" value="createTopupInvoicePDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerCreateTopupPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerCreateTopupPlanInvoicePDFEachMonthJob" />
+		<property name="cronExpression" value="0 0 13 * * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every day's 2:00 p.m. -->
+		<!-- 0 0 14 * * ? -->
+	</bean>
+	<!-- END createNextTopupPlanInvoicePDF -->
+	
 	<!-- plan -->
 	<!-- <bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
@@ -318,6 +338,7 @@
 				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />
 				<ref bean="customerCheckPendingWarningOrderEachFiveDaysTrigger" />
 				<ref bean="customerInvoiceAfterDueNoticeTrigger" />
+				<ref bean="customerCreateTopupPlanInvoicePDFEachMonthTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">

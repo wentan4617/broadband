@@ -154,7 +154,9 @@ public class InvoicePDFCreator extends ITextUtils {
         document.add(createInvoiceSummary());
 
         // DUE NOTIFICATION
-        document.add(createDueNotification());
+        if(this.getLastCustomerInvoice()!=null){
+            document.add(createDueNotification());
+        }
 
         
         /*
@@ -189,10 +191,12 @@ public class InvoicePDFCreator extends ITextUtils {
 	        addCol(paymentSlipTable, "Invoice Number").font(ITextFont.arial_bold_8).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).indent(14F).o();
 	        addCol(paymentSlipTable, "Due Date").font(ITextFont.arial_bold_8).bgColor(new BaseColor(234,234,234)).indent(14F).o();
 	
+	        boolean isFirst = this.getLastCustomerInvoice()==null;
+	        
 	        // LIGHT GRAY VALUE
 	        addCol(paymentSlipTable, this.getCustomer().getId().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getId().toString()).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
-	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getDue_date() != null ? TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date()) : " ").font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
+	        addCol(paymentSlipTable, isFirst ? "" : this.getCurrentCustomerInvoice().getDue_date() != null ? TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date()) : " ").font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).o();
@@ -471,8 +475,9 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(invoiceSummaryTable, 2F, colspan);
 
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
-    	addCol(invoiceSummaryTable, "Current Invoice Total Due on").colspan(4).font(ITextFont.arial_normal_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+        boolean isFirst = this.getLastCustomerInvoice()==null;
+    	addCol(invoiceSummaryTable, isFirst ? "" : "Current Invoice Total Due on").colspan(4).font(ITextFont.arial_normal_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, isFirst ? "" : TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance))).colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
         
         return invoiceSummaryTable;

@@ -49,7 +49,7 @@ tbody td {text-align:center;}
 								Paid&nbsp;<span class="badge">${paidSum}</span>
 							</a>
 							<a href="${ctx}/broadband-user/billing/invoice/view/1/orderNoInvoice" class="btn btn-default ${orderNoInvoiceActive }">
-								Order No Invoice&nbsp;<span class="badge">${orderNoInvoiceSum}</span>
+								Haven't Activated&nbsp;<span class="badge">${orderNoInvoiceSum}</span>
 							</a>
 						</div>
 					</div>
