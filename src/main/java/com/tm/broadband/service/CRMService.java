@@ -1137,12 +1137,14 @@ public class CRMService {
 			Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 			
 			boolean isRegenerateInvoice = false;
+			boolean is_Next_Invoice = true;
 			
 			for (CustomerOrder co : cos) {
 				createTopupPlanInvoiceByOrder(co
 						, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 						, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
-						, isRegenerateInvoice);
+						, isRegenerateInvoice
+						, is_Next_Invoice);
 			}
 		}
 	}
@@ -1151,7 +1153,8 @@ public class CRMService {
 	public void createTopupPlanInvoiceByOrder(CustomerOrder co,
 			Notification notificationEmailFinal,
 			Notification notificationSMSFinal,
-			boolean isRegenerateInvoice) throws ParseException{
+			boolean isRegenerateInvoice,
+			boolean is_Next_Invoice) throws ParseException{
 		
 		Customer c = co.getCustomer();
 		
@@ -1195,12 +1198,18 @@ public class CRMService {
 				ciMapper.insertCustomerInvoice(ci);
 			}
 		} else {
+			// If Not Regenerate then set next invoice create date
+			Date invoiceCreateDay = !is_Next_Invoice 
+					? (co.getOrder_using_start() != null 
+							? co.getOrder_using_start() 
+							: new Date()) 
+					: co.getNext_invoice_create_date();
 			ciPreQuery.getParams().put("where", "by_max_id");
 			cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
 			ci = new CustomerInvoice();
 			ci.setCustomer_id(c.getId());
 			ci.setOrder_id(co.getId());
-			ci.setCreate_date(new Date());
+			ci.setCreate_date(invoiceCreateDay);
 			ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
 			System.out.println("!regenerate: "+ci.getDue_date());
 			ciMapper.insertCustomerInvoice(ci);
@@ -1251,7 +1260,9 @@ public class CRMService {
 					Calendar cal = Calendar.getInstance(Locale.CHINA);
 					cal.setTime(co.getOrder_using_start());
 					cal.add(Calendar.WEEK_OF_MONTH, 1);
+					System.out.println("cal.add(Calendar.WEEK_OF_MONTH, 1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 					cal.add(Calendar.DAY_OF_WEEK, -1);
+					System.out.println("cal.add(Calendar.DAY_OF_WEEK, -1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 					Date startFrom = co.getOrder_using_start();
 					Date endTo = cal.getTime();
 					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
@@ -1294,14 +1305,27 @@ public class CRMService {
 				
 			} else {
 				
+				// Add previous invoice's details into
+				ci.setLast_invoice_id(cpi.getId());
+				ci.setLastCustomerInvoice(cpi);
+				
 				if("plan-topup".equals(cod.getDetail_type())){
 					
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					Calendar cal = Calendar.getInstance(Locale.CHINA);
-					cal.setTime(co.getNext_invoice_create_date());
+					Date startFrom = co.getNext_invoice_create_date();
+					if(is_Next_Invoice){
+						cal.setTime(co.getNext_invoice_create_date());
+						cal.add(Calendar.DAY_OF_WEEK, 3);
+						startFrom = cal.getTime();
+					} else {
+						cal.setTime(co.getNext_invoice_create_date());
+						cal.add(Calendar.WEEK_OF_MONTH, -1);
+						cal.add(Calendar.DAY_OF_WEEK, 3);
+						startFrom = cal.getTime();
+					}
 					cal.add(Calendar.WEEK_OF_MONTH, 1);
 					cal.add(Calendar.DAY_OF_WEEK, -1);
-					Date startFrom = co.getNext_invoice_create_date();
 					Date endTo = cal.getTime();
 					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
 					cid.setInvoice_detail_price(cod.getDetail_price());
@@ -1342,7 +1366,7 @@ public class CRMService {
 				}
 			}
 			
-			if("plan-topup".equals(cod.getDetail_type())){
+			if("plan-topup".equals(cod.getDetail_type()) && !isRegenerateInvoice){
 				
 				int nextInvoiceWeek = 1;
 				int nextInvoiceDay = -2;
@@ -1455,17 +1479,18 @@ public class CRMService {
 		if(cos.size() > 0){
 			
 			boolean isRegenerateInvoice = false;
+			boolean is_Next_Invoice = true;
 			
 			for (CustomerOrder co : cos) {
 				createTermPlanInvoiceByOrder(co
-						, isRegenerateInvoice);
+						, isRegenerateInvoice, is_Next_Invoice);
 			}
 		}
 	}
 
 	@Transactional
 	public void createTermPlanInvoiceByOrder(CustomerOrder co
-			,boolean isRegenerateInvoice) throws ParseException{
+			,boolean isRegenerateInvoice, boolean is_Next_Invoice) throws ParseException{
 		
 		// BEGIN get usable beans
 		// Customer
@@ -1499,7 +1524,7 @@ public class CRMService {
 				ci.setCustomer_id(c.getId());
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
-				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 5));
+				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
 				System.out.println("due_date_ci_!null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			} else if(ci == null){
@@ -1507,18 +1532,24 @@ public class CRMService {
 				ci.setCustomer_id(c.getId());
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
-				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 5));
+				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
 				System.out.println("due_date_ci_null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			}
 		} else {
+			// If Not Regenerate then set next invoice create date
+			Date invoiceCreateDay = !is_Next_Invoice 
+					? (co.getOrder_using_start() != null 
+							? co.getOrder_using_start() 
+							: new Date()) 
+					: co.getNext_invoice_create_date();
 			ciPreQuery.getParams().put("where", "by_max_id");
 			cpi = ciMapper.selectCustomerInvoice(ciPreQuery);
 			ci = new CustomerInvoice();
 			ci.setCustomer_id(c.getId());
 			ci.setOrder_id(co.getId());
-			ci.setCreate_date(new Date());
-			ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 5));
+			ci.setCreate_date(invoiceCreateDay);
+			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 6));
 			System.out.println("!regenerate: "+ci.getDue_date());
 			ciMapper.insertCustomerInvoice(ci);
 			// Set id for invoice's update
@@ -1690,12 +1721,17 @@ public class CRMService {
 					if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 						
 						Calendar cal = Calendar.getInstance();
-						cal.setTime(ci.getCreate_date());
-						cal.add(Calendar.DAY_OF_MONTH, 5);
-						Date endTo = cal.getTime();
-						cal.add(Calendar.MONTH, -1);
-						cal.add(Calendar.DAY_OF_MONTH, 1);
+						if(is_Next_Invoice){
+							cal.setTime(co.getNext_invoice_create_date());
+						} else {
+							cal.setTime(co.getNext_invoice_create_date());
+							cal.add(Calendar.MONTH, -1);
+						}
+						cal.add(Calendar.DAY_OF_MONTH, 7);
 						Date startFrom = cal.getTime();
+						cal.add(Calendar.MONTH, 1);
+						cal.add(Calendar.DAY_OF_MONTH, -1);
+						Date endTo = cal.getTime();
 						
 						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
 						
@@ -1733,13 +1769,13 @@ public class CRMService {
 				
 			}
 			
-			if ("plan-term".equals(cod.getDetail_type())) {
+			if ("plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice) {
 				
 				// if is next invoice then plus one month else plus unit month(s)
 				int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
-				int nextInvoiceDay = -6;
+				int nextInvoiceDay = -7;
 				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(!isFirst 
+				calNextInvoiceDay.setTime(isFirst 
 							? (co.getOrder_using_start() != null 
 							? co.getOrder_using_start() 
 							: new Date()) 
@@ -1851,7 +1887,7 @@ public class CRMService {
 			ci.setCustomer_id(customer.getId());
 			ci.setOrder_id(customerOrder.getId());
 			ci.setCreate_date(invoiceCreateDay);
-			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 5));
+			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 6));
 			ci.setStatus("unpaid");
 			// If Not Regenerate then get most recent invoice as previous invoice
 			ciPreQuery.getParams().put("where", "by_max_id");
@@ -1873,14 +1909,14 @@ public class CRMService {
 				ci.setCustomer_id(customer.getId());
 				ci.setOrder_id(customerOrder.getId());
 				ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
-				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 5));
+				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
 				this.ciMapper.insertCustomerInvoice(ci);
 			} else if(ci==null) {
 				ci = new CustomerInvoice();
 				ci.setCustomer_id(customer.getId());
 				ci.setOrder_id(customerOrder.getId());
 				ci.setCreate_date(ci.getCreate_date()!=null ? ci.getCreate_date() : new Date());
-				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 5));
+				ci.setDue_date(ci.getDue_date()!=null ? ci.getDue_date() : TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
 				this.ciMapper.insertCustomerInvoice(ci);
 			}
 		}
@@ -1964,12 +2000,17 @@ public class CRMService {
 						endTo = cal.getTime();
 						
 					} else {
-						cal.setTime(ci.getCreate_date());
-						cal.add(Calendar.DAY_OF_MONTH, 5);
-						endTo = cal.getTime();
-						cal.add(Calendar.MONTH, -1);
-						cal.add(Calendar.DAY_OF_MONTH, 1);
+						if(is_Next_Invoice){
+							cal.setTime(customerOrder.getNext_invoice_create_date());
+						} else {
+							cal.setTime(customerOrder.getNext_invoice_create_date());
+							cal.add(Calendar.MONTH, -1);
+						}
+						cal.add(Calendar.DAY_OF_MONTH, 7);
 						startFrom = cal.getTime();
+						cal.add(Calendar.MONTH, 1);
+						cal.add(Calendar.DAY_OF_MONTH, -1);
+						endTo = cal.getTime();
 					}
 					
 					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
@@ -2015,7 +2056,7 @@ public class CRMService {
 					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = -6;
+					int nextInvoiceDay = -7;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
 					calNextInvoiceDay.setTime(!is_Next_Invoice 
 								? (customerOrder.getOrder_using_start() != null 
@@ -2288,6 +2329,7 @@ public class CRMService {
 						Date startFrom = TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str());
 						cal.setTime(TMUtils.parseDateYYYYMMDD(co.getOrder_using_start_str()));
 						cal.add(Calendar.WEEK_OF_MONTH, 1);
+						cal.add(Calendar.DAY_OF_WEEK, -1);
 						Date endTo = cal.getTime();
 						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
 					}

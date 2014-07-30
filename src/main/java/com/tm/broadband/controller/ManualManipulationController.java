@@ -6,7 +6,6 @@ import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Timestamp;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -30,8 +29,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallInternationalRate;
-import com.tm.broadband.model.CustomerCallRecord;
-import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
@@ -40,7 +37,6 @@ import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.CallInternationalRateUtility;
 import com.tm.broadband.util.CallingRecordUtility;
-import com.tm.broadband.util.CallingRecordUtility_CallPlus;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -266,52 +262,8 @@ public class ManualManipulationController {
 			, @RequestParam("filePath") String filePath
 			, @RequestParam("billing_type") String billing_type
 			, HttpServletRequest req) {
-
-		BillingFileUpload bfu = new BillingFileUpload();
-		bfu.getParams().put("id", billingFileId);
-		bfu.setInserted_database(true);					// assign inserted_database to true which is 1
-		bfu.setInsert_date(new Timestamp(System.currentTimeMillis()));
-		this.billingService.editBillingFileUpload(bfu);
 		
-		if("chorus".equals(billing_type)){
-			CustomerCallRecord ccrTemp = new CustomerCallRecord();
-			ccrTemp.getParams().put("statement_date", TMUtils.parseDateYYYYMMDD(statementDate));
-			this.billingService.removeCustomerCallRecord(ccrTemp);
-			
-			// Get All data from the CSV file
-			List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
-			
-			// Iteratively insert into database
-			for (CustomerCallRecord ccr : ccrs) {
-				if(ccr.getBilling_description()!=null){
-					switch (ccr.getBilling_description()) {
-					case "Call restrict with no Directory Access nat Res":
-						ccr.setUsed(false);
-						break;
-					case "Caller Display Monthly Charge per line Res":
-						ccr.setUsed(false);
-						break;
-					case "Call waiting nat Res":
-						ccr.setUsed(false);
-						break;
-					case "Faxability Monthly Rental Res":
-						ccr.setUsed(false);
-						break;
-					case "Smart Bundle package":
-						ccr.setUsed(false);
-						break;
-					}
-				}
-				ccr.setUpload_date(new Date());
-				this.billingService.createCustomerCallRecord(ccr);
-			}
-		} else if("callplus".equals(billing_type)){
-			List<CustomerCallingRecordCallplus> ccrcs = CallingRecordUtility_CallPlus.ccrcs(filePath);
-			
-			for (CustomerCallingRecordCallplus ccrc : ccrcs) {
-				this.billingService.createCustomerCallingRecordCallplus(ccrc);
-			}
-		}
+		this.billingService.insertCustomerCallRecord(billingFileId, billing_type, statementDate, filePath);
 		
 		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billing_type;
 	}

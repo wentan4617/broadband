@@ -1195,8 +1195,9 @@ public class CRMRestController {
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
-			this.crmService.createTermPlanInvoiceByOrder(co,
-					isRegenerateInvoice);
+			this.crmService.createTermPlanInvoiceByOrder(co
+					, isRegenerateInvoice
+					, isRegenerateInvoice ? false : true);
 			json.getSuccessMap().put("alert-success",
 					"Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
@@ -1224,7 +1225,7 @@ public class CRMRestController {
 					.queryNotificationBySort("invoice", "sms");
 			this.crmService.createInvoicePDFBoth(co, notificationEmail,
 					notificationSMS,
-					isRegenerateInvoice == true ? false : true,
+					isRegenerateInvoice ? false : true,
 					isRegenerateInvoice);
 			json.getSuccessMap().put("alert-success",
 					"Manually Generate No Term Invoice is successful");
@@ -1252,7 +1253,8 @@ public class CRMRestController {
 			this.crmService.createTopupPlanInvoiceByOrder(co
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
-					, isRegenerateInvoice);
+					, isRegenerateInvoice
+					, isRegenerateInvoice ? false : true);
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {
