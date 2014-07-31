@@ -25,10 +25,20 @@
 					<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
 					<if test="params.order_id != null">and order_id = #{params.order_id}</if>
 					<if test="params.status != null">and status = #{params.status}</if>
+					<if test="params.sale_id != null">
+						and order_id IN (
+							select id from tm_customer_order where sale_id=#{params.sale_id}
+						)
+					</if>
 				</when>
 				<when test="params.where == 'pending'">
 					<if test="params.status1 != null">and (status = #{params.status1} or status = #{params.status2})</if>
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
+					<if test="params.sale_id != null">
+						and order_id IN (
+							select id from tm_customer_order where sale_id=#{params.sale_id}
+						)
+					</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
@@ -36,6 +46,11 @@
 					<if test="params.order_id != null">and order_id = #{params.order_id}</if>
 					<if test="params.status != null">and status = #{params.status}</if>
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
+					<if test="params.sale_id != null">
+						and order_id IN (
+							select id from tm_customer_order where sale_id=#{params.sale_id}
+						)
+					</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -334,6 +349,11 @@
 		select * from tm_customer_invoice where CONVERT(create_date, DATE) between CONVERT(#{params.start_date}, DATE) and CONVERT(#{params.end_date}, DATE)
 		<if test="params.status != null">and status=#{params.status}</if>
 		<if test="params.status1 != null">and (status=#{params.status1} or status=#{params.status2})</if>
+		<if test="params.sale_id != null">
+			and order_id IN (
+				select id from tm_customer_order where sale_id=#{params.sale_id}
+			)
+		</if>
 	</select>
 	
 	<!-- // END SELECT AREA -->

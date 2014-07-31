@@ -47,6 +47,7 @@
 								<form:select path="user_role" class="form-control" data-name="user_permission_selector">
 									<form:option value="none">Clean</form:option>
 									<form:option value="sales">Sales</form:option>
+									<form:option value="agent">Agent</form:option>
 									<form:option value="plan-designer">Plan Designer</form:option>
 									<form:option value="crm-operator">CRM Operator</form:option>
 									<form:option value="accountant">Accountant</form:option>
@@ -157,6 +158,22 @@
 									<li>
 										<label> 
 											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" /> Edit Customer
+										</label>
+									</li>
+								</ul>
+								<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/customer-service-record/view" data-type="checkbox_customer" /> View Customer Service Record
+										</label>
+									</li>
+								</ul>
+								<hr/>
+								<ul class="list-unstyled">
+									<li>
+										<label> 
+											<form:checkbox path="authArray" value="crm/ticket/view" data-type="checkbox_customer" /> View Ticket
 										</label>
 									</li>
 								</ul>
@@ -371,6 +388,29 @@
 								</ul>
 							</div>
 							<hr/>
+							<div class="col-md-2" data-module="agent">
+								<ul class="list-unstyled">
+									<li>
+										<h3>Agent</h3>
+									</li>
+									<li>
+										<label> 
+											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_agent" /> All
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="agent/billing/invoice/view" data-type="checkbox_agent" /> View Invoice
+										</label>
+									</li>
+									<li>
+										<label>
+											<form:checkbox path="authArray" value="agent/billing/chart/commission-statistic" data-type="checkbox_agent" /> Chart(Commission)
+										</label>
+									</li>
+								</ul>
+							</div>
+							<hr/>
 							<div class="col-md-2" data-module="manual-manipulation">
 								<ul class="list-unstyled">
 									<li>
@@ -441,6 +481,11 @@
 			
 			$('div[data-module="sales"]').find('input').prop('checked', true);
 			
+		} else if("agent"==permission){	// Agent
+			
+			$('div[data-module="sales"]').find('input').prop('checked', true);
+			$('div[data-module="agent"]').find('input').prop('checked', true);
+			
 		} else if("plan-designer"==permission){	// Plan Designer
 			
 			$('div[data-module="plan"]').find('input').prop('checked', true);
@@ -466,14 +511,17 @@
 			
 			$('div[data-module="administrator"]').find('input').prop('checked', true);
 			$('div[data-module="system"]').find('input').prop('checked', false);
+			$('div[data-module="agent"]').find('input').prop('checked', false);
 			
 		} else if("administrator"==permission){	// Administrator
 			
 			$('div[data-module="administrator"]').find('input').prop('checked', true);
+			$('div[data-module="agent"]').find('input').prop('checked', false);
 			
  		} else if("system-developer"==permission){	// System Developer
 			
 			$('div[data-module="administrator"]').find('input').prop('checked', true);
+			$('div[data-module="agent"]').find('input').prop('checked', false);
 			
 		}
 	});

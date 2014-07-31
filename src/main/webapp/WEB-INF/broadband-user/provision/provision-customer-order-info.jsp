@@ -61,6 +61,7 @@
 			
 			$('#customer_information_container').html(tmpl('customer_information_form', customerOrder.customer));
 			$('#customer_order_container').html(tmpl('customer_order_form', customerOrder));
+			customerOrder.user_role = '${userSession.user_role}';
 			$('#customer_order_detail_container').html(tmpl('customer_order_detail_form', customerOrder));
 
 			$('button[data-name="trackcode_btn"]').click(function(){

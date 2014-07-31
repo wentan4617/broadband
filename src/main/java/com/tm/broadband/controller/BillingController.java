@@ -751,4 +751,97 @@ public class BillingController {
 		
 		return "broadband-user/billing/invoice-chart";
 	}
+	
+	
+	/**
+	 * Billing Commission Statistics
+	 */
+	@RequestMapping(value = "/broadband-user/agent/billing/chart/commission-statistic/{yearMonth}")
+	public String toChartCommissionStatistics(Model model,
+			@PathVariable(value = "yearMonth") String yearMonth,
+			HttpServletRequest req) {
+		
+		model.addAttribute("panelheading", "Customer Commission Statistics");
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		/**
+		 * WEEK STATISTIC BEGIN
+		 */
+		List<StatisticBilling> weekCommissionStatistics = new ArrayList<StatisticBilling>();
+		TMUtils.thisWeekBillingStatistic(weekCommissionStatistics);
+		
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("start_date", weekCommissionStatistics.get(0).getBillingDate());
+		ciQuery.getParams().put("end_date", weekCommissionStatistics.get(weekCommissionStatistics.size()-1).getBillingDate());
+		ciQuery.getParams().put("sale_id", user.getId());
+		
+		List<CustomerInvoice> weekCustomerCommissions = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		
+		for (StatisticBilling statisticBilling : weekCommissionStatistics) {
+			for (CustomerInvoice ci : weekCustomerCommissions) {
+				if(TMUtils.dateFormatYYYYMMDD(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMMDD(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(TMUtils.bigAdd(
+						statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), 0.045))
+					);
+				}
+			}
+		}
+		
+		model.addAttribute("weekCommissionStatistics", weekCommissionStatistics);
+		/**
+		 * WEEK STATISTIC END
+		 */
+		
+		/**
+		 * MONTH STATISTIC BEGIN
+		 */
+
+		Integer year = null;
+		Integer month = null;
+		
+		if(yearMonth.equals("0")){
+			Calendar c = Calendar.getInstance(Locale.CHINA);
+			// get this year
+			year = c.get(Calendar.YEAR);
+			// get this month
+			month = c.get(Calendar.MONTH)+1;
+			yearMonth = year.toString()+"-"+month.toString();
+		} else {
+			String[] temp = yearMonth.split("-");
+			year = Integer.parseInt(temp[0]);
+			month = Integer.parseInt(temp[1]);
+		}
+		
+		List<StatisticBilling> monthBillingCommissions = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingCommissions);
+
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("start_date", monthBillingCommissions.get(0).getBillingDate());
+		ciQuery.getParams().put("end_date", monthBillingCommissions.get(monthBillingCommissions.size()-1).getBillingDate());
+		ciQuery.getParams().put("sale_id", user.getId());
+		
+		List<CustomerInvoice> monthCustomerTransactions = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : monthBillingCommissions) {
+			for (CustomerInvoice ci : monthCustomerTransactions) {
+				
+				if(TMUtils.dateFormatYYYYMMDD(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMMDD(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(TMUtils.bigAdd(
+							statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), 0.045))
+						);
+				}
+			}
+		}
+		
+		model.addAttribute("monthBillingCommissions", monthBillingCommissions);
+		model.addAttribute("yearMonth",yearMonth);
+		
+		/**
+		 * MONTH STATISTIC END
+		 */
+		
+		
+		return "broadband-user/sale/invoice-chart";
+	}
 }
