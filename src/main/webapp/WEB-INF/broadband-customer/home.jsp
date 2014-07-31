@@ -23,7 +23,11 @@
 <jsp:include page="script.jsp" />
 <script type="text/javascript">
 (function($){
-	
+	$('div[id^="collapse"]').on('show.bs.collapse', function(){
+		$('span[data-id="' + this.id + '"]').attr('class', 'glyphicon glyphicon-chevron-up pull-right');
+	}).on('hide.bs.collapse', function(){
+		$('span[data-id="' + this.id + '"]').attr('class', 'glyphicon glyphicon-chevron-down pull-right');
+	});
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

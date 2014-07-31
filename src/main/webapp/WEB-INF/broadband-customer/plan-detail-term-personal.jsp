@@ -26,19 +26,27 @@
 
 <div class="container">
 	<div class="page-header" style="margin-top:0;">
-		<h1>
-			Personal Broadband Plans
-		</h1>
+		<h1 class="hidden-xs hidden-sm">Personal Broadband Plans</h1>
+		<h2 class="hidden-lg hidden-md" style="font-size:22px;">Personal Broadband Plans</h2>
 	</div>
 	
 	<div class="alert alert-success">
-		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger hidden-xs hidden-sm">
 			Pay-in-Advance, Local Call only.
 		</p>
-		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger hidden-xs hidden-sm">
 			All our Broadband plans are Pay-in-Advance. For the home phone line, it will be local call only. 
 		</p>
-		<p style="font-weight: bold; font-size: 24px;" class="text-danger">
+		<p style="font-weight: bold; font-size: 24px;" class="text-danger hidden-xs hidden-sm">
+			All the toll call will not be allowed.
+		</p>
+		<p style="font-weight: bold;" class="text-danger hidden-lg hidden-md">
+			Pay-in-Advance, Local Call only.
+		</p>
+		<p style="font-weight: bold;" class="text-danger hidden-lg hidden-md">
+			All our Broadband plans are Pay-in-Advance. For the home phone line, it will be local call only. 
+		</p>
+		<p style="font-weight: bold;" class="text-danger hidden-lg hidden-md">
 			All the toll call will not be allowed.
 		</p>
 		<p>
