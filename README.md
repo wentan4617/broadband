@@ -17,6 +17,12 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 2.0.1 2014-07-31
+
+* [user_role添加一个agent角色，在sales的ordering online列表将客户id加链接指向provision里的order_form的modal.](steven)
+* [开发agent的invoice查看界面，列出paid账单所能给予的commisssion.](steven)
+* [开发agent的invoice commission月/周统计界面.](steven)
+
 demand version 1.9.9 2014-07-30
 
 * [分别复审term和no term出账时plan描述所记录的服务开通至终止日期是否准确，调整term及no term非第一张invoice的plan desc里显示的服务开通至终止日期.](steven)

@@ -33,22 +33,22 @@ tbody td {text-align:center;}
 				<div id="collapseOne" class="panel-collapse collapse in">
 					<div class="panel-body">
 						<div class="btn-group btn-group">
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/unpaid" class="btn btn-default ${unpaidActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/unpaid" class="btn btn-default ${unpaidActive }">
 								Unpaid&nbsp;<span class="badge">${unpaidSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/not_pay_off" class="btn btn-default ${not_pay_offActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/not_pay_off" class="btn btn-default ${not_pay_offActive }">
 								Not Pay Off&nbsp;<span class="badge">${notPayOffSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/pending" class="btn btn-default ${pendingActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/pending" class="btn btn-default ${pendingActive }">
 								Pending&nbsp;<span class="badge">${pendingSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/void" class="btn btn-default ${voidActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/void" class="btn btn-default ${voidActive }">
 								Void&nbsp;<span class="badge">${voidSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/paid" class="btn btn-default ${paidActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/paid" class="btn btn-default ${paidActive }">
 								Paid&nbsp;<span class="badge">${paidSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/1/orderNoInvoice" class="btn btn-default ${orderNoInvoiceActive }">
+							<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/orderNoInvoice" class="btn btn-default ${orderNoInvoiceActive }">
 								Haven't Generate&nbsp;<span class="badge">${orderNoInvoiceSum}</span>
 							</a>
 						</div>
@@ -82,6 +82,9 @@ tbody td {text-align:center;}
 								<th style="text-align:right;">Amount Paid</th>
 								<th style="text-align:right;">Balance</th>
 								<th>Invoice Status</th>
+								<c:if test="${paidActive=='active'}">
+									<th style="text-align:right;">Commission</th>
+								</c:if>
 							</tr>
 						</thead>
 						<tbody>
@@ -92,7 +95,7 @@ tbody td {text-align:center;}
 										<input type="checkbox" name="checkbox_cis" value="${ci.id}"/>
 									</td>
 									<td>
-										<a target="_blank" href="${ctx }/broadband-user/crm/customer/edit/${ci.customer_id}">${ci.customer_id}</a>
+										${ci.customer_id}
 									</td>
 									<td>
 										${ci.order_id }
@@ -124,12 +127,17 @@ tbody td {text-align:center;}
 											<c:otherwise>${ci.status }</c:otherwise>
 										</c:choose>
 									</td>
+									<c:if test="${paidActive=='active'}">
+										<td style="text-align:right; font-weight:bold; color:rgb(126,210,0);">
+											<fmt:formatNumber value="${ci.amount_paid * 0.045 }" type="number" pattern="###,##0.00"/>
+										</td>
+									</c:if>
 								</tr>
 							</c:forEach>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="11">
+								<td colspan="12">
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${pageCis.totalPage }" step="1">
 											<li class="${pageCis.pageNo == num ? 'active' : ''}">
@@ -163,7 +171,7 @@ tbody td {text-align:center;}
 										<input type="checkbox" name="checkbox_cis" value="${co.id}"/>
 									</td>
 									<td>
-										<a href="${ctx }/broadband-user/crm/customer/edit/${co.customer_id}">${co.customer_id}</a>
+										${co.customer_id}
 									</td>
 									<td>
 										${co.id }

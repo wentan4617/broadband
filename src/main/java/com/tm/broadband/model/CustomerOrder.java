@@ -14,7 +14,6 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
-import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 public class CustomerOrder implements Serializable {
@@ -69,6 +68,7 @@ public class CustomerOrder implements Serializable {
 	private Boolean is_ddpay;
 	private String ordering_form_pdf_path;
 	private String receipt_pdf_path;
+	private Date disconnected_date;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -84,6 +84,7 @@ public class CustomerOrder implements Serializable {
 	private String next_invoice_create_date_flag_str;
 	private String rfs_date_str;
 	private String order_due_str;
+	private String disconnected_date_str;
 	private Customer customer;
 	@Valid
 	private Plan plan;
@@ -531,6 +532,23 @@ public class CustomerOrder implements Serializable {
 
 	public void setReceipt_pdf_path(String receipt_pdf_path) {
 		this.receipt_pdf_path = receipt_pdf_path;
+	}
+
+	public Date getDisconnected_date() {
+		return disconnected_date;
+	}
+
+	public void setDisconnected_date(Date disconnected_date) {
+		this.disconnected_date = disconnected_date;
+	}
+
+	public String getDisconnected_date_str() {
+		this.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(this.getDisconnected_date()));
+		return disconnected_date_str;
+	}
+
+	public void setDisconnected_date_str(String disconnected_date_str) {
+		this.disconnected_date_str = disconnected_date_str;
 	}
 
 }

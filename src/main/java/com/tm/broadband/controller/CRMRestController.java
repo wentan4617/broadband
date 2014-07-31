@@ -561,6 +561,7 @@ public class CRMRestController {
 			@RequestParam("id") Integer id,
 			@RequestParam("order_status") String order_status,
 			@RequestParam("old_order_status") String old_order_status,
+			@RequestParam("disconnected_date_str") String disconnected_date_str,
 			HttpServletRequest req) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
@@ -571,10 +572,13 @@ public class CRMRestController {
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
 		pl.setOrder_id_customer(id);
-		pl.setProcess_way(this.crmService.queryCustomerOrderById(id).getOrder_status()+" to "+order_status);
+		pl.setProcess_way(old_order_status+" to "+order_status);
 		
 		CustomerOrder co = new CustomerOrder();
 		co.setOrder_status(order_status);
+		if(!"".equals(disconnected_date_str.trim())){
+			co.setDisconnected_date(TMUtils.parseDateYYYYMMDD(disconnected_date_str));
+		}
 		co.getParams().put("id", id);
 		
 		this.crmService.editCustomerOrder(co, pl);

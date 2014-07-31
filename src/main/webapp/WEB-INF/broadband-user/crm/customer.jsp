@@ -220,6 +220,9 @@
 					$('a[data-name="'+co[i].id+'_regenerate_no_term_invoice"]').attr('disabled', 'disabled');
 					$('a[data-name="'+co[i].id+'_generate_no_term_invoice"]').attr('disabled', 'disabled');
 				}
+				if(orderStatusCheck.attr('data-val') == 'disconnected'){
+					$('#'+co[i].id+'_order_disconnected_form_group').css('display','');
+				}
 				$('a[data-name="'+co[i].id+'_regenerate_invoice"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
@@ -378,6 +381,13 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_termination_refund"]').button('reset');
 				});
 				
+				$('select[data-name="'+co[i].id+'_order_status_selector"]').change(function(){
+					if($(this).val()=='disconnected'){
+						$('#'+this.id+'_order_disconnected_form_group').css('display', '');
+					} else {
+						$('#'+this.id+'_order_disconnected_form_group').css('display', 'none');
+					}
+				});
 				
 				// Update order status
 				// Get order status Dialog
@@ -390,10 +400,12 @@
 				$('a[data-name="editOrderStatusModalBtn_'+co[i].id+'"]').click(function(){
 					var orderStatus = $('select[data-name="'+this.id+'_order_status_selector"]');
 					var oldOrderStatus = $('#'+this.id+'_order_status');
+					var disconnected_input = $('input[data-name="'+this.id+'_order_disconnected_input_picker"]').val();
 					var data = {
 							'id':this.id
 							,'order_status':orderStatus.val()
 							,'old_order_status':oldOrderStatus.val()
+							,'disconnected_date_str':disconnected_input
 					};
 					var order_status = $('#'+this.id+'_order_status');
 					$.post('${ctx}/broadband-user/crm/customer/order/status/edit', data, function(json){
@@ -922,6 +934,15 @@
 				/*
 				 *	BEGIN Datepicker area
 				 */
+				// Order disconnected Datepicker
+				var order_disconnected_input = $('input[data-name="'+co[i].id+'_order_disconnected_input_picker"]').attr('data-val');
+				$('#'+co[i].id+'_order_disconnected_datepicker').datepicker({
+				    format: "yyyy-mm-dd",
+				    autoclose: true,
+				    todayHighlight: true
+				    // if order disconnected date is null then assign new Date(), else assign order due date
+				}).datepicker('setDate', order_disconnected_input || new Date());
+				 
 				// Order due Datepicker
 				var order_due_input = $('input[data-name="'+co[i].id+'_order_due_input_picker"]').attr('data-val');
 				$('#'+co[i].id+'_order_due_datepicker').datepicker({

@@ -51,7 +51,7 @@ th, td{
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 class="panel-title">Online Order View&nbsp;
-						<c:if test="${userSession.user_role != 'sales'}">
+						<c:if test="${userSession.user_role != 'sales' && userSession.user_role != 'agent'}">
 							<select id="select_user" class="selectpicker">
 							    <optgroup label="Sales List">
 						    		<option value="0" data-name="selected" selected="selected">All</option>
@@ -92,7 +92,7 @@ th, td{
 										<input type="checkbox" name="checkbox_orders" value="${order.id}"/>
 									</td>
 									<td>
-										${order.id }
+										<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
 									</td>
 									<td>
 										${order.order_status }
@@ -285,4 +285,7 @@ th, td{
 	
 })(jQuery);
 </script>
+
+<!-- provision customer order information model -->
+<jsp:include page="../provision/provision-customer-order-info.jsp" />
 <jsp:include page="../footer-end.jsp" />

@@ -37,6 +37,7 @@ import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCredit;
+import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
@@ -698,7 +699,7 @@ public class SaleController {
 		pageSignatureSum.getParams().put("where", "query_sale_id_not_null");
 
 		User user = (User) req.getSession().getAttribute("userSession");
-		if(user.getUser_role().equals("sales")){
+		if(user.getUser_role().equals("sales") || user.getUser_role().equals("agent")){
 			page.getParams().put("sale_id", user.getId());
 			sale_id = user.getId();
 			pageSignatureSum.getParams().put("sale_id", user.getId());
@@ -838,5 +839,101 @@ public class SaleController {
 		pageSignatureSum = null;
 		
 		return "broadband-user/sale/online-order-view";
+	}
+	
+	// BEGIN InvoiceView
+	@RequestMapping("/broadband-user/agent/billing/invoice/view/{pageNo}/{status}")
+	public String toInvoice(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("status") String status,
+			HttpServletRequest req) {
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+
+		Page<CustomerInvoice> pageCis = new Page<CustomerInvoice>();
+		pageCis.getParams().put("status", status);
+		pageCis.getParams().put("sale_id", user.getId());
+		pageCis.setPageNo(pageNo);
+		pageCis.setPageSize(30);
+		pageCis.getParams().put("orderby", "ORDER BY create_date DESC");
+		
+		if("orderNoInvoice".equals(status)){
+			Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+			pageCos.setPageNo(pageNo);
+			pageCos.setPageSize(30);
+			pageCos.getParams().put("where", "query_no_invoice");
+			pageCos.getParams().put("orderby", "ORDER BY order_create_date DESC");
+			pageCos.getParams().put("sale_id", user.getId());
+			model.addAttribute("pageCos", this.crmService.queryCustomerOrdersByPage(pageCos));
+			
+			pageCos = null;
+		} else if("unpaid".equals(status)){
+			pageCis.getParams().put("where", "non_pending");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("not_pay_off".equals(status)){
+			pageCis.getParams().put("where", "non_pending");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("pending".equals(status)) {
+			pageCis = new Page<CustomerInvoice>();
+			pageCis.getParams().put("where", "pending");
+			pageCis.getParams().put("sale_id", user.getId());
+			pageCis.getParams().put("payment_status", status);
+			pageCis.getParams().put("status1", "unpaid");
+			pageCis.getParams().put("status2", "not_pay_off");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("void".equals(status)){
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("paid".equals(status)){
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+		}
+		pageCis = null;
+		
+		model.addAttribute("status", status);
+		model.addAttribute(status + "Active", "active");
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		
+
+		// BEGIN QUERY SUM BY STATUS
+		Page<CustomerInvoice> pageStatusSum = new Page<CustomerInvoice>();
+		pageStatusSum.getParams().put("where", "pending");
+		pageStatusSum.getParams().put("sale_id", user.getId());
+		pageStatusSum.getParams().put("payment_status", "pending");
+		pageStatusSum.getParams().put("status1", "unpaid");
+		pageStatusSum.getParams().put("status2", "not_pay_off");
+		model.addAttribute("pendingSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum = null;
+		
+		pageStatusSum = new Page<CustomerInvoice>();
+		pageStatusSum.getParams().put("sale_id", user.getId());
+		pageStatusSum.getParams().put("status", "paid");
+		model.addAttribute("paidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		
+		pageStatusSum.getParams().put("status", "void");
+		model.addAttribute("voidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+
+		pageStatusSum.getParams().put("where", "non_pending");
+		pageStatusSum.getParams().put("status", "unpaid");
+		model.addAttribute("unpaidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		
+		pageStatusSum.getParams().put("status", "not_pay_off");
+		model.addAttribute("notPayOffSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum = null;
+		
+		Page<CustomerOrder> pageStatusCoSum = new Page<CustomerOrder>();
+		pageStatusCoSum.getParams().put("sale_id", user.getId());
+		pageStatusCoSum.getParams().put("where", "query_no_invoice");
+		model.addAttribute("orderNoInvoiceSum", this.crmService.queryCustomerOrdersSumByPage(pageStatusCoSum));
+		// END QUERY SUM BY STATUS
+		
+		return "broadband-user/sale/invoice-view";
 	}
 }

@@ -9,17 +9,12 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<c:if test="${userSession.user_role == 'sales'}">
-				<a class="navbar-brand" href="${ctx}/broadband-user/sale/online/ordering/view/1/${userSession.id}">CyberPark Manager System</a>
-			</c:if>
-			<c:if test="${userSession.user_role != 'sales'}">
 			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark Manager System</a>
-			</c:if>
 		</div>
 		<c:if test="${userSession != null }">
 			<div class="collapse navbar-collapse">
 				<ul class="nav navbar-nav">
-					<c:if test="${userSession.user_role != 'sales' }">
+					<c:if test="${userSession.user_role != 'sales' && userSession.user_role != 'agent'}">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Plan <b class="caret"></b>
@@ -249,7 +244,7 @@
 					</c:if>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							Sales <b class="caret"></b>
+							${userSession.user_role == 'agent' ? 'Ordering' : 'Sales'} <b class="caret"></b>
 						</a>
 						<ul class="dropdown-menu">
 							<li>
@@ -266,7 +261,7 @@
 							</li>
 						</ul>
 					</li>
-					<c:if test="${userSession.user_role != 'sales' }">
+					<c:if test="${userSession.user_role != 'sales' && userSession.user_role != 'agent'}">
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							Manual <b class="caret"></b>
@@ -293,6 +288,29 @@
 							</li>
 						</ul>
 					</li>
+					</c:if>
+					
+					<!-- Agent Module's Billing, read only! -->
+					<c:if test="${userSession.user_role == 'agent'}">
+						<li class="dropdown">
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+								Billing <b class="caret"></b>
+							</a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="${ctx}/broadband-user/agent/billing/invoice/view/1/unpaid">
+										<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+										View Invoice
+									</a>
+								</li>
+								<li>
+									<a href="${ctx}/broadband-user/agent/billing/chart/commission-statistic/0">
+										<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
+										Chart(Commission)
+									</a>
+								</li>
+							</ul>
+						</li>
 					</c:if>
 				</ul>
 				<p class="navbar-text pull-right">

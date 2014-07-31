@@ -111,7 +111,7 @@
 				</p>
 			</div>
 			<div class="col-md-3">
-				<select data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-xs">
+				<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_order_status_selector" data-val="<.= customerOrder.order_status .>" class="form-control input-xs">
 					<.
 						var status = [
 							'pending','pending-warning','paid','ordering-pending','ordering-paid',
@@ -137,6 +137,23 @@
 			</div>
 		</div>
 		<!-- END Order Status -->
+		<!-- BEGIN Disconnected Date -->
+		<div class="form-group" id="<.= customerOrder[i].id .>_order_disconnected_form_group" style="display:none;">
+			<label class="control-label col-md-3">Disconnected Date</label>
+			<div class="col-md-3">
+				<p id="<.= customerOrder[i].id .>_order_disconnected" data-val="<.= customerOrder[i].disconnected_date_str .>" class="form-control-static strong">
+					<.= customerOrder[i].disconnected_date_str .>
+				</p>
+			</div>
+			<div class="col-md-3">
+				<div class="input-group date" id="<.= customerOrder[i].id .>_order_disconnected_datepicker">
+					<strong><input data-val="<.= customerOrder[i].disconnected_date_str .>" data-name="<.= customerOrder[i].id .>_order_disconnected_input_picker" class="form-control input-xs" placeholder="Order Disconnected Date"/></strong>
+					<span class="input-group-addon input-xs"><i class="glyphicon glyphicon-calendar"></i></span>
+				</div>
+			</div>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<!-- END Disconnected Date -->
 		<!-- BEGIN Order Type -->
 		<div class="form-group">
 			<label class="control-label col-md-3">Order Type</label>

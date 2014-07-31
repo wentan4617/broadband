@@ -179,6 +179,8 @@
 		<url-pattern>/broadband-user/crm/customer/personal/create</url-pattern>
 		<url-pattern>/broadband-user/crm/customer/business/create</url-pattern>
 		<url-pattern>/broadband-user/crm/customer/edit/*</url-pattern>
+		<url-pattern>/broadband-user/crm/customer-service-record/view/*</url-pattern>
+		<url-pattern>/broadband-user/crm/ticket/view</url-pattern>
 		<!-- CRM Module END -->
 
 		<!-- Billing Module BEGIN -->
@@ -224,6 +226,11 @@
 		<url-pattern>/broadband-user/manual-manipulation/call-billing-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/manual-manipulation/call-international-rate/view/*</url-pattern>
 		<!-- Manual Manipulation Module END -->
+
+		<!-- Agent Module BEGIN -->
+		<url-pattern>/broadband-user/agent/billing/invoice/view/*</url-pattern>
+		<url-pattern>/broadband-user/agent/billing/chart/commission-statistic/*</url-pattern>
+		<!-- Agent Module END -->
 
 	</filter-mapping>
 	

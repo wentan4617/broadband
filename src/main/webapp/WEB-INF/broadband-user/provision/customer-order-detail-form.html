@@ -40,7 +40,9 @@
 				<td>
 					<. if (cod.detail_type.indexOf('hardware-') > -1) { .>
 					<a href="javascript:void(0);">
-						<span class="glyphicon glyphicon-plus-sign" data-hardware data-id="<.=cod.id.>" data-status="close"></span>
+						<. if(user_role!='sales' && user_role!='agent'){ .>
+							<span class="glyphicon glyphicon-plus-sign" data-hardware data-id="<.=cod.id.>" data-status="close"></span>
+						<. } .>
 					</a>
 					<.  } .>
 					<.=cod.detail_name || ''.>

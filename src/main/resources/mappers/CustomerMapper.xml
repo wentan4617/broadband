@@ -109,7 +109,8 @@
 		co.`ddpay_pdf_path`						as co_ddpay_pdf_path,
 		co.`is_ddpay`							as co_is_ddpay,
 		co.`ordering_form_pdf_path`				as co_ordering_form_pdf_path,
-		co.`receipt_pdf_path`					as co_receipt_pdf_path
+		co.`receipt_pdf_path`					as co_receipt_pdf_path,
+		co.`disconnected_date`					as co_disconnected_date
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -149,6 +150,7 @@
 		<result property="is_ddpay" column="co_is_ddpay" />
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
+		<result property="disconnected_date" column="co_disconnected_date" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -457,6 +459,7 @@
 			<result property="is_ddpay" column="co_is_ddpay" />
 			<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 			<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
+			<result property="disconnected_date" column="co_disconnected_date" />
 			
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail" resultMap="CustomerOrderDetailResultMap" />
 		</collection>
