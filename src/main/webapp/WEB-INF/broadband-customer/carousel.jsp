@@ -12,7 +12,7 @@
 		<div class="item active" >
 			<a href="${ctx }/plans/plan-topup/personal" target="_blank"><!-- class="img-responsive" -->
 				<img src="${ctx }/public/bootstrap3/images/topup725-lg.jpg" class="hidden-xs hidden-sm" alt="Broadband Top-Up" />
-				<img src="${ctx }/public/bootstrap3/images/topup725-sm.png" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
+				<img src="${ctx }/public/bootstrap3/images/topup725-sm.jpg" class="hidden-lg hidden-md" alt="Broadband Top-Up" />
 			</a>
 		</div>
 		<div class="item" >

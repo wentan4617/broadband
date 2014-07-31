@@ -25,9 +25,8 @@
 <div class="container">
 
  	<div class="page-header" style="margin-top:0;">
-		<h2>
-			Top Up Unlimited ADSL Broadband Plan
-		</h2>
+ 		<h1 class="hidden-xs hidden-sm">Top Up Unlimited ADSL Broadband Plan</h1>
+		<h5 class="hidden-lg hidden-md" ><strong>Top Up Unlimited ADSL Broadband Plan</strong></h5>
 	</div>
 	
 	<div class="alert alert-success">
