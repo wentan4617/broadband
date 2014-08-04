@@ -4,12 +4,20 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jquery.scrollUp.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/customer.js"></script>
-<!-- Google Tag Manager -->
-<!-- <noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-P28LFM"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-P28LFM');</script> -->
-<!-- End Google Tag Manager -->
+<!-- Facebook Conversion Code for Cyberpark -->
+<script>
+(function() {
+var _fbq = window._fbq || (window._fbq = []);
+if (!_fbq.loaded) {
+var fbds = document.createElement('script');
+fbds.async = true;
+fbds.src = 'http://connect.facebook.net/en_US/fbds.js';
+var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(fbds, s);
+_fbq.loaded = true;
+}
+})();
+window._fbq = window._fbq || [];
+window._fbq.push(['track', '6018351750313', {'value':'0.01','currency':'USD'}]);
+</script>
+<noscript><img height="1" width="1" alt="" style="display:none" src="https://www.facebook.com/tr?ev=6018351750313&amp;cd[value]=0.01&amp;cd[currency]=USD&amp;noscript=1" /></noscript>
