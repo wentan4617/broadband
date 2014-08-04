@@ -86,6 +86,14 @@
 							<p>
 								We already add the free router to your cart.
 							</p>
+							<%-- <hr/>
+							<p>
+								You can either use your <strong>BYO(Bring Your Own)</strong> Router for first month free or get a free router for first month charged.
+							</p>
+							<p>
+								<input type="radio" name="plan_memo" ${plan.memo=='byo'?'checked="checked"':'' } value="byo" />&nbsp;<strong>BYO</strong>&nbsp;(Credit for the first month)&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="plan_memo" ${plan.memo==null?'checked="checked"':'' } value="free-router" />&nbsp;<strong>Get Free Router</strong>&nbsp;(Charge for the first month)
+							</p> --%>
 						</div>
 					</c:when>
 				</c:choose>
@@ -399,6 +407,17 @@
 		, jackpot_fee: new Number(${orderPlan.jackpot_fee})
 		, transition_fee: new Number(${orderPlan.transition_fee})
 	};
+
+/* 	$('input[name="plan_memo"]').on('ifChecked', function(){
+		console.log($(this).val());
+		if($(this).val()=='byo'){
+			plan.memo = 'byo';
+			$('#free-router-detail-li').html('$'+plan.plan_price+' Credit for the first month');
+		} else {
+			plan.memo = null;
+			$('#free-router-detail-li').html('1 Free Router');
+		}
+	}); */
 	
 	var price = {
 		plan_price: 0
@@ -419,6 +438,12 @@
 		$('#order-result').html(tmpl('order_modeal_tmpl', modal));
 		$('#btnConfirm').click(confirm);
 		$('#m_btnConfirm').click(confirm);
+		
+		/* if(plan.memo=='byo'){
+			$('#free-router-detail-li').html('$'+plan.plan_price+' Credit for the first month');
+		} else {
+			$('#free-router-detail-li').html('1 Free Router');
+		} */
 	}
 	
 	//loadOrderModal();

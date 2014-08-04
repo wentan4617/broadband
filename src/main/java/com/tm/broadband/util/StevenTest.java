@@ -1,9 +1,6 @@
 package com.tm.broadband.util;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class StevenTest {
@@ -54,19 +51,19 @@ public class StevenTest {
 //		System.out.println(secondDecode);
 		
 		
-//		SimpleMapperCreator smc = new SimpleMapperCreator();
-//		smc.setAuthor("StevenChen");
-//		smc.setModel("Ticket");
-//		smc.setTable("tm_ticket");
-//		smc.initial();
+		SimpleMapperCreator smc = new SimpleMapperCreator();
+		smc.setAuthor("StevenChen");
+		smc.setModel("TMSComboDetail");
+		smc.setTable("tms_combo_detail");
+		smc.initial();
 		
-		Calendar cal = Calendar.getInstance(Locale.CHINA);
-		cal.setTime(new Date());
-		cal.add(Calendar.WEEK_OF_MONTH, 1);
-		cal.add(Calendar.DAY_OF_WEEK, -1);
-		System.out.println(TMUtils.dateFormatYYYYMMDD(cal.getTime()));
-		cal.add(Calendar.DAY_OF_WEEK, -2);
-		System.out.println(TMUtils.dateFormatYYYYMMDD(cal.getTime()));
+//		Calendar cal = Calendar.getInstance(Locale.CHINA);
+//		cal.setTime(new Date());
+//		cal.add(Calendar.WEEK_OF_MONTH, 1);
+//		cal.add(Calendar.DAY_OF_WEEK, -1);
+//		System.out.println(TMUtils.dateFormatYYYYMMDD(cal.getTime()));
+//		cal.add(Calendar.DAY_OF_WEEK, -2);
+//		System.out.println(TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 		
 	}
 }

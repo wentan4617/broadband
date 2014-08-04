@@ -1619,9 +1619,13 @@ public class CRMService {
 			}
 			if("present-calling-minutes".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cids.add(cid);
 				pcms.add(cod);
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 			}
 			
 			System.out.println("isFirst: " + isFirst);
@@ -1982,9 +1986,13 @@ public class CRMService {
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+					cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cids.add(cid);
 					pcms.add(cod);
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 				
 				// Termed & No Termed
 				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") && !"plan-topup".equals(cod.getDetail_type())){
@@ -2283,8 +2291,7 @@ public class CRMService {
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 			
-			if ("discount".equals(cod.getDetail_type())
-					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+			if ("discount".equals(cod.getDetail_type())) {
 				
 				cid.setInvoice_detail_discount(cod.getDetail_price());
 				// decrease amountPayable

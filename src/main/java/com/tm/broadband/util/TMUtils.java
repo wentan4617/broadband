@@ -709,18 +709,18 @@ public class TMUtils {
 			,Integer index){
 		
 		// If got sufficient given minutes
-		if(pcm.getDetail_unit() > 0){
+		if(pcm.getDetail_calling_minute() > 0){
 			// If Present Minutes greater than duration
-			if(pcm.getDetail_unit() >= duration){
+			if(pcm.getDetail_calling_minute() >= duration){
 				// Decrease Present Minutes
-				pcm.setDetail_unit(TMUtils.bigOperationTwoReminders(pcm.getDetail_unit().doubleValue(), duration, "sub").intValue());
+				pcm.setDetail_calling_minute(TMUtils.bigOperationTwoReminders(pcm.getDetail_calling_minute().doubleValue(), duration, "sub").intValue());
 				// Replace old one to new one
 				Collections.replaceAll(pcms, pcms.get(index), pcm);
 				totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(duration, costPerMinute));
 			} else {
-				totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_unit().doubleValue(), costPerMinute));
+				totalCreditBack = bigAdd(totalCreditBack, TMUtils.bigMultiply(pcm.getDetail_calling_minute().doubleValue(), costPerMinute));
 				// Decrease Present Minutes
-				pcm.setDetail_unit(0);
+				pcm.setDetail_calling_minute(0);
 				// Replace old one to new one
 				Collections.replaceAll(pcms, pcms.get(index), pcm);
 			}
