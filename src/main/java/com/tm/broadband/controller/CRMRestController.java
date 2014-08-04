@@ -1023,6 +1023,7 @@ public class CRMRestController {
 	public JSONBean<String> doCustomerOrderDetailCallingMinutesCreate(
 			Model model, @RequestParam("order_id") int order_id,
 			@RequestParam("customer_id") int customer_id,
+			@RequestParam("charge_amount") Double charge_amount,
 			@RequestParam("calling_minutes") String calling_minutes,
 			@RequestParam("calling_country") String calling_country,
 			RedirectAttributes attr, HttpServletRequest req) {
@@ -1034,11 +1035,12 @@ public class CRMRestController {
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
 			customerOrderDetail.setDetail_name(calling_minutes
-					+ " minutes free to " + calling_country.split("-")[0]);
+					+ " minutes to " + calling_country.split("-")[0]);
 			customerOrderDetail.setDetail_type("present-calling-minutes");
 			customerOrderDetail.setDetail_desc(calling_country);
-			customerOrderDetail.setDetail_unit(Integer
-					.parseInt(calling_minutes));
+			customerOrderDetail.setDetail_price(charge_amount);
+			customerOrderDetail.setDetail_calling_minute(Integer.parseInt(calling_minutes));
+			customerOrderDetail.setDetail_unit(1);
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
@@ -1468,6 +1470,7 @@ public class CRMRestController {
 			@RequestParam("customerId") Integer customerId,
 			@RequestParam("paid_amount") Double paid_amount,
 			@RequestParam("order_pay_way") String order_pay_way,
+			@RequestParam("order_total_price") Double order_total_price,
 			RedirectAttributes attr, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
@@ -1489,24 +1492,49 @@ public class CRMRestController {
 			co.setOrder_status("ordering-paid");
 		}
 		
+		Double cyberParkCredit = 0d;
+		
+		if(order_total_price > paid_amount){
+			cyberParkCredit = TMUtils.bigSub(order_total_price, paid_amount);
+		}
+		
 		Customer customer = new Customer();
 		customer.setBalance(TMUtils.bigAdd(c.getBalance()==null ? 0d : c.getBalance(), paid_amount));
 		customer.getParams().put("id", c.getId());
 		this.crmService.editCustomer(customer);
 		
-		CustomerTransaction ct = new CustomerTransaction();
-		ct.setAmount(paid_amount);
-		ct.setAmount_settlement(paid_amount);
-		ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account2Account");
-		ct.setTransaction_date(new Date());
-		ct.setCustomer_id(customerId);
-		ct.setOrder_id(c.getCustomerOrder().getId());
-		ct.setTransaction_type("Ordering Form Defrayment");
-		ct.setTransaction_sort(c.getCustomerOrder().getOrder_type());
-		this.crmService.createCustomerTransaction(ct);
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		CustomerTransaction ct = null;
+		
+		if(paid_amount > 0){
+			
+			ct = new CustomerTransaction();
+			ct.setAmount(paid_amount);
+			ct.setAmount_settlement(paid_amount);
+			ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account2Account");
+			ct.setTransaction_date(new Date());
+			ct.setCustomer_id(customerId);
+			ct.setOrder_id(c.getCustomerOrder().getId());
+			ct.setTransaction_type("Ordering Form Defrayment");
+			ct.setTransaction_sort(c.getCustomerOrder().getOrder_type());
+			ct.setExecutor(user.getId());
+			this.crmService.createCustomerTransaction(ct);
+		}
+		
+		if(cyberParkCredit > 0d){
+			
+			CustomerOrderDetail cod = new CustomerOrderDetail();
+			cod.setOrder_id(id);
+			cod.setDetail_name("CyberPark Credit");
+			cod.setDetail_price(cyberParkCredit);
+			cod.setDetail_type("discount");
+			cod.setDetail_unit(1);
+			cod.setUser_id(user.getId());
+			this.crmService.createCustomerOrderDetail(cod);
+		}
 		
 		ProvisionLog pl = new ProvisionLog();
-		User user = (User) req.getSession().getAttribute("userSession");
 		pl.setUser_id(user.getId());
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");

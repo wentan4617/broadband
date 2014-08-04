@@ -192,12 +192,14 @@
 				$('a[data-name="payOffOrderModalBtn_'+co[i].id+'"]').click(function(){
 					var paid_amount = $('input[data-name="paid_amount_'+this.id+'"]').val();
 					var order_pay_way = $('select[data-name="order_pay_way_'+this.id+'"]').val();
+					var order_total_price = $('#'+this.id+'_order_total_price').attr('data-val');
 
 					var data = {
 						'id':this.id
 						,'customerId':'${customer.id}'
 						,'paid_amount':paid_amount
 						,'order_pay_way':order_pay_way
+						,'order_total_price':order_total_price
 					};
 					$.post('${ctx}/broadband-user/crm/customer/order/pay-off/receipt', data, function(json){
 						$.jsonValidation(json, 'right');
@@ -863,6 +865,7 @@
 						data = {
 								'order_id':this.id
 								,'customer_id':${customer.id}
+								,'charge_amount':$('input[data-name="'+this.id+'_charge_amount"]').val()+''
 								,'calling_minutes':$('input[data-name="'+this.id+'_calling_minutes"]').val()+''
 								,'calling_country':$('select[data-name="'+this.id+'_calling_country"]').val()+''
 						};

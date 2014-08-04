@@ -245,7 +245,7 @@ public class SimpleMapperCreator {
 		buff.append("import com.tm.broadband.model.Page;\n\n");
 		buff.append("public interface "+this.getModel()+"Mapper {\n\n");
 		buff.append("/**\n");
-		buff.append(" * mapping "+this.getTable()+", customer DAO component\n");
+		buff.append(" * mapping "+this.getTable()+", "+this.getLowerModel()+" DAO component\n");
 		buff.append(" * \n");
 		buff.append(" * @author "+this.getAuthor()+"\n");
 		buff.append(" * \n");

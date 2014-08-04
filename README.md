@@ -17,6 +17,20 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
 
+demand version 2.0.3 2014-08-04
+
+* 在customer service record及ticket comment处加上 word-wrap:break-word; 并测试否能避免留言过长溢出指定区域.(steven)
+* [在Pay off this receipt的时候加一个逻辑，如果输入的钱少于order的total price则用CyberPark Credit来填补上.](steven)
+* Topup账单提示：invoice create date到第5天发送第一个提示，第7天发送最后一天提示，第8天发送suspension提示，第9天发送disconnected提示.(steven)
+* 客户购买term plan界面，加一段话：You can either use your BYO(Bring Your Own) Router for first month free or get a free router for first month charged.(steven)
+* 所有在Due Date之前3天的未付款invoice给客户发邮件及短信提醒一下还剩余几天就Due Date了.(steven)
+* 在order支付发票的界面添加记录user_id.(steven)
+
+demand version 2.0.1 2014-08-01
+
+* contact-us新增user_id字段，在回复时记录其id，显示时显示其用户名.(steven)
+* 设计wholesale模块的所需表第一阶段(基础表).(steven)
+
 demand version 2.0.1 2014-07-31
 
 * [user_role添加一个agent角色，在sales的ordering online列表将客户id加链接指向provision里的order_form的modal.](steven)

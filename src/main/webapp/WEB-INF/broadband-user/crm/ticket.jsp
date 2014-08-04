@@ -126,7 +126,7 @@
 	   		var $table = $('#ticket_comments');
 			$table.html(tmpl('ticket_comments_table_tmpl', page));
 			$table.find('tfoot a').click(function(){
-				$.getTxPage($(this).attr('data-pageNo'));
+				$.getTicketComment($(this).attr('data-pageNo'));
 			});
 			
 			$('a[data-name="new_comment_btn"]').click(function(){

@@ -32,6 +32,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Double detail_topup_fee;
 	private String detail_plan_memo;
 	private Integer detail_unit;
+	private Integer detail_calling_minute;
 	
 	private String detail_type;
 	private Integer detail_is_next_pay;
@@ -291,6 +292,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setUser_id(Integer user_id) {
 		this.user_id = user_id;
+	}
+
+	public Integer getDetail_calling_minute() {
+		return detail_calling_minute;
+	}
+
+	public void setDetail_calling_minute(Integer detail_calling_minute) {
+		this.detail_calling_minute = detail_calling_minute;
 	}
 	
 	
