@@ -628,9 +628,10 @@ public class TMUtils {
 			ccrs.add(ccr);
 			
 			for (CustomerCallingRecordCallplus callingRecordCallplus : ccrcs) {
-				callingRecordCallplus.getParams().put("id", callingRecordCallplus.getId());
-				callingRecordCallplus.setUsed(true);
-				customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(callingRecordCallplus);
+				CustomerCallingRecordCallplus ccrcFinal = new CustomerCallingRecordCallplus();
+				ccrcFinal.getParams().put("id", callingRecordCallplus.getId());
+				ccrcFinal.setUsed(true);
+				customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(ccrcFinal);
 			}
 			
 		}
