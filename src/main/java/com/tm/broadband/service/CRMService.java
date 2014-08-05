@@ -2030,17 +2030,17 @@ public class CRMService {
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
 					cids.add(cid);
-					
+				
 				// Topup Plan
-				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") && "plan-topup".equals(cod.getDetail_type())){
-					
-					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
-					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
-					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
-					// increase amountPayable
-					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
-					// add invoice detail to list
-					cids.add(cid);
+//				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") && "plan-topup".equals(cod.getDetail_type())){
+//					
+//					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
+//					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
+//					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+//					// increase amountPayable
+//					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
+//					// add invoice detail to list
+//					cids.add(cid);
 				} else if(!isMostRecentInvoicePaid && !is_Next_Invoice && isFirst){
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
@@ -2058,9 +2058,15 @@ public class CRMService {
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
 					cids.add(cid);
+				} else if(isFirst) {
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cids.add(cid);
 				}
+				
 				if (cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") 
-						&& !"plan-topup".equals(cod.getDetail_type()) && !isRegenerate) {
+						 && !isRegenerate) {
 					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
