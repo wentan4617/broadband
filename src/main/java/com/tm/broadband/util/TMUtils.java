@@ -542,6 +542,7 @@ public class TMUtils {
 		ccrcQuery.getParams().put("orderby", "ORDER BY date ASC");
 		ccrcQuery.getParams().put("last_month", lastMonthFirst);
 		ccrcQuery.getParams().put("original_number", pstn_number);
+		ccrcQuery.getParams().put("used", false);
 		List<CustomerCallingRecordCallplus> ccrcs = customerCallingRecordCallplusMapper.selectCustomerCallingRecordCallplus(ccrcQuery);
 
 		
@@ -625,6 +626,13 @@ public class TMUtils {
 			// FORMAT DURATION(second) TO TIME STYLE
 			ccr.setFormated_duration(timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
 			ccrs.add(ccr);
+			
+			for (CustomerCallingRecordCallplus callingRecordCallplus : ccrcs) {
+				CustomerCallingRecordCallplus ccrcFinal = new CustomerCallingRecordCallplus();
+				ccrcFinal.getParams().put("id", callingRecordCallplus.getId());
+				ccrcFinal.setUsed(true);
+				customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(ccrcFinal);
+			}
 			
 		}
 		

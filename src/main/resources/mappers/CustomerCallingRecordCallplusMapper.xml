@@ -25,7 +25,8 @@
 		ccrc.`charged_fee` 				as ccrc_charged_fee,
 		ccrc.`original_number` 			as ccrc_original_number,
 		ccrc.`destination_number` 		as ccrc_destination_number,
-		ccrc.`type` 					as ccrc_type
+		ccrc.`type` 					as ccrc_type,
+		ccrc.`used` 					as used
 	</sql>
 	
 	<resultMap type="CustomerCallingRecordCallplus" id="customerCallingRecordCallplusResultMap">
@@ -37,6 +38,7 @@
 		<result property="original_number" column="ccrc_original_number" />
 		<result property="destination_number" column="ccrc_destination_number" />
 		<result property="type" column="ccrc_type" />
+		<result property="used" column="ccrc_used" />
 	</resultMap>
 	
 	<sql id="customerCallingRecordCallplusWhere">
@@ -55,6 +57,7 @@
 					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
 					<if test="params.destination_number != null">and ccrc.destination_number = #{params.destination_number}</if>
 					<if test="params.type != null">and ccrc.type = #{params.type}</if>
+					<if test="params.used != null">and ccrc.used = #{params.used}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -100,9 +103,9 @@
 
 	<insert id="insertCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_calling_record_callplus`(
-			`id`, `date`, `length`, `description`, `charged_fee`, `original_number`, `destination_number`, `type`
+			`id`, `date`, `length`, `description`, `charged_fee`, `original_number`, `destination_number`, `type`, `used`
 		) VALUES (
-			#{id},#{date},#{length},#{description},#{charged_fee},#{original_number},#{destination_number},#{type}
+			#{id},#{date},#{length},#{description},#{charged_fee},#{original_number},#{destination_number},#{type},#{used}
 		)	
 	</insert>
 
@@ -122,7 +125,8 @@
 			<if test="charged_fee != null">charged_fee = #{charged_fee},</if>
 			<if test="original_number != null">original_number = #{original_number},</if>
 			<if test="destination_number != null">destination_number = #{destination_number},</if>
-			<if test="type != null">type = #{type}</if>
+			<if test="type != null">type = #{type},</if>
+			<if test="used != null">used = #{used}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
@@ -146,6 +150,7 @@
 			<if test="params.original_number != null">and original_number = #{params.original_number}</if>
 			<if test="params.destination_number != null">and destination_number = #{params.destination_number}</if>
 			<if test="params.type != null">and type = #{params.type}</if>
+			<if test="params.used != null">and used = #{params.used}</if>
 		</where>
 	</delete>
 	

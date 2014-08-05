@@ -56,6 +56,7 @@ public class CallingRecordUtility_CallPlus {
 	private static CustomerCallingRecordCallplus getCustomerCallingRecordCallplus(String line){
 		CustomerCallingRecordCallplus ccr = new CustomerCallingRecordCallplus();
 		String arr[] = line.split(",");
+		ccr.setUsed(false);
 		
 		// String: Original Number
 		if(arr.length > originalNumberIndex){
