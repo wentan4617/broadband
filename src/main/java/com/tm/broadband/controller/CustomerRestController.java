@@ -3,10 +3,14 @@ package com.tm.broadband.controller;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,10 +33,13 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.DateUsage;
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
+
+import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
@@ -40,6 +47,7 @@ import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
+import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.CheckScriptInjection;
@@ -64,17 +72,20 @@ public class CustomerRestController {
 	private SystemService systemService;
 	private DataService dataService;
 	private BillingService billingService;
+	private PlanService planService;
 
 	@Autowired
-	public CustomerRestController(CRMService crmService, MailerService mailerService
-			,SystemService systemService, SmserService smserService, DataService dataService
-			,BillingService billingService) {
+	public CustomerRestController(CRMService crmService,
+			MailerService mailerService, SystemService systemService,
+			SmserService smserService, DataService dataService,
+			BillingService billingService, PlanService planService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.smserService = smserService;
 		this.systemService = systemService;
 		this.dataService = dataService;
 		this.billingService = billingService;
+		this.planService = planService;
 	}
 	
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -284,6 +295,7 @@ public class CustomerRestController {
 		if (result.hasErrors()) {
 			TMUtils.setJSONErrorMap(json, result);
 			if (!"transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				json.getErrorMap().remove("customerOrder.transition_porting_number");
 				json.getErrorMap().remove("customerOrder.transition_provider_name");
 				json.getErrorMap().remove("customerOrder.transition_account_number");
 				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
@@ -310,6 +322,7 @@ public class CustomerRestController {
 			json.getErrorMap().put("email", "is already in use");
 			return json;
 		}
+		
 		return json;
 	}
 	
@@ -354,6 +367,9 @@ public class CustomerRestController {
 		CustomerOrder co = customer.getCustomerOrders().get(0);
 		String svlan = co.getSvlan()
 				, cvlan = co.getCvlan();
+		
+		if (svlan == null || cvlan == null) 
+			return null;
 		
 		String type = co.getCustomerOrderDetails().get(0).getDetail_plan_type();
 		
@@ -703,15 +719,31 @@ public class CustomerRestController {
 		
 		Customer customer = (Customer) req.getSession().getAttribute("customer");
 		
-		for (Voucher vQuery: customer.getVouchers()) {
-			if (vQuery.getSerial_number().equals(voucher.getSerial_number())
-					&& vQuery.getCard_number().equals(voucher.getCard_number())) {
-				json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been applied.");
-				return json;
+		if (customer != null) {
+			for (Voucher vQuery: customer.getVouchers()) {
+				if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+						&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+					json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been applied.");
+					return json;
+				}
 			}
+			
+			customer.getVouchers().add(v);
 		}
 		
-		customer.getVouchers().add(v);
+		Customer customerReg = (Customer) req.getSession().getAttribute("customerReg");
+		
+		if (customerReg != null) {
+			for (Voucher vQuery: customerReg.getVouchers()) {
+				if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+						&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+					json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been applied.");
+					return json;
+				}
+			}
+			
+			customer.getVouchers().add(v);
+		}
 		
 		json.setModel(v);
 		json.getSuccessMap().put("alert-success", "Cyberpark Voucher " + voucher.getSerial_number() + " has been applied.");
@@ -727,13 +759,29 @@ public class CustomerRestController {
 		
 		Customer customer = (Customer) req.getSession().getAttribute("customer");
 		
-		for (Voucher vQuery: customer.getVouchers()) {
-			if (vQuery.getSerial_number().equals(voucher.getSerial_number())
-					&& vQuery.getCard_number().equals(voucher.getCard_number())) {
-				json.getSuccessMap().put("alert-success", "Voucher Card Number " + voucher.getSerial_number() + " is available.");
-				customer.getVouchers().remove(vQuery);
-				json.setModel(vQuery);
-				break;
+		if (customer != null) {
+			for (Voucher vQuery: customer.getVouchers()) {
+				if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+						&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+					json.getSuccessMap().put("alert-success", "Voucher Card Number " + voucher.getSerial_number() + " is available.");
+					customer.getVouchers().remove(vQuery);
+					json.setModel(vQuery);
+					break;
+				}
+			}
+		}
+		
+		Customer customerReg = (Customer) req.getSession().getAttribute("customerReg");
+		
+		if (customerReg != null) {
+			for (Voucher vQuery: customerReg.getVouchers()) {
+				if (vQuery.getSerial_number().equals(voucher.getSerial_number())
+						&& vQuery.getCard_number().equals(voucher.getCard_number())) {
+					json.getSuccessMap().put("alert-success", "Voucher Card Number " + voucher.getSerial_number() + " is available.");
+					customerReg.getVouchers().remove(vQuery);
+					json.setModel(vQuery);
+					break;
+				}
 			}
 		}
 		
@@ -930,4 +978,127 @@ public class CustomerRestController {
 		
 		return json;
 	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/plans/loading/{select_plan_id}/{select_plan_type}")
+	public Map<String, Map<String, List<Plan>>>  loadingPlans(
+			@PathVariable("select_plan_id") Integer id,
+			@PathVariable("select_plan_type") String type) {
+		
+		Plan plan = new Plan();
+		plan.getParams().put("plan_type", type);
+		plan.getParams().put("plan_class", "personal");
+		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("plan_group_false", "plan-topup");
+		plan.getParams().put("orderby", "order by plan_price");
+		
+		List<Plan> plans = this.planService.queryPlans(plan);
+		
+		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		
+		this.wiredPlanMapBySort(planTypeMap, plans);
+		
+		return planTypeMap;
+	}
+	
+	private void wiredPlanMapBySort(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+		if (plans != null) {
+			for (Plan p: plans) {
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = new ArrayList<Plan>();
+						plansClothed.add(p);
+						planMap.put("plansClothed", plansClothed);
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = new ArrayList<Plan>();
+						plansNaked.add(p);
+						planMap.put("plansNaked", plansNaked);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
+				} else {
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = planMap.get("plansClothed");
+						if (plansClothed == null) {
+							plansClothed = new ArrayList<Plan>();
+							plansClothed.add(p);
+							planMap.put("plansClothed", plansClothed);
+						} else {
+							plansClothed.add(p);
+						}
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = planMap.get("plansNaked");
+						if (plansNaked == null) {
+							plansNaked = new ArrayList<Plan>();
+							plansNaked.add(p);
+							planMap.put("plansNaked", plansNaked);
+						} else {
+							plansNaked.add(p);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	@RequestMapping("/plans/hardware/loading/{hardware_class}")
+	public List<Hardware>  loadingHardwares(
+			@PathVariable("hardware_class") String hardware_class) {
+		
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		hardware.getParams().put("hardware_type", "router");
+		hardware.getParams().put("hardware_class", hardware_class);
+		
+		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
+		
+		return hardwares;
+	}
+	
+	
+	@RequestMapping(value = "/plans/order/confirm", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirm(
+			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		customerReg.setCellphone(customer.getCellphone());
+		customerReg.setEmail(customer.getEmail());
+		customerReg.setTitle(customer.getTitle());
+		customerReg.setFirst_name(customer.getFirst_name());
+		customerReg.setLast_name(customer.getLast_name());
+		customerReg.setIdentity_type(customer.getIdentity_type());
+		customerReg.setIdentity_number(customer.getIdentity_number());
+		customerReg.setCustomer_type(customer.getCustomer_type());
+		
+		customerReg.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
+		
+		this.crmService.doPlansOrderConfirm(customerReg);
+		
+		json.setUrl("/plans/order/summary");
+		
+		return json;
+	}	
+
 }

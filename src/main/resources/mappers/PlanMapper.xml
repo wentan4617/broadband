@@ -88,10 +88,18 @@
 				<when test="params.where=='delete_plan'">
 					<if test="params.id != null">id = #{params.id}</if>
 				</when>
+				<!-- <when test="params.where=='query_plans'">
+					<if test="params.plan_group != null">and p.plan_group != #{params.plan_group}</if>
+					<if test="params.plan_class != null">and p.plan_class = #{params.plan_class}</if>
+					<if test="params.plan_type != null">and p.plan_type = #{params.plan_type}</if>
+					<if test="params.plan_sort != null">and p.plan_sort = #{params.plan_sort}</if>
+					<if test="params.plan_status != null">and p.plan_status = #{params.plan_status}</if>
+				</when> -->
 				
 				<otherwise>
 					<if test="params.id != null">and p.id = #{params.id}</if>
 					<if test="params.plan_group != null">and p.plan_group = #{params.plan_group}</if>
+					<if test="params.plan_group_false != null">and p.plan_group != #{params.plan_group_false}</if>
 					<if test="params.plan_class != null">and p.plan_class = #{params.plan_class}</if>
 					<if test="params.plan_type != null">and p.plan_type = #{params.plan_type}</if>
 					<if test="params.plan_sort != null">and p.plan_sort = #{params.plan_sort}</if>

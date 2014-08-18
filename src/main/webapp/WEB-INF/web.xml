@@ -124,6 +124,21 @@
 		<url-pattern>/order/checkout</url-pattern>
 		<url-pattern>/order/result/*</url-pattern>
 	</filter-mapping>
+	
+	<!-- customerReg filter -->
+	<filter>
+		<filter-name>CustomerRegFilter</filter-name>
+		<filter-class>com.tm.broadband.filter.CustomerRegFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CustomerRegFilter</filter-name>
+		<url-pattern>/plans/address-check/*</url-pattern>
+		<url-pattern>/plans/order</url-pattern>
+		<url-pattern>/plans/address/clear</url-pattern>
+		<url-pattern>/plans/order/summary</url-pattern>
+		<url-pattern>/plans/order/bankdeposit</url-pattern>
+		<url-pattern>/plans/order/dps</url-pattern>
+	</filter-mapping>
 
 	<!-- customer session filter -->
 	<filter>

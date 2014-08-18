@@ -6,6 +6,10 @@ html {
 	height: 100%;
 }
 
+body {
+	padding-bottom: 0;
+}
+
 #scrollUp {
 	bottom: 20px;
 	right: 20px;
@@ -21,20 +25,12 @@ html {
 	height: 46px;
 	width: 111px;
 	background: url("../images/logo.png") no-repeat;
-	margin-top:-12px;
+	margin-top: -12px;
 	background-size: contain;
 }
 
-.logo_ct {
-	display: inline-block;
-	height: 70px;
-	width: 70px;
-	background: url("../images/cartoon.png") no-repeat;
-	background-size: contain;
-}
-
-body {
-	padding-bottom: 0;
+#navhead {
+	margin-bottom:20px;
 }
 
 .list-menu h4 {
@@ -42,51 +38,112 @@ body {
 	margin-bottom: 15px;
 }
 
-.navbar-default {
-	background-color: #08373a;
-	border-color: #386d71;
-}
-
-.navbar-default .navbar-nav>li>a{
-	color:#fff;
-}
-
-.navbar-default .navbar-nav>li>a:active,
-.navbar-default .navbar-nav>li>a:focus,
-.navbar-default .navbar-nav>li>a:hover {
-	color:#378B5C;
-}
-
-.navbar-default .navbar-link {
-	color:#fff;
-}
-
-.navbar-default .navbar-link:active,
-.navbar-default .navbar-link:focus,
-.navbar-default .navbar-link:hover {
-	color:#378B5C;
-}
-
-.navbar-default .navbar-nav .open .dropdown-menu>li>a {
-	color:#428bca;
-}
-
-.navbar-default .navbar-nav .open .dropdown-menu>li>a:active,
-.navbar-default .navbar-nav .open .dropdown-menu>li>a:focus,
-.navbar-default .navbar-nav .open .dropdown-menu>li>a:hover{
-	color:#378B5C;
-}
 
 .customer-panel-height {
-	min-height:500px;
+	min-height: 500px;
 }
 
 .popover-content {
-	width:250px;
+	width: 250px;
 }
 
-.homebg {
-	
-	background-image: url("../images/bg.png");
-	padding-bottom:20px;
+.cyberpark-home-bg {
+	max-width: 1366px;
+	background: url("../images/cyberpark_home_bg.jpg") no-repeat;
+}
+.cyberpark-home-bg img {
+	margin: 0 auto;
+	padding: 60px 30px 30px;
+}
+
+.cyberpark-home-bg a {
+	margin: 0 auto;
+}
+
+@media (min-width : 768px) .bs-docs-masthead {
+	padding: 80px 0;
+}
+
+@media (min-width: 768px)
+.bs-docs-header {
+padding-top: 60px;
+padding-bottom: 60px;
+font-size: 24px;
+text-align: left;
+}
+.bs-docs-header {
+margin-bottom: 40px;
+font-size: 20px;
+position: relative;
+padding: 30px 15px;
+color: #fff;
+text-align: center;
+text-shadow: 0 1px 0 rgba(0,0,0,.1);
+}
+
+.bs-docs-masthead, .bs-docs-booticon {
+	margin: 0 auto 30px;
+}
+
+.bs-docs-booticon-outline {
+	background-color: transparent;
+	border: 1px solid #cdbfe3;
+}
+
+.bs-docs-booticon-lg {
+	font-size: 108px;
+	line-height: 140px;
+}
+
+.bs-docs-booticon {
+	display: block;
+	font-weight: 500;
+	color: #fff;
+	text-align: center;
+	cursor: default;
+	background-color: #563d7c;
+	border-radius: 1%;
+}
+
+.btn-outline-inverse {
+	color: #fff;
+	background-color: transparent;
+	border-color: #fff;
+}
+
+.btn-outline-inverse:hover, .btn-outline-inverse:focus, .btn-outline-inverse:active {
+color: #03764b;
+text-shadow: none;
+background-color: #fff;
+border-color: #fff;
+}
+
+a[title="Facebook"]:hover img,
+a[title="Twitter"]:hover img,
+a[title="Google Plus"]:hover img{
+	opacity: 1;
+}
+
+a[title="Facebook"] img,
+a[title="Twitter"] img,
+a[title="Google Plus"] img{
+	opacity: 0.5;
+}
+
+
+.phone {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: url("../images/phone.png") no-repeat;
+	background-size: contain;
+	margin-bottom: -5px;
+}
+.without_phone {
+	display: inline-block;
+	width: 30px;
+	height: 30px;
+	background: url("../images/without_phone.png") no-repeat;
+	background-size: contain;
+	margin-bottom: -5px;
 }

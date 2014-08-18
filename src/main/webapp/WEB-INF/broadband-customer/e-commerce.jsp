@@ -3,7 +3,11 @@
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="header.jsp" />
-
+<style>
+#navhead {
+	margin-bottom:0;
+}
+</style>
 <style>
 
 .affix {

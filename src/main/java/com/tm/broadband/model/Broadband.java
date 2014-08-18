@@ -7,10 +7,11 @@ package com.tm.broadband.model;
  */
 public class Broadband {
 	
-	
 	private boolean adsl_available;
 	private boolean vdsl_available;
 	private boolean ufb_available;
+	private String services_available;
+	private String address;
 	
 	private String href;
 	private String type;
@@ -67,7 +68,21 @@ public class Broadband {
 	public void setScheduled(String scheduled) {
 		this.scheduled = scheduled;
 	}
-	
-	
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getServices_available() {
+		return services_available;
+	}
+
+	public void setServices_available(String services_available) {
+		this.services_available = services_available;
+	}
+	
 }

@@ -1,0 +1,45 @@
+<div class="panel panel-success">
+	<div class="panel-body" style="padding-bottom:0;">
+		<div class="row">
+			<div class="col-md-2">
+				<span class="glyphicon glyphicon-map-marker" style="font-size: 36px;"></span>
+			</div>
+			<div class="col-md-10">
+				<p><.=customer_address.></p>
+				<p>
+					<a href="<.=ctx.>/plans/address-check/<.=select_plan_type.>/<.=select_plan_id.>" class="btn btn-link" style="padding: 0;">Change Address</a>
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="panel-body" style="padding-top:0;">
+		<div class="well" style="padding:8px; margin-bottom:0;">
+			<h3 class="text-success" style="font-weight:bold;margin-top:0;">
+				<.=plan.plan_name.>
+			</h3>
+			<. if (!naked) {.>
+			<p class="text-success" style="margin:0;">+ Homeline included</p>
+			<.}.>
+			<. if (modem_name != '') {.>
+			<p class="text-success" style="margin:0;">+ <.=modem_name.></p>
+			<.}.>
+			<. if (isContract) {.>
+			<p class="text-success" style="margin:0;">+ <.=contract_name.></p>
+			<.}.>
+			<p class="text-success" style="margin:0;">+ <.=order_broadband_type.></p>
+			<. if (discount_desc != '') {.>
+			<p class="text-success" style="margin:0;">+ <.=discount_desc.></p>
+			<.}.>
+			<hr style="margin:4px;">
+			<p class="text-danger text-center" > 
+				<span style="font-size: 36px;font-weight: bold;">
+					NZ$
+				</span>
+				<span style="font-size: 64px;font-weight: bold;">
+					<.=Number(price.plan_price * prepay_months + price.modem_price + price.service_price - price.discount_price).>
+				</span>
+			</p>
+			<a href="javascript:void(0);" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="get-it-now">Get it Now</a>
+		</div>
+	</div>
+</div>

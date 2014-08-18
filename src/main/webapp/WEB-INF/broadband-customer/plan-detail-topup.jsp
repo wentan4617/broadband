@@ -20,6 +20,12 @@
 .home-title-h2 {
 	font-size:30px;
 }
+
+</style>
+<style>
+#navhead {
+	margin-bottom:0;
+}
 </style>
 
 <div class="container">
@@ -35,26 +41,6 @@
 		<p>CyberPark Top Up Plan offer you unlimited data plan by weekly charges,</p>
 		<p>CyberPark Top Up payment method include: Top-up Voucher, Credit Cards, Account to Account, or Call 0800 2 Cyber (29237) for help.</p>
 	</div>
-	
- 	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
-		<li class="active">
-			<a class="btn-lg">
-				1. Choose Plan
-				<span class="glyphicon glyphicon-hand-right pull-right"></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				2. Fill Application Form
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				3. Review and Checkout 
-			</a>
-		</li>
-	</ul>
 	
 	<div class="panel panel-success">
   		<div class="panel-heading">
