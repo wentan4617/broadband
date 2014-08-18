@@ -193,7 +193,7 @@ public class TestAll {
 		ipdfc.setCustomer(c);
 		ipdfc.setOrg(org);
 		ipdfc.setCcrs(ccrs);
-		System.out.println(ipdfc.create());
+		System.out.println(ipdfc.create().get("filePath"));
 		
 		/**
 		 * END TEST InvoicePDFCreator

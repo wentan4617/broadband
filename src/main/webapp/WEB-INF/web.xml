@@ -201,7 +201,10 @@
 		<!-- Billing Module BEGIN -->
 		<url-pattern>/broadband-user/billing/invoice/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/chart/transaction-statistic/*</url-pattern>
-		<url-pattern>/broadband-user/billing/chart/invoice-statistic/*</url-pattern>
+		<url-pattern>/broadband-user/billing/chart/invoice-statistic/personal/*</url-pattern>
+		<url-pattern>/broadband-user/billing/chart/annual-invoice-statistic/personal/*</url-pattern>
+		<url-pattern>/broadband-user/billing/chart/invoice-statistic/business/*</url-pattern>
+		<url-pattern>/broadband-user/billing/chart/annual-invoice-statistic/business/*</url-pattern>
 		<url-pattern>/broadband-user/billing/voucher/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/voucher-file-upload-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/early-termination-charge/view/*</url-pattern>
@@ -275,5 +278,27 @@
 		<error-code>500</error-code>
 		<location>/public/static/error-500.html</location>
 	</error-page>
+	
+	
+	
+	
+	<!-- BEGIN TMSWholesale SYSTEM -->
+
+
+	<!-- wholesaler session filter -->
+	<filter>
+		<filter-name>WholesalerSessionFilter</filter-name>
+		<filter-class>com.tm.broadband.wholesale.filter.WholesalerSessionFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>WholesalerSessionFilter</filter-name>
+		<url-pattern>/broadband-wholesale/index</url-pattern>
+		<url-pattern>/broadband-wholesale/material/*</url-pattern>
+		<url-pattern>/broadband-wholesale/system/*</url-pattern>
+	</filter-mapping>
+	
+	
+	
+	<!-- END TMSWholesale SYSTEM -->
 
 </web-app>

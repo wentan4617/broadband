@@ -102,15 +102,34 @@ hr {
 							<ul class="list-unstyled">
 								<li>
 		                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/billing/invoice/view/1/unpaid">View Invoice</a>
+		                    		<a href="${ctx }/broadband-user/billing/invoice/view/personal/1/unpaid/all">View Invoice(Personal)</a>
 		                    	</li>
 								<li>
-		                    		<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
+		                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/invoice/view/business/1/unpaid/all">View Invoice(Business)</a>
+		                    	</li>
+							</ul>
+							<hr/>
+							<ul class="list-unstyled">
+								<li>
+		                    		<span class="glyphicon glyphicon-usd" style="padding-right:10px;"></span>
 		                    		<a href="${ctx }/broadband-user/billing/chart/transaction-statistic/0">Chart(Transaction)</a>
 		                    	</li>
 								<li>
-		                    		<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/billing/chart/invoice-statistic/0">Chart(Invoice)</a>
+		                    		<span class="glyphicon glyphicon-home" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/chart/invoice-statistic/personal/0">Chart(Monthly Personal)</a>
+		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-briefcase" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/chart/invoice-statistic/business/0">Chart(Monthly Business)</a>
+		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-home" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/chart/annual-invoice-statistic/personal/0">Chart(Annually Personal)</a>
+		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-briefcase" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/chart/annual-invoice-statistic/business/0">Chart(Annually Business)</a>
 		                    	</li>
 							</ul>
 							<hr/>
@@ -304,7 +323,7 @@ hr {
 		                    <ul class="list-unstyled">
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-		                    		<a href='${ctx }/broadband-user/manual-manipulation/manual-manipulation-record/view/1/generate-termed-invoice'>Manual Termed Invoice</a>
+		                    		<a href='${ctx }/broadband-user/manual-manipulation/manual-manipulation-record/view/1'>Manual Termed Invoice</a>
 		                    	</li>
 		                    </ul>
 		                    <hr/>

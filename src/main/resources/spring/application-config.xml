@@ -226,25 +226,25 @@
 	</bean>
 	<!-- END radiusDataUsageImportCalculator -->
 	
-	<!-- BEGIN customerCreateTermPlanInvoiceOverduePenaltyEachMonthPDF -->
+	<!-- BEGIN customerInvoiceOverduePenaltyEachMonthPDF -->
 	<!-- normal business Bean -->
-	<bean name="customerCreateTermPlanInvoiceOverduePenaltyEachMonth" class="com.tm.broadband.quartz.CustomerCreateTermPlanInvoiceOverduePenaltyEachMonth" />
+	<bean name="customerInvoiceOverduePenaltyEachMonth" class="com.tm.broadband.quartz.CustomerInvoiceOverduePenaltyEachMonth" />
 	<!-- assignment -->
-	<bean id="customerCreateTermPlanInvoiceOverduePenaltyEachMonthJob"
+	<bean id="customerInvoiceOverduePenaltyEachMonthJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-		<property name="targetObject" ref="customerCreateTermPlanInvoiceOverduePenaltyEachMonth" />
-		<property name="targetMethod" value="createTermPlanInvoiceOverduePenalty" />
+		<property name="targetObject" ref="customerInvoiceOverduePenaltyEachMonth" />
+		<property name="targetMethod" value="createInvoiceOverduePenalty" />
 	</bean>
 	<!-- trigger -->
-	<bean id="customerCreateTermPlanInvoiceOverduePenaltyEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
-		<property name="jobDetail" ref="customerCreateTermPlanInvoiceOverduePenaltyEachMonthJob" />
+	<bean id="customerInvoiceOverduePenaltyEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerInvoiceOverduePenaltyEachMonthJob" />
 		<property name="cronExpression" value="0 20 13 20 * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every month's 20th 1:20 p.m. -->
 		<!-- 0 20 13 20 * ? -->
 	</bean>
-	<!-- END customerCreateTermPlanInvoiceOverduePenaltyEachMonthPDF -->
+	<!-- END customerInvoiceOverduePenaltyEachMonthPDF -->
 	
 	<!-- BEGIN customerCheckPendingOrderEachThreeDays -->
 	<!-- normal business Bean -->
@@ -326,19 +326,60 @@
 	</bean>
 	<!-- END createNextTopupPlanInvoicePDF -->
 	
+	<!-- BEGIN customerUpdateInvoiceUnpaid2Overdue -->
+	<!-- normal business Bean -->
+	<bean name="customerUpdateInvoiceUnpaid2Overdue" class="com.tm.broadband.quartz.CustomerUpdateInvoiceUnpaid2Overdue" />
+	<!-- assignment -->
+	<bean id="customerUpdateInvoiceUnpaid2OverdueJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerUpdateInvoiceUnpaid2Overdue" />
+		<property name="targetMethod" value="customerUpdateInvoiceUnpaid2Overdue" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerUpdateInvoiceUnpaid2OverdueTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerUpdateInvoiceUnpaid2OverdueJob" />
+		<property name="cronExpression" value="0 10 0 * * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every day's 0:10 a.m. -->
+		<!-- 0 10 0 * * ? -->
+	</bean>
+	<!-- END customerUpdateInvoiceUnpaid2Overdue -->
+	
+	<!-- BEGIN customerCreateInvoiceOverdue2BadDebit -->
+	<!-- normal business Bean -->
+	<bean name="customerUpdateInvoiceOverdue2BadDebit" class="com.tm.broadband.quartz.CustomerUpdateInvoiceOverdue2BadDebit" />
+	<!-- assignment -->
+	<bean id="customerUpdateInvoiceOverdue2BadDebitJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerUpdateInvoiceOverdue2BadDebit" />
+		<property name="targetMethod" value="customerUpdateInvoiceOverdue2BadDebit" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerUpdateInvoiceOverdue2BadDebitTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerUpdateInvoiceOverdue2BadDebitJob" />
+		<property name="cronExpression" value="0 0 0 L * ?"></property>
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every last date of month -->
+		<!-- 0 0 0 L * ? -->
+	</bean>
+	<!-- END customerCreateInvoiceOverdue2BadDebit -->
+	
 	<!-- plan -->
-	<!-- <bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
+				<!-- <ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
-				<ref bean="customerCreateTermPlanInvoiceOverduePenaltyEachMonthTrigger" />
+				<ref bean="customerInvoiceOverduePenaltyEachMonthTrigger" />
 				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />
 				<ref bean="customerCheckPendingWarningOrderEachFiveDaysTrigger" />
 				<ref bean="customerInvoiceAfterDueNoticeTrigger" />
 				<ref bean="customerCreateTopupPlanInvoicePDFEachMonthTrigger" />
+				<ref bean="customerUpdateInvoiceUnpaid2OverdueTrigger" /> -->
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
@@ -346,7 +387,7 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean> -->
+	</bean>
 	
 	<!-- <import resource="aop-config.xml"/> -->
 

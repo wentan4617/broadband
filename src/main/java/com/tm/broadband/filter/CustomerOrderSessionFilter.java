@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.User;
 
 public class CustomerOrderSessionFilter implements Filter {
 

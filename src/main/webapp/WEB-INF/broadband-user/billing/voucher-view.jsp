@@ -49,7 +49,6 @@
 						<thead >
 							<tr>
 								<th><input type="checkbox" id="checkbox_vs_top" /></th>
-								<th>Serial Number</th>
 								<th>Pin Number</th>
 								<th>Face Value</th>
 								<th>Status</th>
@@ -65,10 +64,7 @@
 										<input type="checkbox" name="checkbox_vs" value="${v.serial_number}"/>
 									</td>
 									<td>
-										${v.serial_number }
-									</td>
-									<td>
-										${v.card_number }
+										${fn:substring(v.card_number,0,3)}***********
 									</td>
 									<td>
 										${v.face_value }

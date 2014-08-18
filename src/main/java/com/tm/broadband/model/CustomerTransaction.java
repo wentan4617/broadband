@@ -245,8 +245,7 @@ public class CustomerTransaction implements Serializable {
 	}
 
 	public String getTransaction_date_str() {
-		transaction_date_str = TMUtils.dateFormatYYYYMMDD(this
-				.getTransaction_date());
+		transaction_date_str = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getTransaction_date());
 		return transaction_date_str;
 	}
 

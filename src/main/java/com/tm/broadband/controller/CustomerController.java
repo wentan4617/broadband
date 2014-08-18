@@ -757,22 +757,9 @@ public class CustomerController {
 		return "broadband-customer/customer-data";
 	}
 
-	@RequestMapping(value = "/customer/billing/{pageNo}")
-	public String customerBilling(Model model,
-			@PathVariable(value = "pageNo") int pageNo,
-			HttpServletRequest request) {
-		
+	@RequestMapping(value = "/customer/billing/view")
+	public String customerBilling(Model model, HttpServletRequest req) {
 		model.addAttribute("bills", "active");
-		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
-		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
-		invoicePage.setPageNo(pageNo);
-		invoicePage.setPageSize(12);
-		invoicePage.getParams().put("orderby", "order by create_date desc");
-		invoicePage.getParams().put("customer_id", customer.getId());
-		this.crmService.queryCustomerInvoicesByPage(invoicePage);
-		
-		model.addAttribute("page", invoicePage);
-		model.addAttribute("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
 		return "broadband-customer/customer-billing";
 	}
 

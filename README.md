@@ -16,6 +16,71 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+ 
+
+demand version 2.1.7 2014-08-18
+
+* customer order界面的Service Given按钮组里添加一个选项，for business post pay.(steven)
+* Service Given时判断客户类型，如果是personal则用service-given短信及邮件模版，如果是business则用business-service-given短信及邮件模版.(steven)
+* 下单时判断plan的客户类型，如果是personal则用online-ordering短信及邮件模版，如果是business则用business-online-ordering短信及邮件模版.(steven)
+* 10号发送ddpay账单时只发送邮件，不发送短信提醒.(steven)
+ 
+
+demand version 2.1.5 2014-08-15
+
+* [在后台Regenerate Invoice时判断，如果最近账单是unpaid或not_pay_off或overdue，则重新生成最近一张账单.](steven)
+* [在后台customer invoice列表里判断，如果是unpaid或not_pay_off或overdue，则显示Make Payment按钮.](steven)
+* [在前台customer invoice列表里判断，如果是(unpaid或not_pay_off或overdue)且customer_type为business，则显示Make Payment.](steven)
+* [将overdue penalty选取范围设定为residential的，business允许最多拖欠三个月，第三个月月底则变成坏账，bad debit.](steven)
+* [做个定时器，在每天凌晨0点取出due date小于等于今天且status为unpaid的账单，将其status改为overdue.](steven)
+* [做个定时器，在每天凌晨0点30分取出due date小于等于三个月前的最后一天且status为overdue，将其status改为bad-debit.](steven)
+* 在invoice列表页添加三个选项:All Invoice, Annually Invoice, Monthly Invoice，点击All Invoice则走现有逻辑不变，点击Annually Invoice则根据所选年份列出该年invoice及各项统计，点击Monthly Invoice则根据所选月份列出该月invoice及各项统计.(steven)
+* [business客户invoice列表界面只显示最近一张invoice的Make Payment按钮，只显示第一张并且是unpaid或overdue或not_pay_off账单的balance.](steven)
+* [residential用户的账单图表页只统计invoice amount,unpaid,paid,overdue,voided,credit。overdue只显示overdue的账单（也就是order被suspended后该order最近一张状态被更改的账单）。voided只显示void的账单（也就是order到期未付款被disconnected后该order最近一张状态被更改的账单）.](steven)
+* [business用户的账单图表页统计invoice amount,unpaid,paid,overdue,voided,credit,bad debit](steven)
+* [invoice添加一个bad-debit状态，标记business账单过期日期超过三个月的为坏账.](steven)
+
+demand version 2.1.3 2014-08-14
+
+* [去掉前端查voucher时的serial number，只要pin number匹配即可.](steven)
+* [客户看的账单列表判断是business的则屏蔽Make Payment按钮，如果该账单所在下标等于后台传出的未付款账单总数则显示Make Payment的按钮.](steven)
+* [Debug给rfs date时所报的错，错误所报之处已定位到，由于替换字符串时如果存在特殊符号，则需要加斜杠进行转义，该错误已被解决.](steven)
+* [将business用户的出账逻辑稍作修改，如果上一个账单balance大于0则累加到当前账单.](steven)
+
+demand version 2.1.1 2014-08-13
+
+* Voucher模块只有agent和sales是看不到的，其他权限皆可看到.(steven)
+* 新增一个epay-customer-service用户权限，该用户只能查看Voucher模块.(steven)
+* 将voucher功能从billing模块移出，新建一个Voucher模块，将移出的voucher功能放到新建的Voucher模块中.(steven)
+* voucher列表的customer_id列可以点击进入customer信息界面，并列出该voucher的transaction记录.(steven)
+
+demand version 2.1.0 2014-08-12
+
+* 检查客户前端下单付款时为何account credit会存入双倍金额.
+* [检查为何赠送拨打分钟数不被计算.](steven)
+* [在每次出下一张账单时判断如果上一个账单的balance小于0则将上一个账单的balance的绝对值存入新账单的paid里新账单的balance则为final_payable减去paid，并且置上一个账单的balance为0.](steven)
+* [检查topup的下一次出账日期为何间隔了7天而不是5天.](steven)
+* [在invoice列表和图标两个界面列出的所有order都为using的invoice.](steven)
+* 在customer信息invoice列表界面添加一个发短信提醒用户的按钮.(steven)
+* [在列出的所有customer的order_serial上标注old，在出账时判断，如果order_serial存在old或者用户类型为business则按老的逻辑显示日期.](steven)
+* [Nathan无法给rfs，后台报错，检查并解决.(未知问题，后来RFS给掉了)](steven)
+
+demand version 2.0.8 2014-08-11
+
+* [更新Callplus费率换算.](steven)
+
+demand version 2.0.6 2014-08-08
+
+* 每个月10号定期出预付N个月的order的电话账单.(steven)
+判断条件为:
+    order_status='using' AND order_using_start!=(current month)
+    AND order_next_invoice_create!=(current month)
+    AND id IN(select order_id from tm_customer_order_detail where detail_type='pstn')
+
+
+demand version 2.0.5 2014-08-07
+
+* 如果客户选择的是有合约的VDSL并且选择了硬件，就要在该detail的description上标注：credit-back，在出账单时判断如果detail类型不为空且包含hardware则判断是否上一次有返还credit，如果没有则hardware price - (hardware price / 12)保留两位小数并存到每一次返还后保存结果的字段上.
 
 demand version 2.0.3 2014-08-04
 

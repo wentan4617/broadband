@@ -77,7 +77,7 @@
 							</strong>
 						</div>
 						<div class="col-md-3">
-							<a href="${ctx }/customer/billing/1" class="btn btn-success btn-block" >View Invoice</a>
+							<a href="${ctx }/customer/billing/view" class="btn btn-success btn-block" >View Invoice</a>
 						</div>
 					</div>
 					<div class="row" style="margin-top:10px;">

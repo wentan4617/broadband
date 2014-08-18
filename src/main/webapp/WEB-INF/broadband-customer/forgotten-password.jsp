@@ -10,41 +10,56 @@
 	<div class="row">
 		<div class="col-md-4 col-md-offset-4">
 			<div class="panel panel-success">
-				<div class="panel-heading">CyberPark Customer Forgotten Password</div>
+				<div class="panel-heading">Forgotten Password</div>
 				<div class="panel-body">
 					
 					<form class="form-horizontal">
 						<div class="form-group">
+							<p class="form-static-control col-md-12">
+								Your provided email or cellphone must match the one you left.
+							</p>
+						</div>
+						<div class="form-group">
+							<p class="form-static-control col-md-12">
+								<strong>Get random password by my:</strong>
+							</p>
+						</div>
+						<div class="form-group">
 							<div class="col-sm-12">
 								<ul class="list-inline topup-list" style="margin: 5px 0 0 0;">
 									<li>
-										<span data-name="email" data-holder="e.g. cyberpark@gmail.co.nz">
+										<label style="cursor:pointer;">
 											<input type="radio" name="type" value="email" checked="checked" /> &nbsp; 
-											<strong>Email Address</strong>
-										</span>
+											<strong>Email</strong>
+										</label>
 									</li>
 									<li>
-										<span data-name="cellphone" data-holder="e.g. 02112121212">
+										<label style="cursor:pointer;">
 											<input type="radio" name="type" value="cellphone" /> &nbsp; 
-											<strong>Mobile Number</strong>
-										</span>
+											<strong>Cellphone</strong>
+										</label>
 									</li>
 								</ul>
 							</div>
 						</div>
-					</form>
-					<form>
 						<div class="form-group">
-							<input type="text" id="login_name" class="form-control" placeholder="e.g. cyberpark@gmail.co.nz" data-error-field/>
+							<div class="col-md-12">
+								<input type="text" id="login_name" class="form-control" placeholder="e.g. cyberpark@gmail.co.nz" data-error-field/>
+							</div>
 						</div>
 						<div class="form-group">
-							<input id="code" class="form-control" placeholder="verification code shown in the picture" data-error-field/>
+							<label for="code" class="control-label col-md-6">Verification code*</label>
+							<div class="col-md-6">
+								<input id="code" class="form-control" placeholder="shown below" data-error-field/>
+							</div>
 						</div>
 						<div class="form-group">
-							<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
-						</div>
-						<div class="form-group">
-							<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
+							<div class="col-md-5 col-md-offset-1" style="text-align:left;">
+								<a href="javascript:void(0);" id="codeLink">Not clear?<br/>Change Another One.</a>
+							</div>
+							<div class="col-md-6">
+								<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
+							</div>
 						</div>
 						
 						<button type="button" data-loading-text="loading..." class="btn btn-success btn-block btn-lg" id="submit-btn">Confirm</button>
@@ -73,11 +88,14 @@
 		}
 	});
 	
-	$('span[data-name="email"] ins').on('click', function(){
-		$('#login_name').attr('placeholder', $('span[data-name="email"]').attr('data-holder'));
-	});
-	$('span[data-name="cellphone"] ins').on('click', function(){
-		$('#login_name').attr('placeholder', $('span[data-name="cellphone"]').attr('data-holder'));
+	$('input[name="type"]').on('ifChecked',function(){
+		if($(this).val()=='cellphone'){
+			$('#login_name').attr('placeholder', 'e.g. 02112121212');
+		} else {
+			$('#login_name').attr('placeholder', 'e.g. cyberpark@gmail.co.nz');
+		}
+		$('#login_name').val('');
+		$('#login_name').focus();
 	});
 	
 	$('#submit-btn').on("click", function(){

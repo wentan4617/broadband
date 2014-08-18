@@ -1,0 +1,123 @@
+<. if (page.results.length > 0) { .>
+	<table class="table table-hover table-bordered table-striped table-condensed">
+		<. for (var iCo=0; iCo < cos.length; iCo++) {
+				var co = cos[iCo];
+		.>
+			<thead>
+				<tr>
+					<th colspan="10">
+						<h4 class="text-success" style="margin:2px;">Order Serial:&nbsp;<small><.= co.id .></small> </h4>
+					</th>
+				</tr>
+				<tr>
+					<th style="width:90px;">Date</th>
+					<th style="width:95px;">Due Date</th>
+					<th>Reference</th>
+					<th style="text-align:right">Payable</th>
+					<th style="text-align:right">Total Credit</th>
+					<th style="text-align:right">Paid</th>
+					<th style="text-align:right">Balance</th>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+				</tr>
+			</thead>
+			<tbody>
+				<. for (var iCi=0; iCi < page.results.length; iCi++) {
+					var ci = page.results[iCi];
+					
+					if (co.id==ci.order_id) {
+						for (var iCt=0; iCt < cts.length; iCt++) {
+							var ct = cts[iCt];
+							
+							if(ct.invoice_id==ci.id){
+							
+				.>
+								<tr class="active">
+									<td><.= ct.transaction_date_str .></td>
+									<td>&nbsp;</td>
+									<td><.= ct.card_name .></td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+									<td style="text-align:right"><strong>$ <.= new Number(ct.amount).toFixed(2) .></strong></td>
+									<td></td>
+									<td>&nbsp;</td>
+									<td>&nbsp;</td>
+								</tr>
+							<.}
+						}.>
+						<tr class="<.= (ci.status=='unpaid' || ci.status=='not_pay_off') ? 'danger' : '' .>">
+							<td><.= ci.create_date_str .></td>
+							<td>
+								&nbsp;
+								<. if(ci.status=='unpaid' || ci.status=='not_pay_off'){ .>
+								<strong style="color:red;"><.= ci.due_date_str .></strong>
+								<. } .>
+							</td>
+							<td>Invoice#&nbsp;-&nbsp;<.= ci.id .></td>
+							<td style="text-align:right;">
+								$ <.= new Number(ci.amount_payable).toFixed(2) .>
+							</td>
+							<td style="text-align:right;">
+								<strong>$ -<.= new Number(ci.amount_payable - ci.final_payable_amount).toFixed(2) .></strong>
+							</td>
+							<td style="text-align:right;">
+								$ -<.= new Number(ci.amount_paid).toFixed(2) .>
+							</td>
+							<td style="text-align:right; color:red;">
+								<. if((customer_type=='business' && ci.status=='unpaid' && iCi==0)
+									  ||(customer_type=='personal' && (ci.status=='unpaid' || ci.status=='not_pay_off' || ci.status=='overdue'))
+									 ){ .>
+								<strong>$&nbsp;(&nbsp;<.= new Number(ci.balance).toFixed(2) .>&nbsp;)&nbsp;</strong>
+								<. } .>
+							</td>
+							<td>
+								<. if((customer_type=='personal' && (ci.status == 'unpaid' || ci.status == 'not_pay_off' || ci.status=='overdue'))
+									  ||(customer_type=='business' && iCi==0 && (ci.status == 'unpaid' || ci.status == 'not_pay_off' || ci.status=='overdue'))){ .>
+									<div class="btn-group">
+										<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+											Make Payment <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu" role="menu">
+											<li><a href="#" data-id="<.= ci.id .>" data-balance="${invoice.balance}"><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+											<li><a href="javascript:void(0);" data-id="<.= ci.id .>" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+											<li><a href="javascript:void(0);" data-id="<.= ci.id .>" data-name="pay_way_by" data-way="account-credit"><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;Account Credit</a></li>
+										</ul>
+									</div>
+								<. } .>
+							</td>
+							<td>
+								<. if(ci.invoice_pdf_path != null){ .>
+									<a target="_blank"
+										href="<.= ctx .>/broadband-customer/billing/invoice/pdf/download/<.= ci.id .>"
+										data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF">
+										<span class="glyphicon glyphicon-cloud-download"></span>
+									</a>
+								<. }.>
+							</td>
+						</tr>
+					<.}.>
+				<.}.>
+		<.}.>
+		
+		</tbody>
+		
+		<tfoot>
+			<tr>
+				<td colspan="11">
+					<ul class="pagination">
+						<. for (var i = 1; i <= page.totalPage; i++) { .>
+							<li class="<.= page.pageNo == i ? 'active' : ''.>">
+								<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+							</li>
+						<. }.>
+					</ul>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+<.}.>
+<. if (page.results.length <= 0) { .>
+	<div class="panel-body">
+		<div class="alert alert-warning">No records have been found.</div>
+	</div>
+<.}.>

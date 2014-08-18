@@ -11,16 +11,16 @@ import com.tm.broadband.service.CRMService;
 * 
 * @author DON CHEN
 */ 
-public class CustomerCreateTermPlanInvoiceOverduePenaltyEachMonth {
+public class CustomerInvoiceOverduePenaltyEachMonth {
 	
 	private CRMService crmService;
 
 	@Autowired
-	public CustomerCreateTermPlanInvoiceOverduePenaltyEachMonth(CRMService crmService){
+	public CustomerInvoiceOverduePenaltyEachMonth(CRMService crmService){
 		this.crmService = crmService;
 	}
 
-	public void createTermPlanInvoiceOverduePenalty() throws ParseException {
-        this.crmService.createTermPlanInvoiceOverduePenalty();
+	public void createInvoiceOverduePenalty() throws ParseException {
+        this.crmService.createInvoiceOverduePenalty();
     } 
 } 

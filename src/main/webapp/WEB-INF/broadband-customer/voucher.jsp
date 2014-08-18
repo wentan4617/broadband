@@ -61,32 +61,26 @@
 								<div class="col-md-12">
 									<img style="width:360px; height:200px; border-radius:30px 30px 30px 30px; box-shadow:5px 5px 5px rgba(0,0,0,.6);" title="Material" src="${ctx}/public/bootstrap3/images/top_up_card_30.png">
 								</div>
-							</div>
+							</div><br/>
 							<div class="form-group">
-								<label for="serial_number" class="control-label col-md-2">Serial No*</label>
-								<div class="col-md-6">
-									<input type="text" id="serial_number" class="form-control" data-error-field />
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="pin_number" class="control-label col-md-2">PIN No*</label>
+								<label for="pin_number" class="control-label col-md-3">Pin Number*</label>
 								<div class="col-md-6">
 									<input type="text" id="pin_number" class="form-control" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="code" class="control-label col-md-2">Authenticode*</label>
+								<label for="code" class="control-label col-md-3">Verification code*</label>
 								<div class="col-md-6">
 									<input id="code" class="form-control" placeholder="Input below box's characters" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="code" class="control-label col-md-2"></label>
+								<label for="code" class="control-label col-md-3"></label>
 								<div class="col-md-3">
 									<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
 								</div>
-								<div class="col-md-5">
-									<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
+								<div class="col-md-3">
+									<a href="javascript:void(0);" id="codeLink">Not clear?<br/>Change Another One.</a>
 								</div>
 							</div>
 							<hr/>

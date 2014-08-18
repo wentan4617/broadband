@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -63,16 +64,14 @@ public class ManualManipulationController {
 	}
 
 	// BEGIN ManualManipulationRecord
-	@RequestMapping(value = "/broadband-user/manual-manipulation/manual-manipulation-record/view/{pageNo}/{manipulation_type}")
+	@RequestMapping(value = "/broadband-user/manual-manipulation/manual-manipulation-record/view/{pageNo}")
 	public String manualManipulationRecordView(Model model,
-			@PathVariable(value = "pageNo") int pageNo,
-			@PathVariable(value = "manipulation_type") String manipulation_type) {
+			@PathVariable(value = "pageNo") int pageNo) {
 
 		Page<ManualManipulationRecord> page = new Page<ManualManipulationRecord>();
 		page.setPageNo(pageNo);
 		page.setPageSize(50);
 		page.getParams().put("orderby", "ORDER BY manipulation_time DESC");
-		page.getParams().put("manipulation_type", manipulation_type);
 		this.systemService.queryManualManipulationRecordsByPage(page);
 		model.addAttribute("page", page);
 
@@ -85,22 +84,40 @@ public class ManualManipulationController {
 			@ModelAttribute("manualManipulationRecord") ManualManipulationRecord mmr,
 			HttpServletRequest req,
 			RedirectAttributes attr) {
-		
-		try {
-			this.crmService.createTermPlanInvoice();
-		} catch (ParseException e) { e.printStackTrace(); }
-		
-		// RECORDING MANIPULATOR'S DETAILS
+
 		User user = (User) req.getSession().getAttribute("userSession");
-		mmr.setAdmin_id(user.getId());
-		mmr.setAdmin_name(user.getUser_name());
-		mmr.setManipulation_time(new Date());
-		mmr.setManipulation_name("Manually Generate Termed Invoices");
-		this.systemService.createManualManipulationRecord(mmr);
+		try {
+			crmService.createDDPayInvoiceManualManipulationRecord(
+				mmr,
+				user
+			);
+		} catch (ParseException e) { e.printStackTrace(); }
 		
 		attr.addFlashAttribute("success", "Create Manual Manipulation Record is successful.");
 
-		return "redirect:/broadband-user/manual-manipulation/manual-manipulation-record/view/" + pageNo + "/" + mmr.getManipulation_type();
+		return "redirect:/broadband-user/manual-manipulation/manual-manipulation-record/view/" + pageNo;
+	}
+
+	@RequestMapping(value = "/broadband-user/manual-manipulation/manual-manipulation-record/non-ddpay/create/{pageNo}", method = RequestMethod.POST)
+	public String doNonDDPayInvoiceManualManipulationRecordCreate(
+			@PathVariable(value = "pageNo") int pageNo,
+			@ModelAttribute("manualManipulationRecord") ManualManipulationRecord mmr,
+			@RequestParam("next_invoice_create_date") String next_invoice_create_date,
+			HttpServletRequest req,
+			RedirectAttributes attr) {
+
+		User user = (User) req.getSession().getAttribute("userSession");
+		try {
+			crmService.createNonDDPayInvoiceManualManipulationRecord(
+				new SimpleDateFormat("yyyy-MM-dd").parse(next_invoice_create_date),
+				mmr,
+				user
+			);
+		} catch (ParseException e) { e.printStackTrace(); }
+		
+		attr.addFlashAttribute("success", "Create Manual Manipulation Record is successful.");
+
+		return "redirect:/broadband-user/manual-manipulation/manual-manipulation-record/view/" + pageNo;
 	}
 	// END ManualManipulationRecord
 	

@@ -39,36 +39,6 @@
 
 (function($){
 	
-	var weekOptions = {
-		scaleOverride : true
-		//** 如果为硬编码模式 **
-		//Number - 硬编码模式下每一步的跨度
-		,scaleSteps : 15
-		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 50
-		//Number - 起始值
-		,scaleStartValue : 0
-		//Number - XY轴线宽度
-		,scaleLineWidth : 3
-		//Number - 网格线宽度
-		,scaleGridLineWidth : 2
-	}
-	
-	var monthOptions = {
-		scaleOverride : true
-		//** 如果为硬编码模式 **
-		//Number - 硬编码模式下每一步的跨度
-		,scaleSteps : 15
-		//Number - 硬编码模式下的步数
-		,scaleStepWidth : 50
-		//Number - 起始值
-		,scaleStartValue : 0
-		//Number - XY轴线宽度
-		,scaleLineWidth : 3
-		//Number - 网格线宽度
-		,scaleGridLineWidth : 2
-	}
-	
 	var weekDataArray = []
 	, weekLabelArray = []
 	, weekMaxNum = 0;
@@ -125,9 +95,9 @@
 				pointStrokeColor : "#fff",
 				data : monthDataArray}]};
 	
-	new Chart(document.getElementById("canvasWeek").getContext("2d")).Line(weekLineChartData, weekOptions);
+	new Chart(document.getElementById("canvasWeek").getContext("2d")).Line(weekLineChartData);
 	
-	new Chart(document.getElementById("canvasMonth").getContext("2d")).Line(monthLineChartData, monthOptions);
+	new Chart(document.getElementById("canvasMonth").getContext("2d")).Line(monthLineChartData);
 	
 	$('.input-group.date').datepicker({
 	    format: "yyyy-mm",

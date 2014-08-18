@@ -28,6 +28,7 @@ import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerBillingSet;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
@@ -37,7 +38,9 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
+
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.service.BillingService;
@@ -525,7 +528,7 @@ public class CustomerRestController {
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), v.getFace_value()));
 			ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getBalance(), v.getFace_value(), "sub"));
 		// Else voucher is greater than balance
-			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance.");
+			json.getSuccessMap().put("alert-success", "Voucher defray has successfully been operate! Please check the changes of your invoice's balance.");
 		} else {
 			c = this.crmService.queryCustomerById(customer_id);
 			c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, TMUtils.bigSub(v.getFace_value(), ci.getBalance())));
@@ -533,7 +536,7 @@ public class CustomerRestController {
 			this.crmService.editCustomer(c);
 			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
 			ci.setBalance(0d);
-			json.getSuccessMap().put("alert-success", "Voucher defray had successfully been operates! Surplus will be add into your credit. Please refresh your browser by lightly press on F5 key on the keyboard to see the changes of invoice's balance and your account credit.");
+			json.getSuccessMap().put("alert-success", "Voucher defray has successfully been operate! Remaining amount has been transfered to your account credit. Please check the changes of your invoice's balance and your account credit.");
 		}
 		v.setStatus("used");
 		v.getParams().put("serial_number", v.getSerial_number());
@@ -909,15 +912,12 @@ public class CustomerRestController {
 		
 		// if verification does not matched!
 		if (!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
-			json.getErrorMap().put("code", "Authenticode does not matched!");
+			json.getErrorMap().put("code", "Verification Code does not matched!");
 			return json;
 		}
 		
 		// if verification does not matched!
-		if ("".equals(voucher.getSerial_number().toString().trim()) && !"".equals(voucher.getCard_number().toString().trim())) {
-			json.getErrorMap().put("serial_number", "Serial Number Is Empty!");
-			return json;
-		} else if ("".equals(voucher.getCard_number().toString().trim()) && !"".equals(voucher.getSerial_number().toString().trim())) {
+		if ("".equals(voucher.getCard_number().toString().trim()) && !"".equals(voucher.getSerial_number().toString().trim())) {
 			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
 			return json;
 		} else if ("".equals(voucher.getCard_number().toString().trim()) && "".equals(voucher.getSerial_number().toString().trim())) {
@@ -926,14 +926,13 @@ public class CustomerRestController {
 			return json;
 		}
 
-		voucher.getParams().put("serial_number", voucher.getSerial_number());
 		voucher.getParams().put("card_number", voucher.getCard_number());
 		voucher = this.billingService.queryVoucher(voucher);
 		if(voucher==null){
-			json.getErrorMap().put("alert-error", "Combination not matched! Please double check your input details.");
+			json.getErrorMap().put("alert-error", "Pin Number not matched! Please double check your voucher's Pin Number.");
 		} else {
 			if("used".equals(voucher.getStatus())) {
-				json.getErrorMap().put("alert-error", "This voucher had been used already!");
+				json.getErrorMap().put("alert-error", "This voucher has been used!");
 			} else if("unused".equals(voucher.getStatus())) {
 				json.getSuccessMap().put("alert-success", "Congratulations! This voucher is available!");
 			}
@@ -941,6 +940,59 @@ public class CustomerRestController {
 		
 		return json;
 	}
+	
+	/**
+	 * CustomerBilling
+	 */
+
+	@RequestMapping(value = "/customer/billing/{pageNo}")
+	public JSONBean<CustomerBillingSet> customerBilling(
+			@PathVariable(value = "pageNo") int pageNo,
+			HttpServletRequest request) {
+		
+		JSONBean<CustomerBillingSet> json = new JSONBean<CustomerBillingSet>();
+		
+		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
+		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
+		invoicePage.setPageNo(pageNo);
+		invoicePage.setPageSize(30);
+		invoicePage.getParams().put("orderby", "order by create_date desc");
+		invoicePage.getParams().put("customer_id", customer.getId());
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
+		
+		if("business".equals(customer.getCustomer_type())){
+			
+		}
+		
+//		Page<CustomerInvoice> ciUnpaidQuery = new Page<CustomerInvoice>();
+//		ciUnpaidQuery.getParams().put("customer_id", customer.getId());
+//		ciUnpaidQuery.getParams().put("where", "by_all_not_pay_off_invoice");
+		
+		CustomerBillingSet cbs = new CustomerBillingSet();
+		cbs.setCos(customer.getCustomerOrders());
+		cbs.setCts(this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
+//		cbs.setNotPayOffInvoices(this.crmService.queryCustomerInvoicesSumByPage(ciUnpaidQuery));
+		cbs.setPage(invoicePage);
+		
+		json.setModel(cbs);
+		
+		return json;
+	}
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	
@@ -1048,4 +1100,5 @@ public class CustomerRestController {
 		
 		return json;
 	}	
+
 }

@@ -170,6 +170,7 @@
 		
 		$.get('${ctx}/broadband-user/crm/customer/edit', data, function(map){
 			map.ctx = '${ctx}';
+			map.user_id = '${userSession.id}';
 			map.user_role = '${userSession.user_role}';
 	   		var $table = $('#order_detail');
 			$table.html(tmpl('customer_order_table_tmpl', map));
@@ -285,6 +286,16 @@
 					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'order-topup');
 					$('#generateOrderInvoiceModal_'+this.id).modal('show');
 				});
+				$('a[data-name="'+co[i].id+'_regenerate_ordering_form"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Regenerate Ordeing Form');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('Regenerate this order\'s ordering form?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to generate ordering form!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'ordering-form');
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
 				// Submit to rest controller
 				$('a[data-name="generateOrderInvoiceModalBtn_'+co[i].id+'"]').click(function(){
 					var generateType = $(this).attr('data-type');
@@ -301,6 +312,8 @@
 						url = '${ctx}/broadband-user/crm/customer/order/invoice/no-term/manually-generate';
 					} else if(orderType=='order-topup'){
 						url = '${ctx}/broadband-user/crm/customer/order/invoice/topup/manually-generate';
+					} else if(orderType=='ordering-form'){
+						url = '${ctx}/broadband-user/crm/customer/order/ordering-form/pdf/regenerate';
 					}
 					
 					$.post(url, data, function(json){
@@ -315,6 +328,7 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_no_term_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_no_term_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_topup_invoice"]').button('reset');
+					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_ordering_form"]').button('reset');
 				});
 				
 

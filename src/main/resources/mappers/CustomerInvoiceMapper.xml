@@ -30,15 +30,56 @@
 							select id from tm_customer_order where sale_id=#{params.sale_id}
 						)
 					</if>
+					<if test="params.not_agent !=null">
+						and order_id in(
+							select id from tm_customer_order
+							where order_status='using'
+						)
+					</if>
+					<if test="params.customer_type != null">
+						and customer_id in(
+							select id from tm_customer
+							where customer_type=#{params.customer_type}
+						)
+					</if>
+					<if test="params.create_date_month != null">
+						and DATE_FORMAT(create_date,'%Y-%m')=DATE_FORMAT(#{params.create_date_month},'%Y-%m')
+					</if>
+					<if test="params.create_date_year != null">
+						and DATE_FORMAT(create_date,'%Y')=DATE_FORMAT(#{params.create_date_year},'%Y')
+					</if>
 				</when>
 				<when test="params.where == 'pending'">
 					<if test="params.status1 != null">and (status = #{params.status1} or status = #{params.status2})</if>
+					<if test="params.status11 != null">and (status = #{params.status11} or status = #{params.status12} or status = #{params.status13})</if>
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
 					<if test="params.sale_id != null">
 						and order_id IN (
 							select id from tm_customer_order where sale_id=#{params.sale_id}
 						)
 					</if>
+					<if test="params.not_agent !=null">
+						and order_id in(
+							select id from tm_customer_order
+							where order_status='using'
+						)
+					</if>
+					<if test="params.customer_type != null">
+						and customer_id in(
+							select id from tm_customer
+							where customer_type=#{params.customer_type}
+						)
+					</if>
+					<if test="params.create_date_month != null">
+						and DATE_FORMAT(create_date,'%Y-%m')=DATE_FORMAT(#{params.create_date_month},'%Y-%m')
+					</if>
+					<if test="params.create_date_year != null">
+						and DATE_FORMAT(create_date,'%Y')=DATE_FORMAT(#{params.create_date_year},'%Y')
+					</if>
+				</when>
+				<when test="params.where == 'by_all_not_pay_off_invoice'">
+					customer_id = #{params.customer_id}
+					AND status IN('unpaid','not_pay_off','overdue')
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
@@ -50,6 +91,24 @@
 						and order_id IN (
 							select id from tm_customer_order where sale_id=#{params.sale_id}
 						)
+					</if>
+					<if test="params.prepayment == true">
+						and status='paid' and balance&lt;0
+					</if>
+					<if test="params.non_prepayment == true">
+						and balance=0
+					</if>
+					<if test="params.customer_type != null">
+						and customer_id in(
+							select id from tm_customer
+							where customer_type=#{params.customer_type}
+						)
+					</if>
+					<if test="params.create_date_month != null">
+						and DATE_FORMAT(create_date,'%Y-%m')=DATE_FORMAT(#{params.create_date_month},'%Y-%m')
+					</if>
+					<if test="params.create_date_year != null">
+						and DATE_FORMAT(create_date,'%Y')=DATE_FORMAT(#{params.create_date_year},'%Y')
 					</if>
 				</otherwise>
 			</choose>
@@ -85,6 +144,20 @@
 				<when test="params.where == 'by_overdue_penalty'">
 					<if test="params.status != null">status = #{params.status}</if>
 					<if test="params.begin_date != null and params.end_date != null">and due_date BETWEEN #{params.begin_date} AND #{params.end_date}</if>
+					<if test="params.customer_type != null">
+						and customer_id in(
+							select id from tm_customer
+							where customer_type=#{params.customer_type}
+						)
+					</if>
+				</when>
+				<when test="params.where == 'by_unpaid_due_date_less_than_today'">
+					date(due_date) &lt;= date(now())
+					and status = 'unpaid'
+				</when>
+				<when test="params.where == 'by_overdue_over_three_month'">
+					status = 'overdue'
+					and date(due_date) &lt;= date(#{params.dueMonthMax})
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
@@ -92,6 +165,7 @@
 					<if test="params.order_id != null">and order_id = #{params.order_id}</if>
 					<if test="params.status != null">and status = #{params.status}</if>
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
+					<if test="params.due_date != null">and date(due_date) = date(#{params.due_date})</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -346,14 +420,49 @@
 	</resultMap>
 	
 	<select id="selectCustomerInvoicesByCreateDate" parameterType="CustomerInvoice" resultType="CustomerInvoice">
-		select * from tm_customer_invoice where CONVERT(create_date, DATE) between CONVERT(#{params.start_date}, DATE) and CONVERT(#{params.end_date}, DATE)
-		<if test="params.status != null">and status=#{params.status}</if>
-		<if test="params.status1 != null">and (status=#{params.status1} or status=#{params.status2})</if>
-		<if test="params.sale_id != null">
-			and order_id IN (
-				select id from tm_customer_order where sale_id=#{params.sale_id}
-			)
-		</if>
+		select * from tm_customer_invoice
+		<where>
+			<if test="params.start_date != null and params.end_date != null">
+				CONVERT(create_date, DATE) between CONVERT(#{params.start_date}, DATE) and CONVERT(#{params.end_date}, DATE)
+			</if>
+			<if test="params.month_start_date != null and params.month_end_date != null">
+				DATE_FORMAT(create_date,'%Y-%m') between DATE_FORMAT(#{params.month_start_date},'%Y-%m') and DATE_FORMAT(#{params.month_end_date},'%Y-%m')
+			</if>
+			<if test="params.status != null">and status=#{params.status}</if>
+			<if test="params.status1 != null">and (status=#{params.status1} or status=#{params.status2})</if>
+			<if test="params.sale_id != null">
+				and order_id IN (
+					select id from tm_customer_order where sale_id=#{params.sale_id}
+				)
+			</if>
+			<if test="params.not_agent !=null">
+				and order_id in(
+					select id from tm_customer_order
+					where order_status='using'
+				)
+			</if>
+			<if test="params.customer_type != null">
+				and customer_id in(
+					select id from tm_customer
+					where customer_type=#{params.customer_type}
+				)
+			</if>
+			<if test="params.order_in_service == true">
+				and order_id in(
+					select id from tm_customer_order
+					where order_status='using'
+				)
+			</if>
+			<if test="params.order_disconnected == true">
+				and order_id in(
+					select id from tm_customer_order
+					where order_status='disconnected'
+				)
+			</if>
+			<if test="params.prepayment == true">
+				and status='paid' and balance&lt;0
+			</if>
+		</where>
 	</select>
 	
 	<!-- // END SELECT AREA -->

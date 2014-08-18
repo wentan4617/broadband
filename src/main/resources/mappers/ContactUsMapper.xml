@@ -30,7 +30,8 @@
 		c.`content` 			as c_content,
 		c.`submit_date` 		as c_submit_date,
 		c.`respond_date` 		as c_respond_date,
-		c.`respond_content` 	as c_respond_content
+		c.`respond_content` 	as c_respond_content,
+		c.`user_id` 	as c_user_id
 	</sql>
 	
 	<resultMap type="ContactUs" id="contactUsResultMap">
@@ -45,6 +46,7 @@
 		<result property="submit_date" column="c_submit_date" />
 		<result property="respond_date" column="c_respond_date" />
 		<result property="respond_content" column="c_respond_content" />
+		<result property="user_id" column="c_user_id" />
 	</resultMap>
 	
 	<sql id="contactUsWhere">
@@ -60,6 +62,7 @@
 			<if test="params.submit_date != null">and c.submit_date = #{params.submit_date}</if>
 			<if test="params.respond_date != null">and c.respond_date = #{params.respond_date}</if>
 			<if test="params.respond_content != null">and c.respond_content = #{params.respond_content}</if>
+			<if test="params.user_id != null">and c.user_id = #{params.user_id}</if>
 		</where>
 	</sql>
 	<!-- // DEFINITION AREA -->
@@ -101,8 +104,8 @@
 	<!-- INSERT AREA -->
 
 	<insert id="insertContactUs" parameterType="ContactUs" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `tm_contact_us`(`first_name`, `last_name`, `email`, `cellphone`, `phone`, `status`, `content`, `submit_date`, `respond_date`, `respond_content`)
-		VALUES (#{first_name},#{last_name},#{email},#{cellphone},#{phone},#{status},#{content},#{submit_date},#{respond_date},#{respond_content})
+		INSERT INTO `tm_contact_us`(`first_name`, `last_name`, `email`, `cellphone`, `phone`, `status`, `content`, `submit_date`, `respond_date`, `respond_content`, `user_id`)
+		VALUES (#{first_name},#{last_name},#{email},#{cellphone},#{phone},#{status},#{content},#{submit_date},#{respond_date},#{respond_content},#{user_id})
 	</insert>
 
 	<!-- // END INSERT AREA -->
@@ -124,7 +127,8 @@
 			<if test="content != null">content = #{content},</if>
 			<if test="submit_date != null">submit_date = #{submit_date},</if>
 			<if test="respond_date != null">respond_date = #{respond_date},</if>
-			<if test="respond_content != null">respond_content = #{respond_content}</if>
+			<if test="respond_content != null">respond_content = #{respond_content},</if>
+			<if test="user_id != null">user_id = #{user_id}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
