@@ -25,34 +25,6 @@
 
 <div class="container">
 	
-	<%-- <img src="${ctx }/public/bootstrap3/images/persoanl-12months-unlimited-plan.png"  class="img-responsive" alt="persoanl 12months unlimited plan"> --%>
-	
-	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
-		<li class="">
-			<a class="btn-lg">
-				1. Choose Plan
-				<span class="glyphicon glyphicon-hand-right pull-right"></span>
-			</a>
-		</li>
-		<li class="active">
-			<a class="btn-lg">
-				2. Check Your Address
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				3. Fill Application Form
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				4. Review and Order
-			</a>
-		</li>
-	</ul>
-	
 	<div class="page-header" style="margin-top:0;">
 		<h2 class="hidden-xs hidden-sm">
 			Check your address whether the service can be installed

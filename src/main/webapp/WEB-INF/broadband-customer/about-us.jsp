@@ -5,6 +5,11 @@
 <jsp:include page="header.jsp" />
 
 <style>
+#navhead {
+	margin-bottom:0;
+}
+</style>
+<style>
 
 .affix {
 	width: 263px;

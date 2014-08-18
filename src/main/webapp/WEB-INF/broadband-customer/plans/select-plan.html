@@ -1,0 +1,85 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">Select One Plan</h4>
+	</div>
+	<div class="panel-body">
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" id="plans">
+			<li class="active">
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;">Homeline Included</a>
+			</li>
+			<li>
+				<a href="#naked" data-toggle="tab" style="padding: 6px;">Naked Broadband</a>
+			</li>
+		</ul>
+		<!-- Tab panes -->
+		<div class="tab-content">
+			<div class="tab-pane fade in active" id="homeline">
+			<. if(plansClothed != null && plansClothed.length > 0) { .>
+				<div class="row">
+				<. for (var i = 0, len = plansClothed.length; i < len; i++) { 
+					var plan = plansClothed[i];
+					var count = len > 3 ? 4 : 6;
+				.> 
+					<div class="col-md-<.=count.>" style="margin-top:10px;">
+						<div data-plan-id="<.=plan.id.>" 
+							data-plan_sort="<.=plan.plan_sort.>"
+						
+							class="alert alert-success" style="cursor: pointer;margin-bottom:0;">
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
+							</p>
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<.=plan.plan_price.> / month
+							</p>
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<span data-icon style="border: 1px solid; padding: 6px 8px; border-radius: 24px; background-color: #fff;">
+									<span class="glyphicon glyphicon-ok"></span>
+								</span>
+							</p>
+						</div>
+					</div>	
+				<.}.>
+				</div>
+			<.} else { .>
+				<div class="alert alert-waring">
+					No records are not found.
+				</div>
+			<.}.>
+			</div>
+			<div class="tab-pane fade" id="naked">
+			<. if (plansNaked != null && plansNaked.length > 0) { .>
+				<div class="row">
+				<. for (var i = 0, len = plansNaked.length; i < len; i++) { 
+					var plan = plansNaked[i];
+					var count = len > 3 ? 4 : 6;
+				.> 
+					<div class="col-md-<.=count.>" style="margin-top:10px;">
+						<div data-plan-id="<.=plan.id.>" 
+							data-plan_sort="<.=plan.plan_sort.>"
+							
+							class="alert alert-success" style="cursor: pointer;margin-bottom:0;">
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
+							</p>
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<.=plan.plan_price.> / month
+							</p>
+							<p class="text-center" style="font-weight:bold;font-size: 25px;">
+								<span data-icon style="border: 1px solid; padding: 6px 8px; border-radius: 24px; background-color: #fff;">
+									<span class="glyphicon glyphicon-ok"></span>
+								</span>
+							</p>
+						</div>
+					</div>	
+				<.}.>
+				</div>
+			<.} else { .>
+				<div class="alert alert-waring">
+					No records are not found.
+				</div>
+			<.}.>
+			</div>
+		</div>
+	</div>
+</div>

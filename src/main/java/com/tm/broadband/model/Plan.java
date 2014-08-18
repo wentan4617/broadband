@@ -78,6 +78,7 @@ public class Plan implements Serializable {
 	private Topup topup = new Topup();
 	private List<Topup> topups;
 	private String[] topupArray;
+	private Double discount_rate;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -320,6 +321,14 @@ public class Plan implements Serializable {
 
 	public void setTransition_fee(Double transition_fee) {
 		this.transition_fee = transition_fee;
+	}
+
+	public Double getDiscount_rate() {
+		return discount_rate;
+	}
+
+	public void setDiscount_rate(Double discount_rate) {
+		this.discount_rate = discount_rate;
 	}
 
 	

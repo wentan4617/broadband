@@ -160,7 +160,7 @@ public class CRMService {
 	}
 	
 	
-	public void doOrderConfirm(Customer customer, Plan plan) {
+public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setOrder_create_date(new Date());
@@ -191,7 +191,7 @@ public class CRMService {
 			//cod_plan.setDetail_is_next_pay(0);
 			//cod_plan.setDetail_expired(new Date());
 			
-			customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
+			customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price());
 			
 //			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
 //			cod_topup.setDetail_name("Broadband Top-Up");
@@ -385,13 +385,13 @@ public class CRMService {
 		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
 			cod.setOrder_id(customer.getCustomerOrder().getId());
 			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
-			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			/*cid.setInvoice_id(ci.getId());
+			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+			cid.setInvoice_id(ci.getId());
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_desc(cod.getDetail_desc());
 			cid.setInvoice_detail_price(cod.getDetail_price());
-			cid.setInvoice_detail_unit(cod.getDetail_unit());*/
-			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+			cid.setInvoice_detail_unit(cod.getDetail_unit());
+			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
 		}
 		
 		if (cts != null) {
@@ -2620,6 +2620,157 @@ public class CRMService {
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
 		}
+	}
+	
+	
+	public void doPlansOrderConfirm(Customer customer) {
+		
+		Double plan_price = 0d;
+		Double modem_price = 0d;
+		Double service_price = 0d;
+		Double discount_price = 0d;
+		
+		CustomerOrder customerOrder = customer.getCustomerOrder();
+		Plan plan = customerOrder.getPlan();
+		
+		customer.setSelect_plan_id(plan.getId());
+		
+		customerOrder.setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
+		customerOrder.setOrder_create_date(new Date());
+		customerOrder.setOrder_type(plan.getPlan_group().replace("plan", "order"));
+		customerOrder.setTerm_period(plan.getTerm_period());
+
+		plan_price = plan.getPlan_price();
+		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
+		cod_plan.setDetail_name(plan.getPlan_name());
+		cod_plan.setDetail_price(plan.getPlan_price());
+		cod_plan.setDetail_data_flow(plan.getData_flow());
+		cod_plan.setDetail_plan_status(plan.getPlan_status());
+		cod_plan.setDetail_plan_type(plan.getPlan_type());
+		cod_plan.setDetail_plan_sort(plan.getPlan_sort());
+		cod_plan.setDetail_plan_group(plan.getPlan_group());
+		cod_plan.setDetail_plan_class(plan.getPlan_class());
+		cod_plan.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
+		cod_plan.setDetail_term_period(plan.getTerm_period());
+		cod_plan.setDetail_plan_memo(plan.getMemo());
+		cod_plan.setDetail_unit(customerOrder.getPrepay_months());
+		cod_plan.setDetail_type(plan.getPlan_group());
+		
+		customerOrder.getCustomerOrderDetails().add(cod_plan);
+		
+		if (customerOrder.getPrepay_months() == 1) {
+			discount_price = 0d;
+		} else if (customerOrder.getPrepay_months() == 3) {
+			discount_price = plan.getPlan_price() * customerOrder.getPrepay_months() * 0.03;
+		} else if (customerOrder.getPrepay_months() == 6) {
+			discount_price = plan.getPlan_price() * customerOrder.getPrepay_months() * 0.07;
+		} else if (customerOrder.getPrepay_months() == 12) {
+			discount_price = plan.getPlan_price() * customerOrder.getPrepay_months() * 0.15;
+		}
+		
+		System.out.println("discount_price: " + discount_price.intValue());
+		customerOrder.setDiscount_price(discount_price.intValue());
+		
+		if ("transition".equals(customerOrder.getOrder_broadband_type())) {
+			 
+			service_price = plan.getTransition_fee();
+			
+			CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+			cod_trans.setDetail_name("Broadband Transition");
+			cod_trans.setDetail_price(plan.getTransition_fee());
+			cod_trans.setDetail_type("transition");
+			cod_trans.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_trans);
+			
+		}  else if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
+			
+			service_price = plan.getPlan_new_connection_fee();
+			
+			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+			cod_conn.setDetail_name("Broadband New Connection");
+			cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+			cod_conn.setDetail_type("new-connection");
+			cod_conn.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_conn);
+			
+		} else if ("jackpot".equals(customerOrder.getOrder_broadband_type())) {
+			
+			service_price = plan.getJackpot_fee();
+			
+			CustomerOrderDetail cod_jackpot = new CustomerOrderDetail();
+			cod_jackpot.setDetail_name("Broadband New Connection & Phone Jack Installation");
+			cod_jackpot.setDetail_price(plan.getJackpot_fee());
+			cod_jackpot.setDetail_type("jackpot");
+			cod_jackpot.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_jackpot);
+			
+		} 
+		
+		// add  pstn
+		
+		if (plan.getPstn_count() != null && plan.getPstn_count() > 0) {
+			
+			for (int i = 0; i < plan.getPstn_count(); i++) {
+				
+				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+				cod_pstn.setDetail_name("HomeLine");
+				cod_pstn.setDetail_price(0d);
+				cod_pstn.setDetail_type("pstn");
+				cod_pstn.setDetail_unit(1);
+				cod_pstn.setPstn_number(customerOrder.getTransition_porting_number());
+				
+				customerOrder.getCustomerOrderDetails().add(cod_pstn);
+			}
+		}
+		
+		// add modem
+		
+		if (customerOrder.getHardwares() != null && customerOrder.getHardwares().size() > 0) {
+			
+			for (Hardware chd: customerOrder.getHardwares()) {
+				
+				if (chd != null) {
+					
+					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+					cod_hd.setDetail_name(chd.getHardware_name());
+					System.out.println("customerOrder.getContract(): " + customerOrder.getContract());
+					cod_hd.setDetail_price(chd.getHardware_price());
+					if ("open term".equals(customerOrder.getContract())) {
+						modem_price = chd.getHardware_price();
+						cod_hd.setDetail_price(chd.getHardware_price());
+					} else if ("12 months contract".equals(customerOrder.getContract())) {
+						System.out.println("chd.getHardware_class(): " + chd.getHardware_class());
+						if ("router-adsl".equals(chd.getHardware_class())) {
+							modem_price = 20d;
+							cod_hd.setDetail_price(20d);
+						} else if ("router-vdsl".equals(chd.getHardware_class())) {
+							modem_price = chd.getHardware_price()/2;
+							cod_hd.setDetail_price(chd.getHardware_price()/2);
+						} else if ("router-ufb".equals(chd.getHardware_class())) {
+							modem_price = chd.getHardware_price()/2;
+							cod_hd.setDetail_price(chd.getHardware_price()/2);
+						}
+					} else if ("24 months contract".equals(customerOrder.getContract())) {
+						
+					}
+					
+					cod_hd.setDetail_unit(1);
+					cod_hd.setIs_post(0);
+					cod_hd.setDetail_type("hardware-router");
+					
+					customerOrder.setHardware_post(1);
+					customerOrder.getCustomerOrderDetails().add(cod_hd);
+				}
+			
+			}
+		}
+		
+		
+		customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price + modem_price - discount_price.intValue());
+		
 	}
 	
 }

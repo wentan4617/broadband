@@ -15,6 +15,18 @@
 <mapper namespace="com.tm.broadband.mapper.HardwareMapper">
 	
 	<!-- DEFINITION AREA -->
+	
+	<sql id="hardwareWhere">
+		<where>
+			<choose>
+				<otherwise>
+					<if test="params.hardware_class != null">hardware_class = #{params.hardware_class}</if>
+					<if test="params.hardware_type != null">and hardware_type = #{params.hardware_type}</if>
+					<if test="params.hardware_status != null">and hardware_status = #{params.hardware_status}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
 
 	<!-- // DEFINITION AREA -->
 	
@@ -24,21 +36,18 @@
 	
 	<select id="selectHardware" parameterType="Hardware" resultType="Hardware">
 		select * from tm_hardware
-		<where>
-			<if test="params.hardware_status != null">hardware_status = #{params.hardware_status}</if>
-		</where>
+		<include refid="hardwareWhere"/>
 	</select>
 	
 	<select id="selectHardwares" parameterType="Hardware" resultType="Hardware">
 		select * from tm_hardware
-		<where>
-			<if test="params.hardware_status != null">hardware_status = #{params.hardware_status}</if>
-		</where>
+		<include refid="hardwareWhere"/>
 	</select>
 
 	<!-- select hardware page -->
 	<select id="selectHardwaresByPage" parameterType="Page" resultType="Hardware">
 		select * from tm_hardware
+		<include refid="hardwareWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
 	</select>
@@ -46,6 +55,7 @@
 	<!-- select hardware sum -->
 	<select id="selectHardwaresSum" parameterType="Page" resultType="int">
 		select count(*) from tm_hardware
+		<include refid="hardwareWhere"/>
 	</select>
 	
 	<!-- when create hardware, check same name -->
@@ -66,8 +76,12 @@
 	
 	<!-- insert hardware -->
 	<insert id="insertHardware" parameterType="Hardware">
-		INSERT INTO `tm_hardware`(`hardware_name`, `hardware_desc`, `hardware_type`, `hardware_status`, `hardware_price`, `hardware_cost`)
-		VALUES (#{hardware_name},#{hardware_desc},#{hardware_type},#{hardware_status},#{hardware_price},#{hardware_cost})
+		INSERT INTO `tm_hardware`(
+			`hardware_name`, `hardware_desc`, `hardware_class`, `hardware_type`, 
+			`hardware_status`, `hardware_price`, `hardware_cost`)
+		VALUES (
+			#{hardware_name}, #{hardware_desc}, #{hardware_class}, #{hardware_type}, 
+			#{hardware_status}, #{hardware_price}, #{hardware_cost})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -78,12 +92,13 @@
 	<update id="updateHardware" parameterType="Hardware">
 		UPDATE `tm_hardware` 
 		<set>
-			<if test="hardware_name != null">`hardware_name`=#{hardware_name},</if>
-			<if test="hardware_desc != null">`hardware_desc`=#{hardware_desc},</if>
-			<if test="hardware_type != null">`hardware_type`=#{hardware_type},</if>
-			<if test="hardware_status != null">`hardware_status`=#{hardware_status},</if>
-			<if test="hardware_price != null">`hardware_price`=#{hardware_price},</if>
-			<if test="hardware_cost != null">`hardware_cost`=#{hardware_cost}</if>
+			<if test="hardware_name != null">`hardware_name` = #{hardware_name},</if>
+			<if test="hardware_desc != null">`hardware_desc` = #{hardware_desc},</if>
+			<if test="hardware_class != null">`hardware_class` = #{hardware_class},</if>
+			<if test="hardware_type != null">`hardware_type` = #{hardware_type},</if>
+			<if test="hardware_status != null">`hardware_status` = #{hardware_status},</if>
+			<if test="hardware_price != null">`hardware_price` = #{hardware_price},</if>
+			<if test="hardware_cost != null">`hardware_cost` = #{hardware_cost}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>

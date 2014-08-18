@@ -1,0 +1,60 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Select one Modem
+		</h4>
+	</div>
+	<div class="panel-body">
+	<. if (hardwares != null && hardwares.length > 0) { .>
+		<div class="row">
+		<. for(var i = 0; i < hardwares.length; i++) {
+			var hardware = hardwares[i];
+		.>
+			<div class="col-md-12">
+				<. if (i > 0) {.><hr><.}.>
+				<h4 class="text-success"><strong><.=hardware.hardware_name.></strong></h4>
+				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
+					<li>
+						<label>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term" checked="checked" /> 
+							&nbsp;<strong>open term</strong> <span class="text-danger">($<.=hardware.hardware_price.>)</span>
+						</label>
+					</li>
+					<li>
+						<label>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="12months" />
+							&nbsp;<strong>12 months contract</strong> 
+							<. if (hardware.hardware_class == 'router-vdsl') { .> 
+								<span class="text-danger">($<.=parseInt(hardware.hardware_price/2).>)</span>
+							<.} else { .>
+								<span class="text-danger">($20)</span>
+							<.}.>
+						</label>
+					</li>
+					<!-- <li>
+						<label>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="24months"/>
+							&nbsp;<strong>24 months contract</strong> <span class="text-danger">(free)</span>
+						</label>
+					</li> -->
+				</ul>
+			</div>
+		<.}.>
+			<div class="col-md-12">
+				<hr>
+				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
+					<li>
+						<label>
+							<input type="radio" name="modem" value="withoutmodem" checked="checked" /> 
+							&nbsp;<strong>No, I don't need a modem</strong>
+						</label>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+	<.} else { .>
+		<div class="alert alert-warning">No records are not found</div>
+	<.}.>
+	</div>
+</div>

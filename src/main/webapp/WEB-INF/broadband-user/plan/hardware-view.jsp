@@ -38,6 +38,7 @@
 							<tr>
 								<th><input type="checkbox" id="checkbox_hardwares_top" /></th>
 								<th>Hardware Name</th>
+								<th>Hardware Class</th>
 								<th>Hardware Type</th>
 								<th>Hardware Status</th>
 								<th>Hardware Price</th>
@@ -55,6 +56,9 @@
 										<a href="${ctx }/broadband-user/plan/hardware/edit/${hardware.id}">
 											${hardware.hardware_name }
 										</a>
+									</td>
+									<td>
+										${hardware.hardware_class }
 									</td>
 									<td>
 										${hardware.hardware_type }
