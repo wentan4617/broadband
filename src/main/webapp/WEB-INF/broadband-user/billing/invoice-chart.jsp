@@ -6,25 +6,152 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+#statisticArea{
+	font-size:14px;
+}
+#statisticArea a{
+	text-decoration:none;
+}
+#statisticArea a#unpaid_btn span.title{
+	background:rgba(250,120,160,0.75); border:3px solid rgba(250,120,160,1); display:block;
+}
+#statisticArea a#unpaid_btn:hover span.title{
+	background:rgba(250,120,160,0.5); border:3px solid rgba(250,120,160,0.8);
+}
+#statisticArea a#overdue_btn span.title{
+	background:rgba(230,50,100,0.75); border:3px solid rgba(230,50,100,1); display:block;
+}
+#statisticArea a#overdue_btn:hover span.title{
+	background:rgba(230,50,100,0.5); border:3px solid rgba(230,50,100,0.8);
+}
+#statisticArea a#credit_btn span.title{
+	background:rgba(252,147,18,0.75); border:3px solid rgba(252,147,18,1); display:block;
+}
+#statisticArea a#credit_btn:hover span.title{
+	background:rgba(252,147,18,0.5); border:3px solid rgba(252,147,18,0.8);
+}
+#statisticArea a#prepayment_btn span.title{
+	background:rgba(183,216,179,0.75); border:3px solid rgba(183,216,179,1); display:block;
+}
+#statisticArea a#prepayment_btn:hover span.title{
+	background:rgba(183,216,179,0.5); border:3px solid rgba(183,216,179,0.8);
+}
+#statisticArea a#paid_btn span.title{
+	background:rgba(153,186,149,0.75); border:3px solid rgba(153,186,149,1); display:block;
+}
+#statisticArea a#paid_btn:hover span.title{
+	background:rgba(153,186,149,0.5); border:3px solid rgba(153,186,149,0.8);
+}
+#statisticArea a#void_btn span.title{
+	background:rgba(137,143,156,0.75); border:3px solid rgba(137,143,156,1); display:block;
+}
+#statisticArea a#void_btn:hover span.title{
+	background:rgba(137,143,156,0.5); border:3px solid rgba(137,143,156,0.8);
+}
+#statisticArea a#bad_debit_btn span.title{
+	background:rgba(77,83,96,0.75); border:3px solid rgba(77,83,96,1); display:block;
+}
+#statisticArea a#bad_debit_btn:hover span.title{
+	background:rgba(77,83,96,0.5); border:3px solid rgba(77,83,96,0.8);
+}
+#statisticArea span{
+	padding:5px; border-radius:4px; color:white; font-weight:bold;
+}
+#statisticArea span#total_monthly_invoice_amount{
+	color:#333;
+}
+#statisticArea div#total_monthly_invoice_amount_div{
+	 border:3px solid #f2dede; border-radius:0 20px 20px 0;
+}
+</style>
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-default">
-				<div class="panel-heading"><h4 class="panel-title">${panelheading}</h4></div>
+				<div class="panel-heading"><h3 class="panel-title">${panelheading} - <strong>${customer_type}</strong></h3></div>
 				<div class="panel-body">
-					<h3>Monthly Invoice Statistics - Total Monthly Statistics:&nbsp;</h3><br/>
-						<strong>PAID: <span id="total_monthly_paid" class="text-success"></span></strong><br/>
-						<strong>CREDIT: <span id="total_monthly_credit" class="text-success"></span></strong><br/>
-						<strong>UNPAID: <span id="total_monthly_unpaid" class="text-danger"></span></strong><br/>
-						<strong>VOID BALANCE: <span id="total_monthly_void_balance" class="text-danger"></span></strong>
-						<hr/>
-						<div class="input-group date col-md-2">
-							<input id="year_month_input"
-								class="form-control" placeholder="Start Date" value="${yearMonth}"/>
-								<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
-						</div>
+					<div class="input-group date col-md-2">
+						<input id="year_month_input"
+							class="form-control" placeholder="Start Date" value="${yearMonth}"/>
+							<span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+					</div>
 					<hr/>
-					<canvas id="canvasMonth" height="800" width="1100"></canvas>
+					<div id="statisticArea">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<div class="col-md-4 bg-success" style="text-align:center;font-size:16px;" id="total_monthly_invoice_amount_div">
+									<!-- INVOICE AMOUNT -->
+									<strong>INVOICE AMOUNT: NZ$<span id="total_monthly_invoice_amount"></span></strong>
+								</div>
+							</div>
+							<hr/>
+							<div class="form-group">
+								<!-- UNPAID -->
+								<div class="col-md-3">
+									<a id="unpaid_btn" href="javascript:void(0);">
+										<span class="title">1.&nbsp;
+											UNPAID: NZ$<span id="total_monthly_unpaid"></span>
+										</span>
+									</a>
+								</div>
+								<!-- PREPAYMENT -->
+								<div class="col-md-3">
+									<a id="prepayment_btn" class="bg-success" href="javascript:void(0);">
+										<span class="title">5.&nbsp;
+											PREPAYMENT: NZ$<span id="total_monthly_prepayment"></span>
+										</span>
+									</a>
+								</div>
+								<!-- CREDITED -->
+								<div class="col-md-3">
+									<a id="credit_btn" href="javascript:void(0);">
+										<span class="title">3.&nbsp;
+											CREDITED: NZ$<span id="total_monthly_credit"></span>
+										</span>
+									</a>
+								</div>
+								<!-- BAD DEBIT -->
+								<div class="col-md-3">
+									<a id="bad_debit_btn" href="javascript:void(0);">
+										<span class="title">6.&nbsp;
+											BAD DEBIT: NZ$<span id="total_monthly_bad_debit"></span>
+										</span>
+									</a>
+								</div>
+							</div>
+							<div class="form-group">
+								<!-- OVERDUE -->
+								<div class="col-md-3">
+									<a id="overdue_btn" href="javascript:void(0);">
+										<span class="title">2.&nbsp;
+											OVERDUE: NZ$<span id="total_monthly_overdue"></span>
+										</span>
+									</a>
+								</div>
+								<!-- PAID -->
+								<div class="col-md-3">
+									<a id="paid_btn" href="javascript:void(0);">
+										<span class="title">4.&nbsp;
+											PAID: NZ$<span id="total_monthly_paid"></span>
+										</span>
+									</a>
+								</div>
+								<!-- VOIDED -->
+								<div class="col-md-3">
+									<a id="void_btn" href="javascript:void(0);">
+										<span class="title">5.&nbsp;
+											VOIDED: NZ$<span id="total_monthly_void_balance"></span>
+										</span>
+									</a>
+								</div>
+							</div>
+						</form>
+					</div>
+					<hr/>
+					<canvas id="canvasMonth" height="500" width="1100"></canvas>
+					<hr/>
 				</div>
 			</div>
 		</div>
@@ -40,58 +167,49 @@
 
 (function($){
 	
-	var monthOptions = {
-		    //Boolean - Show a backdrop to the scale label
-		    scaleShowLabelBackdrop : true,
-		    //String - The colour of the label backdrop
-		    scaleBackdropColor : "rgba(255,255,255,0.75)",
-		    //Number - The backdrop padding above & below the label in pixels
-		    scaleBackdropPaddingY : 2,
-		    //Number - The backdrop padding to the side of the label in pixels
-		    scaleBackdropPaddingX : 2,
-		    //Boolean - Show line for each value in the scale
-		    scaleShowLine : true,
-		    //Boolean - Stroke a line around each segment in the chart
-		    segmentShowStroke : true,
-		    //String - The colour of the stroke on each segement.
-		    segmentStrokeColor : "#fff",
-		    //Number - The width of the stroke value in pixels
-		    segmentStrokeWidth : 1,
-		    //Number - Amount of animation steps
-		    animationSteps : 60,
-		    //String - Animation easing effect.
-		    animationEasing : "easeOutBounce",
-		    //Boolean - Whether to animate the rotation of the chart
-		    animateRotate : true,
-		    //Boolean - Whether to animate scaling the chart from the centre
-		    animateScale : false
-		}
 	
 	var monthlyPaidAmount = '${monthlyPaidAmount}'
 	,monthlyUnpaidAmount = '${monthlyUnpaidAmount}'
 	,monthlyCredit = '${monthlyCredit}'
-	,monthlyVoidBalanceAmount = '${monthlyVoidBalanceAmount}';
-	
-	if(monthlyUnpaidAmount>0 || monthlyPaidAmount>0 || monthlyCredit>0 || monthlyVoidBalanceAmount>0){
+	,monthlyVoidBalanceAmount = '${monthlyVoidBalanceAmount}'
+	,monthlyInvoiceAmount = '${monthlyInvoiceAmount}'
+	,monthlyOverdueAmount = '${monthlyOverdueAmount}'
+	,monthlyBadDebitAmount = '${monthlyBadDebitAmount}'
+	,monthlyPrepaymentAmount = '${monthlyPrepaymentAmount}';
 
-		$('#total_monthly_paid').html('( '+new Number(monthlyPaidAmount).toFixed(2)+' )');
-		$('#total_monthly_unpaid').html('( '+new Number(monthlyUnpaidAmount).toFixed(2)+' )');
-		$('#total_monthly_credit').html('( '+new Number(monthlyCredit).toFixed(2)+' )');
-		$('#total_monthly_void_balance').html('( '+new Number(monthlyVoidBalanceAmount).toFixed(2)+' )');
+	$('#total_monthly_paid').html('( '+new Number(monthlyPaidAmount).toFixed(2)+' )');
+	$('#total_monthly_unpaid').html('( '+new Number(monthlyUnpaidAmount).toFixed(2)+' )');
+	$('#total_monthly_credit').html('( '+new Number(monthlyCredit).toFixed(2)+' )');
+	$('#total_monthly_void_balance').html('( '+new Number(monthlyVoidBalanceAmount).toFixed(2)+' )');
+	$('#total_monthly_invoice_amount').html('( '+new Number(monthlyInvoiceAmount).toFixed(2)+' )');
+	$('#total_monthly_overdue').html('( '+new Number(monthlyOverdueAmount).toFixed(2)+' )');
+	$('#total_monthly_bad_debit').html('( '+new Number(monthlyBadDebitAmount).toFixed(2)+' )');
+	$('#total_monthly_prepayment').html('( '+new Number(monthlyPrepaymentAmount).toFixed(2)+' )');
+	
+	if(monthlyUnpaidAmount>0 || monthlyPaidAmount>0 || monthlyCredit>0 || monthlyVoidBalanceAmount>0 || monthlyPrepaymentAmount>0){
 		
 		var jsonArr = [];
-		
+
 		if(monthlyUnpaidAmount>0){
-			jsonArr.push('{value:'+monthlyUnpaidAmount+',color:"#F7464A",highlight: "#FF5A5E",label: "Unpaid"}');
+			jsonArr.push('{value:'+monthlyUnpaidAmount+',color:"rgba(250,120,160,0.75)",highlight:"rgba(250,120,160,0.5)",label:"Unpaid"}');
+		}
+		if(monthlyOverdueAmount>0){
+			jsonArr.push('{value:'+monthlyOverdueAmount+',color:"rgba(230,50,100,0.75)",highlight:"rgba(230,50,100,0.5)",label:"Overdue"}');
+		}
+		if(monthlyPrepaymentAmount>0){
+			jsonArr.push('{value:'+monthlyPrepaymentAmount+',color:"rgba(183,216,179,0.75)",highlight:"rgba(183,216,179,0.5)",label:"Prepayment"}');
 		}
 		if(monthlyPaidAmount>0){
-			jsonArr.push('{value:'+monthlyPaidAmount+',color: "#FDB45C",highlight: "#FFC870",label: "Paid"}');
+			jsonArr.push('{value:'+monthlyPaidAmount+',color:"rgba(153,186,149,0.75)",highlight:"rgba(153,186,149,0.5)",label:"Paid"}');
 		}
 		if(monthlyCredit>0){
-			jsonArr.push('{value:'+monthlyCredit+',color: "#949FB1",highlight: "#A8B3C5",label: "Credit"}');
+			jsonArr.push('{value:'+monthlyCredit+',color:"rgba(252,147,18,0.75)",highlight:"rgba(252,147,18,0.5)",label:"Credit"}');
 		}
 		if(monthlyVoidBalanceAmount>0){
-			jsonArr.push('{value:'+monthlyVoidBalanceAmount+',color: "#46BFBD",highlight: "#5AD3D1",label: "Void Balance"}');
+			jsonArr.push('{value:'+monthlyVoidBalanceAmount+',color:"rgba(137,143,156,0.75)",highlight:"rgba(137,143,156,0.5)",label:"Voided"}');
+		}
+		if(monthlyBadDebitAmount>0){
+			jsonArr.push('{value:'+monthlyBadDebitAmount+',color:"rgba(77,83,96,0.75)",highlight:"rgba(77,83,96,0.5)",label:"Bad Debit"}');
 		}
 		
 		var jsonArrFinal = '[';
@@ -104,9 +222,8 @@
 		jsonArrFinal += ']';
 		
 		var data = eval(jsonArrFinal);
-		console.log(data);
 		
-		new Chart(document.getElementById("canvasMonth").getContext("2d")).PolarArea(data, monthOptions);
+		new Chart(document.getElementById("canvasMonth").getContext("2d")).Pie(data);
 	} else {
 		$('#alertContainer').html($('#tempAlertErrorContainer').html());
 		$('#text-error').html('Could not find specific month\'s data!');
@@ -119,8 +236,7 @@
 	    minViewMode: 1
 	});
 	
-	$('.input-group.date').datepicker()
-	.on('changeDate', function(ev){
+	$('.input-group.date').datepicker().on('changeDate', function(ev){
 		var value = $('#year_month_input').val();
 		window.location.href = value;
 	});

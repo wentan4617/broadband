@@ -1,4 +1,4 @@
-package com.tm.broadband.util;
+package com.tm.broadband.util.test;
 
 import java.util.Calendar;
 import java.util.Date;

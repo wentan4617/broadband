@@ -262,6 +262,8 @@ public class ProvisionController {
 		model.addAttribute("closedSum", this.provisionService.queryContactUssSumByPage(pageStatusSum));
 		// END QUERY SUM BY STATUS
 		
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		
 		return "broadband-user/provision/contact-us-view";
 	}
 	
@@ -278,6 +280,10 @@ public class ProvisionController {
 		contactUs.setStatus("closed");
 		contactUs.setRespond_date(new Date());
 		contactUs.setRespond_content(respond_content);
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		contactUs.setUser_id(user.getId());
 		
 		this.provisionService.editContactUs(contactUs);
 		

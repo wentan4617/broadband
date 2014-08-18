@@ -45,7 +45,7 @@
 		<where>
 			<choose>
 				<when test="params.where == 'query_last_calling_records'">
-					<if test="params.last_month != null">ccrc.date >= #{params.last_month}</if>
+					<if test="params.last_month != null">date(ccrc.date) >= date(#{params.last_month})</if>
 					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
 				</when>
 				<otherwise>
@@ -129,7 +129,15 @@
 			<if test="used != null">used = #{used}</if>
 		</set>
 		<where>
-			<if test="params.id != null">id = #{params.id}</if>
+			<choose>
+				<when test="params.where == 'last_calling_records'">
+					<if test="params.last_month != null">date(date) >= date(#{params.last_month})</if>
+					<if test="params.original_number != null">and original_number = #{params.original_number}</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">id = #{params.id}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</update>
 

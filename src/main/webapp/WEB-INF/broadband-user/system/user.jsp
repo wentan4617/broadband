@@ -6,6 +6,12 @@
 <jsp:include page="../header.jsp" />
 <jsp:include page="../alert.jsp" />
 
+<style>
+.list-unstyled{
+	font-size:12px;
+}
+</style>
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
@@ -79,364 +85,387 @@
 						<div class="form-group">
 							<label for="is_provision" class="control-label col-md-4">Provision Notice</label>
 							<div class="col-md-3">
-								<input type="checkbox" name="is_provision" ${user.is_provision ? 'checked="checked"' : ''} />
+								<p class="form-control-static">
+									<label><form:radiobutton path="is_provision" value="true"/>Yes</label>&nbsp;
+									<label><form:radiobutton path="is_provision" value="false"/>No</label>
+								</p>
 							</div>
 						</div>
 						<hr/>
 						<h4>User Authentication</h4>
-						<div class="form-group" data-module="administrator">
-							<div class="col-md-2" data-module="plan">
-								<ul class="list-unstyled">
-									<li>
-											<h3>Plan</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_plan" /> All
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/view" data-type="checkbox_plan" /> View Plan
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/create" data-type="checkbox_plan" /> Create Plan
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/edit" data-type="checkbox_plan" /> Edit Plan
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/view" data-type="checkbox_plan" /> View Hardware
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/create" data-type="checkbox_plan" /> Create Hardware
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="plan/hardware/edit" data-type="checkbox_plan" /> Edit Hardware
-										</label>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2" data-module="crm">
-								<ul class="list-unstyled">
-									<li>
-											<h3>CRM</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" /> All
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" /> View Customer
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="crm/customer/personal/create" data-type="checkbox_customer" /> Create Personal Customer
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="crm/customer/business/create" data-type="checkbox_customer" /> Create Business Customer
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" /> Edit Customer
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="crm/customer-service-record/view" data-type="checkbox_customer" /> View Customer Service Record
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="crm/ticket/view" data-type="checkbox_customer" /> View Ticket
-										</label>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2" data-module="billing">
-								<ul class="list-unstyled">
-									<li>
-											<h3>Billing</h3>
-									</li>
-									<li>
-										<label>
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_billing" /> All
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/invoice/view" data-type="checkbox_billing" /> View Invoice
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/chart/transaction-statistic" data-type="checkbox_billing" /> Chart(Transaction)
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/chart/invoice-statistic" data-type="checkbox_billing" /> Chart(Invoice)
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/voucher/view" data-type="checkbox_billing" /> View Voucher
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/voucher-file-upload-record/view" data-type="checkbox_billing" /> View Voucher File Upload
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/early-termination-charge/view" data-type="checkbox_billing" /> View Early Termination Charge
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="billing/termination-refund/view" data-type="checkbox_billing" /> View Termination Refund
-										</label>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2" data-module="provision">
-								<ul class="list-unstyled">
-									<li>
-										<h3>Provision</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_provision" /> All
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="provision/view" data-type="checkbox_provision" /> View Provision
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" /> Provision Customer Order
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="provision/contact-us/view" data-type="checkbox_provision" /> View Contact Us
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_provision" /> View Sales
-										</label>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2" data-module="data">
-								<ul class="list-unstyled">
-									<li>
-											<h3>Data</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="data/operatre" data-type="checkbox_data" /> Data Operatre
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="data/customer/view" data-type="checkbox_data" /> Data Customer View
-										</label>
-									</li>
-								</ul>
-							</div>
-							<div class="col-md-2" data-module="system">
-								<ul class="list-unstyled">
-									<li>
-											<h3>System</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/user/create" data-type="checkbox_system" /> Create User
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/user/edit" data-type="checkbox_system" /> Edit User
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/view" data-type="checkbox_system" /> View Notification
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/create" data-type="checkbox_system" /> Create Notification
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/call_charge_rate/view" data-type="checkbox_system" /> View Call Charge Rate
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/call_charge_rate/create" data-type="checkbox_system" /> Create Call Charge Rate
-										</label>
-									</li>
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/call_charge_rate/edit" data-type="checkbox_system" /> Edit Call Charge Rate
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/company-detail/edit" data-type="checkbox_system" /> Edit Company Detail
-										</label>
-									</li>
-								</ul>
-								<hr/>
-								<ul class="list-unstyled">
-									<li>
-										<label> 
-											<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
-										</label>
-									</li>
-								</ul>
+						<div data-module="administrator">
+							<div class="form-group">
+								<div class="col-md-3" data-module="plan">
+									<ul class="list-unstyled">
+										<li>
+												<h3>Plan</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_plan" /> All
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/view" data-type="checkbox_plan" /> View Plan
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/create" data-type="checkbox_plan" /> Create Plan
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/edit" data-type="checkbox_plan" /> Edit Plan
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/hardware/view" data-type="checkbox_plan" /> View Hardware
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/hardware/create" data-type="checkbox_plan" /> Create Hardware
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="plan/hardware/edit" data-type="checkbox_plan" /> Edit Hardware
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="crm">
+									<ul class="list-unstyled">
+										<li>
+												<h3>CRM</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_customer" /> All
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="crm/customer/view" data-type="checkbox_customer" /> View Customer
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="crm/customer/personal/create" data-type="checkbox_customer" /> Create Personal Customer
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="crm/customer/business/create" data-type="checkbox_customer" /> Create Business Customer
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="crm/customer/edit" data-type="checkbox_customer" /> Edit Customer
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="crm/customer-service-record/view" data-type="checkbox_customer" /> View Customer Service Record
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="crm/ticket/view" data-type="checkbox_customer" /> View Ticket
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="billing">
+									<ul class="list-unstyled">
+										<li>
+												<h3>Billing</h3>
+										</li>
+										<li>
+											<label>
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_billing" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/invoice/view" data-type="checkbox_billing" /> View Invoice
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/transaction-statistic" data-type="checkbox_billing" /> Chart(Transaction)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/invoice-statistic/personal" data-type="checkbox_billing" /> Chart(Monthly Personal)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/annual-invoice-statistic/personal" data-type="checkbox_billing" /> Chart(Annually Personal)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/invoice-statistic/business" data-type="checkbox_billing" /> Chart(Monthly Business)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/annual-invoice-statistic/business" data-type="checkbox_billing" /> Chart(Annually Business)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/voucher/view" data-type="checkbox_billing" /> View Voucher
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/voucher-file-upload-record/view" data-type="checkbox_billing" /> View Voucher File Upload
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/early-termination-charge/view" data-type="checkbox_billing" /> View Early Termination Charge
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/termination-refund/view" data-type="checkbox_billing" /> View Termination Refund
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="provision">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Provision</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_provision" /> All
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="provision/view" data-type="checkbox_provision" /> View Provision
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="provision/customer/view" data-type="checkbox_provision" /> Provision Customer Order
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="provision/contact-us/view" data-type="checkbox_provision" /> View Contact Us
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_provision" /> View Sales
+											</label>
+										</li>
+									</ul>
+								</div>
 							</div>
 							<hr/>
-							<div class="col-md-2" data-module="sales">
-								<ul class="list-unstyled">
-									<li>
-										<h3>Sales</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_sales" /> All
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/view" data-type="checkbox_sales" /> View Online Orders (PAD | PC)
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD | PC)
-										</label>
-									</li>
-								</ul>
+							<div class="form-group">
+								<div class="col-md-3" data-module="data">
+									<ul class="list-unstyled">
+										<li>
+												<h3>Data</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="data/operatre" data-type="checkbox_data" /> Data Operatre
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="data/customer/view" data-type="checkbox_data" /> Data Customer View
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="system">
+									<ul class="list-unstyled">
+										<li>
+												<h3>System</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/user/create" data-type="checkbox_system" /> Create User
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/user/edit" data-type="checkbox_system" /> Edit User
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/notification/view" data-type="checkbox_system" /> View Notification
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/notification/create" data-type="checkbox_system" /> Create Notification
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
+											</label>
+										</li>
+									</ul>
+									<%-- <hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/call_charge_rate/view" data-type="checkbox_system" /> View Call Charge Rate
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/call_charge_rate/create" data-type="checkbox_system" /> Create Call Charge Rate
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/call_charge_rate/edit" data-type="checkbox_system" /> Edit Call Charge Rate
+											</label>
+										</li>
+									</ul> --%>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/company-detail/edit" data-type="checkbox_system" /> Edit Company Detail
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="sales">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Sales</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_sales" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="sale/online/ordering/view" data-type="checkbox_sales" /> View Online Orders (PAD | PC)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD | PC)
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="agent">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Agent</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_agent" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="agent/billing/invoice/view" data-type="checkbox_agent" /> View Invoice
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="agent/billing/chart/commission-statistic" data-type="checkbox_agent" /> Chart(Commission)
+											</label>
+										</li>
+									</ul>
+								</div>
 							</div>
 							<hr/>
-							<div class="col-md-2" data-module="agent">
-								<ul class="list-unstyled">
-									<li>
-										<h3>Agent</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_agent" /> All
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="agent/billing/invoice/view" data-type="checkbox_agent" /> View Invoice
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="agent/billing/chart/commission-statistic" data-type="checkbox_agent" /> Chart(Commission)
-										</label>
-									</li>
-								</ul>
-							</div>
-							<hr/>
-							<div class="col-md-2" data-module="manual-manipulation">
-								<ul class="list-unstyled">
-									<li>
-										<h3>Manual Manipulation</h3>
-									</li>
-									<li>
-										<label> 
-											<input type="checkbox" data-name="checkbox_all" data-type="checkbox_manual_manipulation" /> All
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="manual-manipulation/manual-manipulation-record/view" data-type="checkbox_manual_manipulation" /> View Manual Termed Invoice
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="manual-manipulation/call-billing-record/view" data-type="checkbox_manual_manipulation" /> View Customer Calling Billing
-										</label>
-									</li>
-									<li>
-										<label>
-											<form:checkbox path="authArray" value="manual-manipulation/call-international-rate/view" data-type="checkbox_manual_manipulation" /> View Calling International Rate
-										</label>
-									</li>
-								</ul>
+							<div class="form-group">
+								<div class="col-md-3" data-module="manual-manipulation">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Manual Manipulation</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_manual_manipulation" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="manual-manipulation/manual-manipulation-record/view" data-type="checkbox_manual_manipulation" /> View Manual Termed Invoice
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="manual-manipulation/call-billing-record/view" data-type="checkbox_manual_manipulation" /> View Customer Calling Billing
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="manual-manipulation/call-international-rate/view" data-type="checkbox_manual_manipulation" /> View Calling International Rate
+											</label>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 						<hr/>
@@ -460,6 +489,7 @@
 </div>
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript">
 (function($){
 	
@@ -473,55 +503,60 @@
 		}
 	});
 	
+	$(':radio,:checkbox').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
+	
 	$('select[data-name="user_permission_selector"]').change(function(){
 		var permission = $(this).find('option:selected').val();
-		$('div[data-module="administrator"]').find('input').prop('checked', false);
+		$('div[data-module="administrator"]').find('input').iCheck("uncheck");
 		
 		if("sales"==permission){	// Sales
 			
-			$('div[data-module="sales"]').find('input').prop('checked', true);
+			$('div[data-module="sales"]').find('input').iCheck("check");
 			
 		} else if("agent"==permission){	// Agent
 			
-			$('div[data-module="sales"]').find('input').prop('checked', true);
-			$('div[data-module="agent"]').find('input').prop('checked', true);
+			$('div[data-module="sales"]').find('input').iCheck("check");
+			$('div[data-module="agent"]').find('input').iCheck("check");
 			
 		} else if("plan-designer"==permission){	// Plan Designer
 			
-			$('div[data-module="plan"]').find('input').prop('checked', true);
+			$('div[data-module="plan"]').find('input').iCheck("check");
 			
 		} else if("crm-operator"==permission){	// CRM Operator
 			
-			$('div[data-module="crm"]').find('input').prop('checked', true);
+			$('div[data-module="crm"]').find('input').iCheck("check");
 			
 		} else if("accountant"==permission){	// Accountant
 			
-			$('div[data-module="crm"]').find('input').prop('checked', true);
-			$('div[data-module="billing"]').find('input').prop('checked', true);
-			$('div[data-module="provision"]').find('input').prop('checked', true);
-			$('div[data-module="data"]').find('input').prop('checked', true);
+			$('div[data-module="crm"]').find('input').iCheck("check");
+			$('div[data-module="billing"]').find('input').iCheck("check");
+			$('div[data-module="provision"]').find('input').iCheck("check");
+			$('div[data-module="data"]').find('input').iCheck("check");
 			
 		} else if("provision-team"==permission){	// Provision Team
 			
-			$('div[data-module="crm"]').find('input').prop('checked', true);
-			$('div[data-module="provision"]').find('input').prop('checked', true);
-			$('div[data-module="data"]').find('input').prop('checked', true);
+			$('div[data-module="crm"]').find('input').iCheck("check");
+			$('div[data-module="provision"]').find('input').iCheck("check");
+			$('div[data-module="data"]').find('input').iCheck("check");
 
 		} else if("chief-operator"==permission){	// Chief Operator
 			
-			$('div[data-module="administrator"]').find('input').prop('checked', true);
-			$('div[data-module="system"]').find('input').prop('checked', false);
-			$('div[data-module="agent"]').find('input').prop('checked', false);
+			$('div[data-module="administrator"]').find('input').iCheck("check");
+			$('div[data-module="system"]').find('input').iCheck("uncheck");
+			$('div[data-module="agent"]').find('input').iCheck("uncheck");
 			
 		} else if("administrator"==permission){	// Administrator
 			
-			$('div[data-module="administrator"]').find('input').prop('checked', true);
-			$('div[data-module="agent"]').find('input').prop('checked', false);
+			$('div[data-module="administrator"]').find('input').iCheck("check");
+			$('div[data-module="agent"]').find('input').iCheck("uncheck");
 			
  		} else if("system-developer"==permission){	// System Developer
 			
-			$('div[data-module="administrator"]').find('input').prop('checked', true);
-			$('div[data-module="agent"]').find('input').prop('checked', false);
+			$('div[data-module="administrator"]').find('input').iCheck("check");
+			$('div[data-module="agent"]').find('input').iCheck("uncheck");
 			
 		}
 	});

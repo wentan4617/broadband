@@ -31,7 +31,6 @@ import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
-import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
@@ -208,28 +207,65 @@ public class BillingController {
     }
 	
 	// BEGIN InvoiceView
-	@RequestMapping("/broadband-user/billing/invoice/view/{pageNo}/{status}")
+	@RequestMapping("/broadband-user/billing/invoice/view/{customer_type}/{pageNo}/{status}/{yearOrMonth}")
 	public String toInvoice(Model model
 			, @PathVariable("pageNo") int pageNo
-			, @PathVariable("status") String status) {
+			, @PathVariable("status") String status
+			, @PathVariable("customer_type") String customer_type
+			, @PathVariable("yearOrMonth") String yearOrMonth) {
+		
+		Date year = null;
+		Date yearMonth = null;
+		Calendar cal = Calendar.getInstance();
+		if(yearOrMonth.length()==4) {
+			cal.set(Calendar.YEAR, Integer.parseInt(yearOrMonth));
+			year = cal.getTime();
+		} else if(yearOrMonth.contains("-")) {
+			cal.set(Calendar.MONTH, Integer.parseInt(yearOrMonth.substring(yearOrMonth.indexOf("-")+1, yearOrMonth.length()))-1);
+			yearMonth = cal.getTime();
+		}
 
 		Page<CustomerInvoice> pageCis = new Page<CustomerInvoice>();
-		pageCis.getParams().put("status", status);
+		if(!"prepayment".equals(status)){
+			pageCis.getParams().put("status", "bad_debit".equals(status) ? "bad-debit" : status);
+		}
 		pageCis.setPageNo(pageNo);
 		pageCis.setPageSize(30);
+		if(year!=null){
+			pageCis.getParams().put("create_date_year", year);
+		}
+		if(yearMonth!=null){
+			pageCis.getParams().put("create_date_month", yearMonth);
+		}
 		pageCis.getParams().put("orderby", "ORDER BY create_date DESC");
+		pageCis.getParams().put("customer_type", customer_type);
 		
-		if("orderNoInvoice".equals(status)){
-			Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
-			pageCos.setPageNo(pageNo);
-			pageCos.setPageSize(30);
-			pageCos.getParams().put("where", "query_no_invoice");
-			pageCos.getParams().put("orderby", "ORDER BY order_create_date DESC");
-			model.addAttribute("pageCos", this.crmService.queryCustomerOrdersByPage(pageCos));
-			
-			pageCos = null;
-		} else if("unpaid".equals(status)){
+//		if("orderNoInvoice".equals(status)){
+//			Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+//			pageCos.setPageNo(pageNo);
+//			pageCos.setPageSize(30);
+//			pageCos.getParams().put("where", "query_no_invoice");
+//			pageCos.getParams().put("orderby", "ORDER BY order_create_date DESC");
+//			model.addAttribute("pageCos", this.crmService.queryCustomerOrdersByPage(pageCos));
+//			
+//			pageCos = null;
+//		} else
+			if("unpaid".equals(status)){
 			pageCis.getParams().put("where", "non_pending");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("overdue".equals(status)){
+			pageCis.getParams().put("where", "non_pending");
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("prepayment".equals(status)){
+			pageCis.getParams().put("prepayment", true);
+			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			model.addAttribute("pageCis", pageCis);
+			
+		} else if("bad-debit".equals(status)){
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 			
@@ -242,8 +278,9 @@ public class BillingController {
 			pageCis = new Page<CustomerInvoice>();
 			pageCis.getParams().put("where", "pending");
 			pageCis.getParams().put("payment_status", status);
-			pageCis.getParams().put("status1", "unpaid");
-			pageCis.getParams().put("status2", "not_pay_off");
+			pageCis.getParams().put("status11", "unpaid");
+			pageCis.getParams().put("status12", "not_pay_off");
+			pageCis.getParams().put("status13", "overdue");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 			
@@ -252,43 +289,90 @@ public class BillingController {
 			model.addAttribute("pageCis", pageCis);
 			
 		} else if("paid".equals(status)){
+			pageCis.getParams().put("non_prepayment", true);
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 		}
 		pageCis = null;
 		
+		model.addAttribute(
+			yearOrMonth.contains("-") ? "yearMonth" : 
+			yearOrMonth.length()==4 ? "year" : "all", yearOrMonth);
+		model.addAttribute("customer_type", customer_type);
 		model.addAttribute("status", status);
-		model.addAttribute(status + "Active", "active");
+		if("all".equals(yearOrMonth)){
+			model.addAttribute("allActive", "active");
+			model.addAttribute(status + "Active", "active");
+		} else {
+			model.addAttribute(status + "Active", "active");
+		}
 		model.addAttribute("users", this.systemService.queryUser(new User()));
 		
 
 		// BEGIN QUERY SUM BY STATUS
 		Page<CustomerInvoice> pageStatusSum = new Page<CustomerInvoice>();
+		if(year!=null){
+			pageStatusSum.getParams().put("create_date_year", year);
+		}
+		if(yearMonth!=null){
+			pageStatusSum.getParams().put("create_date_month", yearMonth);
+		}
 		pageStatusSum.getParams().put("where", "pending");
+		pageStatusSum.getParams().put("customer_type", customer_type);
 		pageStatusSum.getParams().put("payment_status", "pending");
-		pageStatusSum.getParams().put("status1", "unpaid");
-		pageStatusSum.getParams().put("status2", "not_pay_off");
-		model.addAttribute("pendingSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("status11", "unpaid");
+		pageStatusSum.getParams().put("status12", "not_pay_off");
+		pageStatusSum.getParams().put("status13", "overdue");
+		Integer sumPending = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("pendingSum", sumPending);
 		pageStatusSum = null;
 		
 		pageStatusSum = new Page<CustomerInvoice>();
+		if(year!=null){
+			pageStatusSum.getParams().put("create_date_year", year);
+		}
+		if(yearMonth!=null){
+			pageStatusSum.getParams().put("create_date_month", yearMonth);
+		}
+		pageStatusSum.getParams().put("customer_type", customer_type);
+		pageStatusSum.getParams().put("prepayment", true);
+		Integer sumPrepayment = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("prepaymentSum", sumPrepayment);
+		
+		pageStatusSum.getParams().remove("prepayment");
+		pageStatusSum.getParams().put("non_prepayment", true);
 		pageStatusSum.getParams().put("status", "paid");
-		model.addAttribute("paidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		Integer sumPaid = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("paidSum", sumPaid);
 		
 		pageStatusSum.getParams().put("status", "void");
-		model.addAttribute("voidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		Integer sumVoid = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("voidSum", sumVoid);
+
+		pageStatusSum.getParams().put("status", "bad-debit");
+		Integer sumBadDebit = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("badDebitSum", sumBadDebit);
 
 		pageStatusSum.getParams().put("where", "non_pending");
 		pageStatusSum.getParams().put("status", "unpaid");
-		model.addAttribute("unpaidSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		Integer sumUnpaid = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("unpaidSum", sumUnpaid);
+
+		pageStatusSum.getParams().put("status", "overdue");
+		Integer sumOverdue = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("overdueSum", sumOverdue);
 		
 		pageStatusSum.getParams().put("status", "not_pay_off");
-		model.addAttribute("notPayOffSum", this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum));
+		Integer sumNotPayOff = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
+		model.addAttribute("notPayOffSum", sumNotPayOff);
 		pageStatusSum = null;
 		
-		Page<CustomerOrder> pageStatusCoSum = new Page<CustomerOrder>();
-		pageStatusCoSum.getParams().put("where", "query_no_invoice");
-		model.addAttribute("orderNoInvoiceSum", this.crmService.queryCustomerOrdersSumByPage(pageStatusCoSum));
+		model.addAttribute("allSum", sumNotPayOff+sumOverdue+sumUnpaid+sumBadDebit+sumVoid+sumPaid+sumPrepayment+sumPending);
+		
+//		Page<CustomerOrder> pageStatusCoSum = new Page<CustomerOrder>();
+//		pageStatusCoSum.getParams().put("where", "query_no_invoice");
+//		pageStatusCoSum.getParams().put("customer_type", customer_type);
+//		model.addAttribute("orderNoInvoiceSum", this.crmService.queryCustomerOrdersSumByPage(pageStatusCoSum));
 		// END QUERY SUM BY STATUS
 		
 		return "broadband-user/billing/invoice-view";
@@ -638,15 +722,15 @@ public class BillingController {
 		return "broadband-user/billing/transaction-chart";
 	}
 	
-	
 	/**
-	 * Billing Invoice Statistics
+	 * Billing Monthly Invoice Statistics
 	 */
-	@RequestMapping(value = "/broadband-user/billing/chart/invoice-statistic/{yearMonth}")
-	public String toChartInvoiceStatistics(Model model,
+	@RequestMapping(value = "/broadband-user/billing/chart/invoice-statistic/{customer_type}/{yearMonth}")
+	public String toChartMonthlyInvoiceStatistics(Model model,
+			@PathVariable(value = "customer_type") String customer_type,
 			@PathVariable(value = "yearMonth") String yearMonth) {
 		
-		model.addAttribute("panelheading", "Customer Invoice Statistics");
+		model.addAttribute("panelheading", "Monthly Invoice Statistics");
 		
 		/**
 		 * MONTHLY STATISTIC BEGIN
@@ -668,68 +752,73 @@ public class BillingController {
 			month = Integer.parseInt(temp[1]);
 		}
 		
+		// BEGIN INVOICE AMOUNT INVOICES
+		Double invoiceAmount = 0d;
+		List<StatisticBilling> monthBillingInvoiceAmountInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingInvoiceAmountInvoices);
+		CustomerInvoice ciTemp = new CustomerInvoice();
+		ciTemp.getParams().put("start_date", monthBillingInvoiceAmountInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBillingInvoiceAmountInvoices.get(monthBillingInvoiceAmountInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerInvoiceAmountInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerInvoiceAmountInvoices) {
+			
+			invoiceAmount = TMUtils.bigAdd(invoiceAmount, ci.getAmount_payable());
+			
+		}
+		model.addAttribute("monthlyInvoiceAmount", invoiceAmount);
+		// END INVOICE AMOUNT INVOICES
+		
 		// BEGIN UNPAID INVOICES
-		Double payableAmount = 0d;
+		Double unpaidAmount = 0d;
 		List<StatisticBilling> monthBillingUnpaidInvoices = new ArrayList<StatisticBilling>();
 		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingUnpaidInvoices);
-		CustomerInvoice ciTemp = new CustomerInvoice();
+		ciTemp = null;
+		ciTemp = new CustomerInvoice();
 		ciTemp.getParams().put("start_date", monthBillingUnpaidInvoices.get(0).getBillingDate());
 		ciTemp.getParams().put("end_date", monthBillingUnpaidInvoices.get(monthBillingUnpaidInvoices.size()-1).getBillingDate());
 		ciTemp.getParams().put("status1", "unpaid");
 		ciTemp.getParams().put("status2", "not_pay_off");
+		ciTemp.getParams().put("customer_type", customer_type);
 		List<CustomerInvoice> monthCustomerUnpaidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
 		for (CustomerInvoice ci : monthCustomerUnpaidInvoices) {
 			
-			payableAmount = TMUtils.bigAdd(payableAmount, ci.getBalance());
+			unpaidAmount = TMUtils.bigAdd(unpaidAmount, ci.getBalance());
 			
 		}
-		model.addAttribute("monthlyUnpaidAmount", payableAmount);
+		model.addAttribute("monthlyUnpaidAmount", unpaidAmount);
 		// END UNPAID INVOICES
 		
-		// BEGIN PAID INVOICES
-		Double paidAmount = 0d;
-		List<StatisticBilling> monthBillingPaidInvoices = new ArrayList<StatisticBilling>();
-		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingPaidInvoices);
+		// BEGIN OVERDUE INVOICES
+		Double overdueAmount = 0d;
+		List<StatisticBilling> monthBillingOverdueInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingOverdueInvoices);
+		ciTemp = null;
 		ciTemp = new CustomerInvoice();
-		ciTemp.getParams().put("start_date", monthBillingPaidInvoices.get(0).getBillingDate());
-		ciTemp.getParams().put("end_date", monthBillingPaidInvoices.get(monthBillingPaidInvoices.size()-1).getBillingDate());
-		ciTemp.getParams().put("status1", "paid");
-		ciTemp.getParams().put("status2", "not_pay_off");
-		List<CustomerInvoice> monthCustomerPaidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
-		for (CustomerInvoice ci : monthCustomerPaidInvoices) {
+		ciTemp.getParams().put("start_date", monthBillingOverdueInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBillingOverdueInvoices.get(monthBillingOverdueInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("status", "overdue");
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerOverdueInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerOverdueInvoices) {
 			
-			paidAmount = TMUtils.bigAdd(paidAmount, ci.getAmount_paid());
+			overdueAmount = TMUtils.bigAdd(overdueAmount, ci.getBalance());
 			
 		}
-		model.addAttribute("monthlyPaidAmount", paidAmount);
-		// END PAID INVOICES
+		model.addAttribute("monthlyOverdueAmount", overdueAmount);
+		// END OVERDUE INVOICES
 		
-		// BEGIN PAID INVOICES
-		Double voidBalanceAmount = 0d;
-		List<StatisticBilling> monthBillingVoidInvoices = new ArrayList<StatisticBilling>();
-		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingVoidInvoices);
-		ciTemp = new CustomerInvoice();
-		ciTemp.getParams().put("start_date", monthBillingVoidInvoices.get(0).getBillingDate());
-		ciTemp.getParams().put("end_date", monthBillingVoidInvoices.get(monthBillingVoidInvoices.size()-1).getBillingDate());
-		ciTemp.getParams().put("status", "void");
-		List<CustomerInvoice> monthCustomerVoidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
-		for (CustomerInvoice ci : monthCustomerVoidInvoices) {
-			
-			voidBalanceAmount = TMUtils.bigAdd(voidBalanceAmount, ci.getBalance());
-			
-		}
-		model.addAttribute("monthlyVoidBalanceAmount", voidBalanceAmount);
-		// END PAID INVOICES
-		
-		// BEGIN ALL INVOICES
+		// BEGIN CREDIT INVOICES
 		Double allPayableAmount = 0d;
 		Double allFinalPayableAmount = 0d;
 		Double allCredit = 0d;
 		List<StatisticBilling> monthBillingAllInvoices = new ArrayList<StatisticBilling>();
 		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingAllInvoices);
+		ciTemp = null;
 		ciTemp = new CustomerInvoice();
 		ciTemp.getParams().put("start_date", monthBillingAllInvoices.get(0).getBillingDate());
 		ciTemp.getParams().put("end_date", monthBillingAllInvoices.get(monthBillingAllInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("customer_type", customer_type);
 		List<CustomerInvoice> monthCustomerAllInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
 		for (CustomerInvoice ci : monthCustomerAllInvoices) {
 			
@@ -739,10 +828,95 @@ public class BillingController {
 		}
 		allCredit = TMUtils.bigSub(allPayableAmount, allFinalPayableAmount);
 		model.addAttribute("monthlyCredit", allCredit);
-		// END All INVOICES
+		// END CREDIT INVOICES
+		
+		// BEGIN PAID INVOICES
+		Double paidAmount = 0d;
+		List<StatisticBilling> monthBillingPaidInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingPaidInvoices);
+		ciTemp = null;
+		ciTemp = new CustomerInvoice();
+		ciTemp.getParams().put("start_date", monthBillingPaidInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBillingPaidInvoices.get(monthBillingPaidInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("status1", "paid");
+		ciTemp.getParams().put("status2", "not_pay_off");
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerPaidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerPaidInvoices) {
+			
+			Double totalPaidAmount = 0d;
+			if("paid".equals(ci.getStatus()) && ci.getBalance()<0){
+				totalPaidAmount = TMUtils.bigAdd(totalPaidAmount, TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+			} else {
+				totalPaidAmount = TMUtils.bigAdd(totalPaidAmount, ci.getAmount_paid());
+			}
+			
+			paidAmount = TMUtils.bigAdd(paidAmount, totalPaidAmount);
+			
+		}
+		model.addAttribute("monthlyPaidAmount", paidAmount);
+		// END PAID INVOICES
+		
+		// BEGIN PREPAYMENT INVOICES
+		Double prepaymentAmount = 0d;
+		List<StatisticBilling> monthBillingPrepaymentInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingPrepaymentInvoices);
+		ciTemp = null;
+		ciTemp = new CustomerInvoice();
+		ciTemp.getParams().put("start_date", monthBillingPrepaymentInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBillingPrepaymentInvoices.get(monthBillingPrepaymentInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("prepayment", true);
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerResidueInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerResidueInvoices) {
+			
+			prepaymentAmount = TMUtils.bigAdd(prepaymentAmount, Math.abs(ci.getBalance()));
+			
+		}
+		model.addAttribute("monthlyPrepaymentAmount", prepaymentAmount);
+		// END PREPAYMENT INVOICES
+		
+		// BEGIN VOID INVOICES
+		Double voidBalanceAmount = 0d;
+		List<StatisticBilling> monthBillingVoidInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingVoidInvoices);
+		ciTemp = null;
+		ciTemp = new CustomerInvoice();
+		ciTemp.getParams().put("start_date", monthBillingVoidInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBillingVoidInvoices.get(monthBillingVoidInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("status", "void");
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerVoidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerVoidInvoices) {
+			
+			voidBalanceAmount = TMUtils.bigAdd(voidBalanceAmount, ci.getBalance());
+			
+		}
+		model.addAttribute("monthlyVoidBalanceAmount", voidBalanceAmount);
+		// END VOID INVOICES
+		
+		// BEGIN BAD DEBIT INVOICES
+		Double badDebitAmount = 0d;
+		List<StatisticBilling> monthBadDebitInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBadDebitInvoices);
+		ciTemp = null;
+		ciTemp = new CustomerInvoice();
+		ciTemp.getParams().put("start_date", monthBadDebitInvoices.get(0).getBillingDate());
+		ciTemp.getParams().put("end_date", monthBadDebitInvoices.get(monthBadDebitInvoices.size()-1).getBillingDate());
+		ciTemp.getParams().put("status", "bad-debit");
+		ciTemp.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> monthCustomerBadDebitInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
+		for (CustomerInvoice ci : monthCustomerBadDebitInvoices) {
+			
+			badDebitAmount = TMUtils.bigAdd(badDebitAmount, ci.getBalance());
+			
+		}
+		model.addAttribute("monthlyBadDebitAmount", badDebitAmount);
+		// END BAD DEBIT INVOICES
 		
 		
 		model.addAttribute("yearMonth",yearMonth);
+		model.addAttribute("customer_type", customer_type);
 		
 		/**
 		 * MONTHLY STATISTIC END
@@ -750,6 +924,233 @@ public class BillingController {
 		
 		
 		return "broadband-user/billing/invoice-chart";
+	}
+	
+	/**
+	 * Billing Annually Invoice Statistics
+	 */
+	@RequestMapping(value = "/broadband-user/billing/chart/annual-invoice-statistic/{customer_type}/{year}")
+	public String toChartAnnuallyInvoiceStatistics(Model model,
+			@PathVariable(value = "customer_type") String customer_type,
+			@PathVariable(value = "year") Integer year) {
+		
+		model.addAttribute("panelheading", "Annual Invoice Statistics");
+		
+		/**
+		 * MONTHLY STATISTIC BEGIN
+		 */
+		if(year==0){
+			Calendar c = Calendar.getInstance(Locale.CHINA);
+			// get this year
+			year = c.get(Calendar.YEAR);
+		}
+		
+		// BEGIN INVOICE AMOUNT INVOICES
+		List<StatisticBilling> annualInvoiceAmountInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualInvoiceAmountInvoices);
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualInvoiceAmountInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualInvoiceAmountInvoices.get(annualInvoiceAmountInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("customer_type", customer_type);
+		List<CustomerInvoice> annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualInvoiceAmountInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, ci.getAmount_payable())
+					);
+				}
+			}
+		}
+		model.addAttribute("annualInvoiceAmountInvoices", annualInvoiceAmountInvoices);
+		// END INVOICE AMOUNT INVOICES
+		
+		// BEGIN UNPAID INVOICES
+		List<StatisticBilling> annualBillingUnpaidInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBillingUnpaidInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBillingUnpaidInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBillingUnpaidInvoices.get(annualBillingUnpaidInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("status1", "unpaid");
+		ciQuery.getParams().put("status2", "not_pay_off");
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBillingUnpaidInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, ci.getBalance())
+					);
+				}
+			}
+		}
+		model.addAttribute("annualUnpaidInvoices", annualBillingUnpaidInvoices);
+		// END UNPAID INVOICES
+		
+		// BEGIN OVERDUE INVOICES
+		List<StatisticBilling> annualOverdueInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualOverdueInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualOverdueInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualOverdueInvoices.get(annualOverdueInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("status", "overdue");
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualOverdueInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, ci.getBalance())
+					);
+				}
+			}
+		}
+		model.addAttribute("annualOverdueInvoices", annualOverdueInvoices);
+		// END OVERDUE INVOICES
+		
+		// BEGIN CREDIT INVOICES
+		List<StatisticBilling> annualBillingCreditInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBillingCreditInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBillingCreditInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBillingCreditInvoices.get(annualBillingCreditInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBillingCreditInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigSub(ci.getAmount_payable(), ci.getFinal_payable_amount()))
+					);
+				}
+			}
+		}
+		model.addAttribute("annualCreditInvoices", annualBillingCreditInvoices);
+		// END CREDIT INVOICES
+
+		// BEGIN PREPAYMENT INVOICES
+		List<StatisticBilling> annualBillingPrepaymentInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBillingPrepaymentInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBillingPrepaymentInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBillingPrepaymentInvoices.get(annualBillingPrepaymentInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("prepayment", true);
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBillingPrepaymentInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, Math.abs(ci.getBalance()))
+					);
+				}
+			}
+		}
+		model.addAttribute("annualPrepaymentInvoices", annualBillingPrepaymentInvoices);
+		// END PREPAYMENT INVOICES
+
+		// BEGIN PAID INVOICES
+		List<StatisticBilling> annualBillingPaidInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBillingPaidInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBillingPaidInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBillingPaidInvoices.get(annualBillingPaidInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("status1", "paid");
+		ciQuery.getParams().put("status2", "not_pay_off");
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBillingPaidInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				Double totalPaidAmount = 0d;
+				if("paid".equals(ci.getStatus()) && ci.getBalance()<0){
+					totalPaidAmount = TMUtils.bigAdd(totalPaidAmount, TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+				} else {
+					totalPaidAmount = TMUtils.bigAdd(totalPaidAmount, ci.getAmount_paid());
+				}
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, totalPaidAmount)
+					);
+				}
+			}
+		}
+		model.addAttribute("annualPaidInvoices", annualBillingPaidInvoices);
+		// END PAID INVOICES
+		
+		// BEGIN VOID INVOICES
+		List<StatisticBilling> annualBillingVoidInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBillingVoidInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBillingVoidInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBillingVoidInvoices.get(annualBillingVoidInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("status", "void");
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBillingVoidInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, ci.getBalance())
+					);
+				}
+			}
+		}
+		model.addAttribute("annualVoidInvoices", annualBillingVoidInvoices);
+		// END VOID INVOICES
+		
+		// BEGIN VOID INVOICES
+		List<StatisticBilling> annualBadDebitInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisYearDateForBillingStatistic(year, annualBadDebitInvoices);
+		ciQuery = null;
+		ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("month_start_date", annualBadDebitInvoices.get(0).getBillingDate());
+		ciQuery.getParams().put("month_end_date", annualBadDebitInvoices.get(annualBadDebitInvoices.size()-1).getBillingDate());
+		ciQuery.getParams().put("status", "bad-debit");
+		ciQuery.getParams().put("customer_type", customer_type);
+		annualCustomerInvoices = null;
+		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
+		for (StatisticBilling statisticBilling : annualBadDebitInvoices) {
+			for (CustomerInvoice ci : annualCustomerInvoices) {
+				
+				if(TMUtils.dateFormatYYYYMM(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMM(ci.getCreate_date()))){
+					statisticBilling.setBillingAmount(
+						TMUtils.bigAdd(statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, ci.getBalance())
+					);
+				}
+			}
+		}
+		model.addAttribute("annualBadDebitInvoices", annualBadDebitInvoices);
+		// END VOID INVOICES
+		
+		
+		model.addAttribute("year",year);
+		model.addAttribute("customer_type", customer_type);
+		
+		/**
+		 * ANNUALLY STATISTIC END
+		 */
+		
+		return "broadband-user/billing/invoice-chart-annual";
 	}
 	
 	
@@ -842,6 +1243,6 @@ public class BillingController {
 		 */
 		
 		
-		return "broadband-user/sale/invoice-chart";
+		return "broadband-user/sale/commission-chart";
 	}
 }

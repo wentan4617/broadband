@@ -50,6 +50,9 @@
 								<th>Status</th>
 								<th>Submit Time</th>
 								<th>Operations</th>
+								<c:if test="${closedActive=='active'}">
+								<th>Responder</th>
+								</c:if>
 							</tr>
 						</thead>
 						<tbody>
@@ -86,6 +89,15 @@
 											<span class="glyphicon glyphicon-envelope"></span>
 										</a>
 									</td>
+									<c:if test="${closedActive=='active'}">
+									<td>
+										<c:forEach var="u" items="${users}">
+											<c:if test="${u.id==contactUs.user_id}">
+												${u.user_name}
+											</c:if>
+										</c:forEach>
+									</td>
+									</c:if>
 								</tr>
 							</c:forEach>
 						</tbody>

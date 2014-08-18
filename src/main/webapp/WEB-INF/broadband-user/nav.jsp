@@ -9,7 +9,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark Manager System</a>
+			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark</a>
 			<c:if test="${userSession != null && userSession.user_role=='system-developer'}">
 				<a class="navbar-brand" href="${ctx}/broadband-wholesale/index"><span style="border:4px solid green; border-radius:10px; padding:4px;">To TMS</span></a>
 			</c:if>
@@ -96,34 +96,46 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/billing/invoice/view/1/unpaid">
+								<a href="${ctx}/broadband-user/billing/invoice/view/personal/1/unpaid/all">
 									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-									View Invoice
+									View Invoice(Personal)
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/billing/chart/transaction-statistic/0">
-									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
-									Chart(Transaction)
-								</a>
-							</li>
-							<li>
-								<a href="${ctx}/broadband-user/billing/chart/invoice-statistic/0">
-									<span class="glyphicon glyphicon-picture" style="padding-right:10px;"></span>
-									Chart(Invoice)
+								<a href="${ctx}/broadband-user/billing/invoice/view/business/1/unpaid/all">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Invoice(Business)
 								</a>
 							</li>
 							<li class="divider"></li>
 							<li>
-								<a href="${ctx}/broadband-user/billing/voucher/view/1/unused">
-									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-									View Voucher
+								<a href="${ctx}/broadband-user/billing/chart/transaction-statistic/0">
+									<span class="glyphicon glyphicon-usd" style="padding-right:10px;"></span>
+									Chart(Transaction)
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/billing/voucher-file-upload-record/view/1/inactivated">
-									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
-									View Voucher File Upload
+								<a href="${ctx}/broadband-user/billing/chart/invoice-statistic/personal/0">
+									<span class="glyphicon glyphicon-home" style="padding-right:10px;"></span>
+									Chart(Monthly Personal)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/chart/invoice-statistic/business/0">
+									<span class="glyphicon glyphicon-briefcase" style="padding-right:10px;"></span>
+									Chart(Monthly Business)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/chart/annual-invoice-statistic/personal/0">
+									<span class="glyphicon glyphicon-home" style="padding-right:10px;"></span>
+									Chart(Annually Personal)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/chart/annual-invoice-statistic/business/0">
+									<span class="glyphicon glyphicon-briefcase" style="padding-right:10px;"></span>
+									Chart(Annually Business)
 								</a>
 							</li>
 							<li class="divider"></li>
@@ -287,6 +299,25 @@
 								<a href="${ctx}/broadband-user/manual-manipulation/call-international-rate/view/1">
 									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
 									Calling International Rate
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
+							Voucher <b class="caret"></b>
+						</a>
+						<ul class="dropdown-menu">
+							<li>
+								<a href="${ctx}/broadband-user/billing/voucher/view/1/unused">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Voucher
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/voucher-file-upload-record/view/1/inactivated">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Voucher File Upload
 								</a>
 							</li>
 						</ul>

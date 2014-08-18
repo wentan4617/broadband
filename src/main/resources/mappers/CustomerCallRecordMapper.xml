@@ -68,6 +68,17 @@
 				<when test="params.where == 'query_unused_rental_records'">
 					ccr.used=#{params.used} AND ccr.clear_service_id = #{params.clear_service_id}
 				</when>
+				<when test="params.where == 'query_last_month_rental_records'">
+					ccr.statement_date >= #{params.last_month} AND
+					ccr.billing_description IN(
+						'Call restrict with no Directory Access nat Res',
+						'Caller Display Monthly Charge per line Res',
+						'Call waiting nat Res',
+					  	'Faxability Monthly Rental Res',
+						'Smart Bundle package'
+					)
+					AND ccr.clear_service_id = #{params.clear_service_id}
+				</when>
 				<otherwise>
 					<if test="params.id != null">ccr.id = #{params.id}</if>
 					<if test="params.statement_date != null">and ccr.statement_date = #{params.statement_date}</if>

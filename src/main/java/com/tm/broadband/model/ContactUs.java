@@ -33,6 +33,7 @@ public class ContactUs implements Serializable {
 	private String content;
 	private Date submit_date;
 	private Date respond_date;
+	private Integer user_id;
 	
 	// begin related attributes
 	
@@ -176,6 +177,14 @@ public class ContactUs implements Serializable {
 
 	public void setRespond_date_str(String respond_date_str) {
 		this.respond_date_str = respond_date_str;
+	}
+
+	public Integer getUser_id() {
+		return user_id;
+	}
+
+	public void setUser_id(Integer user_id) {
+		this.user_id = user_id;
 	}
 
 }

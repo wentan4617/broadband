@@ -31,6 +31,7 @@ import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.ManualDefrayLogMapper;
+import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
@@ -51,6 +52,7 @@ import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.ManualDefrayLog;
+import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
@@ -67,6 +69,7 @@ import com.tm.broadband.pdf.OrderingPDFCreator;
 import com.tm.broadband.pdf.ReceiptPDFCreator;
 import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
+import com.tm.broadband.util.CallingAndRentalFeeCalucation;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 
@@ -101,6 +104,7 @@ public class CRMService {
 	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
 	private TicketMapper ticketMapper;
 	private TicketCommentMapper ticketCommentMapper;
+	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -132,7 +136,8 @@ public class CRMService {
 			VoucherMapper voucherMapper,
 			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
 			TicketMapper ticketMapper,
-			TicketCommentMapper ticketCommentMapper){
+			TicketCommentMapper ticketCommentMapper,
+			ManualManipulationRecordMapper manualManipulationRecordMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -157,6 +162,7 @@ public class CRMService {
 		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
 		this.ticketMapper = ticketMapper;
 		this.ticketCommentMapper = ticketCommentMapper;
+		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 	}
 	
 	
@@ -191,7 +197,7 @@ public class CRMService {
 			//cod_plan.setDetail_is_next_pay(0);
 			//cod_plan.setDetail_expired(new Date());
 			
-			customer.getCustomerOrder().setOrder_total_price(plan.getTopup().getTopup_fee());
+			customer.getCustomerOrder().setOrder_total_price(plan.getPlan_price());
 			
 //			CustomerOrderDetail cod_topup = new CustomerOrderDetail();
 //			cod_topup.setDetail_name("Broadband Top-Up");
@@ -905,56 +911,56 @@ public class CRMService {
 		}
 		
 		// BEGIN TOPUP NOTIFICATION
-		CustomerOrder topupCustomerOrder = new CustomerOrder();
-		topupCustomerOrder.getParams().put("where", "query_topup");
-		topupCustomerOrder.getParams().put("order_status", "using");
-		topupCustomerOrder.getParams().put("order_type_topup", "order-topup");
-		Calendar cal = Calendar.getInstance();
-
-        // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
-		// using new Date() under production environment
-		cal.setTime(new Date());
-		cal.add(Calendar.DATE, 1);
-		topupCustomerOrder.getParams().put("order_due_backward_one", cal.getTime());
-		cal.add(Calendar.DATE, 1);
-		topupCustomerOrder.getParams().put("order_due_backward_two", cal.getTime());
-		List<CustomerOrder> topupCustomerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(topupCustomerOrder);
-		
-		
-		Notification topupNotificationEmail = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
-		Notification topupNotificationSMS = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
-		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
-		
-		for (CustomerOrder customerOrder : topupCustomerOrders) {
-			Customer c = customerOrder.getCustomer();
-			
-			// Prevent template pollution
-			Notification topupNotificationEmailFinal = new Notification(topupNotificationEmail.getTitle(), topupNotificationEmail.getContent());
-			Notification topupNotificationSMSFinal = new Notification(topupNotificationSMS.getTitle(), topupNotificationSMS.getContent());
-
-			// call mail at value retriever
-			Organization org = this.organizationMapper.selectOrganizationByCustomerId(c.getId());
-			c.setOrganization(org);
-			MailRetriever.mailAtValueRetriever(topupNotificationEmailFinal, c, customerOrder, companyDetail);
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(c.getEmail());
-			applicationEmail.setSubject(topupNotificationEmailFinal.getTitle());
-			applicationEmail.setContent(topupNotificationEmailFinal.getContent());
-			// binding attachment name & path to email
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(topupNotificationSMSFinal, c, customerOrder, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMSFinal.getContent());
-
-			topupNotificationEmailFinal = null;
-			topupNotificationSMSFinal = null;
-			c = null;
-			org = null;
-		}
-		topupNotificationEmail = null;
-		topupNotificationSMS = null;
+//		CustomerOrder topupCustomerOrder = new CustomerOrder();
+//		topupCustomerOrder.getParams().put("where", "query_topup");
+//		topupCustomerOrder.getParams().put("order_status", "using");
+//		topupCustomerOrder.getParams().put("order_type_topup", "order-topup");
+//		Calendar cal = Calendar.getInstance();
+//
+//        // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-13") under testing environment
+//		// using new Date() under production environment
+//		cal.setTime(new Date());
+//		cal.add(Calendar.DATE, 1);
+//		topupCustomerOrder.getParams().put("order_due_backward_one", cal.getTime());
+//		cal.add(Calendar.DATE, 1);
+//		topupCustomerOrder.getParams().put("order_due_backward_two", cal.getTime());
+//		List<CustomerOrder> topupCustomerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(topupCustomerOrder);
+//		
+//		
+//		Notification topupNotificationEmail = this.notificationMapper.selectNotificationBySort("topup-notification", "email");
+//		Notification topupNotificationSMS = this.notificationMapper.selectNotificationBySort("topup-notification", "sms");
+//		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+//		
+//		for (CustomerOrder customerOrder : topupCustomerOrders) {
+//			Customer c = customerOrder.getCustomer();
+//			
+//			// Prevent template pollution
+//			Notification topupNotificationEmailFinal = new Notification(topupNotificationEmail.getTitle(), topupNotificationEmail.getContent());
+//			Notification topupNotificationSMSFinal = new Notification(topupNotificationSMS.getTitle(), topupNotificationSMS.getContent());
+//
+//			// call mail at value retriever
+//			Organization org = this.organizationMapper.selectOrganizationByCustomerId(c.getId());
+//			c.setOrganization(org);
+//			MailRetriever.mailAtValueRetriever(topupNotificationEmailFinal, c, customerOrder, companyDetail);
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			applicationEmail.setAddressee(c.getEmail());
+//			applicationEmail.setSubject(topupNotificationEmailFinal.getTitle());
+//			applicationEmail.setContent(topupNotificationEmailFinal.getContent());
+//			// binding attachment name & path to email
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//
+//			// get sms register template from db
+//			MailRetriever.mailAtValueRetriever(topupNotificationSMSFinal, c, customerOrder, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), topupNotificationSMSFinal.getContent());
+//
+//			topupNotificationEmailFinal = null;
+//			topupNotificationSMSFinal = null;
+//			c = null;
+//			org = null;
+//		}
+//		topupNotificationEmail = null;
+//		topupNotificationSMS = null;
 		// END TOPUP NOTIFICATION
 		
 	}
@@ -1093,7 +1099,57 @@ public class CRMService {
 	}
 
 	@Transactional
-	public void createTermPlanInvoiceOverduePenalty() throws ParseException{
+	public void customerUpdateInvoiceUnpaid2Overdue() throws ParseException{
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("where", "by_unpaid_due_date_less_than_today");
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciQuery);
+		
+		if(cis!=null && cis.size()>0){
+			for (CustomerInvoice ci : cis) {
+				CustomerInvoice finalCi = new CustomerInvoice();
+				finalCi.getParams().put("id", ci.getId());
+				finalCi.setStatus("overdue");
+				this.ciMapper.updateCustomerInvoice(finalCi);
+				finalCi = null;
+			}
+		}
+		
+		ciQuery = null;
+		cis = null;
+	}
+
+	@Transactional
+	public void customerUpdateInvoiceOverdue2BadDebit() throws ParseException{
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+		cal.add(Calendar.MONTH, -3);
+		cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE));
+		Date dueMonthMax = cal.getTime();
+		
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("where", "by_overdue_over_three_month");
+		ciQuery.getParams().put("dueMonthMax", dueMonthMax);
+		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciQuery);
+		
+		if(cis!=null && cis.size()>0){
+			for (CustomerInvoice ci : cis) {
+				CustomerInvoice finalCi = new CustomerInvoice();
+				finalCi.getParams().put("id", ci.getId());
+				finalCi.setStatus("bad-debit");
+				this.ciMapper.updateCustomerInvoice(finalCi);
+				finalCi = null;
+			}
+		}
+		
+		// RELEASE MEMORY SPACE
+		cal = null;
+		dueMonthMax = null;
+		ciQuery = null;
+		cis = null;
+	}
+
+	@Transactional
+	public void createInvoiceOverduePenalty() throws ParseException{
 		CustomerInvoice ciTemp = new CustomerInvoice();
 		Calendar beginCal = Calendar.getInstance();
 		beginCal.set(Calendar.MONTH, beginCal.get(Calendar.MONTH)-3);
@@ -1108,6 +1164,7 @@ public class CRMService {
 		endCal.set(Calendar.SECOND, 0);
 		endCal.add(Calendar.DAY_OF_MONTH, -1);
 		ciTemp.getParams().put("where", "by_overdue_penalty");
+		ciTemp.getParams().put("customer_type", "personal");
 		ciTemp.getParams().put("status", "unpaid");
 		ciTemp.getParams().put("begin_date", beginCal.getTime());
 		ciTemp.getParams().put("end_date", endCal.getTime());
@@ -1265,7 +1322,7 @@ public class CRMService {
 					System.out.println("cal.add(Calendar.DAY_OF_WEEK, -1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 					Date startFrom = co.getOrder_using_start();
 					Date endTo = cal.getTime();
-					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
 					
@@ -1327,7 +1384,7 @@ public class CRMService {
 					cal.add(Calendar.WEEK_OF_MONTH, 1);
 					cal.add(Calendar.DAY_OF_WEEK, -1);
 					Date endTo = cal.getTime();
-					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
 					
@@ -1388,6 +1445,18 @@ public class CRMService {
 				
 			}
 		}
+		
+		if(!isFirst){
+			// If previous invoice's balance less than zero
+			if(cpi.getBalance()<0){
+				ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
+				
+				cpi.setBalance(0d);
+				cpi.setAmount_paid(cpi.getFinal_payable_amount());
+				cpi.getParams().put("id", cpi.getId());
+				this.ciMapper.updateCustomerInvoice(cpi);
+			}
+		}
 
 		// store company detail begin
 		CompanyDetail companyDetail = companyDetailMapper.selectCompanyDetail();
@@ -1399,9 +1468,9 @@ public class CRMService {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 				
-			totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, co.getOrder_type(), isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 			
-			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
 		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
@@ -1458,6 +1527,54 @@ public class CRMService {
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
 		
+	}
+
+	@Transactional
+	public void createDDPayInvoiceManualManipulationRecord(ManualManipulationRecord mmr, User user) throws ParseException{
+
+		try {
+			this.createTermPlanInvoice();
+		} catch (ParseException e) { e.printStackTrace(); }
+		
+		mmr.setAdmin_id(user.getId());
+		mmr.setAdmin_name(user.getUser_name());
+		mmr.setManipulation_time(new Date());
+		mmr.setManipulation_name("Manually Generate DDPay Invoices");
+		this.manualManipulationRecordMapper.insertManualManipulationRecord(mmr);
+	}
+
+	@Transactional
+	public void createNonDDPayInvoiceManualManipulationRecord(Date date, ManualManipulationRecord mmr, User user) throws ParseException{
+		
+		try {
+			createNonDDPayPlanInvoice(date);
+		} catch (ParseException e) { e.printStackTrace(); }
+		
+		// RECORDING MANIPULATOR'S DETAILS
+		mmr.setAdmin_id(user.getId());
+		mmr.setAdmin_name(user.getUser_name());
+		mmr.setManipulation_time(new Date());
+		mmr.setManipulation_name("Manually Generate Non DDPay Invoices");
+		this.manualManipulationRecordMapper.insertManualManipulationRecord(mmr);
+	}
+
+	@Transactional
+	public void createNonDDPayPlanInvoice(Date date) throws ParseException{
+
+        CustomerOrder customerOrder = new CustomerOrder();
+        // only if the order is in using status
+        customerOrder.getParams().put("where", "query_no_term");
+        customerOrder.getParams().put("order_status", "using");
+        
+        // using new SimpleDateFormat("yyyy-MM-dd").parse("2014-06-10") under testing environment
+		// using new Date() under production environment
+        customerOrder.getParams().put("next_invoice_create_date", date);
+        customerOrder.getParams().put("order_type", "order-no-term");
+        customerOrder.getParams().put("is_ddpay", false);
+        customerOrder.getParams().put("order_term_type", "order-term");
+        
+        // call Service Method
+		createNextInvoice(customerOrder);
 	}
 
 	@Transactional
@@ -1607,8 +1724,10 @@ public class CRMService {
 				cids.add(cid);
 				
 				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
-			}
-			if("early-termination-debit".equals(cod.getDetail_type())){
+
+				continue;
+				
+			} else if("early-termination-debit".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_price(cod.getDetail_price());
@@ -1616,19 +1735,23 @@ public class CRMService {
 				cids.add(cid);
 				
 				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
-			}
-			if("present-calling-minutes".equals(cod.getDetail_type())){
+
+				continue;
+				
+			} else if("present-calling-minutes".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
-				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_unit(1);
 				cids.add(cid);
 				pcms.add(cod);
 				
-				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+				continue;
 			}
 			
-			System.out.println("isFirst: " + isFirst);
+//			System.out.println("isFirst: " + isFirst);
 			// If first invoice then add all order details into invoice details
 			if(isFirst){
 				
@@ -1643,11 +1766,8 @@ public class CRMService {
 						if(isFirst){
 							cal.setTime(co.getOrder_using_start());
 							cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
-							cid.setInvoice_detail_desc(co.getOrder_using_start_str()+" - "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
+							cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(co.getOrder_using_start())+" - "+TMUtils.retrieveMonthAbbrWithDate(cal.getTime()));
 						}
-						System.out.println("isFirst");
-						System.out.println("co.getOrder_using_start(): "+co.getOrder_using_start());
-						System.out.println("cal.getTime(): "+cal.getTime());
 						
 						// Get served month's term plan's remaining charges 
 						// Production environment should edit as shown below
@@ -1678,13 +1798,15 @@ public class CRMService {
 							Date firstDay = cal.getTime();
 							cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
 							Date lastDay = cal.getTime();
-							cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(firstDay)+" - "+TMUtils.dateFormatYYYYMMDD(lastDay));
+							cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(firstDay)+" - "+TMUtils.retrieveMonthAbbrWithDate(lastDay));
 							
 							// Add monthly price into payable amount
 							totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 							cids.add(cid);
 						}
 					}
+					
+					continue;
 
 				// Else if discount and unexpired then do add discount
 				} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
@@ -1695,6 +1817,8 @@ public class CRMService {
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
+					
+					continue;
 					
 				// Else add all non plan-term, discount, termination-credit, early-termination-debit type details into invoice details
 				} else if(!"discount".equals(cod.getDetail_type())
@@ -1709,6 +1833,8 @@ public class CRMService {
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
+					
+					continue;
 				}
 				
 			// Else not first invoice, add unexpired order detail(s) into invoice detail(s)
@@ -1725,19 +1851,32 @@ public class CRMService {
 					if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 						
 						Calendar cal = Calendar.getInstance();
-						if(is_Next_Invoice){
-							cal.setTime(co.getNext_invoice_create_date());
-						} else {
-							cal.setTime(co.getNext_invoice_create_date());
-							cal.add(Calendar.MONTH, -1);
-						}
-						cal.add(Calendar.DAY_OF_MONTH, 7);
-						Date startFrom = cal.getTime();
-						cal.add(Calendar.MONTH, 1);
-						cal.add(Calendar.DAY_OF_MONTH, -1);
-						Date endTo = cal.getTime();
+						Date startFrom = null;
+						Date endTo = null;
 						
-						cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+						// If is old order than use old logic, service from 1th to last day of the month.
+						if((co.getOrder_serial()!=null && co.getOrder_serial().contains("old"))
+						  || c.getCustomer_type().equals("business")){
+							// Add first day to last day
+							cal.set(Calendar.DAY_OF_MONTH, 1);
+							startFrom = cal.getTime();
+							cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
+							endTo = cal.getTime();
+						} else {
+							if(is_Next_Invoice){
+								cal.setTime(co.getNext_invoice_create_date_flag());
+							} else {
+								cal.setTime(co.getNext_invoice_create_date_flag());
+								cal.add(Calendar.MONTH, -1);
+							}
+							startFrom = cal.getTime();
+							cal.add(Calendar.MONTH, 1);
+							cal.add(Calendar.DAY_OF_MONTH, -1);
+							endTo = cal.getTime();
+						}
+						
+						
+						cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 						
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
@@ -1747,6 +1886,8 @@ public class CRMService {
 						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
 						cids.add(cid);
 					}
+					
+					continue;
 
 				// Else if discount and unexpired then do add discount
 				} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
@@ -1758,6 +1899,8 @@ public class CRMService {
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
+					
+					continue;
 
 				// Else if unexpired then add order detail(s) into invoice detail(s)
 				} else if(cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
@@ -1769,6 +1912,8 @@ public class CRMService {
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
+					
+					continue;
 				}
 				
 			}
@@ -1799,6 +1944,23 @@ public class CRMService {
 				this.customerOrderMapper.updateCustomerOrder(co);
 			}
 		}
+		
+		if(!isFirst){
+			// If previous invoice's balance less than zero
+			if(cpi.getBalance()<0){
+				ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
+				
+				cpi.setBalance(0d);
+				cpi.setAmount_paid(cpi.getFinal_payable_amount());
+				cpi.getParams().put("id", cpi.getId());
+				this.ciMapper.updateCustomerInvoice(cpi);
+				
+				ci.setStatus("not_pay_off");
+			
+			} else {
+				ci.setStatus("unpaid");
+			}
+		}
 
 		// store company detail begin
 		CompanyDetail companyDetail = companyDetailMapper.selectCompanyDetail();
@@ -1811,9 +1973,9 @@ public class CRMService {
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, co.getOrder_type(), isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 				
-				totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
 			}
 		}
 		
@@ -1821,9 +1983,15 @@ public class CRMService {
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
+		// If previous balance greater than 0 and customer_type equals to business
+		if(cpi.getBalance()>0 && "business".equals(c.getCustomer_type())){
+			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
+		}
+		
 		// Set current invoice's payable amount
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
+		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
 
 		// Iteratively inserting invoice detail(s) into tm_invoice_detail table
@@ -1846,11 +2014,10 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		ci.setStatus("unpaid");
 		ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
-		ciMapper.deleteCustomerInvoiceByRepeat();
+//		ciMapper.deleteCustomerInvoiceByRepeat();
 		
 	}
 	
@@ -1992,11 +2159,11 @@ public class CRMService {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cids.add(cid);
 					pcms.add(cod);
-					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
 				// Termed & No Termed
 				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") && !"plan-topup".equals(cod.getDetail_type())){
-
+					
 					Calendar cal = Calendar.getInstance();
 					Date endTo = null;
 					Date startFrom = null;
@@ -2008,20 +2175,30 @@ public class CRMService {
 						endTo = cal.getTime();
 						
 					} else {
-						if(is_Next_Invoice){
-							cal.setTime(customerOrder.getNext_invoice_create_date());
+						
+						// If is old order than use old logic, service from 1th to last day of the month.
+						if((customerOrder.getOrder_serial()!=null && customerOrder.getOrder_serial().contains("old"))
+						  || "business".equals(customer.getCustomer_type())){
+							// Add first day to last day
+							cal.set(Calendar.DAY_OF_MONTH, 1);
+							startFrom = cal.getTime();
+							cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
+							endTo = cal.getTime();
 						} else {
-							cal.setTime(customerOrder.getNext_invoice_create_date());
-							cal.add(Calendar.MONTH, -1);
+							if(is_Next_Invoice){
+								cal.setTime(customerOrder.getNext_invoice_create_date_flag());
+							} else {
+								cal.setTime(customerOrder.getNext_invoice_create_date_flag());
+								cal.add(Calendar.MONTH, -1);
+							}
+							startFrom = cal.getTime();
+							cal.add(Calendar.MONTH, 1);
+							cal.add(Calendar.DAY_OF_MONTH, -1);
+							endTo = cal.getTime();
 						}
-						cal.add(Calendar.DAY_OF_MONTH, 7);
-						startFrom = cal.getTime();
-						cal.add(Calendar.MONTH, 1);
-						cal.add(Calendar.DAY_OF_MONTH, -1);
-						endTo = cal.getTime();
 					}
 					
-					cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(startFrom)+" - "+TMUtils.dateFormatYYYYMMDD(endTo));
+					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 					
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
@@ -2093,6 +2270,24 @@ public class CRMService {
 				}
 			}
 		}
+		
+		if(!isFirst){
+			// If previous invoice's balance less than zero
+			if(cpi.getBalance()<0){
+				ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
+				
+				cpi.setBalance(0d);
+				cpi.setAmount_paid(cpi.getFinal_payable_amount());
+				cpi.getParams().put("id", cpi.getId());
+				this.ciMapper.updateCustomerInvoice(cpi);
+				
+				ci.setStatus("not_pay_off");
+			
+			} else {
+				ci.setStatus("unpaid");
+			}
+		}
+		
 		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
@@ -2101,14 +2296,19 @@ public class CRMService {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			
-			totalAmountPayable = TMUtils.ccrRentalOperation(pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, customerOrder.getOrder_type(), isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 			
-			totalAmountPayable = TMUtils.ccrOperation(pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, customerOrder.getOrder_type(), isRegenerate, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
 			
 		}
 		
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
+		
+		// If previous balance greater than 0 and customer_type equals to business
+		if(cpi!=null && cpi.getBalance()>0 && "business".equals(customer.getCustomer_type())){
+			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
+		}
 
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
@@ -2117,7 +2317,6 @@ public class CRMService {
 		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
 		// Add cids into ci
 		ci.setCustomerInvoiceDetails(cids);
-		ci.setStatus("unpaid");
 		
 		// Add cids into db
 		for (CustomerInvoiceDetail cid : cids) {
@@ -2138,7 +2337,7 @@ public class CRMService {
 		this.ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
-		this.ciMapper.deleteCustomerInvoiceByRepeat();
+//		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
 		if(!isRegenerate){
 			

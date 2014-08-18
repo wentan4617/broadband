@@ -234,7 +234,8 @@ public class CRMRestController {
 		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
 
 		// Assign paid to paid + paid_amount, make this invoice paid off
-		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
+//		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
+		ci.setFinal_payable_amount(ci.getAmount_paid());
 		// Assign balance as 0.0, make this invoice paid off
 		ci.setBalance(0d);
 		// Assign status to paid directly, make this invoice paid off
@@ -807,7 +808,7 @@ public class CRMRestController {
 			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
 		} else if("order-topup".equals(customerOrder.getOrder_type())) {
 			Calendar cal = Calendar.getInstance(Locale.CHINA);
-			cal.setTime(new Date());
+			cal.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 			cal.add(Calendar.WEEK_OF_MONTH, 1);
 			cal.add(Calendar.DAY_OF_WEEK, -1);
 			// Set next invoice create date flag
@@ -1914,6 +1915,28 @@ public class CRMRestController {
 		
 		json.setModel(ticket);
 		
+		return json;
+	}
+
+	// Regenerate Ordering Form
+	@RequestMapping(value = "/broadband-user/crm/customer/order/ordering-form/pdf/regenerate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateOrderingForm(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("generateType") String generateType,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		
+		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(co.getCustomer_id());
+		
+		c.setOrganization(co.getCustomer().getOrganization());
+		
+		c.setCustomerOrder(co);
+		
+		this.crmService.createOrderingFormPDFByDetails(c);
+		json.getSuccessMap().put("alert-success", "Successfully Regenerate Ordering Form");
+
 		return json;
 	}
 }

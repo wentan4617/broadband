@@ -203,6 +203,7 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 		}
 		// retrieve order end
 		// title end
@@ -213,6 +214,7 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 		}
 		// retrieve order end
 		// content end
@@ -356,7 +358,7 @@ public class MailRetriever {
 	
 	public static String preventNull(String property){
 		if(property!=null){
-			return property;
+			return TMUtils.useDollarSymbolInReplace(property);
 		}
 		return "";
 	}

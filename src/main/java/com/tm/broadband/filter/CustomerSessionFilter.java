@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.User;
 
 public class CustomerSessionFilter implements Filter {
 

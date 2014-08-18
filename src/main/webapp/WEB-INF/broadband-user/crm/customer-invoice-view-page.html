@@ -1,3 +1,16 @@
+<style>
+.void{
+	background:rgba(137,143,156,0.5);
+}
+.btn-void{
+	color:#fff;
+	background:rgba(137,143,156,1);
+}
+.btn-void:hover{
+	color:#fff;
+	background:rgba(137,143,156,0.75);
+}
+</style>
 <. if (invoicePage.results != null && invoicePage.results.length > 0) { .>
 <table class="table">
 <. for (var o = 0, len = orderIds.length; o < len; o++){ .>
@@ -63,8 +76,9 @@
 						}
 					}
 		.>
-					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'danger' : 
-									invoice.status=='discard' ? 'info' : '' .>" >
+					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'warning' : 
+									invoice.status=='overdue' ? 'danger' :
+									invoice.status=='void' ? 'void' : '' .>" >
 					<td>Invoice# - <.= invoice.id .></td>
 					<td><.= invoice.create_date_str .></td>
 		<.
@@ -88,7 +102,7 @@
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
 					<td><strong><.= invoice.status .></strong></td>
 		<. 
-					if((invoice.status=='unpaid' || invoice.status=='not_pay_off')
+					if((invoice.status=='unpaid' || invoice.status=='not_pay_off' || invoice.status=='overdue')
 					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 		.>
 					<td>
@@ -125,8 +139,8 @@
 		.>
 					<td>
 						<div class="btn-group">
-							<button type="button" class="btn btn-danger btn-xs" data-name="make_payment_<.= invoice.id .>">Void</button>
-							<button type="button" class="btn btn-danger btn-xs dropdown-toggle" data-toggle="dropdown">
+							<button type="button" class="btn btn-void btn-xs" data-name="make_payment_<.= invoice.id .>">Void</button>
+							<button type="button" class="btn btn-void btn-xs dropdown-toggle" data-toggle="dropdown">
 								<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu" role="menu">
@@ -152,14 +166,14 @@
 					}
 					var downloadUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
 					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + customer_id;
-					if((invoice.status=='unpaid' || invoice.status=='not_pay_off')){
+					if((invoice.status=='unpaid' || invoice.status=='not_pay_off' || invoice.status=='overdue')){
 						if(invoice.invoice_pdf_path != null){
 		.>
 						<td>
-						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
-								<!-- regenerate icon -->
+						<!-- <. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+								regenerate icon
 								<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;
-						<. }.>
+						<. }.> -->
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk" style="font-size:22px;"></span></a>&nbsp;
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
@@ -171,10 +185,10 @@
 						} else {
 		.>
 						<td>
-						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
-							<!-- regenerate icon -->
+						<!-- <. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+							regenerate icon
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
-						<. }.>
+						<. }.> -->
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
@@ -189,10 +203,10 @@
 						if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant' || user_role=='provision-team'){
 		.>
 					<td>
-						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
-							<!-- regenerate icon -->
+						<!-- <. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+							regenerate icon
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="generateUrl_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="regenerate invoice PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;&nbsp;
-						<. }.>
+						<. }.> -->
 						<!-- download icon -->
 						<a target="_blank" href="<.= downloadUrl .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
 					</td>
