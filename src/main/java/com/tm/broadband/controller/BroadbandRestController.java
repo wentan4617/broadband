@@ -19,10 +19,23 @@ public class BroadbandRestController {
 	public BroadbandRestController() {
 	}
 	
+	@RequestMapping("/plans/address/check/{address}")
+	public Broadband plansCheckAddress(@PathVariable("address") String address,
+			HttpSession session) {
+		System.out.println("customerReg check address");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		if (customerReg != null) {
+			return returnBroadband(address, customerReg);
+		}
+		return null;
+		
+	}
+	
 	@RequestMapping("/address/check/{address}")
 	public Broadband checkAddress(@PathVariable("address") String address,
 			HttpSession session) {
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		System.out.println("customer check address");
+		Customer customer = (Customer) session.getAttribute("customer");
 		if (customer != null) {
 			return returnBroadband(address, customer);
 		}
@@ -80,7 +93,7 @@ public class BroadbandRestController {
 	@RequestMapping(value = "/do/service")
 	public void doServiceAvailable(HttpSession session) {
 
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customer = (Customer) session.getAttribute("customer");
 		
 		if (customer != null) {
 			customer.setServiceAvailable(true);

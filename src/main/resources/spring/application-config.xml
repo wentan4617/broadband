@@ -367,10 +367,10 @@
 	<!-- END customerCreateInvoiceOverdue2BadDebit -->
 	
 	<!-- plan -->
-	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<!-- <bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				<!-- <ref bean="customerCreateInvoicePDFEachMonthTrigger" />
+				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
@@ -379,7 +379,7 @@
 				<ref bean="customerCheckPendingWarningOrderEachFiveDaysTrigger" />
 				<ref bean="customerInvoiceAfterDueNoticeTrigger" />
 				<ref bean="customerCreateTopupPlanInvoicePDFEachMonthTrigger" />
-				<ref bean="customerUpdateInvoiceUnpaid2OverdueTrigger" /> -->
+				<ref bean="customerUpdateInvoiceUnpaid2OverdueTrigger" />
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
@@ -387,7 +387,7 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- <import resource="aop-config.xml"/> -->
 

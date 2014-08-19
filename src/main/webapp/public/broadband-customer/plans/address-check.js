@@ -16,7 +16,7 @@
 		if (address != '') {
 			var l = Ladda.create(this);
 		 	l.start();
-			$.get(ctx + '/address/check/' + address, function(broadband){ //console.log(broadband);
+			$.get(ctx + '/plans/address/check/' + address, function(broadband){ //console.log(broadband);
 				broadband.ctx = ctx;
 				broadband.type = select_plan_type;
 				broadband.selected_id = select_plan_id;

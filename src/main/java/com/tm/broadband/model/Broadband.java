@@ -9,10 +9,20 @@ import java.io.Serializable;
  */
 public class Broadband implements Serializable {
 
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+	
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
 	
 	private boolean adsl_available;
 	private boolean vdsl_available;
@@ -23,6 +33,10 @@ public class Broadband implements Serializable {
 	private String href;
 	private String type;
 	private String scheduled;
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public Broadband() {
 		// TODO Auto-generated constructor stub
