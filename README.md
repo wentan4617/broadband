@@ -18,12 +18,21 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
 
+demand version 2.1.8 2014-08-19
+ 
+* [统计bad-debit下的paid及credit到图表中.](steven)
+* [Make Payment里更改状态的选项里新增一个Bad Debit，点击后改变状态为bad-debit.](steven)
+* business-service-given: 
+* business-online-ordering: 
+
 demand version 2.1.7 2014-08-18
 
-* customer order界面的Service Given按钮组里添加一个选项，for business post pay.(steven)
+* Business在Service Given时只需要点Service Only.(steven)
+* 每个月出Business账单时判断
 * Service Given时判断客户类型，如果是personal则用service-given短信及邮件模版，如果是business则用business-service-given短信及邮件模版.(steven)
 * 下单时判断plan的客户类型，如果是personal则用online-ordering短信及邮件模版，如果是business则用business-online-ordering短信及邮件模版.(steven)
-* 10号发送ddpay账单时只发送邮件，不发送短信提醒.(steven)
+* 10号发送business账单时只发送邮件，不发送短信提醒.(steven)
+
  
 
 demand version 2.1.5 2014-08-15

@@ -205,6 +205,7 @@ public class CRMRestController {
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit", method = RequestMethod.POST)
 	public JSONBean<String> doDefrayByDDPay(Model model,
 			@RequestParam("process_way") String process_way,
+			@RequestParam("pay_way") String pay_way,
 			@RequestParam("invoice_id") int invoice_id, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
@@ -233,8 +234,10 @@ public class CRMRestController {
 		order_id = ci.getOrder_id();
 		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
 
-		// Assign paid to paid + paid_amount, make this invoice paid off
-//		ci.setAmount_paid(ci.getAmount_paid() + paid_amount);
+		// If not CyberPark then assign balance to paid
+		if(!"cyberpark-credit".equals(pay_way)){
+			ci.setAmount_paid(ci.getBalance());
+		}
 		ci.setFinal_payable_amount(ci.getAmount_paid());
 		// Assign balance as 0.0, make this invoice paid off
 		ci.setBalance(0d);
@@ -541,15 +544,16 @@ public class CRMRestController {
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/change-status", method = RequestMethod.POST)
 	public JSONBean<String> doInvoiceChangeStatus(Model model,
 			@RequestParam("invoice_id") int invoice_id,
+			@RequestParam("status") String status,
 			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerInvoice ci = new CustomerInvoice();
-		ci.setStatus("void");
+		ci.setStatus(status);
 		ci.getParams().put("id", invoice_id);
 		this.crmService.editCustomerInvoice(ci);
 
-		json.getSuccessMap().put("alert-success", "Change status had successfully been operated!");
+		json.getSuccessMap().put("alert-success", "Change status has successfully been operated!");
 
 		return json;
 	}

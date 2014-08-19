@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TMSMaterialCategoryMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="tMSMaterialCategoryColumns">
+		tmsmc.`id`				as tmsmc_id,
+		tmsmc.`category_name`				as tmsmc_category_name
+	</sql>
+
+	<resultMap type="TMSMaterialCategory" id="tMSMaterialCategoryResultMap">
+		<id property="id" column="tmsmc_id" />
+		<result property="category_name" column="tmsmc_category_name" />
+	</resultMap>
+
+	<sql id="tMSMaterialCategoryWhere">
+		<where>
+			<if test="params.id != null">tmsmc.id = #{params.id}</if>
+			<if test="params.category_name != null">and tmsmc.category_name = #{params.category_name}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTMSMaterialCategory" parameterType="TMSMaterialCategory" resultType="TMSMaterialCategory">
+		select * from tms_material_category as tmsmc
+		<include refid="tMSMaterialCategoryWhere"/>
+	</select>
+
+	<!-- select tMSMaterialCategory page -->
+	<select id="selectTMSMaterialCategorysByPage" parameterType="Page" resultMap="tMSMaterialCategoryResultMap">
+		select 
+			<include refid="tMSMaterialCategoryColumns"/>
+			from tms_material_category as tmsmc
+			<include refid="tMSMaterialCategoryWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select tMSMaterialCategory amount -->
+	<select id="selectTMSMaterialCategorysSum" parameterType="Page" resultType="int">
+		select count(*) from tms_material_category as tmsmc
+		<include refid="tMSMaterialCategoryWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTMSMaterialCategory" parameterType="TMSMaterialCategory" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tms_material_category`(
+			`id`, `category_name`
+		) VALUES (
+			#{id}, #{category_name}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update tMSMaterialCategory -->
+	<update id="updateTMSMaterialCategory" parameterType="TMSMaterialCategory">
+		update tms_material_category
+		<set>
+			<if test="category_name != null">category_name = #{category_name}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTMSMaterialCategoryById" parameterType="int">
+		DELETE FROM tms_material_category WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

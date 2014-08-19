@@ -10,6 +10,42 @@
 	color:#fff;
 	background:rgba(137,143,156,0.75);
 }
+.unpaid{
+	background:rgba(250,70,120,0.3);
+}
+.unpaid:hover{
+	background:rgba(250,70,120,0.35);
+}
+.overdue{
+	background:rgba(220,50,90,0.3);
+}
+.overdue:hover{
+	background:rgba(220,50,90,0.35);
+}
+.prepayment{
+	background:rgba(173,206,169,0.3);
+}
+.prepayment:hover{
+	background:rgba(173,206,169,0.35);
+}
+.paid{
+	background:rgba(153,186,149,0.3);
+}
+.paid:hover{
+	background:rgba(153,186,149,0.35);
+}
+.void{
+	background:rgba(137,143,156,0.3);
+}
+.void:hover{
+	background:rgba(137,143,156,0.35);
+}
+.bad-debit{
+	background:rgba(77,83,96,0.3);
+}
+.bad-debit:hover{
+	background:rgba(77,83,96,0.35);
+}
 </style>
 <. if (invoicePage.results != null && invoicePage.results.length > 0) { .>
 <table class="table">
@@ -47,7 +83,7 @@
 						if(tx.invoice_id==invoice.id){
 							var txAmount_paid = new Number(tx.amount);
 		.>
-							<tr class="success">
+							<tr>
 								<td>Transaction# - <.= tx.id .></td>
 								<td><.= tx.transaction_date_str .></td>
 								<td>&nbsp;</td>
@@ -76,9 +112,12 @@
 						}
 					}
 		.>
-					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'warning' : 
-									invoice.status=='overdue' ? 'danger' :
-									invoice.status=='void' ? 'void' : '' .>" >
+					<tr class="<.= (invoice.status=='unpaid' || invoice.status=='not_pay_off') ? 'unpaid' : 
+									invoice.status=='overdue' ? 'overdue' :
+									invoice.status=='prepayment' ? 'prepayment' :
+									invoice.status=='paid' ? 'paid' :
+									invoice.status=='void' ? 'void' :
+									invoice.status=='bad-debit' ? 'bad-debit' : '' .>" >
 					<td>Invoice# - <.= invoice.id .></td>
 					<td><.= invoice.create_date_str .></td>
 		<.
@@ -131,6 +170,7 @@
 								<li class="divider"></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="pending" ><span class="glyphicon glyphicon-pause"></span>&nbsp;&nbsp;Pending</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="void" ><span class="glyphicon glyphicon-thumbs-down"></span>&nbsp;&nbsp;Avoid</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="bad-debit" ><span class="glyphicon glyphicon-remove"></span>&nbsp;&nbsp;Bad Debit</a></li>
 							</ul>
 						</div>
 					</td>

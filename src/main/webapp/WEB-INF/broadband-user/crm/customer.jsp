@@ -1130,6 +1130,10 @@
 						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Avoid for this invoice?');
 						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will change Invoice\'s status to void.<br/>');
 						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Avoid for this invoice');
+					} else if(pay_way == 'bad-debit'){
+						$('strong[data-name="confirm_payway_modal_title_'+this.id+'"]').html('Use Bad Debit for this invoice?');
+						$('p[data-name="confirm_payway_modal_content_'+this.id+'"]').html('This operation will change Invoice\'s status to bad-debit.<br/>');
+						$('a[data-name="confirm_payway_modal_btn_'+this.id+'"]').html('Confirm to use Bad Debit for this invoice');
 					} 
 					$('button[data-name="make_payment_'+this.id+'"]').button('loading');
 					$('#confirmPayWayModal_'+this.id).modal('show');
@@ -1142,24 +1146,28 @@
 						var data = {
 								invoice_id : this.id
 								,process_way : 'DDPay'
+								,pay_way : pay_way
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'a2a'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'Account2Account'
+								,pay_way : pay_way
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'credit-card'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'Credit Card'
+								,pay_way : pay_way
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'cyberpark-credit'){
 						var data = {
 								invoice_id : this.id
 								,process_way : 'CyberPark Credit'
+								,pay_way : pay_way
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit';
 					} else if(pay_way == 'cash'){
@@ -1181,7 +1189,14 @@
 						url = '${ctx}/broadband-user/crm/customer/invoice/change-payment-status';
 					} else if(pay_way == 'void'){
 						var data = {
-								invoice_id : this.id
+								invoice_id : this.id,
+								status : pay_way
+						};
+						url = '${ctx}/broadband-user/crm/customer/invoice/change-status';
+					} else if(pay_way == 'bad-debit'){
+						var data = {
+								invoice_id : this.id,
+								status : pay_way
 						};
 						url = '${ctx}/broadband-user/crm/customer/invoice/change-status';
 					}

@@ -430,6 +430,7 @@
 			</if>
 			<if test="params.status != null">and status=#{params.status}</if>
 			<if test="params.status1 != null">and (status=#{params.status1} or status=#{params.status2})</if>
+			<if test="params.status3 != null">and (status=#{params.status3} or status=#{params.status4} or status=#{params.status5})</if>
 			<if test="params.sale_id != null">
 				and order_id IN (
 					select id from tm_customer_order where sale_id=#{params.sale_id}

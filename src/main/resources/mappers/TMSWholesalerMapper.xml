@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TMSWholesalerMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="tMSWholesalerColumns">
+		tmsw.`id`				as tmsw_id,
+		tmsw.`company_name`				as tmsw_company_name,
+		tmsw.`wholesaler_id`				as tmsw_wholesaler_id,
+		tmsw.`name`				as tmsw_name,
+		tmsw.`login_name`				as tmsw_login_name,
+		tmsw.`login_password`				as tmsw_login_password,
+		tmsw.`role`				as tmsw_role,
+		tmsw.`cellphone`				as tmsw_cellphone,
+		tmsw.`email`				as tmsw_email,
+		tmsw.`auth`				as tmsw_auth,
+		tmsw.`memo`				as tmsw_memo,
+		tmsw.`status`				as tmsw_status
+	</sql>
+
+	<resultMap type="TMSWholesaler" id="tMSWholesalerResultMap">
+		<id property="id" column="tmsw_id" />
+		<result property="company_name" column="tmsw_company_name" />
+		<result property="wholesaler_id" column="tmsw_wholesaler_id" />
+		<result property="name" column="tmsw_name" />
+		<result property="login_name" column="tmsw_login_name" />
+		<result property="login_password" column="tmsw_login_password" />
+		<result property="role" column="tmsw_role" />
+		<result property="cellphone" column="tmsw_cellphone" />
+		<result property="email" column="tmsw_email" />
+		<result property="auth" column="tmsw_auth" />
+		<result property="memo" column="tmsw_memo" />
+		<result property="status" column="tmsw_status" />
+	</resultMap>
+
+	<sql id="tMSWholesalerWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_primary_wholesaler_by_company_name'">
+					tmsw.wholesaler_id IS NULL
+					AND tmsw.company_name = #{params.company_name}
+				</when>
+				<when test="params.where == 'query_primary_wholesaler'">
+					tmsw.wholesaler_id IS NULL
+				</when>
+				<when test="params.where == 'query_by_wholesaler_id'">
+					tmsw.id = #{params.id} OR tmsw.wholesaler_id = #{params.id}
+				</when>
+				<otherwise>
+					<if test="params.id != null">tmsw.id = #{params.id}</if>
+					<if test="params.company_name != null">and tmsw.company_name = #{params.company_name}</if>
+					<if test="params.wholesaler_id != null">and tmsw.wholesaler_id = #{params.wholesaler_id}</if>
+					<if test="params.name != null">and tmsw.name = #{params.name}</if>
+					<if test="params.login_name != null">and tmsw.login_name = #{params.login_name}</if>
+					<if test="params.login_password != null">and tmsw.login_password = #{params.login_password}</if>
+					<if test="params.role != null">and tmsw.role = #{params.role}</if>
+					<if test="params.cellphone != null">and tmsw.cellphone = #{params.cellphone}</if>
+					<if test="params.email != null">and tmsw.email = #{params.email}</if>
+					<if test="params.auth != null">and tmsw.auth = #{params.auth}</if>
+					<if test="params.memo != null">and tmsw.memo = #{params.memo}</if>
+					<if test="params.status != null">and tmsw.status = #{params.status}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTMSWholesaler" parameterType="TMSWholesaler" resultType="TMSWholesaler">
+		select * from tms_wholesaler as tmsw
+		<include refid="tMSWholesalerWhere"/>
+	</select>
+
+	<!-- select tMSWholesaler page -->
+	<select id="selectTMSWholesalersByPage" parameterType="Page" resultMap="tMSWholesalerResultMap">
+		select 
+			<include refid="tMSWholesalerColumns"/>
+			from tms_wholesaler as tmsw
+			<include refid="tMSWholesalerWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select tMSWholesaler amount -->
+	<select id="selectTMSWholesalersSum" parameterType="Page" resultType="int">
+		select count(*) from tms_wholesaler as tmsw
+		<include refid="tMSWholesalerWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTMSWholesaler" parameterType="TMSWholesaler" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tms_wholesaler`(
+			`company_name`, `wholesaler_id`, `name`, `login_name`, `login_password`,
+			`role`, `cellphone`, `email`, `auth`, `memo`, `status`
+		) VALUES (
+			#{company_name}, #{wholesaler_id}, #{name}, #{login_name}, #{login_password},
+			#{role}, #{cellphone}, #{email}, #{auth}, #{memo}, #{status}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update tMSWholesaler -->
+	<update id="updateTMSWholesaler" parameterType="TMSWholesaler">
+		update tms_wholesaler
+		<set>
+			<if test="company_name != null">company_name = #{company_name},</if>
+			<if test="wholesaler_id != null">wholesaler_id = #{wholesaler_id},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="login_name != null">login_name = #{login_name},</if>
+			<if test="login_password != null">login_password = #{login_password},</if>
+			<if test="role != null">role = #{role},</if>
+			<if test="cellphone != null">cellphone = #{cellphone},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="auth != null">auth = #{auth},</if>
+			<if test="memo != null">memo = #{memo},</if>
+			<if test="status != null">status = #{status}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTMSWholesalerById" parameterType="int">
+		DELETE FROM tms_wholesaler WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>
