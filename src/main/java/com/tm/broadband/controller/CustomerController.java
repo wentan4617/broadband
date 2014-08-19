@@ -97,7 +97,10 @@ public class CustomerController {
 	@RequestMapping("/plans/{group}/{class}")
 	public String plans(Model model, 
 			@PathVariable("group") String group,
-			@PathVariable("class") String classz) {
+			@PathVariable("class") String classz,
+			HttpSession session) {
+		
+		session.removeAttribute("customerReg");
 		
 		Customer customer = new Customer();
 		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
@@ -975,7 +978,7 @@ public class CustomerController {
 			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
 		}
 
-		return "redirect:/customer/billing/1";
+		return "redirect:/customer/billing/view";
 	}
 	
 

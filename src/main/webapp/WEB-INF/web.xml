@@ -138,6 +138,7 @@
 		<url-pattern>/plans/order/summary</url-pattern>
 		<url-pattern>/plans/order/bankdeposit</url-pattern>
 		<url-pattern>/plans/order/dps</url-pattern>
+		<url-pattern>/plans/order/result/success</url-pattern>
 	</filter-mapping>
 
 	<!-- customer session filter -->
@@ -286,7 +287,7 @@
 
 
 	<!-- wholesaler session filter -->
-	<filter>
+	<!-- <filter>
 		<filter-name>WholesalerSessionFilter</filter-name>
 		<filter-class>com.tm.broadband.wholesale.filter.WholesalerSessionFilter</filter-class>
 	</filter>
@@ -296,7 +297,7 @@
 		<url-pattern>/broadband-wholesale/material/*</url-pattern>
 		<url-pattern>/broadband-wholesale/system/*</url-pattern>
 	</filter-mapping>
-	
+	 -->
 	
 	
 	<!-- END TMSWholesale SYSTEM -->

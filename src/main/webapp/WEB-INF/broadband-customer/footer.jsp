@@ -31,7 +31,7 @@
 			</p>
 	    </footer>
 	    
-	    <ul class="list-inline" style="margin:0 auto; width: 230px;">
+	    <ul class="list-inline" style="margin:0 auto; width: 240px;">
 			<li>
 				<a title="Facebook" target="_blank" href="https://www.facebook.com/pages/Cyberpark/223261207861301" >
 					<img alt="facebook" src="${ctx }/public/bootstrap3/images/facebook-icon.png" />

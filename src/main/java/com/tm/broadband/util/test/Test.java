@@ -3,6 +3,8 @@ package com.tm.broadband.util.test;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.tm.broadband.model.Customer;
+
 
 
 
@@ -144,6 +146,8 @@ public class Test {
 //		System.out.println(TMUtils.retrieveMonthAbbrWithDate(TMUtils.parseDateYYYYMMDD("2014-06-09")));
 		
 		System.out.println("A".equals(String.valueOf("abc".toUpperCase().charAt(0))));
+		
+		Console.log(new Customer());
 		
 	}
 

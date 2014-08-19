@@ -1,11 +1,27 @@
 package com.tm.broadband.model;
 
+import java.io.Serializable;
+
 /**
  * one class of status
  * @author Cook1fan
  *
  */
-public class Broadband {
+public class Broadband implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	
+	/*
+	 * TABLE MAPPING PROPERTIES
+	 */
+	
+	/*
+	 * END TABLE MAPPING PROPERTIES
+	 */
+
+	/*
+	 * RELATED PROPERTIES
+	 */
 	
 	private boolean adsl_available;
 	private boolean vdsl_available;
@@ -16,6 +32,10 @@ public class Broadband {
 	private String href;
 	private String type;
 	private String scheduled;
+	
+	/*
+	 * END RELATED PROPERTIES
+	 */
 
 	public Broadband() {
 		// TODO Auto-generated constructor stub

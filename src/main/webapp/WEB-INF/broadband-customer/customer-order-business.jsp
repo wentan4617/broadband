@@ -22,31 +22,7 @@
 
 <div class="container" >
 	
-	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
-		<li class="">
-			<a class="btn-lg">
-				1. Choose Plan
-				<span class="glyphicon glyphicon-hand-right pull-right"></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				2. Check Your Address
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="active">
-			<a class="btn-lg">
-				3. Fill Application Form
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				4. Review and Order
-			</a>
-		</li>
-	</ul>
+	
 	
 	<form id="customerInfoFrom" class="form-horizontal">
 	
@@ -114,27 +90,31 @@
 								<div class="col-md-12">
 									<ul class="list-unstyled topup-list">
 										<li>
-											<input type="radio" name="order_broadband_type" value="transition"
-												<c:if test="${customer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
-													checked="checked"
-												</c:if> />
-											&nbsp; 
-											<strong>
-												Transfer the existing broadband connection to CyberPark 
-												<c:choose>
-													<c:when test="${orderPlan.transition_fee > 0 }">
-														costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
-													</c:when>
-													<c:otherwise>
-														is free
-													</c:otherwise>
-												</c:choose>
-											</strong>
+											<label>
+												<input type="radio" name="order_broadband_type" value="transition"
+													<c:if test="${customer.customerOrder.order_broadband_type=='transition' || customer.customerOrder.order_broadband_type==null}">
+														checked="checked"
+													</c:if> />
+												&nbsp; 
+												<strong>
+													Transfer the existing broadband connection to CyberPark 
+													<c:choose>
+														<c:when test="${orderPlan.transition_fee > 0 }">
+															costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
+														</c:when>
+														<c:otherwise>
+															is free
+														</c:otherwise>
+													</c:choose>
+												</strong>
+											</label>
 										</li>
 										<li>
-											<input type="radio" name="order_broadband_type" 
-												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
+											<label>
+												<input type="radio" name="order_broadband_type" 
+													${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
+												&nbsp; <strong>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
+											</label>
 										</li>
 										<%-- <li>
 											<input type="radio" name="order_broadband_type" 

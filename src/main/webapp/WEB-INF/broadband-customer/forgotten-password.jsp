@@ -8,7 +8,7 @@
 
 <div class="container" style="padding-top: 20px; padding-bottom: 150px;">
 	<div class="row">
-		<div class="col-md-4 col-md-offset-4">
+		<div class="col-md-6 col-md-offset-3">
 			<div class="panel panel-success">
 				<div class="panel-heading">Forgotten Password</div>
 				<div class="panel-body">

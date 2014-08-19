@@ -95,7 +95,10 @@
 	
 	function doUsage(date) {
 		var url = '${ctx}/customer/data/view/' + date;
-		$.get(url, function(list){ console.log(list);
+		$.get(url, function(list){ //console.log(list);
+		
+			if (list == null || list.length == 0) return false;
+			
 			dateUsages = list;
 			var obj = {
 				list: list

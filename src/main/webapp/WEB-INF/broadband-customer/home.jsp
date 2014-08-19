@@ -17,7 +17,7 @@
 
 <jsp:include page="top-wrap.jsp" />
 
-<jsp:include page="welcome.jsp"/>
+<%-- <jsp:include page="welcome.jsp"/> --%>
 
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />

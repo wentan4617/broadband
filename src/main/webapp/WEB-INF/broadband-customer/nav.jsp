@@ -28,7 +28,7 @@
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li>
-				<li><a href="${ctx }/plans/broadband" rel="nofollow">Best Plan</a></li>
+				<li><a href="${ctx }/plans/broadband" rel="nofollow">Broadband Plan</a></li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow">Business Plan</a></li>
 				<li>
 					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Information<b class="caret"></b></a>
@@ -57,7 +57,7 @@
 			            </li>
 		          	</ul>
 				</li>
-				<c:if test="${fn:length(customerReg.address) > 0}">
+				<c:if test="${fn:length(customerReg.address) > 0 }">
 				<li>
 					<a href="${ctx }/plans/address-check/${customerReg.select_plan_type }/${customerReg.select_plan_id }" style="padding-top: 10px; padding-bottom: 5px;" rel="nofollow">
 						<span class="glyphicon glyphicon-map-marker" style="font-size: 24px; "></span>

@@ -43,31 +43,7 @@
 			We can offer more values and better price telecommunication plans to you.
 		</p>
 	</div>
-	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm">
-		<li class="active">
-			<a class="btn-lg">
-				1. Choose Plan
-				<span class="glyphicon glyphicon-hand-right pull-right"></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				2. Check Your Address
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				3. Fill Application Form
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				4. Review and Order
-			</a>
-		</li>
-	</ul>
+	
 	
 	<c:forEach var="type" items="ADSL,VDSL,UFB">
 		<div class="page-header" style="margin-top:0;margin-bottom:5px;">

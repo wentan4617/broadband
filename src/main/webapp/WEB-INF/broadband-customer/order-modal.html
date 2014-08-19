@@ -11,7 +11,7 @@
 				if (plan.plan_group == 'plan-topup') { 
 					price.plan_price = plan.topup_fee;
 				} else if (plan.plan_group == 'plan-no-term' || plan.plan_group == 'plan-term') {
-					price.plan_price = (plan.plan_price * plan.plan_prepay_months) - parseInt(plan.plan_price * plan.plan_prepay_months * plan.discount_rate);
+					price.plan_price = (plan.plan_price * plan.plan_prepay_months);
 				}
 				.>
 				<.=(price.plan_price + price.service_price + price.addons_price).toFixed(2).>
