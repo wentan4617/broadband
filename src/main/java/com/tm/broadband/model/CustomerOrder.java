@@ -47,6 +47,8 @@ public class CustomerOrder implements Serializable {
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
 	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_number;
+	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_porting_number;
 	private Integer hardware_post;
 	private Date order_due;
@@ -69,6 +71,8 @@ public class CustomerOrder implements Serializable {
 	private String ordering_form_pdf_path;
 	private String receipt_pdf_path;
 	private Date disconnected_date;
+	private String connection_date;
+	private String contract;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -95,6 +99,9 @@ public class CustomerOrder implements Serializable {
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
 	private NetworkUsage usage = new NetworkUsage();
+	
+	private Integer prepay_months;
+	private Integer discount_price;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -549,6 +556,38 @@ public class CustomerOrder implements Serializable {
 
 	public void setDisconnected_date_str(String disconnected_date_str) {
 		this.disconnected_date_str = disconnected_date_str;
+	}
+
+	public Integer getPrepay_months() {
+		return prepay_months;
+	}
+
+	public void setPrepay_months(Integer prepay_months) {
+		this.prepay_months = prepay_months;
+	}
+
+	public String getConnection_date() {
+		return connection_date;
+	}
+
+	public void setConnection_date(String connection_date) {
+		this.connection_date = connection_date;
+	}
+
+	public String getContract() {
+		return contract;
+	}
+
+	public void setContract(String contract) {
+		this.contract = contract;
+	}
+
+	public Integer getDiscount_price() {
+		return discount_price;
+	}
+
+	public void setDiscount_price(Integer discount_price) {
+		this.discount_price = discount_price;
 	}
 
 }

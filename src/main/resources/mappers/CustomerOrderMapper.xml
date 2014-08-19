@@ -111,7 +111,9 @@
 		co.`is_ddpay`							as co_is_ddpay,
 		co.`ordering_form_pdf_path`				as co_ordering_form_pdf_path,
 		co.`receipt_pdf_path`					as co_receipt_pdf_path,
-		co.`disconnected_date` 					as co_disconnected_date
+		co.`disconnected_date` 					as co_disconnected_date,
+		co.`connection_date`					as co_connection_date,
+		co.`contract`							as co_contract
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -152,6 +154,8 @@
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		<result property="disconnected_date" column="co_disconnected_date" />
+		<result property="connection_date" column="co_connection_date" />
+		<result property="contract" column="co_contract" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -380,6 +384,8 @@
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		<result property="disconnected_date" column="co_disconnected_date" />
+		<result property="connection_date" column="co_connection_date" />
+		<result property="contract" column="co_contract" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -489,6 +495,8 @@
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		<result property="disconnected_date" column="co_disconnected_date" />
+		<result property="connection_date" column="co_connection_date" />
+		<result property="contract" column="co_contract" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -556,6 +564,8 @@
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		<result property="disconnected_date" column="co_disconnected_date" />
+		<result property="connection_date" column="co_connection_date" />
+		<result property="contract" column="co_contract" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
@@ -607,7 +617,7 @@
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
-			`receipt_pdf_path`,`disconnected_date`)
+			`receipt_pdf_path`,`disconnected_date`,`connection_date`,`contract`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
@@ -616,7 +626,7 @@
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
-			#{receipt_pdf_path},#{disconnected_date})
+			#{receipt_pdf_path},#{disconnected_date},#{connection_date},#{contract})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -665,7 +675,9 @@
 			<if test="is_ddpay != null">is_ddpay=#{is_ddpay},</if>
 			<if test="ordering_form_pdf_path != null">ordering_form_pdf_path=#{ordering_form_pdf_path},</if>
 			<if test="receipt_pdf_path != null">receipt_pdf_path=#{receipt_pdf_path},</if>
-			<if test="disconnected_date != null">disconnected_date=#{disconnected_date}</if>
+			<if test="disconnected_date != null">disconnected_date=#{disconnected_date},</if>
+			<if test="connection_date != null">connection_date=#{connection_date},</if>
+			<if test="contract != null">contract=#{contract}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

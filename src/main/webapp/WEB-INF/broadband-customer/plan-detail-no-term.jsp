@@ -14,7 +14,9 @@
 	color: #fff;
 	background-color: #7BC3EC;
 }
-
+.text-white {
+	color: #fff;
+}
 .home-title {
 	font-size:36px;
 }
@@ -44,47 +46,83 @@
 	</ul>
 	
 	<c:set var="adslPlanMap" value="${planTypeMap['ADSL'] }"></c:set>
-	<c:set var="plans" value="${adslPlanMap['plansNaked'] }"></c:set>
+	<c:set var="vdslPlanMap" value="${planTypeMap['VDSL'] }"></c:set>
 	
+	<c:set var="adslNakedplans" value="${adslPlanMap['plansNaked'] }"></c:set>
+	<c:set var="vdslNakedplans" value="${vdslPlanMap['plansNaked'] }"></c:set>
 	
 	<div class="panel panel-success" id="adslPanel">
 		<div class="panel-body">
 			<img class="pull-right" src="${ctx }/public/bootstrap3/images/icon_most-popular.png" alt="ADSL provides fast bandwidth for home use">
-			<h1 style="height:54px;font-weight:bold;" class="text-success hidden-xs hidden-sm">ADSL Naked BROADBAND (No Term)</h1>
-			<h4 style="height:54px;font-weight:bold;" class="text-success hidden-md hidden-lg">ADSL Naked BROADBAND (No Term)</h4>
+			<h1 style="height:54px;font-weight:bold;" class="text-success hidden-xs hidden-sm">Naked BROADBAND (No Term)</h1>
+			<h4 style="height:54px;font-weight:bold;" class="text-success hidden-md hidden-lg">Naked BROADBAND (No Term)</h4>
 			<hr/>
 			<div class="well">
 				The broadband standard in NZ. Fast Internet over your copper phone line.
 			</div>
 			<h3 class="hidden-xs hidden-sm"><strong class="text-success">How much data do you need?</strong></h3>
 			<h4 class="hidden-lg hidden-md"><strong class="text-success">How much data do you need?</strong></h4>
+			
+			
 			<div class="row">
-				<c:forEach var="plan" items="${plans}" varStatus="item">
+				<c:forEach var="plan" items="${vdslNakedplans}" varStatus="item">
 					<div class="col-md-3">
-						<div class="thumbnail">
+						<div class="thumbnail" style="background:#C72F2F">
 							<div class="caption">
-								<div class="text-success text-center home-title" style="font-weight:bold;">
+								<div class="text-white text-center home-title" style="font-weight:bold;">
 									<c:choose>
 										<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
 										<c:otherwise>${plan.data_flow } GB</c:otherwise>
 									</c:choose>
 								</div>
 								<hr style="margin-top:0;"/>
-								<p class="text-center text-success" style="position:relative;margin-bottom:0;">
+								<p class="text-center text-white" style="position:relative;margin-bottom:0;">
 									<span style="font-size:40px;font-weight:bold;">$</span>
 									<span style="font-size:60px;font-weight:bold;"> 
 										<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
 									</span>
 									/ mth
 								</p>
-								<p style="font-size:18px;">
-									<span class="text-success" style="font-weight:bold;">${plan.plan_name }</span>
+								<p style="font-size:18px;" class="text-center">
+									<span class="text-white" style="font-weight:bold;">${plan.plan_name }</span>
 								</p>
-								
+								<hr/>
 								<!-- desc -->${plan.plan_desc }<!-- // end desc -->
 								<hr/>
 								<p>
-									<a class="btn btn-success btn-lg btn-block"  data-name="purchase" data-id="${plan.id }" data-type="adsl">Purchase</a> 
+									<a class="btn btn-danger btn-lg btn-block"  data-name="purchase" data-id="${plan.id }" data-type="vdsl">Purchase</a> 
+								</p>
+							</div>
+						</div>
+					</div>
+				</c:forEach>
+				
+				<c:forEach var="plan" items="${adslNakedplans}" varStatus="item">
+					<div class="col-md-3">
+						<div class="thumbnail" style="background:#C72F2F">
+							<div class="caption">
+								<div class="text-white text-center home-title" style="font-weight:bold;">
+									<c:choose>
+										<c:when test="${plan.data_flow < 0 }">Unlimited</c:when>
+										<c:otherwise>${plan.data_flow } GB</c:otherwise>
+									</c:choose>
+								</div>
+								<hr style="margin-top:0;"/>
+								<p class="text-center text-white" style="position:relative;margin-bottom:0;">
+									<span style="font-size:40px;font-weight:bold;">$</span>
+									<span style="font-size:60px;font-weight:bold;"> 
+										<fmt:formatNumber value="${plan.plan_price} " type="number" pattern="##0" />
+									</span>
+									/ mth
+								</p>
+								<p style="font-size:18px;" class="text-center">
+									<span class="text-white" style="font-weight:bold;">${plan.plan_name }</span>
+								</p>
+								<hr/>
+								<!-- desc -->${plan.plan_desc }<!-- // end desc -->
+								<hr/>
+								<p>
+									<a class="btn btn-danger btn-lg btn-block"  data-name="purchase" data-id="${plan.id }" data-type="adsl">Purchase</a> 
 								</p>
 							</div>
 						</div>
@@ -101,11 +139,15 @@
 <script type="text/javascript">
 (function($){
 	
-	$('a[data-name="purchase"]').click(function(){
-		
+	$('a[data-name="purchase"][data-type="vdsl"]').click(function(){
+		var select_plan_id = $(this).attr('data-id');
+		var select_plan_type = $(this).attr('data-type');
+		window.location.href = '${ctx}/plans/no-term-plan/personal/' + select_plan_type + '/address-check/' + select_plan_id;
+	});
+	
+	$('a[data-name="purchase"][data-type="adsl"]').click(function(){
 		var select_plan_id = $(this).attr('data-id');
 		window.location.href = '${ctx}/order/' + select_plan_id;
-		
 	});
 
 })(jQuery);

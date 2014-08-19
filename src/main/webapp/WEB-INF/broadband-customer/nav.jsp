@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <style>
@@ -7,17 +8,12 @@
 	padding:3px 20px;
 	display:block;
 }
-.ig-b- { display: inline-block; }
-.ig-b- img { visibility: hidden; }
-.ig-b-:hover { background-position: 0 -60px; } .ig-b-:active { background-position: 0 -120px; }
-.ig-b-v-24 { width: 137px; height: 24px; background: url(//badges.instagram.com/static/images/ig-badge-view-sprite-24.png) no-repeat 0 0; }
-@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min--moz-device-pixel-ratio: 2), only screen and (-o-min-device-pixel-ratio: 2 / 1), only screen and (min-device-pixel-ratio: 2), only screen and (min-resolution: 192dpi), only screen and (min-resolution: 2dppx) {
-.ig-b-v-24 { background-image: url(//badges.instagram.com/static/images/ig-badge-view-sprite-24@2x.png); background-size: 160px 178px; } }
 </style>
 
 
-<div class="navbar navbar-default navbar-static-top" id="navhead">
+<div class="navbar navbar-inverse navbar-static-top" id="navhead">
 	<div class="container">
+	
 		<div class="navbar-header">
 			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="background-color:#5cb85c;">
 				<span class="icon-bar" style="background-color:#fff;"></span> 
@@ -28,119 +24,27 @@
 				<span class="logo"></span> 
 			</a>
 		</div>
-		<div class="collapse navbar-collapse">
+		
+		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
+				<li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li>
+				<li><a href="${ctx }/plans/broadband" rel="nofollow">Best Plan</a></li>
+				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow">Business Plan</a></li>
 				<li>
-					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Personal Plan</strong><b class="caret"></b></a>
-					<ul class="dropdown-menu list-inline hidden-xs hidden-sm" style="width:610px;">
-			            <li style="width:100%;">
-			            	<div class="row">
-			            		<div class="col-md-4" style="border-right: 2px dotted;">
-			            			<p class="text-center text-success">
-				            			<a href="${ctx }/plans/plan-no-term/personal" target="_blank" style="text-decoration: none;">
-				            				<span class="glyphicon glyphicon-th-list" style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">No Term Plan</span>
-										</a>
-			            			</p>
-								</div>
-			            		<div class="col-md-4" style="border-right: 2px dotted;">
-			            			<p class="text-center text-success">
-				            			<a href="${ctx }/plans/plan-topup/personal" target="_blank" style="text-decoration: none;">
-				            				<span class="glyphicon glyphicon-th-large " style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Top Up Plan</span>
-										</a>
-			            			</p>
-			            		</div>
-			            		<div class="col-md-4">
-			            			<p class="text-center text-success">
-				            			<a href="${ctx }/plans/plan-term/personal" target="_blank" style="text-decoration: none;">
-				            				<span class="glyphicon glyphicon-th" style="font-size:85px;display:block;margin-top: 10px;"></span>
-				            				<span style="font-size:22px;display:block;font-weight: bold;margin-top: 10px;">Term Plan</span>
-										</a>
-			            			</p>
-			            		</div>
-			            	</div>
-			            </li>
-		          	</ul>
-		          	<ul class="dropdown-menu hidden-md hidden-lg"><!--  visible-xs visible-sm -->
-			            <li>
-			            	<a href="${ctx }/plans/plan-no-term/personal" target="_blank">
-	            				<span class="glyphicon glyphicon-th-list"></span> No Term Plan
-							</a>	
-			            </li>
-			            <li>
-			            	<a href="${ctx }/plans/plan-topup/personal" target="_blank" >
-	            				<span class="glyphicon glyphicon-th-large "></span> Top Up Plan
-							</a>
-			            </li>
-			            <li>
-			            	<a href="${ctx }/plans/plan-term/personal" target="_blank" >
-	            				<span class="glyphicon glyphicon-th"></span> Term Plan
-							</a>
-			            </li>
+					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Information<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+			            <li><a href="${ctx }/about-us">About CyberPark</a></li>
+		             	<li><a href="${ctx }/voucher">Voucher Checking</a></li>
+			            <li><a href="${ctx }/home-phone-calling-rates">Business Calling Rates</a></li>
+			            <li><a href="${ctx }/wifi-solution" >Wifi Solution</a></li>
+			            <li><a href="${ctx }/e-commerce" >E-Commerce</a></li>
+		             	<li><a href="${ctx }/term-and-conditions">Terms & Conditions</a></li>
 		          	</ul>
 				</li>
-				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow"><strong>Business Plan</strong></a></li>
+				<li><a href="${ctx }/about-us#contact" rel="nofollow"><span style="color:white;">0800 229 237</span></a></li>
 				<li>
-					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Information</strong><b class="caret"></b></a>
-					<ul class="dropdown-menu"><!--  visible-xs visible-sm -->
-			            <li>
-			            	<a href="${ctx }/about-us" >
-	            				About CyberPark
-							</a>	
-			            </li>
-		             	<li>
-			            	<a href="${ctx }/voucher" >
-	            				Voucher Checking
-							</a>
-			            </li>
-			            <li>
-			            	<a href="${ctx }/home-phone-calling-rates" >
-	            				Business Calling Rates
-							</a>
-			            </li>
-			            <li>
-			            	<a href="${ctx }/wifi-solution" >
-	            				Wifi Solution
-							</a>
-			            </li>
-			            <li>
-			            	<a href="${ctx }/e-commerce" >
-	            				E-Commerce
-							</a>
-			            </li>
-		             	<li>
-			            	<a href="${ctx }/term-and-conditions" >
-	            				Terms & Conditions
-							</a>
-			            </li>
-		          	</ul>
-				</li>
-				<li><a href="${ctx }/about-us#contact" rel="nofollow"><strong>Contact Us: <span style="color:white;">0800 229 237</span></strong></a></li>
-				<li>
-					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" ><strong>Share&nbsp;<span class="glyphicon glyphicon-send"></span></strong><b class="caret"></b></a>
-					<ul class="dropdown-menu"><!--  visible-xs visible-sm -->
-		             	<li class="follow-us-on">
-			            	<a title="Instagram" href="http://instagram.com/cyberparknz?ref=badge" class="ig-b- ig-b-v-24"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
-			            </li>
-			            <li>
-			            	<a title="Facebook" target="_blank" href="https://www.facebook.com/pages/Cyberpark/223261207861301">
-			            		<img src="${ctx}/public/bootstrap3/images/follow-on-facebook.png" style="border-radius:5px 5px 5px 5px;"/>
-			            	</a>
-			            </li>
-			            <li>
-			            	<a title="Twitter" target="_blank" href="https://twitter.com/CyberparkNZ">
-			            		<img src="${ctx}/public/bootstrap3/images/follow-on-twitter.png" style="border-radius:5px 5px 5px 5px;"/>
-			            	</a>
-			            </li>
-			            <li>
-			            	<a title="Google Plus" target="_blank" href="https://plus.google.com/113358993092406471657/posts">
-			            		<img src="${ctx}/public/bootstrap3/images/follow-on-g+.png" style="border-radius:5px 5px 5px 5px;"/>
-			            	</a>
-			            </li>
-		             	<li class="follow-us-on">
-			            	<a data-pin-do="buttonFollow" href="http://www.pinterest.com/cyberparknz/">Pinterest</a>
-			            </li>
+					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Share<b class="caret"></b></a>
+					<ul class="dropdown-menu">
 			            <li>
 			            	<a class="fb-share-button" data-href="https://www.facebook.com/pages/Cyberpark/223261207861301" data-type="button_count"></a>
 			            </li>
@@ -153,6 +57,13 @@
 			            </li>
 		          	</ul>
 				</li>
+				<c:if test="${fn:length(customerReg.address) > 0}">
+				<li>
+					<a href="${ctx }/plans/address-check/${customerReg.select_plan_type }/${customerReg.select_plan_id }" style="padding-top: 10px; padding-bottom: 5px;" rel="nofollow">
+						<span class="glyphicon glyphicon-map-marker" style="font-size: 24px; "></span>
+					</a>
+				</li>
+				</c:if>
 			</ul>
 			
 			<c:if test="${customerSession != null }">
@@ -174,12 +85,7 @@
 				</p>
 			</c:if>
 			<c:if test="${customerSession == null }">
-	 			<a href="${ctx }/login" class="btn btn-success navbar-btn navbar-right hidden-xs hidden-sm">
-	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
-	 			</a>
-	 			<a href="${ctx }/login" class="btn btn-success btn-block btn-lg navbar-btn navbar-right hidden-md hidden-lg" >
-	 				<span class="glyphicon glyphicon-log-in"></span> <strong>Login</strong>
-	 			</a>
+	 			<button type="button" class="btn btn-success navbar-btn navbar-right" onclick="window.location.href='${ctx }/login';"><span class="glyphicon glyphicon-log-in"></span> Login</button>
 			</c:if>
 		</div>
 	</div>
@@ -195,13 +101,10 @@
 }(document, 'script', 'facebook-jssdk'));</script>
 
 <script type="text/javascript">
-  window.___gcfg = {lang: 'en-GB'};
-
-  (function() {
-    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
-    po.src = 'https://apis.google.com/js/platform.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
-  })();
+window.___gcfg = {lang: 'en-GB'};
+(function() {
+   var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+   po.src = 'https://apis.google.com/js/platform.js';
+   var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+})();
 </script>
-
-<script type="text/javascript" async src="//assets.pinterest.com/js/pinit.js"></script>

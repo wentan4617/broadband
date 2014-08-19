@@ -107,6 +107,8 @@ public class Customer implements Serializable {
 	private List<CustomerOrder> customerOrders;
 	private Voucher voucher = new Voucher();
 	private List<Voucher> vouchers = new ArrayList<Voucher>();
+	private Broadband broadband;
+	private Plan plan;
 
 	private String id_ck;
 	private String login_name_ck;
@@ -125,6 +127,12 @@ public class Customer implements Serializable {
 	private boolean serviceAvailable;
 	
 	private String pstn;
+	
+	private Integer[] pstn_array;
+	private Integer[] voip_array;
+	
+	private Integer select_plan_id;
+	private String select_plan_type;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -524,6 +532,54 @@ public class Customer implements Serializable {
 
 	public void setPstn(String pstn) {
 		this.pstn = pstn;
+	}
+
+	public Integer[] getPstn_array() {
+		return pstn_array;
+	}
+
+	public void setPstn_array(Integer[] pstn_array) {
+		this.pstn_array = pstn_array;
+	}
+
+	public Integer[] getVoip_array() {
+		return voip_array;
+	}
+
+	public void setVoip_array(Integer[] voip_array) {
+		this.voip_array = voip_array;
+	}
+
+	public Integer getSelect_plan_id() {
+		return select_plan_id;
+	}
+
+	public void setSelect_plan_id(Integer select_plan_id) {
+		this.select_plan_id = select_plan_id;
+	}
+
+	public String getSelect_plan_type() {
+		return select_plan_type;
+	}
+
+	public void setSelect_plan_type(String select_plan_type) {
+		this.select_plan_type = select_plan_type;
+	}
+
+	public Broadband getBroadband() {
+		return broadband;
+	}
+
+	public void setBroadband(Broadband broadband) {
+		this.broadband = broadband;
+	}
+
+	public Plan getPlan() {
+		return plan;
+	}
+
+	public void setPlan(Plan plan) {
+		this.plan = plan;
 	}
 
 	

@@ -22,31 +22,6 @@
 
 <div class="container" >
 	
-	<ul class="panel panel-success nav nav-pills nav-justified hidden-xs hidden-sm"><!-- nav-justified -->
-		<li class="">
-			<a class="btn-lg">
-				1. Choose Plan
-				<span class="glyphicon glyphicon-hand-right pull-right"></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				2. Check Your Address
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="active">
-			<a class="btn-lg">
-				3. Fill Application Form
-				<span class="glyphicon glyphicon-hand-right pull-right" ></span>
-			</a>
-		</li>
-		<li class="">
-			<a class="btn-lg">
-				4. Review and Order
-			</a>
-		</li>
-	</ul>
 	
 	<form id="customerInfoFrom" class="form-horizontal">
 	
@@ -54,49 +29,6 @@
 			<div class="col-md-9 col-sm-12 col-xs-12">
 				
 				<!-- application form -->
-				<c:choose>
-					<c:when test="${orderPlan.plan_group == 'plan-no-term'}">
-						<div class="well well-sm text-danger">
-							<p>
-								All No-Term-Plans won't provide free router, 
-								you can purchase a router which had been listed below. 
-							</p>
-							<p>
-								You can get a free router from <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
-							</p>
-						</div>
-					</c:when>
-					<c:when test="${orderPlan.plan_group == 'plan-topup'}">
-						<div class="well well-sm text-danger">
-							<p>
-								All Top-Up-Plans won't provide free router, 
-								you can purchase a router which had been listed below. 
-							</p>
-							<p>
-								You can get a free router from <a href="${ctx }/plans/plan-term/personal">Click Here</a>.
-							</p>
-						</div>
-					</c:when>
-					<c:when test="${orderPlan.plan_group == 'plan-term'}">
-						<div class="well well-sm text-danger">
-							<p>
-								All Term-Plans will provide you a free router, 
-								You don't need to choose a router which had been listed below. 
-							</p>
-							<p>
-								We already add the free router to your cart.
-							</p>
-							<%-- <hr/>
-							<p>
-								You can either use your <strong>BYO(Bring Your Own)</strong> Router for first month free or get a free router for first month charged.
-							</p>
-							<p>
-								<input type="radio" name="plan_memo" ${plan.memo=='byo'?'checked="checked"':'' } value="byo" />&nbsp;<strong>BYO</strong>&nbsp;(Credit for the first month)&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="plan_memo" ${plan.memo==null?'checked="checked"':'' } value="free-router" />&nbsp;<strong>Get Free Router</strong>&nbsp;(Charge for the first month)
-							</p> --%>
-						</div>
-					</c:when>
-				</c:choose>
 				
 				<div class="panel panel-success">
 				
@@ -166,7 +98,7 @@
 												Transfer the existing broadband connection to CyberPark 
 												<c:choose>
 													<c:when test="${orderPlan.transition_fee > 0 }">
-														costs NZ$ <fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" />
+														costs <span class="text-danger">$<fmt:formatNumber value="${orderPlan.transition_fee }" type="number" pattern="#,##0" /></span>
 													</c:when>
 													<c:otherwise>
 														is free
@@ -177,13 +109,35 @@
 										<li>
 											<input type="radio" name="order_broadband_type" 
 												${customer.customerOrder.order_broadband_type=='new-connection'?'checked="checked"':'' } value="new-connection"/>
-											&nbsp; <strong>Get a new broadband connection on an existing (but inactive) Phone Jack charge NZ$ <fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></strong>
+											&nbsp; 
+											<strong>
+												Get a new broadband connection on an existing (but inactive) Phone Jack 
+												<c:choose>
+													<c:when test="${orderPlan.plan_new_connection_fee > 0 }">
+														costs <span class="text-danger">$<fmt:formatNumber value="${orderPlan.plan_new_connection_fee }" type="number" pattern="#,##0" /></span>
+													</c:when>
+													<c:otherwise>
+														is free
+													</c:otherwise>
+												</c:choose>
+											</strong>
 										</li>
-										<%-- <li>
+										<li>
 											<input type="radio" name="order_broadband_type" 
 												${customer.customerOrder.order_broadband_type=='jackpot'?'checked="checked"':'' } value="jackpot"/>
-											&nbsp; <strong>Get a new broadband connection and an new Phone Jack installation and activation charge NZ$ <fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></strong>
-										</li> --%>
+											&nbsp; 
+											<strong>
+												Get a new broadband connection and an new Phone Jack installation and activation 
+												<c:choose>
+													<c:when test="${orderPlan.jackpot_fee > 0 }">
+														costs <span class="text-danger">$<fmt:formatNumber value="${orderPlan.jackpot_fee }" type="number" pattern="#,##0" /></span>
+													</c:when>
+													<c:otherwise>
+														is free
+													</c:otherwise>
+												</c:choose>
+											</strong>
+										</li>
 									</ul>
 								</div>
 							</div>
@@ -206,29 +160,30 @@
 								</div>
 								
 								<div class="form-group">
-									<label class="control-label col-md-4">Current Provider <span class="text-danger">(*)</span></label>
+									<label class="control-label col-md-4">Homeline Number <span class="text-danger">(*)</span></label>
+									<div class="col-md-4">
+										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label class="control-label col-md-4">Provider Name <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_provider_name" name="customerOrder.transition_provider_name" value="${customer.customerOrder.transition_provider_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Account Holder Name <span class="text-danger">(*)</span></label>
+									<label class="control-label col-md-4">Account Name <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_holder_name" name="customerOrder.transition_account_holder_name" value="${customer.customerOrder.transition_account_holder_name }" class="form-control" data-error-field/>
 									</div>
 								</div>
 								<div class="form-group">
-									<label class="control-label col-md-4">Current Account Number <span class="text-danger">(*)</span></label>
+									<label class="control-label col-md-4">Account Number <span class="text-danger">(*)</span></label>
 									<div class="col-md-4">
 										<input type="text" id="customerOrder.transition_account_number" name="customerOrder.transition_account_number" value="${customer.customerOrder.transition_account_number }" class="form-control" data-error-field/>
 									</div>
 								</div>
-								<div class="form-group">
-									<label class="control-label col-md-4">Porting Home Land-Line Number</label>
-									<div class="col-md-4">
-										<input type="text" id="customerOrder.transition_porting_number" name="customerOrder.transition_porting_number" value="${customer.customerOrder.transition_porting_number }" class="form-control" />
-									</div>
-								</div>
+								
 							
 							</div>
 							

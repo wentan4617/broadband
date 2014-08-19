@@ -5,17 +5,17 @@
 <jsp:include page="header.jsp" />
 
 <style>
-#navhead {
-	margin-bottom:0;
-}
+
 .home-title {
 	font-size:36px;
 	margin-top: 20px;
 	margin-bottom: 10px;
 }
 </style>
+<%-- 
+<jsp:include page="carousel.jsp" /> --%>
 
-<jsp:include page="carousel.jsp" />
+<jsp:include page="top-wrap.jsp" />
 
 <jsp:include page="welcome.jsp"/>
 

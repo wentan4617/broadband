@@ -83,8 +83,11 @@
 	<c:forEach var="type" items="ADSL,VDSL,UFB">
 	
 		<c:set var="planMap" value="${planTypeMap[type] }"></c:set>
+		<c:set var="plansClothed" value="${planMap['plansClothed'] }"></c:set>
+		<c:set var="plansNaked" value="${planMap['plansNaked'] }"></c:set>
 		
-		<div class="page-header" style="margin-top:0;margin-bottom:5px;">
+		<c:if test="${fn:length(plansClothed) > 0 }">
+		<div class="page-header" style="margin-top:0;margin-bottom:5px;" >
 			<h3 class="hidden-xs">
 				<c:choose>
 					<c:when test="${type=='ADSL' }">
@@ -124,8 +127,7 @@
 				</c:choose>
 			</h5>
 		</div>
-		
-		<c:set var="plansClothed" value="${planMap['plansClothed'] }"></c:set>
+		</c:if>
 		
 		<div class="row">
 		<c:forEach var="plan" items="${plansClothed }">
@@ -171,6 +173,7 @@
 		</c:forEach>
 		</div>
 		
+		<c:if test="${fn:length(plansNaked) > 0 }">
 		<div class="page-header" style="margin-top:0;margin-bottom:5px;">
 			<h3 class="hidden-xs">
 				<c:choose>
@@ -211,8 +214,9 @@
 				</c:choose>
 			</h5>
 		</div>
+		</c:if>
 		
-		<c:set var="plansNaked" value="${planMap['plansNaked'] }"></c:set>
+		
 		
 		<div class="row">
 		<c:forEach var="plan" items="${plansNaked }">

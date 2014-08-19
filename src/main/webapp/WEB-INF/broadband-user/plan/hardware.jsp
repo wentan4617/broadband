@@ -20,21 +20,21 @@
 							</div>
 						</div>
 						<div class="form-group">
+							<label for="hardware_class" class="control-label col-md-4">Hardware Class</label>
+							<div class="col-md-3">
+								<select id="hardware_class" class="form-control">
+									<option value="none" ${hardware.hardware_class == 'none' ? 'selected="selected"' : ''}>None</option>
+									<option value="router-adsl" ${hardware.hardware_class == 'router-adsl' ? 'selected="selected"' : ''}>Router-ADSL</option>
+									<option value="router-vdsl" ${hardware.hardware_class == 'router-vdsl' ? 'selected="selected"' : ''}>Router-VDSL</option>
+									<option value="router-ufb" ${hardware.hardware_class == 'router-ufb' ? 'selected="selected"' : ''}>Router-UFB</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label for="hardware_type" class="control-label col-md-4">Hardware Type</label>
 							<div class="col-md-3">
 								<select id="hardware_type" class="form-control">
-									<option
-										<c:if test="${hardware.hardware_type == ''}">
-											selected="selected"
-										</c:if>
-									>none</option>
-									<c:forEach var="type" items="router">
-										<option value="${type}"
-											<c:if test="${type == hardware.hardware_type}">
-												selected="selected"
-											</c:if>
-										>${type}</option>
-									</c:forEach>
+									<option value="router" ${hardware.hardware_type == 'router' ? 'selected="selected"' : ''}>Router</option>
 								</select>
 							</div>
 						</div>
@@ -42,18 +42,9 @@
 							<label for="hardware_status" class="control-label col-md-4">Hardware Status</label>
 							<div class="col-md-3">
 								<select id="hardware_status" class="form-control">
-									<option
-										<c:if test="${hardware.hardware_status == ''}">
-											selected="selected"
-										</c:if>
-									>none</option>
-									<c:forEach var="status" items="active,selling,disable">
-										<option value="${status}"
-											<c:if test="${status == hardware.hardware_status}">
-												selected="selected"
-											</c:if>
-										>${status}</option>
-									</c:forEach>
+									<option value="active" ${hardware.hardware_status == 'active' ? 'selected="selected"' : ''}>Active</option>
+									<option value="selling" ${hardware.hardware_status == 'selling' ? 'selected="selected"' : ''}>Selling</option>
+									<option value="disable" ${hardware.hardware_status == 'disable' ? 'selected="selected"' : ''}>Disable</option>
 								</select>
 							</div>
 						</div>
@@ -179,6 +170,7 @@
 		var plan = {
 			id: '${hardware.id}'
 			, hardware_name: $('#hardware_name').val()
+			, hardware_class: $('#hardware_class option:selected').val()
 			, hardware_type: $('#hardware_type option:selected').val()
 			, hardware_status: $('#hardware_status option:selected').val()
 			, hardware_price: $('#hardware_price').val()
@@ -186,9 +178,7 @@
 			, hardware_desc: $('#hardware_desc').val()
 		};
 		$.post('${ctx}${action}', plan, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
+			if (!$.jsonValidation(json, 'right')) {
 				window.location.href='${ctx}' + json.url;
 			}
 		}, 'json').always(function () {
