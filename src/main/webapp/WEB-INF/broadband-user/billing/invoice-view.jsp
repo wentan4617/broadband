@@ -58,7 +58,7 @@ tbody td {text-align:center;}
 					<h4 class="panel-title">
 						<a data-toggle="collapse" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
 							<c:if test="${fn:length(pageCis.results) > 0 || status!='orderNoInvoice' }">
-								Invoice Query
+								Invoice Query - <strong>${customer_type}</strong>
 							</c:if>
 							<c:if test="${fn:length(pageCos.results) > 0 || status=='orderNoInvoice' }">
 								Order Query
@@ -127,7 +127,7 @@ tbody td {text-align:center;}
 				<div class="panel-heading">
 					<h4 class="panel-title">
 						<c:if test="${fn:length(pageCis.results) > 0 || status!='orderNoInvoice' }">
-							Invoice View
+							Invoice View - <strong>${customer_type}</strong>
 						</c:if>
 						<c:if test="${fn:length(pageCos.results) > 0 || status=='orderNoInvoice' }">
 							Order View
@@ -161,7 +161,7 @@ tbody td {text-align:center;}
 										  status=='prepayment' ? 'prepayment' :
 										  status=='paid' ? 'paid' :
 										  status=='void' ? 'void' :
-										  status=='bad-debit' ? 'bad-debit' : '' }" >
+										  status=='bad_debit' ? 'bad-debit' : '' }" >
 									<td>
 										<input type="checkbox" name="checkbox_cis" value="${ci.id}"/>
 									</td>

@@ -481,7 +481,7 @@ public class InvoicePDFCreator extends ITextUtils {
         boolean isFirst = this.getLastCustomerInvoice()==null;
 		currentFinalPayable = totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance;
     	if("business".equals(this.getCustomer().getCustomer_type())){
-    		previousBalance = this.getLastCustomerInvoice().getBalance()<0 ? 0 : this.getLastCustomerInvoice().getBalance();
+    		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
         	addCol(invoiceSummaryTable, isFirst ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(3).indent(10F).font(ITextFont.arial_normal_8).o();
         	addCol(invoiceSummaryTable, isFirst ? "" : "Previous: $"+TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))+"    +    Current: $"+TMUtils.fillDecimalPeriod(String.valueOf(currentFinalPayable))+"      =").colspan(4).font(ITextFont.arial_bold_10).alignH("r").o();
     	} else {

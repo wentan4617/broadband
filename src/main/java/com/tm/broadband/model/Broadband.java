@@ -1,11 +1,18 @@
 package com.tm.broadband.model;
 
+import java.io.Serializable;
+
 /**
  * one class of status
  * @author Cook1fan
  *
  */
-public class Broadband {
+public class Broadband implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	
 	
 	private boolean adsl_available;

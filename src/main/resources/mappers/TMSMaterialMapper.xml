@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TMSMaterialMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="tMSMaterialColumns">
+		tmsm.`id`				as tmsm_id,
+		tmsm.`name`				as tmsm_name,
+		tmsm.`material_group`				as tmsm_material_group,
+		tmsm.`material_type`				as tmsm_material_type,
+		tmsm.`material_category`				as tmsm_material_category,
+		tmsm.`description`				as tmsm_description,
+		tmsm.`wholesale_price`				as tmsm_wholesale_price,
+		tmsm.`selling_price`				as tmsm_selling_price,
+		tmsm.`earned_price`				as tmsm_earned_price
+	</sql>
+
+	<resultMap type="TMSMaterial" id="tMSMaterialResultMap">
+		<id property="id" column="tmsm_id" />
+		<result property="name" column="tmsm_name" />
+		<result property="material_group" column="tmsm_material_group" />
+		<result property="material_type" column="tmsm_material_type" />
+		<result property="material_category" column="tmsm_material_category" />
+		<result property="description" column="tmsm_description" />
+		<result property="wholesale_price" column="tmsm_wholesale_price" />
+		<result property="selling_price" column="tmsm_selling_price" />
+		<result property="earned_price" column="tmsm_earned_price" />
+	</resultMap>
+
+	<sql id="tMSMaterialWhere">
+		<where>
+			<if test="params.id != null">tmsm.id = #{params.id}</if>
+			<if test="params.name != null">and tmsm.name = #{params.name}</if>
+			<if test="params.material_group != null">and tmsm.material_group = #{params.material_group}</if>
+			<if test="params.material_type != null">and tmsm.material_type = #{params.material_type}</if>
+			<if test="params.material_category != null">and tmsm.material_category = #{params.material_category}</if>
+			<if test="params.description != null">and tmsm.description = #{params.description}</if>
+			<if test="params.wholesale_price != null">and tmsm.wholesale_price = #{params.wholesale_price}</if>
+			<if test="params.selling_price != null">and tmsm.selling_price = #{params.selling_price}</if>
+			<if test="params.earned_price != null">and tmsm.earned_price = #{params.earned_price}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTMSMaterial" parameterType="TMSMaterial" resultType="TMSMaterial">
+		select * from tms_material as tmsm
+		<include refid="tMSMaterialWhere"/>
+	</select>
+
+	<!-- select tMSMaterial page -->
+	<select id="selectTMSMaterialsByPage" parameterType="Page" resultMap="tMSMaterialResultMap">
+		select 
+			<include refid="tMSMaterialColumns"/>
+			from tms_material as tmsm
+			<include refid="tMSMaterialWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select tMSMaterial amount -->
+	<select id="selectTMSMaterialsSum" parameterType="Page" resultType="int">
+		select count(*) from tms_material as tmsm
+		<include refid="tMSMaterialWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTMSMaterial" parameterType="TMSMaterial" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tms_material`(
+			`name`, `material_group`, `material_type`, `material_category`, `description`, `wholesale_price`, 
+			`selling_price`, `earned_price`
+		) VALUES (
+			#{name}, #{material_group}, #{material_type}, #{material_category}, #{description}, #{wholesale_price}, 
+			#{selling_price}, #{earned_price}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update tMSMaterial -->
+	<update id="updateTMSMaterial" parameterType="TMSMaterial">
+		update tms_material
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="material_group != null">material_group = #{material_group},</if>
+			<if test="material_type != null">material_type = #{material_type},</if>
+			<if test="material_category != null">material_category = #{material_category},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="wholesale_price != null">wholesale_price = #{wholesale_price},</if>
+			<if test="selling_price != null">selling_price = #{selling_price},</if>
+			<if test="earned_price != null">earned_price = #{earned_price}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTMSMaterialById" parameterType="int">
+		DELETE FROM tms_material WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

@@ -1,0 +1,84 @@
+<div class="panel-heading">
+	<h4 class="panel-title">Wholesaler View</h4>
+</div>
+<. if(results.length > 0) { .>
+<table class="table" style="font-size:12px;">
+	<thead >
+		<tr>
+			<th><input type="checkbox" id="checkbox_wholesalers_top" /></th>
+			<th>Company Name</th>
+			<th>Login Name</th>
+			<th>Password</th>
+			<th>Cellphone</th>
+			<th>Email</th>
+			<th>Memo</th>
+			<th>Operations</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for (var i=0; i < results.length; i++) { 
+		var w = results[i];
+	.>
+		<tr class="">
+			<td>
+				<input type="checkbox" name="checkbox_wholesalers" value="<.= w.id .>"/>
+			</td>
+			<td>
+				<.= w.company_name .>
+			</td>
+			<td>
+				<a href="<.= ctx .>/broadband-wholesale/system/wholesaler/edit/<.= w.id .>">
+					<.= w.login_name .>
+				</a>
+			</td>
+			<td>
+				<.= w.login_password .>
+			</td>
+			<td>
+				<.= w.cellphone .>
+			</td>
+			<td>
+				<.= w.email .>
+			</td>
+			<td>
+				<.= w.memo .>
+			</td>
+			<td>
+				<. if(userId != null){ .>
+					<a href="javascript:void(0);" class="btn-<.= w.wholesaler_id==null ? 'danger' : 'warning' .> btn-xs" data-name="deleteWholesaler" id="<.= w.id .>" style="padding:4px 6px;"
+					 data-toggle="tooltip" data-placement="right" data-original-title="<.= w.wholesaler_id==null ? 'Primary' : 'Secondary' .>">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				<. } else if(wholesalerId == w.wholesaler_id){ .>
+					<a href="javascript:void(0);" class="btn-warning btn-xs" data-name="deleteWholesaler" id="<.= w.id .>" style="padding:4px 6px;">
+						<span class="glyphicon glyphicon-trash"></span>
+					</a>
+				<. } else { .>
+				&nbsp;
+				<. }.>
+			</td>
+			<td>&nbsp;</td>
+		</tr>
+	<. }.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+					<. for (var i = 1; i <= totalPage; i++) { .>
+						<li class="<.=pageNo == i ? 'active' : ''.>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+						</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<. } .>

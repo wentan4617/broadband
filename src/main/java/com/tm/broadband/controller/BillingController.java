@@ -265,7 +265,7 @@ public class BillingController {
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 			
-		} else if("bad-debit".equals(status)){
+		} else if("bad_debit".equals(status)){
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
 			model.addAttribute("pageCis", pageCis);
 			
@@ -344,7 +344,8 @@ public class BillingController {
 		pageStatusSum.getParams().put("status", "paid");
 		Integer sumPaid = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
 		model.addAttribute("paidSum", sumPaid);
-		
+
+		pageStatusSum.getParams().remove("non_prepayment");
 		pageStatusSum.getParams().put("status", "void");
 		Integer sumVoid = this.crmService.queryCustomerInvoicesSumByPage(pageStatusSum);
 		model.addAttribute("voidSum", sumVoid);
@@ -838,8 +839,9 @@ public class BillingController {
 		ciTemp = new CustomerInvoice();
 		ciTemp.getParams().put("start_date", monthBillingPaidInvoices.get(0).getBillingDate());
 		ciTemp.getParams().put("end_date", monthBillingPaidInvoices.get(monthBillingPaidInvoices.size()-1).getBillingDate());
-		ciTemp.getParams().put("status1", "paid");
-		ciTemp.getParams().put("status2", "not_pay_off");
+		ciTemp.getParams().put("status3", "paid");
+		ciTemp.getParams().put("status4", "not_pay_off");
+		ciTemp.getParams().put("status5", "bad-debit");
 		ciTemp.getParams().put("customer_type", customer_type);
 		List<CustomerInvoice> monthCustomerPaidInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciTemp);
 		for (CustomerInvoice ci : monthCustomerPaidInvoices) {
@@ -1069,8 +1071,9 @@ public class BillingController {
 		ciQuery = new CustomerInvoice();
 		ciQuery.getParams().put("month_start_date", annualBillingPaidInvoices.get(0).getBillingDate());
 		ciQuery.getParams().put("month_end_date", annualBillingPaidInvoices.get(annualBillingPaidInvoices.size()-1).getBillingDate());
-		ciQuery.getParams().put("status1", "paid");
-		ciQuery.getParams().put("status2", "not_pay_off");
+		ciQuery.getParams().put("status3", "paid");
+		ciQuery.getParams().put("status4", "not_pay_off");
+		ciQuery.getParams().put("status5", "bad-debit");
 		ciQuery.getParams().put("customer_type", customer_type);
 		annualCustomerInvoices = null;
 		annualCustomerInvoices = this.billingService.queryCustomerInvoicesByCreateDate(ciQuery);
@@ -1118,7 +1121,7 @@ public class BillingController {
 		model.addAttribute("annualVoidInvoices", annualBillingVoidInvoices);
 		// END VOID INVOICES
 		
-		// BEGIN VOID INVOICES
+		// BEGIN BAD DEBIT INVOICES
 		List<StatisticBilling> annualBadDebitInvoices = new ArrayList<StatisticBilling>();
 		TMUtils.thisYearDateForBillingStatistic(year, annualBadDebitInvoices);
 		ciQuery = null;
@@ -1140,7 +1143,7 @@ public class BillingController {
 			}
 		}
 		model.addAttribute("annualBadDebitInvoices", annualBadDebitInvoices);
-		// END VOID INVOICES
+		// END BAD DEBIT INVOICES
 		
 		
 		model.addAttribute("year",year);

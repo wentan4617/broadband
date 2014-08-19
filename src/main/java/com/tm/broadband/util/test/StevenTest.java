@@ -1,5 +1,6 @@
 package com.tm.broadband.util.test;
 
+import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +117,7 @@ public class StevenTest {
 		mt.setName("Steven");
 		mt.setAge(24);
 		mt.setGendar("male");
-		mt.setJob("DiaoSiYuan");
+//		mt.setJob("DiaoSiYuan");
 		mt.setSal(-0.01);
 		mt.setActive(true);
 		List<ModelTest> mts = new ArrayList<ModelTest>();
@@ -126,6 +127,8 @@ public class StevenTest {
 		objs.add("111");
 		objs.add(false);
 		mt.setObjs(objs);
+		
+		BigInteger bi = new BigInteger("1");
 		
 		Console.log(mt);
 		

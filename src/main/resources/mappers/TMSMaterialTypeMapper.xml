@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TMSMaterialTypeMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="tMSMaterialTypeColumns">
+		tmsmt.`id`				as tmsmt_id,
+		tmsmt.`group_id`				as tmsmt_group_id,
+		tmsmt.`type_name`				as tmsmt_type_name
+	</sql>
+
+	<resultMap type="TMSMaterialType" id="tMSMaterialTypeResultMap">
+		<id property="id" column="tmsmt_id" />
+		<result property="group_id" column="tmsmt_group_id" />
+		<result property="type_name" column="tmsmt_type_name" />
+	</resultMap>
+
+	<sql id="tMSMaterialTypeWhere">
+		<where>
+			<if test="params.id != null">tmsmt.id = #{params.id}</if>
+			<if test="params.group_id != null">and tmsmt.group_id = #{params.group_id}</if>
+			<if test="params.type_name != null">and tmsmt.type_name = #{params.type_name}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTMSMaterialType" parameterType="TMSMaterialType" resultType="TMSMaterialType">
+		select * from tms_material_type as tmsmt
+		<include refid="tMSMaterialTypeWhere"/>
+	</select>
+
+	<!-- select tMSMaterialType page -->
+	<select id="selectTMSMaterialTypesByPage" parameterType="Page" resultMap="tMSMaterialTypeResultMap">
+		select 
+			<include refid="tMSMaterialTypeColumns"/>
+			from tms_material_type as tmsmt
+			<include refid="tMSMaterialTypeWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select tMSMaterialType amount -->
+	<select id="selectTMSMaterialTypesSum" parameterType="Page" resultType="int">
+		select count(*) from tms_material_type as tmsmt
+		<include refid="tMSMaterialTypeWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTMSMaterialType" parameterType="TMSMaterialType" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tms_material_type`(
+			`group_id`,`type_name`
+		) VALUES (
+			#{group_id},#{type_name}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update tMSMaterialType -->
+	<update id="updateTMSMaterialType" parameterType="TMSMaterialType">
+		update tms_material_type
+		<set>
+			<if test="type_name != null">type_name = #{type_name},</if>
+			<if test="group_id != null">group_id = #{group_id}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteTMSMaterialTypeById" parameterType="int">
+		DELETE FROM tms_material_type WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>
