@@ -232,11 +232,13 @@ public class MailRetriever {
 			// retrieve order begin
 			if(noti.getTitle() != null){
 				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
-					if(firstTitlePSTN){
-						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
-						firstTitlePSTN = false;
-					} else {
-						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+					if(cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim())){
+						if(firstTitlePSTN){
+							noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+							firstTitlePSTN = false;
+						} else {
+							noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+						}
 					}
 				}
 				if("hardware-router".equals(cod.getDetail_type())){
@@ -254,12 +256,14 @@ public class MailRetriever {
 			// content begin
 			// retrieve order begin
 			if(noti.getContent() != null){
-				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
-					if(firstContentPSTN){
-						noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
-						firstContentPSTN = false;
-					} else {
-						noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+				if(cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim())){
+					if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+						if(firstContentPSTN){
+							noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+							firstContentPSTN = false;
+						} else {
+							noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+						}
 					}
 				}
 				if("hardware-router".equals(cod.getDetail_type())){

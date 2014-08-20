@@ -431,6 +431,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			customer.getOrganization().setCustomer_id(customer.getId());
 			this.organizationMapper.insertOrganization(customer.getOrganization());
 			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
+			customer.getCustomerOrder().setIs_ddpay(true);
 		}
 		
 		customer.getCustomerOrder().setCustomer_id(customer.getId());
@@ -1006,11 +1007,13 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
 			applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, co.getCustomer(), co, ci, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMSFinal.getContent());
+			
+			if("personal".equals(co.getCustomer().getCustomer_type())){
+				// get sms register template from db
+				MailRetriever.mailAtValueRetriever(notificationSMSFinal, co.getCustomer(), co, ci, companyDetail);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMSFinal.getContent());
+			}
 			
 			notificationEmailFinal = null;
 			notificationSMSFinal = null;

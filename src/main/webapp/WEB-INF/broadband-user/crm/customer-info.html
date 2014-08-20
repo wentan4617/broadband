@@ -243,7 +243,11 @@
 	<div class="form-group">
 		<label for="balance" class="control-label col-md-4">Credit</label>
 		<div class="col-md-4">
-			<input type="text" id="balance" name="balance" value="<.=Number(balance).toFixed(2).>" class="form-control" data-error-field />
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
+				<input type="text" id="balance" name="balance" value="<.=Number(balance).toFixed(2).>" class="form-control" data-error-field />
+			<. } else { .>
+				<input type="text" id="balance" name="balance" value="<.=Number(balance).toFixed(2).>" class="form-control" disabled="disabled" data-error-field />
+			<. } .>
 		</div>
 	</div>
 	<div class="form-group">
