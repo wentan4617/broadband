@@ -620,6 +620,7 @@
 							cvlan.html(cvlan_input);
 							svlan.html(svlan_input);
 							rfs_date.html(rfs_date_input);
+							$.getCustomerOrder();
 						}
 					}, "json");
 				});

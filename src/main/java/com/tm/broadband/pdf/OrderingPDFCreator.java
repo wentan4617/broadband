@@ -573,20 +573,22 @@ public class OrderingPDFCreator extends ITextUtils {
     	// END SEPARATOR
         
         PdfPTable innerTable = newTable().columns(27).widthPercentage(100F).o();
-        addCol(innerTable, "Pay By Bank Deposit:").colspan(7).font(ITextFont.arial_normal_8).o();
-        addCol(innerTable, "Please put your Ordering No.").colspan(9).font(ITextFont.arial_bold_8).o();
-        addCol(innerTable, String.valueOf(this.getCustomerOrder().getId())).colspan(3).font(ITextFont.arial_colored_normal_8).o();
-        addCol(innerTable, "in the reference").colspan(8).font(ITextFont.arial_bold_8).o();
-        
-        addCol(innerTable, "Bank:").colspan(7).font(ITextFont.arial_normal_8).o();
-        addCol(innerTable, "ANZ").colspan(20).font(ITextFont.arial_bold_8).o();
-        
-        addCol(innerTable, "Name of Account:").colspan(7).font(ITextFont.arial_normal_8).o();
-        addCol(innerTable, "Cyberpark Limited").colspan(20).font(ITextFont.arial_bold_8).o();
-        
-        addCol(innerTable, "Account Number:").colspan(7).font(ITextFont.arial_normal_8).o();
-        addCol(innerTable, "06-0709-0444426-00").colspan(20).font(ITextFont.arial_bold_8).o();
-        addCol(innerTable, "Your ordering form will be hold for 7 days.\r\n( 5 working days include 2 weekend days )").colspan(27).paddingV(10F).font(ITextFont.arial_bold_red_10).o();
+        if("personal".equals(customer.getCustomer_type())){
+            addCol(innerTable, "Pay By Bank Deposit:").colspan(7).font(ITextFont.arial_normal_8).o();
+            addCol(innerTable, "Please put your Ordering No.").colspan(9).font(ITextFont.arial_bold_8).o();
+            addCol(innerTable, String.valueOf(this.getCustomerOrder().getId())).colspan(3).font(ITextFont.arial_colored_normal_8).o();
+            addCol(innerTable, "in the reference").colspan(8).font(ITextFont.arial_bold_8).o();
+            
+            addCol(innerTable, "Bank:").colspan(7).font(ITextFont.arial_normal_8).o();
+            addCol(innerTable, "ANZ").colspan(20).font(ITextFont.arial_bold_8).o();
+            
+            addCol(innerTable, "Name of Account:").colspan(7).font(ITextFont.arial_normal_8).o();
+            addCol(innerTable, "Cyberpark Limited").colspan(20).font(ITextFont.arial_bold_8).o();
+            
+            addCol(innerTable, "Account Number:").colspan(7).font(ITextFont.arial_normal_8).o();
+            addCol(innerTable, "06-0709-0444426-00").colspan(20).font(ITextFont.arial_bold_8).o();
+            addCol(innerTable, "Your ordering form will be hold for 7 days.\r\n( 5 working days include 2 weekend days )").colspan(27).paddingV(10F).font(ITextFont.arial_bold_red_10).o();
+        }
         
 //        addCol(innerTable, "Cheques payable to:").colspan(2).font(ITextFont.arial_normal_8).o();
 //        addCol(innerTable, "Please write your Ordering No. on the back of your cheque").colspan(6).font(ITextFont.arial_bold_8).o();

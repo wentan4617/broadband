@@ -151,7 +151,7 @@ public class SystemController {
 
 		Page<User> page = new Page<User>();
 		page.setPageNo(pageNo);
-		page.setPageSize(30);
+		page.setPageSize(50);
 		page.getParams().put("orderby", "order by user_role");
 		this.systemService.queryUsersByPage(page);
 		model.addAttribute("page", page);
@@ -254,7 +254,7 @@ public class SystemController {
 
 		Page<Notification> page = new Page<Notification>();
 		page.setPageNo(pageNo);
-		page.setPageSize(30);
+		page.setPageSize(50);
 		page.getParams().put("orderby", "order by type");
 		this.systemService.queryNotificationsByPage(page);
 		model.addAttribute("page", page);

@@ -68,9 +68,6 @@ th, td{
 					</h4>
 				</div>
 				<c:if test="${fn:length(page.results) > 0 }">
-					<form id="orderForm" action="" method="post">
-					<input type="hidden" name="sale_id"/>
-					<input type="hidden" name="signature"/>
 					<table class="table" style="font-size:12px;">
 						<thead >
 							<tr>
@@ -87,6 +84,9 @@ th, td{
 						</thead>
 						<tbody>
 							<c:forEach var="order" items="${page.results }">
+							<form id="orderForm" action="" method="post">
+							<input type="hidden" name="sale_id"/>
+							<input type="hidden" name="signature"/>
 								<tr>
 									<td>
 										<input type="checkbox" name="checkbox_orders" value="${order.id}"/>
@@ -125,15 +125,36 @@ th, td{
 										<c:if test="${order.credit_pdf_path == null}">
 											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>&nbsp;
 										</c:if>|
-										<a href="javascript:void;" data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Signed Form(s)"></a>&nbsp;
-										<a href="javascript:void;" data-name="upload_previous_provider_invoice_pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Previous Provider Invoice"></a>&nbsp;
+										<a href="javascript:void(0);" data-name="upload-pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Signed Form(s)"></a>&nbsp;
+										<a href="javascript:void(0);" data-name="upload_previous_provider_invoice_pdf" data-order-id="${order.id}" data-customer-id="${order.customer.id}" data-sale-id="${order.sale_id}" class="glyphicon glyphicon-floppy-open" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload Previous Provider Invoice"></a>&nbsp;
 										
-										<!-- If got additional requests -->
-										<c:if test="${order.optional_request != null && order.optional_request != ''}">
-											<a href="javascript:void;" data-name="optional_request_btn" data-optional-request="${order.optional_request }" class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="Sales's Optional Request"></a>&nbsp;
-										</c:if>
+										<a href="javascript:void(0);" data-order-id="${order.id}" data-name="optional_request_btn" class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="Sales's Optional Request"></a>&nbsp;
+										
 									</td>
 								</tr>
+							</form>
+							
+							<!-- Modal -->
+							<form action="${ctx}/broadband-user/sale/online/ordering/optional_request/edit" method="post">
+							<input type="hidden" name="order_id" value="${order.id}" />
+							<input type="hidden" name="sale_id" value="${sale_id}"/>
+							<div class="modal fade" id="optionalRequestModel_${order.id}" tabindex="-1" role="dialog" aria-labelledby="optionalRequestModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+											<h4 class="modal-title" id="optionalRequestModalLabel">Request Record: </h4>
+										</div>
+										<div class="modal-body">
+											<textarea class="form-control" name="optional_request" rows="5">${order.optional_request }</textarea>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary" >Confirm to update record</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							</form>
 							</c:forEach>
 						</tbody>
 						<tfoot>
@@ -150,7 +171,6 @@ th, td{
 						</tr>
 					</tfoot>
 					</table>
-					</form>
 				</c:if>
 				<c:if test="${fn:length(page.results) <= 0 }">
 					<form id="orderForm" action="" method="post" style="display:none;">
@@ -226,21 +246,6 @@ th, td{
 	</div><!-- /.modal -->
 </form>
 
-<!-- Modal -->
-<div class="modal fade" id="optionalRequestModel" tabindex="-1" role="dialog" aria-labelledby="optionalRequestModalLabel" aria-hidden="true">
-	<div class="modal-dialog">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h4 class="modal-title" id="optionalRequestModalLabel">Additional Request: </h4>
-			</div>
-			<div class="modal-body">
-				<p class="form-control-static" data-name="optional_request_p"></p>
-			</div>
-		</div>
-	</div>
-</div>
-
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
@@ -279,8 +284,7 @@ th, td{
 	});
 	
 	$('a[data-name="optional_request_btn"]').click(function(){
-		$('p[data-name="optional_request_p"]').html($(this).attr('data-optional-request'));
-		$('#optionalRequestModel').modal('show');
+		$('#optionalRequestModel_'+$(this).attr('data-order-id')).modal('show');
 	});
 	
 })(jQuery);

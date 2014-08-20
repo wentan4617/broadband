@@ -792,6 +792,11 @@ public class CRMRestController {
 				.getOrder_using_start_str()));
 		co.getParams().put("id", customerOrder.getId());
 		co.setOrder_status("using");
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
+		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+		customer.setOrganization(org);
 
 		if (!"order-topup".equals(customerOrder.getOrder_type())
 		&& (!"order-term".equals(customerOrder.getOrder_type())
@@ -799,17 +804,57 @@ public class CRMRestController {
 		&& (customerOrder.getIs_ddpay()==null
 			|| (customerOrder.getIs_ddpay()!=null && !customerOrder.getIs_ddpay()))))) {
 			
-			Calendar calNextInvoiceDay = Calendar.getInstance();
-			calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
-			// Add plan unit months
-			calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
-			// Set next invoice create date flag
-			co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
-			// Minus 7 days
-			calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
-			// set next invoice date
-			co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-			customerOrder.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+			Date next_invoice_create_date = null;
+			Date next_invoice_create_date_flag = null;
+			
+			if("personal".equals(customer.getCustomer_type())){
+				Calendar calNextInvoiceDay = Calendar.getInstance();
+				calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+				// Add plan unit months
+				calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
+				// Set next invoice create date flag
+				next_invoice_create_date_flag = calNextInvoiceDay.getTime();
+				// Minus 7 days
+				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
+				// set next invoice date
+				next_invoice_create_date = calNextInvoiceDay.getTime();
+			} else {
+				Calendar cal_7th_1hr = Calendar.getInstance();
+				cal_7th_1hr.add(Calendar.MONTH, 1);
+				cal_7th_1hr.set(Calendar.DATE, 6);
+				cal_7th_1hr.set(Calendar.HOUR, 0);
+				cal_7th_1hr.set(Calendar.MINUTE, 0);
+				cal_7th_1hr.set(Calendar.SECOND, 0);
+				cal_7th_1hr.set(Calendar.MILLISECOND, 0);
+				next_invoice_create_date = cal_7th_1hr.getTime();
+				cal_7th_1hr.add(Calendar.DATE, 7);
+				next_invoice_create_date_flag = cal_7th_1hr.getTime();
+				
+				// Get millis
+//				long seventh12hr = cal_7th_1hr.getTimeInMillis();
+//				long currentTime = System.currentTimeMillis();
+//
+//				// If less than seventh 1 o'clock of the month
+//				if(currentTime<seventh12hr){
+//					Calendar cal = cal_7th_1hr;
+//					cal.set(Calendar.HOUR, 0);
+//					next_invoice_create_date = cal.getTime();
+//					cal.add(Calendar.DATE, 7);
+//					next_invoice_create_date_flag = cal.getTime();
+//				} else {
+//					Calendar cal = cal_7th_1hr;
+//					cal.set(Calendar.HOUR, 0);
+//					cal.add(Calendar.MONTH, 1);
+//					next_invoice_create_date = cal.getTime();
+//					cal.add(Calendar.DATE, 7);
+//					next_invoice_create_date_flag = cal.getTime();
+//				}
+			}
+			// Final settings
+			co.setNext_invoice_create_date_flag(next_invoice_create_date_flag);
+			co.setNext_invoice_create_date(next_invoice_create_date);
+			customerOrder.setNext_invoice_create_date(next_invoice_create_date);
+			
 		} else if("order-topup".equals(customerOrder.getOrder_type())) {
 			Calendar cal = Calendar.getInstance(Locale.CHINA);
 			cal.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
@@ -822,10 +867,6 @@ public class CRMRestController {
 			// set next invoice date
 			co.setNext_invoice_create_date(cal.getTime());
 		}
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
-		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-		customer.setOrganization(org);
 
 		if ("save".equals(way)) {
 			co.setOrder_type(customerOrder.getOrder_type());
@@ -1565,6 +1606,7 @@ public class CRMRestController {
 			page.getParams().put("email", customerQuery.getEmail());
 			page.getParams().put("address", customerQuery.getAddress());
 			page.getParams().put("pstn", customerQuery.getPstn());
+			page.getParams().put("customer_type", customerQuery.getCustomer_type());
 		}
 		this.crmService.queryCustomersByPage(page);
 		status.setComplete();

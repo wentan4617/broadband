@@ -313,8 +313,8 @@ public class SaleController {
 		
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
@@ -322,8 +322,8 @@ public class SaleController {
 		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
 		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
@@ -935,5 +935,27 @@ public class SaleController {
 		// END QUERY SUM BY STATUS
 		
 		return "broadband-user/sale/invoice-view";
+	}
+
+	// Update optional request
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/optional_request/edit", method = RequestMethod.POST)
+	public String doCustomerOrderOptionalRequestEdit(Model model,
+			@RequestParam("sale_id") Integer sale_id,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("optional_request") String optional_request,
+			RedirectAttributes attr) {
+
+
+		if (!"".equals(optional_request.trim())) {
+			CustomerOrder co = new CustomerOrder();
+			co.getParams().put("id", order_id);
+			co.setOptional_request(optional_request);
+			this.crmService.editCustomerOrder(co);
+			attr.addFlashAttribute("success", "Request Record had just been edited!");
+		} else {
+			attr.addFlashAttribute("error", "Please input correct Request Record!");
+		}
+
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
 	}
 }

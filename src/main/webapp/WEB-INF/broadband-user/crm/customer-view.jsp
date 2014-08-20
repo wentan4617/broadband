@@ -33,7 +33,7 @@
 <script type="text/javascript">
 (function($){
 	
-	function doPage(pageNo, customer, btn) { console.log(btn);
+	function doPage(pageNo, customer, btn) { //console.log(btn);
 		btn && btn.button('loading');
 		$.get('${ctx}/broadband-user/crm/customer/view/' + pageNo, customer, function(page){ //console.log(page);
 			page.ctx = '${ctx}';
@@ -78,6 +78,14 @@
 				customer[field] = $('#' + field).val();
 			} 
 		}); console.log(customer);
+		$('a[data-id="customer_type"]').each(function(){
+			var val = $(this).hasClass('active');
+			if(val){
+				var field = $(this).attr('data-id');
+				customer[field] = $(this).attr('data-val');
+				console.log(customer);
+			}
+		});
 		doPage(1, customer, $(this));
 	});
 })(jQuery);

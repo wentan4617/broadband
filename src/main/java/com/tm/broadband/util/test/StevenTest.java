@@ -1,9 +1,10 @@
 package com.tm.broadband.util.test;
 
-import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.Date;
+
+import com.tm.broadband.util.TMUtils;
 
 
 public class StevenTest {
@@ -112,26 +113,53 @@ public class StevenTest {
 		
 		
 		
-		ModelTest mt = new ModelTest();
-		mt.setId(1001);
-		mt.setName("Steven");
-		mt.setAge(24);
-		mt.setGendar("male");
-//		mt.setJob("DiaoSiYuan");
-		mt.setSal(-0.01);
-		mt.setActive(true);
-		List<ModelTest> mts = new ArrayList<ModelTest>();
-		mts.add(mt);
-		mt.setAll(mts);
-		List<Object> objs = new ArrayList<Object>();
-		objs.add("111");
-		objs.add(false);
-		mt.setObjs(objs);
+//		ModelTest mt = new ModelTest();
+//		mt.setId(1001);
+//		mt.setName("Steven");
+//		mt.setAge(24);
+//		mt.setGendar("male");
+////		mt.setJob("DiaoSiYuan");
+//		mt.setSal(-0.01);
+//		mt.setActive(true);
+//		List<ModelTest> mts = new ArrayList<ModelTest>();
+//		mts.add(mt);
+//		mt.setAll(mts);
+//		List<Object> objs = new ArrayList<Object>();
+//		objs.add("111");
+//		objs.add(false);
+//		mt.setObjs(objs);
+//		mt.setMt(mt);
+//		
+//		BigInteger bi = new BigInteger("1");
+//		
+//		Console.log(mt.getMt());
 		
-		BigInteger bi = new BigInteger("1");
+		Calendar cal_7th_1hr = Calendar.getInstance();
+		cal_7th_1hr.set(Calendar.DATE, 6);
+		cal_7th_1hr.set(Calendar.HOUR, 13);
+		cal_7th_1hr.set(Calendar.MINUTE, 0);
+		cal_7th_1hr.set(Calendar.SECOND, 0);
+		cal_7th_1hr.set(Calendar.MILLISECOND, 0);
 		
-		Console.log(mt);
+		long seventh12hr = cal_7th_1hr.getTimeInMillis();
+		long currentTime = System.currentTimeMillis();
+		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(cal_7th_1hr.getTime())+", Millisecond: "+seventh12hr); 
 		
+		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(new Date())+", Millisecond: "+currentTime);
+		
+		// If less than seventh 1 o'clock of the month
+		if(currentTime<seventh12hr){
+			System.out.println("Less than seventh 1 o'clock!");
+			Calendar cal = cal_7th_1hr;
+			cal.set(Calendar.HOUR, 0);
+			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
+		} else {
+			System.out.println("Greater than seventh 1 o'clock!");
+			Calendar cal = cal_7th_1hr;
+			cal.set(Calendar.HOUR, 0);
+			cal.add(Calendar.MONTH, 1);
+			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
+		}
 		
 	}
 }

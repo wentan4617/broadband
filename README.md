@@ -18,21 +18,27 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
 
+demand version 2.1.9 2014-08-20
+
+* [sale的view online orders界面的optional_request开放更改权限，显示所有order对应的request_record修改按钮.](steven)
+* 检查Business第一次生成的账单，如果credit超过balance的话是否会将balance变成负值.(steven)
+* 看看如何能够判断出上个月账单的余额负数到底是否有credit还是只是单单的paid amount，如果有credit则将上个月balance里所剩credit累加到这个月，这个月的final_payable_amount减去所剩credit.(steven)
+* 模仿invoice列表的做法，将personal和busines客户分开，方便统计.(steven)
+
+
 demand version 2.1.8 2014-08-19
  
 * [统计bad-debit下的paid及credit到图表中.](steven)
 * [Make Payment里更改状态的选项里新增一个Bad Debit，点击后改变状态为bad-debit.](steven)
-* business-service-given: 
-* business-online-ordering: 
+* [在Service Given时点击Service Only后判断如果customer_type是business则则next_invoice_create_date为下个月7号且next_invoice_create为下个月14号.](steven)
+* 检查7号出账时Business客户是否跟老term逻辑一致，如果using_start_date是当月则只列出开通日到月底的日期及费用，如果using_start_date是上个月则列出上个月开通日至上个月月底及这个月正月的日期及费用.(steven)
+* [customer显示的Account Credit输入框只允许Accountant及以上权限的人员输入，其他人均disabled.](steven)
 
 demand version 2.1.7 2014-08-18
 
-* Business在Service Given时只需要点Service Only.(steven)
-* 每个月出Business账单时判断
-* Service Given时判断客户类型，如果是personal则用service-given短信及邮件模版，如果是business则用business-service-given短信及邮件模版.(steven)
-* 下单时判断plan的客户类型，如果是personal则用online-ordering短信及邮件模版，如果是business则用business-online-ordering短信及邮件模版.(steven)
-* 10号发送business账单时只发送邮件，不发送短信提醒.(steven)
-
+* [Service Given时判断客户类型，如果是personal则用service-given短信及邮件模版，如果是business则用business-service-given短信及邮件模版.](steven)
+* [下单时判断plan的客户类型，如果是personal则用online-ordering短信及邮件模版，如果是business则用business-online-ordering短信及邮件模版.](steven)
+* [10号发送business账单时只发送邮件，不发送短信提醒.](steven)
  
 
 demand version 2.1.5 2014-08-15
@@ -43,7 +49,7 @@ demand version 2.1.5 2014-08-15
 * [将overdue penalty选取范围设定为residential的，business允许最多拖欠三个月，第三个月月底则变成坏账，bad debit.](steven)
 * [做个定时器，在每天凌晨0点取出due date小于等于今天且status为unpaid的账单，将其status改为overdue.](steven)
 * [做个定时器，在每天凌晨0点30分取出due date小于等于三个月前的最后一天且status为overdue，将其status改为bad-debit.](steven)
-* 在invoice列表页添加三个选项:All Invoice, Annually Invoice, Monthly Invoice，点击All Invoice则走现有逻辑不变，点击Annually Invoice则根据所选年份列出该年invoice及各项统计，点击Monthly Invoice则根据所选月份列出该月invoice及各项统计.(steven)
+* [在invoice列表页添加三个选项:All, YEAR, MONTH，点击All则走现有逻辑不变，点击YEAR则根据所选年份列出该年invoice及各项统计，MONTH则根据所选月份列出选定月invoice及各项统计.](steven)
 * [business客户invoice列表界面只显示最近一张invoice的Make Payment按钮，只显示第一张并且是unpaid或overdue或not_pay_off账单的balance.](steven)
 * [residential用户的账单图表页只统计invoice amount,unpaid,paid,overdue,voided,credit。overdue只显示overdue的账单（也就是order被suspended后该order最近一张状态被更改的账单）。voided只显示void的账单（也就是order到期未付款被disconnected后该order最近一张状态被更改的账单）.](steven)
 * [business用户的账单图表页统计invoice amount,unpaid,paid,overdue,voided,credit,bad debit](steven)
@@ -65,7 +71,6 @@ demand version 2.1.1 2014-08-13
 
 demand version 2.1.0 2014-08-12
 
-* 检查客户前端下单付款时为何account credit会存入双倍金额.
 * [检查为何赠送拨打分钟数不被计算.](steven)
 * [在每次出下一张账单时判断如果上一个账单的balance小于0则将上一个账单的balance的绝对值存入新账单的paid里新账单的balance则为final_payable减去paid，并且置上一个账单的balance为0.](steven)
 * [检查topup的下一次出账日期为何间隔了7天而不是5天.](steven)
@@ -93,7 +98,7 @@ demand version 2.0.5 2014-08-07
 
 demand version 2.0.3 2014-08-04
 
-* 在customer service record及ticket comment处加上 word-wrap:break-word; 并测试否能避免留言过长溢出指定区域.(steven)
+* [在customer service record及ticket comment处加上 word-wrap:break-word; 并测试否能避免留言过长溢出指定区域.](steven)
 * [在Pay off this receipt的时候加一个逻辑，如果输入的钱少于order的total price则用CyberPark Credit来填补上.](steven)
 * Topup账单提示：invoice create date到第5天发送第一个提示，第7天发送最后一天提示，第8天发送suspension提示，第9天发送disconnected提示.(steven)
 * 客户购买term plan界面，加一段话：You can either use your BYO(Bring Your Own) Router for first month free or get a free router for first month charged.(steven)
@@ -102,8 +107,8 @@ demand version 2.0.3 2014-08-04
 
 demand version 2.0.1 2014-08-01
 
-* contact-us新增user_id字段，在回复时记录其id，显示时显示其用户名.(steven)
-* 设计wholesale模块的所需表第一阶段(基础表).(steven)
+* [contact-us新增user_id字段，在回复时记录其id，显示时显示其用户名.](steven)
+* [设计wholesale模块的所需表第一阶段(基础表).](steven)
 
 demand version 2.0.1 2014-07-31
 
@@ -115,7 +120,7 @@ demand version 1.9.9 2014-07-30
 
 * [分别复审term和no term出账时plan描述所记录的服务开通至终止日期是否准确，调整term及no term非第一张invoice的plan desc里显示的服务开通至终止日期.](steven)
 * [复审Service Given时topup出账plan desc服务开通至终止日期.](steven)
-* 开发invoice的年度统计，柱状显示每个月的invoice支付额.(steven)
+* [开发invoice的年度统计，柱状显示每个月的invoice支付额.](steven)
 * 开发transaction的年度统计，柱状显示每个月的transaction交易额.(steven)
 * 尝试将所有图表都做成局部刷新，然后将相关的年月统计合并到单个页面以选项卡来区分开.(steven)
 * customer order界面status选择disconnect时下方显示隐藏的

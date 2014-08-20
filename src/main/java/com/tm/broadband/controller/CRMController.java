@@ -277,7 +277,7 @@ public class CRMController {
 			BindingResult result) {
 
 		if (result.hasErrors()) {
-			if ("personal".equals(customer.getType())) {
+			if ("personal".equals(customer.getCustomer_type())) {
 				return "broadband-user/crm/customer-create-personal";
 			} else if ("business".equals(customer.getType())) {
 				return "broadband-user/crm/customer-create-business";
@@ -288,6 +288,7 @@ public class CRMController {
 		Plan plan = new Plan();
 		//plan.getParams().put("plan_status", "active");
 		plan.getParams().put("orderby", "order by plan_type");
+		plan.getParams().put("plan_class", customer.getCustomer_type());
 		List<Plan> plans = this.planService.queryPlans(plan);
 		model.addAttribute("plans", plans);
 
@@ -542,7 +543,7 @@ public class CRMController {
 		
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
 		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
@@ -551,7 +552,7 @@ public class CRMController {
 		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
 		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
+		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
 		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		

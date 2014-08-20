@@ -19,6 +19,15 @@ public class ModelTest implements Serializable {
 	private boolean active;
 	private List<ModelTest> all;
 	private List<Object> objs;
+	private ModelTest mt;
+
+	public ModelTest getMt() {
+		return mt;
+	}
+
+	public void setMt(ModelTest mt) {
+		this.mt = mt;
+	}
 
 	public List<Object> getObjs() {
 		return objs;
