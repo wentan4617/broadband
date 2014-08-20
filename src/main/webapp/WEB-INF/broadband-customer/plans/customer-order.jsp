@@ -26,8 +26,8 @@
 				<div id="select-plan"></div>
 				<div id="prepay-month"></div>
 				<div id="select-modem"></div>
+				<div id="broadband-options"></div>
 				<div id="application"></div>
-				
 			</div>
 			<!-- order-modal -->
 			<div class="col-md-3 hidden-xs hidden-sm" style="padding: 0;">
@@ -47,6 +47,9 @@
 </script>
 <script type="text/html" id="select_modem_tmpl">
 <jsp:include page="select-modem.html" />
+</script>
+<script type="text/html" id="broadband_options_tmpl">
+<jsp:include page="broadband-options.html" />
 </script>
 <script type="text/html" id="application_tmpl" 
 data-cellphone="${customerReg.cellphone }"

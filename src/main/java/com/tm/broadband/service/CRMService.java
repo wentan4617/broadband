@@ -2870,6 +2870,21 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			discount_price = plan.getPlan_price() * customerOrder.getPrepay_months() * 0.15;
 		}
 		
+		if (discount_price > 0d) {
+			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
+			if (customerOrder.getPrepay_months() == 3) {
+				cod_discount.setDetail_name("3% off the total price of plan");
+			} else if (customerOrder.getPrepay_months() == 6) {
+				cod_discount.setDetail_name("7% off the total price of plan");
+			} else if (customerOrder.getPrepay_months() == 12) {
+				cod_discount.setDetail_name("15% off the total price of plan");
+			}
+			cod_discount.setDetail_price(new Double(discount_price.intValue()));
+			cod_discount.setDetail_type("discount");
+			cod_discount.setDetail_unit(1);
+			customerOrder.getCustomerOrderDetails().add(cod_discount);
+		}
+		
 		System.out.println("discount_price: " + discount_price.intValue());
 		customerOrder.setDiscount_price(discount_price.intValue());
 		
@@ -2887,11 +2902,20 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			
 		}  else if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 			
-			service_price = plan.getPlan_new_connection_fee();
-			
 			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 			cod_conn.setDetail_name("Broadband New Connection");
-			cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+			
+			if (customerOrder.getPrepay_months() == 1) {
+				service_price = plan.getPlan_new_connection_fee();
+				cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+			} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+				service_price = plan.getPlan_new_connection_fee() - (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+				cod_conn.setDetail_price(new Double(service_price.intValue()));
+			} else if (customerOrder.getPrepay_months() == 12) {
+				service_price = 0d;
+				cod_conn.setDetail_price(0d);
+			}
+			
 			cod_conn.setDetail_type("new-connection");
 			cod_conn.setDetail_unit(1);
 			
@@ -2941,19 +2965,24 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					System.out.println("customerOrder.getContract(): " + customerOrder.getContract());
 					cod_hd.setDetail_price(chd.getHardware_price());
 					if ("open term".equals(customerOrder.getContract())) {
-						modem_price = chd.getHardware_price();
-						cod_hd.setDetail_price(chd.getHardware_price());
+						if (customerOrder.getPrepay_months() == 1) {
+							modem_price = chd.getHardware_price();
+							cod_hd.setDetail_price(chd.getHardware_price());
+						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+							modem_price = chd.getHardware_price() - (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
+							cod_hd.setDetail_price(new Double(modem_price.intValue()));
+						}
 					} else if ("12 months contract".equals(customerOrder.getContract())) {
 						System.out.println("chd.getHardware_class(): " + chd.getHardware_class());
 						if ("router-adsl".equals(chd.getHardware_class())) {
-							modem_price = 20d;
-							cod_hd.setDetail_price(20d);
+							modem_price = chd.getHardware_price()/2 - 5;
+							cod_hd.setDetail_price(new Double(modem_price.intValue()));
 						} else if ("router-vdsl".equals(chd.getHardware_class())) {
 							modem_price = chd.getHardware_price()/2;
-							cod_hd.setDetail_price(chd.getHardware_price()/2);
+							cod_hd.setDetail_price(new Double(modem_price.intValue()));
 						} else if ("router-ufb".equals(chd.getHardware_class())) {
 							modem_price = chd.getHardware_price()/2;
-							cod_hd.setDetail_price(chd.getHardware_price()/2);
+							cod_hd.setDetail_price(new Double(modem_price.intValue()));
 						}
 					} else if ("24 months contract".equals(customerOrder.getContract())) {
 						
@@ -2971,7 +3000,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		}
 		
 		
-		customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price + modem_price - discount_price.intValue());
+		customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue());
 		
 	}
 	
