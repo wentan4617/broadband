@@ -1,7 +1,7 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-			Select one Modem
+			Select one Modem 
 		</h4>
 	</div>
 	<div class="panel-body">
@@ -16,27 +16,31 @@
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
 					<li>
 						<label>
-							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term" checked="checked" /> 
-							&nbsp;<strong>open term</strong> <span class="text-danger">($<.=hardware.hardware_price.>)</span>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term"/> 
+							&nbsp;<strong>open term</strong>
+							&nbsp;<span class="text-danger">
+							<.if (prepay_months == 1) {.>
+								($<.=hardware.hardware_price.>)
+							<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+								($<.=parseInt(hardware.hardware_price - (hardware.hardware_price/12)*prepay_months).>)
+							<.}.>
+							</span>
 						</label>
 					</li>
+					<. if (prepay_months == 1) {.>
 					<li>
 						<label>
 							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="12months" />
 							&nbsp;<strong>12 months contract</strong> 
-							<. if (hardware.hardware_class == 'router-vdsl') { .> 
+							<. if (hardware.hardware_class == 'router-adsl') { .> 
+								<span class="text-danger">($<.=parseInt(hardware.hardware_price/2 - 5).>)</span>
+							<.} else if (hardware.hardware_class == 'router-vdsl'){ .>
 								<span class="text-danger">($<.=parseInt(hardware.hardware_price/2).>)</span>
-							<.} else { .>
-								<span class="text-danger">($20)</span>
 							<.}.>
 						</label>
 					</li>
-					<!-- <li>
-						<label>
-							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="24months"/>
-							&nbsp;<strong>24 months contract</strong> <span class="text-danger">(free)</span>
-						</label>
-					</li> -->
+					<.}.>
+					
 				</ul>
 			</div>
 		<.}.>
@@ -45,7 +49,7 @@
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
 					<li>
 						<label>
-							<input type="radio" name="modem" value="withoutmodem" checked="checked" /> 
+							<input data-id="0" type="radio" name="modem" value="withoutmodem"/> 
 							&nbsp;<strong>No, I don't need a modem</strong>
 						</label>
 					</li>
@@ -54,7 +58,7 @@
 			
 		</div>
 	<.} else { .>
-		<div class="alert alert-warning">No records are not found</div>
+		<div class="alert alert-warning">No Modems are not found</div>
 	<.}.>
 	</div>
 </div>

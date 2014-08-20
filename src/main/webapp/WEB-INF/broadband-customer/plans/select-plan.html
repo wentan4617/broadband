@@ -19,13 +19,13 @@
 				<div class="row">
 				<. for (var i = 0, len = plansClothed.length; i < len; i++) { 
 					var plan = plansClothed[i];
-					var count = len > 3 ? 4 : 6;
+					var count = len > 2 ? 4 : 6;
 				.> 
 					<div class="col-md-<.=count.>" style="margin-top:10px;">
 						<div data-plan-id="<.=plan.id.>" 
 							data-plan_sort="<.=plan.plan_sort.>"
 						
-							class="alert alert-success" style="cursor: pointer;margin-bottom:0;">
+							class="alert alert-success" style="cursor: pointer;margin-bottom:0;"><!-- alert alert-success -->
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
 								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
 							</p>

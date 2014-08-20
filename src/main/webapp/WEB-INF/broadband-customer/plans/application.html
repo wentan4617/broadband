@@ -29,59 +29,9 @@
 		</div>
 
 		<!-- Broadband Options -->
-		<hr />
+		<!-- <hr />
 		<h4 class="text-success">Broadband Options</h4>
-		<hr />
-
-		<div class="form-group">
-			<div class="col-md-12">
-				<ul class="list-unstyled topup-list">
-					<li>
-						<label>
-							<input type="radio" name="order_broadband_type" value="transition" checked="checked"/> 
-							&nbsp; 
-							<strong> 
-								Transfer the existing broadband connection to CyberPark 
-								<.if (plan.transition_fee > 0) {.>
-									costs <span class="text-danger">$<.=plan.transition_fee.toFixed(0).></span>
-								<.} else {.>
-									is free
-								<.}.>
-							</strong>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="order_broadband_type" value="new-connection" />
-							&nbsp; 
-							<strong> 
-								Get a new broadband connection on an existing (but inactive) Phone Jack 
-								<.if (plan.plan_new_connection_fee > 0) {.>
-									costs <span class="text-danger">$<.=plan.plan_new_connection_fee.toFixed(0).></span>
-								<.} else {.>
-									is free
-								<.}.>
-							</strong>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="order_broadband_type" value="jackpot" /> 
-							&nbsp; 
-							<strong> 
-								Get a new broadband connection and an new Phone Jack installation and activation 
-								<.if (plan.jackpot_fee > 0) {.>
-									costs <span class="text-danger">$<.=plan.jackpot_fee.toFixed(0).></span>
-								<.} else {.>
-									is free
-								<.}.>
-							</strong>
-						</label>
-					</li>
-				</ul>
-			</div>
-		</div>
-
+		<hr /> -->
 
 		<!-- Transition Information -->
 		<div id="transitionContainer">
@@ -226,7 +176,7 @@
 			<div class="col-md-3">
 				<p class="form-control-static">
 					<label>
-						<input type="radio" name="connection_date" value="ASAP" checked="checked"/> <!-- checked="checked" -->
+						<input type="radio" name="connection_date" value="ASAP"/> <!-- checked="checked" -->
 						&nbsp; <strong>ASAP</strong>
 					</label>
 				</p>
