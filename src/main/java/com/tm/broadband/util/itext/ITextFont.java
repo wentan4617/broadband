@@ -22,6 +22,8 @@ public class ITextFont {
 	public static final Font arial_colored_normal_8 = new Font(createBaseFont("Arial.ttf"), 8, Font.NORMAL, new BaseColor(61, 184, 185));
 	public static final Font arial_colored_normal_11 = new Font(createBaseFont("Arial.ttf"), 11, Font.NORMAL, new BaseColor(61, 184, 185));
 	public static final Font arial_colored_bold_11 = new Font(createBaseFont("arialbd.ttf"), 11, Font.NORMAL, new BaseColor(61, 184, 185));
+	public static final Font arial_colored_bold_18 = new Font(createBaseFont("arialbd.ttf"), 18, Font.NORMAL, new BaseColor(61, 184, 185));
+	public static final Font arial_colored_bold_23 = new Font(createBaseFont("arialbd.ttf"), 23, Font.NORMAL, new BaseColor(61, 184, 185));
 	public static final Font arial_bold_8 = new Font(createBaseFont("arialbd.ttf"), 8, Font.NORMAL);
 	public static final Font arial_bold_9 = new Font(createBaseFont("arialbd.ttf"), 9, Font.NORMAL);
 	public static final Font arial_bold_10 = new Font(createBaseFont("arialbd.ttf"), 10, Font.NORMAL);
@@ -34,7 +36,6 @@ public class ITextFont {
 	public static final Font arial_bold_12 = new Font(createBaseFont("arialbd.ttf"), 12, Font.NORMAL);
 	public static final Font arial_bold_20 = new Font(createBaseFont("arialbd.ttf"), 20, Font.NORMAL);
 	public static final Font arial_bold_green_20 = new Font(createBaseFont("arialbd.ttf"), 20, Font.NORMAL, new BaseColor(92,184,92));
-	public static final Font arial_colored_bold_23 = new Font(createBaseFont("arialbd.ttf"), 23, Font.NORMAL, new BaseColor(61, 184, 185));
 	public static final Font lucida_sans_unicode_9 = new Font(createBaseFont("Lucida Sans Unicode.ttf"), 9, Font.NORMAL);
 	
 	public static BaseFont createBaseFont(String fontFile){

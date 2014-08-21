@@ -170,6 +170,12 @@ public class TMUtils {
 	
 	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
 	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
+	public static String fillDecimalPeriod(Integer sum){
+		return numberFormat.format(sum.doubleValue());
+	}
+	
+	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
+	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
 	public static String fillDecimalPeriod(Double sum){
 		return fillDecimalPeriod(String.valueOf(sum));
 	}
@@ -556,6 +562,12 @@ public class TMUtils {
 	}
 	// MULTIPLICATION: Double * Integer
 	public static Double bigMultiply(Double multiplier1, Integer multiplier2){
+		BigDecimal bigMultiplier1 = new BigDecimal(multiplier1);
+		BigDecimal bigMultiplier2 = new BigDecimal(multiplier2);
+		return Double.parseDouble(fillDecimalPeriod(bigMultiplier1.multiply(bigMultiplier2).doubleValue()));
+	}
+	// MULTIPLICATION: Integer * Integer
+	public static Double bigMultiply(Integer multiplier1, Integer multiplier2){
 		BigDecimal bigMultiplier1 = new BigDecimal(multiplier1);
 		BigDecimal bigMultiplier2 = new BigDecimal(multiplier2);
 		return Double.parseDouble(fillDecimalPeriod(bigMultiplier1.multiply(bigMultiplier2).doubleValue()));
