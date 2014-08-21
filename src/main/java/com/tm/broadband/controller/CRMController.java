@@ -86,8 +86,16 @@ public class CRMController {
 	}
 
 	@RequestMapping("/broadband-user/crm/customer/view")
-	public String toCustomerView(SessionStatus status) {
+	public String toCustomerView(SessionStatus status,
+			Model model) {
 		status.setComplete();
+		
+		Page<Customer> cPageQuery = new Page<Customer>();
+		cPageQuery.getParams().put("customer_type", "personal");
+		model.addAttribute("personalSum", this.crmService.queryCustomersSumByPage(cPageQuery));
+		cPageQuery.getParams().put("customer_type", "business");
+		model.addAttribute("businessSum", this.crmService.queryCustomersSumByPage(cPageQuery));
+		
 		return "broadband-user/crm/customer-view";
 	}
 	

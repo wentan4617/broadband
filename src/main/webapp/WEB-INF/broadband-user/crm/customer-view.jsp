@@ -48,6 +48,10 @@
 	   			if (b) $('input[name="checkbox_customer"]').prop("checked", true);
 	   			else $('input[name="checkbox_customer"]').prop("checked", false);
 	   		});
+	   		
+	   		$('a[data-val="personal"] span').html('${personalSum}');
+	   		$('a[data-val="business"] span').html('${businessSum}');
+	   		
 	   	}, 'json').always(function(){
 	   		btn && btn.button('reset');
 	   	});
@@ -76,17 +80,34 @@
 			if (val) {
 				var field = $(this).attr('data-id');
 				customer[field] = $('#' + field).val();
-			} 
-		}); console.log(customer);
+			}
+		});// console.log(customer);
 		$('a[data-id="customer_type"]').each(function(){
 			var val = $(this).hasClass('active');
 			if(val){
 				var field = $(this).attr('data-id');
 				customer[field] = $(this).attr('data-val');
-				console.log(customer);
+				//console.log(customer);
 			}
 		});
 		doPage(1, customer, $(this));
+	});
+
+	$('a[data-id="customer_type"]').click(function(){
+		var customer = {};
+		var field = $(this).attr('data-id');
+		$('input[data-role="query"]').each(function(){
+			var val = $(this).prop("checked");
+			if (val) {
+				var field = $(this).attr('data-id');
+				customer[field] = $('#' + field).val();
+			}
+		});// console.log(customer);
+		$('a[data-id="customer_type"]').removeClass('active');
+		$(this).addClass('active');
+		customer[field] = $(this).attr('data-val');
+		console.log(customer);
+		doPage(1, customer, null);
 	});
 })(jQuery);
 </script>
