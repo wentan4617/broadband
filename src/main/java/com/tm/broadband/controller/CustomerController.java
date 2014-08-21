@@ -1207,7 +1207,7 @@ public class CustomerController {
 			
 			Customer c = new Customer();
 			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
-			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0));
 			c.getParams().put("id", customer.getId());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
