@@ -60,6 +60,7 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
@@ -1206,7 +1207,7 @@ public class CustomerController {
 			
 			Customer c = new Customer();
 			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
-			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0));
 			c.getParams().put("id", customer.getId());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
@@ -1458,14 +1459,19 @@ public class CustomerController {
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
-		
+	
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
 		attr.addFlashAttribute("responseBean", responseBean);
 		
+		System.out.println("1 :" + customer.getCustomerOrder().getOrder_total_price());
+		
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+		
+		System.out.println("2 :" + customer.getCustomerOrder().getOrder_total_price());
+		
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
 		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
