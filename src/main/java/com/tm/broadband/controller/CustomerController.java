@@ -1487,7 +1487,6 @@ public class CustomerController {
 	@RequestMapping(value = "/plans/order/dps", method = RequestMethod.POST)
 	public String planOrderDPS(Model model, HttpServletRequest req, HttpSession session, RedirectAttributes attr) { 
 		
-		
 		Customer customer = (Customer) session.getAttribute("customerReg");
 		
 		Double orderTotalPrice = customer.getCustomerOrder().getOrder_total_price();
@@ -1633,8 +1632,6 @@ public class CustomerController {
 			
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
 			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
-			
-			
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();

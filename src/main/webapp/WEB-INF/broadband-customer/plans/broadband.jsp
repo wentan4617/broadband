@@ -24,8 +24,8 @@
 			<c:choose>
 				<c:when test="${adsl == 'active' }">
 					<div class="col-md-6">
-						<h1 class="text-left">BROADBAND</h1>
-						<p class="text-left hidden-xs" style="font-size:16px;">Great value broadband, offering great speeds via ADSL technology, and available with a range of data caps. ADSL broadband is ideal for casual web browsing, watching YouTube, and all the other usual things we do online. In a nutshell, it’s good value, solid-as broadband, backed with great service from our New Zealand-based call centre.</p>
+						<h1 class="text-left">ADSL BROADBAND</h1>
+						<p class="text-left hidden-xs" style="font-size:16px;">We provide the best deal on ADSL broadband plan. No speed limited and data cap on our Unlimited ADSL plans. All our plans are pay in advance. It provides you a clear and easy read bill. Simple and easy on-line application method can be filled in 5 mins. Or, give us a call, 0800 2 CYBER(29237). Our customer service can help you to apply your broadband as well.</p>
 					</div>
 					<div class="col-md-6">
 						<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/adsl.png" style="padding:0;margin-top: -50px;">
@@ -34,16 +34,16 @@
 				<c:when test="${vdsl == 'active' }">
 					<div class="col-md-6">
 						<h1 class="text-left">ULTRA-FAST VDSL</h1>
-						<p class="text-left hidden-xs" style="font-size:16px;">Get the next generation of broadband at your place. Faster download speeds mean snappier browsing, awesome HD video streaming, and a better online experience – especially if you have a house load of users all online at the same time. VDSL ramps up the speeds you can get on your current copper line. Expect downloads of between 15 and 50 Mbps, and upload speeds between 5 and 10 Mbps.</p>
+						<p class="text-left hidden-xs" style="font-size:16px;">New generation technology on VDSL plan. Faster, stable and reliable VDSL can go through your current copper line. The speed of VDSL will be 3 times faster than ADSL broadband. Download speed achieve to 15Mbps to 35Mbps, and upload speed achieve to around 10Mbps. No speed limited and data cap on our Unlimited ADSL plans. All our plans are pay in advance. It provides you a clear and easy read bill. Simple and easy on-line application method can be filled in 5 mins. Or, give us a call, 0800 2 CYBER(29237). Our customer service can help you to apply your broadband as well.</p>
 					</div>
 					<div class="col-md-6">
-						<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/vdsl.png" style="padding:0;margin-top: -50px;">
+						<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/vdsl.png" style="padding:0;margin-top: -40px;">
 					</div>
 				</c:when>
 				<c:when test="${ufb == 'active' }">
 					<div class="col-md-6">
 						<h1 class="text-left">ULTRA-FAST FIBRE</h1>
-						<p class="text-left hidden-xs" style="font-size:16px;">Get the next generation of broadband at your place delivered over the country’s new $1.5bn Ultra Fast Broadband (UFB) fibre network. Fibre broadband is the fastest and best way to connect to the web. Basically, if you can get fibre at your place, we think you should. It's awesome! We offer two speeds and a variety of data caps, so you can find something that best suits you. Installation is currently free.</p>
+						<p class="text-left hidden-xs" style="font-size:16px;">The new generation of broadband is coming to NZ. There are more and more areas are covered by UFB Fibre. Find a plan and check your address for UFB coverage. No speed limited and data cap on our Unlimited ADSL plans. All our plans are pay in advance. It provides you a clear and easy read bill. Simple and easy on-line application method can be filled in 5 mins. Or, give us a call, 0800 2 CYBER(29237). Our customer service can help you to apply your broadband as well.</p>
 					</div>
 					<div class="col-md-6">
 						<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/ufb.png" style="padding:0;margin-top: -50px;">

@@ -2873,11 +2873,14 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		if (discount_price > 0d) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
 			if (customerOrder.getPrepay_months() == 3) {
-				cod_discount.setDetail_name("3% off the total price of plan");
+				cod_discount.setDetail_name("Prepay 3 Months Discount");
+				cod_discount.setDetail_desc("3% off the total price of plan");
 			} else if (customerOrder.getPrepay_months() == 6) {
-				cod_discount.setDetail_name("7% off the total price of plan");
+				cod_discount.setDetail_name("Prepay 6 Months Discount");
+				cod_discount.setDetail_desc("7% off the total price of plan");
 			} else if (customerOrder.getPrepay_months() == 12) {
-				cod_discount.setDetail_name("15% off the total price of plan");
+				cod_discount.setDetail_name("Prepay 12 Months Discount");
+				cod_discount.setDetail_desc("15% off the total price of plan");
 			}
 			cod_discount.setDetail_price(new Double(discount_price.intValue()));
 			cod_discount.setDetail_type("discount");
