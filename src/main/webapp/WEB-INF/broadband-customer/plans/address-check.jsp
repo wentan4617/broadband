@@ -8,11 +8,11 @@
 
 <div class="container">
 	
-<!-- 	<ul class="nav nav-wizard">
+	<ul class="nav nav-wizard">
 		<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a></li>
 		<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a></li>
 		<li class="active"><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
-	</ul> -->
+	</ul>
 
 	<h2 class="text-center hidden-xs hidden-sm">
 		Check your address whether the service can be installed

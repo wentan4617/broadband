@@ -704,6 +704,8 @@ public class OrderingPDFCreator extends ITextUtils {
         addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(totalPrice))).font(ITextFont.arial_bold_8).alignH("r").o();
         // TOTAL AMOUNT END
         
+        this.customerOrder.setOrder_total_price(totalPrice);
+        
         
         return orderDetailTable;
     }
