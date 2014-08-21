@@ -19,7 +19,7 @@
 			<div class="panel panel-warning">
 				<button class="btn btn-warning btn-block" style="border-radius:0;" onclick="window.location.href='${ctx }/plans/broadband';">
 					<p class="text-center" style="font-weight:bold;font-size:30px;margin-bottom:0;">
-						Phone & 
+						Home Phone &
 					</p>
 					<p class="text-center" style="font-weight:bold;font-size:30px;margin-bottom:0;">
 						Unlimited Broadband
@@ -37,7 +37,7 @@
 				</button>
 				<div class="panel-body" style="height:180px;">
 					<p style="height:120px;">
-						Brilliant value broadband, offering great speeds via ADSL technology, and available with a range of data caps. In a nutshell, it's great value, solid as broadband, backed with great service from our New Zealand-based call centre.
+						We provide the best deal on ADSL broadband plan. No speed limited and data cap on our Unlimited ADSL plans. Apply on-line or Call our Customer Service 0800 2 CYBER (29237) now.
 					</p>
 					<a href="${ctx }/plans/broadband" >Check out all our Broadband Plans</a>
 				</div>
@@ -48,10 +48,10 @@
 			<div class="panel panel-info">
 				<button class="btn btn-info btn-block" style="border-radius:0;" onclick="window.location.href='${ctx }/plans/broadband';">
 					<p class="text-center" style="font-weight:bold;font-size:30px;margin-bottom:0;">
-						Naked Broadband
+						Unlimited Naked 
 					</p>
 					<p class="text-center" style="font-weight:bold;font-size:30px;margin-bottom:0;">
-						Unlimited
+						ADSL Broadband
 					</p>
 					<p class="text-center" style="font-weight:bold;margin-bottom:0;">
 						<span style="font-size:30px;">$</span>
@@ -66,7 +66,7 @@
 				</button>
 				<div class="panel-body" style="height:180px;">
 					<p style="height:120px;">
-						No need for a home phone? But after awesome broadband? It's time to get naked. You get full speed, affordable internet without having to pay for a homeline you don't need.
+						You need Data only? No Home Line requirement? We can provide a no cap Naked ADSL Broadband plan cost only $79. No speed limited and data cap on our Unlimited ADSL plans. Apply on-line or Call our Customer Service 0800 2 CYBER (29237) now.
 					</p>
 					<a href="${ctx }/plans/broadband" >Check out all our Broadband Plans</a>
 				</div>
@@ -85,17 +85,17 @@
 					<p class="text-center" style="font-weight:bold;margin-bottom:0;">
 						<span style="font-size:30px;">$</span>
 						<span style="font-size:60px;" class="hidden-xs"> 
-							79
+							99
 						</span>
 						<span style="font-size:35px;" class="hidden-lg hidden-md hidden-sm"> 
-							79
+							99
 						</span>
 						/ Month
 					</p>
 				</button>
 				<div class="panel-body" style="height:180px;">
 					<p style="height:120px;">
-						Get next generation Ultra Fast broadband at your place. Faster download speeds mean snappier browsing, awesome HD video streaming, and a better online experience. It's the future!
+						New generation technology on VDSL plan. Faster, stable and reliable VDSL can go through your current copper line. The speed of VDSL will be 3 times faster than ADSL broadband. Download speed achieve to 15Mbps to 35Mbps, and upload speed achieve to around 10Mbps.
 					</p>
 					<a href="${ctx }/plans/ultra-fast-vdsl" >Check out all our Ultra-Fast-VSDL Plans</a>
 				</div>
