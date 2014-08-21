@@ -9,11 +9,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.DocumentException;
-import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.CustomerCallRecord;
-import com.tm.broadband.model.CustomerInvoice;
-import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
@@ -102,98 +100,98 @@ public class TestAll {
 		 * BEGIN TEST InvoicePDFCreator
 		 */
 		
-		CompanyDetail cd = new CompanyDetail();
-		Organization org = new Organization();
-		Customer c = new Customer();
-		CustomerInvoice ci = new CustomerInvoice();
-		CustomerInvoice lci = new CustomerInvoice();
-		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-		
-		cd.setName("CyberPark");
-		cd.setAddress("945A New North Rd, Mt Albert, Auckland");
-		cd.setTelephone("02102387392");
-		cd.setFax("0211387649");
-		cd.setDomain("www.cyberpark.co.nz");
-		cd.setGst_registration_number("098 762 778 12");
-		cd.setBank_name("ASB");
-		cd.setBank_account_name("CyberPark");
-		cd.setBank_account_number("3908 8987 6776 5654");
-
-//		// set org
-		org.setOrg_name("CyberPark");
-		org.setOrg_type("NZ Incoporated Company");
-		org.setOrg_trading_name("NZ Limited");
-		org.setOrg_register_no("NZ19876542");
-		org.setOrg_incoporate_date(new Date());
-		org.setHolder_name("Steve");
-		org.setHolder_job_title("Manager");
-		org.setHolder_phone("0210210213");
-		org.setHolder_email("Steve@gmail.com");
-		
-		c.setId(600098);
-		c.setFirst_name("DONG");
-		c.setLast_name("CHEN");
-		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
-		c.setCustomer_type("business");
-		
-//		lci.setAmount_paid(0d);
-//		lci.setAmount_payable(89d);
-//		lci.setBalance(89d);
-//		lci.setCreate_date(new Date());
-//		lci.setPaid_date(new Date());
-//		lci.setPaid_type("MASTER CARD");
-		
-		ci.setId(700098);
-		ci.setCreate_date(new Date());
-		ci.setAmount_paid(0d);
-		ci.setAmount_payable(89d);
-		ci.setFinal_payable_amount(89d);
-		ci.setBalance(89d);
-		ci.setPaid_date(new Date());
-		ci.setPaid_type("VISA CARD");
-		ci.setDue_date(new Date());
-//		ci.setLastCustomerInvoice(lci);
-		
-		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
-		cid.setInvoice_detail_name("ADSL Naked 150 GB Plan");
-		cid.setInvoice_detail_price(89.0d);
-		cid.setInvoice_detail_unit(3);
-		cids.add(cid);
-		cid = new CustomerInvoiceDetail();
-		cid.setInvoice_detail_name("discount $30");
-		cid.setInvoice_detail_discount(30d);
-		cid.setInvoice_detail_unit(1);
-		cids.add(cid);
-		ci.setCustomerInvoiceDetails(cids);
-		
-		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
-		
-		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
-		Double payPerMinute = 0.0133333333333333;
-		
-		int count = 42;
-		while(count >= 0){
-			
-			CustomerCallRecord ccr = new CustomerCallRecord();
-			ccr.setClear_service_id("96272424");
-			ccr.setCharge_date_time(TMUtils.parseDate2YYYYMMDD("2014-04-29 11:18:00"));
-			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide(60d, 60d))));
-			ccr.setFormated_duration(TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
-			ccr.setBilling_description("HAMILTON");
-			ccr.setAmount_incl(0.1);
-			ccr.setAmount_incl(60d * payPerMinute);
-			ccr.setPhone_called("7-847 6989");
-			ccrs.add(ccr);
-			
-			count --;
-		}
-		
-		ipdfc.setCompanyDetail(cd);
-		ipdfc.setCurrentCustomerInvoice(ci);
-		ipdfc.setCustomer(c);
-		ipdfc.setOrg(org);
-		ipdfc.setCcrs(ccrs);
-		System.out.println(ipdfc.create().get("filePath"));
+//		CompanyDetail cd = new CompanyDetail();
+//		Organization org = new Organization();
+//		Customer c = new Customer();
+//		CustomerInvoice ci = new CustomerInvoice();
+//		CustomerInvoice lci = new CustomerInvoice();
+//		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+//		
+//		cd.setName("CyberPark");
+//		cd.setAddress("945A New North Rd, Mt Albert, Auckland");
+//		cd.setTelephone("02102387392");
+//		cd.setFax("0211387649");
+//		cd.setDomain("www.cyberpark.co.nz");
+//		cd.setGst_registration_number("098 762 778 12");
+//		cd.setBank_name("ASB");
+//		cd.setBank_account_name("CyberPark");
+//		cd.setBank_account_number("3908 8987 6776 5654");
+//
+////		// set org
+//		org.setOrg_name("CyberPark");
+//		org.setOrg_type("NZ Incoporated Company");
+//		org.setOrg_trading_name("NZ Limited");
+//		org.setOrg_register_no("NZ19876542");
+//		org.setOrg_incoporate_date(new Date());
+//		org.setHolder_name("Steve");
+//		org.setHolder_job_title("Manager");
+//		org.setHolder_phone("0210210213");
+//		org.setHolder_email("Steve@gmail.com");
+//		
+//		c.setId(600098);
+//		c.setFirst_name("DONG");
+//		c.setLast_name("CHEN");
+//		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
+//		c.setCustomer_type("business");
+//		
+////		lci.setAmount_paid(0d);
+////		lci.setAmount_payable(89d);
+////		lci.setBalance(89d);
+////		lci.setCreate_date(new Date());
+////		lci.setPaid_date(new Date());
+////		lci.setPaid_type("MASTER CARD");
+//		
+//		ci.setId(700098);
+//		ci.setCreate_date(new Date());
+//		ci.setAmount_paid(0d);
+//		ci.setAmount_payable(89d);
+//		ci.setFinal_payable_amount(89d);
+//		ci.setBalance(89d);
+//		ci.setPaid_date(new Date());
+//		ci.setPaid_type("VISA CARD");
+//		ci.setDue_date(new Date());
+////		ci.setLastCustomerInvoice(lci);
+//		
+//		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+//		cid.setInvoice_detail_name("ADSL Naked 150 GB Plan");
+//		cid.setInvoice_detail_price(89.0d);
+//		cid.setInvoice_detail_unit(3);
+//		cids.add(cid);
+//		cid = new CustomerInvoiceDetail();
+//		cid.setInvoice_detail_name("discount $30");
+//		cid.setInvoice_detail_discount(30d);
+//		cid.setInvoice_detail_unit(1);
+//		cids.add(cid);
+//		ci.setCustomerInvoiceDetails(cids);
+//		
+//		InvoicePDFCreator ipdfc = new InvoicePDFCreator();
+//		
+//		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
+//		Double payPerMinute = 0.0133333333333333;
+//		
+//		int count = 42;
+//		while(count >= 0){
+//			
+//			CustomerCallRecord ccr = new CustomerCallRecord();
+//			ccr.setClear_service_id("96272424");
+//			ccr.setCharge_date_time(TMUtils.parseDate2YYYYMMDD("2014-04-29 11:18:00"));
+//			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide(60d, 60d))));
+//			ccr.setFormated_duration(TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
+//			ccr.setBilling_description("HAMILTON");
+//			ccr.setAmount_incl(0.1);
+//			ccr.setAmount_incl(60d * payPerMinute);
+//			ccr.setPhone_called("7-847 6989");
+//			ccrs.add(ccr);
+//			
+//			count --;
+//		}
+//		
+//		ipdfc.setCompanyDetail(cd);
+//		ipdfc.setCurrentCustomerInvoice(ci);
+//		ipdfc.setCustomer(c);
+//		ipdfc.setOrg(org);
+//		ipdfc.setCcrs(ccrs);
+//		System.out.println(ipdfc.create().get("filePath"));
 		
 		/**
 		 * END TEST InvoicePDFCreator
@@ -267,6 +265,14 @@ public class TestAll {
 //		cod.setDetail_price(49.0d);
 //		cod.setDetail_unit(2);
 //		cods.add(cod);
+//		// SET DISCOUNT ON DETAIL
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Plan Discount");
+//		cod.setDetail_desc("3% off the total price of plan");
+//		cod.setDetail_type("discount");
+//		cod.setDetail_price(16.008d);
+//		cod.setDetail_unit(1);
+//		cods.add(cod);
 //		
 //		// set order
 //		co.setId(60005);
@@ -274,13 +280,13 @@ public class TestAll {
 //		co.setCustomerOrderDetails(cods);
 //		
 //		// call OrderPDFCreator
-//		OrderPDFCreator oPDFCreator = new OrderPDFCreator();
+//		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
 //		oPDFCreator.setCustomer(c);
 //		oPDFCreator.setOrg(org);
 //		oPDFCreator.setCustomerOrder(co);
 //		
 //		// create order PDF
-//		oPDFCreator.create();
+//		System.out.println(oPDFCreator.create());
 		/**
 		 * END TEST OrderPDFCreator
 		 */
@@ -438,7 +444,7 @@ public class TestAll {
 
 		
 		/**
-		 * BEGIN TEST OrderPDFCreator
+		 * BEGIN TEST ReceiptPDFCreator
 		 */
 //		Customer c = new Customer();
 //		Organization org = new Organization();
@@ -504,6 +510,14 @@ public class TestAll {
 //		cod.setDetail_price(49.0d);
 //		cod.setDetail_unit(2);
 //		cods.add(cod);
+//		// SET DISCOUNT ON DETAIL
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Plan Discount");
+//		cod.setDetail_desc("3% off the total price of plan");
+//		cod.setDetail_type("discount");
+//		cod.setDetail_price(16.008d);
+//		cod.setDetail_unit(1);
+//		cods.add(cod);
 //		
 //		// set order
 //		co.setId(60005);
@@ -519,7 +533,7 @@ public class TestAll {
 //		// create order PDF
 //		System.out.println(oPDFCreator.create());
 		/**
-		 * END TEST OrderPDFCreator
+		 * END TEST ReceiptPDFCreator
 		 */
 		
 	}
