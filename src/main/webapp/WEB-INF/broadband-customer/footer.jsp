@@ -38,12 +38,12 @@
 				</a>
 			</li>
 			<li>
-				<a title="Google Plus" target="_blank" href="https://twitter.com/CyberparkNZ">
+				<a title="Google Plus" target="_blank" href="https://plus.google.com/113358993092406471657/posts">
 					<img alt="google-plus" src="${ctx }/public/bootstrap3/images/google-plus-icon.png" />
 				</a>
 			</li>
 			<li>
-				<a title="Twitter" target="_blank" href="https://plus.google.com/113358993092406471657/posts">
+				<a title="Twitter" target="_blank" href="https://twitter.com/CyberparkNZ">
 					<img alt="twitter" src="${ctx }/public/bootstrap3/images/twitter-icon.png" />
 				</a>
 			</li>

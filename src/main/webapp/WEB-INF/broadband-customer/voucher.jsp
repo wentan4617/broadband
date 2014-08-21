@@ -110,15 +110,7 @@
 				</address>
 			</section>
 		</div>
-		<div class="col-md-3 hidden-xs hidden-sm">
-			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
-				<ul class="nav nav-pills nav-stacked">
-					<li>
-						<a href="#voucher">Voucher Checking</a>
-					</li>
-				</ul>
-			</div>
-		</div>
+		
 	</div>
 </div>
 
