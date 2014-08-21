@@ -380,8 +380,8 @@ public class OrderingPDFCreator extends ITextUtils {
         Float rowPaddingBottom = 0F;
         // END PARAMETERS
         
-        addCol(table, "I’d like to be kept informed, by various means including electronic messages, of our special offers, deals and", 10, indent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-        addCol(table, "important information on products and services.", 10, indent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        addCol(table, "I’d like to be kept informed, by various means including electronic messages, of our special offers, deals and", 10, indent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
+        addCol(table, "important information on products and services.", 10, indent, ITextFont.arial_normal_10, rowPaddingTop, rowPaddingBottom, null);
 
     	// BEGIN CUSTOMER AGREEMENT AREA ENDING PADDING BOTTOM
         addEmptyCol(table, 10F, 10);
