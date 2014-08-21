@@ -18,12 +18,16 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
 
+demand version 2.2.10 2014-08-21
+
+* [模仿invoice列表的做法，将personal和busines客户分开列出及查找，方便统计.](steven)
+ 
+
 demand version 2.1.9 2014-08-20
 
 * [sale的view online orders界面的optional_request开放更改权限，显示所有order对应的request_record修改按钮.](steven)
 * 检查Business第一次生成的账单，如果credit超过balance的话是否会将balance变成负值.(steven)
 * 看看如何能够判断出上个月账单的余额负数到底是否有credit还是只是单单的paid amount，如果有credit则将上个月balance里所剩credit累加到这个月，这个月的final_payable_amount减去所剩credit.(steven)
-* 模仿invoice列表的做法，将personal和busines客户分开，方便统计.(steven)
 
 
 demand version 2.1.8 2014-08-19

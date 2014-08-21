@@ -282,22 +282,23 @@
 				</when>
 				<otherwise>
 					<if test="params.status != null">c.status LIKE CONCAT('%', '${params.status}', '%')</if>
-					<if test="params.id != null">or c.id LIKE CONCAT('%', '${params.id}', '%')</if>
-					<if test="params.login_name != null">or c.login_name LIKE CONCAT('%', '${params.login_name}', '%')</if>
-					<if test="params.phone != null">or c.phone LIKE CONCAT('%', '${params.phone}', '%')</if>
-					<if test="params.cellphone != null">or c.cellphone LIKE CONCAT('%', '${params.cellphone}', '%')</if>
-					<if test="params.email != null">or c.email LIKE CONCAT('%', '${params.email}', '%')</if>
-					<if test="params.address != null">or c.address LIKE CONCAT('%', '${params.address}', '%')</if>
-					<if test="params.svlan != null">or co.svlan LIKE CONCAT('%', '${params.svlan}', '%')</if>
-					<if test="params.cvlan != null">or co.cvlan LIKE CONCAT('%', '${params.cvlan}', '%')</if>
+					<if test="params.id != null">and c.id LIKE CONCAT('%', '${params.id}', '%')</if>
+					<if test="params.login_name != null">and c.login_name LIKE CONCAT('%', '${params.login_name}', '%')</if>
+					<if test="params.phone != null">and c.phone LIKE CONCAT('%', '${params.phone}', '%')</if>
+					<if test="params.cellphone != null">and c.cellphone LIKE CONCAT('%', '${params.cellphone}', '%')</if>
+					<if test="params.email != null">and c.email LIKE CONCAT('%', '${params.email}', '%')</if>
+					<if test="params.address != null">and c.address LIKE CONCAT('%', '${params.address}', '%')</if>
+					<if test="params.svlan != null">and co.svlan LIKE CONCAT('%', '${params.svlan}', '%')</if>
+					<if test="params.cvlan != null">and co.cvlan LIKE CONCAT('%', '${params.cvlan}', '%')</if>
 					<if test="params.order_status != null">or co.order_status LIKE CONCAT('%', '${params.order_status}', '%')</if>
 					<if test="params.pstn != null">
-						or c.id IN(
+						and c.id IN(
 									SELECT customer_id FROM tm_customer_order WHERE id IN(
 										SELECT order_id FROM tm_customer_order_detail WHERE pstn_number LIKE CONCAT('%', '${params.pstn}', '%')
 									)
 								)
 					</if>
+					<if test="params.customer_type != null">and c.customer_type = #{params.customer_type}</if>
 				</otherwise>
 			</choose>
 			
