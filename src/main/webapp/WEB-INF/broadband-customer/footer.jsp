@@ -1,11 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-
-<div class="container">
-	
-</div>
-
 <div class="navbar-inverse" style="padding-bottom:50px;">
 	<div class="container" >
 	    <footer style="margin-top: 10px;">

@@ -1,8 +1,5 @@
 eclipse.preferences.version=1
 encoding//src/main/java=UTF-8
-encoding//src/main/java/com/tm/broadband/service/BillingService.java=ISO-8859-1
-encoding//src/main/java/com/tm/broadband/service/MailerService.java=UTF-8
 encoding//src/main/resources=UTF-8
-encoding//src/main/webapp/WEB-INF/broadband-customer/plan-detail-term-business.jsp=UTF-8
-encoding//src/main/webapp/WEB-INF/broadband-customer/plan-detail-topup.jsp=UTF-8
+encoding//src/test/java=UTF-8
 encoding/<project>=UTF-8

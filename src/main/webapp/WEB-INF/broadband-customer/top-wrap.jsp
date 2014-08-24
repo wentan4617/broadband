@@ -35,8 +35,8 @@
 						/ Month
 					</p>
 				</button>
-				<div class="panel-body" style="height:180px;">
-					<p style="height:120px;">
+				<div class="panel-body" style="height:200px;">
+					<p style="height:140px;">
 						We provide the best deal on ADSL broadband plan. No speed limited and data cap on our Unlimited ADSL plans. Apply on-line or Call our Customer Service 0800 2 CYBER (29237) now.
 					</p>
 					<a href="${ctx }/plans/broadband" >Check out all our Broadband Plans</a>
@@ -64,8 +64,8 @@
 						/ Month
 					</p>
 				</button>
-				<div class="panel-body" style="height:180px;">
-					<p style="height:120px;">
+				<div class="panel-body" style="height:200px;">
+					<p style="height:140px;">
 						You need Data only? No Home Line requirement? We can provide a no cap Naked ADSL Broadband plan cost only $79. No speed limited and data cap on our Unlimited ADSL plans. Apply on-line or Call our Customer Service 0800 2 CYBER (29237) now.
 					</p>
 					<a href="${ctx }/plans/broadband" >Check out all our Broadband Plans</a>
@@ -93,8 +93,8 @@
 						/ Month
 					</p>
 				</button>
-				<div class="panel-body" style="height:180px;">
-					<p style="height:120px;">
+				<div class="panel-body" style="height:200px;">
+					<p style="height:140px;">
 						New generation technology on VDSL plan. Faster, stable and reliable VDSL can go through your current copper line. The speed of VDSL will be 3 times faster than ADSL broadband. Download speed achieve to 15Mbps to 35Mbps, and upload speed achieve to around 10Mbps.
 					</p>
 					<a href="${ctx }/plans/ultra-fast-vdsl" >Check out all our Ultra-Fast-VSDL Plans</a>

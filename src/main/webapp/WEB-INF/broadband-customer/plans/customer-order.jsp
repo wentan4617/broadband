@@ -18,6 +18,16 @@
 </style>
 
 <div class="container" style="margin-top:20px;">
+
+	<div class="hidden-xs hidden-sm">
+		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
+			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
+			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
+		</ul>
+		<hr>
+	</div>
+	
 	
 	<form id="customerInfoFrom" class="form-horizontal">
 	
@@ -77,5 +87,5 @@ data-transition_porting_number="${customerReg.customerOrder.transition_porting_n
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014822747"></script>
 <jsp:include page="../footer-end.jsp" />
