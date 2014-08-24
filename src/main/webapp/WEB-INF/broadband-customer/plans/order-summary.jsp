@@ -13,6 +13,15 @@
 </style>
 
 <div class="container" style="margin-top:20px;">
+
+	<div class="hidden-xs hidden-sm">
+		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
+			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
+			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
+		</ul>
+		<hr>
+	</div>
 	
 	<div class="panel panel-success">
 		<div class="panel-heading">
@@ -324,6 +333,6 @@ var ctx = '${ctx}';
 var total_vprice = new Number(${total_vprice});
 var order_price = new Number(${customerReg.customerOrder.order_total_price});
 </script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js?ver=2014822747"></script>
 
 <jsp:include page="../footer-end.jsp" />
