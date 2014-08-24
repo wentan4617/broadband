@@ -1,10 +1,8 @@
 package com.tm.broadband.util;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
@@ -20,39 +18,21 @@ import com.tm.broadband.pdf.InvoicePDFCreator;
 public class CallingAndRentalFeeCalucation {
 	
 	// BEGIN CustomerCallRecord OPERATION
-	public static Double ccrRentalOperation(CustomerInvoice ci, String orderType
+	public static Double ccrRentalOperation(CustomerInvoice ci
 			, Boolean isRegenerate, String pstn_number
 			, List<CustomerInvoiceDetail> cids, Double totalAmountPayable
 			, CustomerCallRecordMapper customerCallRecordMapper){
 		
 		Double totalAmountIncl = 0d;
 		
-		Calendar lastMonthFirst = Calendar.getInstance(Locale.CHINA);
-		
 		CustomerCallRecord ccrQuery = new CustomerCallRecord();
-		
-		if("order-topup".equals(orderType)){
-			if(isRegenerate){
-				lastMonthFirst.setTime(ci.getCreate_date());
-			}
-			lastMonthFirst.add(Calendar.WEEK_OF_MONTH, -1);
-			lastMonthFirst.set(Calendar.HOUR_OF_DAY, 0);
-			lastMonthFirst.set(Calendar.MINUTE, 0);
-			lastMonthFirst.set(Calendar.SECOND, 0);
-		} else {
-			lastMonthFirst.set(Calendar.DAY_OF_MONTH, 1);
-			lastMonthFirst.add(Calendar.MONTH, -1);
-			lastMonthFirst.set(Calendar.HOUR_OF_DAY, 0);
-			lastMonthFirst.set(Calendar.MINUTE, 0);
-			lastMonthFirst.set(Calendar.SECOND, 0);
-		}
 		
 		if(isRegenerate){
 			ccrQuery.getParams().put("where", "query_last_month_rental_records");
-			ccrQuery.getParams().put("last_month", lastMonthFirst.getTime());
+			ccrQuery.getParams().put("invoice_id", ci.getId());
 		} else {
 			ccrQuery.getParams().put("where", "query_unused_rental_records");
-			ccrQuery.getParams().put("used", false);
+			ccrQuery.getParams().put("invoice_id", null);
 		}
 		ccrQuery.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
 		List<CustomerCallRecord> ccrs = customerCallRecordMapper.selectCustomerCallRecord(ccrQuery);
@@ -71,11 +51,14 @@ public class CallingAndRentalFeeCalucation {
 				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
 			}
 			
-			CustomerCallRecord ccr = new CustomerCallRecord();
-			ccr.setUsed(true);
-			ccr.getParams().put("clear_service_id", pstn_number);
-			ccr.getParams().put("used", false);
-			customerCallRecordMapper.updateCustomerCallRecord(ccr);
+			if(!isRegenerate){
+				CustomerCallRecord ccr = new CustomerCallRecord();
+				ccr.setInvoice_id(ci.getId());
+				ccr.getParams().put("where", "last_rental_records");
+				ccr.getParams().put("clear_service_id", pstn_number);
+				ccr.getParams().put("invoice_id", null);
+				customerCallRecordMapper.updateCustomerCallRecord(ccr);
+			}
 		}
 		
 		return TMUtils.bigAdd(totalAmountPayable, totalAmountIncl);
@@ -91,25 +74,6 @@ public class CallingAndRentalFeeCalucation {
 			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper
 			, String customerType){
 		
-		Calendar lastMonthFirst = Calendar.getInstance(Locale.CHINA);
-		
-		
-		if("order-topup".equals(orderType)){
-			if(isRegenerate){
-				lastMonthFirst.setTime(ci.getCreate_date());
-			}
-			lastMonthFirst.add(Calendar.WEEK_OF_MONTH, -1);
-			lastMonthFirst.set(Calendar.HOUR_OF_DAY, 0);
-			lastMonthFirst.set(Calendar.MINUTE, 0);
-			lastMonthFirst.set(Calendar.SECOND, 0);
-		} else {
-			lastMonthFirst.set(Calendar.DAY_OF_MONTH, 1);
-			lastMonthFirst.add(Calendar.MONTH, -1);
-			lastMonthFirst.set(Calendar.HOUR_OF_DAY, 0);
-			lastMonthFirst.set(Calendar.MINUTE, 0);
-			lastMonthFirst.set(Calendar.SECOND, 0);
-		}
-		
 		// Total calling record
 		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
 		// Total chargeable amount
@@ -123,8 +87,11 @@ public class CallingAndRentalFeeCalucation {
 		CustomerCallRecord ccrTemp = new CustomerCallRecord();
 		ccrTemp.getParams().put("where", "query_last_call_records");
 		ccrTemp.getParams().put("orderby", "ORDER BY charge_date_time ASC");
-		ccrTemp.getParams().put("last_month", lastMonthFirst.getTime());
-		ccrTemp.getParams().put("record_type", "T1,T3");
+		if(isRegenerate){
+			ccrTemp.getParams().put("invoice_id", ci.getId());
+		} else {
+			ccrTemp.getParams().put("invoice_id", null);
+		}
 		// PRODUCTION MODE CHANGE TO pstn_number
 		ccrTemp.getParams().put("clear_service_id", //96272424
 				TMUtils.formatPhoneNumber(pstn_number)
@@ -168,9 +135,6 @@ public class CallingAndRentalFeeCalucation {
 			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 
 			Double costPerMinute = 1d;
-//			if(is0900){} if(isFax){}
-//			if(isMobile){ costPerMinute = 0.19d ; }
-//			if(isNational){} if(isBusinessLocal){}
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
 			// DURATION/SECONDS
@@ -179,7 +143,7 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setCallType(TMUtils.strCapital(callType));
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
-					isOnRate){
+					isOnRate && duration>0){
 
 				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
 				if(TMUtils.isReminder(String.valueOf(duration))){
@@ -205,22 +169,34 @@ public class CallingAndRentalFeeCalucation {
 			// END Rate Operation
 			
 			// FORMAT DURATION(second) TO TIME STYLE
-			ccr.setFormated_duration(TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
+			ccr.setFormated_duration(duration<=0 ? "" : TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
 			ccrs.add(ccr);
 		}
+		
+		if(!isRegenerate){
+			if(ccrs!=null && ccrs.size()>0){
+				CustomerCallRecord ccrUpdate = new CustomerCallRecord();
+				ccrUpdate.setInvoice_id(ci.getId());
+				ccrUpdate.getParams().put("where", "last_call_records");
+				ccrUpdate.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
+				ccrUpdate.getParams().put("invoice_id", null);
+				customerCallRecordMapper.updateCustomerCallRecord(ccrUpdate);
+				ccrUpdate = null;
+			}
+		}
+		
 		// END Chorus Style Calling Record
 		
 
 		// BEGIN Callplus Style Calling Record
 		CustomerCallingRecordCallplus ccrcQuery = new CustomerCallingRecordCallplus();
-		ccrcQuery.getParams().put("where", "query_last_call_records");
+		ccrcQuery.getParams().put("where", "query_last_calling_records");
 		ccrcQuery.getParams().put("orderby", "ORDER BY date ASC");
-		ccrcQuery.getParams().put("original_number", 
-				TMUtils.formatPhoneNumber(pstn_number));
+		ccrcQuery.getParams().put("original_number", TMUtils.formatPhoneNumber(pstn_number));
 		if(isRegenerate){
-			ccrcQuery.getParams().put("last_month", lastMonthFirst);
+			ccrcQuery.getParams().put("invoice_id", ci.getId());
 		} else {
-			ccrcQuery.getParams().put("used", false);
+			ccrcQuery.getParams().put("invoice_id", null);
 		}
 		List<CustomerCallingRecordCallplus> ccrcs = customerCallingRecordCallplusMapper.selectCustomerCallingRecordCallplus(ccrcQuery);
 		
@@ -251,7 +227,14 @@ public class CallingAndRentalFeeCalucation {
 				break;
 			case "I":	/* International */
 				callType = "international";
-				cir.getParams().put("area_name", ccrc.getDescription());
+				String fix_mobile_country[] = "Bangladesh,Malaysia,Cambodia,Singapore,Canada,South Korea,China,Usa,Hong Kong,Vietnam,India".split(",");
+				String fixMobileCountry = "";
+				for (String country : fix_mobile_country) {
+					if(ccrc.getDescription().contains(country)){
+						fixMobileCountry = country;
+					}
+				}
+				cir.getParams().put("area_name", "".equals(fixMobileCountry) ? ccrc.getDescription() : fixMobileCountry);
 				break;
 			}
 			
@@ -305,18 +288,18 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setFormated_duration(TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
 			ccrs.add(ccr);
 			
-			if(!isRegenerate){
-				if(ccrcs!=null && ccrcs.size()>0){
-					CustomerCallingRecordCallplus ccrcUpdate = new CustomerCallingRecordCallplus();
-					ccrcUpdate.setUsed(true);
-					ccrcUpdate.getParams().put("where", "last_calling_records");
-					ccrcUpdate.getParams().put("original_number", pstn_number);
-					ccrcUpdate.getParams().put("last_month", lastMonthFirst.getTime());
-					customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(ccrcUpdate);
-					ccrcUpdate = null;
-				}
+		}
+		
+		if(!isRegenerate){
+			if(ccrcs!=null && ccrcs.size()>0){
+				CustomerCallingRecordCallplus ccrcUpdate = new CustomerCallingRecordCallplus();
+				ccrcUpdate.setInvoice_id(ci.getId());
+				ccrcUpdate.getParams().put("where", "last_calling_records");
+				ccrcUpdate.getParams().put("original_number", TMUtils.formatPhoneNumber(pstn_number));
+				ccrcUpdate.getParams().put("invoice_id", null);
+				customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(ccrcUpdate);
+				ccrcUpdate = null;
 			}
-			
 		}
 		
 		// END Callplus Style Calling Record
@@ -327,6 +310,7 @@ public class CallingAndRentalFeeCalucation {
 		cid.setInvoice_detail_price(TMUtils.bigSub(totalAmountIncl, totalCreditBack));
 		cid.setInvoice_detail_desc("Total Charge: "+ totalAmountIncl + "\nCredit Back: "+ TMUtils.fillDecimalPeriod(totalCreditBack));
 		cid.setInvoice_detail_unit(1);
+		cid.setInvoice_detail_type("calling-charge");
 		
 		cids.add(cid);
 		
@@ -334,7 +318,6 @@ public class CallingAndRentalFeeCalucation {
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		
-		lastMonthFirst = null;
 		ccrTemp = null;
 		ccrsTemp = null;
 		ccrcQuery = null;
@@ -366,17 +349,23 @@ public class CallingAndRentalFeeCalucation {
 				// Specific countries
 				} else {
 					
-					if("BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".contains(cirAreaName.split(" MOBILE")[0])){
-						
-						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
-						index++;
-						
-					} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
-							&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
-							&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
-						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
-						index++;
+					String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
+					
+					for (String country : fix_mobile_country) {
+						if(cirAreaName.contains(country)){
+							
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
+							index++;
+							
+						} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
+								&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
+								&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, cirs, duration, totalCreditBack, costPerMinute, index);
+							index++;
+						}
 					}
+//					fix_mobile_country.contains(cirAreaName.split(" MOBILE")[0])
+//					 ||fix_mobile_country.contains(cirAreaName.split(" MOBILE")
 				}
 				
 			}

@@ -201,92 +201,92 @@ public class TestAll {
 		/**
 		 * BEGIN TEST OrderPDFCreator
 		 */
-		Customer c = new Customer();
-		Organization org = new Organization();
-		CustomerOrder co = new CustomerOrder();
-		CustomerOrderDetail cod = new CustomerOrderDetail();
-		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
-		
-		// CUSTOMER type
-		c.setCustomer_type("business");
-		// ORDER Broadband Type
-		// Necessary if broadband type is transition
-		co.setOrder_broadband_type("transition");
-		co.setTransition_provider_name("Telecom");
-		co.setTransition_account_holder_name("David Li");
-		co.setTransition_account_number("1234 4321 1234 4321");
-		co.setTransition_porting_number("9876 6789 9876 6789");
-		
-		// set customer
-		c.setId(60089);
-		c.setTitle("Mr");
-		c.setLogin_name("steven1989930");
-		c.setFirst_name("Dong");
-		c.setLast_name("Chen");
-		c.setEmail("davidli@gmail.com");
-		c.setCellphone("021 1234567");
-		c.setPhone("021 1234567");
-		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
-		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
-		c.setDriver_licence("5a. DM670646     5b. 241");
-		c.setPassport("G4041765");
-		c.setCountry("New Zealand");
-		
-		// set org
-		org.setOrg_name("CyberPark");
-		org.setOrg_type("NZ Incoporated Company");
-		org.setOrg_trading_name("NZ Limited");
-		org.setOrg_register_no("NZ19876542");
-		org.setOrg_incoporate_date(new Date());
-		org.setHolder_name("Steve");
-		org.setHolder_job_title("Manager");
-		org.setHolder_phone("0210210213");
-		org.setHolder_email("Steve@gmail.com");
-
-		// set order detail
-		// SET PLAN DETAIL
-		cod.setDetail_name("ADSL Naked 150 GB Plan");
-		cod.setDetail_type("plan-term");
-		cod.setDetail_price(89.0d);
-		cod.setDetail_data_flow(100L);
-		cod.setDetail_term_period(24);
-		cod.setDetail_unit(3);
-		cods.add(cod);
-		// SET ADD ON DETAIL
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("Broadband New Connection");
-		cod.setDetail_type("new-connection");
-		cod.setDetail_price(99.0d);
-		cod.setDetail_unit(1);
-		cods.add(cod);
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
-		cod.setDetail_type("hardware-router");
-		cod.setDetail_price(49.0d);
-		cod.setDetail_unit(2);
-		cods.add(cod);
-		// SET DISCOUNT ON DETAIL
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("Plan Discount");
-		cod.setDetail_desc("3% off the total price of plan");
-		cod.setDetail_type("discount");
-		cod.setDetail_price(16.008d);
-		cod.setDetail_unit(1);
-		cods.add(cod);
-		
-		// set order
-		co.setId(60005);
-		co.setOrder_create_date(new Date());
-		co.setCustomerOrderDetails(cods);
-		
-		// call OrderPDFCreator
-		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
-		oPDFCreator.setCustomer(c);
-		oPDFCreator.setOrg(org);
-		oPDFCreator.setCustomerOrder(co);
-		
-		// create order PDF
-		System.out.println(oPDFCreator.create());
+//		Customer c = new Customer();
+//		Organization org = new Organization();
+//		CustomerOrder co = new CustomerOrder();
+//		CustomerOrderDetail cod = new CustomerOrderDetail();
+//		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
+//		
+//		// CUSTOMER type
+//		c.setCustomer_type("business");
+//		// ORDER Broadband Type
+//		// Necessary if broadband type is transition
+//		co.setOrder_broadband_type("transition");
+//		co.setTransition_provider_name("Telecom");
+//		co.setTransition_account_holder_name("David Li");
+//		co.setTransition_account_number("1234 4321 1234 4321");
+//		co.setTransition_porting_number("9876 6789 9876 6789");
+//		
+//		// set customer
+//		c.setId(60089);
+//		c.setTitle("Mr");
+//		c.setLogin_name("steven1989930");
+//		c.setFirst_name("Dong");
+//		c.setLast_name("Chen");
+//		c.setEmail("davidli@gmail.com");
+//		c.setCellphone("021 1234567");
+//		c.setPhone("021 1234567");
+//		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+//		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
+//		c.setDriver_licence("5a. DM670646     5b. 241");
+//		c.setPassport("G4041765");
+//		c.setCountry("New Zealand");
+//		
+//		// set org
+//		org.setOrg_name("CyberPark");
+//		org.setOrg_type("NZ Incoporated Company");
+//		org.setOrg_trading_name("NZ Limited");
+//		org.setOrg_register_no("NZ19876542");
+//		org.setOrg_incoporate_date(new Date());
+//		org.setHolder_name("Steve");
+//		org.setHolder_job_title("Manager");
+//		org.setHolder_phone("0210210213");
+//		org.setHolder_email("Steve@gmail.com");
+//
+//		// set order detail
+//		// SET PLAN DETAIL
+//		cod.setDetail_name("ADSL Naked 150 GB Plan");
+//		cod.setDetail_type("plan-term");
+//		cod.setDetail_price(89.0d);
+//		cod.setDetail_data_flow(100L);
+//		cod.setDetail_term_period(24);
+//		cod.setDetail_unit(3);
+//		cods.add(cod);
+//		// SET ADD ON DETAIL
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Broadband New Connection");
+//		cod.setDetail_type("new-connection");
+//		cod.setDetail_price(99.0d);
+//		cod.setDetail_unit(1);
+//		cods.add(cod);
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+//		cod.setDetail_type("hardware-router");
+//		cod.setDetail_price(49.0d);
+//		cod.setDetail_unit(2);
+//		cods.add(cod);
+//		// SET DISCOUNT ON DETAIL
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Plan Discount");
+//		cod.setDetail_desc("3% off the total price of plan");
+//		cod.setDetail_type("discount");
+//		cod.setDetail_price(16.008d);
+//		cod.setDetail_unit(1);
+//		cods.add(cod);
+//		
+//		// set order
+//		co.setId(60005);
+//		co.setOrder_create_date(new Date());
+//		co.setCustomerOrderDetails(cods);
+//		
+//		// call OrderPDFCreator
+//		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
+//		oPDFCreator.setCustomer(c);
+//		oPDFCreator.setOrg(org);
+//		oPDFCreator.setCustomerOrder(co);
+//		
+//		// create order PDF
+//		System.out.println(oPDFCreator.create());
 		/**
 		 * END TEST OrderPDFCreator
 		 */
@@ -446,92 +446,92 @@ public class TestAll {
 		/**
 		 * BEGIN TEST ReceiptPDFCreator
 		 */
-//		Customer c = new Customer();
-//		Organization org = new Organization();
-//		CustomerOrder co = new CustomerOrder();
-//		CustomerOrderDetail cod = new CustomerOrderDetail();
-//		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
-//		
-//		// CUSTOMER type
-//		c.setCustomer_type("business");
-//		// ORDER Broadband Type
-//		// Necessary if broadband type is transition
-//		co.setOrder_broadband_type("transition");
-//		co.setTransition_provider_name("Telecom");
-//		co.setTransition_account_holder_name("David Li");
-//		co.setTransition_account_number("1234 4321 1234 4321");
-//		co.setTransition_porting_number("9876 6789 9876 6789");
-//		
-//		// set customer
-//		c.setId(600089);
-//		c.setTitle("Mr");
-//		c.setLogin_name("steven1989930");
-//		c.setFirst_name("Dong");
-//		c.setLast_name("Chen");
-//		c.setEmail("davidli@gmail.com");
-//		c.setCellphone("021 1234567");
-//		c.setPhone("021 1234567");
-//		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
-//		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
-//		c.setDriver_licence("5a. DM670646     5b. 241");
-//		c.setPassport("G4041765");
-//		c.setCountry("New Zealand");
-//		
-//		// set org
-//		org.setOrg_name("CyberPark");
-//		org.setOrg_type("NZ Incoporated Company");
-//		org.setOrg_trading_name("NZ Limited");
-//		org.setOrg_register_no("NZ19876542");
-//		org.setOrg_incoporate_date(new Date());
-//		org.setHolder_name("Steve");
-//		org.setHolder_job_title("Manager");
-//		org.setHolder_phone("0210210213");
-//		org.setHolder_email("Steve@gmail.com");
-//
-//		// set order detail
-//		// SET PLAN DETAIL
-//		cod.setDetail_name("ADSL Naked 150 GB Plan");
-//		cod.setDetail_type("plan-term");
-//		cod.setDetail_price(89.0d);
-//		cod.setDetail_data_flow(100L);
-//		cod.setDetail_term_period(24);
-//		cod.setDetail_unit(3);
-//		cods.add(cod);
-//		// SET ADD ON DETAIL
-////		cod = new CustomerOrderDetail();
-////		cod.setDetail_name("Broadband New Connection");
-////		cod.setDetail_type("new-connection");
-////		cod.setDetail_price(99.0d);
-////		cod.setDetail_unit(1);
-////		cods.add(cod);
+		Customer c = new Customer();
+		Organization org = new Organization();
+		CustomerOrder co = new CustomerOrder();
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
+		
+		// CUSTOMER type
+		c.setCustomer_type("business");
+		// ORDER Broadband Type
+		// Necessary if broadband type is transition
+		co.setOrder_broadband_type("transition");
+		co.setTransition_provider_name("Telecom");
+		co.setTransition_account_holder_name("David Li");
+		co.setTransition_account_number("1234 4321 1234 4321");
+		co.setTransition_porting_number("9876 6789 9876 6789");
+		
+		// set customer
+		c.setId(600089);
+		c.setTitle("Mr");
+		c.setLogin_name("steven1989930");
+		c.setFirst_name("Dong");
+		c.setLast_name("Chen");
+		c.setEmail("davidli@gmail.com");
+		c.setCellphone("021 1234567");
+		c.setPhone("021 1234567");
+		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
+		c.setDriver_licence("5a. DM670646     5b. 241");
+		c.setPassport("G4041765");
+		c.setCountry("New Zealand");
+		
+		// set org
+		org.setOrg_name("CyberPark");
+		org.setOrg_type("NZ Incoporated Company");
+		org.setOrg_trading_name("NZ Limited");
+		org.setOrg_register_no("NZ19876542");
+		org.setOrg_incoporate_date(new Date());
+		org.setHolder_name("Steve");
+		org.setHolder_job_title("Manager");
+		org.setHolder_phone("0210210213");
+		org.setHolder_email("Steve@gmail.com");
+
+		// set order detail
+		// SET PLAN DETAIL
+		cod.setDetail_name("ADSL Naked 150 GB Plan");
+		cod.setDetail_type("plan-term");
+		cod.setDetail_price(89.0d);
+		cod.setDetail_data_flow(100L);
+		cod.setDetail_term_period(24);
+		cod.setDetail_unit(3);
+		cods.add(cod);
+		// SET ADD ON DETAIL
 //		cod = new CustomerOrderDetail();
-//		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
-//		cod.setDetail_type("hardware-router");
-//		cod.setDetail_price(49.0d);
-//		cod.setDetail_unit(2);
-//		cods.add(cod);
-//		// SET DISCOUNT ON DETAIL
-//		cod = new CustomerOrderDetail();
-//		cod.setDetail_name("Plan Discount");
-//		cod.setDetail_desc("3% off the total price of plan");
-//		cod.setDetail_type("discount");
-//		cod.setDetail_price(16.008d);
+//		cod.setDetail_name("Broadband New Connection");
+//		cod.setDetail_type("new-connection");
+//		cod.setDetail_price(99.0d);
 //		cod.setDetail_unit(1);
 //		cods.add(cod);
-//		
-//		// set order
-//		co.setId(60005);
-//		co.setOrder_create_date(new Date());
-//		co.setCustomerOrderDetails(cods);
-//		
-//		// call OrderPDFCreator
-//		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
-//		oPDFCreator.setCustomer(c);
-//		oPDFCreator.setOrg(org);
-//		oPDFCreator.setCustomerOrder(co);
-//		
-//		// create order PDF
-//		System.out.println(oPDFCreator.create());
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+		cod.setDetail_type("hardware-router");
+		cod.setDetail_price(49.0d);
+		cod.setDetail_unit(2);
+		cods.add(cod);
+		// SET DISCOUNT ON DETAIL
+		cod = new CustomerOrderDetail();
+		cod.setDetail_name("Plan Discount");
+		cod.setDetail_desc("3% off the total price of plan");
+		cod.setDetail_type("discount");
+		cod.setDetail_price(16.008d);
+		cod.setDetail_unit(1);
+		cods.add(cod);
+		
+		// set order
+		co.setId(60005);
+		co.setOrder_create_date(new Date());
+		co.setCustomerOrderDetails(cods);
+		
+		// call OrderPDFCreator
+		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
+		oPDFCreator.setCustomer(c);
+		oPDFCreator.setOrg(org);
+		oPDFCreator.setCustomerOrder(co);
+		
+		// create order PDF
+		System.out.println(oPDFCreator.create());
 		/**
 		 * END TEST ReceiptPDFCreator
 		 */

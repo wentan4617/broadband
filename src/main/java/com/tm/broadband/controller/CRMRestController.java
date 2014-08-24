@@ -820,8 +820,9 @@ public class CRMRestController {
 				next_invoice_create_date = calNextInvoiceDay.getTime();
 			} else {
 				Calendar cal_7th_1hr = Calendar.getInstance();
+				cal_7th_1hr.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 				cal_7th_1hr.add(Calendar.MONTH, 1);
-				cal_7th_1hr.set(Calendar.DATE, 6);
+				cal_7th_1hr.set(Calendar.DATE, 7);
 				cal_7th_1hr.set(Calendar.HOUR, 0);
 				cal_7th_1hr.set(Calendar.MINUTE, 0);
 				cal_7th_1hr.set(Calendar.SECOND, 0);
@@ -1606,6 +1607,8 @@ public class CRMRestController {
 			page.getParams().put("email", customerQuery.getEmail());
 			page.getParams().put("address", customerQuery.getAddress());
 			page.getParams().put("pstn", customerQuery.getPstn());
+			page.getParams().put("order_id", customerQuery.getOrder_id());
+			page.getParams().put("invoice_id", customerQuery.getInvoice_id());
 			page.getParams().put("customer_type", customerQuery.getCustomer_type());
 		}
 		this.crmService.queryCustomersByPage(page);

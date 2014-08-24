@@ -1328,6 +1328,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					
 					cids.add(cid);
 					
@@ -1341,6 +1342,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_discount(cod.getDetail_price());
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						cids.add(cid);
 						
@@ -1353,6 +1355,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_price(cod.getDetail_price());
 						cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						cids.add(cid);
 						
@@ -1390,6 +1393,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					
 					cids.add(cid);
 					
@@ -1403,6 +1407,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_discount(cod.getDetail_price());
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						cids.add(cid);
 						
@@ -1415,6 +1420,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_price(cod.getDetail_price());
 						cid.setInvoice_detail_unit(cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						cids.add(cid);
 						
@@ -1448,7 +1454,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				
 			}
 		}
-		
+
 		if(!isFirst){
 			// If previous invoice's balance less than zero
 			if(cpi.getBalance()<0){
@@ -1458,7 +1464,16 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				cpi.setAmount_paid(cpi.getFinal_payable_amount());
 				cpi.getParams().put("id", cpi.getId());
 				this.ciMapper.updateCustomerInvoice(cpi);
+				
+				ci.setStatus("not_pay_off");
+			
+			} else {
+				if(!isRegenerateInvoice){
+					ci.setStatus("unpaid");
+				}
 			}
+		} else {
+			ci.setStatus("unpaid");
 		}
 
 		// store company detail begin
@@ -1471,7 +1486,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 				
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, co.getOrder_type(), isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 			
 			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
 		}
@@ -1505,7 +1520,6 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		ci.setStatus("unpaid");
 		ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
@@ -1724,6 +1738,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_discount(cod.getDetail_price());
 				cid.setInvoice_detail_desc(cod.getDetail_desc());
+				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
 				
 				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
@@ -1735,6 +1750,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_price(cod.getDetail_price());
 				cid.setInvoice_detail_desc(cod.getDetail_desc());
+				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
 				
 				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
@@ -1746,6 +1762,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
 				cid.setInvoice_detail_unit(1);
+				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
 				pcms.add(cod);
 				
@@ -1781,6 +1798,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name()+" ("+resultMap.get("remainingDays")+" day(s) counting from service start date to end of month)");
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
 						cid.setInvoice_detail_price((Double)resultMap.get("totalPrice"));
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						// Add remaining price into payable amount
 						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, (Double)resultMap.get("totalPrice"));
@@ -1794,6 +1812,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 							cid.setInvoice_detail_name(cod.getDetail_name());
 							cid.setInvoice_detail_unit(cod.getDetail_unit());
 							cid.setInvoice_detail_price(cod.getDetail_price());
+							cid.setInvoice_detail_type(cod.getDetail_type());
 							
 							// Add first day to last day
 							cal = Calendar.getInstance(Locale.CHINA);
@@ -1817,6 +1836,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
@@ -1832,6 +1852,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
@@ -1884,6 +1905,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
 						cid.setInvoice_detail_price(cod.getDetail_price());
+						cid.setInvoice_detail_type(cod.getDetail_type());
 						
 						// Add monthly price into payable amount
 						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
@@ -1898,6 +1920,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
@@ -1911,6 +1934,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_price(cod.getDetail_price());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
@@ -1947,7 +1971,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				this.customerOrderMapper.updateCustomerOrder(co);
 			}
 		}
-		
+
 		if(!isFirst){
 			// If previous invoice's balance less than zero
 			if(cpi.getBalance()<0){
@@ -1961,8 +1985,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				ci.setStatus("not_pay_off");
 			
 			} else {
-				ci.setStatus("unpaid");
+				if(!isRegenerateInvoice){
+					ci.setStatus("unpaid");
+				}
 			}
+		} else {
+			ci.setStatus("unpaid");
 		}
 
 		// store company detail begin
@@ -1974,12 +2002,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
-			if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, co.getOrder_type(), isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
-				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
-			}
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+
 		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
@@ -1987,7 +2014,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if(cpi.getBalance()>0 && "business".equals(c.getCustomer_type())){
+		if((cpi!=null && cpi.getBalance()>0) && "business".equals(c.getCustomer_type())){
 			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
 		}
 		
@@ -2134,6 +2161,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			cid.setInvoice_id(ci.getId());
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
+			cid.setInvoice_detail_type(cod.getDetail_type());
 
 			// if detail type equals discount and detail expire date greater
 			// equal than today's date then go into if statement
@@ -2141,6 +2169,8 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
 				
 				cid.setInvoice_detail_discount(cod.getDetail_price());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				// decrease amountPayable
 				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cid.getInvoice_detail_discount(), cid.getInvoice_detail_unit()));
 				// add invoice detail to list
@@ -2153,6 +2183,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
@@ -2160,6 +2191,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 					cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					pcms.add(cod);
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
@@ -2206,6 +2238,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
 					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					// increase amountPayable
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
@@ -2225,6 +2258,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
 					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					// increase amountPayable
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
@@ -2234,6 +2268,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					// if is first invoice and unit isn't null then assigned from unit, otherwise assign to 1
 					cid.setInvoice_detail_unit(cod.getDetail_unit() != null && !is_Next_Invoice && isFirst ? cod.getDetail_unit() : 1);
 					cid.setInvoice_detail_price(cod.getDetail_price() == null ? 0d : cod.getDetail_price());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					// increase amountPayable
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
@@ -2242,6 +2277,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 				}
 				
@@ -2273,7 +2309,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				}
 			}
 		}
-		
+
 		if(!isFirst){
 			// If previous invoice's balance less than zero
 			if(cpi.getBalance()<0){
@@ -2287,8 +2323,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				ci.setStatus("not_pay_off");
 			
 			} else {
-				ci.setStatus("unpaid");
+				if(!isRegenerate){
+					ci.setStatus("unpaid");
+				}
 			}
+		} else {
+			ci.setStatus("unpaid");
 		}
 		
 		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
@@ -2299,7 +2339,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, customerOrder.getOrder_type(), isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
 			
 			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, customerOrder.getOrder_type(), isRegenerate, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
 			
@@ -2524,6 +2564,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
+					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){

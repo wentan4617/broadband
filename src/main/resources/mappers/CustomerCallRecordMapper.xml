@@ -35,7 +35,7 @@
 		ccr.`phone_called` 			as ccr_phone_called,
 		ccr.`juristiction` 			as ccr_juristiction,
 		ccr.`upload_date` 			as ccr_upload_date,
-		ccr.`used` 					as ccr_used
+		ccr.`invoice_id` 			as ccr_invoice_id
 	</sql>
 	
 	<resultMap type="CustomerCallRecord" id="customerCallRecordResultMap">
@@ -54,7 +54,7 @@
 		<result property="phone_called" column="ccr_phone_called" />
 		<result property="juristiction" column="ccr_juristiction" />
 		<result property="upload_date" column="ccr_upload_date" />
-		<result property="used" column="ccr_used" />
+		<result property="invoice_id" column="ccr_invoice_id" />
 	</resultMap>
 	
 	<sql id="customerCallRecordWhere">
@@ -62,15 +62,17 @@
 			<choose>
 				<when test="params.where == 'query_last_call_records'">
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
-					<if test="params.record_type != null">and (ccr.record_type='T1' or ccr.record_type='T3')</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
+					and (ccr.record_type='T1' or ccr.record_type='T3')
+					<if test="params.invoice_id != null">
+						AND ccr.invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND ccr.invoice_id IS NULL
+					</if>
 				</when>
 				<when test="params.where == 'query_unused_rental_records'">
-					ccr.used=#{params.used} AND ccr.clear_service_id = #{params.clear_service_id}
-				</when>
-				<when test="params.where == 'query_last_month_rental_records'">
-					ccr.statement_date >= #{params.last_month} AND
-					ccr.billing_description IN(
+					AND ccr.billing_description IN(
 						'Call restrict with no Directory Access nat Res',
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
@@ -78,6 +80,29 @@
 						'Smart Bundle package'
 					)
 					AND ccr.clear_service_id = #{params.clear_service_id}
+					<if test="params.invoice_id != null">
+						AND ccr.invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND ccr.invoice_id IS NULL
+					</if>
+				</when>
+				<when test="params.where == 'query_last_month_rental_records'">
+					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
+					AND ccr.billing_description IN(
+						'Call restrict with no Directory Access nat Res',
+						'Caller Display Monthly Charge per line Res',
+						'Call waiting nat Res',
+					  	'Faxability Monthly Rental Res',
+						'Smart Bundle package'
+					)
+					AND ccr.clear_service_id = #{params.clear_service_id}
+					<if test="params.invoice_id != null">
+						AND ccr.invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND ccr.invoice_id IS NULL
+					</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">ccr.id = #{params.id}</if>
@@ -95,7 +120,7 @@
 					<if test="params.phone_called != null">and ccr.phone_called = #{params.phone_called}</if>
 					<if test="params.juristiction != null">and ccr.juristiction = #{params.juristiction}</if>
 					<if test="params.upload_date != null">and ccr.upload_date = #{params.upload_date}</if>
-					<if test="params.used != null">and ccr.used = #{params.used}</if>
+					<if test="params.invoice_id != null">and ccr.invoice_id = #{params.invoice_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -143,11 +168,11 @@
 		INSERT INTO `tm_customer_call_record`(
 			`statement_date`, `record_type`, `clear_service_id`, `date_from`, `date_to`, `charge_date_time`
 			, `duration`, `oot_id`, `billing_description`
-			, `amount_excl`, `amount_incl`, `phone_called`, `juristiction`, `upload_date`, `used`
+			, `amount_excl`, `amount_incl`, `phone_called`, `juristiction`, `upload_date`, `invoice_id`
 		) VALUES (
 			#{statement_date},#{record_type},#{clear_service_id},#{date_from},#{date_to},#{charge_date_time}
 			,#{duration},#{oot_id},#{billing_description}
-			,#{amount_excl},#{amount_incl},#{phone_called},#{juristiction},#{upload_date},#{used}
+			,#{amount_excl},#{amount_incl},#{phone_called},#{juristiction},#{upload_date},#{invoice_id}
 		)	
 	</insert>
 
@@ -175,10 +200,40 @@
 			<if test="phone_called != null">phone_called = #{phone_called},</if>
 			<if test="juristiction != null">juristiction = #{juristiction},</if>
 			<if test="upload_date != null">upload_date = #{upload_date},</if>
-			<if test="used != null">used = #{used}</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id}</if>
 		</set>
 		<where>
-			<if test="params.id != null">id = #{params.id}</if>
+			<choose>
+				<when test="params.where == 'last_call_records'">
+					(record_type='T1' or record_type='T3')
+					and clear_service_id = #{params.clear_service_id}
+					<if test="params.invoice_id != null">
+						AND invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND invoice_id IS NULL
+					</if>
+				</when>
+				<when test="params.where == 'last_rental_records'">
+					billing_description IN(
+						'Call restrict with no Directory Access nat Res',
+						'Caller Display Monthly Charge per line Res',
+						'Call waiting nat Res',
+					  	'Faxability Monthly Rental Res',
+						'Smart Bundle package'
+					)
+					AND clear_service_id = #{params.clear_service_id}
+					<if test="params.invoice_id != null">
+						AND invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND invoice_id IS NULL
+					</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">id = #{params.id}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</update>
 
@@ -206,7 +261,7 @@
 			<if test="params.phone_called != null">and phone_called = #{params.phone_called}</if>
 			<if test="params.juristiction != null">and juristiction = #{params.juristiction}</if>
 			<if test="params.upload_date != null">and upload_date = #{params.upload_date}</if>
-			<if test="params.used != null">and used = #{params.used}</if>
+			<if test="params.invoice_id != null">and invoice_id = #{params.invoice_id}</if>
 		</where>
 	</delete>
 	

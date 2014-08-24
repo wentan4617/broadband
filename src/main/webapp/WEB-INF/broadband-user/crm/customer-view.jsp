@@ -48,7 +48,8 @@
 	   			if (b) $('input[name="checkbox_customer"]').prop("checked", true);
 	   			else $('input[name="checkbox_customer"]').prop("checked", false);
 	   		});
-	   		
+
+	   		$('a[data-val="all"] span').html('${allSum}');
 	   		$('a[data-val="personal"] span').html('${personalSum}');
 	   		$('a[data-val="business"] span').html('${businessSum}');
 	   		
@@ -83,11 +84,13 @@
 			}
 		});// console.log(customer);
 		$('a[data-id="customer_type"]').each(function(){
-			var val = $(this).hasClass('active');
-			if(val){
-				var field = $(this).attr('data-id');
-				customer[field] = $(this).attr('data-val');
-				//console.log(customer);
+			if($(this).attr('data-val')!='all'){
+				var val = $(this).hasClass('active');
+				if(val){
+					var field = $(this).attr('data-id');
+					customer[field] = $(this).attr('data-val');
+					//console.log(customer);
+				}
 			}
 		});
 		doPage(1, customer, $(this));
@@ -105,7 +108,9 @@
 		});// console.log(customer);
 		$('a[data-id="customer_type"]').removeClass('active');
 		$(this).addClass('active');
-		customer[field] = $(this).attr('data-val');
+		if($(this).attr('data-val')!='all'){
+			customer[field] = $(this).attr('data-val');
+		}
 		console.log(customer);
 		doPage(1, customer, null);
 	});

@@ -134,32 +134,37 @@ public class StevenTest {
 //		
 //		Console.log(mt.getMt());
 		
-		Calendar cal_7th_1hr = Calendar.getInstance();
-		cal_7th_1hr.set(Calendar.DATE, 6);
-		cal_7th_1hr.set(Calendar.HOUR, 13);
-		cal_7th_1hr.set(Calendar.MINUTE, 0);
-		cal_7th_1hr.set(Calendar.SECOND, 0);
-		cal_7th_1hr.set(Calendar.MILLISECOND, 0);
-		
-		long seventh12hr = cal_7th_1hr.getTimeInMillis();
-		long currentTime = System.currentTimeMillis();
-		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(cal_7th_1hr.getTime())+", Millisecond: "+seventh12hr); 
-		
-		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(new Date())+", Millisecond: "+currentTime);
-		
-		// If less than seventh 1 o'clock of the month
-		if(currentTime<seventh12hr){
-			System.out.println("Less than seventh 1 o'clock!");
-			Calendar cal = cal_7th_1hr;
-			cal.set(Calendar.HOUR, 0);
-			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
-		} else {
-			System.out.println("Greater than seventh 1 o'clock!");
-			Calendar cal = cal_7th_1hr;
-			cal.set(Calendar.HOUR, 0);
-			cal.add(Calendar.MONTH, 1);
-			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
-		}
-		
+//		Calendar cal_7th_1hr = Calendar.getInstance();
+//		cal_7th_1hr.set(Calendar.DATE, 6);
+//		cal_7th_1hr.set(Calendar.HOUR, 13);
+//		cal_7th_1hr.set(Calendar.MINUTE, 0);
+//		cal_7th_1hr.set(Calendar.SECOND, 0);
+//		cal_7th_1hr.set(Calendar.MILLISECOND, 0);
+//		
+//		long seventh12hr = cal_7th_1hr.getTimeInMillis();
+//		long currentTime = System.currentTimeMillis();
+//		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(cal_7th_1hr.getTime())+", Millisecond: "+seventh12hr); 
+//		
+//		System.out.println(TMUtils.dateFormatYYYYMMDDHHMMSS(new Date())+", Millisecond: "+currentTime);
+//		
+//		// If less than seventh 1 o'clock of the month
+//		if(currentTime<seventh12hr){
+//			System.out.println("Less than seventh 1 o'clock!");
+//			Calendar cal = cal_7th_1hr;
+//			cal.set(Calendar.HOUR, 0);
+//			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
+//		} else {
+//			System.out.println("Greater than seventh 1 o'clock!");
+//			Calendar cal = cal_7th_1hr;
+//			cal.set(Calendar.HOUR, 0);
+//			cal.add(Calendar.MONTH, 1);
+//			System.out.println("Assign Next Invoice Create Date:"+TMUtils.dateFormatYYYYMMDDHHMMSS(cal.getTime()));
+//		}
+
+//		String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
+//		
+//		for (String country : fix_mobile_country) {
+//			System.out.println(country);
+//		}
 	}
 }

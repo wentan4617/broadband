@@ -462,27 +462,30 @@ public class BillingService {
 			
 			// Iteratively insert into database
 			for (CustomerCallRecord ccr : ccrs) {
+				boolean isUsefull = false;
 				if(ccr.getBilling_description()!=null){
+					isUsefull = true;
 					switch (ccr.getBilling_description()) {
-					case "Call restrict with no Directory Access nat Res":
-						ccr.setUsed(false);
-						break;
-					case "Caller Display Monthly Charge per line Res":
-						ccr.setUsed(false);
-						break;
-					case "Call waiting nat Res":
-						ccr.setUsed(false);
-						break;
-					case "Faxability Monthly Rental Res":
-						ccr.setUsed(false);
-						break;
-					case "Smart Bundle package":
-						ccr.setUsed(false);
-						break;
+						case "Call restrict with no Directory Access nat Res": break;
+						case "Caller Display Monthly Charge per line Res": break;
+						case "Call waiting nat Res": break;
+						case "Faxability Monthly Rental Res": break;
+						case "Smart Bundle package": break;
+						default: isUsefull = false;
 					}
 				}
-				ccr.setUpload_date(new Date());
-				this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
+				if(ccr.getRecord_type()!=null && !isUsefull){
+					isUsefull = true;
+					switch (ccr.getRecord_type()) {
+						case "T1": break;
+						case "T3": break;
+						default: isUsefull = false;
+					}
+				}
+				if(isUsefull){
+					ccr.setUpload_date(new Date());
+					this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
+				}
 			}
 		} else if("callplus".equals(billing_type)){
 			List<CustomerCallingRecordCallplus> ccrcs = CallingRecordUtility_CallPlus.ccrcs(filePath);
