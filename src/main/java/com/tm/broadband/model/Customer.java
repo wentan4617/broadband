@@ -117,6 +117,9 @@ public class Customer implements Serializable {
 	private String svlan_ck;
 	private String cvlan_ck;
 	private String email_ck;
+	private String pstn_ck;
+	private String order_id_ck;
+	private String invoice_id_ck;
 
 	// password forget email,phone
 	private String type;
@@ -127,6 +130,8 @@ public class Customer implements Serializable {
 	private boolean serviceAvailable;
 	
 	private String pstn;
+	private String order_id;
+	private String invoice_id;
 	
 	private Integer[] pstn_array;
 	private Integer[] voip_array;
@@ -580,6 +585,46 @@ public class Customer implements Serializable {
 
 	public void setPlan(Plan plan) {
 		this.plan = plan;
+	}
+
+	public String getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(String order_id) {
+		this.order_id = order_id;
+	}
+
+	public String getPstn_ck() {
+		return pstn_ck;
+	}
+
+	public void setPstn_ck(String pstn_ck) {
+		this.pstn_ck = pstn_ck;
+	}
+
+	public String getOrder_id_ck() {
+		return order_id_ck;
+	}
+
+	public void setOrder_id_ck(String order_id_ck) {
+		this.order_id_ck = order_id_ck;
+	}
+
+	public String getInvoice_id_ck() {
+		return invoice_id_ck;
+	}
+
+	public void setInvoice_id_ck(String invoice_id_ck) {
+		this.invoice_id_ck = invoice_id_ck;
+	}
+
+	public String getInvoice_id() {
+		return invoice_id;
+	}
+
+	public void setInvoice_id(String invoice_id) {
+		this.invoice_id = invoice_id;
 	}
 
 	

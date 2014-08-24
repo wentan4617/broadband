@@ -37,10 +37,10 @@
 	<insert id="insertCustomerInvoiceDetail" parameterType="CustomerInvoiceDetail" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_invoice_detail`(
 			`invoice_id`, `invoice_detail_name`, `invoice_detail_desc`, `invoice_detail_price`, 
-			`invoice_detail_unit`, `invoice_detail_date`, `invoice_detail_discount`) 
+			`invoice_detail_unit`, `invoice_detail_date`, `invoice_detail_discount`, `invoice_detail_type`) 
 		VALUES (
 			#{invoice_id}, #{invoice_detail_name}, #{invoice_detail_desc}, #{invoice_detail_price},
-			#{invoice_detail_unit}, #{invoice_detail_date}, #{invoice_detail_discount})
+			#{invoice_detail_unit}, #{invoice_detail_date}, #{invoice_detail_discount}, #{invoice_detail_type})
 
 	</insert>
 	

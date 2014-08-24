@@ -91,6 +91,7 @@ public class CRMController {
 		status.setComplete();
 		
 		Page<Customer> cPageQuery = new Page<Customer>();
+		model.addAttribute("allSum", this.crmService.queryCustomersSumByPage(cPageQuery));
 		cPageQuery.getParams().put("customer_type", "personal");
 		model.addAttribute("personalSum", this.crmService.queryCustomersSumByPage(cPageQuery));
 		cPageQuery.getParams().put("customer_type", "business");

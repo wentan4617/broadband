@@ -26,6 +26,7 @@ public class CustomerInvoiceDetail implements Serializable {
 	private Integer invoice_detail_unit;
 	private Date invoice_detail_date;
 	private Double invoice_detail_discount;
+	private String invoice_detail_type;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -125,6 +126,14 @@ public class CustomerInvoiceDetail implements Serializable {
 
 	public void setInvoice_id(Integer invoice_id) {
 		this.invoice_id = invoice_id;
+	}
+
+	public String getInvoice_detail_type() {
+		return invoice_detail_type;
+	}
+
+	public void setInvoice_detail_type(String invoice_detail_type) {
+		this.invoice_detail_type = invoice_detail_type;
 	}
 	
 	

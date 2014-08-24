@@ -298,6 +298,18 @@
 									)
 								)
 					</if>
+					<if test="params.order_id != null">
+						and c.id IN(
+									SELECT customer_id FROM tm_customer_order
+									WHERE id LIKE CONCAT('%', '${params.order_id}', '%')
+								)
+					</if>
+					<if test="params.invoice_id != null">
+						and c.id IN(
+									SELECT customer_id FROM tm_customer_invoice
+									WHERE id LIKE CONCAT('%', '${params.invoice_id}', '%')
+								)
+					</if>
 					<if test="params.customer_type != null">and c.customer_type = #{params.customer_type}</if>
 				</otherwise>
 			</choose>

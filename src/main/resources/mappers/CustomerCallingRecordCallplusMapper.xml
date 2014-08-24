@@ -26,7 +26,7 @@
 		ccrc.`original_number` 			as ccrc_original_number,
 		ccrc.`destination_number` 		as ccrc_destination_number,
 		ccrc.`type` 					as ccrc_type,
-		ccrc.`used` 					as used
+		ccrc.`invoice_id` 				as ccrc_invoice_id
 	</sql>
 	
 	<resultMap type="CustomerCallingRecordCallplus" id="customerCallingRecordCallplusResultMap">
@@ -38,7 +38,7 @@
 		<result property="original_number" column="ccrc_original_number" />
 		<result property="destination_number" column="ccrc_destination_number" />
 		<result property="type" column="ccrc_type" />
-		<result property="used" column="ccrc_used" />
+		<result property="invoice_id" column="ccrc_invoice_id" />
 	</resultMap>
 	
 	<sql id="customerCallingRecordCallplusWhere">
@@ -47,6 +47,12 @@
 				<when test="params.where == 'query_last_calling_records'">
 					<if test="params.last_month != null">date(ccrc.date) >= date(#{params.last_month})</if>
 					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
+					<if test="params.invoice_id != null">
+						AND ccrc.invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND ccrc.invoice_id IS NULL
+					</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">ccrc.id = #{params.id}</if>
@@ -57,7 +63,7 @@
 					<if test="params.original_number != null">and ccrc.original_number = #{params.original_number}</if>
 					<if test="params.destination_number != null">and ccrc.destination_number = #{params.destination_number}</if>
 					<if test="params.type != null">and ccrc.type = #{params.type}</if>
-					<if test="params.used != null">and ccrc.used = #{params.used}</if>
+					<if test="params.invoice_id != null">and ccrc.invoice_id = #{params.invoice_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -103,9 +109,9 @@
 
 	<insert id="insertCustomerCallingRecordCallplus" parameterType="CustomerCallingRecordCallplus" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_calling_record_callplus`(
-			`id`, `date`, `length`, `description`, `charged_fee`, `original_number`, `destination_number`, `type`, `used`
+			`id`, `date`, `length`, `description`, `charged_fee`, `original_number`, `destination_number`, `type`,`invoice_id`
 		) VALUES (
-			#{id},#{date},#{length},#{description},#{charged_fee},#{original_number},#{destination_number},#{type},#{used}
+			#{id},#{date},#{length},#{description},#{charged_fee},#{original_number},#{destination_number},#{type},#{invoice_id}
 		)	
 	</insert>
 
@@ -126,13 +132,18 @@
 			<if test="original_number != null">original_number = #{original_number},</if>
 			<if test="destination_number != null">destination_number = #{destination_number},</if>
 			<if test="type != null">type = #{type},</if>
-			<if test="used != null">used = #{used}</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id}</if>
 		</set>
 		<where>
 			<choose>
 				<when test="params.where == 'last_calling_records'">
-					<if test="params.last_month != null">date(date) >= date(#{params.last_month})</if>
-					<if test="params.original_number != null">and original_number = #{params.original_number}</if>
+					original_number = #{params.original_number}
+					<if test="params.invoice_id != null">
+						AND invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND invoice_id IS NULL
+					</if>
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
@@ -158,7 +169,7 @@
 			<if test="params.original_number != null">and original_number = #{params.original_number}</if>
 			<if test="params.destination_number != null">and destination_number = #{params.destination_number}</if>
 			<if test="params.type != null">and type = #{params.type}</if>
-			<if test="params.used != null">and used = #{params.used}</if>
+			<if test="params.invoice_id != null">and invoice_id = #{params.invoice_id}</if>
 		</where>
 	</delete>
 	

@@ -26,7 +26,7 @@ public class CustomerCallingRecordCallplus implements Serializable {
 	private String original_number;
 	private String destination_number;
 	private String type;
-	private Boolean used;
+	private Integer invoice_id;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -127,13 +127,13 @@ public class CustomerCallingRecordCallplus implements Serializable {
 	public void setType(String type) {
 		this.type = type;
 	}
-	
-	public Boolean getUsed() {
-		return used;
+
+	public Integer getInvoice_id() {
+		return invoice_id;
 	}
-	
-	public void setUsed(Boolean used) {
-		this.used = used;
+
+	public void setInvoice_id(Integer invoice_id) {
+		this.invoice_id = invoice_id;
 	}
 	
 

@@ -15,10 +15,36 @@ Total Mobile Solution Internet Service Web Project
  * planCreate (/plan/create)(post)
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
- * planRemove (/plan/remove/{id})(get)
+ * planRemove (/plan/remove/{id})(get)            
+
+7月到现在还未出账单的order：700056，周一和Gavin讨论看怎么解决
+没有录入order到CyberPark的pstn_number号码：73455586，96235066
+invoice上显示最终应付金额，以及逾期日期
  
 
-demand version 2.2.10 2014-08-21
+demand version 2.2.7 2014-08-23
+
+* [Manoj的7月账单等更新项目后重新生成测试一下看有没有其他问题.](steven)
+* [修改赠送fixed+mobile的匹配方式后，测试有该细目的pstn看是否逻辑正确，先以QianNa的pstn_number：98150689 为例.](steven)
+ 
+
+demand version 2.2.5 2014-08-22
+
+* [筛选出Chorus以及Callplus未计算的拨打记录，供下次出账时计算.](steven)
+* [为了方便Provision通过order id来查找customer，在view customer界面新增一个查询字段:Order Id，将已有的Id改为Customer Id.](steven)
+* [清除现有chorus账单中无用的数据，减少冗余数据在数据库内所占空间.](steven)
+* [在导入chorus账单时筛选出T1,T3及那些能收的rental细目，其余忽略不计.](steven)
+* 定时给预付1月以上的order出只有拨打记录的账单：（时间定在每个月10号中午，也就是导入callplus账单后就可以出了）
+        条件：
+           1. order_status = 'using' : 必须在服务中的order
+           2. and order_type in('order_term','order-no-term') : 类型仅限term和no-term
+           3. and date_format(next_invoice_create_date,'%Y-%m') > date_format(now(),'%Y-%m') : 下次生成账单大于当月.(steven)
+           4. and detail_type = 'pstn' and (pstn_number!=null && !"".equals(pstn_number.trim())) : order detail类型有pstn并且pstn号码不为空.(steven)
+* [出账时根据used的true false来取改成用invoice_id来取，invoice_id是空的则calling detail为未使用，否则已使用.](steven)
+* Regenerate Invoice时判断如果当前账单detail里不包含plan则当前账单为拨打记录账单.(steven)
+
+
+demand version 2.2.1 2014-08-21
 
 * [模仿invoice列表的做法，将personal和busines客户分开列出及查找，方便统计.](steven)
  
@@ -35,7 +61,7 @@ demand version 2.1.8 2014-08-19
 * [统计bad-debit下的paid及credit到图表中.](steven)
 * [Make Payment里更改状态的选项里新增一个Bad Debit，点击后改变状态为bad-debit.](steven)
 * [在Service Given时点击Service Only后判断如果customer_type是business则则next_invoice_create_date为下个月7号且next_invoice_create为下个月14号.](steven)
-* 检查7号出账时Business客户是否跟老term逻辑一致，如果using_start_date是当月则只列出开通日到月底的日期及费用，如果using_start_date是上个月则列出上个月开通日至上个月月底及这个月正月的日期及费用.(steven)
+* [检查7号出账时Business客户是否跟老term逻辑一致，如果using_start_date是当月则只列出开通日到月底的日期及费用，如果using_start_date是上个月则列出上个月开通日至上个月月底及这个月正月的日期及费用.](steven)
 * [customer显示的Account Credit输入框只允许Accountant及以上权限的人员输入，其他人均disabled.](steven)
 
 demand version 2.1.7 2014-08-18

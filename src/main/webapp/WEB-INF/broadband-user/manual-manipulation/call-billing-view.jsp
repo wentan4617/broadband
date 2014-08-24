@@ -98,8 +98,10 @@
 									</td>
 									<td style="font-size:20px;">
 										<a target="_blank" href="${ctx}/broadband-user/manual-manipulation/call-billing-record/csv/download/${callBillingRecord.id }" class="glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Call Billing Record CSV"></a>
-										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-play" style="font-size:20px;" data-name="insertBillingFile" data-id="${callBillingRecord.id }" data-date="${callBillingRecord.statement_date_str }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Insert Records Into Database"></a>
-										&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-trash" style="font-size:20px;" data-name="deleteBillingFile" data-id="${callBillingRecord.id }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete record and CSV file"></a>
+										<c:if test="${notInsertedActive=='active' || userSession.user_role=='system-developer'}">
+											&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-play" style="font-size:20px;" data-name="insertBillingFile" data-id="${callBillingRecord.id }" data-date="${callBillingRecord.statement_date_str }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Insert Records Into Database"></a>
+											&nbsp;<a href="javascript:void(0);" class="glyphicon glyphicon-trash" style="font-size:20px;" data-name="deleteBillingFile" data-id="${callBillingRecord.id }" data-path="${callBillingRecord.upload_path}" data-type="${callBillingRecord.billing_type }" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete record and CSV file"></a>
+										</c:if>
 									</td>
 								</tr>
 							</c:forEach>

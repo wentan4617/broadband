@@ -3,7 +3,10 @@
 		<div class="form-group">
 			<div class="col-md-5">
 				<div class="btn-group btn-group">
-					<a href="javascript:void(0);" class="btn btn-default active" data-id="customer_type" data-val="personal">
+					<a href="javascript:void(0);" class="btn btn-default active" data-id="customer_type" data-val="all">
+						All&nbsp;<span class="badge"></span>
+					</a>
+					<a href="javascript:void(0);" class="btn btn-default" data-id="customer_type" data-val="personal">
 						Personal&nbsp;<span class="badge"></span>
 					</a>
 					<a href="javascript:void(0);" class="btn btn-default" data-id="customer_type" data-val="business">
@@ -31,7 +34,7 @@
 					<input type="text" id="email" name="email" class="form-control"/>
 				</div>
 			</div>
-			<label class="col-md-1 control-label">ID</label>
+			<label class="col-md-1 control-label">Cus ID</label>
 			<div class="col-md-3">
 				<div class="input-group">
 					<span class="input-group-addon"> 
@@ -58,6 +61,27 @@
 						<input type="checkbox" id="address_ck" name="address_ck" data-id="address" data-role="query" />
 					</span>
 					<input type="text" id="address" name="address" class="form-control"/>
+				</div>
+			</div>
+			<label class="col-md-1 control-label">Order ID</label>
+			<div class="col-md-3">
+				<div class="input-group">
+					<span class="input-group-addon"> 
+						<input type="checkbox" id="order_id_ck" name="order_id_ck" data-id="order_id" data-role="query" />
+					</span>
+					<input type="text" id="order_id" name="order_id" class="form-control"/>
+				</div>
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-md-8"></div>
+			<label class="col-md-1 control-label">Inv ID</label>
+			<div class="col-md-3">
+				<div class="input-group">
+					<span class="input-group-addon"> 
+						<input type="checkbox" id="invoice_id_ck" name="invoice_id_ck" data-id="invoice_id" data-role="query" />
+					</span>
+					<input type="text" id="invoice_id" name="invoice_id" class="form-control"/>
 				</div>
 			</div>
 		</div>
