@@ -29,15 +29,20 @@
 							<strong> 
 								Get a new broadband connection on an existing (but inactive) Phone Jack 
 								<.if (plan.plan_new_connection_fee > 0) {.>
-									costs <span class="text-danger">
 									<.if (prepay_months == 1) {.>
-										($<.=parseInt(plan.plan_new_connection_fee).>)
+										costs 
+										<span class="text-danger">
+										<.if (!isContract) {.>
+											$<.=parseInt(plan.plan_new_connection_fee).>
+										<.} else {.>
+											$49
+										<.}.>
+										</span>
 									<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-										($<.=parseInt(plan.plan_new_connection_fee - (plan.plan_new_connection_fee/12)*prepay_months).>)
+										costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee - (plan.plan_new_connection_fee/12)*prepay_months).></span>
 									<.} else if (prepay_months == 12) {.>
 										is free
 									<.}.>
-									</span>
 								<.} else {.>
 									is free
 								<.}.>

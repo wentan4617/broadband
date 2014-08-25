@@ -8,6 +8,7 @@
 
 <style>
 .topup-list li {
+	width: 100%;
 	padding: 10px 20px;
 }
 
@@ -34,6 +35,7 @@
 		<div class="row">
 			<div class="col-md-9 col-sm-12 col-xs-12">
 				<div id="select-plan"></div>
+				<div id="open-term"></div>
 				<div id="prepay-month"></div>
 				<div id="select-modem"></div>
 				<div id="broadband-options"></div>
@@ -51,6 +53,9 @@
 
 <script type="text/html" id="select_plan_tmpl" data-ctx="${ctx }" data-select_plan_id="${customerReg.select_plan_id}" data-select_plan_type="${customerReg.select_plan_type }">
 <jsp:include page="select-plan.html" />
+</script>
+<script type="text/html" id="open_term_tmpl">
+<jsp:include page="open-term.html" />
 </script>
 <script type="text/html" id="prepay_month_tmpl">
 <jsp:include page="prepay-month.html" />

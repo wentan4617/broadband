@@ -15,24 +15,34 @@
 							<input type="radio" name="prepaymonths" value="1"/> 
 							&nbsp;<strong>Prepay 1 month (No discount)</strong>
 						</label>
+						
 					</li>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of plan) ($<.=parseInt(price.plan_price * 3 * 0.03).>)</span></strong>
+							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 12 months plan)</span></strong>
 						</label>
+						<span class="text-success" style="float:right;font-weight:bold;">
+							save $<.=parseInt(price.plan_price * 12 * 0.03).>
+						</span>
 					</li>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of plan) ($<.=parseInt(price.plan_price * 6 * 0.07).>)</span></strong>
+							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 12 months plan)</span></strong>
 						</label>
+						<span class="text-success" style="float:right;font-weight:bold;">
+							save $<.=parseInt(price.plan_price * 12 * 0.07).>
+						</span>
 					</li>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of plan with free modem) ($<.=parseInt(price.plan_price * 12 * 0.15).>)</span></strong>
+							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
 						</label>
+						<span class="text-success" style="float:right;font-weight:bold;">
+							save $<.=parseInt(price.plan_price * 12 * 0.15).>
+						</span>
 					</li>
 				</ul>
 			</div>

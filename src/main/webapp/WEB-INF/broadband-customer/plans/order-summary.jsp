@@ -142,8 +142,7 @@
 									<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
 									<td>${detail.detail_unit }</td>
 									<td>
-										<fmt:formatNumber value="${detail.detail_price * detail.detail_unit - customerReg.customerOrder.discount_price}" type="number" pattern="#,##0.00" />
-										
+										<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
 									</td>
 								</tr>
 								<tr>
@@ -170,8 +169,16 @@
 									<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
 									<td>${detail.detail_unit }</td>
 									<td>
-										<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-										
+										<c:choose>
+											<c:when test="${detail.detail_type == 'discount' }">
+												<span class="text-success">
+													-<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+												</span>
+											</c:when>
+											<c:otherwise>
+												<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+											</c:otherwise>
+										</c:choose>
 									</td>
 								</tr>
 							</c:otherwise>

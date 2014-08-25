@@ -6,10 +6,10 @@
 		<!-- Nav tabs -->
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
-				<a href="#homeline" data-toggle="tab" style="padding: 6px;">Homeline Included</a>
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
 			</li>
 			<li>
-				<a href="#naked" data-toggle="tab" style="padding: 6px;">Naked Broadband</a>
+				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
 			</li>
 		</ul>
 		<!-- Tab panes -->
@@ -52,7 +52,7 @@
 				<div class="row">
 				<. for (var i = 0, len = plansNaked.length; i < len; i++) { 
 					var plan = plansNaked[i];
-					var count = len > 3 ? 4 : 6;
+					var count = len > 2 ? 4 : 6;
 				.> 
 					<div class="col-md-<.=count.>" style="margin-top:10px;">
 						<div data-plan-id="<.=plan.id.>" 
