@@ -29,6 +29,7 @@ public class CustomerCheckPendingWarningOrderEachFiveDays {
         // only if the order is in pending status
         customerOrder.getParams().put("where", "query_pending_notice");
         customerOrder.getParams().put("order_status", "pending-warning");
+        customerOrder.getParams().put("customer_type", "personal");
         
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

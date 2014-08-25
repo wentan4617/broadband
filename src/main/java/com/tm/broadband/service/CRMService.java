@@ -1023,6 +1023,126 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		notificationEmail = null;
 		notificationSMS = null;
 	}
+	
+	@Transactional 
+	public void createNextCallingInvoicePDF() {
+		
+//		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("calling-invoice", "email");
+//		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("calling-invoice", "sms");
+		
+		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
+		
+		CustomerOrder coTemp = new CustomerOrder();
+		coTemp.getParams().put("where", "query_callings");
+		coTemp.getParams().put("status", "using");
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
+		
+		if(cos!=null && cos.size()>0){
+			
+			for (CustomerOrder co : cos) {
+				
+				List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+
+				List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+				List<CustomerOrderDetail> cods = co.getCustomerOrderDetails();
+				String pstn_number = null;
+
+				Double totalCreditBack = 0d;
+				Double totalAmountPayable = 0d;
+				
+				for (CustomerOrderDetail cod : cods) {
+					
+					CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+					
+					if("pstn".equals(cod.getDetail_type()) && (cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
+						pstn_number = cod.getPstn_number();
+						
+					} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+						cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
+						cids.add(cid);
+						pcms.add(cod);
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+					
+					// Termed & No Termed
+					} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+						
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_discount(cod.getDetail_price());
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
+
+						// totalCreditBack add ( discount price times discount unit )
+						totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+						cids.add(cid);
+						
+						continue;
+
+					// Else if unexpired then add order detail(s) into invoice detail(s)
+					}
+					
+					cid = null;
+				}
+				
+				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
+				CustomerInvoice ci = new CustomerInvoice();
+				
+				if(pstn_number!=null){
+					totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, this.customerCallRecordMapper, this.ciMapper);
+					totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer().getCustomer_type());
+				}
+				
+				if(totalAmountPayable>0){
+					
+					if(ci.getId()==null){
+						this.ciMapper.insertCustomerInvoice(ci);
+					}
+					
+					ci.setCustomer_id(co.getCustomer_id());
+					ci.setOrder_id(co.getId());
+					ci.setCreate_date(new Date());
+					Calendar calDueDate = Calendar.getInstance();
+					calDueDate.add(Calendar.DATE, 6);
+					ci.setDue_date(calDueDate.getTime());
+					ci.setStatus("unpaid");
+					
+					ci.setAmount_paid(0d);
+					ci.setAmount_payable(totalAmountPayable);
+					ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
+					ci.setBalance(ci.getFinal_payable_amount());
+					ci.setCustomerInvoiceDetails(cids);
+					for (CustomerInvoiceDetail cid : cids) {
+						cid.setInvoice_id(ci.getId());
+						this.ciDetailMapper.insertCustomerInvoiceDetail(cid);
+					}
+
+					invoicePDF.setCompanyDetail(companyDetail);
+					invoicePDF.setCustomer(co.getCustomer());
+					Organization org = new Organization();
+					org.setCustomer_id(co.getCustomer_id());
+					invoicePDF.setOrg(org);
+					invoicePDF.setCurrentCustomerInvoice(ci);
+					
+					String filePath = null;
+					try {
+						filePath = (String) invoicePDF.create().get("filePath");
+						
+					} catch (DocumentException | IOException e) {
+						e.printStackTrace();
+					}
+					ci.setInvoice_pdf_path(filePath);
+					ci.getParams().put("id", ci.getId());
+					this.ciMapper.updateCustomerInvoice(ci);
+					
+				}
+			}
+			
+		}
+		
+	}
 
 	@Transactional
 	public void createEarlyTerminationInvoice(Integer order_id
@@ -1486,9 +1606,9 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 				
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 			
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
 		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
@@ -2003,9 +2123,9 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 				
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 			
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, co.getOrder_type(), isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, c.getCustomer_type());
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
 
 		}
 		
@@ -2339,9 +2459,9 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		if(pstn_number!=null && !"".equals(pstn_number.trim())){
 			
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper);
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 			
-			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, customerOrder.getOrder_type(), isRegenerate, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, customer.getCustomer_type());
+			totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customer.getCustomer_type());
 			
 		}
 		

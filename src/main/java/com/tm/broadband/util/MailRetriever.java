@@ -164,6 +164,7 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_payable>", String.valueOf(preventNull(inv.getAmount_payable()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_final_amount_payable>", String.valueOf(preventNull(inv.getFinal_payable_amount()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_paid>", String.valueOf(preventNull(inv.getAmount_paid()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_balance>", String.valueOf(preventNull(inv.getBalance()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
@@ -184,6 +185,7 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_payable>", String.valueOf(preventNull(inv.getAmount_payable()))));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_final_amount_payable>", String.valueOf(preventNull(inv.getFinal_payable_amount()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_paid>", String.valueOf(preventNull(inv.getAmount_paid()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_balance>", String.valueOf(preventNull(inv.getBalance()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
