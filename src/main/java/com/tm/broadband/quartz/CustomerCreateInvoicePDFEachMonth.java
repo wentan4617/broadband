@@ -6,7 +6,6 @@ import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.tm.broadband.service.CRMService;
-import com.tm.broadband.util.TMUtils;
 
 /** 
 * Automatically Generating Next Invoices With PDF When Given Date Match next_invoice_date
@@ -23,6 +22,6 @@ public class CustomerCreateInvoicePDFEachMonth {
 	}
 
 	public void createNextInvoicePDF() throws ParseException {
-		crmService.createNonDDPayPlanInvoice(TMUtils.parseDateYYYYMMDD("2014-09-19"));
+		crmService.createNonDDPayPlanInvoice(new Date());
     } 
 } 
