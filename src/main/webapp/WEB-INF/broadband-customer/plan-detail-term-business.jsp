@@ -28,22 +28,27 @@
 }
 </style>
 
+
+<div class="bs-docs-header cyberpark-home-bg" style="padding-bottom: 0;">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6">
+				<h1 class="text-left" style="font-size:28px;">Business Broadband Plans</h1>
+				<p class="text-left hidden-xs"  style="font-size:14px;">
+				We offer the best value and price business broadband plans to you. 
+				Our service range includes small business, retailers, service providers, hospitality, entertainment companies, restaurants, professional service etc.
+				Give us your telecommunication requirements and your previous telecommunication bills.
+				We can offer more values and better price telecommunication plans to you.
+				</p>
+			</div>
+			<div class="col-md-6">
+				<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/business.png" style="padding:0;margin-top: 0;">
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="container">
-	<div class="page-header" style="margin-top:0;">
-		<h1>
-			Business Broadband Plans
-		</h1>
-	</div>
-	
-	<div class="alert alert-info">
-		<p>
-			We offer the best value and price business broadband plans to you. 
-			Our service range includes small business, retailers, service providers, hospitality, entertainment companies, restaurants, professional service etc.
-			Give us your telecommunication requirements and your previous telecommunication bills.
-			We can offer more values and better price telecommunication plans to you.
-		</p>
-	</div>
-	
 	
 	<c:forEach var="type" items="ADSL,VDSL,UFB">
 		<div class="page-header" style="margin-top:0;margin-bottom:5px;">

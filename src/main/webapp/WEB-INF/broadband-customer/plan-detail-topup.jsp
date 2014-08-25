@@ -28,19 +28,29 @@
 }
 </style>
 
-<div class="container">
+<div class="bs-docs-header cyberpark-home-bg" style="padding-bottom: 0;">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-6">
+				<h1 class="text-left" style="font-size:28px;">Top Up Unlimited ADSL Broadband</h1>
+				<p class="text-left hidden-xs" style="font-size:16px;">
+					<strong>Top Up Unlimited ADSL plan is the new broadband plan concept from CyberPark Limited.</strong>
+				</p>
+				<p class="text-left hidden-xs"  style="font-size:14px;">
+				The process and conditions as bellows, it will be more cost efficiency and convenience to all the Top Up users. 
+				CyberPark Top Up Plan offer you unlimited data plan by weekly charges,
+				CyberPark Top Up payment method include: Top-up Voucher, Credit Cards, Account to Account, or Call 0800 2 Cyber (29237) for help.
+				</p>
+			</div>
+			<div class="col-md-6">
+				<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/top-up.png" style="padding:0;margin-top: -50px;">
+			</div>
+		</div>
+	</div>
+</div>
 
- 	<div class="page-header" style="margin-top:0;">
- 		<h1 class="hidden-xs hidden-sm">Top Up Unlimited ADSL Broadband Plan</h1>
-		<h5 class="hidden-lg hidden-md" ><strong>Top Up Unlimited ADSL Broadband Plan</strong></h5>
-	</div>
-	
-	<div class="alert alert-success">
-		<p><strong>Top Up Unlimited ADSL plan is the new broadband plan concept from CyberPark Limited.</strong></p>
-		<p>The process and conditions as bellows, it will be more cost efficiency and convenience to all the Top Up users. </p>
-		<p>CyberPark Top Up Plan offer you unlimited data plan by weekly charges,</p>
-		<p>CyberPark Top Up payment method include: Top-up Voucher, Credit Cards, Account to Account, or Call 0800 2 Cyber (29237) for help.</p>
-	</div>
+<div class="container">
 	
 	<div class="panel panel-success">
   		<div class="panel-heading">
