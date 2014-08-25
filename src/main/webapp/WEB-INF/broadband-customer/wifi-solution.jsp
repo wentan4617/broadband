@@ -35,6 +35,26 @@
 }
 </style>
 
+<div class="bs-docs-header cyberpark-home-bg" style="padding-bottom: 0;margin-bottom:0">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-6">
+				<h1 class="text-left" style="font-size:28px;">CyberPark Wifi Solution</h1>
+				<p class="text-left hidden-xs"  style="font-size:14px;">
+				In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devises which can adopt internet wirelessly radio waves.
+				</p>
+				<p class="text-left hidden-xs"  style="font-size:14px;">
+				The most popular area include, home, work place, education areas, bar, restaurants, cafe shops, Motels and Hotels, public places, and some other luxury or entertainment places.
+				</p>
+			</div>
+			<div class="col-md-6">
+				<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/wifi.png" style="padding:0;margin-top: 0px;">
+			</div>
+		</div>
+	</div>
+</div>
+
 <div class="container">
 	<div class="row" style="margin-bottom:20px;">
 		
@@ -47,10 +67,7 @@
 					</h1>
 				</div>
 				<p>
-					In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devises which can adopt internet wirelessly radio waves.  
-				</p>
-				<p>
-					The most popular area include, home, work place, education areas, bar, restaurants, cafe shops, Motels and Hotels, public places, and some other luxury or entertainment places.  
+					  
 					 
 				</p>
 				<p>
@@ -381,7 +398,7 @@
 			
 		</div>
 		<div class="col-md-3 hidden-xs hidden-sm">
-			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
+			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="300">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">
 						<a href="#introduction">Introduction</a>

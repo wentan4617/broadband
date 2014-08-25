@@ -11,46 +11,37 @@
 			var hardware = hardwares[i];
 		.>
 			<div class="col-md-12">
-				<. if (i > 0) {.><hr><.}.>
-				<h4 class="text-success"><strong><.=hardware.hardware_name.></strong></h4>
+				<. if (i > 0) {.><hr style="margin:0;"><.}.>
+				
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
 					<li>
 						<label>
-							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term"/> 
-							&nbsp;<strong>open term</strong>
-							&nbsp;<span class="text-danger">
-							<.if (prepay_months == 1) {.>
-								($<.=hardware.hardware_price.>)
-							<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-								($<.=parseInt(hardware.hardware_price - (hardware.hardware_price/12)*prepay_months).>)
-							<.}.>
-							</span>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term" style="float:left;"/> 
+							&nbsp;<span class="text-success" style="font-size:18px;"><.=hardware.hardware_name.></span>
 						</label>
-					</li>
-					<. if (prepay_months == 1) {.>
-					<li>
-						<label>
-							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="12months" />
-							&nbsp;<strong>12 months contract</strong> 
-							<. if (hardware.hardware_class == 'router-adsl') { .> 
-								<span class="text-danger">($<.=parseInt(hardware.hardware_price/2 - 5).>)</span>
-							<.} else if (hardware.hardware_class == 'router-vdsl'){ .>
-								<span class="text-danger">($<.=parseInt(hardware.hardware_price/2).>)</span>
+						<span class="text-danger" style="float:right;font-size:18px;font-weight:bold;">
+							<.if (!isContract) {.>
+								<.if (prepay_months == 1) {.>
+									$<.=hardware.hardware_price.>
+								<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+									$<.=parseInt(hardware.hardware_price - (hardware.hardware_price/12)*prepay_months).>
+								<.}.>
+							<.} else {.>
+								$<.=parseInt(hardware.hardware_price/2).>
 							<.}.>
-						</label>
+						</span>
 					</li>
-					<.}.>
 					
 				</ul>
 			</div>
 		<.}.>
 			<div class="col-md-12">
-				<hr>
+				<hr style="margin:0;">
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
 					<li>
 						<label>
 							<input data-id="0" type="radio" name="modem" value="withoutmodem"/> 
-							&nbsp;<strong>No, I don't need a modem</strong>
+							&nbsp;<span style="font-size:18px;">No, I don't need a modem</span>
 						</label>
 					</li>
 				</ul>
