@@ -19,8 +19,18 @@ Total Mobile Solution Internet Service Web Project
 
 7月到现在还未出账单的order：700056，周一和Gavin讨论看怎么解决
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
-invoice上显示最终应付金额，以及逾期日期
  
+
+demand version 2.2.8 2014-08-25
+
+* 
+
+
+demand version 2.2.8 2014-08-25
+
+* invoice邮件及短信上显示最终应付金额，以及逾期日期.(steven)
+* [变成pending-warning的订单不包含business的.](steven)
+
 
 demand version 2.2.7 2014-08-23
 
@@ -34,10 +44,10 @@ demand version 2.2.5 2014-08-22
 * [为了方便Provision通过order id来查找customer，在view customer界面新增一个查询字段:Order Id，将已有的Id改为Customer Id.](steven)
 * [清除现有chorus账单中无用的数据，减少冗余数据在数据库内所占空间.](steven)
 * [在导入chorus账单时筛选出T1,T3及那些能收的rental细目，其余忽略不计.](steven)
-* 定时给预付1月以上的order出只有拨打记录的账单：（时间定在每个月10号中午，也就是导入callplus账单后就可以出了）
+* [定时给预付1月以上的order出只有拨打记录的账单：（时间定在每个月10号中午，也就是导入callplus账单后就可以出了）](steven)
         条件：
            1. order_status = 'using' : 必须在服务中的order
-           2. and order_type in('order_term','order-no-term') : 类型仅限term和no-term
+           2. and order_type in('order-term','order-no-term') : 类型仅限term和no-term
            3. and date_format(next_invoice_create_date,'%Y-%m') > date_format(now(),'%Y-%m') : 下次生成账单大于当月.(steven)
            4. and detail_type = 'pstn' and (pstn_number!=null && !"".equals(pstn_number.trim())) : order detail类型有pstn并且pstn号码不为空.(steven)
 * [出账时根据used的true false来取改成用invoice_id来取，invoice_id是空的则calling detail为未使用，否则已使用.](steven)

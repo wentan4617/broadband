@@ -275,6 +275,12 @@
 				<when test="params.where == 'query_pending_notice'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.order_create_date != null">and date(co.order_create_date)&lt;=date(#{params.order_create_date})</if>
+					<if test="params.customer_type != null">
+					and co.customer_id in(
+						select id from tm_customer
+						where customer_type = #{params.customer_type}
+					)
+					</if>
 				</when>
 				<when test="params.where == 'query_no_term'">
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
@@ -299,6 +305,23 @@
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.order_due_backward_one != null and params.order_due_backward_two != null">and (date(co.order_due)=date(#{params.order_due_backward_one}) or date(co.order_due)=date(#{params.order_due_backward_two}))</if>
 					<if test="params.order_type_topup != null">and co.order_type=#{params.order_type_topup}</if>
+				</when>
+				<when test="params.where == 'query_callings'">
+					co.order_status=#{params.status}
+					and co.order_type in('order-term','order-no-term')
+					and DATE_FORMAT(co.next_invoice_create_date,'%Y-%m') &gt; DATE_FORMAT(now(),'%Y-%m')
+					and co.id in(
+						select order_id from tm_customer_order_detail
+						where pstn_number is not null and pstn_number != ''
+					)
+					and co.id in(
+						select order_id from tm_customer_invoice
+						where DATE_FORMAT(create_date,'%Y-%m') &lt; DATE_FORMAT(now(),'%Y-%m')
+						and id in(
+							select MAX(id) from tm_customer_invoice
+							group by order_id
+						)
+					)
 				</when>
 				<otherwise>
 					<if test="params.id != null">co.id=#{params.id}</if>

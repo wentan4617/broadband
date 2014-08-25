@@ -1,6 +1,7 @@
 package com.tm.broadband.util.test;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 
 public class ModelTest implements Serializable {
@@ -20,6 +21,7 @@ public class ModelTest implements Serializable {
 	private List<ModelTest> all;
 	private List<Object> objs;
 	private ModelTest mt;
+	private Date birth;
 
 	public ModelTest getMt() {
 		return mt;
@@ -103,6 +105,14 @@ public class ModelTest implements Serializable {
 
 	public void setActive(boolean active) {
 		this.active = active;
+	}
+
+	public Date getBirth() {
+		return birth;
+	}
+
+	public void setBirth(Date birth) {
+		this.birth = birth;
 	}
 
 }

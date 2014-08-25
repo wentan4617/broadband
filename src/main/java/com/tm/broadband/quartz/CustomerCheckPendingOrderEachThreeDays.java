@@ -29,6 +29,7 @@ public class CustomerCheckPendingOrderEachThreeDays {
         // only if the order is in pending status
         customerOrder.getParams().put("where", "query_pending_notice");
         customerOrder.getParams().put("order_status", "pending");
+        customerOrder.getParams().put("customer_type", "personal");
         
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

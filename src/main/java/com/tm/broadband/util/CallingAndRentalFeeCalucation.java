@@ -2,11 +2,13 @@ package com.tm.broadband.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
+import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerCallingRecordCallplus;
@@ -14,6 +16,7 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -21,7 +24,7 @@ public class CallingAndRentalFeeCalucation {
 	public static Double ccrRentalOperation(CustomerInvoice ci
 			, Boolean isRegenerate, String pstn_number
 			, List<CustomerInvoiceDetail> cids, Double totalAmountPayable
-			, CustomerCallRecordMapper customerCallRecordMapper){
+			, CustomerCallRecordMapper customerCallRecordMapper, CustomerInvoiceMapper ciMapper){
 		
 		Double totalAmountIncl = 0d;
 		
@@ -53,6 +56,9 @@ public class CallingAndRentalFeeCalucation {
 			
 			if(!isRegenerate){
 				CustomerCallRecord ccr = new CustomerCallRecord();
+				if(ci.getId()==null){
+					ciMapper.insertCustomerInvoice(ci);
+				}
 				ccr.setInvoice_id(ci.getId());
 				ccr.getParams().put("where", "last_rental_records");
 				ccr.getParams().put("clear_service_id", pstn_number);
@@ -65,13 +71,14 @@ public class CallingAndRentalFeeCalucation {
 	}
 	
 	// BEGIN CustomerCallRecord OPERATION
-	public static Double ccrOperation(CustomerInvoice ci, String orderType, Boolean isRegenerate
+	public static Double ccrOperation(CustomerInvoice ci, Boolean isRegenerate
 			, List<CustomerOrderDetail> pcms
 			, String pstn_number, List<CustomerInvoiceDetail> cids
 			, InvoicePDFCreator invoicePDF, Double totalPayableAmouont
 			, CustomerCallRecordMapper customerCallRecordMapper
 			, CallInternationalRateMapper callInternationalRateMapper
 			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper
+			, CustomerInvoiceMapper ciMapper
 			, String customerType){
 		
 		// Total calling record
@@ -176,6 +183,9 @@ public class CallingAndRentalFeeCalucation {
 		if(!isRegenerate){
 			if(ccrs!=null && ccrs.size()>0){
 				CustomerCallRecord ccrUpdate = new CustomerCallRecord();
+				if(ci.getId()==null){
+					ciMapper.insertCustomerInvoice(ci);
+				}
 				ccrUpdate.setInvoice_id(ci.getId());
 				ccrUpdate.getParams().put("where", "last_call_records");
 				ccrUpdate.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
@@ -293,6 +303,9 @@ public class CallingAndRentalFeeCalucation {
 		if(!isRegenerate){
 			if(ccrcs!=null && ccrcs.size()>0){
 				CustomerCallingRecordCallplus ccrcUpdate = new CustomerCallingRecordCallplus();
+				if(ci.getId()==null){
+					ciMapper.insertCustomerInvoice(ci);
+				}
 				ccrcUpdate.setInvoice_id(ci.getId());
 				ccrcUpdate.getParams().put("where", "last_calling_records");
 				ccrcUpdate.getParams().put("original_number", TMUtils.formatPhoneNumber(pstn_number));

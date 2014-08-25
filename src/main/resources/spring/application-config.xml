@@ -366,10 +366,33 @@
 	</bean>
 	<!-- END customerCreateInvoiceOverdue2BadDebit -->
 	
+	<!-- BEGIN createNextCallingInvoicePDF -->
+	<!-- normal business Bean -->
+	<bean name="customerCreateNextCallingInvoicePDF" class="com.tm.broadband.quartz.CustomerCreateNextCallingInvoicePDF" />
+	<!-- assignment -->
+	<bean id="customerCreateNextCallingInvoicePDFJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerCreateNextCallingInvoicePDF" />
+		<property name="targetMethod" value="createNextCallingInvoicePDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerCreateNextCallingInvoicePDFTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail" ref="customerCreateNextCallingInvoicePDFJob" />
+		<property name="cronExpression" value="0 10 13 20 * ?"></property>
+		<!-- every 1 minute -->
+		<!-- 0 */1 * * * ? -->
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every month's 10th 1:20 p.m. -->
+		<!-- 0 10 13 20 * ? -->
+	</bean>
+	<!-- END createNextCallingInvoicePDF -->
+	
 	<!-- plan -->
-	<!-- <bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
+			<!-- 
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
@@ -377,9 +400,13 @@
 				<ref bean="customerInvoiceOverduePenaltyEachMonthTrigger" />
 				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />
 				<ref bean="customerCheckPendingWarningOrderEachFiveDaysTrigger" />
+			-->
+			<!-- 
 				<ref bean="customerInvoiceAfterDueNoticeTrigger" />
 				<ref bean="customerCreateTopupPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerUpdateInvoiceUnpaid2OverdueTrigger" />
+				<ref bean="customerCreateNextCallingInvoicePDFTrigger" />
+			-->
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">
@@ -387,7 +414,7 @@
 				<entry key="timeout" value="30" />
 			</map>
 		</property>
-	</bean> -->
+	</bean>
 	
 	<!-- <import resource="aop-config.xml"/> -->
 

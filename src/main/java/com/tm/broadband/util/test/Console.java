@@ -8,10 +8,30 @@ import java.util.List;
 
 public class Console {
 	
+	private static boolean isDebugMode = false;
+	
+	// PRODUCTION MODE
+	/**
+	 * Production Mode
+	 */
 	public static void log(Object obj){
+		log(obj, false);
+	}
+
+	// DEVELOPMENT MODE
+	/**
+	 * Debugging Mode
+	 */
+	public static void logD(Object obj){
+		log(obj, true);
+	}
+
+	public static void log(Object obj, boolean debugMode){
+		
+		isDebugMode = debugMode;
 		
 		// If is user-defined type
-		if(!isPrimitiveType(obj) && (obj!=null && !obj.toString().startsWith("class"))){
+		if(obj!=null && !obj.toString().startsWith("class")){
 				
 			Class<? extends Object> clazz = obj.getClass();
 
@@ -28,7 +48,7 @@ public class Console {
 				if(clazzName.contains(".")){
 					clazzName = clazzName.substring(clazzName.lastIndexOf(".")+1, clazzName.length());
 				}
-				System.out.println(clazzName+" = {");
+				println(clazzName+" = {");
 				int countComma = 0;
 				for (int i = 0; i < methods.length; i++) {
 					String methodName = methods[i].getName();
@@ -47,23 +67,23 @@ public class Console {
 							if("List".equals(returnTypeStr)){
 								@SuppressWarnings("unchecked")
 								List<Object> allSub = (List<Object>) method.invoke(obj);
-								System.out.print("   "+capital(methodName.substring(3, methodName.length()))+" : {");
+								print("   "+capital(methodName.substring(3, methodName.length()))+" : {");
 								if(allSub!=null && allSub.size()>0){
 									allSubs(method, obj, methodName);
 								} else {
-									System.out.print("   }");
+									print("   }");
 								}
 							} else {
-								System.out.print("   "+capital(methodName.substring(methodName.startsWith("is") ? 2 : 3, methodName.length()))+" : ");
+								print("   "+capital(methodName.substring(methodName.startsWith("is") ? 2 : 3, methodName.length()))+" : ");
 								if(method.invoke(obj)==null){
-									System.out.print(method.invoke(obj));
+									print(method.invoke(obj));
 								} else {
 									if(method.invoke(obj) instanceof String){
-										System.out.print("\""+method.invoke(obj)+"\"");
+										print("\""+method.invoke(obj)+"\"");
 									} else if(method.invoke(obj) instanceof Character){
-										System.out.print("\'"+method.invoke(obj)+"\'");
+										print("\'"+method.invoke(obj)+"\'");
 									} else {
-										System.out.print(method.invoke(obj));
+										print(method.invoke(obj));
 									}
 								}
 							}
@@ -72,21 +92,23 @@ public class Console {
 							e.printStackTrace();
 						}
 						if(countComma<countGetMethod-1){
-							System.out.println(",");
+							println(",");
 							countComma++;
 						} else {
-							System.out.println();
+							println();
 						}
 					}
 				}
-				System.out.println("}");
+				println("}");
 				
 			} else {
-				System.out.println("Methods is empty!");
+				println("Methods is empty!");
 			}
 			
+		} else if(isPrimitiveType(obj)){
+			
 		} else {
-			System.out.println("undefined");
+			println("undefined");
 		}
 		
 	}
@@ -103,13 +125,13 @@ public class Console {
 		List<Object> allSub = (List<Object>) method.invoke(obj);
 		int countPrimitiveComma = 0;
 		for (Object subObj : allSub) {
-			System.out.print("\n");
+			print("\n");
 			if(isPrimitiveInAll(subObj)){
 				if(countPrimitiveComma<allSub.size()-1){
-					System.out.print(",");
+					print(",");
 					countPrimitiveComma++;
 				} else {
-					System.out.println();
+					println();
 				}
 			} else {
 				
@@ -144,50 +166,50 @@ public class Console {
 								} else if("Character".equals(returnTypeStr)){
 									val = (val!=null ? "\'" : "")+val+(val!=null ? "\'" : "");
 								}
-									System.out.print("      "+capital(subMethodName.substring(subMethodName.startsWith("is") ? 2 : 3, subMethodName.length()))+" : "+val);
+									print("      "+capital(subMethodName.substring(subMethodName.startsWith("is") ? 2 : 3, subMethodName.length()))+" : "+val);
 							} catch (IllegalArgumentException e) {
 								e.printStackTrace();
 							}
 							if(countComma<countGetMethod-1){
-								System.out.println(",");
+								println(",");
 								countComma++;
 							} else {
-								System.out.println();
+								println();
 							}
 						}
 					}
 				}
 			}
 		}
-		System.out.print("   }");
+		print("   }");
 	}
 	
 	public static boolean isPrimitiveType(Object obj){
 		boolean flag = false;
 		if(obj instanceof String){
-			System.out.println("String : "+obj); flag = true;
+			println("String : "+obj); flag = true;
 		} else if(obj instanceof Short){
-			System.out.println("Short : "+obj); flag = true;
+			println("Short : "+obj); flag = true;
 		} else if(obj instanceof Byte){
-			System.out.println("Byte : "+obj); flag = true;
+			println("Byte : "+obj); flag = true;
 		} else if(obj instanceof Integer){
-			System.out.println("Integer : "+obj); flag = true;
+			println("Integer : "+obj); flag = true;
 		} else if(obj instanceof Long){
-			System.out.println("Long : "+obj); flag = true;
+			println("Long : "+obj); flag = true;
 		} else if(obj instanceof Float){
-			System.out.println("Float : "+obj); flag = true;
+			println("Float : "+obj); flag = true;
 		} else if(obj instanceof Double){
-			System.out.println("Double : "+obj); flag = true;
+			println("Double : "+obj); flag = true;
 		} else if(obj instanceof Character){
-			System.out.println("Character : "+obj); flag = true;
+			println("Character : "+obj); flag = true;
 		} else if(obj instanceof Boolean){
-			System.out.println("Boolean : "+obj); flag = true;
+			println("Boolean : "+obj); flag = true;
 		} else if(obj instanceof BigInteger){
-			System.out.println("BigInteger : "+obj); flag = true;
+			println("BigInteger : "+obj); flag = true;
 		} else if(obj instanceof BigDecimal){
-			System.out.println("BigDecimal : "+obj); flag = true;
+			println("BigDecimal : "+obj); flag = true;
 		} else if(obj instanceof Number){
-			System.out.println("Number : "+obj); flag = true;
+			println("Number : "+obj); flag = true;
 		}
 		return flag;
 	}
@@ -195,14 +217,32 @@ public class Console {
 	public static boolean isPrimitiveInAll(Object obj){
 		boolean flag = false;
 		if(obj instanceof String){
-			System.out.print("     "+(obj!=null ? "\"" : "")+obj+(obj!=null ? "\"" : "")); flag = true;
+			print("     "+(obj!=null ? "\"" : "")+obj+(obj!=null ? "\"" : "")); flag = true;
 		} else if(obj instanceof Number){
-			System.out.print("      "+obj+""); flag = true;
+			print("      "+obj+""); flag = true;
 		} else if(obj instanceof Boolean){
-			System.out.print("      "+obj+""); flag = true;
+			print("      "+obj+""); flag = true;
 		} else  if(obj instanceof Character){
-			System.out.print("      "+(obj!=null ? "\'" : "")+obj+(obj!=null ? "\'" : "")); flag = true;
+			print("      "+(obj!=null ? "\'" : "")+obj+(obj!=null ? "\'" : "")); flag = true;
 		}
 		return flag;
+	}
+	
+	public static void print(Object content){
+		if(!isDebugMode){
+			System.out.print(content);
+		}
+	}
+	
+	public static void println(Object content){
+		if(!isDebugMode){
+			System.out.println(content);
+		}
+	}
+	
+	public static void println(){
+		if(!isDebugMode){
+			System.out.println();
+		}
 	}
 }
