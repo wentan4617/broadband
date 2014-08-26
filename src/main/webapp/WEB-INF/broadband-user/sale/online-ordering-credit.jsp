@@ -44,12 +44,16 @@
 								<div class="col-sm-8">
 									<ul class="list-inline topup-list" style="margin: 5px 0 0 0;">
 										<li>
-											<input type="radio" name="card_type" value="VISA" checked="checked" /> &nbsp; 
-											<strong>VISA</strong>
+											<label style="cursor:pointer;">
+												<input type="radio" name="card_type" value="VISA" checked="checked" /> &nbsp; 
+												<strong>VISA</strong>
+											</label>
 										</li>
 										<li>
-											<input type="radio" name="card_type" value="MASTERCARD" /> &nbsp; 
-											<strong>MasterCard</strong>
+											<label style="cursor:pointer;">
+												<input type="radio" name="card_type" value="MASTERCARD" /> &nbsp; 
+												<strong>MasterCard</strong>
+											</label>
 										</li>
 									</ul>
 								</div>

@@ -318,7 +318,9 @@
 		<div class="form-group">
 			<label class="control-label col-md-3">Download Application Form</label>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
+			<. } .>
 			<. if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){ .>
 					&nbsp;No Application Form PDF
 			<. } else { .>
@@ -327,10 +329,14 @@
 				</p>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<input type="file" name="application_form_path" class="form-control input-xs" placeholder="File Path" />
+			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Apply Form</button>
+			<. } .>
 			</div>
 		</div>
 		<!-- END Download Application Form -->
@@ -340,15 +346,19 @@
 			<div class="col-md-3">
 			<. if(customerOrder[i].credit_pdf_path == null || customerOrder[i].credit_pdf_path == ''){ .>
 				<p class="form-control-static">No Credit Card Form PDF</p>
-			<. } else { .>
+			<. } else if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/credit/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download credit card form's PDF"></a></p>
 			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<input type="file" name="credit_card_form_path" class="form-control input-xs" placeholder="File Path" />
+			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Credit Card Form</button>
+			<. } .>
 			</div>
 		</div>
 		<!-- END Download Credit Card Form -->
@@ -358,15 +368,19 @@
 			<div class="col-md-3">
 			<. if(customerOrder[i].ddpay_pdf_path == null || customerOrder[i].ddpay_pdf_path == ''){ .>
 						<p class="form-control-static">No DDPay Form PDF</p>
-			<. } else { .>
+			<. } else if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<p class="form-control-static"><a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/ddpay/pdf/download/<.= customerOrder[i].id .>" class="control-label glyphicon glyphicon-floppy-save" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Download ddpay form's PDF"></a></p>
 			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<input type="file" name="ddpay_form_path" class="form-control input-xs" placeholder="File Path" />
+			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload DDPay Form</button>
+			<. } .>
 			</div>
 		</div>
 		<!-- END Download DDPay Form -->
@@ -438,6 +452,7 @@
 				.>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<select data-name="<.= customerOrder[i].id .>_is_ddpay_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
 				<. if(customerOrder[i].is_ddpay==null || customerOrder[i].is_ddpay==false){ .>
 					<option value="false" selected="selected">No</option>
@@ -447,9 +462,12 @@
 					<option value="false">No</option>
 				<. } .>
 				</select>
+			<. } .>
 			</div>
 			<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
 				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_is_ddpay_edit" >Change Is DDPay</a>
+			<. } .>
 			</div>
 		</div>
 		<!-- END Is DDPay -->

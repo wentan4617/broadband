@@ -90,7 +90,7 @@
 							<div class="form-group">
 								<!-- UNPAID -->
 								<div class="col-md-3">
-									<a id="unpaid_btn" href="javascript:void(0);">
+									<a target="blank" id="unpaid_btn" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/unpaid/${yearMonth}">
 										<span class="title">1.&nbsp;
 											UNPAID: NZ$<span id="total_monthly_unpaid"></span>
 										</span>
@@ -98,24 +98,24 @@
 								</div>
 								<!-- PREPAYMENT -->
 								<div class="col-md-3">
-									<a id="prepayment_btn" class="bg-success" href="javascript:void(0);">
-										<span class="title">5.&nbsp;
+									<a target="blank" id="prepayment_btn" class="bg-success" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/prepayment/${yearMonth}">
+										<span class="title">3.&nbsp;
 											PREPAYMENT: NZ$<span id="total_monthly_prepayment"></span>
 										</span>
 									</a>
 								</div>
 								<!-- CREDITED -->
 								<div class="col-md-3">
-									<a id="credit_btn" href="javascript:void(0);">
-										<span class="title">3.&nbsp;
+									<a target="blank" id="credit_btn" href="javascript:void(0);">
+										<span class="title">5.&nbsp;
 											CREDITED: NZ$<span id="total_monthly_credit"></span>
 										</span>
 									</a>
 								</div>
 								<!-- BAD DEBIT -->
 								<div class="col-md-3">
-									<a id="bad_debit_btn" href="javascript:void(0);">
-										<span class="title">6.&nbsp;
+									<a target="blank" id="bad_debit_btn" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/bad_debit/${yearMonth}">
+										<span class="title">7.&nbsp;
 											BAD DEBIT: NZ$<span id="total_monthly_bad_debit"></span>
 										</span>
 									</a>
@@ -124,7 +124,7 @@
 							<div class="form-group">
 								<!-- OVERDUE -->
 								<div class="col-md-3">
-									<a id="overdue_btn" href="javascript:void(0);">
+									<a target="blank" id="overdue_btn" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/overdue/${yearMonth}">
 										<span class="title">2.&nbsp;
 											OVERDUE: NZ$<span id="total_monthly_overdue"></span>
 										</span>
@@ -132,7 +132,7 @@
 								</div>
 								<!-- PAID -->
 								<div class="col-md-3">
-									<a id="paid_btn" href="javascript:void(0);">
+									<a target="blank" id="paid_btn" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/paid/${yearMonth}">
 										<span class="title">4.&nbsp;
 											PAID: NZ$<span id="total_monthly_paid"></span>
 										</span>
@@ -140,8 +140,8 @@
 								</div>
 								<!-- VOIDED -->
 								<div class="col-md-3">
-									<a id="void_btn" href="javascript:void(0);">
-										<span class="title">5.&nbsp;
+									<a target="blank" id="void_btn" href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/void/${yearMonth}">
+										<span class="title">6.&nbsp;
 											VOIDED: NZ$<span id="total_monthly_void_balance"></span>
 										</span>
 									</a>

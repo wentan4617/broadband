@@ -44,7 +44,9 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.pdf.CreditPDFCreator;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
@@ -54,6 +56,7 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
 @Controller
@@ -284,6 +287,38 @@ public class SaleController {
 		// Recycle
 		cod_plan = null;
 		
+		// BEGIN TO CREDIT INFO
+
+		// BEGIN CREDIT CARD YEAR
+		List<String> years = new ArrayList<String>();
+		for (int i = 14; i <= 99; i++) {
+			if(i<10){
+				years.add(String.format("%02d",i));
+			} else {
+				years.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD YEAR
+
+		// BEGIN CREDIT CARD MONTH
+		List<String> months = new ArrayList<String>();
+		for (int i = 1; i <= 12; i++) {
+			if(i<10){
+				months.add(String.format("%02d",i));
+			} else {
+				months.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD MONTH
+
+		model.addAttribute("months", months);
+		model.addAttribute("years", years);
+		
+		// Recycle
+		years = null;
+		months = null;
+
+		// END TO CREDIT INFO
 		
 		return "broadband-user/sale/online-ordering-confirm";
 	}
@@ -293,8 +328,20 @@ public class SaleController {
 	public String orderSave(Model model, 
 			@ModelAttribute("orderPlan") Plan plan, 
 			@ModelAttribute("orderCustomer") Customer customer, 
+			@RequestParam("card_type") String card_type,
+			@RequestParam("holder_name") String holder_name,
+			@RequestParam("card_number") String card_number,
+			@RequestParam("security_code") String security_code,
+			@RequestParam("expiry_month") String expiry_month,
+			@RequestParam("expiry_year") String expiry_year,
 			@RequestParam("optional_request") String optional_request,
 			RedirectAttributes attr, SessionStatus status, HttpServletRequest req) {
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		Integer sale_id = 0;
+		if("sales".equals(user.getUser_role()) || "agent".equals(user.getUser_role())){
+			sale_id = user.getId();
+		}
 		
 		customer.setPassword(TMUtils.generateRandomString(6));
 		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
@@ -305,11 +352,26 @@ public class SaleController {
 		customer.getCustomerOrder().setSale_id(customer.getId());
 		customer.getCustomerOrder().setSignature("unsigned");
 		
-		User user = (User) req.getSession().getAttribute("userSession");
 		customer.getCustomerOrder().setSale_id(user.getId());
 		customer.getCustomerOrder().setOptional_request(optional_request);
 		
 		this.crmService.registerCustomerCalling(customer);
+		
+		ApplicationPDFCreator appPDFCreator = new ApplicationPDFCreator();
+		appPDFCreator.setCustomer(customer);
+		appPDFCreator.setOrg(customer.getOrganization());
+		appPDFCreator.setCustomerOrder(customer.getCustomerOrder());
+		
+		String applicationPDFPath = null;
+		try {
+			applicationPDFPath = appPDFCreator.create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customer.getCustomerOrder().getId());
+		co.setOrder_pdf_path(applicationPDFPath);
+		this.crmService.editCustomerOrder(co);
 		
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
@@ -393,7 +455,50 @@ public class SaleController {
 		/*org = null;
 		co = null;*/
 		
-		return "redirect:/broadband-user/sale/online/ordering/order/credit/" + customer.getId() + "/" + customer.getCustomerOrder().getId();
+		
+		// BEGIN Credit Card
+		
+		if(!"".equals(holder_name) && !"".equals(card_number) && !"".equals(security_code)){
+			CustomerCredit cc = new CustomerCredit();
+			cc.setCard_type(card_type);
+			cc.setHolder_name(holder_name);
+			cc.setCard_number(card_number);
+			cc.setSecurity_code(security_code);
+			cc.setExpiry_date(
+					"20"+expiry_year
+					+"-"+expiry_month);
+			co = null;
+			co = new CustomerOrder();
+			co.setId(customer.getCustomerOrder().getId());
+			this.saleService.createCustomerCredit(cc);
+
+			// BEGIN CREDIT PDF
+			CreditPDFCreator cPDFCreator = new CreditPDFCreator();
+			cc.setCustomer(this.crmService.queryCustomerById(customer.getId()));
+			cPDFCreator.setCc(cc);
+			cPDFCreator.setCo(co);
+			cPDFCreator.setOrg(this.saleService.queryOrganizationByCustomerId(customer.getId()));
+			String creditPDFPath = null;
+			try {
+				creditPDFPath = cPDFCreator.create();
+			} catch (DocumentException | IOException e) {
+				e.printStackTrace();
+			}
+			co.getParams().put("id", co.getId());
+			co.setCredit_pdf_path(creditPDFPath);
+			this.crmService.editCustomerOrder(co);
+			cPDFCreator = null;
+			creditPDFPath = null;
+			// END CREDIT PDF
+			
+			
+			// Recycle
+			co = null;
+		}
+
+		// BEGIN Credit Card
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/by/"+sale_id;
 	}
 	
 	@RequestMapping(value = "/broadband-user/sales/online-ordering/redirect")
@@ -447,6 +552,9 @@ public class SaleController {
     		,@PathVariable(value = "order_id") int order_id) throws IOException {
 		String filePath = this.saleService.queryCustomerOrderFilePathById(order_id);
 		
+		System.out.println("order_id: "+order_id);
+		System.out.println("filePath: "+filePath);
+		
 		// get file path
         Path path = Paths.get(filePath);
         byte[] contents = null;
@@ -475,7 +583,14 @@ public class SaleController {
 			,@RequestParam("customer_id") Integer customer_id
 			,@RequestParam("order_id") Integer order_id
 			,BindingResult result
-			,RedirectAttributes attr) {
+			,RedirectAttributes attr
+			,HttpServletRequest req) {
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		Integer sale_id = 0;
+		if("sales".equals(user.getUser_role()) || "agent".equals(user.getUser_role())){
+			sale_id = user.getId();
+		}
 		
 		customerCredit.setExpiry_date(
 				"20"+customerCredit.getExpiry_year()
@@ -514,8 +629,8 @@ public class SaleController {
 		cPDFCreator = null;
 		creditPDFPath = null;
 		
-		
-		return "redirect:/broadband-user/sale/online-ordering-upload-result/"+customer_id+"/"+order_id;
+
+		return "redirect:/broadband-user/sale/online/ordering/view/by/"+sale_id;
 	}
 
 	@RequestMapping(value = "/broadband-user/sale/online-ordering-upload-result/{customer_id}/{order_id}")
@@ -955,6 +1070,35 @@ public class SaleController {
 		} else {
 			attr.addFlashAttribute("error", "Please input correct Request Record!");
 		}
+
+		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
+	}
+
+	// Update optional request
+	@RequestMapping(value = "/broadband-user/sale/online/ordering/status/edit", method = RequestMethod.POST)
+	public String doCustomerOrderStatusEdit(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("sale_id") Integer sale_id,
+			@RequestParam("status") String status,
+			@RequestParam("old_status") String old_status,
+			RedirectAttributes attr,
+			HttpServletRequest req) {
+
+		ProvisionLog pl = new ProvisionLog();
+		User user = (User) req.getSession().getAttribute("userSession");
+		pl.setUser_id(user.getId());
+		pl.setProcess_datetime(new Date());
+		pl.setOrder_sort("customer-order");
+		pl.setOrder_id_customer(order_id);
+		pl.setProcess_way(old_status+" to "+status);
+		
+		CustomerOrder co = new CustomerOrder();
+		co.setOrder_status(status);
+		co.getParams().put("id", order_id);
+		
+		this.crmService.editCustomerOrder(co, pl);
+		
+		attr.addFlashAttribute("success", "Order Has Successfully Been Voided!");
 
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
 	}
