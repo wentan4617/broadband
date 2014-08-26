@@ -21,10 +21,16 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
  
 
-demand version 2.2.8 2014-08-25
+demand version 2.3.0 2014-08-26
 
-* 
-
+* [检查sales下单后为什么点击Order Form下载按钮报500.](steven)
+* [在sales列表界面添加两个按钮：avoid掉pending和warning-pending的订单，download order form，也就是application form.](steven)
+* [将sales下单步骤缩短一步，只到order confirm即可，将credit card填写信息搬到order confirm里.](steven)
+* 在tm_customer_order表上添加两个字段：customer_type, address。为单用户对多订单逻辑做准备.(steven)
+* [在customer order界面限制只有account以上权限能看到credit card及操作其他牵扯到billing逻辑的关键信息.](steven)
+* [transaction图表总金额不对.](steven)
+* [invoice月统计排版有问题.](steven)
+* 在invoice各统计项点击后跳转到相应日期invoice列表.
 
 demand version 2.2.8 2014-08-25
 

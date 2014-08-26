@@ -119,9 +119,9 @@ th, td{
 										<c:if test="${order.order_pdf_path != null}">
 											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Order PDF"></a>&nbsp;
 										</c:if>
-										<c:if test="${order.credit_pdf_path != null}">
+										<%-- <c:if test="${order.credit_pdf_path != null && userSession.user_role!='sales' && userSession.user_role!='agent'}">
 											<a target="_blank" href="${ctx}/broadband-user/crm/customer/order/credit/pdf/download/${order.id}" class="glyphicon glyphicon-floppy-save" data-toggle="tooltip" data-placement="bottom" data-original-title="Download Credit PDF"></a>&nbsp;
-										</c:if>
+										</c:if> --%>
 										<c:if test="${order.credit_pdf_path == null}">
 											<a target="_blank" href="${ctx}/broadband-user/sale/online/ordering/order/credit/${order.customer_id}/${order.id}" class="glyphicon glyphicon-credit-card" data-toggle="tooltip" data-placement="bottom" data-original-title="Fill Credit Form"></a>&nbsp;
 										</c:if>|
@@ -130,11 +130,15 @@ th, td{
 										
 										<a href="javascript:void(0);" data-order-id="${order.id}" data-name="optional_request_btn" class="glyphicon glyphicon-info-sign" data-toggle="tooltip" data-placement="bottom" data-original-title="Sales's Optional Request"></a>&nbsp;
 										
+										<c:if test="${order.order_status=='pending' || order.order_status=='pending-warning' }">
+											<a href="javascript:void(0);" data-order-id="${order.id}" data-name="void_order_btn" class="glyphicon glyphicon-ban-circle" data-toggle="tooltip" data-placement="bottom" data-original-title="Void this order!"></a>&nbsp;
+										</c:if>
+										
 									</td>
 								</tr>
 							</form>
 							
-							<!-- Modal -->
+							<!-- Optional Request Modal -->
 							<form action="${ctx}/broadband-user/sale/online/ordering/optional_request/edit" method="post">
 							<input type="hidden" name="order_id" value="${order.id}" />
 							<input type="hidden" name="sale_id" value="${sale_id}"/>
@@ -150,6 +154,32 @@ th, td{
 										</div>
 										<div class="modal-footer">
 											<button type="submit" class="btn btn-primary" >Confirm to update record</button>
+										</div>
+									</div>
+								</div>
+							</div>
+							</form>
+							
+							<!-- Status Modal -->
+							<form action="${ctx}/broadband-user/sale/online/ordering/status/edit" method="post">
+							<input type="hidden" name="order_id" value="${order.id}" />
+							<input type="hidden" name="old_status" value="${order.order_status }" />
+							<input type="hidden" name="status" value="void" />
+							<input type="hidden" name="sale_id" value="${sale_id}"/>
+							<div class="modal fade" id="orderStatusModel_${order.id}" tabindex="-1" role="dialog" aria-labelledby="orderStatusModalLabel" aria-hidden="true">
+								<div class="modal-dialog">
+									<div class="modal-content">
+										<div class="modal-header">
+											<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+											<h4 class="modal-title" id="orderStatusModalLabel">Void Order: </h4>
+										</div>
+										<div class="modal-body">
+											<p>
+												Sure to void this order? this order is in ${order.order_status } status and it is allowed to be void.
+											</p>
+										</div>
+										<div class="modal-footer">
+											<button type="submit" class="btn btn-primary" >Confirm to void order</button>
 										</div>
 									</div>
 								</div>
@@ -246,6 +276,34 @@ th, td{
 	</div><!-- /.modal -->
 </form>
 
+<!-- Void Order Modal -->
+<form class="form-horizontal" action="${ctx }/broadband-user/sale/online/ordering/order/upload_previous_provider_invoice_pdf" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="order_id"/>
+	<input type="hidden" name="customer_id"/>
+	<input type="hidden" name="sale_id"/>
+	<div class="modal fade" id="uploadPreviousProviderInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="uploadPreviousProviderInvoiceModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+	        <h3 class="modal-title text-danger" id="uploadPreviousProviderInvoiceModalLabel"><strong>Upload Provider Invoice PDF</strong></h3>
+	      </div>
+	      <div class="modal-body">
+			<div class="form-group">
+				<label class="control-label col-md-6">Previous Provider Invoice Path</label>
+				<div class="col-md-4">
+					<input type="file" name="previous_provider_invoice_path" class="form-control input-sm" placeholder="Choose a file"/>
+				</div>
+			</div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="submit" class="btn btn-success">Upload File</button>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</form>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
@@ -285,6 +343,10 @@ th, td{
 	
 	$('a[data-name="optional_request_btn"]').click(function(){
 		$('#optionalRequestModel_'+$(this).attr('data-order-id')).modal('show');
+	});
+	
+	$('a[data-name="void_order_btn"]').click(function(){
+		$('#orderStatusModel_'+$(this).attr('data-order-id')).modal('show');
 	});
 	
 })(jQuery);

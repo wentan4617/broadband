@@ -280,6 +280,71 @@
 							</div>
 						</div>
 						<hr/>
+							<h2>Account Holder Information (optional)</h2>
+							<div class="row">
+								<form class="form-horizontal">
+									<div class="form-group">
+										<label class="control-label col-sm-2">Card Type</label>
+										<div class="col-sm-10">
+											<ul class="list-inline topup-list" style="margin: 5px 0 0 0;">
+												<li>
+													<label style="cursor:pointer;">
+														<input type="radio" name="card_type" value="VISA" checked="checked" /> &nbsp; 
+														<strong>VISA</strong>
+													</label>
+												</li>
+												<li>
+													<label style="cursor:pointer;">
+														<input type="radio" name="card_type" value="MASTERCARD" /> &nbsp; 
+														<strong>MasterCard</strong>
+													</label>
+												</li>
+											</ul>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="control-label col-sm-12"></label>
+									</div>
+									<div class="form-group">
+										<label for="holder_name" class="col-sm-2 control-label">Holder Name</label>
+										<div class="col-sm-3">
+											<input id="holder_name" class="form-control" placeholder="Holder Name" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="card_number" class="col-sm-2 control-label">Card Number</label>
+										<div class="col-sm-3">
+											<input id="card_number" class="form-control" placeholder="Card Number" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="security_code" class="col-sm-2 control-label">Security Code</label>
+										<div class="col-sm-2">
+											<input id="security_code" class="form-control" placeholder="Security Code" />
+										</div>
+									</div>
+									<div class="form-group">
+										<label for="expiry_month" class="col-sm-2 control-label">Exp MONTH</label>
+										<div class="col-sm-2">
+											<select style="width:68px;" class="form-control" id="expiry_month">
+												<c:forEach var="month" items="${months}">
+													<option value="${month}">${month}</option>
+												</c:forEach>
+											</select>
+										</div>
+										<label for="expiry_year" class="col-sm-1 control-label">YEAR</label>
+										<div class="col-sm-2">
+											<select style="width:68px;" class="form-control" id="expiry_year">
+												<c:forEach var="year" items="${years}">
+													<option value="${year}">${year}</option>
+												</c:forEach>
+											</select>
+										</div>
+									</div>
+								</form>
+							</div>
+						
+						<hr/>
 						<div class="row">
 							<div class="col-sm-3 col-md-2">
 								<a href="${ctx}/broadband-user/sale/online/ordering/order/${orderPlan.id}" class="btn btn-success btn-lg btn-block" >Back</a>
@@ -296,7 +361,7 @@
 									</ul>
 								</div> -->
 								
-								<a  class="btn btn-success btn-lg btn-block"  data-toggle="modal" data-target="#save_order_model"  >Bank Deposit</a>
+								<a  class="btn btn-success btn-lg btn-block"  data-toggle="modal" data-target="#save_order_model" id="confirm_order_btn"  >Bank Deposit</a>
 							</div>
 						</div>
 						
@@ -309,6 +374,12 @@
 
 <!-- Modal -->
 <form class="form-horizontal" action="${ctx}/broadband-user/sale/online/ordering/order/confirm/save" method="post">
+	<input type="hidden" id="card_type" name="card_type" value="VISA" />
+	<input type="hidden" name="holder_name" />
+	<input type="hidden" name="card_number" />
+	<input type="hidden" name="security_code" />
+	<input type="hidden" name="expiry_month" />
+	<input type="hidden" name="expiry_year" />
 	<div class="modal fade" id="save_order_model" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -341,8 +412,26 @@
 <jsp:include page="footer.jsp" />
 <jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
+<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript">
 (function($){
+	$(':radio').iCheck({
+		checkboxClass : 'icheckbox_square-green',
+		radioClass : 'iradio_square-green'
+	});
+	
+	$('input[name="card_type"]').on('ifChecked',function(){
+		$('#card_type').val($(this).val());
+	});
+	
+	$('#confirm_order_btn').click(function(){
+		$('input[name="holder_name"]').val($('#holder_name').val());
+		$('input[name="card_number"]').val($('#card_number').val());
+		$('input[name="security_code"]').val($('#security_code').val());
+		$('input[name="expiry_month"]').val($('#expiry_month').val());
+		$('input[name="expiry_year"]').val($('#expiry_year').val());
+	});
 	
 	/*$('#save_order').click(function(e){
 		e.preventDefault();
