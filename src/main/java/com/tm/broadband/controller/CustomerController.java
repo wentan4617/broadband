@@ -1159,7 +1159,7 @@ public class CustomerController {
          byte[] contents = null;
          // transfer file contents to bytes
          contents = Files.readAllBytes( path );
-         
+          
          HttpHeaders headers = new HttpHeaders();
          // set spring framework media type
          headers.setContentType(MediaType.parseMediaType("application/pdf"));
@@ -1244,7 +1244,7 @@ public class CustomerController {
 			customer.setCustomerOrder(customer.getCustomerOrders().get(0));
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
 			
-			/*Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
@@ -1261,7 +1261,7 @@ public class CustomerController {
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
 			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());*/
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			
 			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
 			
@@ -1464,6 +1464,7 @@ public class CustomerController {
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
+		customer.setBalance(0d);
 	
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		

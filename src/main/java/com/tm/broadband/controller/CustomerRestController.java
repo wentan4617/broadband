@@ -363,69 +363,75 @@ public class CustomerRestController {
 	public List<DateUsage> doCustomerUsageView(HttpServletRequest req,
 			@PathVariable("calculator_date") String calculator_date){
 		
-		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
-		CustomerOrder co = customer.getCustomerOrders().get(0);
-		String svlan = co.getSvlan()
-				, cvlan = co.getCvlan();
-		
-		if (svlan == null || cvlan == null) 
-			return null;
-		
-		String type = co.getCustomerOrderDetails().get(0).getDetail_plan_type();
-		
-		Calendar c = Calendar.getInstance();
-		
-		String[] date_array = calculator_date.split("-");
-		int year = Integer.parseInt(date_array[0]);
-		int month = Integer.parseInt(date_array[1]);
-		
-		c.set(Calendar.YEAR, year);
-		c.set(Calendar.MONTH, month-1);
-		
-		int days = TMUtils.judgeDay(year, month);
-
 		List<DateUsage> dateUsages = new ArrayList<DateUsage>();
-		for (int i = 0; i < days; i++) {
-			c.set(Calendar.DAY_OF_MONTH, i + 1);
-			Date date = c.getTime();
+		
+		try {
+			Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+			CustomerOrder co = customer.getCustomerOrders().get(0);
+			String svlan = co.getSvlan()
+					, cvlan = co.getCvlan();
 			
-			DateUsage dateUsage = new DateUsage();
-			dateUsage.setDate(TMUtils.dateFormatYYYYMMDD(date));
-			dateUsages.add(dateUsage);
-		}
-		
-		NetworkUsage u = new NetworkUsage();
-		String vlan = "";
-		u.getParams().put("where", "query_currentMonth");
-		if ("ADSL".equals(type)) {
-			vlan = "d" + svlan + "/" + String.valueOf(Integer.parseInt(cvlan) + 1600);
-		} else if ("VDSL".equals(type)){
-			vlan = "d" + svlan + "/" + cvlan;
-		} else if ("UFB".equals(type)) {
-			vlan = "u" + svlan + "/" + cvlan;
-		}
-		u.getParams().put("vlan", vlan);
-		u.getParams().put("currentYear", year);
-		u.getParams().put("currentMonth", month);
-		
-		List<NetworkUsage> usages = this.dataService.queryUsages(u);
+			if (svlan == null || cvlan == null) 
+				return null;
+			
+			String type = co.getCustomerOrderDetails().get(0).getDetail_plan_type();
+			
+			Calendar c = Calendar.getInstance();
+			
+			String[] date_array = calculator_date.split("-");
+			int year = Integer.parseInt(date_array[0]);
+			int month = Integer.parseInt(date_array[1]);
+			
+			c.set(Calendar.YEAR, year);
+			c.set(Calendar.MONTH, month-1);
+			
+			int days = TMUtils.judgeDay(year, month);
 
-		if (usages != null && usages.size() > 0) {
-			for (NetworkUsage usage: usages) {
-				for (DateUsage dateUsage: dateUsages) {
-					//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
-					if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
-						if (dateUsage.getUsage() != null) {
-							dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
-							dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
-						} else {
-							dateUsage.setUsage(usage);
+			
+			for (int i = 0; i < days; i++) {
+				c.set(Calendar.DAY_OF_MONTH, i + 1);
+				Date date = c.getTime();
+				
+				DateUsage dateUsage = new DateUsage();
+				dateUsage.setDate(TMUtils.dateFormatYYYYMMDD(date));
+				dateUsages.add(dateUsage);
+			}
+			
+			NetworkUsage u = new NetworkUsage();
+			String vlan = "";
+			u.getParams().put("where", "query_currentMonth");
+			if ("ADSL".equals(type)) {
+				vlan = "d" + svlan + "/" + String.valueOf(Integer.parseInt(cvlan) + 1600);
+			} else if ("VDSL".equals(type)){
+				vlan = "d" + svlan + "/" + cvlan;
+			} else if ("UFB".equals(type)) {
+				vlan = "u" + svlan + "/" + cvlan;
+			}
+			u.getParams().put("vlan", vlan);
+			u.getParams().put("currentYear", year);
+			u.getParams().put("currentMonth", month);
+			
+			List<NetworkUsage> usages = this.dataService.queryUsages(u);
+
+			if (usages != null && usages.size() > 0) {
+				for (NetworkUsage usage: usages) {
+					for (DateUsage dateUsage: dateUsages) {
+						//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+						if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
+							if (dateUsage.getUsage() != null) {
+								dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
+								dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
+							} else {
+								dateUsage.setUsage(usage);
+							}
+							System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+							break;
 						}
-						System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
-						break;
 					}
 				}
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		
 		return dateUsages;
