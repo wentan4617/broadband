@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -1172,7 +1173,7 @@ public class CustomerController {
     @RequestMapping(value = "/customer/ordering-form/checkout", method = RequestMethod.POST)
 	public String orderingFormCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
     	
-    	Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
 
 		GenerateRequest gr = new GenerateRequest();
 
@@ -1197,11 +1198,15 @@ public class CustomerController {
 			) throws Exception {
 		
 		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+		
+		System.out.println("customer: " + new ObjectMapper().writeValueAsString(customer));
 
 		Response responseBean = null;
 
 		if (result != null)
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+	
+		//System.out.println("responseBean: " + new ObjectMapper().writeValueAsString(responseBean));
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
@@ -1239,7 +1244,7 @@ public class CustomerController {
 			customer.setCustomerOrder(customer.getCustomerOrders().get(0));
 			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
 			
-			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+			/*Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
@@ -1256,7 +1261,7 @@ public class CustomerController {
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
 			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());*/
 			
 			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
 			

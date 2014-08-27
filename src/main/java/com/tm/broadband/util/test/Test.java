@@ -3,6 +3,8 @@ package com.tm.broadband.util.test;
 import java.util.Calendar;
 import java.util.Date;
 
+import org.codehaus.jackson.map.ObjectMapper;
+
 import com.tm.broadband.model.Customer;
 
 
@@ -11,6 +13,14 @@ import com.tm.broadband.model.Customer;
 public class Test {
 
 	public static void main(String[] args) throws Exception {
+		
+		Customer customer = null;
+		//customer.setId(11);
+		//customer.setLast_name("aa");
+		
+		ObjectMapper mapper = new ObjectMapper();
+		
+		System.out.print(new ObjectMapper().writeValueAsString(customer));
 
 		// String[] pwds = new String[] { "1", "5", "9", "8", "7", "6", "4",
 		// "3", "2", "q",
@@ -145,9 +155,9 @@ public class Test {
 
 //		System.out.println(TMUtils.retrieveMonthAbbrWithDate(TMUtils.parseDateYYYYMMDD("2014-06-09")));
 		
-		System.out.println("A".equals(String.valueOf("abc".toUpperCase().charAt(0))));
-		
-		Console.log(new Customer());
+//		System.out.println("A".equals(String.valueOf("abc".toUpperCase().charAt(0))));
+//		
+//		Console.log(new Customer());
 		
 	}
 
