@@ -242,11 +242,25 @@
 	
 	<div class="form-group">
 		<label for="balance" class="control-label col-md-4">Credit</label>
-		<div class="col-md-4">
-			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
-				<input type="text" id="balance" name="balance" value="<.=Number(balance).toFixed(2).>" class="form-control" data-error-field />
-			<. } else { .>
-				<input type="text" id="balance" name="balance" value="<.=Number(balance).toFixed(2).>" class="form-control" disabled="disabled" data-error-field />
+		<div class="col-md-2">
+	      <p class="form-control-static"><.=Number(balance).toFixed(2).></p>
+		</div>
+		<div class="col-md-3">
+			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') { .>
+			<div class="btn-group">
+				<button type="button" class="btn btn-primary btn-xs" data-name="topup_account_credit_btn">Make Defrayment</button>
+				<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" role="menu">
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="credit-card" ><span class="glyphicon glyphicon-credit-card"></span>&nbsp;&nbsp;Credit Card</a></li>
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="a2a" ><span class="glyphicon glyphicon-transfer"></span>&nbsp;&nbsp;Account2Account</a></li>
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="ddpay" ><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="cash" ><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="cyberpark-credit" ><span class="glyphicon glyphicon-star-empty"></span>&nbsp;&nbsp;CyberPark Credit</a></li>
+					<li><a href="javascript:void(0);" data-name="topup_account_credit" data-way="voucher" ><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
+				</ul>
+			</div>
 			<. } .>
 		</div>
 	</div>
@@ -329,4 +343,43 @@
 	</div>
 </form>
 
+<!-- confirmTopupAccountCreditModal -->
+<div class="modal fade" id="confirmTopupAccountCreditModal" tabindex="-1" role="dialog" aria-labelledby="confirmTopupAccountCreditModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="confirmPayWayModalLabel">
+					<strong data-name="confirm_topup_account_credit_modal_title"></strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group" style="display:none;" data-name="defray_amount_input">
+					<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
+					<div class="col-md-6">
+						<input name="defray_amount" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
+					</div>
+				</div>
+				<div class="form-group" style="display:none;" data-name="voucher_pin_number_input">
+					<label for="pin_number" class="control-label col-md-6">Pin Number:</label>
+					<div class="col-md-6">
+						<input id="pin_number" name="pin_number" class="form-control input-sm" type="text" placeholder="Pin Number"/>
+					</div>
+				</div>
+				<br/>
+				<div class="form-group">
+					<p data-name="confirm_topup_account_credit_modal_content">
+						<strong></strong>
+					</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_topup_account_credit_modal_btn" data-dismiss="modal"></a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 

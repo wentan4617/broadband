@@ -19,7 +19,23 @@ Total Mobile Solution Internet Service Web Project
 
 7月到现在还未出账单的order：700056，周一和Gavin讨论看怎么解决
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
- 
+
+demand version 2.3.5 2014-08-27
+
+* [在生成只有拨打记录的账单时在invoice的memo里记录上calling-only.](steven)
+* [在每次生成账单时如果当前账单的memo包含calling-only则不将plan计入invoice detail.](steven)
+* [将客户account credit的添加方式改为类似invoice的销帐方式，点击Topup，输入客户所付金额确认.](steven)
+* [检查Business第一次生成的账单，如果credit超过balance的话是否会将balance变成负值.](steven)
+* [看看如何能够判断出上个月账单的余额负数到底是否有credit还是只是单单的paid amount，如果有credit则将上个月balance里所剩credit累加到这个月，这个月的final_payable_amount减去所剩credit.](steven)
+    初步判定的算法为：（Balance为负数的情况）
+        情况一： paid小于等于final payable amount，剩下的都是credit
+            paid <= final payable amount ? abs(balance)
+        情况二： paid大于final payable amount，如果无credit（balance == paid - final payable amount）则剩下的都是paid
+            (paid > final payable amount) && (balance == paid - final payable amount) ? abs(balance)
+        情况三： paid大于final payable amount，如果有credit（balance > paid - final payable amount）则剩下的paid是paid - final payable amount的绝对值，credit是balance - (paid - final payable amount)
+* [出账时判断如果账单的balance小于等于0，则状态为paid，自动抵消该账单.](steven)
+* [在出账判断如果prepayment不够抵消账单，则查customer的account credit，如果account credit不为空且有余额则接着抵消账单余额，并且该account credit的抵消记录也作为一条对应该invoice的card_name为account-credit的transaction记录.](steven)
+
 
 demand version 2.3.0 2014-08-26
 
@@ -30,11 +46,11 @@ demand version 2.3.0 2014-08-26
 * [在customer order界面限制只有account以上权限能看到credit card及操作其他牵扯到billing逻辑的关键信息.](steven)
 * [transaction图表总金额不对.](steven)
 * [invoice月统计排版有问题.](steven)
-* 在invoice各统计项点击后跳转到相应日期invoice列表.
+* [在invoice各统计项点击后跳转到相应日期invoice列表.](steven)
 
 demand version 2.2.8 2014-08-25
 
-* invoice邮件及短信上显示最终应付金额，以及逾期日期.(steven)
+* [invoice邮件及短信上显示最终应付金额，短信显示invoice逾期日期.](steven)
 * [变成pending-warning的订单不包含business的.](steven)
 
 
@@ -57,7 +73,6 @@ demand version 2.2.5 2014-08-22
            3. and date_format(next_invoice_create_date,'%Y-%m') > date_format(now(),'%Y-%m') : 下次生成账单大于当月.(steven)
            4. and detail_type = 'pstn' and (pstn_number!=null && !"".equals(pstn_number.trim())) : order detail类型有pstn并且pstn号码不为空.(steven)
 * [出账时根据used的true false来取改成用invoice_id来取，invoice_id是空的则calling detail为未使用，否则已使用.](steven)
-* Regenerate Invoice时判断如果当前账单detail里不包含plan则当前账单为拨打记录账单.(steven)
 
 
 demand version 2.2.1 2014-08-21
@@ -68,9 +83,7 @@ demand version 2.2.1 2014-08-21
 demand version 2.1.9 2014-08-20
 
 * [sale的view online orders界面的optional_request开放更改权限，显示所有order对应的request_record修改按钮.](steven)
-* 检查Business第一次生成的账单，如果credit超过balance的话是否会将balance变成负值.(steven)
-* 看看如何能够判断出上个月账单的余额负数到底是否有credit还是只是单单的paid amount，如果有credit则将上个月balance里所剩credit累加到这个月，这个月的final_payable_amount减去所剩credit.(steven)
-
+        
 
 demand version 2.1.8 2014-08-19
  
