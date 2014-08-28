@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -1158,7 +1159,7 @@ public class CustomerController {
          byte[] contents = null;
          // transfer file contents to bytes
          contents = Files.readAllBytes( path );
-         
+          
          HttpHeaders headers = new HttpHeaders();
          // set spring framework media type
          headers.setContentType(MediaType.parseMediaType("application/pdf"));
@@ -1172,7 +1173,7 @@ public class CustomerController {
     @RequestMapping(value = "/customer/ordering-form/checkout", method = RequestMethod.POST)
 	public String orderingFormCheckout(Model model, HttpServletRequest req, RedirectAttributes attr) {
     	
-    	Customer customer =  (Customer) req.getSession().getAttribute("customerSession");
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
 
 		GenerateRequest gr = new GenerateRequest();
 
@@ -1197,11 +1198,15 @@ public class CustomerController {
 			) throws Exception {
 		
 		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+		
+		System.out.println("customer: " + new ObjectMapper().writeValueAsString(customer));
 
 		Response responseBean = null;
 
 		if (result != null)
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+	
+		//System.out.println("responseBean: " + new ObjectMapper().writeValueAsString(responseBean));
 
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
@@ -1459,6 +1464,7 @@ public class CustomerController {
 		customer.setUser_name(customer.getLogin_name());
 		customer.setStatus("active");
 		customer.getCustomerOrder().setOrder_status("pending");
+		customer.setBalance(0d);
 	
 		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
 		

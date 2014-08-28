@@ -153,6 +153,9 @@
 		<url-pattern>/customer/details/*</url-pattern>
 		<url-pattern>/customer/payment/*</url-pattern>
 		<url-pattern>/customer/billing/*</url-pattern>
+		<url-pattern>/customer/ordering-form/checkout</url-pattern>
+		<url-pattern>/customer/invoice/checkout</url-pattern>
+		<url-pattern>/customer/topup/checkout</url-pattern>
 	</filter-mapping>
 
 	<!-- user session filter -->

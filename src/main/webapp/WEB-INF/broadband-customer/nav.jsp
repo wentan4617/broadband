@@ -15,17 +15,17 @@
 	<div class="container">
 	
 		<div class="navbar-header">
-			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" style="background-color:#5cb85c;">
-				<span class="icon-bar" style="background-color:#fff;"></span> 
-				<span class="icon-bar" style="background-color:#fff;"></span> 
-				<span class="icon-bar" style="background-color:#fff;"></span>
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+				<span class="icon-bar" ></span> 
+				<span class="icon-bar" ></span> 
+				<span class="icon-bar" ></span>
 			</button>
 			<a class="navbar-brand" href="${ctx }/home" rel="${nofollow}">
 				<span class="logo"></span> 
 			</a>
 		</div>
 		
-		<div class="navbar-collapse collapse">
+		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
 				<li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li>
 				<li><a href="${ctx }/plans/broadband" rel="nofollow">Broadband Plan</a></li>
@@ -66,27 +66,30 @@
 				</c:if>
 			</ul>
 			
-			<c:if test="${customerSession != null }">
-				<p class="navbar-text pull-right" >
-					<a href="${ctx }/customer/home"  class="navbar-link" style="margin-right:10px;">
-						<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
+			
+			<p class="navbar-text navbar-right" >
+				<c:if test="${customerSession != null }">
+					<a href="${ctx }/customer/home" class="navbar-link" >
+						<span class="glyphicon glyphicon-user"></span>
 						<c:choose>
 							<c:when test="${customerSession.customer_type == 'personal' }">
 								${customerSession.first_name } ${customerSession.last_name }
 							</c:when>
 							<c:when test="${customerSession.customer_type == 'business' }">
-								${customerSession.company_name }
+								${customerSession.organization.org_name }
 							</c:when>
 						</c:choose>
 					</a>
 					<a href="${ctx}/signout" rel="nofollow" data-toggle="tooltip" data-placement="bottom" data-original-title="Sign out">
-						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>
+						<span class="glyphicon glyphicon-log-out"></span>
 					</a>
-				</p>
-			</c:if>
-			<c:if test="${customerSession == null }">
-	 			<button type="button" class="btn btn-success navbar-btn navbar-right" onclick="window.location.href='${ctx }/login';"><span class="glyphicon glyphicon-log-in"></span> Login</button>
-			</c:if>
+				</c:if>
+				<c:if test="${customerSession == null }">
+					<a href="${ctx }/login" class="navbar-link" ><span class="glyphicon glyphicon-log-in"></span> Sign in</a>
+				</c:if>
+			</p>
+			
+			
 		</div>
 	</div>
 </div>
