@@ -378,7 +378,7 @@
 	<!-- trigger -->
 	<bean id="customerCreateNextCallingInvoicePDFTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
 		<property name="jobDetail" ref="customerCreateNextCallingInvoicePDFJob" />
-		<property name="cronExpression" value="0 10 13 20 * ?"></property>
+		<property name="cronExpression" value="0-59/30 * * * * ?"></property>
 		<!-- every 1 minute -->
 		<!-- 0 */1 * * * ? -->
 		<!-- every 30 seconds -->

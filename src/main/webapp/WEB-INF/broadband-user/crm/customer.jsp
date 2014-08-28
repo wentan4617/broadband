@@ -160,7 +160,103 @@
 					$btn.button('reset');
 			    });
 			});
-			// END customer info modal area	
+			// END customer info modal area
+			
+			// BEGIN Topup Account Credit
+			$('a[data-name="topup_account_credit"]').click(function(){
+				var pay_way = $(this).attr('data-way');
+				$('a[data-name="confirm_topup_account_credit_modal_btn"]').attr('data-way', pay_way);
+				if(pay_way == 'ddpay'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Use DDPay to topup account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + defray amount).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="defray_amount_input"]').css('display','');
+				} else if(pay_way == 'a2a'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Use A2A to topup account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + defray amount).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="defray_amount_input"]').css('display','');
+				} else if(pay_way == 'cash'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Use Cash to topup account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + defray amount).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="defray_amount_input"]').css('display','');
+				}else if(pay_way == 'credit-card'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Use Credit Card to topup account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + defray amount).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="defray_amount_input"]').css('display','');
+				} else if(pay_way == 'cyberpark-credit'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Give a CyberPark Credit to topup account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + defray amount).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="defray_amount_input"]').css('display','');
+				} else if(pay_way == 'voucher'){
+					$('strong[data-name="confirm_topup_account_credit_modal_title"]').html('Topup a voucher to this customer\'s account credit?');
+					$('p[data-name="confirm_topup_account_credit_modal_content"]').html('This will assign account credit to (account credit + voucher\'s face value).<br/><br/>This will record your identity and manipulation time.<br/>');
+					$('a[data-name="confirm_topup_account_credit_modal_btn"]').html('Confirm');
+					$('div[data-name="voucher_pin_number_input"]').css('display','');
+				}
+				$('button[data-name="topup_account_credit_btn"]').button('loading');
+				$('#confirmTopupAccountCreditModal').modal('show');
+			});
+			// Confirm PayWay
+			$('a[data-name="confirm_topup_account_credit_modal_btn"]').click(function(){
+				this.id = '${customer.id}';
+				var pay_way = $(this).attr('data-way');
+				var url = '';
+				if(pay_way != 'voucher'){
+					url = '${ctx}/broadband-user/crm/customer/account-credit/defrayment/pay-way';
+				} else if(pay_way == 'voucher'){
+					url = '${ctx}/broadband-user/crm/customer/account-credit/defrayment/voucher';
+				}
+				if(pay_way == 'ddpay'){
+					var data = {
+						customer_id : this.id
+						,process_way : 'DDPay'
+						,defray_amount : $('input[name="defray_amount"]').val()
+					};
+				} else if(pay_way == 'a2a'){
+					var data = {
+						customer_id : this.id
+						,process_way : 'Account2Account'
+						,defray_amount : $('input[name="defray_amount"]').val()
+					};
+				} else if(pay_way == 'credit-card'){
+					var data = {
+						customer_id : this.id
+						,process_way : 'Credit Card'
+						,defray_amount : $('input[name="defray_amount"]').val()
+					};
+				} else if(pay_way == 'cyberpark-credit'){
+					var data = {
+						customer_id : this.id
+						,process_way : 'CyberPark Credit'
+						,defray_amount : $('input[name="defray_amount"]').val()
+					};
+				} else if(pay_way == 'cash'){
+					var data = {
+						customer_id : this.id
+						,process_way : 'Cash'
+						,defray_amount : $('input[name="defray_amount"]').val()
+					};
+				} else if(pay_way == 'voucher'){
+					var data = {
+						customer_id : this.id
+						,pin_number : $('input[name="pin_number"]').val()
+					};
+				}
+				$.post(url, data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#confirmTopupAccountCreditModal').on('hidden.bs.modal', function(){
+				$('button[data-name="topup_account_credit_btn"]').button('reset');
+				$.getCustomerInfo();
+				$.getTxPage(1);
+			});
+			// END Topup Account Credit
+			
 		}, "json");
 	}
 
@@ -319,6 +415,7 @@
 					$.post(url, data, function(json){
 						$.jsonValidation(json, 'right');
 						$.getInvoicePage(1);
+						$.getCustomerInfo();
 					}, "json");
 				});
 				// Reset button when hidden regenerate most recent invoice dialog

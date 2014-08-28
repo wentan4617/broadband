@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +53,7 @@ import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
@@ -1108,6 +1111,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					calDueDate.add(Calendar.DATE, 6);
 					ci.setDue_date(calDueDate.getTime());
 					ci.setStatus("unpaid");
+					ci.setMemo("calling-only");
 					
 					ci.setAmount_paid(0d);
 					ci.setAmount_payable(totalAmountPayable);
@@ -1993,6 +1997,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					System.out.println("!isRegenerateInvoice: "+!isRegenerateInvoice);
 					System.out.println("isRegenerateInvoice && \"paid\".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date()): "+(isRegenerateInvoice && "paid".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date())));
 					if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
+
+						// If contains calling-only then this is a calling record invoice
+						if(ci.getMemo()!=null && ci.getMemo().contains("calling-only")){
+							continue;
+						}
 						
 						Calendar cal = Calendar.getInstance();
 						Date startFrom = null;
@@ -2092,25 +2101,46 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			}
 		}
 
+		// Automatically assign previous invoice's prepayment to current invoice if have
 		if(!isFirst){
 			// If previous invoice's balance less than zero
 			if(cpi.getBalance()<0){
-				ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
 				
-				cpi.setBalance(0d);
-				cpi.setAmount_paid(cpi.getFinal_payable_amount());
-				cpi.getParams().put("id", cpi.getId());
-				this.ciMapper.updateCustomerInvoice(cpi);
+				CustomerInvoice cpiUpdate = new CustomerInvoice();
 				
-				ci.setStatus("not_pay_off");
-			
-			} else {
-				if(!isRegenerateInvoice){
-					ci.setStatus("unpaid");
+				// previous final payable < 0 && previous paid == 0 ? (totalCreditBack = totalCreditBack + abs(previous balance), previous final payable = 0d), prepayment is credit
+				if(cpi.getFinal_payable_amount() < 0 && cpi.getAmount_paid()==0){
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, Math.abs(cpi.getBalance()));
+					
+					cpiUpdate.setFinal_payable_amount(0d);
+					
+				// (previous paid > previous final payable) && (abs(previous balance) == previous paid - previous final payable) && previous final payable > 0 ? (current paid = current paid + abs(previous balance), previous paid = previous final payable), prepayment is paid
+				} else if(cpi.getAmount_paid() > cpi.getFinal_payable_amount()
+				  && Math.abs(cpi.getBalance()) == TMUtils.bigSub(cpi.getAmount_paid(), cpi.getFinal_payable_amount())
+				  && cpi.getFinal_payable_amount() > 0){
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
+
+					cpiUpdate.setAmount_paid(cpi.getFinal_payable_amount());
+					
+				// (previous paid > previous final payable) && (abs(previous balance) > previous paid - previous final payable) ? (current paid = current paid + (abs(previous balance) - abs(previous final payable)), totalCreditBack = (totalCreditBack + (abs(previous balance) - previous paid))), prepayment is credit&paid 
+				} else if(cpi.getAmount_paid() > cpi.getFinal_payable_amount()
+				 && Math.abs(cpi.getBalance()) >= TMUtils.bigSub(cpi.getAmount_paid(), cpi.getFinal_payable_amount())){
+					// ciPaid = ciPaid + (abs(cpiBalance) - abs(cpiFinalPayable))
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), TMUtils.bigSub(Math.abs(cpi.getBalance()), Math.abs(cpi.getFinal_payable_amount()))));
+					// totalCreditBack = totalCreditBack + (abs(cpiBalance) - (cpiPaid - cpiFinalPayable))
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigSub(Math.abs(cpi.getBalance()), cpi.getAmount_paid()));
+					
+					cpiUpdate.setAmount_paid(0d);
+					cpiUpdate.setFinal_payable_amount(0d);
+					
 				}
+				
+				cpiUpdate.setBalance(0d);
+				cpiUpdate.getParams().put("id", cpi.getId());
+				cpiUpdate.setStatus("paid");
+				this.ciMapper.updateCustomerInvoice(cpiUpdate);
+				
 			}
-		} else {
-			ci.setStatus("unpaid");
 		}
 
 		// store company detail begin
@@ -2143,15 +2173,70 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		
+		// If balance greater than 0
+		if(ci.getBalance()>0){
+			// If customer account credit greater than 0, then use account credit to defray invoice balance 
+			if(c.getBalance()!=null && c.getBalance()>0){
+				
+				Customer cUpdate = new Customer();
+				CustomerTransaction ct = new CustomerTransaction();
+				
+				// If customer account credit greater than balance
+				if(c.getBalance() >= ci.getBalance()){
+					
+					ct.setAmount(ci.getBalance());
+					ct.setAmount_settlement(ci.getBalance());
+					ct.setCard_name("account-credit");
+					ct.setCustomer_id(c.getId());
+					ct.setOrder_id(co.getId());
+					ct.setInvoice_id(ci.getId());
+					ct.setTransaction_date(new Date());
+					ct.setCurrency_input("NZD");
+					
+					cUpdate.setBalance(TMUtils.bigSub(c.getBalance(), ci.getBalance()));
+					ci.setAmount_paid(ci.getFinal_payable_amount());
+					ci.setBalance(0d);
+				// Else customer account credit less than balance
+				} else {
+					
+					ct.setAmount(c.getBalance());
+					ct.setAmount_settlement(c.getBalance());
+					ct.setCard_name("account-credit");
+					ct.setCustomer_id(c.getId());
+					ct.setOrder_id(co.getId());
+					ct.setInvoice_id(ci.getId());
+					ct.setTransaction_date(new Date());
+					ct.setCurrency_input("NZD");
+					
+					ci.setBalance(TMUtils.bigSub(ci.getBalance(), c.getBalance()));
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), c.getBalance()));
+					cUpdate.setBalance(0d);
+				}
+				cUpdate.getParams().put("id", c.getId());
+				this.customerMapper.updateCustomer(cUpdate);
+				this.customerTransactionMapper.insertCustomerTransaction(ct);
+			}
+		}
+		
+		if(ci.getBalance()<=0){
+			ci.setStatus("paid");
+			
+		// Else paid some fee
+		} else if(ci.getAmount_paid()!=null && ci.getAmount_paid()>0){
+			ci.setStatus("not_pay_off");
+		} else {
+			ci.setStatus("unpaid");
+		}
+		
+		// Set invoice details into 
+		ci.setCustomerInvoiceDetails(cids);
 
 		// Iteratively inserting invoice detail(s) into tm_invoice_detail table
 		for (CustomerInvoiceDetail cid : cids) {
 			cid.setInvoice_id(ci.getId());
 			ciDetailMapper.insertCustomerInvoiceDetail(cid);
 		}
-		
-		// Set invoice details into 
-		ci.setCustomerInvoiceDetails(cids);
 
 		invoicePDF.setCurrentCustomerInvoice(ci);
 
@@ -2318,6 +2403,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				
 				// Termed & No Termed
 				} else if(!isMostRecentInvoicePaid && cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") && !"plan-topup".equals(cod.getDetail_type())){
+
+					// If contains calling-only then this is a calling record invoice
+					if(ci.getMemo()!=null && ci.getMemo().contains("calling-only")){
+						continue;
+					}
 					
 					Calendar cal = Calendar.getInstance();
 					Date endTo = null;
@@ -2362,6 +2452,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					// increase amountPayable
 					totalAmountPayable =  cid.getInvoice_detail_price() != null ? TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cid.getInvoice_detail_price(), cid.getInvoice_detail_unit())) : 0;
 					// add invoice detail to list
+					
 					cids.add(cid);
 				
 				// Topup Plan
@@ -2430,25 +2521,46 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			}
 		}
 
+		// Automatically assign previous invoice's prepayment to current invoice if have
 		if(!isFirst){
 			// If previous invoice's balance less than zero
 			if(cpi.getBalance()<0){
-				ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
 				
-				cpi.setBalance(0d);
-				cpi.setAmount_paid(cpi.getFinal_payable_amount());
-				cpi.getParams().put("id", cpi.getId());
-				this.ciMapper.updateCustomerInvoice(cpi);
+				CustomerInvoice cpiUpdate = new CustomerInvoice();
 				
-				ci.setStatus("not_pay_off");
-			
-			} else {
-				if(!isRegenerate){
-					ci.setStatus("unpaid");
+				// previous final payable < 0 && previous paid == 0 ? (totalCreditBack = totalCreditBack + abs(previous balance), previous final payable = 0d), prepayment is credit
+				if(cpi.getFinal_payable_amount() < 0 && cpi.getAmount_paid()==0){
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, Math.abs(cpi.getBalance()));
+					
+					cpiUpdate.setFinal_payable_amount(0d);
+					
+				// (previous paid > previous final payable) && (abs(previous balance) == previous paid - previous final payable) && previous final payable > 0 ? (current paid = current paid + abs(previous balance), previous paid = previous final payable), prepayment is paid
+				} else if(cpi.getAmount_paid() > cpi.getFinal_payable_amount()
+				  && Math.abs(cpi.getBalance()) == TMUtils.bigSub(cpi.getAmount_paid(), cpi.getFinal_payable_amount())
+				  && cpi.getFinal_payable_amount() > 0){
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), Math.abs(cpi.getBalance())));
+
+					cpiUpdate.setAmount_paid(cpi.getFinal_payable_amount());
+					
+				// (previous paid > previous final payable) && (abs(previous balance) > previous paid - previous final payable) ? (current paid = current paid + (abs(previous balance) - abs(previous final payable)), totalCreditBack = (totalCreditBack + (abs(previous balance) - previous paid))), prepayment is credit&paid 
+				} else if(cpi.getAmount_paid() > cpi.getFinal_payable_amount()
+				 && Math.abs(cpi.getBalance()) >= TMUtils.bigSub(cpi.getAmount_paid(), cpi.getFinal_payable_amount())){
+					// ciPaid = ciPaid + (abs(cpiBalance) - abs(cpiFinalPayable))
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), TMUtils.bigSub(Math.abs(cpi.getBalance()), Math.abs(cpi.getFinal_payable_amount()))));
+					// totalCreditBack = totalCreditBack + (abs(cpiBalance) - (cpiPaid - cpiFinalPayable))
+					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigSub(Math.abs(cpi.getBalance()), cpi.getAmount_paid()));
+					
+					cpiUpdate.setAmount_paid(0d);
+					cpiUpdate.setFinal_payable_amount(0d);
+					
 				}
+				
+				cpiUpdate.setBalance(0d);
+				cpiUpdate.getParams().put("id", cpi.getId());
+				cpiUpdate.setStatus("paid");
+				this.ciMapper.updateCustomerInvoice(cpiUpdate);
+				
 			}
-		} else {
-			ci.setStatus("unpaid");
 		}
 		
 		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
@@ -2478,6 +2590,62 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		// balance = final payable - paid
 		ci.setBalance(TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid()));
+		
+		// If balance greater than 0
+		if(ci.getBalance()>0){
+			// If customer account credit greater than 0, then use account credit to defray invoice balance 
+			if(customer.getBalance()!=null && customer.getBalance()>0){
+				
+				Customer cUpdate = new Customer();
+				CustomerTransaction ct = new CustomerTransaction();
+				
+				// If customer account credit greater than balance
+				if(customer.getBalance() >= ci.getBalance()){
+					
+					ct.setAmount(customer.getBalance());
+					ct.setAmount_settlement(customer.getBalance());
+					ct.setCard_name("account-credit");
+					ct.setCustomer_id(customer.getId());
+					ct.setOrder_id(customerOrder.getId());
+					ct.setInvoice_id(ci.getId());
+					ct.setTransaction_date(new Date());
+					ct.setCurrency_input("NZD");
+					
+					cUpdate.setBalance(TMUtils.bigSub(customer.getBalance(), ci.getBalance()));
+					ci.setAmount_paid(ci.getFinal_payable_amount());
+					ci.setBalance(0d);
+				// Else customer account credit less than balance
+				} else {
+					
+					ct.setAmount(customer.getBalance());
+					ct.setAmount_settlement(customer.getBalance());
+					ct.setCard_name("account-credit");
+					ct.setCustomer_id(customer.getId());
+					ct.setOrder_id(customerOrder.getId());
+					ct.setInvoice_id(ci.getId());
+					ct.setTransaction_date(new Date());
+					ct.setCurrency_input("NZD");
+					
+					ci.setBalance(TMUtils.bigSub(ci.getBalance(), customer.getBalance()));
+					ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), customer.getBalance()));
+					cUpdate.setBalance(0d);
+				}
+				cUpdate.getParams().put("id", customer.getId());
+				this.customerMapper.updateCustomer(cUpdate);
+				this.customerTransactionMapper.insertCustomerTransaction(ct);
+			}
+		}
+		
+		if(ci.getBalance()<=0){
+			ci.setStatus("paid");
+			
+		// Else paid some fee
+		} else if(ci.getAmount_paid()!=null && ci.getAmount_paid()>0){
+			ci.setStatus("not_pay_off");
+		} else {
+			ci.setStatus("unpaid");
+		}
+		
 		// Add cids into ci
 		ci.setCustomerInvoiceDetails(cids);
 		
@@ -3171,6 +3339,53 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue());
 		
+	}
+	
+	@Transactional
+	public JSONBean<String> doTopupAccountCreditByVoucher(int customer_id
+			,String pin_number
+			,HttpServletRequest req
+			,BillingService billingService){
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		Voucher v = new Voucher();
+		v.getParams().put("card_number", pin_number);
+		v.getParams().put("status", "unused");
+		List<Voucher> vs = billingService.queryVouchers(v);
+		v = vs!=null && vs.size()>0 ? vs.get(0) : null;
+		
+		if(v==null){
+			json.getErrorMap().put("alert-error", "We Haven't found this Voucher, or it had been used!");
+			return json;
+		}
+		
+		Double face_value = v.getFace_value();
+		
+		Customer c = this.queryCustomerById(customer_id);
+		c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, face_value));
+		c.getParams().put("id", customer_id);
+		this.editCustomer(c);
+		
+		json.getSuccessMap().put("alert-success", "Voucher defrayed successfull!");
+		v.setStatus("used");
+		v.getParams().put("serial_number", v.getSerial_number());
+		v.setCustomer_id(customer_id);
+		String process_way = "# - "+v.getCard_number();
+		billingService.editVoucher(v);
+
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		CustomerTransaction ct = new CustomerTransaction();
+		ct.setAmount(face_value);
+		ct.setAmount_settlement(face_value);
+		ct.setCard_name(process_way);
+		ct.setCustomer_id(customer_id);
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Voucher");
+		ct.setExecutor(userSession.getId());
+		this.createCustomerTransaction(ct);
+
+		return json;
 	}
 	
 }

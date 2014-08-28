@@ -200,7 +200,12 @@
 										</li>
 										<li>
 											<label>
-												<form:checkbox path="authArray" value="billing/invoice/view" data-type="checkbox_billing" /> View Invoice
+												<form:checkbox path="authArray" value="billing/invoice/view/personal" data-type="checkbox_billing" /> View Invoice(Personal)
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/invoice/view/business" data-type="checkbox_billing" /> View Invoice(Business)
 											</label>
 										</li>
 										<li>
@@ -215,12 +220,12 @@
 										</li>
 										<li>
 											<label>
-												<form:checkbox path="authArray" value="billing/chart/annual-invoice-statistic/personal" data-type="checkbox_billing" /> Chart(Annually Personal)
+												<form:checkbox path="authArray" value="billing/chart/invoice-statistic/business" data-type="checkbox_billing" /> Chart(Monthly Business)
 											</label>
 										</li>
 										<li>
 											<label>
-												<form:checkbox path="authArray" value="billing/chart/invoice-statistic/business" data-type="checkbox_billing" /> Chart(Monthly Business)
+												<form:checkbox path="authArray" value="billing/chart/annual-invoice-statistic/personal" data-type="checkbox_billing" /> Chart(Annually Personal)
 											</label>
 										</li>
 										<li>
@@ -493,14 +498,14 @@
 <script type="text/javascript">
 (function($){
 	
-	$('input[data-name="checkbox_all"]').click(function(){
-		var b = $(this).prop("checked");
+	$('input[data-name="checkbox_all"]').on('ifChecked', function(){
 		var type = $(this).attr("data-type");
-		if (b) {
-			$('input[data-type='+type+']').prop("checked", true);
-		} else {
-			$('input[data-type='+type+']').prop("checked", false);
-		}
+		$('input[data-type='+type+']').iCheck("check");
+	});
+	
+	$('input[data-name="checkbox_all"]').on('ifUnchecked', function(){
+		var type = $(this).attr("data-type");
+		$('input[data-type='+type+']').iCheck("uncheck");
 	});
 	
 	$(':radio,:checkbox').iCheck({

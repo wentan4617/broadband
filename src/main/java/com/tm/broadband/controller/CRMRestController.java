@@ -219,13 +219,9 @@ public class CRMRestController {
 		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
 
-		String redirectUrl = "/manual_defray/redirect/" + ci.getCustomer_id()
-				+ "/" + ci.getId() + "/" + ci.getOrder_id() + "/" + process_way
-				+ "/" + ci.getBalance();
 		if (ci.getBalance() <= 0d) {
 			// If invoice is paid off then no reason for executing the below
 			// operations
-			json.setUrl(redirectUrl);
 			ci.setStatus("paid");
 			this.crmService.editCustomerInvoice(ci);
 			return json;
@@ -284,8 +280,6 @@ public class CRMRestController {
 		this.crmService.editCustomerInvoice(ci);
 		this.crmService.createCustomerTransaction(ct);
 		// END CALL SERVICE LAYER
-
-		json.setUrl(redirectUrl);
 
 		json.getSuccessMap().put("alert-success",
 				"Related invoice's balance had successfully been paid off!");
@@ -1988,4 +1982,57 @@ public class CRMRestController {
 
 		return json;
 	}
+
+	
+	// BEGIN Topup Account Credit By Pay Way
+	@RequestMapping(value = "/broadband-user/crm/customer/account-credit/defrayment/pay-way", method = RequestMethod.POST)
+	public JSONBean<String> doTopupAccountCreditByPayway(Model model,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("process_way") String process_way,
+			@RequestParam("defray_amount") double defray_amount,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(defray_amount<0){
+			json.getErrorMap().put("alert-error", "Please input an amount to continue!");
+			return json;
+		}
+		
+		Customer c = this.crmService.queryCustomerById(customer_id);
+		c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, defray_amount));
+		c.getParams().put("id", customer_id);
+		this.crmService.editCustomer(c);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+
+		CustomerTransaction ct = new CustomerTransaction();
+		ct.setAmount(defray_amount);
+		ct.setAmount_settlement(defray_amount);
+		ct.setCard_name(process_way);
+		ct.setCustomer_id(customer_id);
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("NZD");
+		ct.setExecutor(userSession.getId());
+
+		this.crmService.createCustomerTransaction(ct);
+
+		json.getSuccessMap().put("alert-success", "Cash defray had successfully been operates!");
+
+		return json;
+	}
+	// END Topup Account Credit By Pay Way
+
+
+	// BEGIN Topup Account Credit By Voucher
+	@RequestMapping(value = "/broadband-user/crm/customer/account-credit/defrayment/voucher", method = RequestMethod.POST)
+	public JSONBean<String> doTopupAccountCreditByVoucher(Model model,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("pin_number") String pin_number,
+			HttpServletRequest req) {
+		
+		return this.crmService.doTopupAccountCreditByVoucher(customer_id, pin_number, req, this.billingService);
+		
+	}
+	// END Topup Account Credit By Voucher
 }
