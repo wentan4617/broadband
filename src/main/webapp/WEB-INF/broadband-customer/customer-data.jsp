@@ -14,7 +14,7 @@
 		<div class="col-md-9">
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h1 class="panel-title">Data Usage</h1>
+					<h4 class="panel-title">Data Usage</h4>
 				</div>
 				<div class="panel-body">
 					<div class="row">

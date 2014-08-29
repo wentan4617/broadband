@@ -10,38 +10,42 @@
 		<div class="row">
 			<div class="col-md-12">
 				<ul class="list-unstyled topup-list">
+					<.if (select_plan_type != 'UFB') {.> 
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="1"/> 
 							&nbsp;<strong>Prepay 1 month (No discount)</strong>
 						</label>
-						
 					</li>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 12 months plan)</span></strong>
+							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 3 months plan)</span></strong>
 						</label>
-						<span class="text-success" style="float:right;font-weight:bold;">
-							save $<.=parseInt(price.plan_price * 12 * 0.03).>
+						<span style="float:right;font-weight:bold;">
+							<span class="text-danger">$<.=price.plan_price * 3 - parseInt(price.plan_price * 3 * 0.03).></span>, 
+							<span class="text-success">save $<.=parseInt(price.plan_price * 3 * 0.03).></span>
 						</span>
 					</li>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 12 months plan)</span></strong>
+							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 6 months plan)</span></strong>
 						</label>
-						<span class="text-success" style="float:right;font-weight:bold;">
-							save $<.=parseInt(price.plan_price * 12 * 0.07).>
+						<span style="float:right;font-weight:bold;">
+							<span class="text-danger">$<.=price.plan_price * 6 - parseInt(price.plan_price * 6 * 0.07).></span>, 
+							<span class="text-success">save $<.=parseInt(price.plan_price * 6 * 0.07).></span>
 						</span>
 					</li>
+					<.} .>
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="12" />
 							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
 						</label>
-						<span class="text-success" style="float:right;font-weight:bold;">
-							save $<.=parseInt(price.plan_price * 12 * 0.15).>
+						<span style="float:right;font-weight:bold;">
+							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
+							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
 						</span>
 					</li>
 				</ul>

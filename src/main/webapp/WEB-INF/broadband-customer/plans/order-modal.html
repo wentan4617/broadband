@@ -31,12 +31,31 @@
 			<p class="text-success" style="margin:0;">+ <.=discount_desc.></p>
 			<.}.>
 			<hr style="margin:4px;">
+			<div class="row">
+				<div class="col-md-6">
+					<p class="bg-warning text-center text-warning" style="font-weight:bold;">Original</p>
+				</div>
+				<div class="col-md-6">
+					<p class="bg-success text-center text-success" style="font-weight:bold;">Save</p>
+				</div>
+				<div class="col-md-6">
+					<p class="bg-warning text-center text-warning" style="font-size: 30px;font-weight:bold;">
+						$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
+					</p>
+				</div>
+				<div class="col-md-6">
+					<p class="bg-success text-center text-success" style="font-size: 30px;font-weight:bold;">
+						$ <.=price.discount_price + price.save_service_price + price.save_modem_price.>
+					</p>
+				</div>
+			</div>
+			<hr style="margin:4px;">
 			<p class="text-danger text-center" > 
 				<span style="font-size: 36px;font-weight: bold;">
 					NZ$
 				</span>
 				<span style="font-size: 64px;font-weight: bold;">
-					<.=Number(price.plan_price * prepay_months + price.modem_price + price.service_price - price.discount_price).>
+					<.=price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price.>
 				</span>
 			</p>
 			<a href="javascript:void(0);" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="get-it-now">Get it Now</a>

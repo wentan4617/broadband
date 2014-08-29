@@ -42,6 +42,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
@@ -808,11 +809,29 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/customer/topup/checkout", method = RequestMethod.POST)
 	public String topupCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
-			@RequestParam("topup") Double topup) {
+			@RequestParam("prepaymonths") Integer months) {
+		
+		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+		CustomerOrderDetail cod = customer.getCustomerOrders().get(0).getCustomerOrderDetails().get(0);
+		Double price = cod.getDetail_price();
+		Double total = 0d;
+		
+		if (months == 1) {
+			total = price;
+		} else if (months == 3) {
+			Double temp = price * 3 * 0.03;
+			total = price * 3 - temp.intValue();
+		} else if (months == 6) {
+			Double temp = price * 6 * 0.07;
+			total = price * 6 - temp.intValue();
+		} else if (months == 12) {
+			Double temp = price * 12 * 0.15;
+			total = price * 12 - temp.intValue();
+		}
 
 		GenerateRequest gr = new GenerateRequest();
 
-		gr.setAmountInput(new DecimalFormat("#.00").format(topup));
+		gr.setAmountInput(new DecimalFormat("#.00").format(total));
 		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
@@ -842,8 +861,8 @@ public class CustomerController {
 		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 			
 			Customer c = new Customer();
-			
-			c.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+			c.setBalance(customer.getBalance());
 			c.getParams().put("id", customer.getId());
 
 			CustomerTransaction customerTransaction = new CustomerTransaction();
