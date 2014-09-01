@@ -180,100 +180,110 @@
 		</div>
 	</div>
 	
-	<div>
-		<ul>
-			<li>No Terms, No contract</li>
-			<li>Use your own Routers</li>
-			
-		</ul>
+	<div class="row" >
+		<div class="col-md-6">
+			<p class="lead" style="margin-top: 70px;">
+				New Concept for New Zealand Broadband Plan
+			</p>
+			<p class="lead">
+				No Terms, No Contract, Use your own Routers, or you can purchase a new router from us online. 
+			</p>
+			<p class="lead">
+				Visit Our Web-site <a href="http://www.cyberpark.co.nz">www.cyberpark.co.nz</a> and select "Top Up Plan"
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-1.png">
+		</div>
 	</div>
 	
-	<div class="page-header">
-		<span class="home-title-h2">
-			Introduction of Top-up broadband plan
-		</span>
-	</div>
-	<div>
-		<p class="lead">
-			Top-up broadband plan is created by CyberPark Limited in 2014.
-		</p>
-		<p>
-			We broke your traditional understanding to the broadband contract plans and monthly charges method. Convenience services can give you more choices to your broadband plans. You can easily top-up your account and change your monthly data usages. Customers can purchase the top-up voucher from the dairy shops. We also accept credit cards, pay-pal, and account-to-account payment methods. You don’t need change any router when you transit from your current internet service providers to our Top-up broadband plan. Your transition will be automatically changing broadband to our service without any gaps. 
-		</p>
+	<hr>
+	
+	<div class="row" >
+		<div class="col-md-6" >
+			<p class="lead" style="margin-top: 20px;">
+				Filling your Personal Details, like, name, address, contact phone number, email, etc.
+			</p>
+			<p class="lead">
+				Transfer the existing broadband connection to Cyber Park is free of charge
+			</p>
+			<p class="lead">
+				Get a new broadband connection on an existing (but inactive) Phone Jack point costs $169
+			</p>
+			<p class="lead">
+				Get a new broadband connection and a new Phone Jack point and activation costs $229
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-2.png">
+		</div>
 	</div>
 	
-	<div class="page-header">
-		<span class="home-title-h2">
-			How can I apply Top-up broadband plan?
-		</span>
-	</div>
-	<div>
-		<ul>
-			<li>Visit our web-site www.cyberpark.co.nz and choose "Apply Top-up broadband"</li>
-			<li>Filling your personal details, like name, address, contact phone number</li>
-			<li>If you are transiting from your current Internet service providers, please accurately fill the details of your current provider and account number.</li>
-			<li>Submit all your details and select the first top-up value (start from NZ$ 30 for 7 days)</li>
-			<li>Transition Provider is free of charge</li>
-			<li>New connection has one-off charge NZ$ 145</li>
-			<li>New Phone Jack installation has one-off charge NZ$ 199</li>
-			<li>If you don't have ADSL router, we can offer you NZ$ 50 for TP link ADSL2+ router</li>
-		</ul>
+	<hr>
+	
+	<div class="row">
+		<div class="col-md-6">
+			<p class="lead"  style="margin-top: 30px;">
+				All our plans are pay in advance plan. Please arrange the payment after you receive your Ordering Form. At the same time, you will receive your Cyber Park account number and passwords. You can check your accounts online. 
+			</p>
+			<p class="lead">
+				Payment methods include: Credit Cards (online), Account-to-account (online), Voucher (online), and bank deposits. 
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-3.png">
+		</div>
 	</div>
 	
-	<div class="page-header">
-		<span class="home-title-h2">
-			What you have in your Top-up broadband plan?
-		</span>
-	</div>
-	<div>
-		<p>Top-up broadband plan is a Naked ADSL2+ broadband plan or Home Phone line + ADSL2+ broadband plan. Home phone line is for local call only.</p>
+	<hr>
+	
+	<div class="row" >
+		<div class="col-md-6">
+			<p class="lead" style="margin-top: 30px;">
+				After we received your ordering deposit, you will receive Cyber Park broadband services normally in 5 working days. 
+			</p>
+			<p class="lead">
+				New connection or New Phone Jack point installation application may takes longer, and cooperator may contact with you for booking appointments. 
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-4.png">
+		</div>
 	</div>
 	
-	<div class="page-header">
-		<span class="home-title-h2">
-			How does Top-up broadband plan works?
-		</span>
-	</div>
-	<div>
-		<ul>
-			<li>
-				After your application, you will receive a confirmation email and provision confirmation email/message from us. Cyber Park broadband service normally can provide services to you in 3 to 5 working days. New connection or New Phone Jack point installation application may takes longer, and our installation cooperator may contact with you for booking appointment.
-			</li>
-			<li>
-				We will generate your account and passwords. You can log in your account to check your data usage period (expire date). 
-			</li>
-			<li>
-				Payment functions can offer you different methods to Top-up, like credit cards, account-to-account, paypal, or top-up voucher. All these payment methods are security and convenience in NZ market.  	
-			</li>
-			<li>
-				When you overdue your service period, you broadband service will be automatically suspend in the following 48 hours. After that, your broadband connection will be disconnected and reaction may charges you as a New Connection which costs NZ$ 145.  
-			</li>
-		</ul>
+	<hr>
+	
+	<div class="row" >
+		<div class="col-md-6">
+			<p class="lead" style="margin-top: 30px;">
+				Log into your Cyber Park account, you can easily to find out your personal details, accounts, and several payment methods. 
+			</p>
+			<p class="lead">
+				There are no any extra charges will be happened because our Top Up plan is unlimited data or local call only.
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-5.png">
+		</div>
 	</div>
 	
-	<div class="page-header">
-		<span class="home-title-h2">
-			Conditions:
-		</span>
+	<hr>
+	
+	<div class="row">
+		<div class="col-md-6">
+			<p class="lead" style="margin-top: 30px;">
+				Cyber Park Top Up plan service will be automatically suspended after expire date. 
+			</p>
+			<p class="lead">
+				Reactivating in 48 hours will be free of charges. The services will be disconnected 2 working days after the services are suspended. The first reactivating cost is NZD$45 after the services are disconnected. The seconded re-connection will be defined as new connection which costs NZ$ 169.
+			</p>
+		</div>
+		<div class="col-md-6">
+			<img class="img-responsive" alt="" src="${ctx }/public/bootstrap3/images/topup-6.png">
+		</div>
 	</div>
-	<div>
-		<ul>
-			<li>CyberPark top up plan is based on rechargeable process. All the top up amount will be the credits in Customers’ Cyber Park account.</li>
-			<li>User your own router/modem</li>
-			<li>No term</li>
-			<li>"week" is defined as 7 days after the customer received broadband service</li>
-			<li>Transfer the existing broadband connection to CyberPark is free of charge</li>
-			<li>Get a new broadband connection on an existing (but inactive) Phone Jack point charge NZ$ 145</li>
-			<li>Get a new broadband connection and an new Phone Jack point installation and activation charge NZ$ 199</li>
-			<li>CyberPark Top Up plan service is automatically disconnected in 48 hours after expire date, reactivating cost in 2 working days is NZD$45. Re-connection will be defined as new connection which costs NZ$ 145.</li>
-			<li>After CyberPark Top Up plan service was terminated, CyberPark account user can Top Up his/her CyberPark account online or contact with our customer service to reactivating the broadband services in 2 working days. However, we cannot guarantee the previous ADSL pots available all the time. More information, please contact with our customer service , 0800 2 Cyber (29237)</li>
-			<li>Reasonable unlimited data use</li>
-			<li>Respect to the copy right regulation in NZ</li>
-			<li>Free of charge upgrade to any CyberPark term plans</li>
-			<li>CyberPark has the rights to explain the charging system to Top Up Plans, more information you can email to <a href="">info@cyberpark.co.nz</a> or call 0800 2 Cyber (29237)</li>
-		</ul>
-	</div>
-	<p>&nbsp;</p>
+	
+	<hr>
 </div>
 
 
