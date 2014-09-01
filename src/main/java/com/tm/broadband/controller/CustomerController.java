@@ -727,7 +727,7 @@ public class CustomerController {
 		
 		attr.addFlashAttribute("success", "Welcome to CyberTech Customer Billing.");
 		
-		return "redirect:/customer/billing/1";
+		return "redirect:/customer/billing/view";
 	}
 
 	@RequestMapping(value = "/customer/home")

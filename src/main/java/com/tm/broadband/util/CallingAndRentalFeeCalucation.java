@@ -2,7 +2,6 @@ package com.tm.broadband.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import com.tm.broadband.mapper.CallInternationalRateMapper;
@@ -16,7 +15,6 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.pdf.InvoicePDFCreator;
-import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -46,12 +44,12 @@ public class CallingAndRentalFeeCalucation {
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 				cid.setInvoice_detail_name(ccr.getBilling_description());
 				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
-				cid.setInvoice_detail_price(ccr.getAmount_incl());
+				cid.setInvoice_detail_price(TMUtils.getRentalChargeFee(ccr.getDate_from(), "Smart Bundle package".equals(ccr.getBilling_description()) ? 18d : 6d));
 				cid.setInvoice_detail_unit(1);
 				
 				cids.add(cid);
 				
-				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, cid.getInvoice_detail_price());
 			}
 			
 			if(!isRegenerate){

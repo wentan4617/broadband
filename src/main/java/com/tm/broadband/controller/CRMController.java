@@ -214,8 +214,7 @@ public class CRMController {
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
 		Customer customer = this.crmService.queryCustomerById(customerId);
 		Notification notification = this.systemService.queryNotificationBySort("invoice", "email");
-		CustomerInvoice inv = new CustomerInvoice();
-		inv.setId(invoiceId);
+		CustomerInvoice inv = this.crmService.queryCustomerInvoiceById(invoiceId);
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
 		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);

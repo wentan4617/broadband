@@ -17,8 +17,36 @@ Total Mobile Solution Internet Service Web Project
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)            
 
-7月到现在还未出账单的order：700056，周一和Gavin讨论看怎么解决
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
+
+demand version 2.3.9 2014-08-31
+
+* 在发送invoice时提示用户如果想shrink your broadband bill（缩短你的宽带账单金额），可以一次性充值3/6/12个月的钱+3%/+7%/+15%到他的账户余额，以供该用户在CyberPark网站消费.(steven)
+
+
+demand version 2.3.7 2014-08-29
+
+* [chorus账单的rental fee在出账时需要加入我们给客户的价格.](steven)
+        Call restrict with no Directory Access nat Res: NZ$ 6.00
+        Call waiting nat Res: NZ$: 6.00
+        Faxability Monthly Rental Res: NZ$ 6.00
+        Caller Display Monthly Charge per line Res： NZ$ 6.00
+        Smart Bundle package: NZ$ 18.00
+    
+* 在出下一次非DDPay账单时如果自动支付了.(steven)
+    初步判定的算法为：（account credit || prepayment或account credit && prepayment为true的情况）
+        情况一： account credit == true，告知客户通过account credit抵消了相应金额的账单余额
+        情况二： previous invoice prepayment == true，告知客户通过prepayment抵消了相应金额的账单余额
+        情况三： (account credit && previous invoice prepayment) == true，告知用户通过account credit & prepayment抵消了相应金额的账单余额
+
+    邮件及短信模版应显示的内容有：
+        invoice no: invoice id
+        status: current status
+        payable amount:
+        credit back:
+        paid:
+        balance: remaining balance
+        
 
 demand version 2.3.5 2014-08-27
 
