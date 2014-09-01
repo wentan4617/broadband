@@ -283,27 +283,5 @@
 		<error-code>500</error-code>
 		<location>/public/static/error-500.html</location>
 	</error-page>
-	
-	
-	
-	
-	<!-- BEGIN TMSWholesale SYSTEM -->
-
-
-	<!-- wholesaler session filter -->
-	<!-- <filter>
-		<filter-name>WholesalerSessionFilter</filter-name>
-		<filter-class>com.tm.broadband.wholesale.filter.WholesalerSessionFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>WholesalerSessionFilter</filter-name>
-		<url-pattern>/broadband-wholesale/index</url-pattern>
-		<url-pattern>/broadband-wholesale/material/*</url-pattern>
-		<url-pattern>/broadband-wholesale/system/*</url-pattern>
-	</filter-mapping>
-	 -->
-	
-	
-	<!-- END TMSWholesale SYSTEM -->
 
 </web-app>
