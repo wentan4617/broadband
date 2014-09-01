@@ -17,7 +17,7 @@
 	<import resource="datasource-config.xml" />
 
 	<!-- scanning package -->
-	<context:component-scan base-package="com.tm.broadband.service,com.tm.broadband.aop,com.tm.broadband.wholesale.service" />
+	<context:component-scan base-package="com.tm.broadband.service,com.tm.broadband.aop" />
 	
 	<!-- enable aop with @Aspect -->
 	<aop:aspectj-autoproxy />

@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
 	<!-- scanning package -->
-	<context:component-scan base-package="com.tm.broadband.controller,com.tm.broadband.wholesale.controller" />
+	<context:component-scan base-package="com.tm.broadband.controller" />
 	
 	<!-- mvc annotation -->
 	<mvc:annotation-driven />
