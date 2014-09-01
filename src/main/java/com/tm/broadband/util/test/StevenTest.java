@@ -1,9 +1,10 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
+
+import com.tm.broadband.util.TMUtils;
 
 
 public class StevenTest {
@@ -164,5 +165,10 @@ public class StevenTest {
 //		for (String country : fix_mobile_country) {
 //			System.out.println(country);
 //		}
+		
+//		System.out.println(TMUtils.getRentalChargeFee(TMUtils.parseDateYYYYMMDD("2014-07-01"), 18d));
+		
+		System.out.println("asdasdsd$".contains("$"));
+		
 	}
 }

@@ -166,6 +166,7 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_payable>", String.valueOf(preventNull(inv.getAmount_payable()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_final_amount_payable>", String.valueOf(preventNull(inv.getFinal_payable_amount()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_paid>", String.valueOf(preventNull(inv.getAmount_paid()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_total_credit_back>", String.valueOf(TMUtils.bigSub(preventNull(inv.getAmount_payable()), preventNull(inv.getFinal_payable_amount())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_balance>", String.valueOf(preventNull(inv.getBalance()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_memo>", preventNull(inv.getMemo())));
@@ -187,6 +188,7 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_payable>", String.valueOf(preventNull(inv.getAmount_payable()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_final_amount_payable>", String.valueOf(preventNull(inv.getFinal_payable_amount()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_paid>", String.valueOf(preventNull(inv.getAmount_paid()))));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_total_credit_back>", String.valueOf(TMUtils.bigSub(preventNull(inv.getAmount_payable()), preventNull(inv.getFinal_payable_amount())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_balance>", String.valueOf(preventNull(inv.getBalance()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_memo>", preventNull(inv.getMemo())));

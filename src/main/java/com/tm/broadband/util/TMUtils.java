@@ -578,6 +578,12 @@ public class TMUtils {
 		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
 		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
 	}
+	// DIVISION: Double / Integer
+	public static Double bigDivide(Double divisor1, Integer divisor2){
+		BigDecimal bigDivisor1 = new BigDecimal(divisor1);
+		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
+		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
+	}
 	
 	// FOUR OPERATIONS, BUT ONLY LEFT TWO REMINDERS
 	public static Double bigOperationTwoReminders(Double operator1, Double operator2, String type){
@@ -616,4 +622,25 @@ public class TMUtils {
 		return "";
 	}
 	// END RegexSymbol
+	
+	// BEGIN Rental Charge Fee
+	public static Double getRentalChargeFee(Date startFrom, Double monthlyFee){
+		
+		Double finalChargeFee = 0d;
+		Double dailyFee = 0d;
+		Integer servedDay = 0;
+		Integer maxDay = 0;
+		Integer startDay = 0;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(startFrom);
+		String startFromStr = TMUtils.dateFormatYYYYMMDD(cal.getTime());
+		startDay = Integer.parseInt(startFromStr.substring(startFromStr.lastIndexOf("-")+1));
+		maxDay = cal.getMaximum(Calendar.DATE);
+		dailyFee = TMUtils.bigDivide(monthlyFee, maxDay);
+		servedDay = maxDay - startDay + 1;
+		finalChargeFee = TMUtils.bigMultiply(dailyFee, servedDay);
+		
+		return finalChargeFee;
+	}
+	// END Rental Charge Fee
 }

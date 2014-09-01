@@ -2670,6 +2670,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		// Deleting repeated invoices
 //		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
+		
 		if(!isRegenerate){
 			
 			// call mail at value retriever
