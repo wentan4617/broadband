@@ -25,7 +25,7 @@
 	var modem_selected = null;
 	var naked = false;
 	var modem_name = "";
-	var isContract = (select_plan_type == 'UFB' ? true : false);
+	var isContract = false; //(select_plan_type == 'UFB' ? true : false);
 	var contract_name = "";
 	var order_broadband_type = "Transfer Broadband Connection";
 	var prepay_months = 1;
@@ -34,7 +34,7 @@
 	var hardware_class = '';
 	var cal;
 	
-	var months_selected = "1"
+	var months_selected = (select_plan_type == 'UFB' ? "12" : "1");
 	var hardware_id_selected = "0";
 	var hardware_value_selected = "withoutmodem";
 	var broadband_value_selected = "transition";
@@ -45,6 +45,9 @@
 		, addons_price: 0
 		, modem_price: 0
 		, discount_price: 0
+		
+		, save_service_price: 0
+		, save_modem_price: 0
 	};
 		
 	function loadingPlans() {
@@ -156,6 +159,7 @@
 		var obj = {
 			ctx: ctx
 			, price: price
+			, select_plan_type: select_plan_type
 		};
 		var $div = $('#prepay-month');
 		$div.html(tmpl('prepay_month_tmpl', obj));
@@ -170,14 +174,14 @@
 				price.discount_price = 0;
 				modem_selected = null;
 			} else if (value == 3) {
-				discount_desc = '3% off the total price of 12 months plan';
+				discount_desc = '3% off the total price of 3 months plan';
 				prepay_months = 3;
-				price.discount_price = parseInt(price.plan_price * 12 * 0.03);
+				price.discount_price = parseInt(price.plan_price * 3 * 0.03);
 				modem_selected = null;
 			} else if (value == 6) {
-				discount_desc = '7% off the total price of 12 months plan';
+				discount_desc = '7% off the total price of 6 months plan';
 				prepay_months = 6;
-				price.discount_price = parseInt(price.plan_price * 12 * 0.07);
+				price.discount_price = parseInt(price.plan_price * 6 * 0.07);
 				modem_selected = null;
 			} else if (value == 12) {
 				discount_desc = '15% off the total price of 12 months plan with free modem';
@@ -190,6 +194,7 @@
 			}
 			
 			price.modem_price = 0;
+			price.save_modem_price = 0;
 			modem_name = "";
 			
 			flushModems();
@@ -238,6 +243,7 @@
 			if (value == 'withoutmodem') {
 				modem_selected = null;
 				price.modem_price = 0;
+				price.save_modem_price = 0;
 				modem_name = '';
 			} else { //console.log('id: ' + id + ", modems: " + modems.length);
 				if (modems != null && modems.length > 0) {
@@ -248,11 +254,14 @@
 							if (!isContract) {
 								if (prepay_months == 1) {
 									price.modem_price = Number(modem.hardware_price);
+									price.save_modem_price = 0;
 								} else if (prepay_months == 3 || prepay_months == 6) {
-									price.modem_price = parseInt(modem.hardware_price - (modem.hardware_price/12)*prepay_months);
+									price.modem_price = modem.hardware_price -  parseInt((modem.hardware_price/12)*prepay_months);
+									price.save_modem_price = parseInt((modem.hardware_price/12)*prepay_months);
 								}
 							} else {
 								price.modem_price = parseInt(modem.hardware_price/2);
+								price.save_modem_price = parseInt(modem.hardware_price/2);
 							}
 							modem_name = modem.hardware_name;
 							break;
@@ -336,6 +345,7 @@
 				order_broadband_type = "Transfer Broadband Connection";
 				$('#transitionContainer').show('fast');
 				price.service_price = plan.transition_fee;
+				price.save_service_price = 0;
 				startDate = "+7d";
 			} else if (value == 'new-connection') {
 				order_broadband_type = "New Connection Only";
@@ -343,13 +353,17 @@
 				if (prepay_months == 1) {
 					if (!isContract) {
 						price.service_price = parseInt(plan.plan_new_connection_fee);
+						price.save_service_price = 0;
 					} else {
 						price.service_price = 49;
+						price.save_service_price = plan.plan_new_connection_fee - 49;
 					}
 				} else if (prepay_months == 3 || prepay_months == 6) {
-					price.service_price = parseInt(plan.plan_new_connection_fee - (plan.plan_new_connection_fee/12)*prepay_months);
+					price.service_price = plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months);
+					price.save_service_price = parseInt((plan.plan_new_connection_fee/12)*prepay_months);
 				} else if (prepay_months == 12) {
 					price.service_price = 0;
+					price.save_service_price = 0;
 				}
 				startDate = "+12d";
 			} else if (value == 'jackpot') {
@@ -393,7 +407,6 @@
 		
 		$('#get-it-now').click(confirm);
 	}
-	
 	
 	/*
 	 * GET IT NOW
@@ -444,7 +457,5 @@
 		   	}
 		}).always(function(){ l.stop(); });	
 	}
-	
-
 	
 })(jQuery);

@@ -3193,9 +3193,9 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		if (customerOrder.getPrepay_months() == 1) {
 			discount_price = 0d;
 		} else if (customerOrder.getPrepay_months() == 3) {
-			discount_price = plan.getPlan_price() * 12 * 0.03;
+			discount_price = plan.getPlan_price() * 3 * 0.03;
 		} else if (customerOrder.getPrepay_months() == 6) {
-			discount_price = plan.getPlan_price() * 12 * 0.07;
+			discount_price = plan.getPlan_price() * 6 * 0.07;
 		} else if (customerOrder.getPrepay_months() == 12) {
 			discount_price = plan.getPlan_price() * 12 * 0.15;
 		}
@@ -3204,10 +3204,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
 			if (customerOrder.getPrepay_months() == 3) {
 				cod_discount.setDetail_name("Prepay 3 Months Discount");
-				cod_discount.setDetail_desc("3% off the total price of 12 months plan");
+				cod_discount.setDetail_desc("3% off the total price of 3 months plan");
 			} else if (customerOrder.getPrepay_months() == 6) {
 				cod_discount.setDetail_name("Prepay 6 Months Discount");
-				cod_discount.setDetail_desc("7% off the total price of 12 months plan");
+				cod_discount.setDetail_desc("7% off the total price of 6 months plan");
 			} else if (customerOrder.getPrepay_months() == 12) {
 				cod_discount.setDetail_name("Prepay 12 Months Discount");
 				cod_discount.setDetail_desc("15% off the total price of 12 months plan");
@@ -3247,7 +3247,8 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
 				}
 			} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-				service_price = plan.getPlan_new_connection_fee() - (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+				Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+				service_price = plan.getPlan_new_connection_fee() - temp.intValue();
 				cod_conn.setDetail_price(new Double(service_price.intValue()));
 			} else if (customerOrder.getPrepay_months() == 12) {
 				service_price = 0d;
@@ -3307,7 +3308,8 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 							modem_price = chd.getHardware_price();
 							cod_hd.setDetail_price(chd.getHardware_price());
 						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-							modem_price = chd.getHardware_price() - (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
+							Double temp = (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
+							modem_price = chd.getHardware_price() - temp.intValue();
 							cod_hd.setDetail_price(new Double(modem_price.intValue()));
 						}
 					} else if ("12 months contract".equals(customerOrder.getContract())) {

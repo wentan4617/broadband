@@ -10,9 +10,6 @@
 				<span class="icon-bar"></span>
 			</button>
 			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark</a>
-			<c:if test="${userSession != null && userSession.user_role=='system-developer'}">
-				<a class="navbar-brand" href="${ctx}/broadband-wholesale/index"><span style="border:4px solid green; border-radius:10px; padding:4px;">To TMS</span></a>
-			</c:if>
 		</div>
 		<c:if test="${userSession != null }">
 			<div class="collapse navbar-collapse">

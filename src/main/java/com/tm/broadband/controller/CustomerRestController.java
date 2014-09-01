@@ -387,7 +387,6 @@ public class CustomerRestController {
 			
 			int days = TMUtils.judgeDay(year, month);
 
-			
 			for (int i = 0; i < days; i++) {
 				c.set(Calendar.DAY_OF_MONTH, i + 1);
 				Date date = c.getTime();
