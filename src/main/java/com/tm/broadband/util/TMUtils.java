@@ -165,7 +165,7 @@ public class TMUtils {
 	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,
 	// if 8.88 is 8.8 then fill one 0 behind and finally 8.8 become 8.80
 	public static String fillDecimalPeriod(String sum){
-		return numberFormat.format(Double.parseDouble(sum));
+		return "".equals(sum) ? "" : numberFormat.format(Double.parseDouble(sum));
 	}
 	
 	// e.g.:to the nearest whole number, for example rounding of 8.88 is 8.89 so change it to 8.89 and then fill 0.0 to 0.00,

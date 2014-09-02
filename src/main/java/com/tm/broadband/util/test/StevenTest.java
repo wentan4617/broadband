@@ -168,7 +168,7 @@ public class StevenTest {
 		
 //		System.out.println(TMUtils.getRentalChargeFee(TMUtils.parseDateYYYYMMDD("2014-07-01"), 18d));
 		
-		System.out.println("asdasdsd$".contains("$"));
+//		System.out.println("asdasdsd$".contains("$"));
 		
 	}
 }
