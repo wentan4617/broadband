@@ -827,6 +827,8 @@ public class CustomerController {
 		} else if (months == 12) {
 			Double temp = price * 12 * 0.15;
 			total = price * 12 - temp.intValue();
+		} else {
+			total = new Double(months);
 		}
 
 		GenerateRequest gr = new GenerateRequest();
@@ -1334,17 +1336,7 @@ public class CustomerController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	
 	
@@ -1424,6 +1416,17 @@ public class CustomerController {
 		model.addAttribute("select_plan_id", id);
 		model.addAttribute("select_plan_type", type);
 		return "broadband-customer/plans/address-check";
+	}
+	
+	@RequestMapping("/plans/address-check/promotion") 
+	public String toAddressCheckPromotion(Model model, HttpSession session) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");
+		customer.getCustomerOrder().setSale_id(10023);
+		session.setAttribute("customerReg", customer);
+		
+		return "redirect:/plans/address-check/0/0";
 	}
 	
 	
