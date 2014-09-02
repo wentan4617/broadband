@@ -33,7 +33,7 @@
 				</a>
 			</li>
 			<li>
-				<a title="Google Plus" target="_blank" href="https://plus.google.com/113358993092406471657/posts">
+				<a title="Google Plus" target="_blank" href="https://plus.google.com/113358993092406471657/posts" rel="publisher">
 					<img alt="google-plus" src="${ctx }/public/bootstrap3/images/google-plus-icon.png" />
 				</a>
 			</li>
