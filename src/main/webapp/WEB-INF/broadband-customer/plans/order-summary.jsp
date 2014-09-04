@@ -75,14 +75,14 @@
 				<div class="col-sm-4"><strong>Email</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.email }</strong></div>
 			</div>
-			<div class="row" style="margin-top:5px;">
+			<%-- <div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Type</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_type }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Number</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_number }</strong></div>
-			</div>
+			</div> --%>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Connection Date</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.connection_date }</strong></div>

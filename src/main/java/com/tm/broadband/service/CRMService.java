@@ -485,6 +485,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		}
 		customerOrder.setCustomer_id(customer.getId());
 		
+		System.out.println("customerOrder.getSale_id(): " + customerOrder.getSale_id());
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		
 		for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
@@ -3174,7 +3175,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 
 		plan_price = plan.getPlan_price();
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
-		cod_plan.setDetail_name(plan.getPlan_name());
+		if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
+			cod_plan.setDetail_name(plan.getPlan_name().replaceAll("Homeline", "VOIP"));
+		} else {
+			cod_plan.setDetail_name(plan.getPlan_name());
+		}
 		cod_plan.setDetail_price(plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
 		cod_plan.setDetail_plan_status(plan.getPlan_status());
@@ -3197,7 +3202,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		} else if (customerOrder.getPrepay_months() == 6) {
 			discount_price = plan.getPlan_price() * 6 * 0.07;
 		} else if (customerOrder.getPrepay_months() == 12) {
-			discount_price = plan.getPlan_price() * 12 * 0.15;
+			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
+				discount_price = 0d;
+			} else {
+				discount_price = plan.getPlan_price() * 12 * 0.15;
+			}
+			
 		}
 		
 		if (discount_price > 0d) {
@@ -3274,21 +3284,48 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			
 		} 
 		
-		// add  pstn
+		// add pstn
 		
 		if (plan.getPstn_count() != null && plan.getPstn_count() > 0) {
 			
 			for (int i = 0; i < plan.getPstn_count(); i++) {
 				
 				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-				cod_pstn.setDetail_name("HomeLine");
+				if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
+					cod_pstn.setDetail_name("VOIP");
+					cod_pstn.setDetail_type("voip");
+				} else {
+					cod_pstn.setDetail_name("HomeLine");
+					cod_pstn.setDetail_type("pstn");
+				}
 				cod_pstn.setDetail_price(0d);
-				cod_pstn.setDetail_type("pstn");
 				cod_pstn.setDetail_unit(1);
 				cod_pstn.setPstn_number(customerOrder.getTransition_porting_number());
 				
 				customerOrder.getCustomerOrderDetails().add(cod_pstn);
 			}
+		
+		}
+		
+		// add-ons
+		if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
+			CustomerOrderDetail cod_addons = new CustomerOrderDetail();
+			cod_addons.setDetail_name("200 calling minutes of 40 countries");
+			cod_addons.setDetail_type("present-calling-minutes");
+			cod_addons.setDetail_desc("international");
+			cod_addons.setDetail_calling_minute(200);
+			cod_addons.setDetail_price(0d);
+			cod_addons.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_addons);
+			
+			CustomerOrderDetail cod_ipad = new CustomerOrderDetail();
+			cod_ipad.setDetail_name("Apple iPad Mini 16G");
+			cod_ipad.setDetail_type("hardware");
+			cod_ipad.setDetail_price(0d);
+			cod_ipad.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_ipad);
 		}
 		
 		// add modem

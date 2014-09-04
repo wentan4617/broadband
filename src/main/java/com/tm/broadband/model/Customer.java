@@ -76,8 +76,8 @@ public class Customer implements Serializable {
 	private String customer_type;
 	
 	private String identity_type;
-	@NotEmpty(groups = { CustomerValidatedMark.class})
-	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class})
+	/*@NotEmpty(groups = { CustomerValidatedMark.class})
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class})*/
 	private String identity_number;
 
 	/*

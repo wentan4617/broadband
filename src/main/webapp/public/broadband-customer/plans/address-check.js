@@ -21,6 +21,21 @@
 				broadband.type = select_plan_type;
 				broadband.selected_id = select_plan_id;
 				$('#checkResult').html(tmpl('result_tmpl', broadband));
+				if (broadband.adsl_available) { //alert('adsl');
+					$('#adsl').click(function(){
+						window.location.href = ctx + '/plans/order?select_plan_type=ADSL';
+					});
+				}
+				if (broadband.vdsl_available) {
+					$('#vdsl').click(function(){ //alert('vdsl');
+						window.location.href = ctx + '/plans/order?select_plan_type=VDSL';
+					});
+				}
+				if (broadband.ufb_available) {
+					$('#ufb').click(function(){ //alert('ufb');
+						window.location.href = ctx + '/plans/order?select_plan_type=UFB';
+					});
+				}
 		   	}).always(function(){ l.stop(); });
 		} else {
 			alert('Please enter a real address.');

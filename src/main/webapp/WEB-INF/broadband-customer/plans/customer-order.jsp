@@ -51,7 +51,11 @@
 	
 </div>
 
-<script type="text/html" id="select_plan_tmpl" data-ctx="${ctx }" data-select_plan_id="${customerReg.select_plan_id}" data-select_plan_type="${customerReg.select_plan_type }">
+<script type="text/html" id="select_plan_tmpl" 
+data-ctx="${ctx }" 
+data-select_plan_id="${customerReg.select_plan_id}" 
+data-select_plan_type="${customerReg.select_plan_type }"
+data-sale-id="${customerReg.customerOrder.sale_id }">
 <jsp:include page="select-plan.html" />
 </script>
 <script type="text/html" id="open_term_tmpl">
@@ -92,5 +96,5 @@ data-transition_porting_number="${customerReg.customerOrder.transition_porting_n
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20148311813"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014941943"></script>
 <jsp:include page="../footer-end.jsp" />
