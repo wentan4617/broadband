@@ -11,12 +11,14 @@ import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
+import com.tm.broadband.mapper.SEOMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.SEO;
 import com.tm.broadband.model.User;
 
 /**
@@ -33,18 +35,21 @@ public class SystemService {
 	private CompanyDetailMapper companyDetailMapper;
 	private CustomerMapper customerMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
+	private SEOMapper seoMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
 			NotificationMapper notificationMapper,
 			CompanyDetailMapper companyDetailMapper,
 			CustomerMapper customerMapper,
-			ManualManipulationRecordMapper manualManipulationRecordMapper) {
+			ManualManipulationRecordMapper manualManipulationRecordMapper,
+			SEOMapper seoMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
 		this.companyDetailMapper = companyDetailMapper;
 		this.customerMapper = customerMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
+		this.seoMapper = seoMapper;
 	}
 
 	public SystemService() {
@@ -188,6 +193,25 @@ public class SystemService {
 
 	/*
 	 * CompanyDetail Service End
+	 */
+
+	
+	/*
+	 * SEO Service Begin
+	 */
+
+	@Transactional
+	public void editSEO(SEO seo) {
+		this.seoMapper.updateSEO(seo);
+	}
+	
+	@Transactional
+	public SEO querySEO() {
+		return this.seoMapper.selectSEO(new SEO())!=null&&this.seoMapper.selectSEO(new SEO()).size()>0 ? this.seoMapper.selectSEO(new SEO()).get(0) : null;
+	}
+
+	/*
+	 * SEO Service End
 	 */
 
 	/*

@@ -92,7 +92,8 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = { "", "/home" })
-	public String home(Model model) {
+	public String home(Model model, HttpServletRequest req) {
+		req.getSession().setAttribute("seoSession", this.systemService.querySEO());
 		model.addAttribute("nofollow", "nofollow");
 		return "broadband-customer/home";
 	}

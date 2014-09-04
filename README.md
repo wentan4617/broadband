@@ -19,6 +19,14 @@ Total Mobile Solution Internet Service Web Project
 
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
+demand version 2.4.0 2014-09-04
+
+* 在ordering form和receipt里显示pstn号码.(steven)
+* 给pstn和voip的detail删除功能.(steven)
+* add detail里加多一个pstn和voip的选项.(steven)
+* 出invoice时取出order下所有的pstn+voip，迭代计算拨打记录，然后在invoice里显示.(steven)
+
+
 demand version 2.3.9 2014-08-31
 
 * 在发送invoice时提示用户如果想shrink your broadband bill（缩短你的宽带账单金额），可以一次性充值3/6/12个月的钱+3%/+7%/+15%到他的账户余额，以供该用户在CyberPark网站消费.(steven)

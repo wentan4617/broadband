@@ -1,10 +1,8 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Date;
 
-import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.SimpleMapperCreator;
 
 
 public class StevenTest {
@@ -53,13 +51,6 @@ public class StevenTest {
 //		// Second Decode
 //		String secondDecode = secondEncode.substring(3, secondEncode.length()-3);
 //		System.out.println(secondDecode);
-		
-		
-//		SimpleMapperCreator smc = new SimpleMapperCreator();
-//		smc.setAuthor("StevenChen");
-//		smc.setModel("TMSMaterialCategory");
-//		smc.setTable("tms_material_category");
-//		smc.initial();
 		
 //		Calendar cal = Calendar.getInstance(Locale.CHINA);
 //		cal.setTime(new Date());
@@ -169,6 +160,13 @@ public class StevenTest {
 //		System.out.println(TMUtils.getRentalChargeFee(TMUtils.parseDateYYYYMMDD("2014-07-01"), 18d));
 		
 //		System.out.println("asdasdsd$".contains("$"));
+		
+		
+		SimpleMapperCreator smc = new SimpleMapperCreator();
+		smc.setAuthor("CyberPark");
+		smc.setModel("SEO");
+		smc.setTable("tm_seo");
+		smc.initial();
 		
 	}
 }

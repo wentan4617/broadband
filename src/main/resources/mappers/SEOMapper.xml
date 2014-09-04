@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.SEOMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="sEOColumns">
+		seo.`title`				as seo_title,
+		seo.`description`		as seo_description,
+		seo.`keywords`			as seo_keywords
+	</sql>
+
+	<resultMap type="SEO" id="sEOResultMap">
+		<result property="title" column="seo_title" />
+		<result property="description" column="seo_description" />
+		<result property="keywords" column="seo_keywords" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectSEO" parameterType="SEO" resultType="SEO">
+		select * from tm_seo as seo
+	</select>
+
+	<!-- select sEO page -->
+	<select id="selectSEOsByPage" parameterType="Page" resultMap="sEOResultMap">
+		select 
+			<include refid="sEOColumns"/>
+			from tm_seo as seo
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select sEO amount -->
+	<select id="selectSEOsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_seo as seo
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertSEO" parameterType="SEO" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_seo`(
+			`title`, `description`, `keywords`
+		) VALUES (
+			#{title}, #{description}, #{keywords}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update sEO -->
+	<update id="updateSEO" parameterType="SEO">
+		update tm_seo
+		<set>
+			<if test="title != null">title = #{title},</if>
+			<if test="description != null">description = #{description},</if>
+			<if test="keywords != null">keywords = #{keywords}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteSEOById" parameterType="int">
+		DELETE FROM tm_seo WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>
