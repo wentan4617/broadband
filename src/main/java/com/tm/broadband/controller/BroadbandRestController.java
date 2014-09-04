@@ -87,6 +87,11 @@ public class BroadbandRestController {
 		if ("UFB".equals(customer.getSelect_plan_type()) && broadband.isUfb_available()) {
 			customer.setServiceAvailable(true);
 		}
+		if ("0".equals(customer.getSelect_plan_type())) {
+			if (broadband.isAdsl_available() || broadband.isVdsl_available() || broadband.isUfb_available()) {
+				customer.setServiceAvailable(true);
+			}
+		}
 		return broadband;
 	}
 	

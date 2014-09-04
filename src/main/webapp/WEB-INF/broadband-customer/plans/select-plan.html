@@ -15,7 +15,7 @@
 		<!-- Tab panes -->
 		<div class="tab-content">
 			<div class="tab-pane fade in active" id="homeline">
-			<. if(plansClothed != null && plansClothed.length > 0) { .>
+			<. if (plansClothed != null && plansClothed.length > 0) { .>
 				<div class="row">
 				<. for (var i = 0, len = plansClothed.length; i < len; i++) { 
 					var plan = plansClothed[i];
@@ -42,7 +42,7 @@
 				<.}.>
 				</div>
 			<.} else { .>
-				<div class="alert alert-waring">
+				<div class="alert alert-warning" style="margin-top:10px;">
 					No records are not found.
 				</div>
 			<.}.>
@@ -75,7 +75,7 @@
 				<.}.>
 				</div>
 			<.} else { .>
-				<div class="alert alert-waring">
+				<div class="alert alert-warning" style="margin-top:10px;">
 					No records are not found.
 				</div>
 			<.}.>

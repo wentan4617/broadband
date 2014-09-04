@@ -1004,7 +1004,9 @@ public class CustomerRestController {
 	@RequestMapping("/plans/loading/{select_plan_id}/{select_plan_type}")
 	public Map<String, Map<String, List<Plan>>>  loadingPlans(
 			@PathVariable("select_plan_id") Integer id,
-			@PathVariable("select_plan_type") String type) {
+			@PathVariable("select_plan_type") String type, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
 		Plan plan = new Plan();
 		plan.getParams().put("plan_type", type);
@@ -1012,6 +1014,10 @@ public class CustomerRestController {
 		plan.getParams().put("plan_status", "selling");
 		plan.getParams().put("plan_group_false", "plan-topup");
 		plan.getParams().put("orderby", "order by plan_price");
+		
+		if ("VDSL".equals(type) && customerReg.getCustomerOrder().getSale_id() != null) {
+			plan.getParams().put("id", 42);
+		}
 		
 		List<Plan> plans = this.planService.queryPlans(plan);
 		

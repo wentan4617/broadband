@@ -1418,8 +1418,8 @@ public class CustomerController {
 		return "broadband-customer/plans/address-check";
 	}
 	
-	@RequestMapping("/plans/address-check/promotion") 
-	public String toAddressCheckPromotion(Model model, HttpSession session) {
+	@RequestMapping("/plans/promotion") 
+	public String plansNewZelandPromotion(Model model, HttpSession session) {
 		
 		Customer customer = new Customer();
 		customer.getCustomerOrder().setOrder_broadband_type("transition");
@@ -1431,11 +1431,19 @@ public class CustomerController {
 	
 	
 	@RequestMapping("/plans/order") 
-	public String toOrderPlan(Model model, HttpSession session) {
+	public String toOrderPlan(Model model, HttpSession session,
+			@RequestParam(value = "select_plan_type", required = false) String select_plan_type) {
 		
 		String url = "broadband-customer/plans/customer-order";
 		
 		Customer customer = (Customer) session.getAttribute("customerReg");
+		
+		if (select_plan_type != null && !"".equals(select_plan_type)) {
+			customer.setSelect_plan_type(select_plan_type);
+		}
+		if ("0".equals(customer.getSelect_plan_type())) {
+			customer.setSelect_plan_type("VDSL");
+		}
 		if (!customer.isServiceAvailable()) {
 			String type = "broadband";
 			if ("ADSL".equals(customer.getSelect_plan_type())) {
@@ -1471,7 +1479,6 @@ public class CustomerController {
 	
 	@RequestMapping("/plans/order/summary") 
 	public String plansOrderSummary(Model model, HttpSession session) {
-		
 		return "broadband-customer/plans/order-summary";
 	}
 	

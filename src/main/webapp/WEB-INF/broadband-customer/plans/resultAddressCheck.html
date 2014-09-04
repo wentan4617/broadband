@@ -7,7 +7,7 @@
 	<div class="panel-body bg-primary ">
 		<div class="row">
 			<div class="col-md-4">
-				<div class="alert alert-<.=adsl_available?'success':'danger'.>" style="height:150px;">
+				<div id="adsl" class="alert alert-<.=adsl_available?'success':'danger'.>" style="height:150px;<.=adsl_available?'cursor: pointer;':''.>">
 					<p class="text-center">
 						<span class="glyphicon glyphicon-<.=adsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
 					</p>
@@ -20,7 +20,7 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="alert alert-<.=vdsl_available?'success':'danger'.>" style="height:150px;">
+				<div id="vdsl" class="alert alert-<.=vdsl_available?'success':'danger'.>" style="height:150px;<.=vdsl_available?'cursor: pointer;':''.>">
 					<p class="text-center">
 						<span class="glyphicon glyphicon-<.=vdsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
 					</p>
@@ -33,7 +33,7 @@
 				</div>
 			</div>
 			<div class="col-md-4">
-				<div class="alert alert-<.=ufb_available?'success':'danger'.>" style="height:150px;">
+				<div id="ufb" class="alert alert-<.=ufb_available?'success':'danger'.>" style="height:150px;<.=ufb_available?'cursor: pointer;':''.>">
 					<p class="text-center">
 						<span class="glyphicon glyphicon-<.=ufb_available?'ok':'remove'.>" style="font-size:24px;"></span>
 					</p>
@@ -52,7 +52,7 @@
 			<div class="col-md-2 col-xs-4">
 				<a href="<.=ctx.>/plans/broadband" class="btn btn-success btn-block" id="back">Back</a>
 			</div>
-			<div class="col-md-2 col-md-offset-8 col-xs-4 col-xs-offset-4">
+			<div class="col-md-2 col-md-offset-8 col-xs-5 col-xs-offset-3">
 				<a href="<.=ctx.>/plans/order" class="btn btn-success btn-block" id="continue">Continue</a>
 			</div>
 		</div>
