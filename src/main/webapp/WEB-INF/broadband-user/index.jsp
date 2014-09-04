@@ -257,6 +257,12 @@ hr {
 		                    		<a href="${ctx }/broadband-user/system/company-detail/edit">Edit Company Detail</a>
 		                    	</li>
 		                    </ul>
+		                    <ul class="list-unstyled">
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/system/seo/edit">Edit SEO</a>
+		                    	</li>
+		                    </ul>
 		                    <hr/>
 		                    <ul class="list-unstyled">
 		                    	<li>

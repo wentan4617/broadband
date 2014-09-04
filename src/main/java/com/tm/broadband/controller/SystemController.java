@@ -24,6 +24,7 @@ import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.SEO;
 import com.tm.broadband.model.StatisticCustomer;
 import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
@@ -339,6 +340,46 @@ public class SystemController {
 	}
 	/*
 	 * CompanyDetail Controller end
+	 */
+	
+	/*
+	 * SEO Controller begin
+	 */
+
+	@RequestMapping(value = "/broadband-user/system/seo/edit")
+	public String toSEOEdit(Model model) {
+
+		model.addAttribute("panelheading", "SEO Edit");
+		model.addAttribute("action", "/broadband-user/system/seo/edit");
+
+		SEO seo = this.systemService.querySEO();
+
+		model.addAttribute("seo", seo);
+
+		return "broadband-user/system/seo";
+	}
+	
+	@RequestMapping(value = "/broadband-user/system/seo/edit", method = RequestMethod.POST)
+	public String doSEOEdit(
+			Model model,
+			@ModelAttribute("seo") SEO seo,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		model.addAttribute("panelheading", "SEO Edit");
+		model.addAttribute("action", "/broadband-user/system/seo/edit");
+
+		if (result.hasErrors()) {
+			return "/broadband-user/system/seo";
+		}
+
+		this.systemService.editSEO(seo);
+
+		attr.addFlashAttribute("success", "Edit SEO successful.");
+
+		return "redirect:/broadband-user/system/seo/edit";
+	}
+	/*
+	 * SEO Controller end
 	 */
 	
 	/**

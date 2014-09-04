@@ -392,6 +392,14 @@
 									<ul class="list-unstyled">
 										<li>
 											<label> 
+												<form:checkbox path="authArray" value="system/seo/edit" data-type="checkbox_system" /> Edit SEO
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
 												<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
 											</label>
 										</li>

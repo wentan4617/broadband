@@ -516,7 +516,7 @@ public class OrderingPDFCreator extends ITextUtils {
                 totalPrice += price.multiply(unit).doubleValue();
 
                 // BEGIN ADD ON ROWS
-                addColBottomBorder(orderDetailTable, cod.getDetail_name(), 5, firstColIndent, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+                addColBottomBorder(orderDetailTable, cod.getDetail_name()+("pstn".equals(cod.getDetail_type()) ? " ("+cod.getPstn_number()+")" : ""), 5, firstColIndent, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
                 addColBottomBorder(orderDetailTable, " ", 2, 0F, null, 0F, 0F, null, borderColor);
                 addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
                 addColBottomBorder(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
