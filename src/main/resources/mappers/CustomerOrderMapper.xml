@@ -183,7 +183,9 @@
 		cod.`hardware_comment`					as cod_hardware_comment,
 		cod.`track_code`						as cod_track_code,
 		cod.`pstn_number` 						as cod_pstn_number,
-		cod.`user_id` 							as cod_user_id
+		cod.`user_id` 							as cod_user_id,
+		cod.`voip_password` 					as cod_voip_password,
+		cod.`voip_assign_date` 					as cod_voip_assign_date
 	</sql>
 	<resultMap type="CustomerOrderDetail" id="customerOrderDetailResultMap">
 		<id property="id" column="cod_id" />
@@ -211,6 +213,8 @@
 		<result property="track_code" column="cod_track_code" />
 		<result property="pstn_number" column="cod_pstn_number" />
 		<result property="user_id" column="cod_user_id" />
+		<result property="voip_password" column="cod_voip_password" />
+		<result property="voip_assign_date" column="cod_voip_assign_date" />
 	</resultMap>
 	
 	<sql id="organizationColumns">
@@ -456,6 +460,8 @@
 			<result property="track_code" column="cod_track_code" />
 			<result property="pstn_number" column="cod_pstn_number" />
 			<result property="user_id" column="cod_user_id" />
+			<result property="voip_password" column="cod_voip_password" />
+			<result property="voip_assign_date" column="cod_voip_assign_date" />
 		</collection>
 	</resultMap>
 	

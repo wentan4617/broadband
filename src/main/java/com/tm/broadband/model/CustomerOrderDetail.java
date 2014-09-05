@@ -42,6 +42,8 @@ public class CustomerOrderDetail implements Serializable {
 	private String track_code;
 	private String pstn_number;
 	private Integer user_id;
+	private String voip_password;
+	private Date voip_assign_date;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -54,6 +56,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private CustomerOrder customerOrder;
 	private String detail_expired_str;
+	private String voip_assign_date_str;
 	
 	
 	/*
@@ -300,6 +303,30 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_calling_minute(Integer detail_calling_minute) {
 		this.detail_calling_minute = detail_calling_minute;
+	}
+
+	public String getVoip_password() {
+		return voip_password;
+	}
+
+	public void setVoip_password(String voip_password) {
+		this.voip_password = voip_password;
+	}
+
+	public Date getVoip_assign_date() {
+		return voip_assign_date;
+	}
+
+	public void setVoip_assign_date(Date voip_assign_date) {
+		this.voip_assign_date = voip_assign_date;
+	}
+
+	public String getVoip_assign_date_str() {
+		return TMUtils.dateFormatYYYYMMDD(this.getVoip_assign_date());
+	}
+
+	public void setVoip_assign_date_str(String voip_assign_date_str) {
+		this.voip_assign_date_str = voip_assign_date_str;
 	}
 	
 	
