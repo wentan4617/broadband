@@ -6,8 +6,10 @@
 
 <jsp:include page="../header.jsp" />
 
-<c:if test="${customerReg.customerOrder.sale_id != null }">
-	<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu.jpg" style="margin: -20px auto 10px;">
+<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+	<div class="cyberpark-home-bg" >
+		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu2.png" style="margin: -20px auto 10px;padding: 0;" >
+	</div>
 </c:if>
 
 <div class="container">

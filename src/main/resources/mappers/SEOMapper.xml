@@ -34,7 +34,7 @@
 
 	<!-- SELECT AREA -->
 
-	<select id="selectSEO" parameterType="SEO" resultType="SEO">
+	<select id="selectSEOs" parameterType="SEO" resultType="SEO">
 		select * from tm_seo as seo
 	</select>
 

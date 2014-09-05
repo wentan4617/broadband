@@ -6,6 +6,7 @@
 		, customer_address = $('#order_modal_tmpl').attr('data-customer-address')
 		, select_modem_container = $('#select-modem')
 		, prepay_months_container = $('#prepay-month')
+		, open_term_container = $('#open-term')
 		, sale_id = $('#select_plan_tmpl').attr('data-sale-id')
 		
 	var	application = $('#application_tmpl') 
@@ -72,6 +73,7 @@
 			
 			var obj = {
 				ctx: ctx
+				, sale_id: sale_id
 				, select_plan_id: select_plan_id 
 				, select_plan_type: select_plan_type
 				, plansClothed: plansClothed
@@ -145,8 +147,6 @@
 				}
 				
 			});
-			
-			
 			
 		});
 	}
@@ -223,9 +223,11 @@
 			} else if (value == 12) {
 				
 				if (select_plan_type == 'VDSL' && sale_id != null && sale_id != '') {
-					discount_desc = 'free iPad Mini, free VOIP Wifi modem';
+					discount_desc = '<span class="text-danger">free iPad Mini 16G, free VOIP Wifi modem, 200 calling minutes of 40 countries</span>';
 					prepay_months = 12;
 					price.discount_price = 0;
+					open_term_container.hide('fast');
+					prepay_months_container.hide('fast');
 				} else {
 					discount_desc = '15% off the total price of 12 months plan with free modem';
 					prepay_months = 12;
@@ -236,7 +238,7 @@
 				
 				modem_selected = modems && $.extend({}, modems[0]);
 				if (modem_selected != null) modem_selected.hardware_price = 0;
-				console.log(modem_selected);
+				//console.log(modem_selected);
 			}
 			
 			price.modem_price = 0;
@@ -490,8 +492,8 @@
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
 		}
 	 	
-		console.log(customer);
-		console.log(JSON.stringify(customer));
+		//console.log(customer);
+		//console.log(JSON.stringify(customer));
 		
 	 	$.ajax({
 			type: 'post'

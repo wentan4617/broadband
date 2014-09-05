@@ -48,8 +48,7 @@ body {
 }
 
 .cyberpark-home-bg {
-	//max-width: 1366px;
-	background: url("../images/cyberpark_home_bg.jpg") no-repeat;
+	background: url("../images/cyberpark_home_bg.jpg");
 }
 .cyberpark-home-bg img {
 	margin: 0 auto;

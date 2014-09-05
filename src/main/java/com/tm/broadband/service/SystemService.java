@@ -207,7 +207,8 @@ public class SystemService {
 	
 	@Transactional
 	public SEO querySEO() {
-		return this.seoMapper.selectSEO(new SEO())!=null&&this.seoMapper.selectSEO(new SEO()).size()>0 ? this.seoMapper.selectSEO(new SEO()).get(0) : null;
+		List<SEO> seos = this.seoMapper.selectSEOs(new SEO());
+		return seos != null && seos.size() > 0 ? seos.get(0) : null;
 	}
 
 	/*
