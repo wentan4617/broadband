@@ -745,7 +745,7 @@
 										|| customerOrderDetail[d].detail_type=='plan-topup')
 									){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
 									  	<span class="glyphicon glyphicon-pencil"></span> 
 									</a>
 								<.
@@ -784,15 +784,22 @@
 									}
 									if(customerOrderDetail[d].detail_type=='pstn'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>">
 									  	<span class="glyphicon glyphicon-edit"></span> PSTN
 									</a>
 								<.
 									}
 									if(customerOrderDetail[d].detail_type=='voip'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs pull-right xs-btn-width" data-name="<.= customerOrder[i].id .>_update_pstn" data-id="<.= customerOrderDetail[d].id .>">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-voip-password="<.= customerOrderDetail[d].voip_password .>" data-voip-assign-date="<.= customerOrderDetail[d].voip_assign_date_str .>">
 									  	<span class="glyphicon glyphicon-edit"></span> VoIP
+									</a>
+								<.
+									}
+									if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete this <.= customerOrderDetail[d].detail_type .>">
+									  	<span class="glyphicon glyphicon-trash"></span> 
 									</a>
 								<.
 									}
@@ -1230,27 +1237,52 @@
 	</div>
 	<!-- /.modal -->
 
-	<!-- Edit PSTN Modal -->
+	<!-- Edit Phone Modal -->
 	<form class="form-horizontal">
-		<div class="modal fade" id="updatePSTNModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="updatePSTNModalLabel" aria-hidden="true">
+		<div class="modal fade" id="updatePhoneModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="updatePhoneModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-						<h4 class="modal-title text-danger" id="updatePSTNModalLabel">
-							<strong>Update PSTN Info</strong>
+						<h4 class="modal-title text-danger" id="updatePhoneModalLabel">
+							<strong>Update Phone Info</strong>
 						</h4>
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
-							<label class="control-label col-md-4">PSTN Number</label>
+							<label class="control-label col-md-4">Detail Name</label>
 							<div class="col-md-6">
-								<input data-name="pstn_number_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="PSTN Number" />
+								<input data-name="detail_name_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Number</label>
+							<div class="col-md-6">
+								<input data-name="phone_number_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Phone Number" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Type</label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_update_phone_type" class="form-control input-sm" style="height:26px; padding:0 10px;">
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_update_voip_password" style="display:none;">
+							<label class="control-label col-md-4">VoIP Password</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_update_voip_password" class="form-control input-sm" placeholder="VoIP Password" />
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_update_voip_assign_date" style="display:none;">
+							<label class="control-label col-md-4">VoIP Assign Date</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_update_voip_assign_date" class="form-control input-sm" placeholder="VoIP Assign Date" />
 							</div>
 						</div>
 					</div>
 					<div class="modal-footer">
-						<a id="<.= customerOrder[i].id .>" data-name="updatePSTNModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Update PSTN</a>
+						<a id="<.= customerOrder[i].id .>" data-name="updatePhoneModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Update Phone</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -1300,6 +1332,7 @@
 							<div class="col-md-6">
 								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_detail_type" class="form-control input-sm">
 									<option value="none">---choose one---</option>
+									<option value="phone">Phone Number</option>
 									<option value="discount">Credit</option>
 									<option value="debit">Debit</option>
 									<option value="present-calling-minutes">Offer Calling Minutes</option>
@@ -1314,6 +1347,42 @@
 							Please choose a type to add into this order!
 						</p>
 					</div>
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_phone_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Name</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_name" class="form-control input-sm" placeholder="Detail Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Number</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_number" class="form-control input-sm" placeholder="Phone Number" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Type</label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_phone_type" class="form-control input-sm" style="height:26px; padding:0 10px;">
+										<option value="pstn">PSTN</option>
+										<option value="voip">VoIP</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_phone_voip_password" style="display:none;">
+							<label class="control-label col-md-4">VoIP Password</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_voip_password" class="form-control input-sm" placeholder="VoIP Password" />
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_phone_voip_assign_date" style="display:none;">
+							<label class="control-label col-md-4">VoIP Assign Date</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_voip_assign_date" class="form-control input-sm" placeholder="VoIP Assign Date" />
+							</div>
+						</div>
+					</div>
+					
 					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_discount_modal_body" style="display:none;">
 						<div class="form-group">
 							<label class="control-label col-md-4">Credit Name</label>

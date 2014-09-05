@@ -1033,28 +1033,54 @@ public class CRMRestController {
 		return map;
 	}
 
-	// Update PSTN
-	@RequestMapping(value = "/broadband-user/crm/customer/order/pstn/edit", method = RequestMethod.POST)
+	// Update Phone
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/phone/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPSTNEdit(Model model,
 			@RequestParam("order_detail_id") int order_detail_id,
-			@RequestParam("customer_id") int customer_id,
-			@RequestParam("pstn_number") String pstn_number,
+			@RequestParam("detail_name") String detail_name,
+			@RequestParam("phone_number") String phone_number,
+			@RequestParam("phone_type") String phone_type,
+			@RequestParam("voip_password") String voip_password,
+			@RequestParam("voip_assign_date") String voip_assign_date,
 			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
 
-		if (!"".equals(pstn_number.trim())) {
-			CustomerOrderDetail cod = new CustomerOrderDetail();
-			cod.getParams().put("id", order_detail_id);
-			cod.setPstn_number(pstn_number);
-			this.crmService.editCustomerOrderDetail(cod);
-			// Update Customer Order Detail PSTN is successful.
-			json.getSuccessMap().put("alert-success",
-					"PSTN number had just been edited!");
-		} else {
-			json.getErrorMap().put("alert-error",
-					"Please input correct PSTN number!");
+		if ("".equals(detail_name.trim()) && "".equals(phone_number.trim())) {
+			json.getErrorMap().put("alert-error", "Please fill essential detail(s)!");
+			return json;
 		}
+		
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		cod.setDetail_name(detail_name);
+		cod.setPstn_number(phone_number);
+		cod.setDetail_unit(1);
+		cod.setDetail_price(0d);
+		cod.setDetail_type(phone_type);
+		
+		if("voip".equals(phone_type)){
+			
+			cod.setVoip_password(voip_password);
+
+			if(!"".equals(voip_assign_date)){
+				
+				String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+				Pattern pat = Pattern.compile(rexp);
+				Matcher mat = pat.matcher(voip_assign_date);
+				boolean dateType = mat.matches();
+				if (dateType && TMUtils.isDateFormat(voip_assign_date, "-")) {
+					cod.setVoip_assign_date(TMUtils.parseDateYYYYMMDD(voip_assign_date));
+				} else {
+					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyy-mm-dd");
+					return json;
+				}
+			}
+		}
+		
+		cod.getParams().put("id", order_detail_id);
+		this.crmService.editCustomerOrderDetail(cod);
+		
+		json.getSuccessMap().put("alert-success", "Phone number had just been edited!");
 
 		return json;
 	}
@@ -1141,23 +1167,16 @@ public class CRMRestController {
 			customerOrderDetail.setDetail_name(detail_name);
 			customerOrderDetail.setDetail_price(detail_price);
 			customerOrderDetail.setDetail_unit(detail_unit);
-			customerOrderDetail.setDetail_expired(TMUtils
-					.parseDateYYYYMMDD(detail_expired));
+			customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
 			customerOrderDetail.setDetail_type(detail_type);
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
 			// Create Customer Order Detail Discount is successful.
-			String detailType = detail_type.equals("discount") ? "credit"
-					: "debit";
-			json.getSuccessMap().put(
-					"alert-success",
-					"New " + detailType
-							+ " had been attached to related order! Order Id: "
-							+ order_id);
+			String detailType = detail_type.equals("discount") ? "credit" : "debit";
+			json.getSuccessMap().put("alert-success", "New " + detailType + " had been attached to related order! Order Id: " + order_id);
 		} else {
-			json.getErrorMap().put("alert-error",
-					"Expiry Date Format Incorrect! Must be yyy-mm-dd");
+			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyy-mm-dd");
 		}
 
 		return json;
@@ -1175,15 +1194,61 @@ public class CRMRestController {
 
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
 		// Remove Customer Order Detail Discount is successful.
-		String detailType = "discount".equals(detail_type) ? "Credit"
-				: "debit".equals(detail_type) ? "Debit"
+		String detailType = "discount".equals(detail_type) ? "Credit" : "debit".equals(detail_type) ? "Debit"
 						: "early-termination-debit".equals(detail_type) ? "Early Termination Charge"
-								: "termination-credit".equals(detail_type) ? "Termination Refund"
-										: detail_type;
-		json.getSuccessMap().put(
-				"alert-success",
-				"Selected " + detailType
-						+ " had been detached from related order!");
+						: "termination-credit".equals(detail_type) ? "Termination Refund" : detail_type;
+		json.getSuccessMap().put("alert-success", "Selected " + detailType + " had been detached from related order!");
+
+		return json;
+	}
+
+	// Add phone number
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/phone_number/save", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailPhoneNumberCreate(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("detail_name") String detail_name,
+			@RequestParam("phone_number") String phone_number,
+			@RequestParam("phone_type") String phone_type,
+			@RequestParam("voip_password") String voip_password,
+			@RequestParam("voip_assign_date") String voip_assign_date,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if("".equals(detail_name.trim()) && "".equals(phone_number.trim())){
+			json.getErrorMap().put("alert-error", "Please fill essential field(s)!");
+			return json;
+		}
+		
+		CustomerOrderDetail cod = new CustomerOrderDetail();
+		cod.setOrder_id(order_id);
+		cod.setDetail_name(detail_name);
+		cod.setPstn_number(phone_number);
+		cod.setDetail_unit(1);
+		cod.setDetail_price(0d);
+		cod.setDetail_type(phone_type);
+		
+		if("voip".equals(phone_type)){
+			
+			cod.setVoip_password(voip_password);
+
+			if(!"".equals(voip_assign_date)){
+				
+				String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+				Pattern pat = Pattern.compile(rexp);
+				Matcher mat = pat.matcher(voip_assign_date);
+				boolean dateType = mat.matches();
+				if (dateType && TMUtils.isDateFormat(voip_assign_date, "-")) {
+					cod.setVoip_assign_date(TMUtils.parseDateYYYYMMDD(voip_assign_date));
+				} else {
+					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyy-mm-dd");
+					return json;
+				}
+			}
+		}
+
+		this.crmService.createCustomerOrderDetail(cod);
+		json.getSuccessMap().put("alert-success", "Add new "+phone_type+" successfully!");
 
 		return json;
 	}

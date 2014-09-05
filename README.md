@@ -19,11 +19,19 @@ Total Mobile Solution Internet Service Web Project
 
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
-demand version 2.4.0 2014-09-04
+demand version 2.5.0 2014-09-05
 
-* 在ordering form和receipt里显示pstn号码.(steven)
-* 给pstn和voip的detail删除功能.(steven)
-* add detail里加多一个pstn和voip的选项.(steven)
+* 制作工单（Onsite Sheet PDF）：在order界面点击生成工单，填写所需信息确认生成
+    header：order信息
+    body：faulty comments，resolution comments，generator
+    footer：customer signature
+* 更改CRMService里的方法：createInvoicePDFBoth(), createTermPlanInvoiceByOrder(), createTopupPlanInvoiceByOrder()
+
+demand version 2.4.5 2014-09-04
+
+* [在ordering form和receipt里显示pstn号码.](steven)
+* [给pstn和voip的detail删除功能.](steven)
+* [add detail里加多一个pstn和voip的选项.](steven)
 * 出invoice时取出order下所有的pstn+voip，迭代计算拨打记录，然后在invoice里显示.(steven)
 
 
