@@ -8,16 +8,9 @@ import com.tm.broadband.model.Page;
 
 public interface SEOMapper {
 
-/**
- * mapping tm_seo, sEO DAO component
- * 
- * @author CyberPark
- * 
-  */
-
 	/* SELECT AREA */
 
-	List<SEO> selectSEO(SEO seo);
+	List<SEO> selectSEOs(SEO seo);
 	List<SEO> selectSEOsByPage(Page<SEO> page);
 	int selectSEOsSum(Page<SEO> page);
 

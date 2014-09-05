@@ -43,6 +43,8 @@
 				</a>
 			</li>
 		</ul>
+		
+		<img alt="" src="${ctx }/public/bootstrap3/images/cyberpark-2d-code.jpg" class="img-responsive" width="160px" height="160px" style="margin:20px auto;">
 	</div>
 </div>
 <a id="scrollUp" href="#top" title="" style="position: fixed; z-index: 2147483647;"></a>

@@ -1,9 +1,16 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
-		<h4 class="panel-title">Select One Plan</h4>
+		<h4 class="panel-title">
+		<. if (select_plan_type == 'VDSL' && sale_id != null && sale_id != ''){.>
+			Promotion VDSL Plan
+		<.} else {.>
+			Select One Plan
+		<.}.>
+		</h4>
 	</div>
 	<div class="panel-body">
 		<!-- Nav tabs -->
+		<.if (select_plan_type == 'ADSL') {.>
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
 				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
@@ -12,6 +19,30 @@
 				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
 			</li>
 		</ul>
+		<.} else if (select_plan_type == 'VDSL') {
+		
+			if (sale_id == null || sale_id == '') {.>
+		<ul class="nav nav-tabs" id="plans">
+			<li class="active">
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
+			</li>
+			<li>
+				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
+			</li>
+		</ul>
+		<.
+			}
+		} else if (select_plan_type == 'UFB') {.>
+		<ul class="nav nav-tabs" id="plans">
+			<li class="active">
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
+			</li>
+			<li>
+				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
+			</li>
+		</ul>
+		<.}.>
+		
 		<!-- Tab panes -->
 		<div class="tab-content">
 			<div class="tab-pane fade in active" id="homeline">
@@ -30,7 +61,12 @@
 								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
-								<.=plan.plan_price.> / month
+								<. if (select_plan_type == 'VDSL' && sale_id != null && sale_id != ''){.>
+									<.=plan.plan_price * 12.> / year
+								<.} else {.>
+									<.=plan.plan_price.> / month
+								<.}.>
+								
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
 								<span data-icon style="border: 1px solid; padding: 6px 8px; border-radius: 24px; background-color: #fff;">
