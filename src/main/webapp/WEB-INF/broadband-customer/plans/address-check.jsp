@@ -47,6 +47,8 @@
 		<a href="${ctx }/plans/address/clear" class="btn btn-link">Clear Address</a>
 	</p>
 	
+	<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+	
 	<div class="panel panel-success">
 		<div class="panel-heading">
 			<h4 class="panel-title">
@@ -124,6 +126,12 @@
 			</div>
 		</div>
 	</div>
+
+	<p class="alert alert-warning">
+		If you have more questions, you can directly contact our customer service 0800 2 Cyber (29237).
+	</p>
+	
+	</c:if>
 	
 	<div id="checkResult" data-select_plan_id="${select_plan_id}" data-select_plan_type="${select_plan_type}" style="min-height:600px;margin-top:15px;"></div>
 
