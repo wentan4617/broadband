@@ -836,33 +836,20 @@
 				/*
 				 *	BEGIN customer order detail(s) area
 				 */
-				$('select[data-name="'+co[i].id+'_update_phone_type"]').change(function(){
-					if($(this).val()=='pstn'){
-						$('div[data-name="'+this.id+'_update_voip_password"]').css('display','none');
-						$('div[data-name="'+this.id+'_update_voip_assign_date"]').css('display','none');
-					} else {
-						$('div[data-name="'+this.id+'_update_voip_password"]').css('display','');
-						$('div[data-name="'+this.id+'_update_voip_assign_date"]').css('display','');
-					}
-				});
 				$('a[data-name="'+co[i].id+'_update_phone"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="updatePhoneModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-id'));
 					$('a[data-name="updatePhoneModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('a[data-name="updatePhoneModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
 					$('input[data-name="detail_name_'+this.id+'"]').val($(this).attr('data-detail-name'));
 					$('input[data-name="phone_number_'+this.id+'"]').val($(this).attr('data-val'));
-					var oSelect = $('select[data-name="'+this.id+'_update_phone_type"]');
 					if($(this).attr('data-type')=='voip'){
 						$('input[data-name="'+this.id+'_update_voip_password"]').val($(this).attr('data-voip-password'));
 						$('input[data-name="'+this.id+'_update_voip_assign_date"]').val($(this).attr('data-voip-assign-date'));
 						$('input[data-name="phone_number_'+this.id+'"]').val($(this).attr('data-val'));
-						oSelect.append('<option value="voip" selected="selected">VoIP</option>');
-						oSelect.append('<option value="pstn">PSTN</option>');
 						$('div[data-name="'+this.id+'_update_voip_password"]').css('display','');
 						$('div[data-name="'+this.id+'_update_voip_assign_date"]').css('display','');
 					} else {
-						oSelect.append('<option value="voip">VoIP</option>');
-						oSelect.append('<option value="pstn" selected="selected">PSTN</option>');
 						$('div[data-name="'+this.id+'_update_voip_password"]').css('display','none');
 						$('div[data-name="'+this.id+'_update_voip_assign_date"]').css('display','none');
 					}
@@ -873,7 +860,7 @@
 					var order_detail_id = $(this).attr('data-detail-id');
 					var detail_name = $('input[data-name="detail_name_'+this.id+'"]').val();
 					var phone_number = $('input[data-name="phone_number_'+this.id+'"]').val();
-					var phone_type = $('select[data-name="'+this.id+'_update_phone_type"]').val();
+					var phone_type = $(this).attr('data-type');
 					var data = {
 							'order_detail_id':order_detail_id
 							,'detail_name':detail_name+''
@@ -974,6 +961,61 @@
 				/*
 				 *	END Remove detail
 				 */
+				 
+				 
+				/*
+				 *	BEGIN Add phone
+				 */
+				$('a[data-name="'+co[i].id+'_add_phone"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="addPhoneModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('#addPhoneModal_'+this.id).modal('show');
+				});
+				
+				$('select[data-name="'+co[i].id+'_phone_type"]').change(function(){
+					if($(this).val()=='pstn'){
+						$('div[data-name="'+this.id+'_voip_password"]').css('display','none');
+						$('div[data-name="'+this.id+'_voip_assign_date"]').css('display','none');
+					} else {
+						$('div[data-name="'+this.id+'_voip_password"]').css('display','');
+						$('div[data-name="'+this.id+'_voip_assign_date"]').css('display','');
+					}
+				});
+				// Submit to rest controller
+				$('a[data-name="addPhoneModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					this.id = $(this).attr('data-id');
+					var detail_name = $('input[data-name="'+this.id+'_detail_name"]').val();
+					var phone_number = $('input[data-name="'+this.id+'_phone_number"]').val();
+					var phone_type = $('select[data-name="'+this.id+'_phone_type"]').val();
+					var voip_password = $('input[data-name="'+this.id+'_voip_password"]').val();
+					var voip_assign_date = $('input[data-name="'+this.id+'_voip_assign_date"]').val();
+					var data = {
+						'order_id':this.id
+						,'detail_name':detail_name+''
+						,'phone_number':phone_number+''
+						,'phone_type':phone_type+''
+						,'voip_password':voip_password+''
+						,'voip_assign_date':voip_assign_date+''
+					};
+					
+					$.post('${ctx}/broadband-user/crm/customer/order/detail/phone_number/save', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				/*
+				 *	END Add phone
+				 */
+				
+				 
+				// Reset button when hidden order add detail dialog
+				$('#addPhoneModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_add_phone"]').button('reset');
+					$.getCustomerOrder();
+				});
+				 
+				/*
+				 *	END Add phone
+				 */
 				
 				 
 				/*
@@ -990,16 +1032,6 @@
 					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).val());
 				});
 				
-				$('select[data-name="'+co[i].id+'_phone_type"]').change(function(){
-					if($(this).val()=='pstn'){
-						$('div[data-name="'+this.id+'_phone_voip_password"]').css('display','none');
-						$('div[data-name="'+this.id+'_phone_voip_assign_date"]').css('display','none');
-					} else {
-						$('div[data-name="'+this.id+'_phone_voip_password"]').css('display','');
-						$('div[data-name="'+this.id+'_phone_voip_assign_date"]').css('display','');
-					}
-				});
-				
 				// Submit to rest controller
 				$('a[data-name="addDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					this.id = $(this).attr('data-id');
@@ -1007,23 +1039,7 @@
 					var data = {};
 					
 					var url = '${ctx}/broadband-user/crm/customer/order/detail/save';
-					if(detail_type == 'phone'){
-						var detail_name = $('input[data-name="'+this.id+'_'+detail_type+'_name"]').val();
-						var phone_number = $('input[data-name="'+this.id+'_'+detail_type+'_number"]').val();
-						var phone_type = $('select[data-name="'+this.id+'_'+detail_type+'_type"]').val();
-						var voip_password = $('input[data-name="'+this.id+'_'+detail_type+'_voip_password"]').val();
-						var voip_assign_date = $('input[data-name="'+this.id+'_'+detail_type+'_voip_assign_date"]').val();
-						data = {
-								'order_id':this.id
-								,'detail_name':detail_name+''
-								,'phone_number':phone_number+''
-								,'phone_type':phone_type+''
-								,'voip_password':voip_password+''
-								,'voip_assign_date':voip_assign_date+''
-						};
-						console.log(data);
-						url = '${ctx}/broadband-user/crm/customer/order/detail/phone_number/save';
-					} else if(detail_type == 'early-termination-debit'){
+					if(detail_type == 'early-termination-debit'){
 						data = {
 								'order_id':this.id
 								,'terminatedDate':$('input[data-name="'+this.id+'_detail_early_termination_date"]').val()+''

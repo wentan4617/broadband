@@ -15,6 +15,7 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -101,7 +102,12 @@ public class CallingAndRentalFeeCalucation {
 		ccrTemp.getParams().put("clear_service_id", //96272424
 				TMUtils.formatPhoneNumber(pstn_number)
 		);
+
 		List<CustomerCallRecord> ccrsTemp = customerCallRecordMapper.selectCustomerCallRecord(ccrTemp);
+
+		for (CustomerCallRecord customerCallRecord : ccrsTemp) {
+			Console.log(customerCallRecord);
+		}
 
 		// ITERATIVELY ADD ALL CALL CHARGES
 		for (CustomerCallRecord ccr : ccrsTemp) {
@@ -325,7 +331,7 @@ public class CallingAndRentalFeeCalucation {
 		
 		cids.add(cid);
 		
-		invoicePDF.setCcrs(ccrs);
+		invoicePDF.getCrrsMap().put(pstn_number, ccrs);
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		
