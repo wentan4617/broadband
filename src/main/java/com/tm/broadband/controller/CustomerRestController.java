@@ -293,7 +293,7 @@ public class CustomerRestController {
 		}
 		
 		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
+			json.setJSONErrorMap(result);
 			if (!"transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
 				json.getErrorMap().remove("customerOrder.transition_porting_number");
 				json.getErrorMap().remove("customerOrder.transition_provider_name");

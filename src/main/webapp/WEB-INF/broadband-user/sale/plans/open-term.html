@@ -1,0 +1,31 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Open Term Or Contract 12 Months
+		</h4>
+	</div>
+	<div class="panel-body">
+		<ul class="list-inline" style="margin-bottom:0;">
+					
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="open-term" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
+						Open Term 
+					</span>
+				</label>
+			</li>
+			
+			<. if (sale_id == null || sale_id == '') {.>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
+				</label>
+			</li>
+			<.}.>
+			
+		</ul>
+	</div>
+</div>
+

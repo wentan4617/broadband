@@ -28,7 +28,6 @@ public class BroadbandRestController {
 			return returnBroadband(address, customerReg);
 		}
 		return null;
-		
 	}
 	
 	@RequestMapping("/address/check/{address}")
@@ -40,7 +39,16 @@ public class BroadbandRestController {
 			return returnBroadband(address, customer);
 		}
 		return null;
-		
+	}
+	
+	@RequestMapping("/sale/plans/address/check/{address}")
+	public Broadband checkAddressSale(@PathVariable("address") String address,
+			HttpSession session) {
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		if (customerRegSale != null) {
+			return returnBroadband(address, customerRegSale);
+		}
+		return null;
 	}
 	
 	@RequestMapping("/sale/address/check/{address}")

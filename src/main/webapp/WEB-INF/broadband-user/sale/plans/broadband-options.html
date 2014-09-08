@@ -1,0 +1,79 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Broadband Options
+		</h4>
+	</div>
+	<div class="panel-body">
+		<div class="form-group">
+			<div class="col-md-12">
+				<ul class="list-unstyled topup-list">
+					<li>
+						<label>
+							<input type="radio" name="order_broadband_type" value="transition"/> 
+							&nbsp; 
+							<strong> 
+								Transfer the existing broadband connection to CyberPark 
+								<.if (plan.transition_fee > 0) {.>
+									costs <span class="text-danger">$<.=plan.transition_fee.toFixed(0).></span>
+								<.} else {.>
+									is free
+								<.}.>
+							</strong>
+						</label>
+					</li>
+					<li>
+						<label>
+							<input type="radio" name="order_broadband_type" value="new-connection" />
+							&nbsp; 
+							<strong> 
+								Get a new broadband connection on an existing (but inactive) Phone Jack 
+								<.if (plan.plan_new_connection_fee > 0) {.>
+									<.if (prepay_months == 1) {.>
+										costs 
+										<.if (!isContract) {.>
+											<span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+										<.} else {.>
+											<span class="text-danger">$49</span>, 
+											<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
+										<.}.>
+									<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+										costs 
+										<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
+										<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
+									<.} else if (prepay_months == 12) {.>
+										is free
+									<.}.>
+								<.} else {.>
+									is free
+								<.}.>
+							</strong>
+						</label>
+					</li>
+					<!-- <li>
+						<label>
+							<input type="radio" name="order_broadband_type" value="jackpot" /> 
+							&nbsp; 
+							<strong> 
+								Get a new broadband connection and an new Phone Jack installation and activation 
+								<.if (plan.jackpot_fee > 0) {.>
+									costs <span class="text-danger">$<.=plan.jackpot_fee.toFixed(0).></span>
+								<.} else {.>
+									is free
+								<.}.>
+							</strong>
+						</label>
+					</li> -->
+				</ul>
+			</div>
+		</div>
+		
+		<div class="well">
+			<p class="text-danger">
+				Dear customer, if you are transfering to CyberPark Internet service, please inform your existing Internet service provider AFTER you received our email and text message for SERVICE GIVEN DATE.
+			</p>
+		</div>
+		
+	</div>
+</div>
+

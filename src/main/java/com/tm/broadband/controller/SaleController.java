@@ -8,9 +8,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -1102,4 +1105,359 @@ public class SaleController {
 
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/broadband-user/sale/plans/{type}/{clasz}")
+	public String broadband(Model model,
+			@PathVariable("type") String type, 
+			@PathVariable("clasz") String clasz, HttpSession session) {
+		
+		Customer customer = (Customer) session.getAttribute("customerRegSale");
+		
+		if (customer == null) {
+			customer = new Customer();
+			customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			session.setAttribute("customerRegSale", customer);
+		}
+		
+		List<Plan> plans = null;
+		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		String url = "";
+		
+		url = "broadband-user/sale/plans/broadband";
+		if ("broadband".equals(type)) {
+			model.addAttribute("adsl", "active");
+			type = "ADSL";
+		} else if ("ultra-fast-vdsl".equals(type)) {
+			model.addAttribute("vdsl", "active");
+			type = "VDSL";
+		} else if ("ultra-fast-fibre".equals(type)) {
+			model.addAttribute("ufb", "active");
+			type = "UFB";
+		}
+		
+		model.addAttribute("type", type);
+		model.addAttribute("clasz", clasz);
+		
+		String type_search = type;
+		
+		if (customer.getBroadband() != null && !customer.getBroadband().getServices_available().contains(type)) {
+			type_search = "ADSL";
+		}
+		
+		model.addAttribute("type_search", type_search);
+		
+		Plan plan = new Plan();
+		plan.getParams().put("plan_type", type_search);
+		plan.getParams().put("plan_class", clasz);
+		plan.getParams().put("plan_status", "selling");
+		plan.getParams().put("plan_group_false", "plan-topup");
+		plan.getParams().put("orderby", "order by plan_price");
+		
+		plans = this.planService.queryPlans(plan);
+		
+		this.wiredPlanMapBySort(planTypeMap, plans);
+		
+		model.addAttribute("planTypeMap", planTypeMap);
+		
+		return url;
+	}
+	
+	private void wiredPlanMapBySort(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+		if (plans != null) {
+			for (Plan p: plans) {
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = new ArrayList<Plan>();
+						plansClothed.add(p);
+						planMap.put("plansClothed", plansClothed);
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = new ArrayList<Plan>();
+						plansNaked.add(p);
+						planMap.put("plansNaked", plansNaked);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
+				} else {
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = planMap.get("plansClothed");
+						if (plansClothed == null) {
+							plansClothed = new ArrayList<Plan>();
+							plansClothed.add(p);
+							planMap.put("plansClothed", plansClothed);
+						} else {
+							plansClothed.add(p);
+						}
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = planMap.get("plansNaked");
+						if (plansNaked == null) {
+							plansNaked = new ArrayList<Plan>();
+							plansNaked.add(p);
+							planMap.put("plansNaked", plansNaked);
+						} else {
+							plansNaked.add(p);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	@RequestMapping("/broadband-user/sale/plans/address-check/{type}/{clasz}/{id}") 
+	public String toAddressCheck(Model model,
+			@PathVariable("type") String type,
+			@PathVariable("clasz") String clasz,
+			@PathVariable("id") int id,
+			HttpSession session) {
+		
+		Customer customer = (Customer) session.getAttribute("customerRegSale");
+		customer.setSelect_plan_id(id);
+		customer.setSelect_plan_type(type);
+		customer.setSelect_customer_type(clasz);
+		
+		model.addAttribute("select_plan_id", id);
+		model.addAttribute("select_plan_type", type);
+		model.addAttribute("select_customer_type", clasz);
+		return "broadband-user/sale/plans/address-check";
+	}
+	
+	
+	@RequestMapping("/broadband-user/sale/plans/order") 
+	public String toOrderPlan(Model model, HttpSession session,
+			@RequestParam(value = "select_plan_type", required = false) String select_plan_type) {
+		
+		String url = "broadband-user/sale/plans/customer-order";
+		
+		Customer customer = (Customer) session.getAttribute("customerRegSale");
+		
+		if (select_plan_type != null && !"".equals(select_plan_type)) {
+			customer.setSelect_plan_type(select_plan_type);
+		}
+		if ("0".equals(customer.getSelect_plan_type())) {
+			customer.setSelect_plan_type("VDSL");
+		}
+		if (!customer.isServiceAvailable()) {
+			String type = "broadband";
+			if ("ADSL".equals(customer.getSelect_plan_type())) {
+				type = "broadband";
+			} else if ("VDSL".equals(customer.getSelect_plan_type())){
+				type = "ultra-fast-vdsl";
+			} else if ("UFB".equals(customer.getSelect_plan_type())) {
+				type = "ultra-fast-fibre";
+			}
+			url = "redirect:/broadband-user/sales/plans/" + type + "/" + customer.getSelect_customer_type();
+		}
+		
+		return url;
+	}
+	
+	@RequestMapping("/broadband-user/sale/plans/address/clear") 
+	public String addressClear(Model model, HttpSession session) {
+		
+		Customer customer = (Customer) session.getAttribute("customerRegSale");
+		String type = "broadband", url = "";
+		if ("ADSL".equals(customer.getSelect_plan_type())) {
+			type = "broadband";
+		} else if ("VDSL".equals(customer.getSelect_plan_type())){
+			type = "ultra-fast-vdsl";
+		} else if ("UFB".equals(customer.getSelect_plan_type())) {
+			type = "ultra-fast-fibre";
+		}
+		url = "redirect:/broadband-user/sale/plans/" + type + "/" + customer.getSelect_customer_type();
+		session.removeAttribute("customerRegSale");
+		
+		return url;
+	}
+	
+	@RequestMapping("/broadband-user/sale/plans/order/summary") 
+	public String plansOrderSummary(Model model, HttpSession session) {
+		
+		// BEGIN CREDIT CARD YEAR
+		List<String> years = new ArrayList<String>();
+		for (int i = 14; i <= 99; i++) {
+			if(i<10){
+				years.add(String.format("%02d",i));
+			} else {
+				years.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD YEAR
+
+		// BEGIN CREDIT CARD MONTH
+		List<String> months = new ArrayList<String>();
+		for (int i = 1; i <= 12; i++) {
+			if(i<10){
+				months.add(String.format("%02d",i));
+			} else {
+				months.add(String.format("%d",i));
+			}
+		}
+		// END CREDIT CARD MONTH
+
+		model.addAttribute("months", months);
+		model.addAttribute("years", years);
+		
+		return "broadband-user/sale/plans/order-summary";
+	}
+	
+	
+	
+	@RequestMapping(value = "/broadband-user/sale/plans/confirm/save", method = RequestMethod.POST)
+	public String sale(Model model, 
+			@RequestParam("card_type") String card_type,
+			@RequestParam("holder_name") String holder_name,
+			@RequestParam("card_number") String card_number,
+			@RequestParam("security_code") String security_code,
+			@RequestParam("expiry_month") String expiry_month,
+			@RequestParam("expiry_year") String expiry_year,
+			@RequestParam("optional_request") String optional_request,
+			RedirectAttributes attr, HttpSession session) {
+		
+		User user = (User) session.getAttribute("userSession");
+		Integer sale_id = 0;
+		if("sales".equals(user.getUser_role()) || "agent".equals(user.getUser_role())){
+			sale_id = user.getId();
+		}
+		
+		Customer customer = (Customer)session.getAttribute("customerRegSale");
+		
+		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
+		customer.setUser_name(customer.getLogin_name());
+		customer.setStatus("active");
+		customer.getCustomerOrder().setOrder_status("pending");
+		customer.getCustomerOrder().setSignature("unsigned");
+		customer.getCustomerOrder().setSale_id(customer.getId());
+		customer.getCustomerOrder().setSale_id(user.getId());
+		customer.getCustomerOrder().setOptional_request(optional_request);
+		
+		this.crmService.registerCustomerCalling(customer);
+		
+		ApplicationPDFCreator appPDFCreator = new ApplicationPDFCreator();
+		appPDFCreator.setCustomer(customer);
+		appPDFCreator.setOrg(customer.getOrganization());
+		appPDFCreator.setCustomerOrder(customer.getCustomerOrder());
+		
+		String applicationPDFPath = null;
+		try {
+			applicationPDFPath = appPDFCreator.create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customer.getCustomerOrder().getId());
+		co.setOrder_pdf_path(applicationPDFPath);
+		this.crmService.editCustomerOrder(co);
+		
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachPath(orderingPath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+
+		user = null;
+		notification = null;
+		applicationEmail = null;
+		orderingPath = null;
+		companyDetail = null;
+		/*org = null;
+		co = null;*/
+		
+		
+		// BEGIN Credit Card
+		
+		if(!"".equals(holder_name) && !"".equals(card_number) && !"".equals(security_code)){
+			CustomerCredit cc = new CustomerCredit();
+			cc.setCard_type(card_type);
+			cc.setHolder_name(holder_name);
+			cc.setCard_number(card_number);
+			cc.setSecurity_code(security_code);
+			cc.setExpiry_date(
+					"20"+expiry_year
+					+"-"+expiry_month);
+			co = null;
+			co = new CustomerOrder();
+			co.setId(customer.getCustomerOrder().getId());
+			this.saleService.createCustomerCredit(cc);
+
+			// BEGIN CREDIT PDF
+			CreditPDFCreator cPDFCreator = new CreditPDFCreator();
+			cc.setCustomer(this.crmService.queryCustomerById(customer.getId()));
+			cPDFCreator.setCc(cc);
+			cPDFCreator.setCo(co);
+			cPDFCreator.setOrg(this.saleService.queryOrganizationByCustomerId(customer.getId()));
+			String creditPDFPath = null;
+			try {
+				creditPDFPath = cPDFCreator.create();
+			} catch (DocumentException | IOException e) {
+				e.printStackTrace();
+			}
+			co.getParams().put("id", co.getId());
+			co.setCredit_pdf_path(creditPDFPath);
+			this.crmService.editCustomerOrder(co);
+			cPDFCreator = null;
+			creditPDFPath = null;
+			// END CREDIT PDF
+			
+			
+			// Recycle
+			co = null;
+		}
+
+		// BEGIN Credit Card
+		
+		session.removeAttribute("customerRegSale");
+		
+		return "redirect:/broadband-user/sale/online/ordering/view/by/"+sale_id;
+	}
+	
+	
 }

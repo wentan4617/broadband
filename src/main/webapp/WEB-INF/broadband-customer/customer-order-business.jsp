@@ -65,7 +65,7 @@
 							
 							<!-- customer account -->
 							<hr/>
-							<h4 class="text-success">Create Your Account</h4>
+							<h4 class="text-success">Create Business Account</h4>
 							<hr/>
 							
 							<div class="form-group">

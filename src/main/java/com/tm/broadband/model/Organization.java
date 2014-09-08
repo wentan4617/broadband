@@ -31,8 +31,8 @@ public class Organization implements Serializable {
 	private String holder_name;
 	private String holder_job_title;
 	private String holder_phone;
-	@Email(groups = { CustomerOrganizationValidatedMark.class})
-	@Length(max = 40, groups = { CustomerOrganizationValidatedMark.class })
+	/*@Email(groups = { CustomerOrganizationValidatedMark.class})
+	@Length(max = 40, groups = { CustomerOrganizationValidatedMark.class })*/
 	private String holder_email;
 
 	/*

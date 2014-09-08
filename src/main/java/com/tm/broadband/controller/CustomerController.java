@@ -1403,7 +1403,6 @@ public class CustomerController {
 		return url;
 	}
 	
-	
 	@RequestMapping("/plans/address-check/{type}/{id}") 
 	public String toAddressCheck(Model model,
 			@PathVariable("type") String type,
