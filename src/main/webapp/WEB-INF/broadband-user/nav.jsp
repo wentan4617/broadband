@@ -266,9 +266,15 @@
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/sale/online/ordering/plans/business">
+								<a href="${ctx}/broadband-user/sale/online/ordering/plans/personal"><!--  -->
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 									Ordering Online (PAD | PC)
+								</a>
+							</li>
+							<li>
+								<a href="${ctx}/broadband-user/sale/plans/broadband/personal">
+									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+									New Ordering Online (PAD | PC)
 								</a>
 							</li>
 						</ul>

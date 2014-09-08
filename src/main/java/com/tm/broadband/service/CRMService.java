@@ -3231,7 +3231,6 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			} else {
 				discount_price = plan.getPlan_price() * 12 * 0.15;
 			}
-			
 		}
 		
 		if (discount_price > 0d) {
@@ -3319,7 +3318,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cod_pstn.setDetail_name("VOIP");
 					cod_pstn.setDetail_type("voip");
 				} else {
-					cod_pstn.setDetail_name("HomeLine");
+					if ("business".equals(customer.getCustomer_type())) {
+						cod_pstn.setDetail_name("BusinessLine");
+					} else {
+						cod_pstn.setDetail_name("HomeLine");
+					}
 					cod_pstn.setDetail_type("pstn");
 				}
 				cod_pstn.setDetail_price(0d);

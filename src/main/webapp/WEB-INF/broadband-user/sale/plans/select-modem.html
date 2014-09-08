@@ -1,0 +1,57 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h4 class="panel-title">
+			Select one Modem 
+		</h4>
+	</div>
+	<div class="panel-body">
+	<. if (hardwares != null && hardwares.length > 0) { .>
+		<div class="row">
+		<. for(var i = 0; i < hardwares.length; i++) {
+			var hardware = hardwares[i];
+		.>
+			<div class="col-md-12">
+				<. if (i > 0) {.><hr style="margin:0;"><.}.>
+				
+				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
+					<li>
+						<label>
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term" style="float:left;"/> 
+							&nbsp;<span class="text-success" style="font-size:18px;"><.=hardware.hardware_name.></span>
+						</label>
+						<span style="float:right;font-size:18px;font-weight:bold;">
+						<.if (!isContract) {.>
+							<.if (prepay_months == 1) {.>
+								<span class="text-danger">$<.=hardware.hardware_price.></span>
+							<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+								<span class="text-danger">$<.=hardware.hardware_price - parseInt((hardware.hardware_price/12)*prepay_months).></span>, 
+								<span class="text-success">save $<.=parseInt((hardware.hardware_price/12)*prepay_months).></span>
+							<.}.>
+						<.} else {.>
+							<span class="text-danger">$<.=parseInt(hardware.hardware_price/2).></span>, 
+							<span class="text-success">save $<.=parseInt(hardware.hardware_price/2).></span>
+						<.}.>
+						</span>
+					</li>
+					
+				</ul>
+			</div>
+		<.}.>
+			<div class="col-md-12">
+				<hr style="margin:0;">
+				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
+					<li>
+						<label>
+							<input data-id="0" type="radio" name="modem" value="withoutmodem"/> 
+							&nbsp;<span style="font-size:18px;">No, I don't need a modem</span>
+						</label>
+					</li>
+				</ul>
+			</div>
+			
+		</div>
+	<.} else { .>
+		<div class="alert alert-warning">No Modems are not found</div>
+	<.}.>
+	</div>
+</div>

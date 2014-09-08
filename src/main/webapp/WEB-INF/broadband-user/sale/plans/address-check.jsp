@@ -6,7 +6,7 @@
 
 <jsp:include page="../header.jsp" />
 
-<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+<c:if test="${customerRegSale.customerOrder.sale_id != null && customerRegSale.customerOrder.sale_id != 0}">
 	<div class="cyberpark-home-bg" >
 		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu2.png" style="margin: -20px auto 10px;padding: 0;" >
 	</div>
@@ -15,8 +15,9 @@
 <div class="container">
 	
 	<div class="hidden-xs hidden-sm">
-		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
-			<li class="active"><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+		<ul class="nav nav-pills nav-wizard" style="width: 750px; margin: 0 auto;">
+			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li>
+			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
 		</ul>
@@ -33,7 +34,7 @@
 	<div class="row" style="margin-top:30px;">
 		<div class="col-md-6 col-md-offset-3 col-xs-12 col-sm-12">
 			<div class="input-group">
-				<input id="address" value="${customerReg.address }" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
+				<input id="address" value="${customerRegSale.address }" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
 				<span class="input-group-btn">
 					<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
 						<span class="ladda-label glyphicon glyphicon-search"></span>
@@ -44,10 +45,10 @@
 	</div>
 	
 	<p class="text-center">
-		<a href="${ctx }/plans/address/clear" class="btn btn-link">Clear Address</a>
+		<a href="${ctx }/broadband-user/sale/plans/address/clear" class="btn btn-link">Clear Address</a>
 	</p>
 	
-	<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+	<c:if test="${customerRegSale.customerOrder.sale_id != null && customerRegSale.customerOrder.sale_id != 0}">
 	
 	<div class="panel panel-success">
 		<div class="panel-heading">
@@ -133,9 +134,11 @@
 	
 	</c:if>
 	
-	<div id="checkResult" data-select_plan_id="${select_plan_id}" data-select_plan_type="${select_plan_type}" style="min-height:600px;margin-top:15px;"></div>
-
-	
+	<div id="checkResult" 
+		data-select_plan_id="${select_plan_id}" 
+		data-select_plan_type="${select_plan_type}" 
+		data-select_customer_type="${select_customer_type }"
+		style="min-height:600px;margin-top:15px;"></div>
 	
 </div>
 
@@ -150,7 +153,7 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/address-check.js?ver=201493811"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/address-check.js?ver=201493811"></script>
 <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
-<jsp:include page="../footer-end.jsp" />
+<jsp:include page="../../footer-end.jsp" />

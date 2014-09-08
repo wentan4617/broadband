@@ -290,7 +290,11 @@ hr {
 		                    	</li>
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans/business">Ordering Online (PAD | PC)</a>
+		                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans/personal">Ordering Online (PAD | PC)</a>
+		                    	</li>
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
+		                    		<a href="${ctx}/broadband-user/sale/plans/broadband/personal">New Ordering Online (PAD | PC)</a>
 		                    	</li>
 		                    </ul>
 					  	</div>

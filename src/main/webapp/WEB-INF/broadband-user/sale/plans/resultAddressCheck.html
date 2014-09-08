@@ -1,0 +1,61 @@
+<div class="panel panel-primary">
+	
+	<div class="panel-body bg-primary">
+		<h2 class="text-center hidden-xs hidden-sm"><span class="glyphicon glyphicon-map-marker"></span> <.=address.></h2>
+		<h4 class="text-center hidden-lg hidden-md"><span class="glyphicon glyphicon-map-marker"></span> <.=address.></h4>
+	</div>
+	<div class="panel-body bg-primary ">
+		<div class="row">
+			<div class="col-md-4">
+				<div id="adsl" class="alert alert-<.=adsl_available?'success':'danger'.>" style="height:150px;<.=adsl_available?'cursor: pointer;':''.>">
+					<p class="text-center">
+						<span class="glyphicon glyphicon-<.=adsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
+					</p>
+					<p class="text-center">
+						<strong style="font-size:24px;">Broadband</strong>
+					</p>
+					<p class="text-center">
+						<small><.=adsl_available?'Available':'Not Available'.></small>
+					</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div id="vdsl" class="alert alert-<.=vdsl_available?'success':'danger'.>" style="height:150px;<.=vdsl_available?'cursor: pointer;':''.>">
+					<p class="text-center">
+						<span class="glyphicon glyphicon-<.=vdsl_available?'ok':'remove'.>" style="font-size:24px;"></span>
+					</p>
+					<p class="text-center">
+						<strong style="font-size:24px;">Ultra-Fast-VDSL</strong>
+					</p>
+					<p class="text-center">
+						<small><.=vdsl_available?'Available':'Not Available'.></small>
+					</p>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div id="ufb" class="alert alert-<.=ufb_available?'success':'danger'.>" style="height:150px;<.=ufb_available?'cursor: pointer;':''.>">
+					<p class="text-center">
+						<span class="glyphicon glyphicon-<.=ufb_available?'ok':'remove'.>" style="font-size:24px;"></span>
+					</p>
+					<p class="text-center">
+						<strong style="font-size:24px;">Ultra-Fast-Fibre</strong>
+					</p>
+					<p class="text-center">
+						<small><.=ufb_available?'Available':'Not Available'.></small>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-md-2 col-xs-4">
+				<a href="<.=ctx.>/broadband-user/sale/plans/broadband/<.=select_customer_type.>" class="btn btn-success btn-block" id="back">Back</a>
+			</div>
+			<div class="col-md-2 col-md-offset-8 col-xs-5 col-xs-offset-3">
+				<a href="<.=ctx.>/broadband-user/sale/plans/order" class="btn btn-success btn-block" id="continue">Continue</a>
+			</div>
+		</div>
+	</div>
+</div>
+

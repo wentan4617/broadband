@@ -138,6 +138,7 @@ public class Customer implements Serializable {
 	
 	private Integer select_plan_id;
 	private String select_plan_type;
+	private String select_customer_type;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -627,5 +628,13 @@ public class Customer implements Serializable {
 		this.invoice_id = invoice_id;
 	}
 
+	public String getSelect_customer_type() {
+		return select_customer_type;
+	}
+
+	public void setSelect_customer_type(String select_customer_type) {
+		this.select_customer_type = select_customer_type;
+	}
+	
 	
 }
