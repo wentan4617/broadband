@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +42,6 @@ public class InvoicePDFCreator extends ITextUtils {
     private CustomerInvoice lastCustomerInvoice;
     private Customer customer;
 	private Organization org;
-	private List<CustomerCallRecord> ccrs;
 
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
@@ -63,8 +63,9 @@ public class InvoicePDFCreator extends ITextUtils {
     private Double currentFinalPayable = 0d;
 	
     boolean isBusiness = false;
-	
-	private String pstn_number = "";
+    
+    private Map<String, List<CustomerCallRecord>> crrsMap = new LinkedHashMap<String, List<CustomerCallRecord>>();
+    private boolean isFirstPstn = true;
 	
 	public InvoicePDFCreator(){}
 	
@@ -78,15 +79,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
 		this.customer = customer;
 		this.org = org;
-		this.ccrs = ccrs;
 	}
 
 	public Map<String, Object> create() throws DocumentException, MalformedURLException, IOException{
 		Map<String, Object> map = new HashMap<String, Object>();
 		
         Document document = new Document(PageSize.A4);
-        
-    	this.pstn_number = ccrs != null && ccrs.size() > 0 ? ccrs.get(0).getClear_service_id() : "";
         
 		// Output PDF Path, e.g.: application_60089.pdf
 		String outputFile = TMUtils.createPath(
@@ -289,13 +287,15 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // BEGIN CALLING RECORD
-        if(isCCRS()){
+        if(crrsMap.size() > 0){
      		// start new page
             document.newPage();
             // SECOND PAGE'S HEADER
     		pageHeader(writer);
             // ADD TABLE 2 DOCUMENT
-            document.add(createCallRecordDetails());
+    		for (String k : crrsMap.keySet()) {
+              document.add(createCallRecordDetails(k, crrsMap.get(k)));
+			}
         }
         // END CALLING RECORD
         
@@ -715,10 +715,15 @@ public class InvoicePDFCreator extends ITextUtils {
         return invoiceDetailsTable;
 	}
 	
-	private PdfPTable createCallRecordDetails(){
+	private PdfPTable createCallRecordDetails(String pstn_number, List<CustomerCallRecord> ccrs){
         PdfPTable callRecordDetailsTable = newTable().columns(14).widthPercentage(98F).o();
-        addEmptyCol(callRecordDetailsTable, 160F, 14);
-        addCol(callRecordDetailsTable, "Calling details : " + this.pstn_number).colspan(14).font(ITextFont.arial_bold_12).paddingTo("b", 4F).o();
+        if(this.isFirstPstn){
+            addEmptyCol(callRecordDetailsTable, 160F, 14);
+            this.isFirstPstn = false;
+        } else {
+            addEmptyCol(callRecordDetailsTable, 20F, 14);
+        }
+        addCol(callRecordDetailsTable, "Calling details : " + pstn_number).colspan(14).font(ITextFont.arial_bold_12).paddingTo("b", 4F).o();
         addEmptyCol(callRecordDetailsTable, 10F, 14);
         addCol(callRecordDetailsTable, "Date").colspan(2).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 5F).paddingTo("l", 4F).alignH("c").o();
         addCol(callRecordDetailsTable, "Phone Number").colspan(3).font(ITextFont.arial_bold_white_9).bgColor(titleBGColor).paddingTo("b", 4F).alignH("c").o();
@@ -729,7 +734,7 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(callRecordDetailsTable, 6F, 14);
         
         Double totalCallFee = 0d;
-        for (CustomerCallRecord ccr : this.ccrs) {
+        for (CustomerCallRecord ccr : ccrs) {
             addCol(callRecordDetailsTable, TMUtils.retrieveMonthAbbrWithDate(ccr.getCharge_date_time())).colspan(2).font(ITextFont.arial_normal_8).paddingTo("r", 4F).alignH("r").o();
             addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
             addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
@@ -838,10 +843,6 @@ public class InvoicePDFCreator extends ITextUtils {
         PdfContentByte paymentSlipTableCanvas = writer.getDirectContent();
         headerTable.writeSelectedRows(0, -1, 41, 810, paymentSlipTableCanvas);
 	}
-	
-	private Boolean isCCRS(){
-		return this.ccrs != null && this.ccrs.size() > 0;
-	}
 
 	public CompanyDetail getCompanyDetail() {
 		return companyDetail;
@@ -884,12 +885,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.org = org;
 	}
 
-	public List<CustomerCallRecord> getCcrs() {
-		return ccrs;
+	public Map<String, List<CustomerCallRecord>> getCrrsMap() {
+		return crrsMap;
 	}
 
-	public void setCcrs(List<CustomerCallRecord> ccrs) {
-		this.ccrs = ccrs;
+	public void setCrrsMap(Map<String, List<CustomerCallRecord>> crrsMap) {
+		this.crrsMap = crrsMap;
 	}
 
 	

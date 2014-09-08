@@ -19,13 +19,19 @@ Total Mobile Solution Internet Service Web Project
 
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
+demand version 2.5.1 2014-09-06
+
+* ordering form和receipt里的号码如果为空则显示Empty.(steven)
+
+
 demand version 2.5.0 2014-09-05
 
 * 制作工单（Onsite Sheet PDF）：在order界面点击生成工单，填写所需信息确认生成
     header：order信息
     body：faulty comments，resolution comments，generator
     footer：customer signature
-* 更改CRMService里的方法：createInvoicePDFBoth(), createTermPlanInvoiceByOrder(), createTopupPlanInvoiceByOrder()
+* 计算多个电话号码拨打记录需要更改CRMService里的方法：createInvoicePDFBoth(), createTermPlanInvoiceByOrder(), createTopupPlanInvoiceByOrder()
+
 
 demand version 2.4.5 2014-09-04
 
