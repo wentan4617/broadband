@@ -1415,6 +1415,10 @@ public class CustomerController {
 		
 		model.addAttribute("select_plan_id", id);
 		model.addAttribute("select_plan_type", type);
+		
+		if ("en".equals(customer.getLanguage())) {
+			model.addAttribute("en", "en");
+		}
 		return "broadband-customer/plans/address-check";
 	}
 	
@@ -1424,6 +1428,19 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.getCustomerOrder().setOrder_broadband_type("transition");
 		customer.getCustomerOrder().setSale_id(10023);
+		customer.setLanguage("cn");
+		session.setAttribute("customerReg", customer);
+		
+		return "redirect:/plans/address-check/0/0";
+	}
+	
+	@RequestMapping("/plans/promotion/en") 
+	public String plansNewZelandPromotionEn(Model model, HttpSession session) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");
+		customer.getCustomerOrder().setSale_id(10023);
+		customer.setLanguage("en");
 		session.setAttribute("customerReg", customer);
 		
 		return "redirect:/plans/address-check/0/0";

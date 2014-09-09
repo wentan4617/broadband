@@ -139,6 +139,7 @@ public class Customer implements Serializable {
 	private Integer select_plan_id;
 	private String select_plan_type;
 	private String select_customer_type;
+	private String language;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -634,6 +635,14 @@ public class Customer implements Serializable {
 
 	public void setSelect_customer_type(String select_customer_type) {
 		this.select_customer_type = select_customer_type;
+	}
+
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 	
 	
