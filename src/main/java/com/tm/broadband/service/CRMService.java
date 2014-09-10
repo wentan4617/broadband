@@ -2549,6 +2549,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				
 				CustomerInvoice cpiUpdate = new CustomerInvoice();
 				
+				cpi.setFinal_payable_amount(cpi.getFinal_payable_amount()!=null ? cpi.getFinal_payable_amount() : 0d);
+				cpi.setAmount_paid(cpi.getAmount_paid()!=null ? cpi.getAmount_paid() : 0d);
+				cpi.setBalance(cpi.getBalance()!=null ? cpi.getBalance() : 0d);
+				
 				// previous final payable < 0 && previous paid == 0 ? (totalCreditBack = totalCreditBack + abs(previous balance), previous final payable = 0d), prepayment is credit
 				if(cpi.getFinal_payable_amount() < 0 && cpi.getAmount_paid()==0){
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, Math.abs(cpi.getBalance()));

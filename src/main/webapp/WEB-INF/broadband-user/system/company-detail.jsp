@@ -153,7 +153,15 @@
 										</div>
 									</div>
 								</div>
-								
+								<div class="form-group">
+									<label for="billing_address" class="control-label col-md-2">Billing Address</label>
+									<div class="col-md-9">
+										<form:input id="billing_address" path="billing_address" class="form-control" placeholder="Billing Address" />
+									</div>
+									<p class="help-block col-md-1">
+										<form:errors path="billing_address" cssErrorClass="error"/>
+									</p>
+								</div>
 								<div class="form-group">
 									<label for="address" class="control-label col-md-2">Address</label>
 									<div class="col-md-9">
