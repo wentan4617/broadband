@@ -36,6 +36,14 @@ TMS Permissions:
 * Manager权限有：administrator, accountant, provision
 
 
+demand version 1.1.5 2014-09-10
+
+* 制作OrderingFormPDFCreator，用来下单时创建PDF.(steven)
+* [删除material关联删除相应的material_wholesaler及combo_wholesaler.](steven)
+* [删除combo关联删除相应的combo_wholesaler.](steven)
+* [删除wholsaler关联删除相应的material_wholesaler及combo_wholesaler.](steven)
+
+
 demand version 1.1.0 2014-09-04
 
 * wholesaler下单时选择combo或material，DIY形式下单.
@@ -45,15 +53,16 @@ demand version 1.1.0 2014-09-04
 
 demand version 1.0.8 2014-09-03
 
-* 更新material表不影响material_wholesaler表，删除才会同时删除.(steven)
-* 更新combo表不影响combo_wholesaler表，删除才会同时删除.(steven)
+* [完美创建更新wholeslaer及其附属material及combo产品.](steven)
+* [更新material表不影响material_wholesaler表，删除才会同时删除.](steven)
+* [更新combo表不影响combo_wholesaler表，删除才会同时删除.](steven)
 * 将wholesaler界面改成模版，wholesaler添加更新界面在权限下面的排版：
     所有的material以表格形式列出。
     所有combo以表格形式列出。
     所有该wholesaler下的sales：
 * [选中material操作下拉菜单选create combo，modal里填写combo名称comfirm则创建一个新combo.](steven)
 * [点击combo编号进入修改界面，修改界面列出所有material供勾选或反选.](steven)
-* wholesaler列表界面只显示每家公司的主wholesaler帐号.(steven)
+* [wholesaler列表界面只显示每家公司的主wholesaler帐号.](steven)
 * wholesaler列表的operations下拉菜单可以上下架(on/off shelf)选中wholesaler的material和combo.(steven)
 
 

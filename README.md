@@ -19,6 +19,19 @@ Total Mobile Solution Internet Service Web Project
 
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
+在2014-09-10将当天应该生成账单的订单的next_invoice_create_date改成2014-09-11，next_invoice_create_date_flag改成2014-09-18。
+将2014-09-11应该生成账单的order_id记录下来700156，待2014-09-11当天将所有订单的账单生成之后再通过以下语句将日期修正
+    update tm_customer_order set next_invoice_create_date=date('2014-10-10'), next_invoice_create_date_flag=date('2014-10-17')
+    where date(next_invoice_create_date)=date('2014-10-11') and id!=700156
+
+demand version 2.5.2 2014-09-10
+
+* customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.(steven)
+* 重新生成ordering form时将计算出的订单应付金额更新到order里.(steven)
+* 后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.(steven)
+* [Edit Company Detail界面查看为什么不能更新公司信息.](steven)
+
+
 demand version 2.5.1 2014-09-06
 
 * ordering form和receipt里的号码如果为空则显示Empty.(steven)
@@ -311,7 +324,7 @@ demand version 1.7.2 2014-07-16
 * [invoice和ordering online邮件模版里分别添加一个链接：ordering online的是(域名/customer/home/客户id/加密后的登录密码+3位随机字符串)，invoice的是(域名/customer/billing/1/客户id/加密后的登录密码+3位随机字符串)，点击后传入的客户id与customer的id匹配及去掉后3位随机字符串的加密密码与md5_password匹配则跳转至customer登录后的相应界面，否则跳转至登录页.](steven)
 
 ###Important Level (Medium)
-* 添加一个重新生成Ordering Form的按钮，点击确认后根据order的detail重新生成该Ordering Form.(steven)
+* [添加一个重新生成Ordering Form的按钮，点击确认后根据order的detail重新生成该Ordering Form.](steven)
 * Add Detail里添加两个选项：Plan和Item，Plan需要写name, type, plan type, plan sort, price, flow，Item有几种：Broadband New Connection, Hardware(steven)
 * [invoice列表的Make Payment添加一个Avoid This Invoice选项，点击确认后该账单status变为void状态.](steven)
 
@@ -319,7 +332,7 @@ demand version 1.7.2 2014-07-16
 * 发invoice的email使用新添加的accounts@cyberpark.co.nz邮箱，发faulty回复邮件使用provision@cyberpark.co.nz邮箱.(steven)
 * 后台留言板添加发短信和发邮件功能，将David给的回复模版加入可选模版.(steven)
 * 目前Contact-Us和内部人员后台留言的选项有:fualty, billing, hardware issue, application, booking appointment.(steven)
-* 添加一个内部人员留言表，记录打电话客户的cellphone, email, name，都是非必填，description必填，再加个customer_id字段显示时根据该字段区分New Customer和Existing Customer(steven)
+* [添加一个内部人员留言表(Ticket系统)，记录打电话客户的cellphone, email, name，都是非必填，description必填，再加个customer_id字段显示时根据该字段区分New Customer和Existing Customer.](steven)
 * 在Customer Service Record界面点击添加Service Record时选择@后面列出所有非sales的用户，将选定的用户id迭代记录到mention字段中，在这之前user的id要全部改成以1000开头以防模糊匹配出多条类似id的用户.(steven)
 * 添加一个Mentioned About Me，tm_customer_service_record表的mention字段储存@到的所有user的id.(steven)
 
