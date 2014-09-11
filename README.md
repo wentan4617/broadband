@@ -24,6 +24,13 @@ Total Mobile Solution Internet Service Web Project
     update tm_customer_order set next_invoice_create_date=date('2014-10-10'), next_invoice_create_date_flag=date('2014-10-17')
     where date(next_invoice_create_date)=date('2014-10-11') and id!=700156
 
+demand version 2.5.2 2014-09-11
+
+* 在Chorus账单里查找出不再服务内的pstn及asid.
+* customer 列表界面添加通过ASID查询的功能.
+
+
+
 demand version 2.5.2 2014-09-10
 
 * customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.(steven)

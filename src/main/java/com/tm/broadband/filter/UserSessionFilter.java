@@ -28,6 +28,7 @@ public class UserSessionFilter implements Filter {
 		
 		String url = req.getRequestURL().toString();
 		System.out.println("UserSessionFilter: " + url);
+		System.out.println("userSession: " + user);
 		
 		if (user != null) {
 			chain.doFilter(request, response);

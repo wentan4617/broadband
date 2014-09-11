@@ -759,11 +759,13 @@ public class CRMController {
 		gr.setCurrencyInput("NZD");
 		gr.setTxnType("Purchase");
 
-		String path = req.getScheme()+"://"+(req.getLocalAddr().equals("127.0.0.1") ? "localhost" : req.getLocalAddr())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
-		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
-		
-		gr.setUrlFail(wholePath);
-		gr.setUrlSuccess(wholePath);
+//		String path = req.getScheme()+"://"+(req.getLocalAddr().equals("127.0.0.1") ? "localhost" : req.getLocalAddr())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
+//		String wholePath = path+"/broadband-user/crm/customer/invoice/payment/credit-card/result/"+invoice_id;
+
+		gr.setUrlFail(req.getRequestURL().toString().substring(0, req.getRequestURL().toString().lastIndexOf("/")+1)+"result/"+invoice_id);
+		gr.setUrlSuccess(req.getRequestURL().toString().substring(0, req.getRequestURL().toString().lastIndexOf("/")+1)+"result/"+invoice_id);
+//		gr.setUrlFail(wholePath);
+//		gr.setUrlSuccess(wholePath);
 
 		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
 
@@ -853,6 +855,91 @@ public class CRMController {
 		customer = null;
 		
 		return "redirect:/broadband-user/crm/customer/edit/"+customerId;
+	}
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit")
+	public String toTopupAccountCredit(Model model, HttpServletRequest req, RedirectAttributes attr
+			,@RequestParam("customer_id") Integer customer_id
+			,@RequestParam("topup_amount") Double topup_amount) {
+
+		GenerateRequest gr = new GenerateRequest();
+		
+		gr.setAmountInput(new DecimalFormat("#.00").format(topup_amount));
+		//gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+//
+//		String path = req.getScheme()+"://"+(req.getLocalAddr().equals("127.0.0.1") ? "localhost" : req.getLocalAddr())+(req.getLocalPort()==80 ? "" : ":"+req.getLocalPort())+req.getContextPath();
+//		String wholePath = path+"/broadband-user/crm/customer/topup/account-credit/"+customer_id;
+		
+		System.out.println("path: "+req.getRequestURL().toString()+"/"+customer_id);
+
+		gr.setUrlFail(req.getRequestURL().toString()+"/"+customer_id);
+		gr.setUrlSuccess(req.getRequestURL().toString()+"/"+customer_id);
+//		gr.setUrlFail(wholePath);
+//		gr.setUrlSuccess(wholePath);
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+		
+		System.out.println("redirectUrl: "+redirectUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit/{customer_id}")
+	public String toSignupTopupAccountCredit(Model model
+			,@PathVariable("customer_id") Integer customer_id
+			, RedirectAttributes attr
+			,@RequestParam(value = "result", required = true) String result
+			,SessionStatus status
+			) throws Exception {
+		
+		Response responseBean = null;
+		
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			Customer customer = this.crmService.queryCustomerById(customer_id);
+			Customer cUpdate = new Customer();
+			cUpdate.setBalance(TMUtils.bigAdd(customer.getBalance()!=null ? customer.getBalance() : 0d, Double.parseDouble(responseBean.getAmountSettlement())));
+			cUpdate.getParams().put("id", customer_id);
+			this.crmService.editCustomer(cUpdate);
+
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			this.crmService.createCustomerTransaction(customerTransaction);
+			
+			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+
+			customer = null;
+			
+		} else {
+			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+		}
+		
+		responseBean = null;
+		
+		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
 	}
 
 	/**
