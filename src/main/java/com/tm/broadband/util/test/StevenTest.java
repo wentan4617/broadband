@@ -162,11 +162,14 @@ public class StevenTest {
 //		System.out.println("asdasdsd$".contains("$"));
 		
 		
-		SimpleMapperCreator smc = new SimpleMapperCreator();
-		smc.setAuthor("CyberPark");
-		smc.setModel("SEO");
-		smc.setTable("tm_seo");
-		smc.initial();
+//		SimpleMapperCreator smc = new SimpleMapperCreator();
+//		smc.setAuthor("CyberPark");
+//		smc.setModel("SEO");
+//		smc.setTable("tm_seo");
+//		smc.initial();
+		
+//		String str = "cyberpark/ccc/asd";
+//		System.out.println(str.substring(0, str.lastIndexOf("/")+1));
 		
 	}
 }

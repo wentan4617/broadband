@@ -38,7 +38,7 @@ TMS Permissions:
 
 demand version 1.1.5 2014-09-10
 
-* 制作OrderingFormPDFCreator，用来下单时创建PDF.(steven)
+* 制作OrderingPDFCreator，用来下单时创建PDF.(steven)
 * [删除material关联删除相应的material_wholesaler及combo_wholesaler.](steven)
 * [删除combo关联删除相应的combo_wholesaler.](steven)
 * [删除wholsaler关联删除相应的material_wholesaler及combo_wholesaler.](steven)

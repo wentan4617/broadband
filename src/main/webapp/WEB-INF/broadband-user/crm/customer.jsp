@@ -257,6 +257,11 @@
 			});
 			// END Topup Account Credit
 			
+			// BEGIN Topup Account Credit By DPS
+			$('button[data-name="topup_account_credit_by_dps"]').click(function(){
+				$('#confirmTopupAccountCreditByDPSModal').modal('show');
+			});
+			
 		}, "json");
 	}
 
