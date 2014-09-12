@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -789,18 +790,19 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		oPDFCreator.setOrg(c.getOrganization());
 		oPDFCreator.setCustomerOrder(c.getCustomerOrder());
 		
-		String pdfPath = "";
+		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
-			pdfPath = oPDFCreator.create();
+			resultMap = oPDFCreator.create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
 		CustomerOrder co = new CustomerOrder();
 		co.getParams().put("id", c.getCustomerOrder().getId());
-		co.setOrdering_form_pdf_path(pdfPath);
+		co.setOrdering_form_pdf_path((String) resultMap.get("path"));
+		co.setOrder_total_price((Double) resultMap.get("totalPrice"));
 		this.customerOrderMapper.updateCustomerOrder(co);
 		
-		return pdfPath;
+		return (String) resultMap.get("path");
 	}
 	/**
 	 * END createOrderingForm

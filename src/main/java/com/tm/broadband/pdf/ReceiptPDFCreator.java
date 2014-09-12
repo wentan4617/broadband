@@ -350,13 +350,13 @@ public class ReceiptPDFCreator extends ITextUtils {
         addEmptyCol(orderPDFTitleTable, 2F, 10);
     	// END TRANSITION PADDING TOP
         
-    	addCol(orderPDFTitleTable, "Your Current Provider Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Previous Provider Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_provider_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, "Account Holder Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_holder_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, "Your Current Account Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Account Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, "Your Porting Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, "Porting Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_porting_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         // END TRANSITION INFO ROWS
 
@@ -522,7 +522,9 @@ public class ReceiptPDFCreator extends ITextUtils {
                 totalPrice += price.multiply(unit).doubleValue();
 
                 // BEGIN ADD ON ROWS
-                addColBottomBorder(orderDetailTable, cod.getDetail_name()+("pstn".equals(cod.getDetail_type()) ? " ("+cod.getPstn_number()+")" : ""), 5, firstColIndent, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
+                addColBottomBorder(orderDetailTable, cod.getDetail_name()+(
+                	"pstn".equals(cod.getDetail_type()) ? " ("+cod.getPstn_number()+")" :
+                	"voip".equals(cod.getDetail_type()) ? " ("+cod.getPstn_number()+")" : ""), 5, firstColIndent, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
                 addColBottomBorder(orderDetailTable, " ", 2, 0F, null, 0F, 0F, null, borderColor);
                 addColBottomBorder(orderDetailTable, String.valueOf(TMUtils.fillDecimalPeriod(String.valueOf(cod.getDetail_price()))), 1, 0F, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
                 addColBottomBorder(orderDetailTable, String.valueOf(cod.getDetail_unit()), 1, 0F, ITextFont.arial_normal_8, contentPaddingTop, contentPaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);

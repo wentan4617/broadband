@@ -35,6 +35,9 @@ TMS Permissions:
 * wholesaler权限有：Administrator, Accountant, Provisioner
 * Manager权限有：administrator, accountant, provision
 
+TMS Order Status:
+    pending, processing, processing-reconnection, rfs, service-giving, suspend, disconnected, void, cancel
+
 
 demand version 1.1.5 2014-09-10
 

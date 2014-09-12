@@ -24,6 +24,7 @@
 				<li><a href="#invoice_detail" data-toggle="tab"><strong>Invoice Detail</strong></a></li>
 				<li><a href="#transaction_detail" data-toggle="tab"><strong>Transaction Detail</strong></a></li>
 				<li><a href="#customer_service_record_detail" data-toggle="tab"><strong>Customer Service Record</strong></a></li>
+				<li><a href="#customer_ticket_record_detail" data-toggle="tab"><strong>Customer Ticket Record</strong></a></li>
 			</ul>
 
 			<!-- Tab panes -->
@@ -33,6 +34,7 @@
 				<div class="panel-body tab-pane fade" id="invoice_detail"></div>
 				<div class="panel-body tab-pane fade" id="transaction_detail"></div>
 				<div class="panel-body tab-pane fade" id="customer_service_record_detail"></div>
+				<div class="panel-body tab-pane fade" id="customer_ticket_record_detail"></div>
 			</div>
 		</div>
 	</div>
@@ -57,6 +59,10 @@
 <!-- Customer Service Record Detail Template -->
 <script type="text/html" id="customer_service_record_table_tmpl">
 <jsp:include page="customer-service-record-view-page.html" />
+</script>
+<!-- Customer Ticket Detail Template -->
+<script type="text/html" id="customer_ticket_record_table_tmpl">
+<jsp:include page="customer-ticket-record-view-page.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />
@@ -309,10 +315,10 @@
 				});
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#payOffOrderModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
 					$.getCustomerOrder();
 					$.getCustomerInfo();
 					$.getTxPage(1);
-					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
 				});
 				
 				// Regenerate most recent invoice
@@ -397,6 +403,16 @@
 					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'ordering-form');
 					$('#generateOrderInvoiceModal_'+this.id).modal('show');
 				});
+				$('a[data-name="'+co[i].id+'_regenerate_receipt"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('strong[data-name="generate_invoice_title_'+this.id+'"]').html('Regenerate Receipt');
+					$('p[data-name="generate_invoice_content_'+this.id+'"]').html('Regenerate this order\'s receipt?');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').html('Confirm to generate receipt!');
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-type', $btn.attr('data-type'));
+					$('a[data-name="generateOrderInvoiceModalBtn_'+this.id+'"]').attr('data-order-type', 'receipt');
+					$('#generateOrderInvoiceModal_'+this.id).modal('show');
+				});
 				// Submit to rest controller
 				$('a[data-name="generateOrderInvoiceModalBtn_'+co[i].id+'"]').click(function(){
 					var generateType = $(this).attr('data-type');
@@ -415,6 +431,8 @@
 						url = '${ctx}/broadband-user/crm/customer/order/invoice/topup/manually-generate';
 					} else if(orderType=='ordering-form'){
 						url = '${ctx}/broadband-user/crm/customer/order/ordering-form/pdf/regenerate';
+					} else if(orderType=='receipt'){
+						url = '${ctx}/broadband-user/crm/customer/order/receipt/pdf/regenerate';
 					}
 					
 					$.post(url, data, function(json){
@@ -431,6 +449,7 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_no_term_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_topup_invoice"]').button('reset');
 					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_ordering_form"]').button('reset');
+					$.getCustomerOrder();
 				});
 				
 
@@ -1195,7 +1214,6 @@
 		}, "json");
 	}
 	
-	
 	$.getCcrPage = function(pageNo) {
 		$.get('${ctx}/broadband-user/crm/customer-service-record/view/' + pageNo +'/'+ ${customer.id}, function(json){
 			json.ctx = '${ctx}';
@@ -1224,6 +1242,19 @@
 			$('#customerServiceRecordModal').on('hidden.bs.modal', function(){
 				$('a[data-name="new_service_record_btn"]').button('reset');
 				$.getCcrPage(pageNo);
+			});
+			
+		}, "json");
+	}
+	
+	$.getTicketPage = function(pageNo) {
+		$.get('${ctx}/broadband-user/crm/customer-ticket-record/view/' + pageNo +'/'+ ${customer.id}, function(json){
+			json.ctx = '${ctx}';
+			json.customer_id = '${customer.id}';
+	   		var $table = $('#customer_ticket_record_detail');
+			$table.html(tmpl('customer_ticket_record_table_tmpl', json));
+			$table.find('tfoot a').click(function(){
+				$.getTicketsPage($(this).attr('data-pageNo'));
 			});
 			
 		}, "json");
@@ -1405,6 +1436,7 @@
 	$.getInvoicePage(1);
 	$.getTxPage(1);
 	$.getCcrPage(1);
+	$.getTicketPage(1);
 	
 	
 })(jQuery);

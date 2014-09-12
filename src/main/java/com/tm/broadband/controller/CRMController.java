@@ -136,6 +136,24 @@ public class CRMController {
 		return map;
 	}
 	
+	@RequestMapping(value = "/broadband-user/crm/customer-ticket-record/view/{pageNo}/{customer_id}")
+	@ResponseBody
+	public Map<String, Object> toCustomerTicketRecord(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("customer_id") int customer_id) {
+
+		Page<Ticket> page = new Page<Ticket>();
+		page.setPageNo(pageNo);
+		page.setPageSize(10);
+		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("customer_id", customer_id);
+		this.crmService.queryTicketsByPage(page);
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("users", this.systemService.queryUser(new User()));
+		map.put("page", page);
+		return map;
+	}
+	
 	@RequestMapping(value = "/broadband-user/crm/customer/remove/{id}")
 	public String customerRemove(@PathVariable(value = "id") int id, RedirectAttributes attr, SessionStatus status) {
 		this.crmService.removeCustomer(id);
@@ -862,6 +880,11 @@ public class CRMController {
 	public String toTopupAccountCredit(Model model, HttpServletRequest req, RedirectAttributes attr
 			,@RequestParam("customer_id") Integer customer_id
 			,@RequestParam("topup_amount") Double topup_amount) {
+		
+		if(topup_amount==null || topup_amount<=0){
+			attr.addFlashAttribute("error", "Please input an amount to continue!");
+			return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
+		}
 
 		GenerateRequest gr = new GenerateRequest();
 		
