@@ -1351,6 +1351,8 @@ public class CustomerController {
 		if (customer == null) {
 			customer = new Customer();
 			customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customer.setSelect_plan_id(0);
+			customer.setSelect_plan_type("0");
 			session.setAttribute("customerReg", customer);
 		}
 		
@@ -1461,7 +1463,9 @@ public class CustomerController {
 		if ("0".equals(customer.getSelect_plan_type())) {
 			customer.setSelect_plan_type("VDSL");
 		}
+		
 		if (!customer.isServiceAvailable()) {
+			System.out.println("customer.isServiceAvailable(): " + customer.isServiceAvailable());
 			String type = "broadband";
 			if ("ADSL".equals(customer.getSelect_plan_type())) {
 				type = "broadband";

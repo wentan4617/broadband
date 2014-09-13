@@ -548,7 +548,7 @@
 					parent.empty();
 					parent.append(tmpl('voucher_form_result_tmpl', v));
 					cancelVoucher(); 
-					total_vprice += v.face_value; console.log(total_vprice);
+					total_vprice += v.face_value; //console.log(total_vprice);
 					TAAV();
 				}
 			}).always(function() { l.stop(); });
