@@ -33,8 +33,8 @@
 				</c:when>
 				<c:when test="${vdsl == 'active' }">
 					<div class="col-md-6">
-						<h1 class="text-left">ULTRA-FAST VDSL</h1>
-						<p class="text-left hidden-xs" style="font-size:16px;">New generation technology on VDSL plan. Faster, stable and reliable VDSL can go through your current copper line. The speed of VDSL will be 3 times faster than ADSL broadband. Download speed achieve to 15Mbps to 35Mbps, and upload speed achieve to around 10Mbps. No speed limited and data cap on our Unlimited ADSL plans. All our plans are pay in advance. It provides you a clear and easy read bill. Simple and easy on-line application method can be filled in 5 mins. Or, give us a call, 0800 2 CYBER(29237). Our customer service can help you to apply your broadband as well.</p>
+						<h1 class="text-left">High Speed VDSL</h1>
+						<p class="text-left hidden-xs" style="font-size:16px;">New generation technology on VDSL plan. Faster, stable and reliable VDSL can go through your current copper line. The speed of VDSL will be 3 times faster than ADSL broadband. Download speed achieve to 15Mbps to 35Mbps, and upload speed achieve to around 10Mbps. </p>
 					</div>
 					<div class="col-md-6">
 						<img class="hidden-xs" src="${ctx }/public/bootstrap3/images/vdsl.png" style="padding:0;margin-top: -40px;">
@@ -58,24 +58,38 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-6 col-md-offset-3">
-			<div style="width:100%">
-				<ul class="nav nav-pills nav-justified" style="margin:10px auto 20px;">
-					<li class="${adsl }"><a href="${ctx }/plans/broadband">Broadband</a></li>
-					<li class="${vdsl }"><a href="${ctx }/plans/ultra-fast-vdsl">Ultra Fast VDSL</a></li>
-					<li class="${ufb }"><a href="${ctx }/plans/ultra-fast-fibre">Ultra Fast Fibre </a></li>
-				</ul>
-			</div>
+			<ul class="nav nav-pills nav-justified">
+				<li class="" style="padding: 20px;">
+					<a href="${ctx }/plans/broadband" style="${adsl=='active'?'border: 5px solid #0b7c51;':'' }">
+						<img class="img-responsive" src="${ctx }/public/bootstrap3/images/adsl-s${adsl=='active'?'1':'' }.png" style="height: 120px;">
+					</a>
+				</li>
+				<li class="" style="padding: 20px;">
+					<a href="${ctx }/plans/ultra-fast-vdsl" style="${vdsl=='active'?'border: 5px solid #0b7c51;':'' }">
+						<img class="img-responsive" src="${ctx }/public/bootstrap3/images/vdsl-s${vdsl=='active'?'1':'' }.png" style="height: 120px;">
+					</a>
+				</li>
+				<li class="" style="padding: 20px;">
+					<a href="${ctx }/plans/ultra-fast-fibre" style="${ufb=='active'?'border: 5px solid #0b7c51;':'' }">
+						<img class="img-responsive" src="${ctx }/public/bootstrap3/images/ufb-s${ufb=='active'?'1':'' }.png" style="height: 120px;">
+					</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 </div>
+
+<%-- <li class="${adsl }"><a href="${ctx }/plans/broadband">ADSL Broadband</a></li>
+<li class="${vdsl }"><a href="${ctx }/plans/ultra-fast-vdsl">High Speed VDSL</a></li>
+<li class="${ufb }"><a href="${ctx }/plans/ultra-fast-fibre">Ultra Fast Fibre </a></li> --%>
 
 <div class="container">
 
 	<c:if test="${customerReg.broadband != null && !fn:contains(customerReg.broadband.services_available, type)}">
 		<div class="alert alert-warning">
 			<h2 class="text-center">Sorry, it looks like this service isn’t available at your place yet.</h2>
-			<p class="text-center">Not to worry – we have a range of great alternatives. And, if you sign up with us, </p>
-			<p class="text-center">upgrading to this service when it becomes available is super easy.</p>
+			<p class="text-center">Dont't worry, we have a range of great alternatives.</p>
+			<p class="text-center">Upgrading to this service when it becomes available is super easy.</p>
 		</div>
 		<p>&nbsp;</p>
 	</c:if>

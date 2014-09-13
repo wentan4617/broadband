@@ -26,8 +26,14 @@ public class BroadbandRestController {
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		if (customerReg != null) {
 			return returnBroadband(address, customerReg);
+		} else {
+			customerReg = new Customer();
+			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customerReg.setSelect_plan_id(0);
+			customerReg.setSelect_plan_type("0");
+			session.setAttribute("customerReg", customerReg);
+			return returnBroadband(address, customerReg);
 		}
-		return null;
 	}
 	
 	@RequestMapping("/address/check/{address}")
@@ -100,6 +106,7 @@ public class BroadbandRestController {
 				customer.setServiceAvailable(true);
 			}
 		}
+		
 		return broadband;
 	}
 	

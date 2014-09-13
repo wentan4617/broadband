@@ -3,6 +3,7 @@
 	var ctx = $('#result_tmpl').attr('data-ctx')
 		, select_plan_id = $('#checkResult').attr('data-select_plan_id')
 		, select_plan_type = $('#checkResult').attr('data-select_plan_type')
+		, isShowContinue = $('#checkResult').attr('data-isShowContinue')
 	
 	$(document).keypress(function(e){
 		if (event.keyCode == 13) {
@@ -14,12 +15,12 @@
 		var address = $('#address').val();
 		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
 		if (address != '') {
-			var l = Ladda.create(this);
-		 	l.start();
+			var l = Ladda.create(this); l.start();
 			$.get(ctx + '/plans/address/check/' + address, function(broadband){ //console.log(broadband);
 				broadband.ctx = ctx;
 				broadband.type = select_plan_type;
 				broadband.selected_id = select_plan_id;
+				broadband.isShowContinue = isShowContinue;
 				$('#checkResult').html(tmpl('result_tmpl', broadband));
 				if (broadband.adsl_available) { //alert('adsl');
 					$('#adsl').click(function(){
