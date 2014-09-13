@@ -2048,6 +2048,28 @@ public class CRMRestController {
 		return json;
 	}
 
+	// Regenerate Receipt
+	@RequestMapping(value = "/broadband-user/crm/customer/order/receipt/pdf/regenerate", method = RequestMethod.POST)
+	public JSONBean<String> doManuallyGenerateReceipt(Model model,
+			@RequestParam("id") int id,
+			@RequestParam("generateType") String generateType,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		
+		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(co.getCustomer_id());
+		
+		c.setOrganization(co.getCustomer().getOrganization());
+		
+		c.setCustomerOrder(co);
+		
+		this.crmService.createReceiptPDFByDetails(c);
+		json.getSuccessMap().put("alert-success", "Successfully Regenerate Receipt");
+
+		return json;
+	}
+
 	
 	// BEGIN Topup Account Credit By Pay Way
 	@RequestMapping(value = "/broadband-user/crm/customer/account-credit/defrayment/pay-way", method = RequestMethod.POST)

@@ -19,10 +19,11 @@ Total Mobile Solution Internet Service Web Project
 
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
-在2014-09-10将当天应该生成账单的订单的next_invoice_create_date改成2014-09-11，next_invoice_create_date_flag改成2014-09-18。
-将2014-09-11应该生成账单的order_id记录下来700156，待2014-09-11当天将所有订单的账单生成之后再通过以下语句将日期修正
-    update tm_customer_order set next_invoice_create_date=date('2014-10-10'), next_invoice_create_date_flag=date('2014-10-17')
-    where date(next_invoice_create_date)=date('2014-10-11') and id!=700156
+
+demand version 2.5.5 2014-09-12
+
+* [customer order界面添加一个按钮：Regenerate Receipt，点击后系统根据order细目重新生成收据.](steven)
+
 
 demand version 2.5.2 2014-09-11
 
@@ -30,11 +31,10 @@ demand version 2.5.2 2014-09-11
 * customer 列表界面添加通过ASID查询的功能.
 
 
-
 demand version 2.5.2 2014-09-10
 
-* customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.(steven)
-* 重新生成ordering form时将计算出的订单应付金额更新到order里.(steven)
+* [customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.](steven)
+* [重新生成ordering form时将计算出的订单应付金额更新到order里.](steven)
 * 后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.(steven)
 * [Edit Company Detail界面查看为什么不能更新公司信息.](steven)
 
@@ -50,7 +50,7 @@ demand version 2.5.0 2014-09-05
     header：order信息
     body：faulty comments，resolution comments，generator
     footer：customer signature
-* 计算多个电话号码拨打记录需要更改CRMService里的方法：createInvoicePDFBoth(), createTermPlanInvoiceByOrder(), createTopupPlanInvoiceByOrder()
+* [计算多个电话号码拨打记录需要更改CRMService里的方法：createInvoicePDFBoth(), createTermPlanInvoiceByOrder(), createTopupPlanInvoiceByOrder()](steven)
 
 
 demand version 2.4.5 2014-09-04
@@ -58,7 +58,7 @@ demand version 2.4.5 2014-09-04
 * [在ordering form和receipt里显示pstn号码.](steven)
 * [给pstn和voip的detail删除功能.](steven)
 * [add detail里加多一个pstn和voip的选项.](steven)
-* 出invoice时取出order下所有的pstn+voip，迭代计算拨打记录，然后在invoice里显示.(steven)
+* [出invoice时取出order下所有的pstn+voip，迭代计算拨打记录，然后在invoice里显示.](steven)
 
 
 demand version 2.3.9 2014-08-31

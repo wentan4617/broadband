@@ -1,0 +1,69 @@
+<hr/>
+<.
+	var results = page.results;
+	var totalPage = page.totalPage;
+	var pageNo = page.pageNo;
+.>
+<. if (results != null && results.length > 0) { .>
+	<table class="table">
+	<thead>
+		<tr>
+			<th colspan="11">
+				<!-- In the external page, assign customer_id as obj's attribute -->
+				<h3 class="text-success" style="margin: 2px;"><strong>Customer Id:&nbsp;<small><.= customer_id .></small></strong></h3>
+			</th>
+		</tr>
+		<tr>
+			<th>Ticket Id</th>
+			<th>Type</th>
+			<th>Create Date</th>
+			<th>Published By</th>
+			<th>Description</th>
+			<th>&nbsp;</th>
+		</tr>
+	</thead>
+	<tbody>
+	<.
+		for (var i = 0, len = results.length; i < len; i++){
+			var ticket = results[i];
+	.>
+			<tr>
+			<td>Ticket ID# - <a target="_blank" href="<.= ctx+'/broadband-user/crm/ticket/edit/'+ticket.id .>"><.= ticket.id .></a></td>
+			<td><.= ticket.ticket_type .></td>
+			<td><.= ticket.create_date_str .></td>
+			<td>
+				<. for(var u=0; u<users.length; u++){
+				      if(users[u].id == ticket.user_id){
+				.>
+						<.= users[u].user_name .>
+				<.
+				      }
+				.>
+				<. } .>
+			</td>
+			<td style="width:600px;overflow-x:hidden;"><p style="width:600px;"><.= ticket.description .></p></td>
+			<td>&nbsp;</td>
+			</tr>
+	<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = totalPage; i <= len; i++) {
+	.>
+						<li class="<.= pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<. } else { .>
+	<div class="alert alert-warning">No records have been found.</div>
+<. } .>
