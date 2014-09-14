@@ -13,12 +13,12 @@
     <title>${seoSession.title}</title>
     <link rel="shortcut icon" type="image/ico"  href="${ctx}/public/bootstrap3/images/icon.png"/>
     <link href="${ctx}/public/bootstrap3/css/bootstrap.min.css" rel="stylesheet" type="text/css" media="screen" />
-    <link href="${ctx}/public/bootstrap3/css/customer.css?ver=2014822747" rel="stylesheet" type="text/css"  />
+    <link href="${ctx}/public/bootstrap3/css/customer.css?ver=20149131504" rel="stylesheet" type="text/css"  />
     <link href="${ctx}/public/bootstrap3/css/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/skins/all.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
-    <link href="${ctx}/public/bootstrap3/css/bootstrap-nav-wizard.css?ver=2014822747" rel="stylesheet" type="text/css" />
+    <link href="${ctx}/public/bootstrap3/css/bootstrap-nav-wizard.css?ver=20149131504" rel="stylesheet" type="text/css" />
     <!--[if lt IE 9]>
     	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
