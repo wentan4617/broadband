@@ -20,6 +20,13 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.1.6 2014-09-13
+
+* 通过邀请人customer id注册后的
+* 在customer order界面添加一个按钮，点击后提醒用户我们收到他支付订单的金额，我们将继续process他的订单.(steven)
+* 创建agent角色用户时通过短信和邮件发送友好提示，邮件内容包含他的注册信息.(steven)
+
+
 demand version 2.5.5 2014-09-12
 
 * [customer order界面添加一个按钮：Regenerate Receipt，点击后系统根据order细目重新生成收据.](steven)
