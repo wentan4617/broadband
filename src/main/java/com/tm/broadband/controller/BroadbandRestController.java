@@ -25,8 +25,10 @@ public class BroadbandRestController {
 		System.out.println("customerReg check address");
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		if (customerReg != null) {
+			System.out.println("this is old customerReg");
 			return returnBroadband(address, customerReg);
 		} else {
+			System.out.println("this is new customerReg");
 			customerReg = new Customer();
 			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
 			customerReg.setSelect_plan_id(0);
@@ -52,9 +54,17 @@ public class BroadbandRestController {
 			HttpSession session) {
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
 		if (customerRegSale != null) {
+			System.out.println("this is old customerReg");
+			return returnBroadband(address, customerRegSale);
+		} else {
+			System.out.println("this is new customerReg");
+			customerRegSale = new Customer();
+			customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customerRegSale.setSelect_plan_id(0);
+			customerRegSale.setSelect_plan_type("0");
+			session.setAttribute("customerRegSale", customerRegSale);
 			return returnBroadband(address, customerRegSale);
 		}
-		return null;
 	}
 	
 	@RequestMapping("/sale/address/check/{address}")
@@ -92,13 +102,15 @@ public class BroadbandRestController {
 		
 		customer.setServiceAvailable(false);
 		
-		if ("ADSL".equals(customer.getSelect_plan_type()) && broadband.isAdsl_available()) {
+		System.out.println("customer.getSelect_plan_type(): " + customer.getSelect_plan_type());
+		
+		if (broadband.isAdsl_available()) { //"ADSL".equals(customer.getSelect_plan_type()) && 
 			customer.setServiceAvailable(true);
 		}
-		if ("VDSL".equals(customer.getSelect_plan_type()) && broadband.isVdsl_available()) {
+		if (broadband.isVdsl_available()) { // "VDSL".equals(customer.getSelect_plan_type()) && 
 			customer.setServiceAvailable(true);
 		}
-		if ("UFB".equals(customer.getSelect_plan_type()) && broadband.isUfb_available()) {
+		if (broadband.isUfb_available()) { // "UFB".equals(customer.getSelect_plan_type()) && 
 			customer.setServiceAvailable(true);
 		}
 		if ("0".equals(customer.getSelect_plan_type())) {

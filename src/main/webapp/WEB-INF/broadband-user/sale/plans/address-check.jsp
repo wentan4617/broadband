@@ -15,9 +15,9 @@
 <div class="container">
 	
 	<div class="hidden-xs hidden-sm">
-		<ul class="nav nav-pills nav-wizard" style="width: 750px; margin: 0 auto;">
-			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li>
-			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
+			<!-- <li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li> -->
+			<li class="active"><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
 		</ul>
@@ -44,9 +44,9 @@
 		</div>
 	</div>
 	
-	<p class="text-center">
+	<%-- <p class="text-center">
 		<a href="${ctx }/broadband-user/sale/plans/address/clear" class="btn btn-link">Clear Address</a>
-	</p>
+	</p> --%>
 	
 	<c:if test="${customerRegSale.customerOrder.sale_id != null && customerRegSale.customerOrder.sale_id != 0}">
 	
@@ -138,7 +138,7 @@
 		data-select_plan_id="${select_plan_id}" 
 		data-select_plan_type="${select_plan_type}" 
 		data-select_customer_type="${select_customer_type }"
-		style="min-height:600px;margin-top:15px;"></div>
+		style="min-height:300px;margin-top:15px;"></div>
 	
 </div>
 
