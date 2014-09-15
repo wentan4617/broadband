@@ -1,5 +1,8 @@
 <div class="panel panel-success">
 	<div class="panel-body" style="padding-bottom:0;">
+		<a href="<.=ctx.>/broadband-user/sale/plans/order?select_plan_type=<.=select_plan_type.>&select_customer_type=<.=select_customer_type=='personal'?'business':'personal'.>" class="btn btn-link" style="padding: 0;">Change to <.=select_customer_type=='personal'?'Business Plans':'Personal Plans'.></a>
+	</div>
+	<div class="panel-body" style="padding-bottom:0;">
 		<div class="row">
 			<div class="col-md-2">
 				<span class="glyphicon glyphicon-map-marker" style="font-size: 36px;"></span>
@@ -58,7 +61,7 @@
 				<span style="font-size: 36px;font-weight: bold;">
 					NZ$
 				</span>
-				<span style="font-size: 64px;font-weight: bold;">
+				<span style="font-size: 54px;font-weight: bold;">
 					<.=price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price.>
 					<.if (select_customer_type == 'business') {.>
 					<span style="font-size: 12px;">+GST</span>

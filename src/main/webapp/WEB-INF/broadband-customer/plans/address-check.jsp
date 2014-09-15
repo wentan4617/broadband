@@ -133,7 +133,7 @@
 	
 	</c:if>
 	
-	<div id="checkResult" data-select_plan_id="${select_plan_id}" data-select_plan_type="${select_plan_type}"  data-isShowContinue="yes" style="min-height:600px;margin-top:15px;"></div>
+	<div id="checkResult" data-select_plan_id="${select_plan_id}" data-select_plan_type="${select_plan_type}"  data-isShowContinue="no" style="min-height:300px;margin-top:15px;"></div>
 
 	
 	

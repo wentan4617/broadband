@@ -1250,9 +1250,14 @@ public class SaleController {
 			HttpSession session) {
 		
 		Customer customer = (Customer) session.getAttribute("customerRegSale");
-		customer.setSelect_plan_id(id);
-		customer.setSelect_plan_type(type);
-		customer.setSelect_customer_type(clasz);
+		if (customer == null) {
+			customer = new Customer();
+			customer.setSelect_plan_id(id);
+			customer.setSelect_plan_type(type);
+			customer.setSelect_customer_type(clasz);
+			session.setAttribute("customerRegSale", customer);
+		}
+		
 		
 		model.addAttribute("select_plan_id", id);
 		model.addAttribute("select_plan_type", type);
@@ -1263,11 +1268,16 @@ public class SaleController {
 	
 	@RequestMapping("/broadband-user/sale/plans/order") 
 	public String toOrderPlan(Model model, HttpSession session,
-			@RequestParam(value = "select_plan_type", required = false) String select_plan_type) {
+			@RequestParam(value = "select_plan_type", required = false) String select_plan_type,
+			@RequestParam(value = "select_customer_type", required = false) String select_customer_type) {
 		
 		String url = "broadband-user/sale/plans/customer-order";
 		
 		Customer customer = (Customer) session.getAttribute("customerRegSale");
+		
+		if (select_customer_type != null) {
+			customer.setSelect_customer_type(select_customer_type);
+		}
 		
 		if (select_plan_type != null && !"".equals(select_plan_type)) {
 			customer.setSelect_plan_type(select_plan_type);

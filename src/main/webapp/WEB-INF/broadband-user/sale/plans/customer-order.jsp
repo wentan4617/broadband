@@ -21,10 +21,10 @@
 <div class="container" style="margin-top:20px;">
 
 	<div class="hidden-xs hidden-sm">
-		<ul class="nav nav-pills nav-wizard" style="width: 750px; margin: 0 auto;">
-			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li>
-			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
-			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
+		<ul class="nav nav-pills nav-wizard" style="width: 650px; margin: 0 auto;">
+			<!-- <li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li> -->
+			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application of ${customerRegSale.select_customer_type=='personal'?'Personal':'Business' }</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
 		</ul>
 		<hr>

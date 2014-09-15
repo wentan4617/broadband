@@ -294,7 +294,7 @@ hr {
 		                    	</li>
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx}/broadband-user/sale/plans/broadband/personal">New Ordering Online (PAD | PC)</a>
+		                    		<a href="${ctx}/broadband-user/sale/plans/address-check/ADSL/personal/0">New Ordering Online (PAD | PC)</a>
 		                    	</li>
 		                    </ul>
 					  	</div>
