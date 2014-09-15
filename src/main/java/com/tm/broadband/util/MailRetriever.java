@@ -77,8 +77,8 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_cellphone>", preventNull(cus.getCellphone())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_status>", preventNull(cus.getStatus())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_invoice_post>", preventNull(cus.getInvoice_post())));
-			noti.setTitle(noti.getTitle().replaceAll("@<customer_register_date>", preventNull(cus.getRegister_date_str())));
-			noti.setTitle(noti.getTitle().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<customer_register_date>", preventNull(cus.getRegister_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(cus.getRegister_date()) : cus.getRegister_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(cus.getActive_date()) : cus.getActive_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_balance>", String.valueOf(preventNull(cus.getBalance()))));
 		}
 		// retrieve customer details end
@@ -104,8 +104,8 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<customer_cellphone>", preventNull(cus.getCellphone())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_status>", preventNull(cus.getStatus())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_invoice_post>", preventNull(cus.getInvoice_post())));
-			noti.setContent(noti.getContent().replaceAll("@<customer_register_date>", preventNull(cus.getRegister_date_str())));
-			noti.setContent(noti.getContent().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<customer_register_date>", preventNull(cus.getRegister_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(cus.getRegister_date()) : cus.getRegister_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<customer_active_date>", preventNull(cus.getActive_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(cus.getActive_date()) : cus.getActive_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_balance>", String.valueOf(preventNull(cus.getBalance()))));
 		}
 		// retrieve customer details end
@@ -161,8 +161,8 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_id>", String.valueOf(preventNull(inv.getId()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_invoice_serial>", preventNull(inv.getInvoice_serial())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_customer_id>", String.valueOf(preventNull(inv.getCustomer_id()))));
-			noti.setTitle(noti.getTitle().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date_str())));
-			noti.setTitle(noti.getTitle().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getCreate_date()) : inv.getCreate_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getDue_date()) : inv.getDue_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_payable())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_final_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getFinal_payable_amount())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_paid>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_paid())))));
@@ -170,7 +170,7 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_balance>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getBalance())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_memo>", preventNull(inv.getMemo())));
-			noti.setTitle(noti.getTitle().replaceAll("@<invoice_paid_date>", preventNull(inv.getPaid_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_paid_date>", preventNull(inv.getPaid_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getPaid_date()) : inv.getPaid_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_paid_type>", preventNull(inv.getPaid_type())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_last_invoice_id>", String.valueOf(preventNull(inv.getLast_invoice_id()))));
 		}
@@ -183,8 +183,8 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<invoice_id>", String.valueOf(preventNull(inv.getId()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_invoice_serial>", preventNull(inv.getInvoice_serial())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_customer_id>", String.valueOf(preventNull(inv.getCustomer_id()))));
-			noti.setContent(noti.getContent().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date_str())));
-			noti.setContent(noti.getContent().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getCreate_date()) : inv.getCreate_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getDue_date()) : inv.getDue_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_payable())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_final_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getFinal_payable_amount())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_paid>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_paid())))));
@@ -192,7 +192,7 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<invoice_balance>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getBalance())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_status>", preventNull(inv.getStatus())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_memo>", preventNull(inv.getMemo())));
-			noti.setContent(noti.getContent().replaceAll("@<invoice_paid_date>", preventNull(inv.getPaid_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_paid_date>", preventNull(inv.getPaid_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getPaid_date()) : inv.getPaid_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_paid_type>", preventNull(inv.getPaid_type())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_last_invoice_id>", String.valueOf(preventNull(inv.getLast_invoice_id()))));
 		}
@@ -205,8 +205,8 @@ public class MailRetriever {
 		// retrieve order begin
 		if(noti.getTitle() != null){
 			noti.setTitle(noti.getTitle().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
-			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
-			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 		}
 		// retrieve order end
@@ -216,8 +216,8 @@ public class MailRetriever {
 		// retrieve order begin
 		if(noti.getContent() != null){
 			noti.setContent(noti.getContent().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
-			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due_str()))));
-			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 		}
 		// retrieve order end
@@ -238,7 +238,7 @@ public class MailRetriever {
 				if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
 					if(cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim())){
 						if(firstTitlePSTN){
-							noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+							noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf("Phone Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
 							firstTitlePSTN = false;
 						} else {
 							noti.setTitle(noti.getTitle().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
@@ -247,7 +247,7 @@ public class MailRetriever {
 				}
 				if("hardware-router".equals(cod.getDetail_type())){
 					if(firstTitleHardware){
-						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf("Modem: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
 						firstTitleHardware = false;
 					} else {
 						noti.setTitle(noti.getTitle().replaceAll("@<order_detail_name>", String.valueOf("; "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
@@ -263,7 +263,7 @@ public class MailRetriever {
 				if(cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim())){
 					if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
 						if(firstContentPSTN){
-							noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf(", Your Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
+							noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf("Phone Number: "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
 							firstContentPSTN = false;
 						} else {
 							noti.setContent(noti.getContent().replaceAll("@<order_detail_number>", String.valueOf("; "+preventNull(cod.getPstn_number())+"@<order_detail_number>")));
@@ -272,7 +272,7 @@ public class MailRetriever {
 				}
 				if("hardware-router".equals(cod.getDetail_type())){
 					if(firstContentHardware){
-						noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf(", Your Modem: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
+						noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf("Modem Details: "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
 						firstContentHardware = false;
 					} else {
 						noti.setContent(noti.getContent().replaceAll("@<order_detail_name>", String.valueOf("; "+preventNull(cod.getDetail_name())+"@<order_detail_name>")));
