@@ -64,6 +64,18 @@
 								</form:select>
 							</div>
 						</div>
+						<div class="form-group" data-name="agent_commission_rates_div" ${user.user_role=='agent' ? '' : 'style="display:none;"' } >
+							<label for="agent_commission_rates" class="control-label col-md-4">Agent Commission Rates</label>
+							<div class="col-md-3">
+								<div class="input-group">
+									<form:input path="agent_commission_rates" class="form-control" placeholder="Agent Commission Rates" />
+									<span class="input-group-addon">%</span>
+								</div>
+							</div>
+							<p class="help-block">
+								<form:errors path="agent_commission_rates" cssErrorClass="error"/>
+							</p>
+						</div>
 						<div class="form-group">
 							<label for="email" class="control-label col-md-4">Email</label>
 							<div class="col-md-3">
@@ -524,6 +536,12 @@
 	$('select[data-name="user_permission_selector"]').change(function(){
 		var permission = $(this).find('option:selected').val();
 		$('div[data-module="administrator"]').find('input').iCheck("uncheck");
+		
+		if("agent"==permission){
+			$('div[data-name="agent_commission_rates_div"]').css('display', '');
+		} else {
+			$('div[data-name="agent_commission_rates_div"]').css('display', 'none');
+		}
 		
 		if("sales"==permission){	// Sales
 			

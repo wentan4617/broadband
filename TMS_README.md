@@ -36,7 +36,7 @@ TMS Permissions:
 * Manager权限有：administrator, accountant, provision
 
 TMS Order Status:
-    pending, processing, processing-reconnection, rfs, in-service, suspend, disconnected, void, cancel
+    pending, processing, reconnection, rfs, in-service, suspend, disconnected, void, cancel
 
 
 demand version 1.1.6 2014-09-13

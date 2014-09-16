@@ -1186,7 +1186,7 @@ public class BillingController {
 			for (CustomerInvoice ci : weekCustomerCommissions) {
 				if(TMUtils.dateFormatYYYYMMDD(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMMDD(ci.getCreate_date()))){
 					statisticBilling.setBillingAmount(TMUtils.bigAdd(
-						statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), 0.045))
+						statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), TMUtils.bigDivide(user.getAgent_commission_rates(), 100)))
 					);
 				}
 			}
@@ -1232,7 +1232,7 @@ public class BillingController {
 				
 				if(TMUtils.dateFormatYYYYMMDD(statisticBilling.getBillingDate()).equals(TMUtils.dateFormatYYYYMMDD(ci.getCreate_date()))){
 					statisticBilling.setBillingAmount(TMUtils.bigAdd(
-							statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), 0.045))
+							statisticBilling.getBillingAmount()!= null ? statisticBilling.getBillingAmount() : 0d, TMUtils.bigMultiply(ci.getAmount_paid(), TMUtils.bigDivide(user.getAgent_commission_rates(), 100)))
 						);
 				}
 			}

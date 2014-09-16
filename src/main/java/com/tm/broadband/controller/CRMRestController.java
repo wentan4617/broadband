@@ -1152,6 +1152,7 @@ public class CRMRestController {
 			@RequestParam("detail_price") Double detail_price,
 			@RequestParam("detail_unit") Integer detail_unit,
 			@RequestParam("detail_expired") String detail_expired,
+			@RequestParam("detail_desc") String detail_desc,
 			@RequestParam("detail_type") String detail_type,
 			RedirectAttributes attr, HttpServletRequest req) {
 
@@ -1168,6 +1169,7 @@ public class CRMRestController {
 			customerOrderDetail.setDetail_price(detail_price);
 			customerOrderDetail.setDetail_unit(detail_unit);
 			customerOrderDetail.setDetail_expired(TMUtils.parseDateYYYYMMDD(detail_expired));
+			customerOrderDetail.setDetail_desc(detail_desc);
 			customerOrderDetail.setDetail_type(detail_type);
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
@@ -1731,7 +1733,7 @@ public class CRMRestController {
 		
 		Page<Ticket> page = new Page<Ticket>();
 		page.setPageNo(pageNo);
-		page.setPageSize(30);
+		page.setPageSize(500);
 		page.getParams().put("orderby", "order by create_date desc");
 		page.getParams().put("where", "query_by_public_protected");
 		page.getParams().put("public_protected", "public_protected");
@@ -1792,18 +1794,30 @@ public class CRMRestController {
 		this.crmService.queryTicketsByPage(page);
 		List<Ticket> ts = new ArrayList<Ticket>();
 		for (Ticket t : page.getResults()) {
-			if(t.getNot_yet_review_comment_viewer()!=null
-			   && t.getNot_yet_review_comment_viewer().contains(user.getId().toString())){
-				t.setNotYetReview(true);
+			if((t.getNot_yet_review_comment_viewer()!=null && t.getNot_yet_review_comment_viewer().contains(user.getId().toString()))
+			|| (t.getNot_yet_viewer()!=null && t.getNot_yet_viewer().contains(user.getId().toString()))){
+				if(t.getNot_yet_review_comment_viewer()!=null
+				   && t.getNot_yet_review_comment_viewer().contains(user.getId().toString())){
+					t.setNotYetReview(true);
+				}
+				if(t.getNot_yet_viewer()!=null
+				   && t.getNot_yet_viewer().contains(user.getId().toString())){
+					t.setMentioned(true);
+				}
+				if(t.getUser_id().equals(user.getId())){
+					t.setMyTicket(true);
+				}
+				ts.add(t);
 			}
-			if(t.getNot_yet_viewer()!=null
-			   && t.getNot_yet_viewer().contains(user.getId().toString())){
-				t.setMentioned(true);
+		}
+		for (Ticket t : page.getResults()) {
+			if((t.getNot_yet_review_comment_viewer()==null || !t.getNot_yet_review_comment_viewer().contains(user.getId().toString()))
+			&& (t.getNot_yet_viewer()==null || !t.getNot_yet_viewer().contains(user.getId().toString()))){
+				if(t.getUser_id().equals(user.getId())){
+					t.setMyTicket(true);
+				}
+				ts.add(t);
 			}
-			if(t.getUser_id().equals(user.getId())){
-				t.setMyTicket(true);
-			}
-			ts.add(t);
 		}
 		page.setResults(ts);
 		

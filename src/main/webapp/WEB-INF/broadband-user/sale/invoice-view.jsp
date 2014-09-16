@@ -129,7 +129,7 @@ tbody td {text-align:center;}
 									</td>
 									<c:if test="${paidActive=='active'}">
 										<td style="text-align:right; font-weight:bold; color:rgb(126,210,0);">
-											<fmt:formatNumber value="${ci.amount_paid * 0.045 }" type="number" pattern="###,##0.00"/>
+											<fmt:formatNumber value="${ci.amount_paid * (userSession.agent_commission_rates/100) }" type="number" pattern="###,##0.00"/>
 										</td>
 									</c:if>
 								</tr>

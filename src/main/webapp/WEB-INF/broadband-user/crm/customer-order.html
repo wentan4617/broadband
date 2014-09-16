@@ -1435,6 +1435,15 @@
 					
 					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_discount_modal_body" style="display:none;">
 						<div class="form-group">
+							<label class="control-label col-md-4">Show In</label>
+							<div class="col-md-6">
+								<select data-name="<.= customerOrder[i].id .>_discount_desc" class="form-control input-sm" style="height:26px; padding:0 10px;">
+									<option value="all-forms">ordering, receipt, all invoices</option>
+									<option value="next-invoices">start from second invoice</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
 							<label class="control-label col-md-4">Credit Name</label>
 							<div class="col-md-6">
 								<input data-name="<.= customerOrder[i].id .>_discount_name" class="form-control input-sm" placeholder="Credit Name" />

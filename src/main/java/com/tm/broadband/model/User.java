@@ -38,6 +38,7 @@ public class User implements Serializable {
 	private String cellphone;
 	private String email;
 	private Boolean is_provision;
+	private Double agent_commission_rates;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -156,5 +157,14 @@ public class User implements Serializable {
 	public void setIs_provision(Boolean is_provision) {
 		this.is_provision = is_provision;
 	}
+
+	public Double getAgent_commission_rates() {
+		return agent_commission_rates;
+	}
+
+	public void setAgent_commission_rates(Double agent_commission_rates) {
+		this.agent_commission_rates = agent_commission_rates;
+	}
+
 
 }
