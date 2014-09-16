@@ -1101,6 +1101,12 @@
 								,'detail_expired':detail_expired+''
 								,'detail_type':detail_type+''
 						};
+						
+						if(detail_type == 'discount'){
+							data.detail_desc = $('select[data-name="'+this.id+'_'+detail_type+'_desc"]').val();
+						} else {
+							data.detail_desc = null;
+						}
 					}
 					
 					if(detail_type != 'none'){

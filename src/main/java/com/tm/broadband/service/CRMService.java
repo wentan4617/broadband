@@ -2860,7 +2860,8 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 			
-			if ("discount".equals(cod.getDetail_type())) {
+			if ("discount".equals(cod.getDetail_type())
+				&& (cod.getDetail_desc()==null || (cod.getDetail_desc()!=null && "all-forms".equals(cod.getDetail_desc())))) {
 				
 				cid.setInvoice_detail_discount(cod.getDetail_price());
 				// decrease amountPayable

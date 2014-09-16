@@ -48,7 +48,7 @@ public class SendEmailAspect {
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customer.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
@@ -57,7 +57,7 @@ public class SendEmailAspect {
 		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 	}
 

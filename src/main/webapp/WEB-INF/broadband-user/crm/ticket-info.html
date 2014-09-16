@@ -176,7 +176,9 @@
 	<div class="form-group">
 		<div class="col-md-4"></div>
 		<div class="col-md-3">
+			<. if(user_role == 'system-developer'){ .>
 			<a href="javascript:void(0);" class="btn btn-success btn-xs btn-block" id="updateTicketBtn">Update Ticket</a>
+			<. } .>
 		</div>
 		<div class="col-md-4">
 			<. if(user_role == 'system-developer'){ .>

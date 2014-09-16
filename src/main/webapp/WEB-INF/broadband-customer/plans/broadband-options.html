@@ -9,16 +9,18 @@
 			<div class="col-md-12">
 				<ul class="list-unstyled topup-list">
 					<li>
+						Do you have Internet service at moment?
+					</li>
+					<li>
 						<label>
 							<input type="radio" name="order_broadband_type" value="transition"/> 
 							&nbsp; 
 							<strong> 
-								Transfer the existing broadband connection to CyberPark 
+								YES! Transfer the existing broadband connection to CyberPark 
 								<.if (plan.transition_fee > 0) {.>
 									costs <span class="text-danger">$<.=plan.transition_fee.toFixed(0).></span>
 								<.} else {.>
-									is free
-								<.}.>
+									is free<.}.>!
 							</strong>
 						</label>
 					</li>
@@ -27,7 +29,7 @@
 							<input type="radio" name="order_broadband_type" value="new-connection" />
 							&nbsp; 
 							<strong> 
-								Get a new broadband connection on an existing (but inactive) Phone Jack 
+								NO, Get a new broadband connection on an existing (but inactive) Phone Jack 
 								<.if (plan.plan_new_connection_fee > 0) {.>
 									<.if (prepay_months == 1) {.>
 										costs 
@@ -45,8 +47,7 @@
 										is free
 									<.}.>
 								<.} else {.>
-									is free
-								<.}.>
+									is free<.}.>!
 							</strong>
 						</label>
 					</li>

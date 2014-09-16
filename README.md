@@ -20,6 +20,16 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.1.8 2014-09-16
+
+* 添加一种新的credit，重新生成ordering和receipt时不显示，service giving的第一个账单也不显示.(steven)
+
+
+demand version 1.1.7 2014-09-15
+
+* [在tm_user表上添加一个字段，agent_commision_rates，用来分别给不同的agent不同的commision.](steven)
+
+
 demand version 1.1.6 2014-09-13
 
 * 通过邀请人customer id注册后的
