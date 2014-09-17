@@ -24,17 +24,17 @@
 				$('#checkResult').html(tmpl('result_tmpl', broadband));
 				if (broadband.adsl_available) { //alert('adsl');
 					$('#adsl').click(function(){
-						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=ADSL';
+						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=ADSL&select_customer_type=' + select_customer_type;
 					});
 				}
 				if (broadband.vdsl_available) {
 					$('#vdsl').click(function(){ //alert('vdsl');
-						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=VDSL';
+						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=VDSL&select_customer_type=' + select_customer_type;
 					});
 				}
 				if (broadband.ufb_available) {
 					$('#ufb').click(function(){ //alert('ufb');
-						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=UFB';
+						window.location.href = ctx + '/broadband-user/sale/plans/order?select_plan_type=UFB&select_customer_type=' + select_customer_type;
 					});
 				}
 		   	}).always(function(){ l.stop(); });

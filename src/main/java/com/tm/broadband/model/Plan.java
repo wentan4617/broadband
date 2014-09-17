@@ -65,6 +65,7 @@ public class Plan implements Serializable {
 	@NumberFormat
 	@NotNull(groups = { PlanValidatedMark.class })
 	private Double transition_fee;
+	private Integer voip_count;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -73,6 +74,14 @@ public class Plan implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+
+	public Integer getVoip_count() {
+		return voip_count;
+	}
+
+	public void setVoip_count(Integer voip_count) {
+		this.voip_count = voip_count;
+	}
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private Topup topup = new Topup();
