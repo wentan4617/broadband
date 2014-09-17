@@ -506,7 +506,12 @@ public class SaleController {
 	
 	@RequestMapping(value = "/broadband-user/sales/online-ordering/redirect")
 	public String toOnlineOrdering(Model model){
-		return "redirect:/broadband-user/sale/online/ordering/plans/business";
+		return "redirect:/broadband-user/sale/plans/select-customer-business";
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/plans/select-customer-business")
+	public String salePlansSelectCustomerBusiness(Model model){
+		return "broadband-user/sale/plans/select-customer-business";
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/credit/{customer_id}/{order_id}")

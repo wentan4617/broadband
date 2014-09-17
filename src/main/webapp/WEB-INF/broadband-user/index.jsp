@@ -288,13 +288,13 @@ hr {
 		                    		<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
 		                    		<a href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }'>View Online Orders (PAD | PC)</a>
 		                    	</li>
-		                    	<li>
+		                    	<%-- <li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 		                    		<a href="${ctx }/broadband-user/sale/online/ordering/plans/personal">Ordering Online (PAD | PC)</a>
-		                    	</li>
+		                    	</li> --%>
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx}/broadband-user/sale/plans/address-check/ADSL/personal/0">New Ordering Online (PAD | PC)</a>
+		                    		<a href="${ctx}/broadband-user/sale/plans/select-customer-business">New Ordering Online (PAD | PC)</a>
 		                    	</li>
 		                    </ul>
 					  	</div>

@@ -9,7 +9,7 @@
 <style>
 .affix {
 	width: 263px;
-	top: 20px;
+	top: 40px;
 }
 .nav-pills>li>a {
 	border-radius: 0px;
@@ -42,51 +42,143 @@
 	border-bottom-right-radius: 0;
 	border-top-right-radius: 0;
 }
+.panel-success {
+	border-top-color:transparent;
+}
 </style>
 
 <div class="container" style="margin-top:20px;">
 	<div class="row" style="margin-bottom:20px;">
 		
 		<div class="col-md-9 col-xs-12 col-sm-12">
-			<div class="panel panel-success">
-				<div class="panel-heading">
-					<h4 class="panel-title">International Calling Rates</h4><br/>
-					<span style="color:black;">&nbsp;(&nbsp;For Business Customer Only&nbsp;)&nbsp;</span>
-				</div>
-				<c:if test="${fn:length(letterCirs) > 0}">
+		
+			<!-- Nav tabs -->
+			<ul class="nav nav-tabs" id="rates">
+				<li class="active"><a href="#personal-rates" data-toggle="tab" data-type="p"><strong>Personal Rates</strong></a></li>
+				<li><a href="#business-rates" data-toggle="tab" data-type="b"><strong>Business Rates</strong></a></li>
+			</ul>
+
+			<!-- Tab panes -->
+			<div class="tab-content panel panel-success">
+				<div class="panel-body tab-pane fade in active" id="personal-rates" >	
+				
 					<table class="table table-bordered">
 						<thead>
-							<tr>
-								<th>Country name</th>
-								<th>Area Prefix</th>
-								<th>Cents per min rate</th>
+							<tr class="success">
+								<th>NZ Local</th>
+								<th>NZ National</th>
+								<th>NZ Mobile</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="lCir" items="${letterCirs }">
-								<tr class="active" id="${lCir.letter}">
-									<td colspan="3">${lCir.letter}</td>
-								</tr>
-								<c:forEach var="cir" items="${lCir.cirs }">
-									<tr>
-										<td>${cir.area_name}</td>
-										<td>${cir.area_prefix}</td>
-										<td>$ ${cir.rate_cost}</td>
-									</tr>
-								</c:forEach>
-							</c:forEach>
+							<tr>
+								<td>Free</td>
+								<td>$ 0.06</td>
+								<td>$ 0.19</td>
+							</tr>
 						</tbody>
-					</table>
-				</c:if>
-			</div>
+					</table>		
+					
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<h4 class="panel-title">International</h4>
+						</div>
+						<c:if test="${fn:length(letterCirs) > 0}">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Country name</th>
+										<th>Area Prefix</th>
+										<th>Cents per min rate</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach var="lCir" items="${letterCirs }">
+										<c:if test="${fn:length(lCir.cirs) > 0 }">
+											<tr class="active" id="${lCir.letter}p">
+												<td colspan="3">${lCir.letter}</td>
+											</tr>
+											<c:forEach var="cir" items="${lCir.cirs }">
+												<tr>
+													<td>${cir.area_name}</td>
+													<td>${cir.area_prefix}</td>
+													<td>$ ${cir.rate_cost}</td>
+												</tr>
+											</c:forEach>
+										</c:if>
+									</c:forEach>
+								</tbody>
+							</table>
+						</c:if>
+					</div>
+					
+				</div>
+				
+				
+				<div class="panel-body tab-pane fade" id="business-rates" >
+				
+					<table class="table table-bordered">
+						<thead>
+							<tr class="success">
+								<th>NZ Local</th>
+								<th>NZ National</th>
+								<th>NZ Mobile</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>$ 0.03</td>
+								<td>$ 0.06</td>
+								<td>$ 0.19</td>
+							</tr>
+						</tbody>
+					</table>		
+					
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<h4 class="panel-title">International</h4>
+						</div>
+						<c:if test="${fn:length(letterCirs) > 0}">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<th>Country name</th>
+										<th>Area Prefix</th>
+										<th>Cents per min rate</th>
+									</tr>
+								</thead>
+								<tbody>
+									<c:forEach var="lCir" items="${letterCirs }">
+										<c:if test="${fn:length(lCir.cirs) > 0 }">
+											<tr class="active" id="${lCir.letter}b">
+												<td colspan="3">${lCir.letter}</td>
+											</tr>
+											<c:forEach var="cir" items="${lCir.cirs }">
+												<tr>
+													<td>${cir.area_name}</td>
+													<td>${cir.area_prefix}</td>
+													<td>$ ${cir.rate_cost}</td>
+												</tr>
+											</c:forEach>
+										</c:if>
+									</c:forEach>
+								</tbody>
+							</table>
+						</c:if>
+					</div>
+				</div>
+				
+			</div>			
 		</div>
 		<div class="col-md-3 hidden-xs hidden-sm">
-			 <div data-spy="affix" data-offset-top="100"><!-- navbar-example panel panel-default -->
-				<ul class="pagination" style="margin-top:0;"><!-- nav nav-pills nav-stacked -->
+			 <div data-spy="affix" data-offset-top="100">
+				<ul class="pagination" style="margin-top:0;">
 					<c:forEach var="lCir" items="${letterCirs }" varStatus="item">
-						<li>
-							<a href="#${lCir.letter }" style="${item.last ? 'width:80px;height:35px;' : 'width:40px;height:35px;'}">${lCir.letter }</a>
-						</li>
+						<c:if test="${fn:length(lCir.cirs) > 0 }">
+							<li>
+								<a href="#${lCir.letter}p" style="${item.last ? 'width:80px;height:35px;' : 'width:40px;height:35px;'}" data-letter="${lCir.letter }">${lCir.letter }</a>
+							</li>
+						</c:if>
 					</c:forEach>
 				</ul>
 			</div>
@@ -99,6 +191,15 @@
 <script type="text/javascript">
 (function($){
 	$('body').scrollspy({ target: '.navbar-example' });
+	
+	$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+		var type = $(e.target).attr('data-type');
+		//console.log(type);
+		$('a[data-letter]').each(function(){
+			var l = $(this).attr('data-letter');
+			$(this).attr('href', '#' + l + type);
+		});
+	});
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

@@ -159,6 +159,13 @@
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label for="voip_count" class="control-label col-md-4">VOIP (Qty)</label>
+							<div class="col-md-3">
+								<input type="text" value="${plan.voip_count}" id="voip_count" class="form-control" />
+							</div>
+						</div>
+						
 						<%-- <div class="form-group">
 							<label for="pstn_rental_amount" class="control-label col-md-4">PSTN Rental Amount</label>
 							<div class="col-md-3">
@@ -342,6 +349,7 @@
 			, memo: $('#memo').val()
 			, promotion: $('#promotion').prop("checked")
 			, place_sort: $('#place_sort').val()
+			, voip_count: $('#voip_count').val()
 		};
 		$btn.button('loading');
 		$.post('${ctx}${action}', plan, function(json){

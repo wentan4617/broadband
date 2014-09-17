@@ -1080,8 +1080,8 @@ public class CustomerController {
 		return "broadband-customer/chorus-googlemap";
 	}
 	
-	@RequestMapping("/home-phone-calling-rates")
-	public String homePhoneCallingRates(Model model) {
+	@RequestMapping("/calling-rates")
+	public String callingRates(Model model) {
 		
 		List<CallInternationalRate> letterCirs = new ArrayList<CallInternationalRate>();
 		letterCirs.add(new CallInternationalRate("A"));
@@ -1116,8 +1116,7 @@ public class CustomerController {
 		if (cirs != null) {
 			for (CallInternationalRate cir: cirs) {
 				boolean b = false;
-				for (CallInternationalRate lCir: letterCirs) {
-						
+				for (CallInternationalRate lCir: letterCirs) {	
 					if (!"".equals(cir.getArea_name())
 							&& lCir.getLetter().equals(String.valueOf(cir.getArea_name().toUpperCase().charAt(0)))) {
 						//System.out.println(lCir.getLetter() + ", " + cir.getArea_name().toUpperCase().charAt(0));
