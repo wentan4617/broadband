@@ -1588,35 +1588,36 @@ public class CRMRestController {
 		c.setCustomerOrder(c.getCustomerOrders().get(0));
 		c.setOrganization(org);
 		
-		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
-		
-		CustomerOrder co = new CustomerOrder();
-		co.setReceipt_pdf_path(receiptPath);
-		if("pending".equals(c.getCustomerOrder().getOrder_status())
-		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
-		  || "void".equals(c.getCustomerOrder().getOrder_status())){
-			co.setOrder_status("paid");
-		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
-			co.setOrder_status("ordering-paid");
-		}
-		
 		Double cyberParkCredit = 0d;
 		
-		if(order_total_price > paid_amount){
+		if("account-credit".equals(order_pay_way)){
+			cyberParkCredit = TMUtils.bigSub(order_total_price, c.getBalance()==null ? 0d : c.getBalance());
+			paid_amount = 0d;
+		}
+		
+		if("cyberpark-credit".equals(order_pay_way)){
+			cyberParkCredit = order_total_price;
+			paid_amount = 0d;
+		}
+		
+		if(!"account-credit".equals(order_pay_way)
+		&& !"cyberpark-credit".equals(order_pay_way)
+		&& (order_total_price > paid_amount)){
 			cyberParkCredit = TMUtils.bigSub(order_total_price, paid_amount);
 		}
 		
-		Customer customer = new Customer();
-		customer.setBalance(TMUtils.bigAdd(c.getBalance()==null ? 0d : c.getBalance(), paid_amount));
-		customer.getParams().put("id", c.getId());
-		this.crmService.editCustomer(customer);
+		if(!"account-credit".equals(order_pay_way) || !"cyberpark-credit".equals(order_pay_way)){
+			Customer customer = new Customer();
+			customer.setBalance(TMUtils.bigAdd(c.getBalance()==null ? 0d : c.getBalance(), paid_amount));
+			customer.getParams().put("id", c.getId());
+			this.crmService.editCustomer(customer);
+		}
 		
 		User user = (User) req.getSession().getAttribute("userSession");
 		
 		CustomerTransaction ct = null;
 		
 		if(paid_amount > 0){
-			
 			ct = new CustomerTransaction();
 			ct.setAmount(paid_amount);
 			ct.setAmount_settlement(paid_amount);
@@ -1631,7 +1632,6 @@ public class CRMRestController {
 		}
 		
 		if(cyberParkCredit > 0d){
-			
 			CustomerOrderDetail cod = new CustomerOrderDetail();
 			cod.setOrder_id(id);
 			cod.setDetail_name("CyberPark Credit");
@@ -1639,7 +1639,19 @@ public class CRMRestController {
 			cod.setDetail_type("discount");
 			cod.setDetail_unit(1);
 			cod.setUser_id(user.getId());
+			System.out.println("CyberPark Credit: "+cyberParkCredit);
 			this.crmService.createCustomerOrderDetail(cod);
+		}
+		
+		CustomerOrder co = new CustomerOrder();
+		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
+		co.setReceipt_pdf_path(receiptPath);
+		if("pending".equals(c.getCustomerOrder().getOrder_status())
+		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
+		  || "void".equals(c.getCustomerOrder().getOrder_status())){
+			co.setOrder_status("paid");
+		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
+			co.setOrder_status("ordering-paid");
 		}
 		
 		ProvisionLog pl = new ProvisionLog();
@@ -1647,7 +1659,7 @@ public class CRMRestController {
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
 		pl.setOrder_id_customer(id);
-		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status());
+		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
 		co.getParams().put("id", id);
 		this.crmService.editCustomerOrder(co, pl);
 		

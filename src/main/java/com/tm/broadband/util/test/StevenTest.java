@@ -171,5 +171,13 @@ public class StevenTest {
 //		String str = "cyberpark/ccc/asd";
 //		System.out.println(str.substring(0, str.lastIndexOf("/")+1));
 		
+//		String url = "/broadband-user/crm/customer/invoice/payment/credit-card/{id}/{redirect_from}/{invoice_status}";
+//
+//		String finalUrl = url.substring(0, url.lastIndexOf("/"));
+//		finalUrl = finalUrl.substring(0, finalUrl.lastIndexOf("/"));
+//		finalUrl = finalUrl.substring(0, finalUrl.lastIndexOf("/"));
+//		
+//		System.out.println(finalUrl);
+		
 	}
 }
