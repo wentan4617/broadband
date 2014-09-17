@@ -296,6 +296,13 @@
 					$('input[data-name="paid_amount_'+this.id+'"]').val(total_price.toFixed(2));
 					$('#payOffOrderModal_'+this.id).modal('show');
 				});
+				$('select[data-name="order_pay_way_'+co[i].id+'"]').change(function(){
+					if('account-credit,cyberpark-credit'.indexOf($(this).val())>=0){
+						$('div[data-name="paid_amount_div_'+this.id+'"]').css('display','none');
+					} else {
+						$('div[data-name="paid_amount_div_'+this.id+'"]').css('display','');
+					}
+				});
 				// Submit to rest controller
 				$('a[data-name="payOffOrderModalBtn_'+co[i].id+'"]').click(function(){
 					var paid_amount = $('input[data-name="paid_amount_'+this.id+'"]').val();
@@ -309,6 +316,7 @@
 						,'order_pay_way':order_pay_way
 						,'order_total_price':order_total_price
 					};
+					console.log('asdsad');
 					$.post('${ctx}/broadband-user/crm/customer/order/pay-off/receipt', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json");

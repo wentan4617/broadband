@@ -847,18 +847,20 @@
 					</div>
 					<div class="modal-body">
 						<div class="form-group">
+							<label class="control-label col-md-6">Pay Way</label>
+							<div class="col-md-4">
+								<select id="<.= customerOrder[i].id .>" class="form-control input-sm" data-name="order_pay_way_<.= customerOrder[i].id .>">
+									<option value="a2a">A2A</option>
+									<option value="cash">Cash</option>
+									<option value="account-credit">Account Credit</option>
+									<option value="cyberpark-credit">CyberPark Credit</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="paid_amount_div_<.= customerOrder[i].id .>">
 							<label class="control-label col-md-6">Paid Amount</label>
 							<div class="col-md-4">
 								<input class="form-control input-sm" type="text" data-name="paid_amount_<.= customerOrder[i].id .>" placeholder="0.00" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-md-6">Pay Way</label>
-							<div class="col-md-4">
-								<select class="form-control input-sm" data-name="order_pay_way_<.= customerOrder[i].id .>">
-									<option value="account-2-account">A2A</option>
-									<option value="cash">Cash</option>
-								</select>
 							</div>
 						</div>
 						<br/>

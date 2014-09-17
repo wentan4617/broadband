@@ -80,6 +80,9 @@ th, td{
 								<th>Signature</th>
 								<th>Sales Name</th>
 								<th>Operations</th>
+								<c:if test="${userSession.user_role=='agent'}">
+									<th>Payment</th>
+								</c:if>
 							</tr>
 						</thead>
 						<tbody>
@@ -135,6 +138,32 @@ th, td{
 										</c:if>
 										
 									</td>
+									<c:choose>
+										<c:when test="${(order.ordering_form_pdf_path!=null && order.ordering_form_pdf_path!='')
+			  									||(order.receipt_pdf_path!=null && order.receipt_pdf_path!='')}">
+											<c:choose>
+												<c:when test="${order.receipt_pdf_path!=null && order.receipt_pdf_path!=''}">
+													<td></td>
+												</c:when>
+												<c:otherwise>
+													<td>
+														<div class="btn-group">
+															<button type="button" class="btn btn-primary btn-xs" data-name="make_payment_<.= invoice.id .>">Make Payment</button>
+															<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+																<span class="caret"></span>
+															</button>
+															<ul class="dropdown-menu" role="menu">
+																<li><a href="${ctx}/broadband-user/crm/customer/invoice/payment/credit-card/${order.id}/agent_ordering/${order.order_status}"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;DPS</a></li>
+															</ul>
+														</div>
+													</td>
+												</c:otherwise>
+											</c:choose>
+										</c:when>
+										<c:otherwise>
+												<td></td>
+										</c:otherwise>
+									</c:choose>
 								</tr>
 							</form>
 							

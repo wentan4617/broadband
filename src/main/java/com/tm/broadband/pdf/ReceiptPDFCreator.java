@@ -81,7 +81,7 @@ public class ReceiptPDFCreator extends ITextUtils {
 					if(!cod.getDetail_type().contains("discount")){
 						// SAVE ADD ON NOT INCLUDE DISCOUNT
 						codAddOns.add(cod);
-					} else if((cod.getDetail_desc()==null) || (cod.getDetail_desc()!=null && cod.getDetail_desc().equals("all-forms"))) {
+					} else if((cod.getDetail_desc()==null) || (cod.getDetail_desc()!=null && cod.getDetail_desc().contains("all-forms"))) {
 						codDiscounts.add(cod);
 					}
 				}

@@ -2861,7 +2861,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 			
 			if ("discount".equals(cod.getDetail_type())
-				&& (cod.getDetail_desc()==null || (cod.getDetail_desc()!=null && "all-forms".equals(cod.getDetail_desc())))) {
+				&& (cod.getDetail_desc()==null || (cod.getDetail_desc()!=null && cod.getDetail_desc().contains("all-forms")))) {
 				
 				cid.setInvoice_detail_discount(cod.getDetail_price());
 				// decrease amountPayable
@@ -2922,6 +2922,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				}
 			}
 		}
+		
+		System.out.println("totalAmountPayable: "+totalAmountPayable);
+		System.out.println("totalCreditBack: "+totalCreditBack);
+		System.out.println("c.getBalance(): "+c.getBalance());
 		
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
 		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
@@ -3245,13 +3249,13 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
 			if (customerOrder.getPrepay_months() == 3) {
 				cod_discount.setDetail_name("Prepay 3 Months Discount");
-				cod_discount.setDetail_desc("3% off the total price of 3 months plan");
+				cod_discount.setDetail_desc("3% off the total price of 3 months plan. all-forms");
 			} else if (customerOrder.getPrepay_months() == 6) {
 				cod_discount.setDetail_name("Prepay 6 Months Discount");
-				cod_discount.setDetail_desc("7% off the total price of 6 months plan");
+				cod_discount.setDetail_desc("7% off the total price of 6 months plan. all-forms");
 			} else if (customerOrder.getPrepay_months() == 12) {
 				cod_discount.setDetail_name("Prepay 12 Months Discount");
-				cod_discount.setDetail_desc("15% off the total price of 12 months plan");
+				cod_discount.setDetail_desc("15% off the total price of 12 months plan. all-forms");
 			}
 			cod_discount.setDetail_price(new Double(discount_price.intValue()));
 			cod_discount.setDetail_type("discount");

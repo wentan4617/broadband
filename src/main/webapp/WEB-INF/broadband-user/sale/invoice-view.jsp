@@ -81,7 +81,9 @@ tbody td {text-align:center;}
 								<th style="text-align:right;">Total Credit</th>
 								<th style="text-align:right;">Amount Paid</th>
 								<th style="text-align:right;">Balance</th>
-								<th>Invoice Status</th>
+								<c:if test="${unpaidActive=='active' || not_pay_offActive=='active' || pendingActive=='active'}">
+									<th>Operations</th>
+								</c:if>
 								<c:if test="${paidActive=='active'}">
 									<th style="text-align:right;">Commission</th>
 								</c:if>
@@ -127,6 +129,19 @@ tbody td {text-align:center;}
 											<c:otherwise>${ci.status }</c:otherwise>
 										</c:choose>
 									</td>
+									<c:if test="${unpaidActive=='active' || not_pay_offActive=='active' || pendingActive=='active'}">
+										<td>
+											<div class="btn-group">
+												<button type="button" class="btn btn-primary btn-xs" data-name="make_payment_<.= invoice.id .>">Make Payment</button>
+												<button type="button" class="btn btn-primary btn-xs dropdown-toggle" data-toggle="dropdown">
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu" role="menu">
+													<li><a href="${ctx}/broadband-user/crm/customer/invoice/payment/credit-card/${ci.id}/agent_invoice/${ci.status}"><span class="glyphicon glyphicon-link"></span>&nbsp;&nbsp;DPS</a></li>
+												</ul>
+											</div>
+										</td>
+									</c:if>
 									<c:if test="${paidActive=='active'}">
 										<td style="text-align:right; font-weight:bold; color:rgb(126,210,0);">
 											<fmt:formatNumber value="${ci.amount_paid * (userSession.agent_commission_rates/100) }" type="number" pattern="###,##0.00"/>
