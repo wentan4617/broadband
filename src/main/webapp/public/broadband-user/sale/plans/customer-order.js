@@ -36,31 +36,31 @@
 	var modems = null;
 	var modem_selected = null;
 	var naked = false;
-	var modem_name = "";
+	var modem_name = '';
 	var isContract = false; //(select_plan_type == 'UFB' ? true : false);
-	var contract_name = "";
-	var order_broadband_type = "Transfer Broadband Connection";
+	var contract_name = '';
+	var order_broadband_type = 'Transfer Broadband Connection';
 	var prepay_months = 1;
 	var discount_desc = '';
 	var connection_date = 'ASAP';
 	var hardware_class = '';
 	var cal;
 	
-	var months_selected = "1";
+	var months_selected = '1';
 	if (select_plan_type == 'ADSL') {
-		months_selected = "1";
+		months_selected = '1';
 	} else if (select_plan_type == 'VDSL') {
 		if (sale_id == null || sale_id == '') {
-			months_selected = "1";
+			months_selected = '1';
 		} else {
-			months_selected = "12";
+			months_selected = '12';
 		}
 	} else if (select_plan_type == 'UFB') {
-		months_selected = "12";
+		months_selected = '12';
 	}
-	var hardware_id_selected = "0";
-	var hardware_value_selected = "withoutmodem";
-	var broadband_value_selected = "transition";
+	var hardware_id_selected = '0';
+	var hardware_value_selected = 'withoutmodem';
+	var broadband_value_selected = 'transition';
 	
 	var price = {
 		plan_price: 0
@@ -90,8 +90,7 @@
 				, plansNaked: plansNaked
 			};
 			
-			var $div = $('#select-plan');
-			$div.html(tmpl('select_plan_tmpl', obj));
+			$('#select-plan').html(tmpl('select_plan_tmpl', obj));
 			
 			// loadingModems
 			if (select_plan_type == 'ADSL') {
@@ -101,7 +100,7 @@
 			} else if (select_plan_type == 'UFB') {
 				hardware_class = 'router-ufb';
 			}
-			var url = ctx + "/broadband-user/sale/plans/hardware/loading/" + hardware_class;
+			var url = ctx + '/broadband-user/sale/plans/hardware/loading/' + hardware_class;
 			$.get(url, function(hardwares){ //console.log(hardwares);
 				modems = hardwares;
 				//flushModems();
@@ -168,28 +167,36 @@
 			, select_plan_type: select_plan_type
 			, sale_id: sale_id
 		};
-		var $div = $('#open-term');
-		$div.html(tmpl('open_term_tmpl', obj));
+		$('#open-term').html(tmpl('open_term_tmpl', obj));
 		
-		$('input[name="contract"]').iCheck({ checkboxClass : 'icheckbox_square-green' , radioClass : 'iradio_square-green' });
+		$('input[name="contract"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="contract"]').on('ifChecked', function(){
 			var value = this.value;
 			if (value == 'open-term') {
 				isContract = false;
 				contract_name = '';
-				prepay_months_container.show('fast');
-				flushPrepayMonth();
+				if (select_customer_type == 'personal') { console.log('open-term, personal');
+					prepay_months_container.show('fast');
+					flushPrepayMonth();
+				} else if (select_customer_type == 'business') { console.log('open-term, business');
+					flushPrepayMonth();
+				}
 			} else if (value == '12months') {
 				isContract = true;
 				contract_name = '12 months contract';
-				discount_desc = '';
-				select_modem_container.show('fast');
-				prepay_months_container.hide('fast');
-				prepay_months = 1;
-				price.discount_price = 0;
-				modem_selected = null;
-				flushModems();
-				flushBroadbandOptions();
+				if (select_customer_type == 'personal') { console.log('12months, personal');
+					discount_desc = '';
+					select_modem_container.show('fast');
+					prepay_months_container.hide('fast');
+					prepay_months = 1;
+					price.discount_price = 0;
+					modem_selected = null;
+					flushModems();
+					flushBroadbandOptions();
+				} else if (select_customer_type == 'business') { console.log('12months, business');
+					flushPrepayMonth();
+				}
+				
 			}
 			
 		});
@@ -207,7 +214,7 @@
 		};
 		var $div = $('#prepay-month');
 		$div.html(tmpl('prepay_month_tmpl', obj));
-		$('input[name="prepaymonths"]').iCheck({ checkboxClass : 'icheckbox_square-green' , radioClass : 'iradio_square-green' });
+		$('input[name="prepaymonths"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="prepaymonths"]').on('ifChecked', function(){
 			var value = Number(this.value); 
 			months_selected = value;
@@ -252,7 +259,7 @@
 			
 			price.modem_price = 0;
 			price.save_modem_price = 0;
-			modem_name = "";
+			modem_name = '';
 			
 			flushModems();
 			flushBroadbandOptions();
@@ -280,16 +287,15 @@
 	}*/
 	
 	function flushModems() {
-		var obj = {
+		var o = {
 			ctx: ctx
 			, prepay_months: prepay_months
 			, isContract: isContract
 			, hardwares: modems
 		};
-		var $div = $('#select-modem');
-		$div.html(tmpl('select_modem_tmpl', obj));		
+		$('#select-modem').html(tmpl('select_modem_tmpl', o));		
 		
-		$('input[name="modem"]').iCheck({ checkboxClass : 'icheckbox_square-green' , radioClass : 'iradio_square-green' });
+		$('input[name="modem"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="modem"]').on('ifChecked', function(){
 			var $modem = $(this);
 			var id = Number($modem.attr('data-id'));
@@ -402,6 +408,7 @@
 	function flushBroadbandOptions() {
 		var obj = { 
 			ctx: ctx 
+			, select_customer_type: select_customer_type
 			, prepay_months: prepay_months
 			, isContract: isContract
 			, plan: plan
@@ -409,7 +416,7 @@
 		var $div = $('#broadband-options');
 		$div.html(tmpl('broadband_options_tmpl', obj));
 		
-		$('input[name="order_broadband_type"]').iCheck({ checkboxClass : 'icheckbox_square-green' , radioClass : 'iradio_square-green' });
+		$('input[name="order_broadband_type"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="order_broadband_type"]').on('ifChecked', function(){
 			var value = this.value;
 			broadband_value_selected = value;
@@ -423,18 +430,23 @@
 			} else if (value == 'new-connection') {
 				order_broadband_type = "New Connection Only";
 				$('#transitionContainer').hide('fast');
-				if (prepay_months == 1) {
-					if (!isContract) {
-						price.service_price = parseInt(plan.plan_new_connection_fee);
+				if (select_customer_type == 'personal' || (select_customer_type == 'business' && !isContract)) {
+					if (prepay_months == 1) {
+						if (!isContract) {
+							price.service_price = parseInt(plan.plan_new_connection_fee);
+							price.save_service_price = 0;
+						} else {
+							price.service_price = 49;
+							price.save_service_price = plan.plan_new_connection_fee - 49;
+						}
+					} else if (prepay_months == 3 || prepay_months == 6) {
+						price.service_price = plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months);
+						price.save_service_price = parseInt((plan.plan_new_connection_fee/12)*prepay_months);
+					} else if (prepay_months == 12) {
+						price.service_price = 0;
 						price.save_service_price = 0;
-					} else {
-						price.service_price = 49;
-						price.save_service_price = plan.plan_new_connection_fee - 49;
 					}
-				} else if (prepay_months == 3 || prepay_months == 6) {
-					price.service_price = plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months);
-					price.save_service_price = parseInt((plan.plan_new_connection_fee/12)*prepay_months);
-				} else if (prepay_months == 12) {
+				} else if (select_customer_type == 'business' && isContract) {
 					price.service_price = 0;
 					price.save_service_price = 0;
 				}
