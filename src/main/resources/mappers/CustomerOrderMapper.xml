@@ -713,6 +713,16 @@
 		</where>
 	</update>
 	
+	<!-- update customer order -->
+	<update id="updateCustomerOrderServiceGivingNextInvoiceCreate" parameterType="CustomerOrder">
+		update tm_customer_order 
+		<set>
+			<if test="order_using_start != null">order_using_start = null,</if>
+			<if test="next_invoice_create_date != null">next_invoice_create_date = null</if>
+		</set>
+		where id = #{params.id}
+	</update>
+	
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
 	<!-- DELETE AREA -->

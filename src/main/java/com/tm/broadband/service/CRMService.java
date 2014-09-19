@@ -582,6 +582,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	public int queryCustomerOrdersSumByPage(Page<CustomerOrder> page) {
 		return this.customerOrderMapper.selectCustomerOrdersSum(page);
 	}
+	
+	public void editCustomerOrderServiceGivingNextInvoiceCreate(CustomerOrder customerOrder){
+		this.customerOrderMapper.updateCustomerOrderServiceGivingNextInvoiceCreate(customerOrder);
+	}
 
 	@Transactional
 	public Page<CustomerInvoice> queryCustomerInvoicesByPage(Page<CustomerInvoice> page) {
@@ -593,6 +597,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	@Transactional
 	public int queryCustomerInvoicesSumByPage(Page<CustomerInvoice> page) {
 		return this.ciMapper.selectCustomerInvoicesSum(page);
+	}
+
+	public List<CustomerInvoiceDetail> queryCustomerInvoiceDetailsByCustomerInvoiceId(int id) {
+		return this.ciDetailMapper.selectCustomerInvoiceDetailsByCustomerInvoiceId(id);
 	}
 	
 	@Transactional
@@ -775,6 +783,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	@Transactional
 	public void editCustomerInvoice(CustomerInvoice ci){
 		this.ciMapper.updateCustomerInvoice(ci);
+	}
+	
+	@Transactional
+	public void removeCustomerInvoiceByIdWithDetail(int id){
+		this.ciMapper.deleteCustomerInvoiceById(id);
+		this.ciDetailMapper.deleteCustomerInvoiceDetailByInvoiceId(id);
 	}
 	/*
 	 * end customer invoice
@@ -2044,7 +2058,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 								cal.add(Calendar.MONTH, -1);
 							}
 							startFrom = cal.getTime();
-							cal.add(Calendar.MONTH, 1);
+							cal.add(Calendar.MONTH, cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
 							cal.add(Calendar.DAY_OF_MONTH, -1);
 							endTo = cal.getTime();
 						}
@@ -2460,7 +2474,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 								cal.add(Calendar.MONTH, -1);
 							}
 							startFrom = cal.getTime();
-							cal.add(Calendar.MONTH, 1);
+							cal.add(Calendar.MONTH,  cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
 							cal.add(Calendar.DAY_OF_MONTH, -1);
 							endTo = cal.getTime();
 						}
@@ -2756,6 +2770,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		this.customerTransactionMapper.insertCustomerTransaction(customerTransaction);
 	}
 	
+	@Transactional
+	public void removeCustomerTransactionById(int id){
+		this.customerTransactionMapper.deleteCustomerTransactionById(id);
+	}
+	
 	/**
 	 * END CustomerTransaction
 	 */
@@ -2859,6 +2878,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
+			cid.setInvoice_detail_type(cod.getDetail_type());
 			
 			if ("discount".equals(cod.getDetail_type())
 				&& (cod.getDetail_desc()==null || (cod.getDetail_desc()!=null && cod.getDetail_desc().contains("all-forms")))) {
@@ -2886,7 +2906,6 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
-					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){

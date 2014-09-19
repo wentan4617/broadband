@@ -121,6 +121,9 @@
 	<delete id="deleteCustomerTransactionByCustomerId" parameterType="int">
 		DELETE FROM tm_customer_transaction WHERE customer_id = #{0}
 	</delete>
+	<delete id="deleteCustomerTransactionById" parameterType="int">
+		DELETE FROM tm_customer_transaction WHERE id = #{0}
+	</delete>
 	<!-- // END DELETE AREA -->
 	
 </mapper>

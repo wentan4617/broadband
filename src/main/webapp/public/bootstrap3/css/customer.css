@@ -119,13 +119,15 @@ border-color: #fff;
 
 a[title="Facebook"]:hover img,
 a[title="Twitter"]:hover img,
-a[title="Google Plus"]:hover img{
+a[title="Google Plus"]:hover img,
+a[title="YouTube"]:hover img{
 	opacity: 1;
 }
 
 a[title="Facebook"] img,
 a[title="Twitter"] img,
-a[title="Google Plus"] img{
+a[title="Google Plus"] img,
+a[title="YouTube"] img{
 	opacity: 0.5;
 }
 

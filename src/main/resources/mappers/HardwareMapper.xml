@@ -19,6 +19,9 @@
 	<sql id="hardwareWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_by_class_with_voip'">
+					hardware_class = #{params.hardware_class} or hardware_class = 'router-voip'
+				</when>
 				<otherwise>
 					<if test="params.hardware_class != null">hardware_class = #{params.hardware_class}</if>
 					<if test="params.hardware_type != null">and hardware_type = #{params.hardware_type}</if>

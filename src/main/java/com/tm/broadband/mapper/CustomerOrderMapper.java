@@ -59,6 +59,8 @@ public interface CustomerOrderMapper {
 	
 	void updateCustomerOrder(CustomerOrder customerOrder);
 	
+	void updateCustomerOrderServiceGivingNextInvoiceCreate(CustomerOrder customerOrder);
+	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA */

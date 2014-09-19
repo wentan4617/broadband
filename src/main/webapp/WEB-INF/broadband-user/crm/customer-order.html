@@ -171,8 +171,33 @@
 					<.= customerOrder[i].order_type .>
 				</p>
 			</div>
-			<label class="control-label col-md-3">&nbsp;</label>
-			<div class="col-md-3">&nbsp;</div>
+			<div class="col-md-3">
+				<. if(user_role=='system-developer'){ .>
+					<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_order_type_selector" data-val="<.= customerOrder.order_type .>" class="form-control input-xs">
+						<.
+							var order_type = [
+								'order-term','order-no-term','order-topup'
+							];
+							for(var ot=0; ot<order_type.length; ot++){
+								if(customerOrder[i].order_type == order_type[ot]){
+						.>
+									<option value="<.= order_type[ot] .>" selected="selected"><.= order_type[ot] .></option>
+						<.
+								} else {
+						.>
+									<option value="<.= order_type[ot] .>"><.= order_type[ot] .></option>
+						<.
+								}
+							}
+						.>
+					</select>
+				<. } .>
+			</div>
+			<div class="col-md-3">
+				<. if(user_role=='system-developer'){ .>
+					<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_type_edit">Update Order Type</a>
+				<. } .>
+			</div>
 		</div>
 		<!-- END Order Type -->
 		<!-- BEGIN Order Broadband Type -->
@@ -580,7 +605,13 @@
 		
 		<!-- Service Given Information -->
 		<hr />
-		<h4 class="text-success">Service Given Information</h4>
+		<h4 class="text-success">
+			Service Given Information&nbsp;
+			<. if(user_role=='system-developer'){ .>
+				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_service_giving_date_btn_<.= customerOrder[i].id .>" data-date-type="service-giving" data-dismiss="modal">Empty Service Giving Date</a>
+				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_next_invoice_create_date_btn_<.= customerOrder[i].id .>" data-date-type="next-invoice-create" data-dismiss="modal">Empty Next Invoice Create Date</a>
+			<. } .>
+		</h4>
 		<hr />
 		<div class="row">
 			<div class="col-md-6">
@@ -824,6 +855,9 @@
 						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width" data-name="<.= customerOrder[i].id .>_add_detail">
 						  <span class="glyphicon glyphicon-plus"></span> Add Detail
 						</a>
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width" data-name="<.= customerOrder[i].id .>_add_product">
+						  <span class="glyphicon glyphicon-plus"></span> Add Product
+						</a>
 				<.
 					}
 				.>
@@ -1008,6 +1042,56 @@
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderStatusModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order status</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Edit Order Type Modal -->
+	<div class="modal fade" id="editOrderTypeModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderTypeModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="editOrderTypeModalLabel">
+						<strong>Update Order Type</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Update order type?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="editOrderTypeModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update this order type</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Empty service giving or next invoice create date Modal -->
+	<div class="modal fade" id="emptyServiceGivingNextInvoiceCreateDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="emptyServiceGivingNextInvoiceCreateDateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="emptyServiceGivingNextInvoiceCreateDateModalLabel">
+						<strong data-name="service_giving_next_invoice_create_date_title_<.= customerOrder[i].id .>"></strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p data-name="service_giving_next_invoice_create_date_content_<.= customerOrder[i].id .>">
+						
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="emptyServiceGivingNextInvoiceCreateModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -1599,6 +1683,94 @@
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" data-name="addDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Add Detail</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Add Product Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addProductModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="addProductModalLabel">
+							<strong>Add A Product</strong>
+						</h4>
+						<div class="form-group">
+							<label class="control-label col-md-4">Product Type</label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_product_type" class="form-control input-sm">
+									<option value="none">---choose one---</option>
+									<option value="personal-plan-adsl">Personal Plan ADSL</option>
+									<option value="personal-plan-vdsl">Personal Plan VDSL</option>
+									<option value="personal-plan-ufb">Personal Plan UFB</option>
+									<option value="business-plan-adsl">Business Plan ADSL</option>
+									<option value="business-plan-vdsl">Business Plan VDSL</option>
+									<option value="business-plan-ufb">Business Plan UFB</option>
+									<option value="hardware-adsl">Hardware ADSL</option>
+									<option value="hardware-vdsl">Hardware VDSL</option>
+									<option value="hardware-ufb">Hardware UFB</option>
+									<!-- <option value="custom-detail">Custom Detail</option> -->
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="product_type_div" style="display:none;">
+							<label class="control-label col-md-4" data-name="product_type_name"></label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_product_type_select" class="form-control input-sm">
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="product_unit_div" style="display:none;">
+							<label class="control-label col-md-4" data-name="product_unit_label"></label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_product_unit" class="form-control input-sm" value="1" placeholder="Product Unit" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_plan_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Name</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_name" class="form-control input-sm" placeholder="Detail Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Number</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_number" class="form-control input-sm" placeholder="Phone Number" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Phone Type</label>
+							<div class="col-md-6">
+								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_phone_type" class="form-control input-sm" style="height:26px; padding:0 10px;">
+										<option value="pstn">PSTN</option>
+										<option value="voip">VoIP</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_phone_voip_password" style="display:none;">
+							<label class="control-label col-md-4">VoIP Password</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_voip_password" class="form-control input-sm" placeholder="VoIP Password" />
+							</div>
+						</div>
+						<div class="form-group" data-name="<.= customerOrder[i].id .>_phone_voip_assign_date" style="display:none;">
+							<label class="control-label col-md-4">VoIP Assign Date</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_phone_voip_assign_date" class="form-control input-sm" placeholder="VoIP Assign Date" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="addProductModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal" style="display:none;"></a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
