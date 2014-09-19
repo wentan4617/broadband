@@ -41,6 +41,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
@@ -59,7 +60,6 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
 @Controller
@@ -1016,6 +1016,24 @@ public class SaleController {
 			
 		} else if("paid".equals(status)){
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
+			for (CustomerInvoice ci : pageCis.getResults()) {
+				List<CustomerInvoiceDetail> cids = this.crmService.queryCustomerInvoiceDetailsByCustomerInvoiceId(ci.getId());
+				for (CustomerInvoiceDetail cid : cids) {
+					if(cid.getInvoice_detail_type()!=null && cid.getInvoice_detail_type().contains("plan")){
+						Double ci_commission = ci.getCommission()!=null ? ci.getCommission() : 0d;
+						Double plan_price = cid.getInvoice_detail_price()!=null ? cid.getInvoice_detail_price() : 0d;
+						Double commission_rates = user.getAgent_commission_rates()!=null ? user.getAgent_commission_rates()/100 : 0d;
+						Integer unit = cid.getInvoice_detail_unit();
+						// If plan prepay month greater equals than 3 months 
+						if(unit>=3){
+							ci.setCommission(TMUtils.bigAdd(ci_commission, plan_price+((unit-3) * plan_price * commission_rates)));
+						// If plan prepay month less equals than 3 months
+						} else {
+							ci.setCommission(TMUtils.bigAdd(ci_commission, plan_price*commission_rates));
+						}
+					}
+				}
+			}
 			model.addAttribute("pageCis", pageCis);
 		}
 		pageCis = null;

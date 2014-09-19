@@ -59,6 +59,8 @@ public class CustomerInvoice implements Serializable {
 
 	private Customer customer;
 	private CustomerOrder customerOrder;
+	
+	private Double commission;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -285,6 +287,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setPayment_status(String payment_status) {
 		this.payment_status = payment_status;
+	}
+
+	public Double getCommission() {
+		return commission;
+	}
+
+	public void setCommission(Double commission) {
+		this.commission = commission;
 	}
 
 }

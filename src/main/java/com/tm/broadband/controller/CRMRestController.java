@@ -37,10 +37,12 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.TicketComment;
@@ -50,6 +52,7 @@ import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
+import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
@@ -66,17 +69,20 @@ public class CRMRestController {
 	private SystemService systemService;
 	private SmserService smserService;
 	private BillingService billingService;
+	private PlanService planService;
 
 	@Autowired
 	public CRMRestController(CRMService crmService,
 			MailerService mailerService, SystemService systemService,
 			SmserService smserService
-			,BillingService billingService) {
+			,BillingService billingService
+			,PlanService planService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
 		this.billingService = billingService;
+		this.planService =planService;
 	}
 
 	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
@@ -392,6 +398,215 @@ public class CRMRestController {
 	}
 	// END Cash
 
+	// BEGIN Account Credit
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/account-credit", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByAccountCredit(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		Integer customer_id = null;
+		Integer order_id = null;
+		Double paid_amount = null;
+		String process_way = "Account Credit";
+		String process_sort = null;
+
+		// BEGIN INVOICE ASSIGNMENT
+		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
+		ci.getParams().put("id", ci.getId());
+
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+			this.crmService.editCustomerInvoice(ci);
+			return json;
+		}
+		customer_id = ci.getCustomer_id();
+		order_id = ci.getOrder_id();
+		Customer c = this.crmService.queryCustomerById(customer_id);
+		// If account credit greater equal invoice balance
+		if(c.getBalance()<=0){
+			json.getErrorMap().put("alert-error", "Insufficient Fund!");
+			return json;
+		}
+		if(c.getBalance() >= ci.getBalance()){
+			paid_amount = ci.getBalance();
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), ci.getBalance()));
+			c.setBalance(TMUtils.bigSub(c.getBalance(), ci.getBalance()));
+			ci.setBalance(0d);
+		} else {
+			paid_amount = c.getBalance();
+			ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), c.getBalance()));
+			ci.setBalance(TMUtils.bigSub(ci.getBalance(), c.getBalance()));
+			c.setBalance(0d);
+		}
+		process_way+="# - "+customer_id;
+		c.getParams().put("id", customer_id);
+		this.crmService.editCustomer(c);
+		
+		// If balance equals to 0d then paid else not_pay_off, make this invoice
+		// paid (off)
+		if (ci.getBalance() <= 0d) {
+			ci.setStatus("paid");
+		} else {
+			ci.setStatus("not_pay_off");
+		}
+		// END INVOICE ASSIGNMENT
+
+		// Get order_type
+		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		case "order-term":
+			process_sort = "plan-term";
+			break;
+		case "order-no-term":
+			process_sort = "plan-no-term";
+			break;
+		case "order-topup":
+			process_sort = "plan-topup";
+			break;
+		}
+
+		User userSession = (User) req.getSession().getAttribute("userSession");
+
+		// BEGIN TRANSACTION ASSIGNMENT
+		CustomerTransaction ct = new CustomerTransaction();
+		// Assign invoice's paid amount to transaction's amount
+		ct.setAmount(paid_amount);
+		ct.setAmount_settlement(paid_amount);
+		// Assign card_name as ddpay
+		ct.setCard_name(process_way);
+		// Assign transaction's sort as type's return from order by order_id
+		ct.setTransaction_sort(process_sort);
+		// Assign customer_id, order_id, invoice_id to transaction's related
+		// fields
+		ct.setCustomer_id(customer_id);
+		ct.setOrder_id(order_id);
+		ct.setInvoice_id(invoice_id);
+		// Assign transaction's time as current time
+		ct.setTransaction_date(new Date());
+		ct.setCurrency_input("Account Credit");
+		ct.setExecutor(userSession.getId());
+		// END TRANSACTION ASSIGNMENT
+
+		// BEGIN CALL SERVICE LAYER
+		this.crmService.editCustomerInvoice(ci);
+		this.crmService.createCustomerTransaction(ct);
+		// END CALL SERVICE LAYER
+		
+		
+		json.getSuccessMap().put("alert-success", "Account Credit defray had successfully been operates!");
+
+		return json;
+	}
+	// END Account Credit
+
+	// BEGIN Product Plans
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/plans")
+	public JSONBean<Plan> doProductPlans(Model model,
+			@RequestParam("plan_class") String plan_class,
+			@RequestParam("plan_type") String plan_type,
+			HttpServletRequest req) {
+
+		JSONBean<Plan> json = new JSONBean<Plan>();
+		
+		Plan planQuery = new Plan();
+		planQuery.getParams().put("plan_class", plan_class);
+		planQuery.getParams().put("plan_type", plan_type);
+		
+		List<Plan> plans = this.planService.queryPlans(planQuery);
+		
+		json.setModels(plans);		
+		
+		return json;
+		
+	}
+	// END Product Plans
+
+	// BEGIN Product Hardwares
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/hardwares")
+	public JSONBean<Hardware> doProductHardwares(Model model,
+			@RequestParam("hardware_class") String hardware_class,
+			HttpServletRequest req) {
+
+		JSONBean<Hardware> json = new JSONBean<Hardware>();
+		
+		Hardware hardwareQuery = new Hardware();
+		hardwareQuery.getParams().put("where", "query_by_class_with_voip");
+		hardwareQuery.getParams().put("hardware_class", "router-"+hardware_class);
+		
+		List<Hardware> hardwares = this.planService.queryHardwares(hardwareQuery);
+		
+		json.setModels(hardwares);		
+		
+		return json;
+		
+	}
+	// END Product Hardwares
+
+	// BEGIN Add Product
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/create", method = RequestMethod.POST)
+	public JSONBean<String> doProductCreate(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("product_id") Integer product_id,
+			@RequestParam("product_unit") Integer product_unit,
+			@RequestParam("product_type") String product_type,
+			HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		String msg = null;
+		
+		if(product_type.indexOf("plan") >= 0){
+			
+			Plan planQuery = new Plan();
+			planQuery.getParams().put("id", product_id);
+			Plan plan = this.planService.queryPlan(planQuery);
+
+			CustomerOrderDetail codCreate = new CustomerOrderDetail();
+			codCreate.setOrder_id(order_id);
+			codCreate.setDetail_unit(product_unit);
+			codCreate.setDetail_term_period(plan.getTerm_period());
+			codCreate.setDetail_name(plan.getPlan_name());
+			codCreate.setDetail_desc(plan.getPlan_desc());
+			codCreate.setDetail_price(plan.getPlan_price());
+			codCreate.setDetail_data_flow(plan.getData_flow());
+			codCreate.setDetail_plan_memo(plan.getMemo());
+			codCreate.setDetail_plan_status(plan.getPlan_status());
+			codCreate.setDetail_plan_type(plan.getPlan_type());
+			codCreate.setDetail_plan_sort(plan.getPlan_sort());
+			codCreate.setDetail_plan_group(plan.getPlan_group());
+			codCreate.setDetail_type(plan.getPlan_group());
+			codCreate.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
+			
+			this.crmService.createCustomerOrderDetail(codCreate);
+			
+			msg = "New Plan has added to related Order. Order#"+order_id;
+			
+		} else if(product_type.indexOf("hardware") >= 0){
+			
+			Hardware hardwareQuery = new Hardware();
+			hardwareQuery.getParams().put("id", product_id);
+			Hardware hardware = this.planService.queryHardwareById(product_id);
+			
+			CustomerOrderDetail codCreate = new CustomerOrderDetail();
+			codCreate.setOrder_id(order_id);
+			codCreate.setDetail_unit(product_unit);
+			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_desc(hardware.getHardware_desc());
+			codCreate.setDetail_type("hardware-router");
+			codCreate.setIs_post(0);
+			
+			
+			msg = "New Hardware has added to related Order. Order#"+order_id;
+			
+		}
+		
+		json.getSuccessMap().put("alert-success", msg);
+		
+		return json;
+		
+	}
+	// END Add Product
 
 	// BEGIN Voucher
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/voucher", method = RequestMethod.POST)
@@ -584,6 +799,54 @@ public class CRMRestController {
 		json.setModel(co);
 
 		json.getSuccessMap().put("alert-success", "Order Status Changed!");
+
+		return json;
+	}
+
+	// Update order type
+	@RequestMapping(value = "/broadband-user/crm/customer/order/type/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerOrderTypeEdit(Model model,
+			@RequestParam("id") Integer id,
+			@RequestParam("order_type") String order_type,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		CustomerOrder co = new CustomerOrder();
+		co.setOrder_type(order_type);
+		co.getParams().put("id", id);
+		
+		this.crmService.editCustomerOrder(co);
+		
+		json.setModel(co);
+
+		json.getSuccessMap().put("alert-success", "Order Type Changed!");
+
+		return json;
+	}
+
+	// Empty service giving or next invoice create date
+	@RequestMapping(value = "/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerServiceGivingNextInvoiceCreate(Model model,
+			@RequestParam("id") Integer id,
+			@RequestParam("date_type") String date_type,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		CustomerOrder co = new CustomerOrder();
+		if("service-giving".equals(date_type)){
+			co.setOrder_using_start(new Date());
+		} else {
+			co.setNext_invoice_create_date(new Date());
+		}
+		co.getParams().put("id", id);
+		
+		this.crmService.editCustomerOrderServiceGivingNextInvoiceCreate(co);
+		
+		json.setModel(co);
+
+		json.getSuccessMap().put("alert-success", "Empty Order "+date_type+" successfully!");
 
 		return json;
 	}
@@ -1200,6 +1463,38 @@ public class CRMRestController {
 						: "early-termination-debit".equals(detail_type) ? "Early Termination Charge"
 						: "termination-credit".equals(detail_type) ? "Termination Refund" : detail_type;
 		json.getSuccessMap().put("alert-success", "Selected " + detailType + " had been detached from related order!");
+
+		return json;
+	}
+
+	// Remove transaction
+	@RequestMapping(value = "/broadband-user/crm/customer/transaction/remove", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerTransactionRemove(Model model,
+			@RequestParam("tx_id") int tx_id,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		this.crmService.removeCustomerTransactionById(tx_id);
+		// Remove Customer invoice and related detail is successful.
+		
+		json.getSuccessMap().put("alert-success", "Selected transaction has been detached from customer, and removed permanently!");
+
+		return json;
+	}
+
+	// Remove invoice
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/remove", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerInvoiceRemove(Model model,
+			@RequestParam("ci_id") int ci_id,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		this.crmService.removeCustomerInvoiceByIdWithDetail(ci_id);
+		// Remove Customer transaction is successful.
+		
+		json.getSuccessMap().put("alert-success", "Selected invoice and related details has been detached from customer, and removed permanently!");
 
 		return json;
 	}

@@ -68,6 +68,9 @@
 			<th>Status / Defray Way</th>
 			<th>&nbsp;</th>
 			<th>&nbsp;</th>
+			<. if(user_role=='system-developer'){ .>
+				<th style="text-align:center;">OP</th>
+			<. } .>
 		</tr>
 	</thead>
 	<tbody>
@@ -106,6 +109,9 @@
 									   		}
 										}
 									.>
+								<. } .>
+								<. if(user_role=='system-developer'){ .>
+									<td>&nbsp;</td>
 								<. } .>
 							</tr>
 		<.
@@ -166,6 +172,7 @@
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="ddpay" ><span class="glyphicon glyphicon-share-alt"></span>&nbsp;&nbsp;DDPay</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cash" ><span class="glyphicon glyphicon-usd"></span>&nbsp;&nbsp;Cash</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="cyberpark-credit" ><span class="glyphicon glyphicon-star-empty"></span>&nbsp;&nbsp;CyberPark Credit</a></li>
+								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="account-credit" ><span class="glyphicon glyphicon-star"></span>&nbsp;&nbsp;Account Credit</a></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="voucher" ><span class="glyphicon glyphicon-tags"></span>&nbsp;&nbsp;Voucher</a></li>
 								<li class="divider"></li>
 								<li><a href="javascript:void(0);" id="<.= invoice.id .>" data-name="pay_way_by_<.= invoice.id .>" data-way="pending" ><span class="glyphicon glyphicon-pause"></span>&nbsp;&nbsp;Pending</a></li>
@@ -258,6 +265,13 @@
 						}
 					}
 		.>
+				<. if(user_role=='system-developer'){ .>
+					<td style="text-align:center;">
+						<a id="<.= invoice.id .>" data-name="remove_invoice_btn_<.= invoice.id .>" class="btn btn-danger btn-xs" href="javascript:void(0);">
+							<span class="glyphicon glyphicon-trash"></span>
+						</a>
+					</td>
+				<. } .>
 				</tr>
 
 		<. } .>
@@ -321,6 +335,31 @@
 					</div>
 					<div class="modal-footer">
 						<a href="javascript:void(0);" class="btn btn-success col-md-12" data-name="confirm_payway_modal_btn_<.= invoice.id .>" id="<.= invoice.id .>" data-dismiss="modal"></a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+
+		<!-- Remove invoice Modal -->
+		<div class="modal fade" id="removeInvoiceModal_<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="removeInvoiceModalLabel_<.= invoice.id .>" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="removeInvoiceModalLabel_<.= invoice.id .>">
+							<strong>Remove selected invoice permanently!</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="text-warning">
+							Sure to remove this invoice permanently?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-danger" data-name="removeInvoiceModalModalBtn_<.= invoice.id .>" data-dismiss="modal">Remove</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

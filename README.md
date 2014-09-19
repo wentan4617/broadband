@@ -20,9 +20,20 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.1.9 2014-09-18
+
+* 后台invoice Make Payment添加一个选项，Account Credit，可以通过客户account credit余额抵消账单.(steven)
+* [Agent的commission做判断，如果是一个月的plan则amount paid * 0.45，如果是3个月及以上的预付月份则](steven)
+    Unit个月：plan detail price + ((Unit - 3) * plan detail price * commission)
+* [CRM里所需升级：（仅system-developer权限能使用](steven)
+    transaction添加删除按钮
+    invoice添加删除按钮.关联删除相关invoice detail
+    service giving和next invoice create添加日期置空按钮
+    
+
 demand version 1.1.8 2014-09-16
 
-* 添加一种新的credit，重新生成ordering和receipt时不显示，service giving的第一个账单也不显示.(steven)
+* [添加一种新的credit，重新生成ordering和receipt时不显示，service giving的第一个账单也不显示.](steven)
 
 
 demand version 1.1.7 2014-09-15

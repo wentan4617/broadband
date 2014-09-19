@@ -26,7 +26,7 @@
 			</p>
 	    </footer>
 	    
-	    <ul class="list-inline" style="margin:0 auto; width: 240px;">
+	    <ul class="list-inline" style="margin:0 auto; width: 320px;">
 			<li>
 				<a title="Facebook" target="_blank" href="https://www.facebook.com/pages/Cyberpark/223261207861301" >
 					<img alt="facebook" src="${ctx }/public/bootstrap3/images/facebook-icon.png" />
@@ -40,6 +40,11 @@
 			<li>
 				<a title="Twitter" target="_blank" href="https://twitter.com/CyberparkNZ">
 					<img alt="twitter" src="${ctx }/public/bootstrap3/images/twitter-icon.png" />
+				</a>
+			</li>
+			<li>
+				<a title="YouTube" target="_blank" href="http://www.youtube.com/channel/UCTmXMdGEUxYRwlxw3SjZePA">
+					<img alt="youtube" src="${ctx }/public/bootstrap3/images/youtube-icon.png" />
 				</a>
 			</li>
 		</ul>
