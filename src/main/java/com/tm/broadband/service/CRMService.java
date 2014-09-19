@@ -3302,22 +3302,29 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 			cod_conn.setDetail_name("Broadband New Connection");
 			
-			if (customerOrder.getPrepay_months() == 1) {
-				if ("12 months contract".equals(customerOrder.getContract())) {
-					service_price = 49d;
-					cod_conn.setDetail_price(49d);
-				} else {
-					service_price = plan.getPlan_new_connection_fee();
-					cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+			if ("personal".equals(customer.getCustomer_type()) 
+					|| ("business".equals(customer.getCustomer_type()) && !"12 months contract".equals(customerOrder.getContract()))) {
+				if (customerOrder.getPrepay_months() == 1) {
+					if ("12 months contract".equals(customerOrder.getContract())) {
+						service_price = 49d;
+						cod_conn.setDetail_price(49d);
+					} else {
+						service_price = plan.getPlan_new_connection_fee();
+						cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+					}
+				} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+					Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+					service_price = plan.getPlan_new_connection_fee() - temp.intValue();
+					cod_conn.setDetail_price(new Double(service_price.intValue()));
+				} else if (customerOrder.getPrepay_months() == 12) {
+					service_price = 0d;
+					cod_conn.setDetail_price(0d);
 				}
-			} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-				Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
-				service_price = plan.getPlan_new_connection_fee() - temp.intValue();
-				cod_conn.setDetail_price(new Double(service_price.intValue()));
-			} else if (customerOrder.getPrepay_months() == 12) {
+			} else if ("business".equals(customer.getCustomer_type()) && "12 months contract".equals(customerOrder.getContract())) {
 				service_price = 0d;
 				cod_conn.setDetail_price(0d);
 			}
+			
 			
 			cod_conn.setDetail_type("new-connection");
 			cod_conn.setDetail_unit(1);

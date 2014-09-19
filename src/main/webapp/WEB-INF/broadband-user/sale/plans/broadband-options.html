@@ -29,19 +29,23 @@
 							<strong> 
 								Get a new broadband connection on an existing (but inactive) Phone Jack 
 								<.if (plan.plan_new_connection_fee > 0) {.>
-									<.if (prepay_months == 1) {.>
-										costs 
-										<.if (!isContract) {.>
-											<span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
-										<.} else {.>
-											<span class="text-danger">$49</span>, 
-											<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
+									<.if (select_customer_type == 'personal' || (select_customer_type == 'business' && !isContract)) {.>
+										<.if (prepay_months == 1) {.>
+											costs 
+											<.if (!isContract) {.>
+												<span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+											<.} else {.>
+												<span class="text-danger">$49</span>, 
+												<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
+											<.}.>
+										<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+											costs 
+											<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
+											<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
+										<.} else if (prepay_months == 12) {.>
+											is free
 										<.}.>
-									<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-										costs 
-										<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
-										<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
-									<.} else if (prepay_months == 12) {.>
+									<.} else if (select_customer_type == 'business' && isContract) {.>
 										is free
 									<.}.>
 								<.} else {.>

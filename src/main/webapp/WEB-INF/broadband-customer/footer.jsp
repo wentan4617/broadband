@@ -5,10 +5,10 @@
 	<div class="container" >
 	    <footer style="margin-top: 10px;">
 	        <p class="pull-right hidden-xs hidden-sm" style="color:#fff">
-				&copy; 2014 CyberPark Limited &middot;
+				&copy; CyberPark Limited &middot; 2014 
 			</p>
 			<p class="text-center hidden-md hidden-lg" style="color:#fff">
-				&copy; 2014 CyberPark Limited &middot;
+				&copy; CyberPark Limited &middot; 2014
 			</p>
 			<p class="hidden-xs hidden-sm">
 				<a href="${ctx }/about-us" rel="nofollow">About CyberPark</a>
