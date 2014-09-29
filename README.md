@@ -20,9 +20,23 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
-demand version 1.1.9 2014-09-18
+demand version 1.2.4 2014-09-29
 
-* 后台invoice Make Payment添加一个选项，Account Credit，可以通过客户account credit余额抵消账单.(steven)
+* transaction列表分类：Visa,MasterCard,Cash,(Account2Account,Account-2-Account),DDPay,Credit Card,(account-credit,Account Credit),CyberPark Credit,Voucher
+
+
+demand version 1.2.2 2014-09-26
+
+* billing模块做一个手动出invoice的功能，点击可以填写
+
+
+demand version 1.2.0 2014-09-19
+
+* [后台invoice Make Payment添加一个选项，Account Credit，可以通过客户account credit余额抵消账单.](steven)
+
+
+
+demand version 1.1.9 2014-09-18
 * [Agent的commission做判断，如果是一个月的plan则amount paid * 0.45，如果是3个月及以上的预付月份则](steven)
     Unit个月：plan detail price + ((Unit - 3) * plan detail price * commission)
 * [CRM里所需升级：（仅system-developer权限能使用](steven)

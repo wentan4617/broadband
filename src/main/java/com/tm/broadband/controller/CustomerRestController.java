@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -38,9 +37,8 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Organization;
-
-import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.service.BillingService;
@@ -823,7 +821,7 @@ public class CustomerRestController {
 		order_id = ci.getOrder_id();
 		Customer c = this.crmService.queryCustomerById(customer_id);
 		// If account credit greater equal invoice balance
-		if(c.getBalance()<=0){
+		if(c.getBalance()==null || c.getBalance()<=0){
 			json.getErrorMap().put("alert-error", "Insufficient Fund!");
 			return json;
 		}

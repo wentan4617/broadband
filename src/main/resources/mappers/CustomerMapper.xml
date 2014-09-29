@@ -285,6 +285,8 @@
 					</if>
 				</when>
 				<otherwise>
+					<if test="params.last_name != null">c.last_name LIKE CONCAT('%', '${params.last_name}', '%')</if>
+					<if test="params.first_name != null">c.first_name LIKE CONCAT('%', '${params.first_name}', '%')</if>
 					<if test="params.status != null">c.status LIKE CONCAT('%', '${params.status}', '%')</if>
 					<if test="params.id != null">and c.id LIKE CONCAT('%', '${params.id}', '%')</if>
 					<if test="params.login_name != null">and c.login_name LIKE CONCAT('%', '${params.login_name}', '%')</if>
