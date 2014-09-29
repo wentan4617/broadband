@@ -133,7 +133,12 @@
 									</c:choose>
 								</p>
 								<p class="text-center" style="font-weight:bold;font-size: 24px;">
-									(Homeline Included)
+									<c:choose>
+										<c:when test="${type_search=='ADSL' }">(Homeline Included)</c:when>
+										<c:when test="${type_search=='VDSL' }">(Homeline Included)</c:when>
+										<c:when test="${type_search=='UFB' }">(VoIP Homeline)</c:when>
+									</c:choose>
+									
 								</p>
 								<p class="text-center" style="font-weight:bold;">
 									<span style="font-size:30px;">$</span>
