@@ -6,7 +6,6 @@
 		<div class="row">
 			<div class="col-sm-2">
 				<a class="navbar-brand" href="${ctx}/broadband-user/index">
-					<span class="logo"></span>
 				</a>
 			</div>
 			<div class="col-sm-2">

@@ -596,6 +596,7 @@ public class CRMRestController {
 			codCreate.setDetail_type("hardware-router");
 			codCreate.setIs_post(0);
 			
+			this.crmService.createCustomerOrderDetail(codCreate);
 			
 			msg = "New Hardware has added to related Order. Order#"+order_id;
 			
@@ -1971,6 +1972,8 @@ public class CRMRestController {
 		page.getParams().put("orderby", "order by register_date desc");
 		if (customerQuery != null) {
 			page.getParams().put("id", customerQuery.getId());
+			page.getParams().put("first_name", customerQuery.getFirst_name());
+			page.getParams().put("last_name", customerQuery.getLast_name());
 			page.getParams().put("cellphone", customerQuery.getCellphone());
 			page.getParams().put("email", customerQuery.getEmail());
 			page.getParams().put("address", customerQuery.getAddress());

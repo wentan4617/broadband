@@ -39,6 +39,39 @@ TMS Order Status:
     pending, processing, reconnection, rfs, in-service, suspend, disconnected, void, cancel
 
 
+demand version 1.2.0 2014-09-25
+
+* 如果 wholesaler 下单时选择 customer pay type 为 pre-pay，则附带 ordering form 再出两张 receipt，如果选择 post-pay 则仅出两张 ordering form.(kanny)
+* service giving 时判断，如果该 order 为 pre-pay，则附带设置下一次出账日期再出两张 invoice（给Wholesaler和Customer），如果该 order 为 post-pay 则仅设置下一次出账日期.(steven)
+* pre-pay 按CyberPark的Residential出账逻辑走，post-pay 每月1号固定出账单，从服务开通日开始算起.(steven)
+* 添加Wholesaler时可以给Wholesaler指定一些给客户看得到的Wholesaler公司的信息.(steven)
+* 添加order_group表：id, first_name, last_name, email, mobile, is_send_invoice_statement, is_send_invoice_together，order添加一个group_id字段，可以将相关的order关联起来.(steven)
+* invoice出账逻辑顺序：
+
+1. 出账：
+    1：有group：
+    is_combined_send==true，is_statement==true：相关 order 打包发送给 group 的 contactor，并附带 statement
+    is_combined_send==true，is_statement==false：相关 order 打包发送给 group 的 contactor，不附带 statement
+    is_combined_send==false，is_statement==true：相关 order 分别发送给 order 的 contactor，并发送 statement 给 group 的 contactor
+    is_combined_send==false，is_statement==false：相关 order 分别发送给 order 的 contactor，不发送 statement 给 group 的 contactor
+
+    2：无group：
+    is_wholesaler_invoice_mobile_notification==true，发送 order 给指定 order 的 contractor 的 mobile
+    is_wholesaler_invoice_email_notification==true，发送 order  给指定 order 的 contractor 的 email
+    is_wholesaler_invoice_mobile_notification==false，不发送 order 给指定 order 的 contractor 的 mobile
+    is_wholesaler_invoice_email_notification==false，不发送 order  给指定 order 的 contractor 的 email
+    
+    
+    
+
+1. 给Wholesaler出账时是否发送邮件或短信提醒：
+is_wholesaler_invoice_mobile_notification==true || is_wholesaler_invoice_email_notification==true
+
+2. 给Customer出账时是否发送邮件提醒：
+is_customer_invoice_mobile_notification==true || is_customer_invoice_email_notification==true
+
+
+
 demand version 1.1.6 2014-09-13
 
 * 在customer order界面添加一个按钮，点击后提醒用户我们收到他支付订单的金额，我们将继续process他的订单.(steven)

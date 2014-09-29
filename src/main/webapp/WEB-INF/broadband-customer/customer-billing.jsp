@@ -105,7 +105,7 @@
 				} else if(pay_way == 'account-credit'){
 					$('strong[data-name="confirm_payway_modal_title"]').html('Use Your Account Credit to pay this invoice?');
 					$('strong[data-name="confirm_payway_modal_content"]').html('If your account credit is greater than or equal to invoice\'s balance then the surplus will be automatically return back to your account\'s credit. If your account\'s credit is less than the invoice\'s balance then decrease the invoice balance and status will be set not_pay_off.<br/>');
-					$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Voucher');
+					$('a[data-name="confirm_payway_modal_btn"]').html('Confirm to use Account Credit');
 					$('div[data-name="pin_number_input"]').css('display', 'none');
 				}
 				$('#confirmPayWayModal').attr('data-id', invoice_id);

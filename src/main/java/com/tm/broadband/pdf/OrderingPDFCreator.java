@@ -669,12 +669,17 @@ public class OrderingPDFCreator extends ITextUtils {
         Double totalDiscountPrice = 0d;
         
         for (CustomerOrderDetail disDetail : this.codDiscounts) {
+        	System.out.println("totalPrice: "+totalPrice);
         	Double subDiscountPrice = (double) (disDetail.getDetail_price().intValue()*disDetail.getDetail_unit());
         	totalDiscountPrice = TMUtils.bigAdd(totalDiscountPrice, subDiscountPrice);
-        	totalPrice = TMUtils.bigSub(totalPrice, totalDiscountPrice);
+        	totalPrice = TMUtils.bigSub(totalPrice, subDiscountPrice);
             // #####SEPARATOR BEGIN
             addCol(orderDetailTable, " ").colspan(10).fixedHeight(4F).o();
             // #####SEPARATOR END
+            System.out.println("disDetail.getDetail_price(): "+disDetail.getDetail_price());
+        	System.out.println("totalPrice: "+totalPrice);
+        	System.out.println("subDiscountPrice: "+subDiscountPrice);
+        	System.out.println("totalDiscountPrice: "+totalDiscountPrice);
             
             // content
             addCol(orderDetailTable, disDetail.getDetail_name()).colspan(3).font(ITextFont.arial_normal_8).border("b", 1F).fixedHeight(16F).o();

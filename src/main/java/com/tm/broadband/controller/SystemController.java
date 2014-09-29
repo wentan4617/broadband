@@ -71,7 +71,7 @@ public class SystemController {
 	
 	@RequestMapping("/broadband-user/index/redirect")
 	public String redirectIndex(RedirectAttributes attr) {
-		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
+		attr.addFlashAttribute("success", "Welcome to Broadband Management System.");
 		return "redirect:/broadband-user/index";
 	}
 

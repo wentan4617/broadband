@@ -1,5 +1,6 @@
 <div class="panel-body">
 	<form class="form-horizontal">
+	
 		<div class="form-group">
 			<div class="col-md-5">
 				<div class="btn-group btn-group">
@@ -15,6 +16,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="form-group">
 			<label class="col-md-1 control-label">Mobile</label>
 			<div class="col-md-3">
@@ -44,6 +46,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="form-group">
 			<label class="col-md-1 control-label">PSTN No</label>
 			<div class="col-md-3">
@@ -73,8 +76,26 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="form-group">
-			<div class="col-md-8"></div>
+			<label class="col-md-1 control-label">First-Name</label>
+			<div class="col-md-3">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="checkbox" id="first_name_ck" name="first_name_ck" data-id="first_name" data-role="query" />
+					</span>
+					<input type="text" id="first_name" name="first_name" class="form-control"/>
+				</div>
+			</div>
+			<label class="col-md-1 control-label">Last-Name</label>
+			<div class="col-md-3">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<input type="checkbox" id="last_name_ck" name="last_name_ck" data-id="last_name" data-role="query" />
+					</span>
+					<input type="text" id="last_name" name="last_name" class="form-control"/>
+				</div>
+			</div>
 			<label class="col-md-1 control-label">Inv ID</label>
 			<div class="col-md-3">
 				<div class="input-group">
@@ -85,6 +106,7 @@
 				</div>
 			</div>
 		</div>
+		
 		<div class="form-group">
 			<div class="col-md-2 col-md-offset-2">
 				<button type="submit" data-loading-text="Loading..." class="btn btn-success btn-block" id="query">Query</button>

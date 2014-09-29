@@ -9,7 +9,7 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${ctx}/broadband-user/index">CyberPark</a>
+			<a class="navbar-brand" href="${ctx}/broadband-user/index">Home</a>
 		</div>
 		<c:if test="${userSession != null }">
 			<div class="collapse navbar-collapse">
