@@ -19,7 +19,29 @@
 	
 	<sql id="pageWhere">
 		<where>
-			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+			<choose>
+				<when test="params.where == 'card_name2'">
+					(card_name = #{params.card_name}
+					or
+					card_name = #{params.card_name2})
+					<if test="params.transaction_date_month != null">
+						and DATE_FORMAT(transaction_date,'%Y-%m')=DATE_FORMAT(#{params.transaction_date_month},'%Y-%m')
+					</if>
+					<if test="params.transaction_date_year != null">
+						and DATE_FORMAT(transaction_date,'%Y')=DATE_FORMAT(#{params.transaction_date_year},'%Y')
+					</if>
+				</when>
+				<otherwise>
+					<if test="params.customer_id != null">customer_id = #{params.customer_id}</if>
+					<if test="params.card_name != null">and card_name = #{params.card_name}</if>
+					<if test="params.transaction_date_month != null">
+						and DATE_FORMAT(transaction_date,'%Y-%m')=DATE_FORMAT(#{params.transaction_date_month},'%Y-%m')
+					</if>
+					<if test="params.transaction_date_year != null">
+						and DATE_FORMAT(transaction_date,'%Y')=DATE_FORMAT(#{params.transaction_date_year},'%Y')
+					</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	

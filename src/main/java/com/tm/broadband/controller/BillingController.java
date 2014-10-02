@@ -379,6 +379,160 @@ public class BillingController {
 		return "broadband-user/billing/invoice-view";
 	}
 	
+	// BEGIN TransactionView
+	@RequestMapping("/broadband-user/billing/transaction/view/{pageNo}/{cardName}/{yearOrMonth}")
+	public String toTransaction(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable("cardName") String cardName
+			, @PathVariable("yearOrMonth") String yearOrMonth) {
+		
+		Date year = null;
+		Date yearMonth = null;
+		Calendar cal = Calendar.getInstance();
+		if(yearOrMonth.length()==4) {
+			cal.set(Calendar.YEAR, Integer.parseInt(yearOrMonth));
+			year = cal.getTime();
+		} else if(yearOrMonth.contains("-")) {
+			cal.set(Calendar.MONTH, Integer.parseInt(yearOrMonth.substring(yearOrMonth.indexOf("-")+1, yearOrMonth.length()))-1);
+			yearMonth = cal.getTime();
+		}
+		
+		System.out.println("pageNo: "+pageNo);
+		System.out.println("cardName: "+cardName);
+		System.out.println("yearOrMonth: "+yearOrMonth);
+
+		Page<CustomerTransaction> page = new Page<CustomerTransaction>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		if(year!=null){
+			page.getParams().put("transaction_date_year", year);
+		}
+		if(yearMonth!=null){
+			page.getParams().put("transaction_date_month", yearMonth);
+		}
+		page.getParams().put("orderby", "ORDER BY transaction_date DESC");
+		
+		if("visa".equals(cardName)){
+			page.getParams().put("card_name", "Visa");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("masterCard".equals(cardName)){
+			page.getParams().put("card_name", "MasterCard");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("cash".equals(cardName)){
+			page.getParams().put("card_name", "Cash");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("a2a".equals(cardName)){
+			page.getParams().put("where", "card_name2");
+			page.getParams().put("card_name", "Account2Account");
+			page.getParams().put("card_name2", "Account-2-Account");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("ddpay".equals(cardName)){
+			page.getParams().put("card_name", "DDPay");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("creditCard".equals(cardName)) {
+			page.getParams().put("card_name", "Credit Card");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("accountCredit".equals(cardName)){
+			page.getParams().put("where", "card_name2");
+			page.getParams().put("card_name", "account-credit");
+			page.getParams().put("card_name2", "Account Credit");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("cyberparkCredit".equals(cardName)){
+			page.getParams().put("card_name", "CyberPark Credit");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+			
+		} else if("voucher".equals(cardName)){
+			page.getParams().put("card_name", "Voucher");
+			page = this.crmService.queryCustomerTransactionsByPage(page);
+			model.addAttribute("page", page);
+		}
+		page = null;
+		
+		model.addAttribute(
+			yearOrMonth.contains("-") ? "yearMonth" : 
+			yearOrMonth.length()==4 ? "year" : "all", yearOrMonth);
+		model.addAttribute("transactionType", cardName);
+		if("all".equals(yearOrMonth)){
+			model.addAttribute("allActive", "active");
+			model.addAttribute(cardName + "Active", "active");
+		} else {
+			model.addAttribute(cardName + "Active", "active");
+		}
+		model.addAttribute("users", this.systemService.queryUser(new User()));
+		
+
+		// BEGIN QUERY SUM BY TRANSACTION TYPE
+		Page<CustomerTransaction> pageStatusSum = new Page<CustomerTransaction>();
+		
+		if(year!=null){
+			pageStatusSum.getParams().put("transaction_date_year", year);
+		}
+		if(yearMonth!=null){
+			pageStatusSum.getParams().put("transaction_date_month", yearMonth);
+		}
+		
+		pageStatusSum.getParams().put("card_name", "Visa");
+		Integer sumVisa = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("visaSum", sumVisa);
+		
+		pageStatusSum.getParams().put("card_name", "MasterCard");
+		Integer sumMasterCard = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("masterCardSum", sumMasterCard);
+		
+		pageStatusSum.getParams().put("card_name", "Cash");
+		Integer sumCash = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("cashSum", sumCash);
+		
+		pageStatusSum.getParams().put("card_name", "DDPay");
+		Integer sumDDPay = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("ddpaySum", sumDDPay);
+		
+		pageStatusSum.getParams().put("card_name", "Credit Card");
+		Integer sumCreditCard = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("creditCardSum", sumCreditCard);
+		
+		pageStatusSum.getParams().put("card_name", "CyberPark Credit");
+		Integer sumCyberParkCredit = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("cyberparkCreditSum", sumCyberParkCredit);
+		
+		pageStatusSum.getParams().put("card_name", "Voucher");
+		Integer sumVoucher = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("voucherSum", sumVoucher);
+
+		pageStatusSum.getParams().put("where", "card_name2");
+		pageStatusSum.getParams().put("card_name", "Account2Account");
+		pageStatusSum.getParams().put("card_name2", "Account-2-Account");
+		Integer sumA2A = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("a2aSum", sumA2A);
+
+		pageStatusSum.getParams().put("card_name", "account-credit");
+		pageStatusSum.getParams().put("card_name2", "Account Credit");
+		Integer sumAccountCredit = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
+		model.addAttribute("accountCreditSum", sumAccountCredit);
+		pageStatusSum = null;
+		
+		model.addAttribute("allSum", sumVoucher+sumCyberParkCredit+sumAccountCredit+sumCreditCard+sumDDPay+sumA2A+sumCash+sumMasterCard+sumVisa);
+		
+		// END QUERY SUM BY STATUS
+		
+		return "broadband-user/billing/transaction-view";
+	}
+	
 	@RequestMapping("/broadband-user/billing/voucher-file-upload-record/view/{pageNo}/{status}")
 	public String toVoucherFileUpload(Model model
 			, @PathVariable("pageNo") int pageNo

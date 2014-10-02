@@ -20,9 +20,23 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.2.5 2014-10-01
+
+* [customer 列表界面添加asid查询.](steven)
+
+
 demand version 1.2.4 2014-09-29
 
-* transaction列表分类：Visa,MasterCard,Cash,(Account2Account,Account-2-Account),DDPay,Credit Card,(account-credit,Account Credit),CyberPark Credit,Voucher
+* transaction列表分类：
+    Visa:visa,
+    MasterCard:master card,
+    Cash:cash,
+    (Account2Account,Account-2-Account):a2a,
+    DDPay:ddpay,
+    Credit Card:credit card,
+    (account-credit,Account Credit):account credit,
+    CyberPark Credit:cyberpark credit,
+    Voucher:voucher
 
 
 demand version 1.2.2 2014-09-26

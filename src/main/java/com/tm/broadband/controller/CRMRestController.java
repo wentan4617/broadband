@@ -57,6 +57,7 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
@@ -1287,6 +1288,7 @@ public class CRMRestController {
 		User user = new User();
 		List<User> users = this.systemService.queryUser(user);
 		user.getParams().put("user_role", "sales");
+		user.getParams().put("user_role2", "agent");
 		List<User> sales = this.systemService.queryUser(user);
 
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -1981,6 +1983,7 @@ public class CRMRestController {
 			page.getParams().put("order_id", customerQuery.getOrder_id());
 			page.getParams().put("invoice_id", customerQuery.getInvoice_id());
 			page.getParams().put("customer_type", customerQuery.getCustomer_type());
+			page.getParams().put("broadband_asid", customerQuery.getBroadband_asid());
 		}
 		this.crmService.queryCustomersByPage(page);
 		status.setComplete();

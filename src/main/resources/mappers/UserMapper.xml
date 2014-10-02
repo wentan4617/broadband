@@ -17,17 +17,24 @@
 	<!-- DEFINITION AREA -->
 	<sql id="userWhere">
 		<where>
-			<if test="params.id != null">id = #{params.id}</if>
-			<if test="params.login_name != null">and login_name = #{params.login_name}</if>
-			<if test="params.password != null">and password = #{params.password}</if>
-			<if test="params.user_name != null">and user_name = #{params.user_name}</if>
-			<if test="params.user_role != null">and user_role = #{params.user_role}</if>
-			<if test="params.memo != null">and memo = #{params.memo}</if>
-			<if test="params.auth != null">and auth = #{params.auth}</if>
-			<if test="params.cellphone != null">and cellphone = #{params.cellphone}</if>
-			<if test="params.email != null">and email = #{params.email}</if>
-			<if test="params.is_provision != null">and is_provision = #{params.is_provision}</if>
-			<if test="params.agent_commission_rates != null">and agent_commission_rates = #{params.agent_commission_rates}</if>
+			<choose>
+				<when test="params.user_role2 != null">
+					and (user_role = #{params.user_role} or user_role = #{params.user_role2})
+				</when>
+				<otherwise>
+					<if test="params.id != null">id = #{params.id}</if>
+					<if test="params.login_name != null">and login_name = #{params.login_name}</if>
+					<if test="params.password != null">and password = #{params.password}</if>
+					<if test="params.user_name != null">and user_name = #{params.user_name}</if>
+					<if test="params.user_role != null">and user_role = #{params.user_role}</if>
+					<if test="params.memo != null">and memo = #{params.memo}</if>
+					<if test="params.auth != null">and auth = #{params.auth}</if>
+					<if test="params.cellphone != null">and cellphone = #{params.cellphone}</if>
+					<if test="params.email != null">and email = #{params.email}</if>
+					<if test="params.is_provision != null">and is_provision = #{params.is_provision}</if>
+					<if test="params.agent_commission_rates != null">and agent_commission_rates = #{params.agent_commission_rates}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	<!-- // DEFINITION AREA -->

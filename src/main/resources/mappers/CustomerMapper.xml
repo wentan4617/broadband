@@ -110,7 +110,9 @@
 		co.`is_ddpay`							as co_is_ddpay,
 		co.`ordering_form_pdf_path`				as co_ordering_form_pdf_path,
 		co.`receipt_pdf_path`					as co_receipt_pdf_path,
-		co.`disconnected_date`					as co_disconnected_date
+		co.`disconnected_date`					as co_disconnected_date,
+		co.`connection_date`					as co_connection_date,
+		co.`contract`							as co_contract
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -151,6 +153,8 @@
 		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 		<result property="disconnected_date" column="co_disconnected_date" />
+		<result property="connection_date" column="co_connection_date" />
+		<result property="contract" column="co_contract" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -308,6 +312,12 @@
 						and c.id IN(
 									SELECT customer_id FROM tm_customer_order
 									WHERE id LIKE CONCAT('%', '${params.order_id}', '%')
+								)
+					</if>
+					<if test="params.broadband_asid != null">
+						and c.id IN(
+									SELECT customer_id FROM tm_customer_order
+									WHERE broadband_asid LIKE CONCAT('%', '${params.broadband_asid}', '%')
 								)
 					</if>
 					<if test="params.invoice_id != null">
@@ -481,6 +491,8 @@
 			<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
 			<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
 			<result property="disconnected_date" column="co_disconnected_date" />
+			<result property="connection_date" column="co_connection_date" />
+			<result property="contract" column="co_contract" />
 			
 			<collection property="customerOrderDetails" ofType="CustomerOrderDetail" resultMap="CustomerOrderDetailResultMap" />
 		</collection>

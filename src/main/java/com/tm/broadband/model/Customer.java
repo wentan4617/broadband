@@ -120,6 +120,7 @@ public class Customer implements Serializable {
 	private String pstn_ck;
 	private String order_id_ck;
 	private String invoice_id_ck;
+	private String broadband_asid_ck;
 
 	// password forget email,phone
 	private String type;
@@ -132,6 +133,7 @@ public class Customer implements Serializable {
 	private String pstn;
 	private String order_id;
 	private String invoice_id;
+	private String broadband_asid;
 	
 	private Integer[] pstn_array;
 	private Integer[] voip_array;
@@ -643,6 +645,22 @@ public class Customer implements Serializable {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getBroadband_asid_ck() {
+		return broadband_asid_ck;
+	}
+
+	public void setBroadband_asid_ck(String broadband_asid_ck) {
+		this.broadband_asid_ck = broadband_asid_ck;
+	}
+
+	public String getBroadband_asid() {
+		return broadband_asid;
+	}
+
+	public void setBroadband_asid(String broadband_asid) {
+		this.broadband_asid = broadband_asid;
 	}
 	
 	

@@ -108,6 +108,10 @@ hr {
 		                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
 		                    		<a href="${ctx }/broadband-user/billing/invoice/view/business/1/unpaid/all">View Invoice(Business)</a>
 		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/billing/transaction/view/1/visa/all">View Transaction</a>
+		                    	</li>
 							</ul>
 							<hr/>
 							<ul class="list-unstyled">

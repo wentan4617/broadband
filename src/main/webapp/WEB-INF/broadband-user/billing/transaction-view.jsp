@@ -30,7 +30,7 @@ tbody td {text-align:center;}
 						<form class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-1">
-									<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/unpaid/all" class="btn btn-default ${allActive}">
+									<a href="${ctx}/broadband-user/billing/transaction/view/1/all" class="btn btn-default ${allActive}">
 										All&nbsp;<span class="badge">${allSum}</span>
 									</a>
 								</div>
@@ -50,178 +50,93 @@ tbody td {text-align:center;}
 						</form>
 					<hr/>
 						<div class="btn-group btn-group">
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/unpaid/${year}${yearMonth}${all}" class="btn btn-default ${unpaidActive }">
-								Unpaid&nbsp;<span class="badge">${unpaidSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/visa/${year}${yearMonth}${all}" class="btn btn-default ${visaActive }">
+								Visa&nbsp;<span class="badge">${visaSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/not_pay_off/${year}${yearMonth}${all}" class="btn btn-default ${not_pay_offActive }">
-								Not Pay Off&nbsp;<span class="badge">${notPayOffSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/masterCard/${year}${yearMonth}${all}" class="btn btn-default ${masterCardActive }">
+								Master Card&nbsp;<span class="badge">${masterCardSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/overdue/${year}${yearMonth}${all}" class="btn btn-default ${overdueActive }">
-								Overdue&nbsp;<span class="badge">${overdueSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/cash/${year}${yearMonth}${all}" class="btn btn-default ${cashActive }">
+								Cash&nbsp;<span class="badge">${cashSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/pending/${year}${yearMonth}${all}" class="btn btn-default ${pendingActive }">
-								Pending&nbsp;<span class="badge">${pendingSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/a2a/${year}${yearMonth}${all}" class="btn btn-default ${a2aActive }">
+								A2A&nbsp;<span class="badge">${a2aSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/prepayment/${year}${yearMonth}${all}" class="btn btn-default ${prepaymentActive }">
-								Prepayment&nbsp;<span class="badge">${prepaymentSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/ddpay/${year}${yearMonth}${all}" class="btn btn-default ${ddpayActive }">
+								DDPay&nbsp;<span class="badge">${ddpaySum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/paid/${year}${yearMonth}${all}" class="btn btn-default ${paidActive }">
-								Paid&nbsp;<span class="badge">${paidSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/creditCard/${year}${yearMonth}${all}" class="btn btn-default ${creditCardActive }">
+								Credit Card&nbsp;<span class="badge">${creditCardSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/void/${year}${yearMonth}${all}" class="btn btn-default ${voidActive }">
-								Void&nbsp;<span class="badge">${voidSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/accountCredit/${year}${yearMonth}${all}" class="btn btn-default ${accountCreditActive }">
+								Account Credit&nbsp;<span class="badge">${accountCreditSum}</span>
 							</a>
-							<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/bad_debit/${year}${yearMonth}${all}" class="btn btn-default ${bad_debitActive }">
-								Bad Debit&nbsp;<span class="badge">${badDebitSum}</span>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/cyberparkCredit/${year}${yearMonth}${all}" class="btn btn-default ${cyberparkCreditActive }">
+								CyberPark Credit&nbsp;<span class="badge">${cyberparkCreditSum}</span>
 							</a>
-							<%-- <a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/1/orderNoInvoice" class="btn btn-default ${orderNoInvoiceActive }">
-								Haven't Generate&nbsp;<span class="badge">${orderNoInvoiceSum}</span>
-							</a> --%>
+							<a href="${ctx}/broadband-user/billing/transaction/view/1/voucher/${year}${yearMonth}${all}" class="btn btn-default ${voucherActive }">
+								Voucher&nbsp;<span class="badge">${voucherSum}</span>
+							</a>
 						</div>
 					</div>
 				</div>
 			</div>
-		
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						<c:if test="${fn:length(pageCis.results) > 0 || status!='orderNoInvoice' }">
-							Invoice View - <strong>${customer_type}</strong>
-						</c:if>
-						<c:if test="${fn:length(pageCos.results) > 0 || status=='orderNoInvoice' }">
-							Order View
+						<c:if test="${fn:length(page.results) > 0}">
+							Transaction View
 						</c:if>
 					</h4>
 				</div>
-				<c:if test="${fn:length(pageCis.results) > 0 }">
+				<c:if test="${fn:length(page.results) > 0 }">
 					<table class="table" style="font-size:12px;">
 						<thead >
 							<tr>
-								<th><input type="checkbox" id="checkbox_cis_top" /></th>
+								<th><input type="checkbox" id="checkbox_txs_top" /></th>
 								<th>Customer Id</th>
 								<th>Order Id</th>
 								<th>Invoice Id</th>
-								<th>Create Date</th>
-								<th>Due Date</th>
-								<th style="text-align:right;">Amount Payable</th>
-								<th style="text-align:right;">Total Credit</th>
-								<th style="text-align:right;">Amount Paid</th>
-								<th style="text-align:right;">Balance</th>
-								<c:if test="${status=='prepayment'}">
-									<th style="text-align:right;">Prepaid</th>
-								</c:if>
-								<th>Invoice Status</th>
+								<th>Transaction Date</th>
+								<th>Transaction Type</th>
+								<th>Cardholder Name</th>
+								<th>Card Name</th>
+								<th>Card Number</th>
+								<th style="text-align:right;">Amount</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="ci" items="${pageCis.results }">
-								<tr class="${(status=='unpaid' || status=='not_pay_off') ? 'unpaid' : 
-										  status=='overdue' ? 'overdue' :
-										  status=='prepayment' ? 'prepayment' :
-										  status=='paid' ? 'paid' :
-										  status=='void' ? 'void' :
-										  status=='bad_debit' ? 'bad-debit' : '' }" >
-									<td>
-										<input type="checkbox" name="checkbox_cis" value="${ci.id}"/>
-									</td>
-									<td>
-										<a target="_blank" href="${ctx }/broadband-user/crm/customer/edit/${ci.customer_id}">${ci.customer_id}</a>
-									</td>
-									<td>
-										${ci.order_id }
-									</td>
-									<td>
-										${ci.id }
-									</td>
-									<td>
-										${ci.create_date_str }
-									</td>
-									<td>
-										${ci.due_date_str }
-									</td>
-									<td style="text-align:right;">
-										<fmt:formatNumber value="${ci.amount_payable }" type="number" pattern="###,##0.00"/>
-									</td>
-									<td style="text-align:right;">
-										<fmt:formatNumber value="${ci.amount_payable - ci.final_payable_amount }" type="number" pattern="###,##0.00"/>
-									</td>
-									<td style="text-align:right;">
-										<fmt:formatNumber value="${ci.amount_paid }" type="number" pattern="###,##0.00"/>
-									</td>
-									<td style="text-align:right;">
-										<fmt:formatNumber value="${ci.balance }" type="number" pattern="###,##0.00"/>
-									</td>
-									<c:if test="${status=='prepayment'}">
-										<td style="text-align:right;">
-											<fmt:formatNumber value="${ci.amount_paid-ci.final_payable_amount }" type="number" pattern="###,##0.00"/>
-										</td>
-									</c:if>
-									<td>
-										<c:choose>
-											<c:when test="${status=='pending' }">${ci.payment_status }</c:when>
-											<c:otherwise>${ci.status }</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-							</c:forEach>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="11">
-									<ul class="pagination">
-										<c:forEach var="num" begin="1" end="${pageCis.totalPage }" step="1">
-											<li class="${pageCis.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/billing/invoice/view/${customer_type}/${num}/${status}/${year}${yearMonth}${all}">${num}</a>
-											</li>
-										</c:forEach>
-									</ul>
-								</td>
-							</tr>
-						</tfoot>
-					</table>
-				</c:if>
-				<c:if test="${fn:length(pageCos.results) > 0 }">
-					<table class="table" style="font-size:12px;">
-						<thead >
-							<tr>
-								<th><input type="checkbox" id="checkbox_cis_top" /></th>
-								<th>Customer Id</th>
-								<th>Order Id</th>
-								<th>Create Date</th>
-								<th>Service Given Date</th>
-								<th>Order Type</th>
-								<th>Belongs To</th>
-								<th>Order Status</th>
-							</tr>
-						</thead>
-						<tbody>
-							<c:forEach var="co" items="${pageCos.results }">
+							<c:forEach var="tx" items="${page.results }">
 								<tr>
 									<td>
-										<input type="checkbox" name="checkbox_cis" value="${co.id}"/>
+										<input type="checkbox" name="checkbox_txs" value="${tx.id}"/>
 									</td>
 									<td>
-										<a href="${ctx }/broadband-user/crm/customer/edit/${co.customer_id}">${co.customer_id}</a>
+										<a target="_blank" href="${ctx}/broadband-user/crm/customer/edit/${tx.customer_id}">${tx.customer_id}</a>
 									</td>
 									<td>
-										${co.id }
+										${tx.order_id }
 									</td>
 									<td>
-										${co.order_create_date_str }
+										${tx.invoice_id }
 									</td>
 									<td>
-										${co.order_using_start_str }
+										${tx.transaction_date_str }
 									</td>
 									<td>
-										${co.order_type }
+										${tx.transaction_type }
 									</td>
 									<td>
-										${co.sale_id }
+										${tx.cardholder_name }
 									</td>
 									<td>
-										${co.order_status }
+										${tx.card_name }
 									</td>
 									<td>
+										${tx.card_number }
+									</td>
+									<td style="text-align:right;">
+										<fmt:formatNumber value="${tx.amount }" type="number" pattern="###,##0.00"/>
 									</td>
 								</tr>
 							</c:forEach>
@@ -230,9 +145,9 @@ tbody td {text-align:center;}
 							<tr>
 								<td colspan="11">
 									<ul class="pagination">
-										<c:forEach var="num" begin="1" end="${pageCos.totalPage }" step="1">
-											<li class="${pageCos.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/billing/invoice/view/${num}/${status}">${num}</a>
+										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
+											<li class="${page.pageNo == num ? 'active' : ''}">
+												<a href="${ctx}/broadband-user/billing/transaction/view/${num}/${transactionType}/${year}${yearMonth}${all}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>
@@ -241,7 +156,7 @@ tbody td {text-align:center;}
 						</tfoot>
 					</table>
 				</c:if>
-				<c:if test="${fn:length(pageCis.results) <= 0 && fn:length(pageCos.results) <= 0 }">
+				<c:if test="${fn:length(page.results) <= 0}">
 					<div class="panel-body">
 						<div class="alert alert-warning">No records have been found.</div>
 					</div>
@@ -258,12 +173,12 @@ tbody td {text-align:center;}
 (function($) {
 	$('button[data-toggle="tooltip"]').tooltip();
 	
-	$('#checkbox_cis_top').click(function() {
+	$('#checkbox_txs_top').click(function() {
 		var b = $(this).prop("checked");
 		if (b) {
-			$('input[name="checkbox_cis"]').prop("checked", true);
+			$('input[name="checkbox_txs"]').prop("checked", true);
 		} else {
-			$('input[name="checkbox_cis"]').prop("checked", false);
+			$('input[name="checkbox_txs"]').prop("checked", false);
 		}
 	});
 	
