@@ -59,6 +59,21 @@
 </div>
 
 <div class="container" style="margin-top:30px;">
+	<div class="row btn-purple" style="margin-bottom:10px;">
+		<div class="col-md-6" style="padding-left:0;">
+			<img alt="" class="img-responsive" src="${ctx }/public/bootstrap3/images/promotion.png" style="">
+		</div>
+		<div class="col-md-6">
+			<p class="lead" style="padding:20px 20px 0;">Promotion Plans</p>
+			<p style="padding:0 20px 0;">
+				Specail Plans, Free Gift.
+			</p>
+			<p style="padding:0 20px 0;">
+				VDSL + VoIP Home Line $99/mth, 12mths Term, Prepay 12mths.
+			</p>
+			<a href="${ctx }/plans/promotions" class="btn btn-lg btn-outline-inverse pull-right" style="margin: 8px 14px;">View More</a>
+		</div>
+	</div>
 	<div class="row btn-warning" style="margin-bottom:10px;">
 		<div class="col-md-6">
 			<p style="padding:20px 20px 0;"></p>

@@ -15,13 +15,12 @@
 	<div class="panel-body" style="padding-top:0;">
 		<div class="well" style="padding:8px; margin-bottom:0;">
 			<h4 class="text-success" style="font-weight:bold;margin-top:0;">
-				<.if (sale_id != null && sale_id != '') {.>
-				<.=plan.plan_name.replace(/Homeline/g, 'VOIP') .>
-				<.} else {.>
-				<.=plan.plan_name.>
-				<.}.>
+			<.=plan.plan_name.>
 			</h4>
-			<. if (!naked) {.>
+			<.if (sale_id == '10023' || sale_id == '20023') {.>
+			<p class="text-success" style="margin:0;">+ VoIP Homeline included</p>
+			<.}.>
+			<.if (!naked) {.>
 			<p class="text-success" style="margin:0;">+ Homeline included</p>
 			<.}.>
 			<. if (modem_name != '') {.>

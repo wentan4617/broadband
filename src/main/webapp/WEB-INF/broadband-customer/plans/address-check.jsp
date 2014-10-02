@@ -6,9 +6,14 @@
 
 <jsp:include page="../header.jsp" />
 
-<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+<c:if test="${customerReg.customerOrder.sale_id == 10023}">
 	<div class="cyberpark-home-bg" >
 		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu2${en }.png" style="margin: -20px auto 10px;padding: 0;" >
+	</div>
+</c:if>
+<c:if test="${customerReg.customerOrder.sale_id == 20023}">
+	<div class="cyberpark-home-bg" >
+		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/3monthgift${en }.jpg" style="margin: -20px auto 10px;padding: 0;" >
 	</div>
 </c:if>
 
@@ -47,7 +52,7 @@
 		<a href="${ctx }/plans/address/clear" class="btn btn-link">Clear Address</a>
 	</p>
 	
-	<c:if test="${customerReg.customerOrder.sale_id != null && customerReg.customerOrder.sale_id != 0}">
+	<c:if test="${customerReg.customerOrder.sale_id == 10023}">
 	
 	<div class="panel panel-success">
 		<div class="panel-heading">
@@ -134,9 +139,6 @@
 	</c:if>
 	
 	<div id="checkResult" data-select_plan_id="${select_plan_id}" data-select_plan_type="${select_plan_type}"  data-isShowContinue="no" style="min-height:300px;margin-top:15px;"></div>
-
-	
-	
 </div>
 
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>

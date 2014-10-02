@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -11,7 +9,6 @@
 	width: 100%;
 	padding: 10px 20px;
 }
-
 .affix {
 	width:293px;
 	top:30px;
@@ -55,7 +52,8 @@
 data-ctx="${ctx }" 
 data-select_plan_id="${customerReg.select_plan_id}" 
 data-select_plan_type="${customerReg.select_plan_type }"
-data-sale-id="${customerReg.customerOrder.sale_id }">
+data-sale-id="${customerReg.customerOrder.sale_id }"
+data-promotion="${customerReg.customerOrder.promotion }">
 <jsp:include page="select-plan.html" />
 </script>
 <script type="text/html" id="open_term_tmpl">
@@ -78,6 +76,7 @@ data-first_name="${customerReg.first_name }"
 data-last_name="${customerReg.last_name }"
 data-identity_type="${customerReg.identity_type }"
 data-identity_number="${customerReg.identity_number }"
+data-_transition_provider_name="${customerReg.customerOrder._transition_provider_name }"
 data-transition_provider_name="${customerReg.customerOrder.transition_provider_name }"
 data-transition_account_holder_name="${customerReg.customerOrder.transition_account_holder_name }"
 data-transition_account_number="${customerReg.customerOrder.transition_account_number }"
@@ -96,5 +95,5 @@ data-transition_porting_number="${customerReg.customerOrder.transition_porting_n
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014941943"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20141021141"></script>
 <jsp:include page="../footer-end.jsp" />

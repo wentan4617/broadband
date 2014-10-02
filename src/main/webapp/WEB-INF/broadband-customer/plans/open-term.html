@@ -6,7 +6,7 @@
 	</div>
 	<div class="panel-body">
 		<ul class="list-inline" style="margin-bottom:0;">
-					
+			<.if (sale_id == '10023') {.>
 			<li style="padding: 10px 20px;">
 				<label>
 					<input type="radio" name="contract" value="open-term" />&nbsp; 
@@ -15,8 +15,22 @@
 					</span>
 				</label>
 			</li>
-			
-			<. if (sale_id == null || sale_id == '') {.>
+			<.} else if (sale_id == '20023') {.>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
+				</label>
+			</li>
+			<.} else {.>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="open-term" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
+						Open Term 
+					</span>
+				</label>
+			</li>
 			<li style="padding: 10px 20px;">
 				<label>
 					<input type="radio" name="contract" value="12months" />&nbsp; 
@@ -24,7 +38,6 @@
 				</label>
 			</li>
 			<.}.>
-			
 		</ul>
 	</div>
 </div>

@@ -19,11 +19,11 @@
 	<sql id="hardwareWhere">
 		<where>
 			<choose>
-				<when test="params.where == 'query_by_class_with_voip'">
-					hardware_class = #{params.hardware_class} or hardware_class = 'router-voip'
-				</when>
 				<otherwise>
-					<if test="params.hardware_class != null">hardware_class = #{params.hardware_class}</if>
+					<if test="params.router_adsl != null">router_adsl = #{params.router_adsl}</if>
+					<if test="params.router_vdsl != null">and router_vdsl = #{params.router_vdsl}</if>
+					<if test="params.router_ufb != null">and router_ufb = #{params.router_ufb}</if>
+					<if test="params.support_voip != null">and support_voip = #{params.support_voip}</if>
 					<if test="params.hardware_type != null">and hardware_type = #{params.hardware_type}</if>
 					<if test="params.hardware_status != null">and hardware_status = #{params.hardware_status}</if>
 				</otherwise>
@@ -81,10 +81,12 @@
 	<insert id="insertHardware" parameterType="Hardware">
 		INSERT INTO `tm_hardware`(
 			`hardware_name`, `hardware_desc`, `hardware_class`, `hardware_type`, 
-			`hardware_status`, `hardware_price`, `hardware_cost`)
+			`hardware_status`, `hardware_price`, `hardware_cost`, 
+			`router_adsl`, `router_vdsl`, `router_ufb`, `support_pstn`, `support_voip`)
 		VALUES (
 			#{hardware_name}, #{hardware_desc}, #{hardware_class}, #{hardware_type}, 
-			#{hardware_status}, #{hardware_price}, #{hardware_cost})
+			#{hardware_status}, #{hardware_price}, #{hardware_cost}, 
+			#{router_adsl}, #{router_vdsl}, #{router_ufb}, #{support_pstn}, #{support_voip})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -101,7 +103,13 @@
 			<if test="hardware_type != null">`hardware_type` = #{hardware_type},</if>
 			<if test="hardware_status != null">`hardware_status` = #{hardware_status},</if>
 			<if test="hardware_price != null">`hardware_price` = #{hardware_price},</if>
-			<if test="hardware_cost != null">`hardware_cost` = #{hardware_cost}</if>
+			<if test="hardware_cost != null">`hardware_cost` = #{hardware_cost},</if>
+			
+			<if test="router_adsl != null">`router_adsl` = #{router_adsl},</if>
+			<if test="router_vdsl != null">`router_vdsl` = #{router_vdsl},</if>
+			<if test="router_ufb != null">`router_ufb` = #{router_ufb},</if>
+			<if test="support_pstn != null">`support_pstn` = #{support_pstn},</if>
+			<if test="support_voip != null">`support_voip` = #{support_voip}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>
