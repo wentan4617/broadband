@@ -3230,11 +3230,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 
 		plan_price = plan.getPlan_price();
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
-		if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
-			cod_plan.setDetail_name(plan.getPlan_name().replaceAll("Homeline", "VOIP"));
-		} else {
-			cod_plan.setDetail_name(plan.getPlan_name());
-		}
+		cod_plan.setDetail_name(plan.getPlan_name());
 		cod_plan.setDetail_price(plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
 		cod_plan.setDetail_plan_status(plan.getPlan_status());
@@ -3253,11 +3249,15 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		if (customerOrder.getPrepay_months() == 1) {
 			discount_price = 0d;
 		} else if (customerOrder.getPrepay_months() == 3) {
-			discount_price = plan.getPlan_price() * 3 * 0.03;
+			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+				discount_price = 0d;
+			} else {
+				discount_price = plan.getPlan_price() * 3 * 0.03;
+			}
 		} else if (customerOrder.getPrepay_months() == 6) {
 			discount_price = plan.getPlan_price() * 6 * 0.07;
 		} else if (customerOrder.getPrepay_months() == 12) {
-			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
+			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 10023) {
 				discount_price = 0d;
 			} else {
 				discount_price = plan.getPlan_price() * 12 * 0.15;
@@ -3283,6 +3283,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		}
 		
 		System.out.println("discount_price: " + discount_price.intValue());
+		System.out.println("customerOrder.getContract(): " + customerOrder.getContract());
 		customerOrder.setDiscount_price(discount_price.intValue());
 		
 		if ("transition".equals(customerOrder.getOrder_broadband_type())) {
@@ -3302,25 +3303,35 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
 			cod_conn.setDetail_name("Broadband New Connection");
 			
-			if ("personal".equals(customer.getCustomer_type()) 
-					|| ("business".equals(customer.getCustomer_type()) && !"12 months contract".equals(customerOrder.getContract()))) {
-				if (customerOrder.getPrepay_months() == 1) {
-					if ("12 months contract".equals(customerOrder.getContract())) {
-						service_price = 49d;
-						cod_conn.setDetail_price(49d);
-					} else {
+			if ("personal".equals(customer.getCustomer_type())) {
+				
+				if ("12 months contract".equals(customerOrder.getContract())) {
+					 if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+						 if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+							 service_price = 0d;
+							 cod_conn.setDetail_price(service_price);
+						 } else {
+							 service_price = 49d;
+							 cod_conn.setDetail_price(service_price);
+						 }
+					 } else if (customerOrder.getPrepay_months() == 12){
+						 service_price = 0d;
+						 cod_conn.setDetail_price(service_price);
+					 }
+				} else if ("open term".equals(customerOrder.getContract())) {
+					if (customerOrder.getPrepay_months() == 1) {
 						service_price = plan.getPlan_new_connection_fee();
-						cod_conn.setDetail_price(plan.getPlan_new_connection_fee());
+						cod_conn.setDetail_price(service_price);
+					} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+						Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+						service_price = plan.getPlan_new_connection_fee() - temp.intValue();
+						cod_conn.setDetail_price(new Double(service_price.intValue()));
+					} else if (customerOrder.getPrepay_months() == 12) {
+						service_price = 0d;
+						cod_conn.setDetail_price(0d);
 					}
-				} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-					Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
-					service_price = plan.getPlan_new_connection_fee() - temp.intValue();
-					cod_conn.setDetail_price(new Double(service_price.intValue()));
-				} else if (customerOrder.getPrepay_months() == 12) {
-					service_price = 0d;
-					cod_conn.setDetail_price(0d);
 				}
-			} else if ("business".equals(customer.getCustomer_type()) && "12 months contract".equals(customerOrder.getContract())) {
+			} else if ("business".equals(customer.getCustomer_type())) {
 				service_price = 0d;
 				cod_conn.setDetail_price(0d);
 			}
@@ -3352,17 +3363,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			for (int i = 0; i < plan.getPstn_count(); i++) {
 				
 				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
-				if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
-					cod_pstn.setDetail_name("VOIP");
-					cod_pstn.setDetail_type("voip");
+				if ("business".equals(customer.getCustomer_type())) {
+					cod_pstn.setDetail_name("BusinessLine");
 				} else {
-					if ("business".equals(customer.getCustomer_type())) {
-						cod_pstn.setDetail_name("BusinessLine");
-					} else {
-						cod_pstn.setDetail_name("HomeLine");
-					}
-					cod_pstn.setDetail_type("pstn");
+					cod_pstn.setDetail_name("HomeLine");
 				}
+				cod_pstn.setDetail_type("pstn");
 				cod_pstn.setDetail_price(0d);
 				cod_pstn.setDetail_unit(1);
 				cod_pstn.setPstn_number(customerOrder.getTransition_porting_number());
@@ -3372,25 +3378,69 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		}
 		
+		// add voip
+		
+		if (plan.getVoip_count() != null && plan.getVoip_count() > 0) {
+			
+			for (int i = 0; i < plan.getVoip_count(); i++) {
+				
+				CustomerOrderDetail cod_voip = new CustomerOrderDetail();
+				cod_voip.setDetail_name("VoIP Homeline");
+				cod_voip.setDetail_type("voip");
+				cod_voip.setDetail_price(0d);
+				cod_voip.setDetail_unit(1);
+				//cod_voip.setPstn_number(customerOrder.getTransition_porting_number());
+				
+				customerOrder.getCustomerOrderDetails().add(cod_voip);
+			}
+		
+		}
+		
 		// add-ons
-		if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id() != 0) {
-			CustomerOrderDetail cod_addons = new CustomerOrderDetail();
-			cod_addons.setDetail_name("200 calling minutes of 40 countries");
-			cod_addons.setDetail_type("present-calling-minutes");
-			cod_addons.setDetail_desc("international");
-			cod_addons.setDetail_calling_minute(200);
-			cod_addons.setDetail_price(0d);
-			cod_addons.setDetail_unit(1);
+		if ("VDSL".equals(customer.getSelect_plan_type())) {
 			
-			customerOrder.getCustomerOrderDetails().add(cod_addons);
+			if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 10023) {
+				
+				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
+				cod_addons.setDetail_name("200 calling minutes of 40 countries");
+				cod_addons.setDetail_type("present-calling-minutes");
+				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_calling_minute(200);
+				cod_addons.setDetail_price(0d);
+				cod_addons.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_addons);
+				
+				CustomerOrderDetail cod_ipad = new CustomerOrderDetail();
+				cod_ipad.setDetail_name("Apple iPad Mini 16G");
+				cod_ipad.setDetail_type("hardware");
+				cod_ipad.setDetail_price(0d);
+				cod_ipad.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_ipad);
+				
+			} else if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+				
+				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
+				cod_addons.setDetail_name("100 calling minutes of 40 countries");
+				cod_addons.setDetail_type("present-calling-minutes");
+				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_calling_minute(100);
+				cod_addons.setDetail_price(0d);
+				cod_addons.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_addons);
+				
+				CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+				cod_hd.setDetail_name("1 TB Portable Hard Drive");
+				cod_hd.setDetail_type("hardware");
+				cod_hd.setDetail_price(0d);
+				cod_hd.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_hd);
+				
+			}
 			
-			CustomerOrderDetail cod_ipad = new CustomerOrderDetail();
-			cod_ipad.setDetail_name("Apple iPad Mini 16G");
-			cod_ipad.setDetail_type("hardware");
-			cod_ipad.setDetail_price(0d);
-			cod_ipad.setDetail_unit(1);
-			
-			customerOrder.getCustomerOrderDetails().add(cod_ipad);
 		}
 		
 		// add modem
@@ -3403,28 +3453,38 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					
 					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
 					cod_hd.setDetail_name(chd.getHardware_name());
-					System.out.println("customerOrder.getContract(): " + customerOrder.getContract());
 					cod_hd.setDetail_price(chd.getHardware_price());
-					if ("open term".equals(customerOrder.getContract())) {
+					
+					if ("12 months contract".equals(customerOrder.getContract())) {
+						if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+							if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+								modem_price = 0d;
+								cod_hd.setDetail_price(modem_price);
+							} else {
+								if (chd.getId().intValue() == 3) {
+									modem_price = 0d;
+									cod_hd.setDetail_price(modem_price);
+								} else {
+									Double temp = chd.getHardware_price()/2;
+									modem_price = chd.getHardware_price() - temp.intValue();
+									cod_hd.setDetail_price(new Double(modem_price.intValue()));
+								}
+							}
+						} else if (customerOrder.getPrepay_months() == 12) {
+							modem_price = 0d;
+							cod_hd.setDetail_price(modem_price);
+						}
+					} else if ("open term".equals(customerOrder.getContract())) {
 						if (customerOrder.getPrepay_months() == 1) {
 							modem_price = chd.getHardware_price();
-							cod_hd.setDetail_price(chd.getHardware_price());
+							cod_hd.setDetail_price(modem_price);
 						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
 							Double temp = (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
 							modem_price = chd.getHardware_price() - temp.intValue();
 							cod_hd.setDetail_price(new Double(modem_price.intValue()));
-						}
-					} else if ("12 months contract".equals(customerOrder.getContract())) {
-						System.out.println("chd.getHardware_class(): " + chd.getHardware_class());
-						if ("router-adsl".equals(chd.getHardware_class())) {
-							modem_price = chd.getHardware_price()/2;
-							cod_hd.setDetail_price(new Double(modem_price.intValue()));
-						} else if ("router-vdsl".equals(chd.getHardware_class())) {
-							modem_price = chd.getHardware_price()/2;
-							cod_hd.setDetail_price(new Double(modem_price.intValue()));
-						} else if ("router-ufb".equals(chd.getHardware_class())) {
-							modem_price = chd.getHardware_price()/2;
-							cod_hd.setDetail_price(new Double(modem_price.intValue()));
+						} else if (customerOrder.getPrepay_months() == 12) {
+							modem_price = 0d;
+							cod_hd.setDetail_price(0d);
 						}
 					} else if ("24 months contract".equals(customerOrder.getContract())) {
 						

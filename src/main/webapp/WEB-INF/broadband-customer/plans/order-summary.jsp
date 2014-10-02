@@ -121,7 +121,7 @@
 						<!-- <th>Term</th> -->
 						<th>Monthly Charge</th>
 						<th>Qty</th>
-						<th>Subtotal</th>
+						<th>Sub Total</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -149,9 +149,9 @@
 									<th>&nbsp;</th>
 									<th>&nbsp;</th>
 									<!-- <th>&nbsp;</th> -->
-									<th>Unit Price</th>
+									<th>One-off Charge</th>
 									<th>Qty</th>
-									<th>Subtotal</th>
+									<th>Sub Total</th>
 								</tr>
 							</c:when>
 							<c:otherwise>

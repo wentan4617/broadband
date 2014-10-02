@@ -37,13 +37,15 @@
 						<thead >
 							<tr>
 								<th><input type="checkbox" id="checkbox_hardwares_top" /></th>
-								<th>Hardware Name</th>
-								<th>Hardware Class</th>
-								<th>Hardware Type</th>
-								<th>Hardware Status</th>
-								<th>Hardware Price</th>
-								<th>Hardware Cost</th>
-								<th>&nbsp;</th>
+								<th>Name</th>
+								<th>Type</th>
+								<th>Status</th>
+								<th>Price</th>
+								<th>Cost</th>
+								<th>Router ADSL</th>
+								<th>Router VDSL</th>
+								<th>Router UFB</th>
+								<th>Support VoIP</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -56,9 +58,6 @@
 										<a href="${ctx }/broadband-user/plan/hardware/edit/${hardware.id}">
 											${hardware.hardware_name }
 										</a>
-									</td>
-									<td>
-										${hardware.hardware_class }
 									</td>
 									<td>
 										${hardware.hardware_type }
@@ -74,7 +73,26 @@
 										<fmt:formatNumber value="${hardware.hardware_cost }" type="number" pattern="#,#00.00" />
 										
 									</td>
-									<td>&nbsp;</td>
+									<td>
+										<c:if test="${hardware.router_adsl}">
+											<span class="glyphicon glyphicon-ok"></span>
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${hardware.router_vdsl }">
+											<span class="glyphicon glyphicon-ok"></span>
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${hardware.router_ufb }">
+											<span class="glyphicon glyphicon-ok"></span>
+										</c:if>
+									</td>
+									<td>
+										<c:if test="${hardware.support_voip }">
+											<span class="glyphicon glyphicon-ok"></span>
+										</c:if>
+									</td>
 								</tr>
 							</c:forEach>
 						</tbody>

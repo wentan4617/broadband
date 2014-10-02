@@ -59,10 +59,10 @@
 					Provider Name <span class="text-danger">(*)</span>
 				</label>
 				<div class="col-md-4">
-					<select id="customerOrder.transition_provider_name" class="selectpicker show-tick form-control" data-error-field>
-					<. var names = ['Telecom', 'Vodafone', 'Orcon', 'Slingshot', 'Snap', 'Flip', 'Woosh', 'Telnet', 'megaTel', 'Other'];
+					<select id="transition_provider_name" class="selectpicker show-tick form-control" data-error-field>
+					<. var names = ['Telecom', 'Vodafone', 'Orcon', 'Slingshot', 'Snap', 'Flip', 'Woosh', 'Telnet', 'megaTel', '2talk', 'Other'];
 						for (var i = 0, len = names.length; i < len; i++) {
-							if (transition_provider_name == names[i]) {.>
+							if (_transition_provider_name == names[i]) {.>
 						<option value="<.=names[i].>" selected="selected"><.=names[i].></option>
 							<.} else { .>
 						<option value="<.=names[i].>"><.=names[i].></option>
@@ -70,6 +70,12 @@
 						}
 					.>
 					</select>
+				</div>
+			</div>
+			<div class="form-group" id="other_container" style="<.=transition_provider_name=='Other'?'display:block':'display:none'.>">
+				<label class="control-label col-md-4"></label>
+				<div class="col-md-4">
+					<input type="text" id="customerOrder.transition_provider_name" value="<.=transition_provider_name.>" class="form-control" placeholder="Put your provider name." data-error-field />
 				</div>
 			</div>
 			<div class="form-group">

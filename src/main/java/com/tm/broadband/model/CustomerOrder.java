@@ -102,10 +102,20 @@ public class CustomerOrder implements Serializable {
 	
 	private Integer prepay_months;
 	private Integer discount_price;
+	private String _transition_provider_name;
+	private Boolean promotion;
 
 	/*
 	 * END RELATED PROPERTIES
 	 */
+
+	public String get_transition_provider_name() {
+		return _transition_provider_name;
+	}
+
+	public void set_transition_provider_name(String _transition_provider_name) {
+		this._transition_provider_name = _transition_provider_name;
+	}
 
 	public CustomerOrder() {
 	}
@@ -588,6 +598,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setDiscount_price(Integer discount_price) {
 		this.discount_price = discount_price;
+	}
+
+	public Boolean getPromotion() {
+		return promotion;
+	}
+
+	public void setPromotion(Boolean promotion) {
+		this.promotion = promotion;
 	}
 
 }

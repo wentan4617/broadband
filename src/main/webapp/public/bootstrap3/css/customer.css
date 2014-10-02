@@ -174,3 +174,14 @@ a[title="topup"]:hover img{
 	background: url("../images/cyberpark-home-bottom.png");
 	background-size: contain;
 }
+
+.btn-purple:hover {
+	color: #fff;
+	background-color: #5a4080;
+	border-color: #5a4080;
+}
+.btn-purple {
+	color: #fff;
+	background-color: #7d64a1;
+	border-color: #7d64a1;
+}

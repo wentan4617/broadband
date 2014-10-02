@@ -23,7 +23,7 @@ public class Hardware implements Serializable {
 	private String hardware_name;
 	// @NotEmpty(groups = { HardwareValidatedMark.class})
 	private String hardware_desc;
-	@NotEmpty(groups = { HardwareValidatedMark.class })
+	// @NotEmpty(groups = { HardwareValidatedMark.class })
 	private String hardware_class;
 	@NotEmpty(groups = { HardwareValidatedMark.class })
 	private String hardware_type;
@@ -36,6 +36,11 @@ public class Hardware implements Serializable {
 	private String img1;
 	private String img2;
 	private String img3;
+	private Boolean router_adsl;
+	private Boolean router_vdsl;
+	private Boolean router_ufb;
+	private Boolean support_pstn;
+	private Boolean support_voip;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -149,6 +154,46 @@ public class Hardware implements Serializable {
 
 	public void setHardware_class(String hardware_class) {
 		this.hardware_class = hardware_class;
+	}
+
+	public Boolean getRouter_adsl() {
+		return router_adsl;
+	}
+
+	public void setRouter_adsl(Boolean router_adsl) {
+		this.router_adsl = router_adsl;
+	}
+
+	public Boolean getRouter_vdsl() {
+		return router_vdsl;
+	}
+
+	public void setRouter_vdsl(Boolean router_vdsl) {
+		this.router_vdsl = router_vdsl;
+	}
+
+	public Boolean getRouter_ufb() {
+		return router_ufb;
+	}
+
+	public void setRouter_ufb(Boolean router_ufb) {
+		this.router_ufb = router_ufb;
+	}
+
+	public Boolean getSupport_pstn() {
+		return support_pstn;
+	}
+
+	public void setSupport_pstn(Boolean support_pstn) {
+		this.support_pstn = support_pstn;
+	}
+
+	public Boolean getSupport_voip() {
+		return support_voip;
+	}
+
+	public void setSupport_voip(Boolean support_voip) {
+		this.support_voip = support_voip;
 	}
 
 }

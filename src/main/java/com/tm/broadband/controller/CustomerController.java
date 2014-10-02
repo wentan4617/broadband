@@ -1329,17 +1329,10 @@ public class CustomerController {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
-
-	
-	
-	
+	@RequestMapping("/plans/promotions")
+	public String plansPromotions() {
+		return "broadband-customer/plans/plan-promotion";
+	}
 	
 	@RequestMapping("/plans/{type}")
 	public String broadband(Model model,
@@ -1429,6 +1422,7 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.getCustomerOrder().setOrder_broadband_type("transition");
 		customer.getCustomerOrder().setSale_id(10023);
+		customer.getCustomerOrder().setPromotion(true);
 		customer.setLanguage("cn");
 		session.setAttribute("customerReg", customer);
 		
@@ -1441,6 +1435,20 @@ public class CustomerController {
 		Customer customer = new Customer();
 		customer.getCustomerOrder().setOrder_broadband_type("transition");
 		customer.getCustomerOrder().setSale_id(10023);
+		customer.getCustomerOrder().setPromotion(true);
+		customer.setLanguage("en");
+		session.setAttribute("customerReg", customer);
+		
+		return "redirect:/plans/address-check/0/0";
+	}
+	
+	@RequestMapping("/plans/promotion/hd/en") 
+	public String plansHDPromotionEn(Model model, HttpSession session) {
+		
+		Customer customer = new Customer();
+		customer.getCustomerOrder().setOrder_broadband_type("transition");
+		customer.getCustomerOrder().setSale_id(20023);
+		customer.getCustomerOrder().setPromotion(true);
 		customer.setLanguage("en");
 		session.setAttribute("customerReg", customer);
 		

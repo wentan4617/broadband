@@ -1,7 +1,7 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-		<. if (select_plan_type == 'VDSL' && sale_id != null && sale_id != ''){.>
+		<. if (select_plan_type == 'VDSL' && (sale_id == '10023' || sale_id == '20023')){.>
 			Promotion VDSL Plan
 		<.} else {.>
 			Select One Plan
@@ -21,7 +21,7 @@
 		</ul>
 		<.} else if (select_plan_type == 'VDSL') {
 		
-			if (sale_id == null || sale_id == '') {.>
+			if (sale_id != '10023' && sale_id != '20023') {.>
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
 				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
@@ -61,7 +61,7 @@
 								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
-								<. if (select_plan_type == 'VDSL' && sale_id != null && sale_id != ''){.>
+								<. if (select_plan_type == 'VDSL' && sale_id == '10023'){.>
 									<.=plan.plan_price * 12.> / year
 								<.} else {.>
 									<.=plan.plan_price.> / month

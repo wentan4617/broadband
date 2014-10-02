@@ -5,12 +5,16 @@
 		</h4>
 	</div>
 	<div class="panel-body">
+		
+		<div class="well">
+			<p class="text-danger">
+				Dear customer, if you are transfering to CyberPark Internet service, please inform your existing Internet service provider AFTER you received our email and text message for SERVICE GIVEN DATE.
+			</p>
+		</div>
+		
 		<div class="form-group">
 			<div class="col-md-12">
 				<ul class="list-unstyled topup-list">
-					<li>
-						Do you have Internet service at moment?
-					</li>
 					<li>
 						<label>
 							<input type="radio" name="order_broadband_type" value="transition"/> 
@@ -30,24 +34,51 @@
 							&nbsp; 
 							<strong> 
 								NO, Get a new broadband connection on an existing (but inactive) Phone Jack 
-								<.if (plan.plan_new_connection_fee > 0) {.>
-									<.if (prepay_months == 1) {.>
-										costs 
-										<.if (!isContract) {.>
-											<span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+							<.if (plan.plan_new_connection_fee > 0) {.>
+								<.if (isContract) {.>
+								
+									<.if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {.>
+									
+										<.if (sale_id == '20023') {.>
+								is free 
+								(<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
 										<.} else {.>
-											<span class="text-danger">$49</span>, 
-											<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
+								costs 
+								<span class="text-danger">$49</span>, 
+								<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
 										<.}.>
-									<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-										costs 
-										<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
-										<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
-									<.} else if (prepay_months == 12) {.>
-										is free
+									<.} else {.>
+								
+								is free 
+								(<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
+								
 									<.}.>
 								<.} else {.>
-									is free<.}.>!
+								
+									<.if (prepay_months == 1) {.>
+									
+								costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+								
+									<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+									
+								costs 
+								<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
+								<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
+									
+									<.} else if (prepay_months == 12) {.>
+									
+								is free 
+								(<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
+								
+									<.}.>
+									
+								<.}.>
+							<.} else {.>
+								is free
+							<.}.>!
 							</strong>
 						</label>
 					</li>
@@ -69,11 +100,7 @@
 			</div>
 		</div>
 		
-		<div class="well">
-			<p class="text-danger">
-				Dear customer, if you are transfering to CyberPark Internet service, please inform your existing Internet service provider AFTER you received our email and text message for SERVICE GIVEN DATE.
-			</p>
-		</div>
+		
 		
 	</div>
 </div>
