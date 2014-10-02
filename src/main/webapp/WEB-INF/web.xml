@@ -207,6 +207,7 @@
 		<!-- Billing Module BEGIN -->
 		<url-pattern>/broadband-user/billing/invoice/view/personal/*</url-pattern>
 		<url-pattern>/broadband-user/billing/invoice/view/business/*</url-pattern>
+		<url-pattern>/broadband-user/billing/transaction/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/chart/transaction-statistic/*</url-pattern>
 		<url-pattern>/broadband-user/billing/chart/invoice-statistic/personal/*</url-pattern>
 		<url-pattern>/broadband-user/billing/chart/invoice-statistic/business/*</url-pattern>

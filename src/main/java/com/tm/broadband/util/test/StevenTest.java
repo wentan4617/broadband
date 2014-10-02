@@ -1,6 +1,7 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
+import java.util.Calendar;
 
 import com.tm.broadband.util.SimpleMapperCreator;
 
@@ -178,6 +179,10 @@ public class StevenTest {
 //		finalUrl = finalUrl.substring(0, finalUrl.lastIndexOf("/"));
 //		
 //		System.out.println(finalUrl);
+		
+//		Calendar cal = Calendar.getInstance();
+//		cal.add(Calendar.DATE, -2);
+//		System.out.println(cal.getTime());
 		
 	}
 }

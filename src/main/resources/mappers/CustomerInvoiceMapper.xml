@@ -159,12 +159,21 @@
 					status = 'overdue'
 					and date(due_date) &lt;= date(#{params.dueMonthMax})
 				</when>
+				<when test="params.where == 'create_date_status2'">
+					and date(create_date) = date(#{params.create_date})
+					and (status = #{params.status} or status = #{params.status2})
+				</when>
+				<when test="params.where == 'create_date2_status2'">
+					and (date(create_date) = date(#{params.create_date}) or date(create_date) = date(#{params.create_date2}))
+					and (status = #{params.status} or status = #{params.status2})
+				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>
 					<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
 					<if test="params.order_id != null">and order_id = #{params.order_id}</if>
 					<if test="params.status != null">and status = #{params.status}</if>
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
+					<if test="params.create_date != null">and date(create_date) = date(#{params.create_date})</if>
 					<if test="params.due_date != null">and date(due_date) = date(#{params.due_date})</if>
 				</otherwise>
 			</choose>

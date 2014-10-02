@@ -265,7 +265,7 @@
 						}
 					}
 		.>
-				<. if(user_role=='system-developer'){ .>
+				<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 					<td style="text-align:center;">
 						<a id="<.= invoice.id .>" data-name="remove_invoice_btn_<.= invoice.id .>" class="btn btn-danger btn-xs" href="javascript:void(0);">
 							<span class="glyphicon glyphicon-trash"></span>

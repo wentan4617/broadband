@@ -4,7 +4,7 @@
     <hr>
     <footer>
         <p>
-        	&copy; CyberPark Broadband Manager System 2014 &middot; 
+        	&copy; Broadband Manager System 2014 &middot; 
         </p>
     </footer>
 </div>

@@ -616,6 +616,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	}
 	
 	@Transactional
+	public int queryCustomerTransactionsSumByPage(Page<CustomerTransaction> page) {
+		return this.customerTransactionMapper.selectCustomerTransactionsSum(page);
+	}
+	
+	@Transactional
 	public String queryCustomerOrderTypeById(int id) {
 		return this.customerOrderMapper.selectCustomerOrderTypeById(id);
 	}
@@ -770,6 +775,10 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	public CustomerInvoice queryCustomerInvoice(CustomerInvoice ci) {
 		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ci);
 		return cis!=null && cis.size()>0 ? cis.get(0) : null;
+	}
+	
+	public List<CustomerInvoice> queryCustomerInvoices(CustomerInvoice ci) {
+		return this.ciMapper.selectCustomerInvoices(ci);
 	}
 	
 	public Double queryCustomerInvoicesBalanceByCid(int cid, String status) {
@@ -3194,20 +3203,148 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	
 	// Check Pending Warning Order
 	@Transactional 
-	public void checkInvoiceAfterDueNotice() throws ParseException{
-		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-void-notice", "email");
-		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-void-notice", "sms");
+	public void checkInvoiceNotification() throws ParseException{
+
+		Calendar calThird = Calendar.getInstance();
+		calThird.add(Calendar.DATE, -2);
+		Calendar calFifth = Calendar.getInstance();
+		calFifth.add(Calendar.DATE, -4);
+		Calendar calEighth = Calendar.getInstance();
+		calEighth.add(Calendar.DATE, -7);
+		Calendar calNinth = Calendar.getInstance();
+		calNinth.add(Calendar.DATE, -8);
+		Calendar calTenth = Calendar.getInstance();
+		calTenth.add(Calendar.DATE, -9);
+		Date third = calThird.getTime();
+		Date fifth = calFifth.getTime();
+		Date eighth = calEighth.getTime();
+		Date ninth = calNinth.getTime();
+		Date tenth = calTenth.getTime();
+		
 		CustomerInvoice ciQuery = new CustomerInvoice();
-		ciQuery.getParams().put("where", "query_most_unpaid_invoice");
+		ciQuery.getParams().put("where", "create_date2_status2");
 		ciQuery.getParams().put("status", "unpaid");
-		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ciQuery);
-		for (CustomerInvoice ci : cis) {
+		ciQuery.getParams().put("status2", "overdue");
+		
+		ciQuery.getParams().put("create_date", third);
+		ciQuery.getParams().put("create_date2", fifth);
+		List<CustomerInvoice> cisThirdFifth = this.queryCustomerInvoices(ciQuery);
+		ciQuery.getParams().put("create_date", eighth);
+		ciQuery.getParams().put("create_date2", ninth);
+		List<CustomerInvoice> cisEighthNinth = this.queryCustomerInvoices(ciQuery);
+		
+		ciQuery.getParams().put("where", "create_date_status2");
+		ciQuery.getParams().remove("create_date2");
+		ciQuery.getParams().put("create_date", tenth);
+		List<CustomerInvoice> cisTenth = this.queryCustomerInvoices(ciQuery);
+		
+		// If any of them isn't null and size>0
+		if((cisThirdFifth!=null && cisThirdFifth.size()>0)
+		|| (cisEighthNinth!=null && cisEighthNinth.size()>0)
+		|| (cisTenth!=null && cisTenth.size()>0)){
+
+			Notification emailThirdFifth = this.notificationMapper.selectNotificationBySort("invoice-notice-third-fifth-day", "email");
+			Notification smsThirdFifth = this.notificationMapper.selectNotificationBySort("invoice-notice-third-fifth-day", "sms");
+
+			Notification emailEighthNinth = this.notificationMapper.selectNotificationBySort("invoice-notice-eighth-ninth-day", "email");
+			Notification smsEighthNinth = this.notificationMapper.selectNotificationBySort("invoice-notice-eighth-ninth-day", "sms");
+
+			Notification emailTenth = this.notificationMapper.selectNotificationBySort("invoice-notice-tenth-day", "email");
+			Notification smsTenth = this.notificationMapper.selectNotificationBySort("invoice-notice-tenth-day", "sms");
 			
-			// Prevent template pollution
-			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
-			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
+			CompanyDetail cd = this.queryCompanyDetail();
+			
+//			System.out.println("cisThirdFifth: ");
+			for (CustomerInvoice ci : cisThirdFifth) {
+				
+				Customer c = this.queryCustomerById(ci.getCustomer_id());
+
+				// Prevent template pollution
+				Notification emailThirdFifthFinal = new Notification(emailThirdFifth.getTitle(), emailThirdFifth.getContent());
+				Notification smsThirdFifthFinal = new Notification(smsThirdFifth.getTitle(), smsThirdFifth.getContent());
+				
+				MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, c, ci, cd);
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(c.getEmail());
+				applicationEmail.setSubject(emailThirdFifthFinal.getTitle());
+				applicationEmail.setContent(emailThirdFifthFinal.getContent());
+				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+				// get sms register template from db
+				MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, c, ci, cd);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsThirdFifthFinal.getContent());
+				
+//				Console.log(ci);
+			}
+
+//			System.out.println("cisEighthNinth: ");
+			for (CustomerInvoice ci : cisEighthNinth) {
+				
+				Calendar calSuspend = Calendar.getInstance();
+				calSuspend.setTime(ci.getCreate_date());
+				calSuspend.add(Calendar.DATE, 9);
+				ci.setSuspend_date_str(TMUtils.dateFormatYYYYMMDD(calSuspend.getTime()));
+				
+				Customer c = this.queryCustomerById(ci.getCustomer_id());
+
+				// Prevent template pollution
+				Notification emailEighthNinthFinal = new Notification(emailEighthNinth.getTitle(), emailEighthNinth.getContent());
+				Notification smsEighthNinthFinal = new Notification(smsEighthNinth.getTitle(), smsEighthNinth.getContent());
+				
+				MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, c, ci, cd);
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(c.getEmail());
+				applicationEmail.setSubject(emailEighthNinthFinal.getTitle());
+				applicationEmail.setContent(emailEighthNinthFinal.getContent());
+				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+				// get sms register template from db
+				MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, c, ci, cd);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsEighthNinthFinal.getContent());
+				
+				
+//				Console.log(ci);
+			}
+
+//			System.out.println("cisTenth: ");
+			for (CustomerInvoice ci : cisTenth) {
+				
+				Calendar calDisconnect = Calendar.getInstance();
+				calDisconnect.setTime(ci.getCreate_date());
+				calDisconnect.add(Calendar.DATE, 11);
+				ci.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(calDisconnect.getTime()));
+				
+				Customer c = this.queryCustomerById(ci.getCustomer_id());
+
+				// Prevent template pollution
+				Notification emailTenthFinal = new Notification(emailTenth.getTitle(), emailTenth.getContent());
+				Notification smsTenthFinal = new Notification(smsTenth.getTitle(), smsTenth.getContent());
+				
+				MailRetriever.mailAtValueRetriever(emailTenthFinal, c, ci, cd);
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(c.getEmail());
+				applicationEmail.setSubject(emailTenthFinal.getTitle());
+				applicationEmail.setContent(emailTenthFinal.getContent());
+				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+				// get sms register template from db
+				MailRetriever.mailAtValueRetriever(smsTenthFinal, c, ci, cd);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsTenthFinal.getContent());
+				
+//				Console.log(ci);
+			}
 			
 		}
+		
 	}
 	
 	

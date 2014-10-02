@@ -34,7 +34,7 @@
 			<td><.= tx.card_name .></td>
 			<td><.= tx.transaction_sort .></td>
 			<td style="text-align:center;"><.= txAmount.toFixed(2) .></td>
-			<. if(user_role=='system-developer'){ .>
+			<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 				<td style="text-align:center;">
 					<a id="<.= tx.id .>" data-name="remove_transaction_btn" class="btn btn-danger btn-xs" href="javascript:void(0);">
 						<span class="glyphicon glyphicon-trash"></span>

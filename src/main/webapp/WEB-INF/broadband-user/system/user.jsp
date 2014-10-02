@@ -222,6 +222,11 @@
 										</li>
 										<li>
 											<label>
+												<form:checkbox path="authArray" value="billing/transaction/view" data-type="checkbox_billing" /> View Transaction
+											</label>
+										</li>
+										<li>
+											<label>
 												<form:checkbox path="authArray" value="billing/chart/transaction-statistic" data-type="checkbox_billing" /> Chart(Transaction)
 											</label>
 										</li>

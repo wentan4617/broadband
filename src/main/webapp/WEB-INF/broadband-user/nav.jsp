@@ -104,6 +104,12 @@
 									View Invoice(Business)
 								</a>
 							</li>
+							<li>
+								<a href="${ctx}/broadband-user/billing/transaction/view/1/visa/all">
+									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
+									View Transaction
+								</a>
+							</li>
 							<li class="divider"></li>
 							<li>
 								<a href="${ctx}/broadband-user/billing/chart/transaction-statistic/0">
@@ -286,7 +292,7 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/manual-manipulation/manual-manipulation-record/view/1/generate-termed-invoice">
+								<a href="${ctx}/broadband-user/manual-manipulation/manual-manipulation-record/view/1">
 									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
 									Manual Termed Invoice
 								</a>

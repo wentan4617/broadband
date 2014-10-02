@@ -91,6 +91,15 @@
 		<hr/>
 
 		<!-- BEGIN ORDER INFO -->
+		<!-- BEGIN Connection Date -->
+		<div class="form-group">
+			<label class="control-label col-md-3">Preferred RFS Date</label>
+			<div class="col-md-3">
+				<p class="form-control-static"><.= customerOrder[i].connection_date .></p>
+			</div>
+			<label class="control-label col-md-3">&nbsp;</label>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
 		<!-- BEGIN Order Id -->
 		<div class="form-group">
 			<label class="control-label col-md-3">Order ID</label>
@@ -172,7 +181,7 @@
 				</p>
 			</div>
 			<div class="col-md-3">
-				<. if(user_role=='system-developer'){ .>
+				<. if(user_role=='system-developer' || user_role=='administrator' || user_role=='accountant'){ .>
 					<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_order_type_selector" data-val="<.= customerOrder.order_type .>" class="form-control input-xs">
 						<.
 							var order_type = [
@@ -194,7 +203,7 @@
 				<. } .>
 			</div>
 			<div class="col-md-3">
-				<. if(user_role=='system-developer'){ .>
+				<. if(user_role=='system-developer' || user_role=='administrator' || user_role=='accountant'){ .>
 					<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_type_edit">Update Order Type</a>
 				<. } .>
 			</div>
@@ -432,11 +441,11 @@
 			</div>
 			<div class="col-md-3">
 				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
-				<. for(var u=0; u<sales.length; u++){
-						if(sales[u] == customerOrder[i].sale_id){ .>
-					<option value="<.= sales[u].id .>" selected="selected"><.= sales[u].user_name .></option>
+				<. for(var s=0; s<sales.length; s++){
+						if(sales[s].id == customerOrder[i].sale_id){ .>
+					<option value="<.= sales[s].id .>" selected="selected"><.= sales[s].user_name .></option>
 				<. 		} else { .>
-					<option value="<.= sales[u].id .>"><.= sales[u].user_name .></option>
+					<option value="<.= sales[s].id .>"><.= sales[s].user_name .></option>
 				<. 		}
 					} .>
 				</select>

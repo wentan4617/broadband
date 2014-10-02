@@ -47,6 +47,9 @@ public class CustomerInvoice implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String suspend_date_str;
+	private String disconnected_date_str;
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String create_date_str;
@@ -295,6 +298,22 @@ public class CustomerInvoice implements Serializable {
 
 	public void setCommission(Double commission) {
 		this.commission = commission;
+	}
+
+	public String getSuspend_date_str() {
+		return suspend_date_str;
+	}
+
+	public void setSuspend_date_str(String suspend_date_str) {
+		this.suspend_date_str = suspend_date_str;
+	}
+
+	public String getDisconnected_date_str() {
+		return disconnected_date_str;
+	}
+
+	public void setDisconnected_date_str(String disconnected_date_str) {
+		this.disconnected_date_str = disconnected_date_str;
 	}
 
 }

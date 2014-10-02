@@ -163,6 +163,8 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_customer_id>", String.valueOf(preventNull(inv.getCustomer_id()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getCreate_date()) : inv.getCreate_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getDue_date()) : inv.getDue_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_suspend_date_str>", preventNull(inv.getSuspend_date_str())));
+			noti.setTitle(noti.getTitle().replaceAll("@<invoice_disconnected_date_str>", preventNull(inv.getDisconnected_date_str())));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_payable())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_final_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getFinal_payable_amount())))));
 			noti.setTitle(noti.getTitle().replaceAll("@<invoice_amount_paid>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_paid())))));
@@ -185,6 +187,8 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<invoice_customer_id>", String.valueOf(preventNull(inv.getCustomer_id()))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_create_date_str>", preventNull(inv.getCreate_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getCreate_date()) : inv.getCreate_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_due_date_str>", preventNull(inv.getDue_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(inv.getDue_date()) : inv.getDue_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_suspend_date_str>", preventNull(inv.getSuspend_date_str())));
+			noti.setContent(noti.getContent().replaceAll("@<invoice_disconnected_date_str>", preventNull(inv.getDisconnected_date_str())));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_payable())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_final_amount_payable>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getFinal_payable_amount())))));
 			noti.setContent(noti.getContent().replaceAll("@<invoice_amount_paid>", TMUtils.fillDecimalPeriod(String.valueOf(preventNull(inv.getAmount_paid())))));
