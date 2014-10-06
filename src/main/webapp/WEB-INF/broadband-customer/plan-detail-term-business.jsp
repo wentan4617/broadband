@@ -184,7 +184,7 @@
 	$('a[data-name="purchase"]').click(function(){
 		var select_plan_id = $(this).attr('data-id');
 		var select_plan_type = $(this).attr('data-type');
-		window.location.href = '${ctx}/plans/term-plan/busniess/' + select_plan_type + '/address-check/' + select_plan_id;
+		window.location.href = '${ctx}/plans/define/' + select_plan_type + '/' + select_plan_id;
 	});
 	
 	$('div[id^="collapse"]').on('show.bs.collapse', function(){

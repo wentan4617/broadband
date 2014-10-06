@@ -28,7 +28,7 @@
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/address-check.js?ver=20149131504"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/address-check.js?ver=2014103804"></script>
 <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="footer-end.jsp" />

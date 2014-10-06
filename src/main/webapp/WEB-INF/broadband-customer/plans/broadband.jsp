@@ -229,7 +229,7 @@
 	
 	$('button[data-type]').click(function(){
 		var select_plan_id = $(this).attr('data-id');
-		window.location.href = '${ctx}/plans/address-check/${type_search}/' + select_plan_id;
+		window.location.href = '${ctx}/plans/define/${type_search}/' + select_plan_id;
 	});
 
 })(jQuery);

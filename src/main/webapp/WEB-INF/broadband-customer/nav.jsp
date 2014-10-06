@@ -59,7 +59,7 @@
 				</li>
 				<c:if test="${fn:length(customerReg.address) > 0 }">
 				<li>
-					<a href="${ctx }/plans/address-check/${customerReg.select_plan_type }/${customerReg.select_plan_id }" style="padding-top: 10px; padding-bottom: 5px;" rel="nofollow">
+					<a href="${ctx }/plans/address-check" style="padding-top: 10px; padding-bottom: 5px;" rel="nofollow">
 						<span class="glyphicon glyphicon-map-marker" style="font-size: 24px; "></span>
 					</a>
 				</li>

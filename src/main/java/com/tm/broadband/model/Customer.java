@@ -76,8 +76,8 @@ public class Customer implements Serializable {
 	private String customer_type;
 	
 	private String identity_type;
-	/*@NotEmpty(groups = { CustomerValidatedMark.class})
-	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class})*/
+	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String identity_number;
 
 	/*
@@ -141,6 +141,7 @@ public class Customer implements Serializable {
 	private Integer select_plan_id;
 	private String select_plan_type;
 	private String select_customer_type;
+	private String select_plan_group;
 	private String language;
 
 	/*
@@ -662,6 +663,15 @@ public class Customer implements Serializable {
 	public void setBroadband_asid(String broadband_asid) {
 		this.broadband_asid = broadband_asid;
 	}
-	
+
+	public String getSelect_plan_group() {
+		return select_plan_group;
+	}
+
+	public void setSelect_plan_group(String select_plan_group) {
+		this.select_plan_group = select_plan_group;
+	}
+
+
 	
 }

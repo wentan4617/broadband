@@ -64,7 +64,7 @@
 								<. if (select_plan_type == 'VDSL' && sale_id == '10023'){.>
 									<.=plan.plan_price * 12.> / year
 								<.} else {.>
-									<.=plan.plan_price.> / month
+									<.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
 								<.}.>
 								
 							</p>
@@ -99,7 +99,7 @@
 								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
-								<.=plan.plan_price.> / month
+								<.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
 								<span data-icon style="border: 1px solid; padding: 6px 8px; border-radius: 24px; background-color: #fff;">

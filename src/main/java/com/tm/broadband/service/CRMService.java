@@ -3400,6 +3400,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 				discount_price = plan.getPlan_price() * 12 * 0.15;
 			}
 		}
+		customerOrder.setDiscount_price(discount_price.intValue());
 		
 		if (discount_price > 0d) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
@@ -3594,11 +3595,11 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					
 					if ("12 months contract".equals(customerOrder.getContract())) {
 						if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-							if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+							if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023 && "VDSL".equals(customer.getSelect_plan_type())) {
 								modem_price = 0d;
 								cod_hd.setDetail_price(modem_price);
 							} else {
-								if (chd.getId().intValue() == 3) {
+								if (chd.getId().intValue() == 3 || chd.getId().intValue() == 1) {
 									modem_price = 0d;
 									cod_hd.setDetail_price(modem_price);
 								} else {
@@ -3638,8 +3639,14 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			}
 		}
 		
+		if ("personal".equals(customer.getCustomer_type())) {
+			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue());
+		} else if ("business".equals(customer.getCustomer_type())) {
+			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue());
+		}
 		
-		customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue());
+		
+		
 		
 	}
 	

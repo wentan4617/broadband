@@ -7,21 +7,7 @@
 
 <jsp:include page="header.jsp" />
 
-<style>
-.topup-list li {
-	padding: 10px 20px;
-}
-.nav-pills>li.active>a, 
-.nav-pills>li.active>a:hover, 
-.nav-pills>li.active>a:focus {
-	color: #fff;
-	background-color: #7BC3EC;
-}
-.home-title-h2 {
-	font-size:30px;
-}
 
-</style>
 <style>
 #navhead {
 	margin-bottom:0;
@@ -97,7 +83,7 @@
 				<div class="col-lg-3">
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;"><!--  -->
-							<a id="join_plan" href="${ctx }/order/${planTypeMap['ADSL']['plansNaked'][0].id}" class="btn btn-success btn-block" style="height: 140px;" >
+							<a id="join_plan" href="${ctx }/plans/define/ADSL/${planTypeMap['ADSL']['plansNaked'][0].id}" class="btn btn-success btn-block" style="height: 140px;" >
 								<span style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1; display:block;">Join</span>
 								<span style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</span>
 							</a>
@@ -168,7 +154,7 @@
 				<div class="col-lg-3">
 					<div class="panel panel-success">
 						<div class="panel-body" style="padding: 0;"><!--  -->
-							<a id="join_plan" href="${ctx }/order/${planTypeMap['ADSL']['plansClothed'][0].id}" class="btn btn-success btn-block" style="height: 140px;" >
+							<a id="join_plan" href="${ctx }/plans/define/ADSL/${planTypeMap['ADSL']['plansClothed'][0].id}" class="btn btn-success btn-block" style="height: 140px;" >
 								<span style="font-size: 50px; font-weight: bold; margin: 10px; line-height: 1; display:block;">Join</span>
 								<span style="font-size: 50px; font-weight: bold; margin: 0; line-height: 1;">Plan</span>
 							</a>
