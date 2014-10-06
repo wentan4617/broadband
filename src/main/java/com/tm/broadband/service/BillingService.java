@@ -18,6 +18,7 @@ import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.VOSVoIPRateMapper;
 import com.tm.broadband.mapper.VoucherBannedListMapper;
 import com.tm.broadband.mapper.VoucherFileUploadMapper;
 import com.tm.broadband.mapper.VoucherMapper;
@@ -32,12 +33,16 @@ import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.model.VoucherFileUpload;
+import com.tm.broadband.util.CallInternationalRateUtility;
 import com.tm.broadband.util.CallingRecordUtility;
 import com.tm.broadband.util.CallingRecordUtility_CallPlus;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.VOSVoIPRatesUtility;
+import com.tm.broadband.util.test.Console;
 
 /**
  * Billing service
@@ -52,6 +57,7 @@ public class BillingService {
 	private CustomerCallRecordMapper customerCallRecordMapper;
 	private CallChargeRateMapper callChargeRateMapper;
 	private CallInternationalRateMapper callInternationalRateMapper;
+	private VOSVoIPRateMapper vosVoIPRateMapper;
 	private EarlyTerminationChargeMapper earlyTerminationChargeMapper;
 	private EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper;
 	private TerminationRefundMapper terminationRefundMapper;
@@ -67,6 +73,7 @@ public class BillingService {
 			,CustomerCallRecordMapper customerCallRecordMapper
 			,CallChargeRateMapper callChargeRateMapper
 			,CallInternationalRateMapper callInternationalRateMapper
+			,VOSVoIPRateMapper vosVoIPRateMapper
 			,EarlyTerminationChargeMapper earlyTerminationChargeMapper
 			,EarlyTerminationChargeParameterMapper earlyTerminationChargeParameterMapper
 			,TerminationRefundMapper terminationRefundMapper
@@ -80,6 +87,7 @@ public class BillingService {
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
 		this.callInternationalRateMapper = callInternationalRateMapper;
+		this.vosVoIPRateMapper = vosVoIPRateMapper;
 		this.earlyTerminationChargeMapper = earlyTerminationChargeMapper;
 		this.earlyTerminationChargeParameterMapper = earlyTerminationChargeParameterMapper;
 		this.terminationRefundMapper = terminationRefundMapper;
@@ -185,7 +193,6 @@ public class BillingService {
 	// END CallChargeRate
 
 	// BEGIN CallInternationalRate
-	
 	@Transactional
 	public Page<CallInternationalRate> queryCallInternationalRatesByPage(Page<CallInternationalRate> page) {
 		page.setTotalRecord(this.callInternationalRateMapper.selectCallInternationalRatesSum(page));
@@ -204,8 +211,8 @@ public class BillingService {
 	}
 
 	@Transactional
-	public void removeCallInternationalRate(CallInternationalRate cir) {
-		this.callInternationalRateMapper.deleteCallInternationalRate(cir);
+	public void removeCallInternationalRate() {
+		this.callInternationalRateMapper.deleteCallInternationalRate();
 	}
 
 	@Transactional
@@ -217,8 +224,41 @@ public class BillingService {
 	public List<CallInternationalRate> queryCallInternationalRatesGroupBy() {
 		return this.callInternationalRateMapper.selectCallInternationalRatesGroupBy();
 	}
-	
 	// END CallInternationalRate
+
+	// BEGIN VOSVoIPRates
+	@Transactional
+	public Page<VOSVoIPRate> queryVOSVoIPRatesByPage(Page<VOSVoIPRate> page) {
+		page.setTotalRecord(this.vosVoIPRateMapper.selectVOSVoIPRatesSum(page));
+		page.setResults(this.vosVoIPRateMapper.selectVOSVoIPRatesByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createVOSVoIPRates(VOSVoIPRate vosVoIPRate) {
+		this.vosVoIPRateMapper.insertVOSVoIPRate(vosVoIPRate);
+	}
+
+	@Transactional 
+	public List<VOSVoIPRate> queryVOSVoIPRates(VOSVoIPRate vosVoIPRate){
+		return this.vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRate);
+	}
+
+	@Transactional
+	public void removeVOSVoIPRates() {
+		this.vosVoIPRateMapper.deleteVOSVoIPRates();
+	}
+
+	@Transactional
+	public void editVOSVoIPRates(VOSVoIPRate vosVoIPRate) {
+		this.vosVoIPRateMapper.updateVOSVoIPRate(vosVoIPRate);
+	}
+	
+	@Transactional
+	public List<VOSVoIPRate> queryVOSVoIPRatesGroupBy() {
+		return this.vosVoIPRateMapper.selectVOSVoIPRatesGroupBy();
+	}
+	// END VOSVoIPRates
 
 	// BEGIN EarlyTerminationCharge
 	@Transactional
@@ -493,6 +533,35 @@ public class BillingService {
 			for (CustomerCallingRecordCallplus ccrc : ccrcs) {
 				this.customerCallingRecordCallplusMapper.insertCustomerCallingRecordCallplus(ccrc);
 			}
+		}
+	}
+
+	@Transactional
+	public void insertCallInternationalRate(String save_path) {
+		
+		this.callInternationalRateMapper.deleteCallInternationalRate();
+		
+		// Get All data from the CSV file
+		List<CallInternationalRate> cirs = CallInternationalRateUtility.cirs(save_path);
+		
+		// Iteratively insert into database
+		for (CallInternationalRate cir : cirs) {
+			this.callInternationalRateMapper.insertCallInternationalRate(cir);
+		}
+	}
+
+	@Transactional
+	public void insertVOSVoIPRates(String save_path) {
+		
+		this.vosVoIPRateMapper.deleteVOSVoIPRates();
+		
+		// Get All data from the CSV file
+		List<VOSVoIPRate> vosVoIPRates = VOSVoIPRatesUtility.cirs(save_path);
+		
+		// Iteratively insert into database
+		for (VOSVoIPRate vosVoIPRate : vosVoIPRates) {
+			Console.log(vosVoIPRate);
+			this.vosVoIPRateMapper.insertVOSVoIPRate(vosVoIPRate);
 		}
 	}
 }

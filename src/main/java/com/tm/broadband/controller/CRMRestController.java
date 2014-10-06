@@ -57,7 +57,6 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
@@ -84,6 +83,33 @@ public class CRMRestController {
 		this.smserService = smserService;
 		this.billingService = billingService;
 		this.planService =planService;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/sms/send")
+	public JSONBean<Customer> customerSendSMSByCellphone(
+			Model model,
+			@RequestParam("customer_id") Integer customer_id,
+			@RequestParam("content") String content) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		
+		Customer cQuery = this.crmService.queryCustomerById(customer_id);
+		
+		if((cQuery.getCellphone()!=null && !"".equals(cQuery.getCellphone().trim()))
+		&& (content!=null && !"".equals(content.trim()))){
+			
+			this.crmService.sendCustomerSMSByCellphone(cQuery.getCellphone(), content);
+			
+			json.getSuccessMap().put("alert-success", "Content has been successfully sent to specific cellphone number!");
+			
+		} else {
+			
+			json.getErrorMap().put("alert-error", "Could not send SMS without assign a cellphone number or content!");
+			
+		}
+		
+		
+		return json;
 	}
 
 	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
@@ -593,6 +619,7 @@ public class CRMRestController {
 			codCreate.setOrder_id(order_id);
 			codCreate.setDetail_unit(product_unit);
 			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_price(hardware.getHardware_price());
 			codCreate.setDetail_desc(hardware.getHardware_desc());
 			codCreate.setDetail_type("hardware-router");
 			codCreate.setIs_post(0);
@@ -827,12 +854,28 @@ public class CRMRestController {
 		return json;
 	}
 
+	// Empty svcvlan, rfs date
+	@RequestMapping(value = "/broadband-user/crm/customer/order/svcvlan-rfsdate/empty", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerSVCVLanRFSDateEmpty(Model model,
+			@RequestParam("id") Integer id) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.getParams().put("id", id);
+		
+		this.crmService.editCustomerOrderSVCVLanRFSDateEmpty(coUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Empty SV/CVLan, RFS Date successfully!");
+		
+		return json;
+	}
+
 	// Empty service giving or next invoice create date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerServiceGivingNextInvoiceCreate(Model model,
+	public JSONBean<CustomerOrder> doCustomerServiceGivingNextInvoiceEmpty(Model model,
 			@RequestParam("id") Integer id,
-			@RequestParam("date_type") String date_type,
-			HttpServletRequest req) {
+			@RequestParam("date_type") String date_type) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
@@ -844,7 +887,7 @@ public class CRMRestController {
 		}
 		co.getParams().put("id", id);
 		
-		this.crmService.editCustomerOrderServiceGivingNextInvoiceCreate(co);
+		this.crmService.editCustomerOrderServiceGivingNextInvoiceEmpty(co);
 		
 		json.setModel(co);
 
@@ -852,6 +895,24 @@ public class CRMRestController {
 
 		return json;
 	}
+
+	// Empty broadband asid
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/empty", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerBroadbandASIDEmpty(Model model,
+			@RequestParam("id") Integer id) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.getParams().put("id", id);
+		
+		this.crmService.editCustomerOrderBroadbandASIDEmpty(coUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Empty Broadband ASID successfully!");
+		
+		return json;
+	}
+
 
 	// Update order due date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/due_date/edit", method = RequestMethod.POST)

@@ -159,13 +159,15 @@
 					status = 'overdue'
 					and date(due_date) &lt;= date(#{params.dueMonthMax})
 				</when>
-				<when test="params.where == 'create_date_status2'">
+				<when test="params.where == 'create_date_status2_due_date_is_not_null'">
 					and date(create_date) = date(#{params.create_date})
 					and (status = #{params.status} or status = #{params.status2})
+					and due_date IS NOT NULL
 				</when>
-				<when test="params.where == 'create_date2_status2'">
+				<when test="params.where == 'create_date2_status2_due_date_is_not_null'">
 					and (date(create_date) = date(#{params.create_date}) or date(create_date) = date(#{params.create_date2}))
 					and (status = #{params.status} or status = #{params.status2})
+					and due_date IS NOT NULL
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>

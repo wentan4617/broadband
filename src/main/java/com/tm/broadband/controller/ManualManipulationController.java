@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,10 +32,10 @@ import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.SystemService;
-import com.tm.broadband.util.CallInternationalRateUtility;
 import com.tm.broadband.util.CallingRecordUtility;
 import com.tm.broadband.util.TMUtils;
 
@@ -122,7 +121,7 @@ public class ManualManipulationController {
 	// END ManualManipulationRecord
 	
 	// BEGIN CallInternationalRate
-	@RequestMapping("/broadband-user/manual-manipulation/call-international-rate/view/{pageNo}")
+	@RequestMapping("/broadband-user/manual-manipulation/pstn-calling-rate/view/{pageNo}")
 	public String toCallInternationalRate(Model model
 			, @PathVariable("pageNo") int pageNo) {
 
@@ -285,11 +284,11 @@ public class ManualManipulationController {
 		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billing_type;
 	}
 	
-	// Insert Call International Rate CSV into database
-	@RequestMapping(value = "/broadband-user/manual-manipulation/call-international-rate/csv/insert", method = RequestMethod.POST)
+	// Insert PSTN Calling Rate CSV into database
+	@RequestMapping(value = "/broadband-user/manual-manipulation/pstn-calling-rate/csv/insert", method = RequestMethod.POST)
 	public String insertCallInternationalRateCSVIntoDatabase(Model model
 			, @RequestParam("pageNo") int pageNo
-			, @RequestParam("call_international_rate_csv_file") MultipartFile filePath) {
+			, @RequestParam("pstn_calling_rate_csv_file") MultipartFile filePath) {
 
 		if(!filePath.isEmpty()){
 			String save_path = TMUtils.createPath("broadband" + File.separator
@@ -300,19 +299,50 @@ public class ManualManipulationController {
 				e.printStackTrace();
 			}
 			
-			this.billingService.removeCallInternationalRate(null);
-			
-			// Get All data from the CSV file
-			List<CallInternationalRate> cirs = CallInternationalRateUtility.cirs(save_path);
-			
-			// Iteratively insert into database
-			for (CallInternationalRate cir : cirs) {
-				this.billingService.createCallInternationalRate(cir);
-			}
+			this.billingService.insertCallInternationalRate(save_path);
 		}
 		
-		return "redirect:/broadband-user/manual-manipulation/call-international-rate/view/" + pageNo ;
+		return "redirect:/broadband-user/manual-manipulation/pstn-calling-rate/view/" + pageNo ;
 	}
 	// END CallInternationalRate
+	
+	// BEGIN VOSVoIPRate
+	@RequestMapping("/broadband-user/manual-manipulation/vos-voip-call-rate/view/{pageNo}")
+	public String toVOSVoIPRate(Model model
+			, @PathVariable("pageNo") int pageNo) {
+
+		Page<VOSVoIPRate> page = new Page<VOSVoIPRate>();
+		page.setPageNo(pageNo);
+		page.setPageSize(50);
+		page.getParams().put("orderby", "ORDER BY rate_type");
+		page = this.billingService.queryVOSVoIPRatesByPage(page);
+		
+		model.addAttribute("page", page);		
+		
+		return "broadband-user/manual-manipulation/vos-voip-call-rate-view";
+	}
+	
+	// Insert VOSVoIPRate CSV into database
+	@RequestMapping(value = "/broadband-user/manual-manipulation/vos-voip-call-rate/csv/insert", method = RequestMethod.POST)
+	public String insertVOSVoIPRateCSVIntoDatabase(Model model
+			, @RequestParam("pageNo") int pageNo
+			, @RequestParam("vos_voip_call_rate_csv_file") MultipartFile filePath) {
+
+		if(!filePath.isEmpty()){
+			String save_path = TMUtils.createPath("broadband" + File.separator
+					+ "vos_voip_call_rate" + File.separator + filePath.getOriginalFilename());
+			try {
+				filePath.transferTo(new File(save_path));
+			} catch (IllegalStateException | IOException e) {
+				e.printStackTrace();
+			}
+			System.out.println("save_path: "+save_path);
+			
+			this.billingService.insertVOSVoIPRates(save_path);
+		}
+		
+		return "redirect:/broadband-user/manual-manipulation/vos-voip-call-rate/view/" + pageNo ;
+	}
+	// END VOSVoIPRate
 	
 }

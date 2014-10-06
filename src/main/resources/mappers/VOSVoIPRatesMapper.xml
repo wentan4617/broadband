@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.VOSVoIPRateMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="vOSVoIPRateColumns">
+		vosvipr.`area_prefix`				as vosvipr_area_prefix,
+		vosvipr.`rate_type`					as vosvipr_rate_type,
+		vosvipr.`area_name`					as vosvipr_area_name,
+		vosvipr.`billed_rate`				as vosvipr_billed_rate,
+		vosvipr.`billed_cycle`				as vosvipr_billed_cycle,
+		vosvipr.`billed_per_min`			as vosvipr_billed_per_min
+	</sql>
+
+	<resultMap type="VOSVoIPRate" id="vOSVoIPRateResultMap">
+		<id property="area_prefix" column="vosvipr_area_prefix" />
+		<result property="rate_type" column="vosvipr_rate_type" />
+		<result property="area_name" column="vosvipr_area_name" />
+		<result property="billed_rate" column="vosvipr_billed_rate" />
+		<result property="billed_cycle" column="vosvipr_billed_cycle" />
+		<result property="billed_per_min" column="vosvipr_billed_per_min" />
+	</resultMap>
+
+	<sql id="vOSVoIPRateWhere">
+		<where>
+			<if test="params.area_prefix != null">vosvipr.area_prefix = #{params.area_prefix}</if>
+			<if test="params.rate_type != null">and vosvipr.rate_type = #{params.rate_type}</if>
+			<if test="params.area_name != null">and vosvipr.area_name = #{params.area_name}</if>
+			<if test="params.billed_rate != null">and vosvipr.billed_rate = #{params.billed_rate}</if>
+			<if test="params.billed_cycle != null">and vosvipr.billed_cycle = #{params.billed_cycle}</if>
+			<if test="params.billed_per_min != null">and vosvipr.billed_per_min = #{params.billed_per_min}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectVOSVoIPRate" parameterType="VOSVoIPRate" resultType="VOSVoIPRate">
+		select * from tm_vos_voip_rates as vosvipr
+		<include refid="vOSVoIPRateWhere"/>
+	</select>
+
+	<!-- select vOSVoIPRates page -->
+	<select id="selectVOSVoIPRatesByPage" parameterType="Page" resultMap="vOSVoIPRateResultMap">
+		select 
+			<include refid="vOSVoIPRateColumns"/>
+			from tm_vos_voip_rates as vosvipr
+			<include refid="vOSVoIPRateWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select vOSVoIPRates amount -->
+	<select id="selectVOSVoIPRatesSum" parameterType="Page" resultType="int">
+		select count(*) from tm_vos_voip_rates as vosvipr
+		<include refid="vOSVoIPRateWhere"/>
+	</select>
+	
+	<select id="selectVOSVoIPRatesGroupBy" resultType="CallInternationalRate">
+		select 
+			rate_type, area_name,  area_prefix, billed_rate, billed_cycle, billed_per_min
+		from tm_vos_voip_rates
+		GROUP BY rate_type, area_name, billed_rate
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertVOSVoIPRate" parameterType="VOSVoIPRate" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_vos_voip_rates`(
+			`area_prefix`, `rate_type`, `area_name`, `billed_rate`, `billed_cycle`, 
+			`billed_per_min`
+		) VALUES (
+			#{area_prefix}, #{rate_type}, #{area_name}, #{billed_rate}, #{billed_cycle}, 
+			#{billed_per_min}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update vOSVoIPRates -->
+	<update id="updateVOSVoIPRate" parameterType="VOSVoIPRate">
+		update tm_vos_voip_rates
+		<set>
+			<if test="rate_type != null">rate_type = #{rate_type},</if>
+			<if test="area_name != null">area_name = #{area_name},</if>
+			<if test="billed_rate != null">billed_rate = #{billed_rate},</if>
+			<if test="billed_cycle != null">billed_cycle = #{billed_cycle},</if>
+			<if test="billed_per_min != null">billed_per_min = #{billed_per_min}</if>
+		</set>
+		<where>
+			<if test="params.area_prefix != null">id = #{params.area_prefix}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteVOSVoIPRates">
+		DELETE FROM tm_vos_voip_rates
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

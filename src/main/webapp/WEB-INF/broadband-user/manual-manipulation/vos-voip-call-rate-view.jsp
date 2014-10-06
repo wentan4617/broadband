@@ -15,10 +15,10 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						Call International Rate View
+						VOS VoIP Rate View
 						<div class="pull-right">
-							<button class="btn btn-success btn-xs" data-name="upload_pstn_calling_rate_csv_file_btn" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload PSTN Calling Rate CSV">
-								<strong>&nbsp;UPLOAD CALL INTERNATIONAL RATE CSV FILE&nbsp;<span class="glyphicon glyphicon-arrow-up"></span></strong>
+							<button class="btn btn-success btn-xs" data-name="upload_vos_voip_call_rate_csv_file_btn" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload VOS VoIP RATE CSV">
+								<strong>&nbsp;UPLOAD VOS VoIP RATE CSV FILE&nbsp;<span class="glyphicon glyphicon-arrow-up"></span></strong>
 							</button>
 						</div>
 					</h4>
@@ -30,23 +30,31 @@
 								<th>Area Prefix</th>
 								<th>Rate Type</th>
 								<th>Area Name</th>
-								<th>Rate Cost</th>
+								<th>Billed Rate</th>
+								<th>Billed Cycle</th>
+								<th>Billed Per Minute</th>
 							</tr>
 						</thead>
 						<tbody>
-							<c:forEach var="callInternationalRate" items="${page.results }">
+							<c:forEach var="vosVoIPRate" items="${page.results }">
 								<tr>
 									<td>
-										${callInternationalRate.area_prefix }
+										${vosVoIPRate.area_prefix }
 									</td>
 									<td>
-										${callInternationalRate.rate_type }
+										${vosVoIPRate.rate_type }
 									</td>
 									<td>
-										${callInternationalRate.area_name }
+										${vosVoIPRate.area_name }
 									</td>
 									<td>
-										${callInternationalRate.rate_cost}
+										${vosVoIPRate.billed_rate}
+									</td>
+									<td>
+										${vosVoIPRate.billed_cycle}
+									</td>
+									<td>
+										${vosVoIPRate.billed_per_min}
 									</td>
 								</tr>
 							</c:forEach>
@@ -57,7 +65,7 @@
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
 											<li class="${page.pageNo == num ? 'active' : ''}">
-												<a href="${ctx}/broadband-user/manual-manipulation/pstn-calling-rate/view/${num}">${num}</a>
+												<a href="${ctx}/broadband-user/manual-manipulation/vos-voip-call-rate/view/${num}">${num}</a>
 											</li>
 										</c:forEach>
 									</ul>
@@ -76,23 +84,23 @@
 	</div>
 </div>
 
-<!-- Upload PSTN Calling Rate Modal -->
-<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/pstn-calling-rate/csv/insert" method="post" enctype="multipart/form-data">
+<!-- Upload Call International Rate Modal -->
+<form class="form-horizontal" action="${ctx}/broadband-user/manual-manipulation/vos-voip-call-rate/csv/insert" method="post" enctype="multipart/form-data">
 	<input type="hidden" name="pageNo" value="${page.pageNo}" />
-	<div class="modal fade" id="uploadPSTNCallingRateCSVModal" tabindex="-1" role="dialog" aria-labelledby="uploadPSTNCallingRateCSVModalLabel" aria-hidden="true">
+	<div class="modal fade" id="uploadVOSVoIPRateCSVModal" tabindex="-1" role="dialog" aria-labelledby="uploadVOSVoIPRateCSVModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="uploadPSTNCallingRateCSVModalLabel">
-						<strong>Upload PSTN Calling Rate CSV</strong>
+					<h4 class="modal-title" id="uploadVOSVoIPRateCSVModalLabel">
+						<strong>Upload VOS VoIP Rate CSV</strong>
 					</h4>
 				</div>
 				<div class="modal-body">
 					<div class="form-group">
-						<label for="pstn_calling_rate_csv_file" class="control-label col-md-5">PSTN Calling Rate File(CSV):</label>
+						<label for="vos_voip_call_rate_csv_file" class="control-label col-md-5">VOS VoIP Rate File(CSV):</label>
 						<div class="col-md-5">
-							<input class="form-control input-sm" type="file" name="pstn_calling_rate_csv_file" placeholder="Choose a file"/>
+							<input class="form-control input-sm" type="file" name="vos_voip_call_rate_csv_file" placeholder="Choose a file"/>
 						</div>
 					</div>
 				</div>
@@ -113,8 +121,8 @@
 (function($) {
 	$('button[data-toggle="tooltip"]').tooltip();
 	
-	$('button[data-name="upload_pstn_calling_rate_csv_file_btn"]').click(function(){
-		$('#uploadPSTNCallingRateCSVModal').modal('show');
+	$('button[data-name="upload_vos_voip_call_rate_csv_file_btn"]').click(function(){
+		$('#uploadVOSVoIPRateCSVModal').modal('show');
 	});
 
 })(jQuery);

@@ -713,14 +713,24 @@
 		</where>
 	</update>
 	
-	<!-- update customer order -->
-	<update id="updateCustomerOrderServiceGivingNextInvoiceCreate" parameterType="CustomerOrder">
+	<!-- empty customer order service given, next invoice create date -->
+	<update id="updateCustomerOrderServiceGivingNextInvoiceEmpty" parameterType="CustomerOrder">
 		update tm_customer_order 
 		<set>
 			<if test="order_using_start != null">order_using_start = null,</if>
 			<if test="next_invoice_create_date != null">next_invoice_create_date = null</if>
 		</set>
 		where id = #{params.id}
+	</update>
+	
+	<!-- empty customer order svcvlan, rfs date -->
+	<update id="updateCustomerOrderSVCVLanRFSDateEmpty" parameterType="CustomerOrder">
+		update tm_customer_order set svlan=null, cvlan=null, rfs_date=null where id = #{params.id}
+	</update>
+	
+	<!-- empty customer order broadband asid -->
+	<update id="updateCustomerOrderBroadbandASIDEmpty" parameterType="CustomerOrder">
+		update tm_customer_order set broadband_asid=null where id = #{params.id}
 	</update>
 	
 	<!-- // END UPDATE AREA -->

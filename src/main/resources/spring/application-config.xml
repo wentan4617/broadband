@@ -405,8 +405,8 @@
 				<ref bean="customerCreateTopupPlanInvoicePDFEachMonthTrigger" />
 				<ref bean="customerUpdateInvoiceUnpaid2OverdueTrigger" />
 				<ref bean="customerCreateNextCallingInvoicePDFTrigger" />
-			-->
 				<ref bean="customerInvoiceNotificationTrigger" />
+			-->
 			</list>
 		</property>
 		<property name="schedulerContextAsMap">

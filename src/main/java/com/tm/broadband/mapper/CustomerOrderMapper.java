@@ -59,7 +59,11 @@ public interface CustomerOrderMapper {
 	
 	void updateCustomerOrder(CustomerOrder customerOrder);
 	
-	void updateCustomerOrderServiceGivingNextInvoiceCreate(CustomerOrder customerOrder);
+	void updateCustomerOrderServiceGivingNextInvoiceEmpty(CustomerOrder customerOrder);
+	
+	void updateCustomerOrderSVCVLanRFSDateEmpty(CustomerOrder customerOrder);
+	
+	void updateCustomerOrderBroadbandASIDEmpty(CustomerOrder customerOrder);
 	
 	/* // END UPDATE AREA */
 	/* =================================================================================== */

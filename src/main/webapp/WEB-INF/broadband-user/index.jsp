@@ -348,7 +348,11 @@ hr {
 		                    	</li>
 								<li>
 		                    		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/manual-manipulation/call-international-rate/view/1">Calling International Rate</a>
+		                    		<a href="${ctx }/broadband-user/manual-manipulation/pstn-calling-rate/view/1">PSTN Calling Rate</a>
+		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/manual-manipulation/vos-voip-call-rate/view/1">VoIP Calling Rate</a>
 		                    	</li>
 		                    </ul>
 					  	</div>

@@ -491,7 +491,12 @@
 										</li>
 										<li>
 											<label>
-												<form:checkbox path="authArray" value="manual-manipulation/call-international-rate/view" data-type="checkbox_manual_manipulation" /> View Calling International Rate
+												<form:checkbox path="authArray" value="manual-manipulation/pstn-call-rate/view" data-type="checkbox_manual_manipulation" /> View PSTN Calling Rate
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="manual-manipulation/vos-voip-call-rate/view" data-type="checkbox_manual_manipulation" /> View VoIP Calling Rate
 											</label>
 										</li>
 									</ul>

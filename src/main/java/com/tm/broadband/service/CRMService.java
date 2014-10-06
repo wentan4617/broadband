@@ -583,8 +583,16 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		return this.customerOrderMapper.selectCustomerOrdersSum(page);
 	}
 	
-	public void editCustomerOrderServiceGivingNextInvoiceCreate(CustomerOrder customerOrder){
-		this.customerOrderMapper.updateCustomerOrderServiceGivingNextInvoiceCreate(customerOrder);
+	public void editCustomerOrderSVCVLanRFSDateEmpty(CustomerOrder customerOrder){
+		this.customerOrderMapper.updateCustomerOrderSVCVLanRFSDateEmpty(customerOrder);
+	}
+	
+	public void editCustomerOrderServiceGivingNextInvoiceEmpty(CustomerOrder customerOrder){
+		this.customerOrderMapper.updateCustomerOrderServiceGivingNextInvoiceEmpty(customerOrder);
+	}
+	
+	public void editCustomerOrderBroadbandASIDEmpty(CustomerOrder customerOrder){
+		this.customerOrderMapper.updateCustomerOrderBroadbandASIDEmpty(customerOrder);
 	}
 
 	@Transactional
@@ -3222,7 +3230,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		Date tenth = calTenth.getTime();
 		
 		CustomerInvoice ciQuery = new CustomerInvoice();
-		ciQuery.getParams().put("where", "create_date2_status2");
+		ciQuery.getParams().put("where", "create_date2_status2_due_date_is_not_null");
 		ciQuery.getParams().put("status", "unpaid");
 		ciQuery.getParams().put("status2", "overdue");
 		
@@ -3233,7 +3241,7 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		ciQuery.getParams().put("create_date2", ninth);
 		List<CustomerInvoice> cisEighthNinth = this.queryCustomerInvoices(ciQuery);
 		
-		ciQuery.getParams().put("where", "create_date_status2");
+		ciQuery.getParams().put("where", "create_date_status2_due_date_is_not_null");
 		ciQuery.getParams().remove("create_date2");
 		ciQuery.getParams().put("create_date", tenth);
 		List<CustomerInvoice> cisTenth = this.queryCustomerInvoices(ciQuery);
@@ -3688,6 +3696,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 		this.createCustomerTransaction(ct);
 
 		return json;
+	}
+	
+	public void sendCustomerSMSByCellphone(String cellphone,
+			String content){
+
+		this.smserService.sendSMSByAsynchronousMode(cellphone, content);
 	}
 	
 }
