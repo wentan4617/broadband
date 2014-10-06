@@ -555,7 +555,9 @@
 		
 		<!-- SV/CVLan Information -->
 		<hr />
-		<h4 class="text-success">SV/CVLan &amp; RFS(Ready For Service) Date Information</h4>
+		<h4 class="text-success">SV/CVLan &amp; RFS(Ready For Service) Date Information&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_svcvlan_btn_<.= customerOrder[i].id .>" data-type="svcvlan" data-dismiss="modal">Empty SV/CVLan, RFS Date</a>
+		</h4>
 		<hr />
 		<div class="row">
 			<div class="col-md-6">
@@ -617,8 +619,8 @@
 		<h4 class="text-success">
 			Service Given Information&nbsp;
 			<. if(user_role=='system-developer'){ .>
-				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_service_giving_date_btn_<.= customerOrder[i].id .>" data-date-type="service-giving" data-dismiss="modal">Empty Service Giving Date</a>
-				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_next_invoice_create_date_btn_<.= customerOrder[i].id .>" data-date-type="next-invoice-create" data-dismiss="modal">Empty Next Invoice Create Date</a>
+				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_service_giving_date_btn_<.= customerOrder[i].id .>" data-type="service-giving" data-dismiss="modal">Empty Service Giving Date</a>
+				<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_next_invoice_create_date_btn_<.= customerOrder[i].id .>" data-type="next-invoice-create" data-dismiss="modal">Empty Next Invoice Create Date</a>
 			<. } .>
 		</h4>
 		<hr />
@@ -686,7 +688,9 @@
 		
 		<!-- Broadband ASID -->
 		<hr />
-		<h4 class="text-success">Broadband ASID Information</h4>
+		<h4 class="text-success">Broadband ASID Information&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_broadband_asid_btn_<.= customerOrder[i].id .>" data-type="broadband_asid" data-dismiss="modal">Empty Broadband ASID</a>
+		</h4>
 		<hr />
 		<div class="row">
 			<div class="col-md-6">

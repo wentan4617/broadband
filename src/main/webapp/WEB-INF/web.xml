@@ -251,7 +251,8 @@
 		<!-- Manual Manipulation Module BEGIN -->
 		<url-pattern>/broadband-user/manual-manipulation/manual-manipulation-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/manual-manipulation/call-billing-record/view/*</url-pattern>
-		<url-pattern>/broadband-user/manual-manipulation/call-international-rate/view/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/pstn-call-rate/view/*</url-pattern>
+		<url-pattern>/broadband-user/manual-manipulation/vos-voip-call-rate/view/*</url-pattern>
 		<!-- Manual Manipulation Module END -->
 
 		<!-- Agent Module BEGIN -->

@@ -510,10 +510,18 @@
 				
 				// Empty order service giving or next invoice create date
 				// Get order service giving or next invoice create date Dialog
+				$('a[data-name="empty_svcvlan_btn_'+co[i].id+'"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
+					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
+					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty SV/CVLan, RFS Date!');
+					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty SV/CVLan, RFS Date?');
+				});
 				$('a[data-name="empty_service_giving_date_btn_'+co[i].id+'"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
-					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-date-type', $(this).attr('data-date-type'));
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
 					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
 					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Service Giving Date!');
 					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Service Giving Date?');
@@ -521,18 +529,45 @@
 				$('a[data-name="empty_next_invoice_create_date_btn_'+co[i].id+'"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
-					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-date-type', $(this).attr('data-date-type'));
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
 					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
 					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Next Invoice Create Date!');
 					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Next Invoice Create Date?');
 				});
+				$('a[data-name="empty_broadband_asid_btn_'+co[i].id+'"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
+					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
+					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Broadband ASID!');
+					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Broadband ASID?');
+				});
 				// Submit to rest controller
 				$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+co[i].id+'"]').click(function(){
-					var data = {
-							'id':this.id
-							,'date_type':$(this).attr('data-date-type')
-					};
-					$.post(ctx+'/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty', data, function(json){
+					var date_type = $(this).attr('data-type');
+					console.log(date_type);
+					var url = '';
+					var data = {};
+					if(date_type=='service-giving' || date_type=='next-invoice-create'){
+						url = ctx+'/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty';
+						data = {
+								'id':this.id
+								,'date_type':date_type
+						};
+					}
+					if(date_type=='svcvlan'){
+						url = ctx+'/broadband-user/crm/customer/order/svcvlan-rfsdate/empty';
+						data = {
+								'id':this.id
+						};
+					}
+					if(date_type=='broadband_asid'){
+						url = ctx+'/broadband-user/crm/customer/order/broadband_asid/empty';
+						data = {
+								'id':this.id
+						};
+					}
+					$.post(url, data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});

@@ -165,8 +165,8 @@ public class StevenTest {
 		
 //		SimpleMapperCreator smc = new SimpleMapperCreator();
 //		smc.setAuthor("CyberPark");
-//		smc.setModel("SEO");
-//		smc.setTable("tm_seo");
+//		smc.setModel("VOSVoIPRates");
+//		smc.setTable("tm_vos_voip_rates");
 //		smc.initial();
 		
 //		String str = "cyberpark/ccc/asd";

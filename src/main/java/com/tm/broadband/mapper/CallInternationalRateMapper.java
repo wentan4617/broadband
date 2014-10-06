@@ -30,7 +30,7 @@ public interface CallInternationalRateMapper {
 	/* =================================================================================== */
 	/* DELETE AREA */
 
-	void deleteCallInternationalRate(CallInternationalRate cir);
+	void deleteCallInternationalRate();
 	
 	/* // END DELETE AREA */
 
