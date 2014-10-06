@@ -61,7 +61,6 @@ import com.tm.broadband.validator.mark.OnlinePayByVoucherValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
-@SessionAttributes(value = { "customer", "orderPlan"})
 public class CustomerRestController {
 	
 	private CRMService crmService;
@@ -999,21 +998,28 @@ public class CustomerRestController {
 	
 	
 	
-	@RequestMapping("/plans/loading/{select_plan_id}/{select_plan_type}")
-	public Map<String, Map<String, List<Plan>>>  loadingPlans(
-			@PathVariable("select_plan_id") Integer id,
-			@PathVariable("select_plan_type") String type, HttpSession session) {
+	@RequestMapping("/plans/loading")
+	public Map<String, Map<String, List<Plan>>> loadingPlans(HttpSession session) {
 		
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
 		Plan plan = new Plan();
-		plan.getParams().put("plan_type", type);
-		plan.getParams().put("plan_class", "personal");
+		plan.getParams().put("plan_type", customerReg.getSelect_plan_type());
+		plan.getParams().put("plan_class", customerReg.getSelect_customer_type());
 		plan.getParams().put("plan_status", "selling");
-		plan.getParams().put("plan_group_false", "plan-topup");
+		System.out.println("customerReg.getSelect_plan_group(): " + customerReg.getSelect_plan_group());
+		if ("plan-topup".equals(customerReg.getSelect_plan_group())) {
+			System.out.println("topup");
+			plan.getParams().put("plan_group", "plan-topup");
+		} else {
+			System.out.println("!!!topup");
+			plan.getParams().put("plan_group_false", "plan-topup");
+		}
 		plan.getParams().put("orderby", "order by plan_price");
 		
-		if ("VDSL".equals(type) && customerReg.getCustomerOrder().getSale_id() != null) {
+		if ("VDSL".equals(customerReg.getSelect_plan_type()) 
+				&& customerReg.getCustomerOrder().getSale_id() != null
+				&& "personal".equals(customerReg.getSelect_customer_type())) {
 			plan.getParams().put("id", 42);
 		}
 		
@@ -1104,6 +1110,35 @@ public class CustomerRestController {
 		customerReg.setIdentity_type(customer.getIdentity_type());
 		customerReg.setIdentity_number(customer.getIdentity_number());
 		customerReg.setCustomer_type(customer.getCustomer_type());
+		
+		customerReg.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
+		
+		this.crmService.doPlansOrderConfirm(customerReg);
+		
+		json.setUrl("/plans/order/summary");
+		
+		return json;
+	}	
+	
+	@RequestMapping(value = "/plans/order/confirm/business", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmBusiness(
+			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		customerReg.setCellphone(customer.getCellphone());
+		customerReg.setEmail(customer.getEmail());
+		customerReg.setTitle(customer.getTitle());
+		customerReg.setFirst_name(customer.getFirst_name());
+		customerReg.setLast_name(customer.getLast_name());
+		customerReg.setIdentity_type(customer.getIdentity_type());
+		customerReg.setIdentity_number(customer.getIdentity_number());
+		customerReg.setCustomer_type(customer.getCustomer_type());
+		
+		customerReg.setOrganization(customer.getOrganization());
 		
 		customerReg.setCustomerOrder(customer.getCustomerOrder());
 		

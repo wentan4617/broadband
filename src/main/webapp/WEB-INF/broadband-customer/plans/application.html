@@ -1,19 +1,19 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
 		<h4 class="panel-title">
-			Your Application Form
+			<.=select_customer_type=='personal'?'Your':'Business'.> Application Form
 		</h4>
 	</div>
 	
 	<div class="panel-body">
 	
 		<!-- create account -->
-		<h4 class="text-success">Create Your Account</h4>
+		<h4 class="text-success">Create <.=select_customer_type=='personal'?'Your':'Business'.> Account</h4>
 		<hr />
 
 		<div class="form-group">
 			<label for="cellphone" class="control-label col-md-4">
-				Your Mobile <span class="text-danger">(*)</span>
+				<.=select_customer_type=='personal'?'Your':'Business'.> Mobile <span class="text-danger">(*)</span>
 			</label>
 			<div class="col-md-4">
 				<input type="text" id="cellphone" value="<.=cellphone.>" class="form-control" placeholder="e.g.: 0210800123" data-error-field />
@@ -21,7 +21,7 @@
 		</div>
 		<div class="form-group">
 			<label for="email" class="control-label col-md-4">
-				Your Email <span class="text-danger">(*)</span>
+				<.=select_customer_type=='personal'?'Your':'Business'.> Email <span class="text-danger">(*)</span>
 			</label>
 			<div class="col-md-4">
 				<input type="text" id="email" value="<.=email.>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field />
@@ -47,7 +47,7 @@
 			
 			<div class="form-group">
 				<label class="control-label col-md-4">
-					Homeline Number <span class="text-danger">(*)</span>
+					<.=select_customer_type=='personal'?'Homeline':'Businessline'.> Number <span class="text-danger">(*)</span>
 				</label>
 				<div class="col-md-4">
 					<input type="text" id="customerOrder.transition_porting_number" value="<.=transition_porting_number.>" class="form-control" />
@@ -102,9 +102,11 @@
 		<!-- Personal Information -->
 
 		<hr />
-		<h4 class="text-success">Personal Information</h4>
+		<h4 class="text-success"><.=select_customer_type=='personal'?'Personal Information':'Group/Organization Information'.></h4>
 		<hr />
 
+		<.if (select_customer_type == 'personal') { .>
+		
 		<div class="form-group">
 			<label for="title" class="control-label col-md-4">Title</label>
 			<div class="col-md-2">
@@ -137,11 +139,92 @@
 				<input type="text" id="last_name" value="<.=last_name.>" class="form-control" data-error-field />
 			</div>
 		</div>
+		
+		<.} else if (select_customer_type == 'business') {.>
+		
+		<div class="form-group">
+			<label for="organization.org_type" class="control-label col-md-4">Group/Organization Type</label>
+			<div class="col-md-6">
+				<select id="organization.org_type" class="selectpicker show-tick form-control" data-error-field>
+				<. var org_types = ['NZ Incorporated Company', 'Limited Partnership', 'Sole Trader', 'Partnership', 'Trust', 'Overseas Company', 'Society'];
+					for (var i = 0, len = org_types.length; i < len; i++) {
+						if (org_type == org_types[i]) {.>
+					<option value="<.=org_types[i].>" selected="selected"><.=org_types[i].></option>
+						<.} else { .>
+					<option value="<.=org_types[i].>"><.=org_types[i].></option>
+						<.}
+					}
+				.>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.org_name" class="control-label col-md-4">Group/Organization Name</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.org_name" value="<.=org_name.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.org_trading_name" class="control-label col-md-4">Trading Name</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.org_trading_name" value="<.=org_trading_name.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.org_register_no" class="control-label col-md-4">Registration No.</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.org_register_no" value="<.=org_register_no.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.org_incoporate_date" class="control-label col-md-4">Date Incorporated</label>
+			<div class="col-md-4">
+				<div class="input-group date">
+			  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" class="form-control" class="form-control"  data-error-field />
+			  		<span class="input-group-addon">
+			  			<i class="glyphicon glyphicon-calendar"></i>
+			  		</span>
+				</div>
+			</div>
+		</div>
+		
+		<!-- Contract Details -->
+		
+		<hr/>
+		<h4 class="text-success">Contract Details / Holder Account</h4>
+		<hr/>
+		
+		<div class="form-group">
+			<label for="organization.holder_name" class="control-label col-md-4">Full name</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.holder_name" value="<.=holder_name.>" class="form-control"  data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.holder_job_title" class="control-label col-md-4">Job title</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.holder_job_title" value="<.=holder_job_title.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.holder_phone" class="control-label col-md-4">Phone Number</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.holder_phone" value="<.=holder_phone.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="organization.holder_email" class="control-label col-md-4">Email Address</label>
+			<div class="col-md-6">
+				<input type="text" id="organization.holder_email" value="<.=holder_email.>" class="form-control" data-error-field/>
+			</div>
+		</div>
+							
+		<.}.>
 
 
 		<!-- For ID Purpose Only -->
 
-		<!-- <hr />
+		<hr />
 		<h4 class="text-success">For ID Purpose Only</h4>
 		<hr />
 
@@ -168,7 +251,7 @@
 			<div class="col-md-4">
 				<input type="text" id="identity_number" value="<.=identity_number.>" class="form-control" data-error-field />
 			</div>
-		</div> -->
+		</div>
 		
 		
 		<!-- Preferred connection date -->
@@ -185,11 +268,26 @@
 		
 		<div class="form-group">
 			<label for="connection_date" class="control-label col-md-4">Connection date</label>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<p class="form-control-static">
 					<label>
 						<input type="radio" name="connection_date" value="ASAP"/> <!-- checked="checked" -->
 						&nbsp; <strong>ASAP</strong>
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="am" class="control-label col-md-4"></label>
+			<div class="col-md-3">
+				<p class="form-control-static">
+					<label>
+						<input type="radio" name="am" value="AM" checked="checked"/> <!-- checked="checked" -->
+						&nbsp; <strong>AM</strong>
+					</label>&nbsp;
+					<label>
+						<input type="radio" name="am" value="PM"/> <!-- checked="checked" -->
+						&nbsp; <strong>PM</strong>
 					</label>
 				</p>
 			</div>

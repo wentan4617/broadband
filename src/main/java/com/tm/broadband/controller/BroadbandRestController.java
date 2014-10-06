@@ -13,45 +13,35 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.util.broadband.BroadbandCapability;
 
 @RestController
-@SessionAttributes(value = { "customer", "orderCustomer"})
 public class BroadbandRestController {
 
 	public BroadbandRestController() {
 	}
 	
 	@RequestMapping("/plans/address/check/{address}")
-	public Broadband plansCheckAddress(@PathVariable("address") String address,
-			HttpSession session) {
+	public Broadband plansCheckAddress(HttpSession session
+			, @PathVariable("address") String address) {
+		
 		System.out.println("customerReg check address");
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
-		if (customerReg != null) {
-			System.out.println("this is old customerReg");
-			return returnBroadband(address, customerReg);
-		} else {
-			System.out.println("this is new customerReg");
+		if (customerReg == null) {
+			System.out.println("this is new customerReg, 1");
 			customerReg = new Customer();
+			customerReg.setSelect_customer_type("personal");
 			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-			customerReg.setSelect_plan_id(0);
-			customerReg.setSelect_plan_type("0");
+			customerReg.getCustomerOrder().setPromotion(false);
 			session.setAttribute("customerReg", customerReg);
 			return returnBroadband(address, customerReg);
+		} else {
+			System.out.println("this is old customerReg");
+			return returnBroadband(address, customerReg);
 		}
-	}
-	
-	@RequestMapping("/address/check/{address}")
-	public Broadband checkAddress(@PathVariable("address") String address,
-			HttpSession session) {
-		System.out.println("customer check address");
-		Customer customer = (Customer) session.getAttribute("customer");
-		if (customer != null) {
-			return returnBroadband(address, customer);
-		}
-		return null;
 	}
 	
 	@RequestMapping("/sale/plans/address/check/{address}")
-	public Broadband checkAddressSale(@PathVariable("address") String address,
-			HttpSession session) {
+	public Broadband checkAddressSale(HttpSession session
+			, @PathVariable("address") String address) {
+		
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
 		if (customerRegSale != null) {
 			System.out.println("this is old customerReg");
@@ -65,12 +55,6 @@ public class BroadbandRestController {
 			session.setAttribute("customerRegSale", customerRegSale);
 			return returnBroadband(address, customerRegSale);
 		}
-	}
-	
-	@RequestMapping("/sale/address/check/{address}")
-	public Broadband checkAddressSale(@PathVariable("address") String address,
-			@ModelAttribute("orderCustomer") Customer customer) {
-		return returnBroadband(address, customer);
 	}
 	
 	private Broadband returnBroadband(String address, Customer customer) {
@@ -113,25 +97,13 @@ public class BroadbandRestController {
 		if (broadband.isUfb_available()) { // "UFB".equals(customer.getSelect_plan_type()) && 
 			customer.setServiceAvailable(true);
 		}
-		if ("0".equals(customer.getSelect_plan_type())) {
-			if (broadband.isAdsl_available() || broadband.isVdsl_available() || broadband.isUfb_available()) {
-				customer.setServiceAvailable(true);
-			}
+		
+		if ("plan-topup".equals(customer.getSelect_plan_group())) {
+			broadband.setVdsl_available(false);
+			broadband.setUfb_available(false);
 		}
 		
 		return broadband;
-	}
-	
-	@RequestMapping(value = "/do/service")
-	public void doServiceAvailable(HttpSession session) {
-
-		Customer customer = (Customer) session.getAttribute("customer");
-		
-		if (customer != null) {
-			customer.setServiceAvailable(true);
-			System.out.println("do service...");
-		}
-
 	}
 
 }

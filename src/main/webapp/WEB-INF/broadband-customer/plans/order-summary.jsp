@@ -35,7 +35,14 @@
 			<div class="row">
 				<div class="col-md-6 col-xs-12 col-sm-12">
 					<h4 class="text-success">
-						${customerReg.title } ${customerReg.first_name } ${customerReg.last_name }
+						<c:choose>
+							<c:when test="${customerReg.customer_type == 'personal' }">
+								${customerReg.title } ${customerReg.first_name } ${customerReg.last_name }
+							</c:when>
+							<c:when test="${customerReg.customer_type == 'business' }">
+								${customerReg.organization.org_name }
+							</c:when>
+						</c:choose>
 					</h4>
 				</div>
 			</div>
@@ -63,7 +70,69 @@
 			
 			
 			
-			<hr />
+			<c:if test="${customerReg.customer_type == 'business' }">
+			
+			<hr style="margin-top:0;"/>
+			<h2>Business Information</h2>
+			<hr style="margin-top:0;"/>
+			
+			<div class="row">
+				<div class="col-sm-4"><strong>Organization Type</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_type }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Trading Name</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_trading_name }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Registration No.</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_register_no }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Date Incoporated</strong></div>
+				<div class="col-sm-6">
+					<strong class="text-info">
+						<fmt:formatDate  value="${customerReg.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
+					</strong>
+				</div>
+			</div>
+			<hr /><!-- style="margin-top:0;" -->
+			<h2>Account Holder Information</h2>
+			<hr style="margin-top:0;"/>
+			<div class="row" >
+				<div class="col-sm-4"><strong>Full name</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_name }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Job Title</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_job_title }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Phone</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_phone }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Email</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_email }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Identity Type</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_type }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Identity Number</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_number }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Connection Date</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.connection_date }</strong></div>
+			</div>
+			
+			</c:if>
+			
+			<c:if test="${customerReg.customer_type == 'personal' }">
+			
+			<hr /><!-- style="margin-top:0;" -->
 			<h2>Personal Information</h2>
 			<hr style="margin-top:0;"/>
 			
@@ -75,25 +144,27 @@
 				<div class="col-sm-4"><strong>Email</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.email }</strong></div>
 			</div>
-			<%-- <div class="row" style="margin-top:5px;">
+			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Type</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_type }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Number</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.identity_number }</strong></div>
-			</div> --%>
+			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Connection Date</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.connection_date }</strong></div>
 			</div>
+			
+			</c:if>
 			
 			<c:if test="${customerReg.customerOrder.order_broadband_type == 'transition' }">
 				<hr />
 				<h2>Transition</h2>
 				<hr style="margin-top:0;"/>
 				<div class="row" >
-					<div class="col-sm-4"><strong>Homeline Number</strong></div>
+					<div class="col-sm-4"><strong>Phoneline Number</strong></div>
 					<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.transition_porting_number }</strong></div>
 				</div>
 				<div class="row" style="margin-top:5px;">
@@ -119,7 +190,17 @@
 						<th>Service / Product</th>
 						<th>Data</th>
 						<!-- <th>Term</th> -->
-						<th>Monthly Charge</th>
+						<th>
+							<c:choose>
+								<c:when test="${customerReg.select_plan_group == 'plan-topup' }">
+								Weekly Charge
+								</c:when>
+								<c:otherwise>
+								Monthly Charge
+								</c:otherwise>
+							</c:choose>
+							
+						</th>
 						<th>Qty</th>
 						<th>Sub Total</th>
 					</tr>
@@ -195,6 +276,9 @@
 				
 					<table class="table">
 						<tbody>
+						<c:choose>
+							<c:when test="${customerReg.customer_type == 'personal' }">
+							
 							<tr>
 								<td>Total before GST</td>
 								<td>
@@ -231,6 +315,37 @@
 									<strong class="text-success" id="TAAVPrice"></strong>
 								</td>
 							</tr>
+							
+							</c:when>
+							
+							<c:when test="${customerReg.customer_type == 'business' }">
+							
+							<tr>
+								<td>Order Price</td>
+								<td>
+									NZ$ 
+									<fmt:formatNumber value="${(customerReg.customerOrder.order_total_price + customerReg.customerOrder.discount_price)/1.15}" type="number" pattern="#,##0.00" />
+								</td>
+							</tr>
+							<tr>
+								<td>Plus GST at 15% </td>
+								<td>
+									NZ$ 
+									<fmt:formatNumber value="${(customerReg.customerOrder.order_total_price + customerReg.customerOrder.discount_price)/1.15 * 0.15}" type="number" pattern="#,##0.00" />
+								</td>
+							</tr>
+							<tr>
+								<td><strong>Order Total</strong></td>
+								<td>
+									<strong class="text-success">
+										NZ$ 
+										<fmt:formatNumber value="${customerReg.customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
+									</strong>
+								</td>
+							</tr>
+												
+							</c:when>
+						</c:choose>
 						</tbody>
 					</table>
 				</div>
@@ -247,8 +362,8 @@
 			
 			<div id="alertContainer"></div>
 					
-			<div id="tempAlertSuccessContainer" style="display:none;">
-				<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none;">
+			<div id="tempAlertSuccessContainer" style="display:none">
+				<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
 					<span id="text-success"></span>
 				</div>

@@ -1,39 +1,77 @@
 (function($) {
 	
-	var ctx = $('#select_plan_tmpl').attr('data-ctx')
-		, select_plan_id = $('#select_plan_tmpl').attr('data-select_plan_id')
-		, select_plan_type = $('#select_plan_tmpl').attr('data-select_plan_type')
+	var select_plan_tmpl = $('#select_plan_tmpl')
+		, ctx = select_plan_tmpl.attr('data-ctx')
+		, select_plan_group = select_plan_tmpl.attr('data-select_plan_group')
+		, select_plan_id = select_plan_tmpl.attr('data-select_plan_id')
+		, select_plan_type = select_plan_tmpl.attr('data-select_plan_type')
+		, select_customer_type = select_plan_tmpl.attr('data-select_customer_type')
+		, sale_id = select_plan_tmpl.attr('data-sale-id')
+		, promotion = select_plan_tmpl.attr('data-promotion') == 'true' ? true : false
+		
 		, customer_address = $('#order_modal_tmpl').attr('data-customer-address')
 		, select_modem_container = $('#select-modem')
 		, prepay_months_container = $('#prepay-month')
 		, open_term_container = $('#open-term')
-		, sale_id = $('#select_plan_tmpl').attr('data-sale-id')
-		, promotion = Boolean($('#select_plan_tmpl').attr('data-promotion'))
+		
+		
+	var open_term_tmpl = $('#open_term_tmpl')
+		, contract = open_term_tmpl.attr('data-contract')
+		
+	var prepay_month_tmpl = $('#prepay_month_tmpl')
+	
+	var select_modem_tmpl = $('#select_modem_tmpl')
+	
+	var broadband_options_tmpl = $('#broadband_options_tmpl')
 		
 	var	application = $('#application_tmpl') 
-	, cellphone = application.attr('data-cellphone')
-	, email = application.attr('data-email')
-	, title = application.attr('data-title')
-	, first_name = application.attr('data-first_name')
-	, last_name = application.attr('data-last_name')
-	, identity_type = application.attr('data-identity_type')
-	, identity_number = application.attr('data-identity_number')
-	, _transition_provider_name = application.attr('data-_transition_provider_name')
-	, transition_provider_name  = application.attr('data-transition_provider_name')
-	, transition_account_holder_name = application.attr('data-transition_account_holder_name')
-	, transition_account_number = application.attr('data-transition_account_number')
-	, transition_porting_number  = application.attr('data-transition_porting_number')
+		, cellphone = application.attr('data-cellphone')
+		, email = application.attr('data-email')
+		, title = application.attr('data-title')
+		, first_name = application.attr('data-first_name')
+		, last_name = application.attr('data-last_name')
+		, identity_type = application.attr('data-identity_type')
+		, identity_number = application.attr('data-identity_number')
+		, _transition_provider_name = application.attr('data-_transition_provider_name')
+		, transition_provider_name  = application.attr('data-transition_provider_name')
+		, transition_account_holder_name = application.attr('data-transition_account_holder_name')
+		, transition_account_number = application.attr('data-transition_account_number')
+		, transition_porting_number  = application.attr('data-transition_porting_number')
+		, org_type = application.attr('data-org_type')
+		, org_name = application.attr('data-org_name')
+		, org_trading_name = application.attr('data-org_trading_name')
+		, org_register_no = application.attr('data-org_register_no')
+		, org_incoporate_date = application.attr('data-org_incoporate_date')
+		, holder_name = application.attr('data-holder_name')
+		, holder_job_title = application.attr('data-holder_job_title')
+		, holder_phone = application.attr('data-holder_phone')
+		, holder_email = application.attr('data-holder_email')
 	
 	var plan = {};
 	var modems = [];
 	var modem_selected = null;
 	var naked = false;
 	var has_voip = false;
-	var modem_name = "";
-	var isContract = (sale_id == '20023' ? true : false);
-	var contract_name = "";
-	var order_broadband_type = "Transfer Broadband Connection";
-	var prepay_months = 1;
+	var modem_name = '';
+	var isContract = false;
+	if (select_customer_type == 'personal') {
+		if (select_plan_group == 'plan-topup') {
+			isContract = false;
+		} else {
+			isContract = (select_plan_type == 'VDSL' && sale_id == '20023' ? true : false);
+			if (contract == '12 months contract') {
+				isContract = true;
+			} else if (contract == 'open term') {
+				isContract = false;
+			}
+		}
+	} else if (select_customer_type == 'business') {
+		isContract = true;
+	}
+	
+	var contract_name = '';
+	var order_broadband_type = 'Transfer Broadband Connection';
+	var prepay_months = prepay_month_tmpl.attr('data-prepay_months');
 	var discount_desc = '';
 	var connection_date = 'ASAP';
 	var hardware_class = '';
@@ -53,9 +91,15 @@
 	} else if (select_plan_type == 'UFB') {
 		months_selected = '12';
 	}
-	var hardware_id_selected = '0';
+	if (prepay_months != '') {
+		months_selected = prepay_months;
+	}
+	var hardware_id_selected = select_modem_tmpl.attr('data-hardware_id_selected'); //console.log(hardware_id_selected == '');
+	if (hardware_id_selected == '') {
+		hardware_id_selected = '0';
+	} //console.log(hardware_id_selected);
 	var hardware_value_selected = 'withoutmodem';
-	var broadband_value_selected = 'transition';
+	var broadband_value_selected = broadband_options_tmpl.attr('data-order_broadband_type');
 	
 	var price = {
 		plan_price: 0
@@ -69,18 +113,19 @@
 	};
 		
 	function loadingPlans() {
-		var url = ctx + '/plans/loading/' + select_plan_id + "/" + select_plan_type;
+		var url = ctx + '/plans/loading';
 		$.get(url, function(planTypeMap){
 			
 			var planMap = planTypeMap[select_plan_type];
-			var plansClothed = planMap['plansClothed'];
+			var plansClothed = planMap['plansClothed']; //console.log(plansClothed);
 			var plansNaked = planMap['plansNaked'];
 			
 			var o = {
 				ctx: ctx
-				, sale_id: sale_id
+				, select_plan_group: select_plan_group
 				, select_plan_id: select_plan_id 
 				, select_plan_type: select_plan_type
+				, sale_id: sale_id
 				, plansClothed: plansClothed
 				, plansNaked: plansNaked
 			};
@@ -102,36 +147,39 @@
 					var plan_id = Number($div.attr('data-plan-id'));
 					var plan_sort = $div.attr('data-plan_sort');
 					
+					//console.log(plan_sort);
+					
 					if (plan_sort == 'CLOTHED') {
 						$.each(plansClothed, function(){
 							if (this.id == plan_id) {
-								plan = this;
+								plan = $.extend({}, this);
 								return false;
 							}
 						});
 					} else if (plan_sort == 'NAKED') {
 						$.each(plansNaked, function(){
 							if (this.id == plan_id) {
-								plan = this;
+								plan = $.extend({}, this);
 								return false;
 							}
 						});
 					}
 					
 					//console.log(plan);
-					if (promotion) {
+					//console.log(promotion);
+					if (promotion && select_plan_type == 'VDSL') { //console.log('promotion');
 						plan.plan_name = plan.plan_name.replace(/Homeline/g, 'VoIP Homeline');
 						naked = (plan.pstn_count = 0) > 0 ? false : true;
 						has_voip = (plan.voip_count = 1) > 0 ? true : false;
-					} else {
+					} else { console.log('normal');
 						naked = plan.pstn_count > 0 ? false : true;
 						has_voip = plan.voip_count > 0 ? true : false;
 					}
 					
+					//console.log(naked);
 					
 					price.plan_price = plan.plan_price;
 					price.service_price = plan.transition_fee;
-					
 					
 					flushOpenTerm();
 				});
@@ -157,6 +205,8 @@
 	function flushOpenTerm() {
 		var o = {
 			ctx: ctx
+			, select_plan_group: select_plan_group
+			, select_customer_type: select_customer_type
 			, select_plan_type: select_plan_type
 			, sale_id: sale_id
 		};
@@ -169,7 +219,11 @@
 				isContract = false;
 				contract_name = '';
 				//prepay_months_container.show('fast');
+				if (select_plan_type == 'UFB' && months_selected != '12') {
+					months_selected = '12';
+				}
 				flushPrepayMonth();
+				
 			} else if (value == '12months') {
 				isContract = true;
 				contract_name = '12 months contract';
@@ -194,7 +248,10 @@
 		var o = {
 			ctx: ctx
 			, price: price
+			, select_plan_group: select_plan_group
+			, select_customer_type: select_customer_type
 			, select_plan_type: select_plan_type
+			, isContract: isContract
 			, sale_id: sale_id
 		};
 		$('#prepay-month').html(tmpl('prepay_month_tmpl', o));
@@ -221,13 +278,14 @@
 							return false;
 						}
 					});
-					console.log(modem_selected);
+					//console.log(modem_selected);
 					if (modem_selected != null) {
 						//modem_selected.hardware_price = 0;
 						hardware_id_selected = modem_selected.id; //console.log(hardware_id_selected);
 						hardware_value_selected = 'open-term'; //console.log(hardware_value_selected);
 					}
 				} else {
+					//console.log('running');
 					discount_desc = '3% off the total price of 3 months plan';
 					prepay_months = 3;
 					price.discount_price = parseInt(price.plan_price * 3 * 0.03);
@@ -270,7 +328,7 @@
 				}
 				
 				//modem_selected = modems && $.extend({}, modems[0]);
-				console.log(modem_selected);
+				//console.log(modem_selected);
 				if (modem_selected != null) {
 					//modem_selected.hardware_price = 0;
 					hardware_id_selected = modem_selected.id; //console.log(hardware_id_selected);
@@ -290,27 +348,11 @@
 		var months_oo = $('input[name="prepaymonths"][value="' + months_selected + '"]');
 		months_oo.iCheck('check');
 	}
-
-	//flushPrepayMonth();
-	
-	/*function loadingModems() {
-		if (select_plan_type == 'ADSL') {
-			hardware_class = 'router-adsl';
-		} else if (select_plan_type == 'VDSL') {
-			hardware_class = 'router-vdsl';
-		} else if (select_plan_type == 'UFB') {
-			hardware_class = 'router-ufb';
-		}
-		var url = ctx + "/plans/hardware/loading/" + hardware_class;
-		$.get(url, function(hardwares){ //console.log(hardwares);
-			modems = hardwares;
-			flushModems();
-		});
-	}*/
 	
 	function flushModems() {
 		var o = {
 			ctx: ctx
+			, select_plan_type: select_plan_type
 			, sale_id: sale_id
 			, prepay_months: prepay_months
 			, isContract: isContract
@@ -319,7 +361,7 @@
 		if (prepay_months == 12) {
 			o.hardwares = [modem_selected];
 		}
-		if (sale_id == '20023' && prepay_months == 3) {
+		if (select_plan_type == 'VDSL' && sale_id == '20023' && prepay_months == 3) {
 			o.hardwares = [modem_selected];
 		}
 		$('#select-modem').html(tmpl('select_modem_tmpl', o));		
@@ -343,11 +385,11 @@
 						modem_selected = this;
 						if (isContract) {
 							if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {
-								if (sale_id == '20023') {
+								if (sale_id == '20023' && select_plan_type == 'VDSL') {
 									price.modem_price = parseInt(0);
 									price.save_modem_price = parseInt(this.hardware_price);
 								} else {
-									if (this.id == 3) {
+									if (this.id == 3 || this.id == 1) {
 										price.modem_price = parseInt(0);
 										price.save_modem_price = parseInt(this.hardware_price);
 									} else {
@@ -355,7 +397,6 @@
 										price.save_modem_price = parseInt(this.hardware_price/2);
 									}
 								}
-								
 							} else if (prepay_months == 12) {
 								price.modem_price = parseInt(0);
 								price.save_modem_price = parseInt(this.hardware_price);
@@ -380,13 +421,12 @@
 			flushOrderModal();
 		});
 		
-		var modem_oo = $('input[name="modem"][data-id="' + hardware_id_selected + '"]').first();
-		modem_oo.iCheck('check');
-		
-		/*if (prepay_months != 12) {
-			var modem_oo = $('input[name="modem"][data-id="' + hardware_id_selected + '"]').first();
-			modem_oo.iCheck('check');
-		}*/
+		var count = $('input[name="modem"][data-id="' + hardware_id_selected + '"]').length;
+		if (count > 0) {
+			$('input[name="modem"][data-id="' + hardware_id_selected + '"]').iCheck('check');
+		} else {
+			$('input[name="modem"]').first().iCheck('check');
+		}
 		
 	}
 	
@@ -395,6 +435,7 @@
 	function flushApplication() {
 		var o = { 
 			ctx: ctx 
+			, select_customer_type: select_customer_type
 			, prepay_months: prepay_months
 			, plan: plan
 			, cellphone: cellphone
@@ -409,10 +450,24 @@
 			, transition_account_holder_name: transition_account_holder_name
 			, transition_account_number: transition_account_number
 			, transition_porting_number: transition_porting_number
+			, org_type: org_type
+			, org_name: org_name
+			, org_trading_name: org_trading_name
+			, org_register_no: org_register_no
+			, org_incoporate_date: org_incoporate_date
+			, holder_name: holder_name
+			, holder_job_title: holder_job_title
+			, holder_phone: holder_phone
+			, holder_email: holder_email
 		};
 		$('#application').html(tmpl('application_tmpl', o));
 		$('input[name="connection_date"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('.selectpicker').selectpicker(); 
+		$('.input-group.date').datepicker({
+		    format: "yyyy-mm-dd",
+		    autoclose: true,
+		    todayHighlight: true
+		});
 		
 		$('#transition_provider_name').change(function(){
 			var value = this.value;
@@ -446,8 +501,6 @@
 			cal.datepicker('update', null);
 		});
 		
-		
-		
 		$('input[name="connection_date"]').iCheck('check');
 		
 	}
@@ -457,6 +510,7 @@
 	function flushBroadbandOptions() {
 		var o = { 
 			ctx: ctx 
+			, select_customer_type: select_customer_type
 			, sale_id: sale_id
 			, prepay_months: prepay_months
 			, isContract: isContract
@@ -464,7 +518,7 @@
 		};
 		$('#broadband-options').html(tmpl('broadband_options_tmpl', o));
 		
-		$('input[name="order_broadband_type"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
+		$('input[name="order_broadband_type"],input[name="am"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="order_broadband_type"]').on('ifChecked', function(){
 			var value = this.value;
 			broadband_value_selected = value;
@@ -478,31 +532,37 @@
 			} else if (value == 'new-connection') {
 				order_broadband_type = "New Connection Only";
 				$('#transitionContainer').hide('fast');
-				if (isContract) {
-					if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {
-						if (sale_id == '20023') {
+				if (select_customer_type == 'personal') {
+					if (isContract) {
+						if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {
+							if (sale_id == '20023') {
+								price.service_price = 0;
+								price.save_service_price = plan.plan_new_connection_fee;
+							} else {
+								price.service_price = 49;
+								price.save_service_price = plan.plan_new_connection_fee - 49;
+							}
+						} else if (prepay_months == 12) {
 							price.service_price = 0;
 							price.save_service_price = plan.plan_new_connection_fee;
-						} else {
-							price.service_price = 49;
-							price.save_service_price = plan.plan_new_connection_fee - 49;
 						}
-					} else if (prepay_months == 12) {
-						price.service_price = 0;
-						price.save_service_price = plan.plan_new_connection_fee;
+					} else {
+						if (prepay_months == 1) {
+							price.service_price = parseInt(plan.plan_new_connection_fee);
+							price.save_service_price = 0;
+						} else if (prepay_months == 3 || prepay_months == 6) {
+							price.service_price = plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months);
+							price.save_service_price = parseInt((plan.plan_new_connection_fee/12)*prepay_months);
+						} else if (prepay_months == 12) {
+							price.service_price = 0;
+							price.save_service_price = plan.plan_new_connection_fee;
+						}
 					}
-				} else {
-					if (prepay_months == 1) {
-						price.service_price = parseInt(plan.plan_new_connection_fee);
-						price.save_service_price = 0;
-					} else if (prepay_months == 3 || prepay_months == 6) {
-						price.service_price = plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months);
-						price.save_service_price = parseInt((plan.plan_new_connection_fee/12)*prepay_months);
-					} else if (prepay_months == 12) {
-						price.service_price = 0;
-						price.save_service_price = plan.plan_new_connection_fee;
-					}
+				} else if (select_customer_type == 'business') {
+					price.service_price = 0;
+					price.save_service_price = plan.plan_new_connection_fee;
 				}
+				
 				startDate = "+12d";
 			} else if (value == 'jackpot') {
 				order_broadband_type = "New Connection & Phone Jack Installation";
@@ -529,10 +589,12 @@
 			, sale_id: sale_id
 			, select_plan_id: select_plan_id
 			, select_plan_type: select_plan_type
+			, select_customer_type: select_customer_type
 			, customer_address: customer_address
 			, plan: plan
 			, price: price
 			, naked: naked
+			, has_voip: has_voip
 			, modem_name: modem_name
 			, isContract: isContract
 			, contract_name: contract_name
@@ -551,7 +613,13 @@
 	 */
 	
 	function confirm() {
-		var url = ctx + '/plans/order/confirm';
+		
+		if (select_customer_type == 'personal') {
+			var url = ctx + '/plans/order/confirm';
+		} else if (select_customer_type == 'business') {
+			var url = ctx + '/plans/order/confirm/business';
+		}
+		
 		var l = Ladda.create(this); l.start();
 		var customer = {
 			address: customer_address
@@ -560,18 +628,21 @@
 			, title: $('#title').val()
 			, first_name: $('#first_name').val()
 			, last_name: $('#last_name').val()
-			/*, identity_type: $('#identity_type').val()
-			, identity_number: $('#identity_number').val()*/
-			, customer_type: 'personal'
+			, identity_type: $('#identity_type').val()
+			, identity_number: $('#identity_number').val()
+			, customer_type: select_customer_type
 			, customerOrder: {
 				order_broadband_type: $('input[name="order_broadband_type"]:checked').val()
 				, prepay_months: prepay_months
 				, contract: (contract_name == '' ? 'open term' : contract_name)
-				, connection_date: connection_date
+				, connection_date: connection_date + ', ' + $('input[name="am"]').val()
 				, plan: plan
 				, sale_id: sale_id
+				, promotion: promotion
 				, hardwares: [modem_selected]
+				, hardware_id_selected: hardware_id_selected
 			}
+			, organization: {}
 		};
 			
 		if (customer.customerOrder.order_broadband_type == 'transition') {
@@ -580,6 +651,18 @@
 			customer.customerOrder.transition_account_holder_name = $('#customerOrder\\.transition_account_holder_name').val();
 			customer.customerOrder.transition_account_number = $('#customerOrder\\.transition_account_number').val();
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
+		}
+		
+		if (customer.customer_type == 'business') {
+			customer.organization.org_type = $('#organization\\.org_type').val();
+			customer.organization.org_name = $('#organization\\.org_name').val();
+			customer.organization.org_trading_name = $('#organization\\.org_trading_name').val();
+			customer.organization.org_register_no = $('#organization\\.org_register_no').val();
+			customer.organization.org_incoporate_date = $('#organization\\.org_incoporate_date').val();
+			customer.organization.holder_name = $('#organization\\.holder_name').val();
+			customer.organization.holder_job_title = $('#organization\\.holder_job_title').val();
+			customer.organization.holder_phone = $('#organization\\.holder_phone').val();
+			customer.organization.holder_email = $('#organization\\.holder_email').val();
 		}
 	 	
 		console.log(customer);

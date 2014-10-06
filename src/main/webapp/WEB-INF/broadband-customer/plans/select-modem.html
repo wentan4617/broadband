@@ -22,11 +22,11 @@
 						<span style="float:right;font-size:18px;font-weight:bold;">
 						<.if (isContract) {.>
 							<.if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {.>
-								<.if (sale_id == '20023') {.>
+								<.if (sale_id == '20023' && select_plan_type == 'VDSL') {.>
 							<span class="text-danger">$<.=parseInt(0).></span>, 
 							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>
 								<.} else {.>
-									<.if (hardware.id == 3) {.>
+									<.if (hardware.id == 3 || hardware.id == 1) {.>
 							<span class="text-danger">$<.=parseInt(0).></span>, 
 							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>
 									<.} else {.>
@@ -57,7 +57,10 @@
 			</div>
 		<.}.>
 		
-		<.if (prepay_months != 12 && sale_id != '20023') {.>
+		<.if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {.>
+			<.if (select_plan_type == 'VDSL' && sale_id == '20023') {.>
+			
+			<.} else {.>
 			<div class="col-md-12">
 				<hr style="margin:0;">
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
@@ -69,6 +72,7 @@
 					</li>
 				</ul>
 			</div>
+			<.}.>
 		<.}.>
 			
 			

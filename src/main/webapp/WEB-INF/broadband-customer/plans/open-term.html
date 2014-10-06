@@ -1,12 +1,18 @@
 <div class="panel panel-success">
 	<div class="panel-heading">
 		<h4 class="panel-title">
+		<.if (select_plan_group == 'plan-topup') {.>
+			Open Term
+		<.} else {.>
 			Open Term Or Contract 12 Months
+		<.}.>
 		</h4>
 	</div>
 	<div class="panel-body">
 		<ul class="list-inline" style="margin-bottom:0;">
-			<.if (sale_id == '10023') {.>
+		<.if (select_customer_type == 'personal') {.>
+			<.if (select_plan_group == 'plan-topup') {.>
+			
 			<li style="padding: 10px 20px;">
 				<label>
 					<input type="radio" name="contract" value="open-term" />&nbsp; 
@@ -15,14 +21,30 @@
 					</span>
 				</label>
 			</li>
-			<.} else if (sale_id == '20023') {.>
-			<li style="padding: 10px 20px;">
-				<label>
-					<input type="radio" name="contract" value="12months" />&nbsp; 
-					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
-				</label>
-			</li>
+			
 			<.} else {.>
+				<.if (select_plan_type == 'VDSL' && sale_id == '10023') {.>
+				
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="open-term" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
+						Open Term 
+					</span>
+				</label>
+			</li>
+			
+				<.} else if (select_plan_type == 'VDSL' && sale_id == '20023') {.>
+				
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
+				</label>
+			</li>
+			
+				<.} else {.>
+			
 			<li style="padding: 10px 20px;">
 				<label>
 					<input type="radio" name="contract" value="open-term" />&nbsp; 
@@ -37,7 +59,19 @@
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
 				</label>
 			</li>
+			
+				<.}.>
 			<.}.>
+			
+		<.} else if (select_customer_type == 'business') {.>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
+				</label>
+			</li>
+		<.}.>
+			
 		</ul>
 	</div>
 </div>

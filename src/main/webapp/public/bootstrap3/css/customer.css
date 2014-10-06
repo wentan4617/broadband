@@ -147,16 +147,16 @@ a[title="topup"]:hover img{
 
 .phone {
 	display: inline-block;
-	width: 30px;
-	height: 30px;
+	width: 25px;
+	height: 25px;
 	background: url("../images/phone.png") no-repeat;
 	background-size: contain;
 	margin-bottom: -5px;
 }
 .without_phone {
 	display: inline-block;
-	width: 30px;
-	height: 30px;
+	width: 25px;
+	height: 25px;
 	background: url("../images/without_phone.png") no-repeat;
 	background-size: contain;
 	margin-bottom: -5px;

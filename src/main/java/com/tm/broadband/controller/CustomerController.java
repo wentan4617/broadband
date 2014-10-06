@@ -67,7 +67,6 @@ import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 @Controller
-@SessionAttributes(value = { "customer", "orderPlan", "planTypeMap"})
 public class CustomerController {
 
 	private PlanService planService;
@@ -95,20 +94,23 @@ public class CustomerController {
 	public String home(Model model, HttpSession session) {
 		session.setAttribute("seoSession", this.systemService.querySEO());
 		model.addAttribute("nofollow", "nofollow");
+		session.removeAttribute("customerReg");
 		return "broadband-customer/home";
 	}
 
 	@RequestMapping("/plans/{group}/{class}")
-	public String plans(Model model, 
-			@PathVariable("group") String group,
-			@PathVariable("class") String classz,
-			HttpSession session) {
-		
-		session.removeAttribute("customerReg");
-		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-		model.addAttribute("customer", customer);
+	public String plans(Model model, HttpSession session
+			, @PathVariable("group") String group
+			, @PathVariable("class") String classz) {
+	
+		Customer customerReg = new Customer();
+		customerReg.setSelect_plan_group(group);
+		System.out.println("this is new " + classz + " customerReg, " + group);
+		customerReg.setSelect_customer_type(classz);
+		customerReg.getCustomerOrder().setOrder_broadband_type("transition");
+		customerReg.getCustomerOrder().setPromotion(false);
+		customerReg.setLanguage("en");
+		session.setAttribute("customerReg", customerReg);
 		
 		List<Plan> plans = null;
 		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
@@ -137,45 +139,6 @@ public class CustomerController {
 		} else if ("plan-term".equals(group) && "business".equals(classz)) {
 			url = "broadband-customer/plan-detail-term-business";
 		}
-
-		return url;
-	}
-	
-	@RequestMapping("/plans/{group}/{class}/{type}/promotion")
-	public String plansPromotion(Model model, 
-			@PathVariable("group") String group,
-			@PathVariable("class") String classz,
-			@PathVariable("type") String type) {
-		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-		model.addAttribute("customer", customer);
-		
-		List<Plan> plans = null;
-		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
-		//Map<String, List<Plan>> planMap = new HashMap<String, List<Plan>>(); // key = plan_type
-		String url = "";
-		
-		Plan plan = new Plan();
-		plan.getParams().put("plan_group", group);
-		plan.getParams().put("plan_class", classz);
-		plan.getParams().put("promotion", true);
-		plan.getParams().put("plan_status", "selling");
-		plan.getParams().put("orderby", "order by place_sort");
-		
-		plans = this.planService.queryPlans(plan);
-		
-		this.wiredPlanMap(planTypeMap, plans, false);
-		//this.wiredPlanMapBySort(planTypeMap, plans);
-		
-		model.addAttribute("planTypeMap", planTypeMap);
-		model.addAttribute("selectdType", type);
-		
-		if ("personal".equals(classz)) {	
-			url = "broadband-customer/plan-detail-term-personal-promotion";
-		} else if ("business".equals(classz)) {
-			url = "broadband-customer/plan-detail-term-business-promotion";
-		} 
 
 		return url;
 	}
@@ -272,18 +235,6 @@ public class CustomerController {
 				}
 			}
 		}
-	}
-	
-	@RequestMapping("/plans/{group}/{class}/{type}/address-check/{id}") 
-	public String toAddressCheck(Model model,
-			@PathVariable("group") String group,
-			@PathVariable("class") String classz, 
-			@PathVariable("type") String type,
-			@PathVariable("id") int id) {
-		
-		model.addAttribute("select_plan_id", id);
-		model.addAttribute("select_plan_type", type);
-		return "broadband-customer/address-check";
 	}
 
 	@RequestMapping("/order/{id}") 
@@ -1321,61 +1272,55 @@ public class CustomerController {
 	
 	
 	
+	// 1
 	
-	
-	
-	
-	
-	
-	
-	
-	@RequestMapping("/plans/promotions")
-	public String plansPromotions() {
-		return "broadband-customer/plans/plan-promotion";
+	@RequestMapping("/plans/define/{type}")
+	public String plansDefineType(HttpSession session, @PathVariable("type") String type) {
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		customerReg.setSelect_plan_type(type);
+		return "redirect:/plans/order";
 	}
 	
+	// 2
+	
 	@RequestMapping("/plans/{type}")
-	public String broadband(Model model,
-			@PathVariable("type") String type, HttpSession session) {
+	public String broadband(Model model, HttpSession session
+			, @PathVariable("type") String type) {
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
-		if (customer == null) {
-			customer = new Customer();
-			customer.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-			customer.setSelect_plan_id(0);
-			customer.setSelect_plan_type("0");
-			session.setAttribute("customerReg", customer);
+		if (customerReg == null) {
+			System.out.println("this is new customerReg, 2");
+			customerReg = new Customer();
+			customerReg.setSelect_plan_group("");
+			customerReg.setSelect_customer_type("personal");
+			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customerReg.getCustomerOrder().setPromotion(false);
+			session.setAttribute("customerReg", customerReg);
+		} else {
+			customerReg.setSelect_plan_group("");
 		}
 		
 		List<Plan> plans = null;
 		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
-		String url = "";
+		String url = "broadband-customer/plans/broadband";
 		
 		if ("broadband".equals(type)) {
-			model.addAttribute("title", "");
 			model.addAttribute("adsl", "active");
 			type = "ADSL";
-			url = "broadband-customer/plans/broadband";
 		} else if ("ultra-fast-vdsl".equals(type)) {
-			model.addAttribute("title", "");
 			model.addAttribute("vdsl", "active");
 			type = "VDSL";
-			url = "broadband-customer/plans/broadband";
-			//url = "broadband-customer/plans/ultra-fast-vdsl";
 		} else if ("ultra-fast-fibre".equals(type)) {
-			model.addAttribute("title", "");
 			model.addAttribute("ufb", "active");
 			type = "UFB";
-			url = "broadband-customer/plans/broadband";
-			//url = "broadband-customer/plans/ultra-fast-fibre";
 		}
 		
 		model.addAttribute("type", type);
 		
 		String type_search = type;
 		
-		if (customer.getBroadband() != null && !customer.getBroadband().getServices_available().contains(type)) {
+		if (customerReg.getBroadband() != null && !customerReg.getBroadband().getServices_available().contains(type)) {
 			type_search = "ADSL";
 		}
 		
@@ -1397,34 +1342,34 @@ public class CustomerController {
 		return url;
 	}
 	
-	@RequestMapping("/plans/address-check/{type}/{id}") 
-	public String toAddressCheck(Model model,
-			@PathVariable("type") String type,
-			@PathVariable("id") int id,
-			HttpSession session) {
-		
-		Customer customer = (Customer) session.getAttribute("customerReg");
-		customer.setSelect_plan_id(id);
-		customer.setSelect_plan_type(type);
-		
-		model.addAttribute("select_plan_id", id);
-		model.addAttribute("select_plan_type", type);
-		
-		if ("en".equals(customer.getLanguage())) {
-			model.addAttribute("en", "en");
-		}
-		return "broadband-customer/plans/address-check";
+	@RequestMapping("/plans/define/{type}/{id}")
+	public String plansDefineTypeId(HttpSession session
+			, @PathVariable("type") String type
+			, @PathVariable("id") int id) {
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		customerReg.setSelect_plan_type(type);
+		customerReg.setSelect_plan_id(id);
+		return "redirect:/plans/address-check";
+	}
+	
+	// 3
+	
+	@RequestMapping("/plans/promotions")
+	public String plansPromotions() {
+		return "broadband-customer/plans/plan-promotion";
 	}
 	
 	@RequestMapping("/plans/promotion") 
 	public String plansNewZelandPromotion(Model model, HttpSession session) {
 		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");
-		customer.getCustomerOrder().setSale_id(10023);
-		customer.getCustomerOrder().setPromotion(true);
-		customer.setLanguage("cn");
-		session.setAttribute("customerReg", customer);
+		Customer customerReg = new Customer();
+		System.out.println("this is new customerReg, 3");
+		customerReg.setSelect_customer_type("personal");
+		customerReg.getCustomerOrder().setOrder_broadband_type("transition");
+		customerReg.getCustomerOrder().setSale_id(10023);
+		customerReg.getCustomerOrder().setPromotion(true);
+		customerReg.setLanguage("cn");
+		session.setAttribute("customerReg", customerReg);
 		
 		return "redirect:/plans/address-check/0/0";
 	}
@@ -1432,53 +1377,58 @@ public class CustomerController {
 	@RequestMapping("/plans/promotion/en") 
 	public String plansNewZelandPromotionEn(Model model, HttpSession session) {
 		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");
-		customer.getCustomerOrder().setSale_id(10023);
-		customer.getCustomerOrder().setPromotion(true);
-		customer.setLanguage("en");
-		session.setAttribute("customerReg", customer);
+		Customer customerReg = new Customer();
+		System.out.println("this is new customerReg, 3");
+		customerReg.setSelect_customer_type("personal");
+		customerReg.getCustomerOrder().setOrder_broadband_type("transition");
+		customerReg.getCustomerOrder().setSale_id(10023);
+		customerReg.getCustomerOrder().setPromotion(true);
+		customerReg.setLanguage("en");
+		session.setAttribute("customerReg", customerReg);
 		
-		return "redirect:/plans/address-check/0/0";
+		return "redirect:/plans/address-check";
 	}
 	
 	@RequestMapping("/plans/promotion/hd/en") 
 	public String plansHDPromotionEn(Model model, HttpSession session) {
 		
-		Customer customer = new Customer();
-		customer.getCustomerOrder().setOrder_broadband_type("transition");
-		customer.getCustomerOrder().setSale_id(20023);
-		customer.getCustomerOrder().setPromotion(true);
-		customer.setLanguage("en");
-		session.setAttribute("customerReg", customer);
+		Customer customerReg = new Customer();
+		System.out.println("this is new customerReg, 3");
+		customerReg.setSelect_customer_type("personal");
+		customerReg.getCustomerOrder().setOrder_broadband_type("transition");
+		customerReg.getCustomerOrder().setSale_id(20023);
+		customerReg.getCustomerOrder().setPromotion(true);
+		customerReg.setLanguage("en");
+		session.setAttribute("customerReg", customerReg);
 		
-		return "redirect:/plans/address-check/0/0";
+		return "redirect:/plans/address-check";
 	}
+	
+	// ***
+	
+	@RequestMapping("/plans/address-check") 
+	public String toAddressCheck(Model model, HttpSession session) {
+		return "broadband-customer/plans/address-check";
+	}
+	
+	// ***
 	
 	
 	@RequestMapping("/plans/order") 
-	public String toOrderPlan(Model model, HttpSession session,
-			@RequestParam(value = "select_plan_type", required = false) String select_plan_type) {
+	public String toOrderPlan(Model model, HttpSession session) {
 		
 		String url = "broadband-customer/plans/customer-order";
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
-		if (select_plan_type != null && !"".equals(select_plan_type)) {
-			customer.setSelect_plan_type(select_plan_type);
-		}
-		if ("0".equals(customer.getSelect_plan_type())) {
-			customer.setSelect_plan_type("VDSL");
-		}
-		
-		if (!customer.isServiceAvailable()) {
-			System.out.println("customer.isServiceAvailable(): " + customer.isServiceAvailable());
+		if (!customerReg.isServiceAvailable()) {
+			System.out.println("customer.isServiceAvailable(): " + customerReg.isServiceAvailable());
 			String type = "broadband";
-			if ("ADSL".equals(customer.getSelect_plan_type())) {
+			if ("ADSL".equals(customerReg.getSelect_plan_type())) {
 				type = "broadband";
-			} else if ("VDSL".equals(customer.getSelect_plan_type())){
+			} else if ("VDSL".equals(customerReg.getSelect_plan_type())){
 				type = "ultra-fast-vdsl";
-			} else if ("UFB".equals(customer.getSelect_plan_type())) {
+			} else if ("UFB".equals(customerReg.getSelect_plan_type())) {
 				type = "ultra-fast-fibre";
 			}
 			url = "redirect:/plans/" + type;
@@ -1490,64 +1440,79 @@ public class CustomerController {
 	@RequestMapping("/plans/address/clear") 
 	public String addressClear(Model model, HttpSession session) {
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
-		String type = "broadband", url = "";
-		if ("ADSL".equals(customer.getSelect_plan_type())) {
-			type = "broadband";
-		} else if ("VDSL".equals(customer.getSelect_plan_type())){
-			type = "ultra-fast-vdsl";
-		} else if ("UFB".equals(customer.getSelect_plan_type())) {
-			type = "ultra-fast-fibre";
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		String url = "";
+		if ("personal".equals(customerReg.getSelect_customer_type())) {
+			if (customerReg.getCustomerOrder().getPromotion()) {
+				url = "redirect:/plans/promotions";
+			} else if ("plan-topup".equals(customerReg.getSelect_plan_group())) {
+				url = "redirect:/plans/plan-topup/personal";
+			} else {
+				String type = "broadband";
+				if ("ADSL".equals(customerReg.getSelect_plan_type())) {
+					type = "broadband";
+				} else if ("VDSL".equals(customerReg.getSelect_plan_type())){
+					type = "ultra-fast-vdsl";
+				} else if ("UFB".equals(customerReg.getSelect_plan_type())) {
+					type = "ultra-fast-fibre";
+				}
+				url = "redirect:/plans/" + type;
+			}
+			
+		} else if ("business".equals(customerReg.getSelect_customer_type())) {
+			url = "redirect:/plans/plan-term/business";
 		}
-		url = "redirect:/plans/" + type;
+		
 		session.removeAttribute("customerReg");
 		
 		return url;
 	}
+	
+	// +++
 	
 	@RequestMapping("/plans/order/summary") 
 	public String plansOrderSummary(Model model, HttpSession session) {
 		return "broadband-customer/plans/order-summary";
 	}
 	
-	
 	@RequestMapping(value = "/plans/order/bankdeposit", method = RequestMethod.POST)
 	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
-		customer.setPassword(TMUtils.generateRandomString(6));
-		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
-		customer.setUser_name(customer.getLogin_name());
-		customer.setStatus("active");
-		customer.getCustomerOrder().setOrder_status("pending");
-		customer.setBalance(0d);
+		customerReg.setPassword(TMUtils.generateRandomString(6));
+		customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
+		customerReg.setUser_name(customerReg.getLogin_name());
+		customerReg.setStatus("active");
+		customerReg.getCustomerOrder().setOrder_status("pending");
+		customerReg.setBalance(0d);
 	
-		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder());
+		this.crmService.saveCustomerOrder(customerReg, customerReg.getCustomerOrder());
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");
 		attr.addFlashAttribute("responseBean", responseBean);
 		
-		System.out.println("1 :" + customer.getCustomerOrder().getOrder_total_price());
+		System.out.println("1 :" + customerReg.getCustomerOrder().getOrder_total_price());
 		
-		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
 		
-		System.out.println("2 :" + customer.getCustomerOrder().getOrder_total_price());
+		System.out.println("2 :" + customerReg.getCustomerOrder().getOrder_total_price());
 		
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail); // call mail at value retriever
 		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setAddressee(customerReg.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
-		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachName("ordering_form_" + customerReg.getCustomerOrder().getId() + ".pdf");
 		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+		notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
+		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 		
 		return "redirect:/plans/order/result";
 	}

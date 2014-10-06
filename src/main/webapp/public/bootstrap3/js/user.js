@@ -27,14 +27,15 @@
 		$alertContainer.find('#alert-success').remove();
 		$alertContainer.find('#alert-error').remove();
 		$('[data-error-field]').tooltip('destroy').closest('div.form-group').removeClass('has-error');
-		$.each(json.errorMap, function(key){
+		$.each(json.errorMap, function(key) {
 			if (key == "alert-error") {
 				$('#alertContainer').html($('#tempAlertErrorContainer').html());
 				$('#text-error').text(json.errorMap[key]);
 				$('#alert-error').show('normal');
 			} else {
-				var $input = $('#' + key.replace('.','\\.'));
+				var $input = $('#' + key.replace('.', '\\.'));
 				var input_placement = $input.attr('data-placement'); // console.log(input_placement);
+				lastErr = $input;
 				$input
 					.focus()
 					.tooltip({

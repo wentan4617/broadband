@@ -13,25 +13,25 @@
 				<a href="${ctx }/plans/broadband" title="adsl">
 					<img class="img-responsive" src="${ctx }/public/bootstrap3/images/adsl-icon.png" style="padding: 0 0 10px;">
 				</a>
-				<p class="text-center hidden-xs" style="color:white;">ADSL Broadband</p>
+				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">ADSL Broadband</p>
 			</div>
 			<div class="col-md-2 col-xs-3">
 				<a href="${ctx }/plans/ultra-fast-vdsl" title="vdsl">
 					<img class="img-responsive" src="${ctx }/public/bootstrap3/images/vdsl-icon.png" style="padding: 0 0 10px;">
 				</a>
-				<p class="text-center hidden-xs" style="color:white;">High-Speed VDSL</p>
+				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">High-Speed VDSL</p>
 			</div>
 			<div class="col-md-2 col-xs-3">
 				<a href="${ctx }/plans/ultra-fast-fibre" title="ufb">
 					<img class="img-responsive" src="${ctx }/public/bootstrap3/images/ufb-icon.png" style="padding: 0 0 10px;">
 				</a>
-				<p class="text-center hidden-xs" style="color:white;">Ultra-Fast Fibre</p>
+				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">Ultra-Fast Fibre</p>
 			</div>
 			<div class="col-md-2 col-xs-3">
 				<a href="${ctx }/plans/plan-topup/personal" title="topup">
 					<img class="img-responsive" src="${ctx }/public/bootstrap3/images/topup-icon.png" style="padding: 0 0 10px;">
 				</a>
-				<p class="text-center hidden-xs" style="color:white;">Top-Up Plans</p>
+				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">Top-Up Plans</p>
 			</div>
 		</div>
 		<div class="row" style="margin-bottom:20px;">
@@ -64,13 +64,8 @@
 			<img alt="" class="img-responsive" src="${ctx }/public/bootstrap3/images/promotion.png" style="">
 		</div>
 		<div class="col-md-6">
-			<p class="lead" style="padding:20px 20px 0;">Promotion Plans</p>
-			<p style="padding:0 20px 0;">
-				Specail Plans, Free Gift.
-			</p>
-			<p style="padding:0 20px 0;">
-				VDSL + VoIP Home Line $99/mth, 12mths Term, Prepay 12mths.
-			</p>
+			<p class="lead" style="padding:10px 20px 0;margin-bottom:0;font-size: 36px;font-weight: bold;">Unlimited Data</p>
+			<p class="lead" style="padding:10px 20px 0;margin-bottom:0;font-size: 36px;font-weight: bold;">VoIP Homeline</p>
 			<a href="${ctx }/plans/promotions" class="btn btn-lg btn-outline-inverse pull-right" style="margin: 8px 14px;">View More</a>
 		</div>
 	</div>

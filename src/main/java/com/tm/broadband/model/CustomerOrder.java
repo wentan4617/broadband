@@ -104,6 +104,7 @@ public class CustomerOrder implements Serializable {
 	private Integer discount_price;
 	private String _transition_provider_name;
 	private Boolean promotion;
+	private Integer hardware_id_selected;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -606,6 +607,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setPromotion(Boolean promotion) {
 		this.promotion = promotion;
+	}
+
+	public Integer getHardware_id_selected() {
+		return hardware_id_selected;
+	}
+
+	public void setHardware_id_selected(Integer hardware_id_selected) {
+		this.hardware_id_selected = hardware_id_selected;
 	}
 
 }

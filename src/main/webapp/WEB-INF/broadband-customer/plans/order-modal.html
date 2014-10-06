@@ -7,7 +7,7 @@
 			<div class="col-md-10">
 				<p><.=customer_address.></p>
 				<p>
-					<a href="<.=ctx.>/plans/address-check/<.=select_plan_type.>/<.=select_plan_id.>" class="btn btn-link" style="padding: 0;">Change Address</a>
+					<a href="<.=ctx.>/plans/address-check" class="btn btn-link" style="padding: 0;">Change Address</a>
 				</p>
 			</div>
 		</div>
@@ -17,11 +17,23 @@
 			<h4 class="text-success" style="font-weight:bold;margin-top:0;">
 			<.=plan.plan_name.>
 			</h4>
-			<.if (sale_id == '10023' || sale_id == '20023') {.>
-			<p class="text-success" style="margin:0;">+ VoIP Homeline included</p>
-			<.}.>
 			<.if (!naked) {.>
-			<p class="text-success" style="margin:0;">+ Homeline included</p>
+			<p class="text-success" style="margin:0;">
+				<.if (select_customer_type == 'personal') {.>
+				+ Homeline included
+				<.} else if (select_customer_type == 'business') {.>
+				+ Businessline included
+				<.}.>
+			</p>
+			<.}.>
+			<.if (has_voip) {.>
+			<p class="text-success" style="margin:0;">
+				<.if (select_customer_type == 'personal') {.>
+				+ VoIP Homeline included
+				<.} else if (select_customer_type == 'business') {.>
+				+ VoIP Businessline included
+				<.}.>
+			</p>
 			<.}.>
 			<. if (modem_name != '') {.>
 			<p class="text-success" style="margin:0;">+ <.=modem_name.></p>
@@ -36,17 +48,13 @@
 			<hr style="margin:4px;">
 			<div class="row">
 				<div class="col-md-6">
-					<p class="bg-warning text-center text-warning" style="font-weight:bold;">Original</p>
-				</div>
-				<div class="col-md-6">
-					<p class="bg-success text-center text-success" style="font-weight:bold;">Save</p>
-				</div>
-				<div class="col-md-6">
+					<p class="bg-warning text-center text-warning" style="font-weight:bold;margin-bottom: 0;">Original</p>
 					<p class="bg-warning text-center text-warning" style="font-size: 30px;font-weight:bold;">
 						$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
 					</p>
 				</div>
 				<div class="col-md-6">
+					<p class="bg-success text-center text-success" style="font-weight:bold;margin-bottom: 0;">Save</p>
 					<p class="bg-success text-center text-success" style="font-size: 30px;font-weight:bold;">
 						$ <.=price.discount_price + price.save_service_price + price.save_modem_price.>
 					</p>
@@ -57,8 +65,11 @@
 				<span style="font-size: 36px;font-weight: bold;">
 					NZ$
 				</span>
-				<span style="font-size: 64px;font-weight: bold;">
+				<span style="font-size: 54px;font-weight: bold;">
 					<.=price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price.>
+					<.if (select_customer_type == 'business') {.>
+					<span style="font-size: 12px;">+GST</span>
+					<.}.>
 				</span>
 			</p>
 			<a href="javascript:void(0);" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="get-it-now">Get it Now</a>
