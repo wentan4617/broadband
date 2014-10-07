@@ -234,12 +234,104 @@ public class CRMRestController {
 		return json;
 	}
 
-	// BEGIN DDPay
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit", method = RequestMethod.POST)
-	public JSONBean<String> doDefrayByDDPay(Model model,
+//	// BEGIN DDPay
+//	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit_cash", method = RequestMethod.POST)
+//	public JSONBean<String> doDefrayByDDPay(Model model,
+//			@RequestParam("process_way") String process_way,
+//			@RequestParam("pay_way") String pay_way,
+//			@RequestParam("invoice_id") int invoice_id, HttpServletRequest req) {
+//
+//		JSONBean<String> json = new JSONBean<String>();
+//
+//		Integer customer_id = null;
+//		Integer order_id = null;
+//		Double paid_amount = null;
+//		String process_sort = null;
+//
+//		// BEGIN INVOICE ASSIGNMENT
+//		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
+//		ci.getParams().put("id", ci.getId());
+//
+//		if (ci.getBalance() <= 0d) {
+//			// If invoice is paid off then no reason for executing the below
+//			// operations
+//			ci.setStatus("paid");
+//			this.crmService.editCustomerInvoice(ci);
+//			return json;
+//		}
+//		customer_id = ci.getCustomer_id();
+//		order_id = ci.getOrder_id();
+//		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
+//
+//		// If not CyberPark then assign balance to paid
+//		if(!"cyberpark-credit".equals(pay_way)){
+//			ci.setAmount_paid(ci.getBalance());
+//		}
+//		ci.setFinal_payable_amount(ci.getAmount_paid());
+//		// Assign balance as 0.0, make this invoice paid off
+//		ci.setBalance(0d);
+//		// Assign status to paid directly, make this invoice paid off
+//		ci.setStatus("paid");
+//		// END INVOICE ASSIGNMENT
+//
+//		// Get order_type
+//		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+//		case "order-term":
+//			process_sort = "plan-term";
+//			break;
+//		case "order-no-term":
+//			process_sort = "plan-no-term";
+//			break;
+//		case "order-topup":
+//			process_sort = "plan-topup";
+//			break;
+//		}
+//
+//		User userSession = (User) req.getSession().getAttribute("userSession");
+//
+//		// BEGIN TRANSACTION ASSIGNMENT
+//		CustomerTransaction ct = new CustomerTransaction();
+//		// Assign invoice's paid amount to transaction's amount
+//		ct.setAmount(paid_amount);
+//		ct.setAmount_settlement(paid_amount);
+//		// Assign card_name as ddpay
+//		ct.setCard_name(process_way);
+//		// Assign transaction's sort as type's return from order by order_id
+//		ct.setTransaction_sort(process_sort);
+//		// Assign customer_id, order_id, invoice_id to transaction's related
+//		// fields
+//		ct.setCustomer_id(customer_id);
+//		ct.setOrder_id(order_id);
+//		ct.setInvoice_id(invoice_id);
+//		// Assign transaction's time as current time
+//		ct.setTransaction_date(new Date());
+//		ct.setCurrency_input("NZD");
+//		ct.setExecutor(userSession.getId());
+//		// END TRANSACTION ASSIGNMENT
+//
+//		// BEGIN CALL SERVICE LAYER
+//		this.crmService.editCustomerInvoice(ci);
+//		this.crmService.createCustomerTransaction(ct);
+//		// END CALL SERVICE LAYER
+//
+//		json.getSuccessMap().put("alert-success",
+//				"Related invoice's balance had successfully been paid off!");
+//		
+//		ct = null;
+//		ci = null;
+//
+//		return json;
+//	}
+//	// END DDPay
+
+	// BEGIN Cash
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/ddpay_a2a_credit-card_cyberpark-credit_cash", method = RequestMethod.POST)
+	public JSONBean<String> doDefrayByCash(Model model,
+			@RequestParam("invoice_id") int invoice_id,
 			@RequestParam("process_way") String process_way,
 			@RequestParam("pay_way") String pay_way,
-			@RequestParam("invoice_id") int invoice_id, HttpServletRequest req) {
+			@RequestParam("eliminate_amount") double eliminate_amount,
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 
@@ -250,98 +342,6 @@ public class CRMRestController {
 
 		// BEGIN INVOICE ASSIGNMENT
 		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
-		ci.getParams().put("id", ci.getId());
-
-		if (ci.getBalance() <= 0d) {
-			// If invoice is paid off then no reason for executing the below
-			// operations
-			ci.setStatus("paid");
-			this.crmService.editCustomerInvoice(ci);
-			return json;
-		}
-		customer_id = ci.getCustomer_id();
-		order_id = ci.getOrder_id();
-		paid_amount = TMUtils.bigSub(ci.getFinal_payable_amount(), ci.getAmount_paid());
-
-		// If not CyberPark then assign balance to paid
-		if(!"cyberpark-credit".equals(pay_way)){
-			ci.setAmount_paid(ci.getBalance());
-		}
-		ci.setFinal_payable_amount(ci.getAmount_paid());
-		// Assign balance as 0.0, make this invoice paid off
-		ci.setBalance(0d);
-		// Assign status to paid directly, make this invoice paid off
-		ci.setStatus("paid");
-		// END INVOICE ASSIGNMENT
-
-		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
-		case "order-term":
-			process_sort = "plan-term";
-			break;
-		case "order-no-term":
-			process_sort = "plan-no-term";
-			break;
-		case "order-topup":
-			process_sort = "plan-topup";
-			break;
-		}
-
-		User userSession = (User) req.getSession().getAttribute("userSession");
-
-		// BEGIN TRANSACTION ASSIGNMENT
-		CustomerTransaction ct = new CustomerTransaction();
-		// Assign invoice's paid amount to transaction's amount
-		ct.setAmount(paid_amount);
-		ct.setAmount_settlement(paid_amount);
-		// Assign card_name as ddpay
-		ct.setCard_name(process_way);
-		// Assign transaction's sort as type's return from order by order_id
-		ct.setTransaction_sort(process_sort);
-		// Assign customer_id, order_id, invoice_id to transaction's related
-		// fields
-		ct.setCustomer_id(customer_id);
-		ct.setOrder_id(order_id);
-		ct.setInvoice_id(invoice_id);
-		// Assign transaction's time as current time
-		ct.setTransaction_date(new Date());
-		ct.setCurrency_input("NZD");
-		ct.setExecutor(userSession.getId());
-		// END TRANSACTION ASSIGNMENT
-
-		// BEGIN CALL SERVICE LAYER
-		this.crmService.editCustomerInvoice(ci);
-		this.crmService.createCustomerTransaction(ct);
-		// END CALL SERVICE LAYER
-
-		json.getSuccessMap().put("alert-success",
-				"Related invoice's balance had successfully been paid off!");
-		
-		ct = null;
-		ci = null;
-
-		return json;
-	}
-	// END DDPay
-
-	// BEGIN Cash
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/defray/cash", method = RequestMethod.POST)
-	public JSONBean<String> doDefrayByCash(Model model,
-			@RequestParam("invoice_id") int invoice_id,
-			@RequestParam("eliminate_amount") double eliminate_amount,
-			HttpServletRequest req) {
-
-		JSONBean<String> json = new JSONBean<String>();
-
-		Integer customer_id = null;
-		Integer order_id = null;
-		Double paid_amount = null;
-		String process_way = "Cash";
-		String process_sort = null;
-
-		// BEGIN INVOICE ASSIGNMENT
-		CustomerInvoice ci = this.crmService
-				.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
 
 		String redirectUrl = "/manual_defray/redirect/" + ci.getCustomer_id()
@@ -1117,79 +1117,84 @@ public class CRMRestController {
 		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
 		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
 		customer.setOrganization(org);
+		
+		if("save".equals(way)){
 
-		if (!"order-topup".equals(customerOrder.getOrder_type())
-		&& (!"order-term".equals(customerOrder.getOrder_type())
-		|| ("order-term".equals(customerOrder.getOrder_type())
-		&& (customerOrder.getIs_ddpay()==null
-			|| (customerOrder.getIs_ddpay()!=null && !customerOrder.getIs_ddpay()))))) {
-			
-			Date next_invoice_create_date = null;
-			Date next_invoice_create_date_flag = null;
-			
-			if("personal".equals(customer.getCustomer_type())){
-				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
-				// Add plan unit months
-				calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
-				// Set next invoice create date flag
-				next_invoice_create_date_flag = calNextInvoiceDay.getTime();
-				// Minus 7 days
-				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
-				// set next invoice date
-				next_invoice_create_date = calNextInvoiceDay.getTime();
-			} else {
-				Calendar cal_7th_1hr = Calendar.getInstance();
-				cal_7th_1hr.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
-				cal_7th_1hr.add(Calendar.MONTH, 1);
-				cal_7th_1hr.set(Calendar.DATE, 7);
-				cal_7th_1hr.set(Calendar.HOUR, 0);
-				cal_7th_1hr.set(Calendar.MINUTE, 0);
-				cal_7th_1hr.set(Calendar.SECOND, 0);
-				cal_7th_1hr.set(Calendar.MILLISECOND, 0);
-				next_invoice_create_date = cal_7th_1hr.getTime();
-				cal_7th_1hr.add(Calendar.DATE, 7);
-				next_invoice_create_date_flag = cal_7th_1hr.getTime();
+			if (!"order-topup".equals(customerOrder.getOrder_type())
+			&& (!"order-term".equals(customerOrder.getOrder_type())
+			|| ("order-term".equals(customerOrder.getOrder_type())
+			&& (customerOrder.getIs_ddpay()==null
+				|| (customerOrder.getIs_ddpay()!=null && !customerOrder.getIs_ddpay()))))) {
 				
-				// Get millis
-//				long seventh12hr = cal_7th_1hr.getTimeInMillis();
-//				long currentTime = System.currentTimeMillis();
-//
-//				// If less than seventh 1 o'clock of the month
-//				if(currentTime<seventh12hr){
-//					Calendar cal = cal_7th_1hr;
-//					cal.set(Calendar.HOUR, 0);
-//					next_invoice_create_date = cal.getTime();
-//					cal.add(Calendar.DATE, 7);
-//					next_invoice_create_date_flag = cal.getTime();
-//				} else {
-//					Calendar cal = cal_7th_1hr;
-//					cal.set(Calendar.HOUR, 0);
-//					cal.add(Calendar.MONTH, 1);
-//					next_invoice_create_date = cal.getTime();
-//					cal.add(Calendar.DATE, 7);
-//					next_invoice_create_date_flag = cal.getTime();
-//				}
+				Date next_invoice_create_date = null;
+				Date next_invoice_create_date_flag = null;
+				
+				if("personal".equals(customer.getCustomer_type())){
+					Calendar calNextInvoiceDay = Calendar.getInstance();
+					calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+					// Add plan unit months
+					calNextInvoiceDay.add(Calendar.MONTH, order_detail_unit);
+					// Set next invoice create date flag
+					next_invoice_create_date_flag = calNextInvoiceDay.getTime();
+					// Minus 7 days
+					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, -7);
+					// set next invoice date
+					next_invoice_create_date = calNextInvoiceDay.getTime();
+				} else {
+					Calendar cal_7th_1hr = Calendar.getInstance();
+					cal_7th_1hr.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+					cal_7th_1hr.add(Calendar.MONTH, 1);
+					cal_7th_1hr.set(Calendar.DATE, 7);
+					cal_7th_1hr.set(Calendar.HOUR, 0);
+					cal_7th_1hr.set(Calendar.MINUTE, 0);
+					cal_7th_1hr.set(Calendar.SECOND, 0);
+					cal_7th_1hr.set(Calendar.MILLISECOND, 0);
+					next_invoice_create_date = cal_7th_1hr.getTime();
+					cal_7th_1hr.add(Calendar.DATE, 7);
+					next_invoice_create_date_flag = cal_7th_1hr.getTime();
+					
+					// Get millis
+//					long seventh12hr = cal_7th_1hr.getTimeInMillis();
+//					long currentTime = System.currentTimeMillis();
+	//
+//					// If less than seventh 1 o'clock of the month
+//					if(currentTime<seventh12hr){
+//						Calendar cal = cal_7th_1hr;
+//						cal.set(Calendar.HOUR, 0);
+//						next_invoice_create_date = cal.getTime();
+//						cal.add(Calendar.DATE, 7);
+//						next_invoice_create_date_flag = cal.getTime();
+//					} else {
+//						Calendar cal = cal_7th_1hr;
+//						cal.set(Calendar.HOUR, 0);
+//						cal.add(Calendar.MONTH, 1);
+//						next_invoice_create_date = cal.getTime();
+//						cal.add(Calendar.DATE, 7);
+//						next_invoice_create_date_flag = cal.getTime();
+//					}
+				}
+				// Final settings
+				co.setNext_invoice_create_date_flag(next_invoice_create_date_flag);
+				co.setNext_invoice_create_date(next_invoice_create_date);
+				customerOrder.setNext_invoice_create_date(next_invoice_create_date);
+				
+			} else if("order-topup".equals(customerOrder.getOrder_type())) {
+				Calendar cal = Calendar.getInstance(Locale.CHINA);
+				cal.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
+				cal.add(Calendar.WEEK_OF_MONTH, 1);
+				cal.add(Calendar.DAY_OF_WEEK, -1);
+				// Set next invoice create date flag
+				co.setNext_invoice_create_date_flag(cal.getTime());
+				// Minus 1 days
+				cal.add(Calendar.DAY_OF_WEEK, -2);
+				// set next invoice date
+				co.setNext_invoice_create_date(cal.getTime());
 			}
-			// Final settings
-			co.setNext_invoice_create_date_flag(next_invoice_create_date_flag);
-			co.setNext_invoice_create_date(next_invoice_create_date);
-			customerOrder.setNext_invoice_create_date(next_invoice_create_date);
 			
-		} else if("order-topup".equals(customerOrder.getOrder_type())) {
-			Calendar cal = Calendar.getInstance(Locale.CHINA);
-			cal.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
-			cal.add(Calendar.WEEK_OF_MONTH, 1);
-			cal.add(Calendar.DAY_OF_WEEK, -1);
-			// Set next invoice create date flag
-			co.setNext_invoice_create_date_flag(cal.getTime());
-			// Minus 1 days
-			cal.add(Calendar.DAY_OF_WEEK, -2);
-			// set next invoice date
-			co.setNext_invoice_create_date(cal.getTime());
 		}
 
 		if ("save".equals(way)) {
+			
 			co.setOrder_type(customerOrder.getOrder_type());
 			proLog.setProcess_way(customerOrder.getOrder_status() + " to using");
 			
@@ -1264,6 +1269,7 @@ public class CRMRestController {
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
 			json.getSuccessMap().put("alert-success", "Service Given Date successfully settled!");
+			
 		}
 
 		this.crmService.editCustomerOrder(co, proLog);

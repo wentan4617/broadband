@@ -157,6 +157,9 @@ public class ManualManipulationController {
 		switch (billing_type) {
 		case "all":
 			break;
+		case "vosVoIP":
+			page.getParams().put("billing_type", "vos-voip");
+			break;
 		default:
 			page.getParams().put("billing_type", billing_type);
 			break;
@@ -180,6 +183,9 @@ public class ManualManipulationController {
 		pageStatusSum.getParams().put("billing_type", "callplus");
 		pageStatusSum.getParams().put("inserted_database", true);
 		model.addAttribute("callplusInsertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
+		pageStatusSum.getParams().put("billing_type", "vos-voip");
+		pageStatusSum.getParams().put("inserted_database", true);
+		model.addAttribute("vosVoIPInsertedSum", this.billingService.queryBillingFileUploadsSumByPage(pageStatusSum));
 		// END QUERY SUM BY INSERTED_DATABASE
 		
 		model.addAttribute("users", this.systemService.queryUser(new User()));

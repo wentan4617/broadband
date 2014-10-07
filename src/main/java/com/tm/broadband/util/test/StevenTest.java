@@ -1,9 +1,8 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
-import java.util.Calendar;
-
-import com.tm.broadband.util.SimpleMapperCreator;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class StevenTest {
@@ -165,8 +164,8 @@ public class StevenTest {
 		
 //		SimpleMapperCreator smc = new SimpleMapperCreator();
 //		smc.setAuthor("CyberPark");
-//		smc.setModel("VOSVoIPRates");
-//		smc.setTable("tm_vos_voip_rates");
+//		smc.setModel("VOSVoIPCallRecord");
+//		smc.setTable("tm_vos_voip_call_record");
 //		smc.initial();
 		
 //		String str = "cyberpark/ccc/asd";

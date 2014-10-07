@@ -18,6 +18,7 @@ import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
+import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VOSVoIPRateMapper;
 import com.tm.broadband.mapper.VoucherBannedListMapper;
 import com.tm.broadband.mapper.VoucherFileUploadMapper;
@@ -33,6 +34,7 @@ import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.TerminationRefund;
+import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
@@ -41,8 +43,8 @@ import com.tm.broadband.util.CallInternationalRateUtility;
 import com.tm.broadband.util.CallingRecordUtility;
 import com.tm.broadband.util.CallingRecordUtility_CallPlus;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.VOSVoIPCallRecordUtility;
 import com.tm.broadband.util.VOSVoIPRatesUtility;
-import com.tm.broadband.util.test.Console;
 
 /**
  * Billing service
@@ -67,6 +69,7 @@ public class BillingService {
 	private CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper;
 	private CustomerTransactionMapper ctMapper;
 	private CustomerInvoiceMapper ciMapper;
+	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
@@ -82,7 +85,8 @@ public class BillingService {
 			,VoucherBannedListMapper voucherBannedListMapper
 			,CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
 			CustomerInvoiceMapper ciMapper,
-			CustomerTransactionMapper ctMapper) {
+			CustomerTransactionMapper ctMapper,
+			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
@@ -97,6 +101,7 @@ public class BillingService {
 		this.customerCallingRecordCallplusMapper = customerCallingRecordCallplusMapper;
 		this.ctMapper = ctMapper;
 		this.ciMapper = ciMapper;
+		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
 	}
 	
 	public BillingService(){}
@@ -259,6 +264,30 @@ public class BillingService {
 		return this.vosVoIPRateMapper.selectVOSVoIPRatesGroupBy();
 	}
 	// END VOSVoIPRates
+
+	// BEGIN VOSVoIPCallRecord
+	@Transactional
+	public Page<VOSVoIPCallRecord> queryVOSVoIPCallRecordsByPage(Page<VOSVoIPCallRecord> page) {
+		page.setTotalRecord(this.vosVoIPCallRecordMapper.selectVOSVoIPCallRecordsSum(page));
+		page.setResults(this.vosVoIPCallRecordMapper.selectVOSVoIPCallRecordsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createVOSVoIPCallRecord(VOSVoIPCallRecord vosVoIPCallRecord) {
+		this.vosVoIPCallRecordMapper.insertVOSVoIPCallRecord(vosVoIPCallRecord);
+	}
+
+	@Transactional 
+	public List<VOSVoIPCallRecord> queryVOSVoIPCallRecord(VOSVoIPCallRecord vosVoIPCallRecord){
+		return this.vosVoIPCallRecordMapper.selectVOSVoIPCallRecord(vosVoIPCallRecord);
+	}
+
+	@Transactional
+	public void editVOSVoIPCallRecord(VOSVoIPCallRecord vosVoIPCallRecord) {
+		this.vosVoIPCallRecordMapper.updateVOSVoIPCallRecord(vosVoIPCallRecord);
+	}
+	// END VOSVoIPCallRecord
 
 	// BEGIN EarlyTerminationCharge
 	@Transactional
@@ -493,6 +522,7 @@ public class BillingService {
 		this.billingFileUploadMapper.updateBillingFileUpload(bfu);
 		
 		if("chorus".equals(billing_type)){
+			
 			CustomerCallRecord ccrTemp = new CustomerCallRecord();
 			ccrTemp.getParams().put("statement_date", TMUtils.parseDateYYYYMMDD(statementDate));
 			this.customerCallRecordMapper.deleteCustomerCallRecord(ccrTemp);
@@ -527,12 +557,23 @@ public class BillingService {
 					this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
 				}
 			}
+			
 		} else if("callplus".equals(billing_type)){
+			
 			List<CustomerCallingRecordCallplus> ccrcs = CallingRecordUtility_CallPlus.ccrcs(filePath);
 			
 			for (CustomerCallingRecordCallplus ccrc : ccrcs) {
 				this.customerCallingRecordCallplusMapper.insertCustomerCallingRecordCallplus(ccrc);
 			}
+			
+		} else if("vos-voip".equals(billing_type)){
+			
+			List<VOSVoIPCallRecord> vosVoIPCallRecords = VOSVoIPCallRecordUtility.vosVoIPCallRecords(filePath);
+			
+			for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecords) {
+				this.vosVoIPCallRecordMapper.insertVOSVoIPCallRecord(vosVoIPCallRecord);
+			}
+			
 		}
 	}
 
@@ -560,8 +601,11 @@ public class BillingService {
 		
 		// Iteratively insert into database
 		for (VOSVoIPRate vosVoIPRate : vosVoIPRates) {
-			Console.log(vosVoIPRate);
 			this.vosVoIPRateMapper.insertVOSVoIPRate(vosVoIPRate);
 		}
+	}
+
+	@Transactional
+	public void insertVOSVoIPCallRecords(String save_path) {
 	}
 }

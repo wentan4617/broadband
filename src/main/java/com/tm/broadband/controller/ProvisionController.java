@@ -129,6 +129,12 @@ public class ProvisionController {
 			model.addAttribute("panelheading", "Void Order &gt; Void");
 		}
 		
+		// Upgrade Order
+		else if ("upgrade".equals(order_status)) {
+			model.addAttribute("upgradeActive", "active");
+			model.addAttribute("panelheading", "Upgrade Order &gt; Upgrade");
+		}
+		
 		Page<CustomerOrder> p = new Page<CustomerOrder>();
 		p.getParams().put("where", "query_order_status");
 		p.getParams().put("status", "active");
@@ -175,6 +181,10 @@ public class ProvisionController {
 		
 		p.getParams().put("order_status", "void");
 		model.addAttribute("voidSum", this.provisionService.queryCustomerOrdersSumByPage(p));
+		
+		// Upgrade Order
+		p.getParams().put("order_status", "upgrade");
+		model.addAttribute("upgradeSum", this.provisionService.queryCustomerOrdersSumByPage(p));
 		
 		model.addAttribute("order_status", order_status);
 		

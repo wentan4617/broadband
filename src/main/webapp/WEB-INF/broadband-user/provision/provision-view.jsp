@@ -162,6 +162,12 @@
 							Void Order <span class="badge">${voidSum }</span>
 						</a>
 						
+						
+						<!-- Upgrade Order -->
+						<a href="${ctx }/broadband-user/provision/customer/view/1/upgrade" data-name="queryBtn" class="btn btn-default ${upgradeActive }">
+							Order Upgrade&nbsp;<span class="badge">${upgradeSum }</span>
+						</a>
+						
 					</div>
 				</div>
 				

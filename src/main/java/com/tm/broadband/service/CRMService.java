@@ -41,6 +41,7 @@ import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
 import com.tm.broadband.mapper.TicketCommentMapper;
 import com.tm.broadband.mapper.TicketMapper;
+import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
@@ -109,6 +110,7 @@ public class CRMService {
 	private TicketMapper ticketMapper;
 	private TicketCommentMapper ticketCommentMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
+	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -141,7 +143,8 @@ public class CRMService {
 			CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper,
 			TicketMapper ticketMapper,
 			TicketCommentMapper ticketCommentMapper,
-			ManualManipulationRecordMapper manualManipulationRecordMapper){
+			ManualManipulationRecordMapper manualManipulationRecordMapper,
+			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -167,6 +170,7 @@ public class CRMService {
 		this.ticketMapper = ticketMapper;
 		this.ticketCommentMapper = ticketCommentMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
+		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
 	}
 	
 	
@@ -810,6 +814,89 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	/*
 	 * end customer invoice
 	 * */
+	
+	/**
+	 * BEGIN Ticket
+	 */
+	@Transactional
+	public List<Ticket> queryTicket(Ticket t){
+		return this.ticketMapper.selectTicket(t);
+	}
+	
+	@Transactional
+	public void createTicket(Ticket t){
+		this.ticketMapper.insertTicket(t);
+	}
+	
+	@Transactional
+	public void editTicket(Ticket t){
+		this.ticketMapper.updateTicket(t);
+	}
+	
+	@Transactional
+	public Page<Ticket> queryTicketsByPage(Page<Ticket> page){
+		page.setTotalRecord(this.ticketMapper.selectTicketsSum(page));
+		page.setResults(this.ticketMapper.selectTicketsByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public void removeTicketById(int id){
+		this.ticketMapper.deleteTicketById(id);
+	}
+	
+	@Transactional
+	public int queryTicketsBySum(Page<Ticket> page){
+		return this.ticketMapper.selectTicketsSum(page);
+	}
+
+	/**
+	 * END Ticket
+	 */
+	
+	/**
+	 * BEGIN TicketComment
+	 */
+	@Transactional
+	public List<TicketComment> queryTicketComment(TicketComment tc){
+		return this.ticketCommentMapper.selectTicketComment(tc);
+	}
+	
+	@Transactional
+	public void createTicketComment(TicketComment tc){
+		this.ticketCommentMapper.insertTicketComment(tc);
+	}
+	
+	@Transactional
+	public void editTicketComment(TicketComment tc){
+		this.ticketCommentMapper.updateTicketComment(tc);
+	}
+	
+	@Transactional
+	public Page<TicketComment> queryTicketCommentsByPage(Page<TicketComment> page){
+		page.setTotalRecord(this.ticketCommentMapper.selectTicketCommentsSum(page));
+		page.setResults(this.ticketCommentMapper.selectTicketCommentsByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public void removeTicketCommentById(int id){
+		this.ticketCommentMapper.deleteTicketCommentById(id);
+	}
+	
+	@Transactional
+	public void removeTicketCommentByTicketId(int id){
+		this.ticketCommentMapper.deleteTicketCommentByTicketId(id);
+	}
+	
+	@Transactional
+	public int queryTicketCommentsBySum(Page<TicketComment> page){
+		return this.ticketCommentMapper.selectTicketCommentsSum(page);
+	}
+
+	/**
+	 * END TicketComment
+	 */
 	
 	/**
 	 * BEGIN createOrderingForm
@@ -2037,6 +2124,33 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 					continue;
 				}
 				
+				if ("plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && c.getCustomer_type().equals("business")) {
+					
+					// if is next invoice then plus one month else plus unit month(s)
+					int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
+					int nextInvoiceDay = -7;
+					Calendar calNextInvoiceDay = Calendar.getInstance();
+					calNextInvoiceDay.setTime(isFirst 
+								? (co.getOrder_using_start() != null 
+								? co.getOrder_using_start() 
+								: new Date()) 
+						: co.getNext_invoice_create_date_flag());
+					calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+					// update customer order's next invoice create day flag begin
+					co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+					// update customer order's next invoice create day flag end
+
+					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+					// update customer order's next invoice create day begin
+					co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+					// update customer order's next invoice create day end
+					
+					co.getParams().put("id", co.getId());
+					
+					this.customerOrderMapper.updateCustomerOrder(co);
+					
+				}
+				
 			// Else not first invoice, add unexpired order detail(s) into invoice detail(s)
 			} else {
 				
@@ -2062,20 +2176,25 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 						// If is old order than use old logic, service from 1th to last day of the month.
 						if((co.getOrder_serial()!=null && co.getOrder_serial().contains("old"))
 						  || c.getCustomer_type().equals("business")){
-							// Add first day to last day
+							// Add first day as begin date and last day as end date
 							cal.set(Calendar.DAY_OF_MONTH, 1);
 							startFrom = cal.getTime();
 							cal.set(Calendar.DAY_OF_MONTH, cal.getActualMaximum(Calendar.DATE));
 							endTo = cal.getTime();
 						} else {
+							// If second or greater invoices then assign begin date to next_invoice_create_date_flag
 							if(is_Next_Invoice){
 								cal.setTime(co.getNext_invoice_create_date_flag());
+							// Else first invoice then assign begin date to next_invoice_create_date_flag - 1
 							} else {
 								cal.setTime(co.getNext_invoice_create_date_flag());
 								cal.add(Calendar.MONTH, -1);
 							}
+							// Assign calculated date to begin date
 							startFrom = cal.getTime();
+							// If unit not null then add unit month(s), else add 1 month
 							cal.add(Calendar.MONTH, cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1);
+							// Minus 1 day
 							cal.add(Calendar.DAY_OF_MONTH, -1);
 							endTo = cal.getTime();
 						}
@@ -3125,89 +3244,6 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
-	
-	/**
-	 * BEGIN Ticket
-	 */
-	@Transactional
-	public List<Ticket> queryTicket(Ticket t){
-		return this.ticketMapper.selectTicket(t);
-	}
-	
-	@Transactional
-	public void createTicket(Ticket t){
-		this.ticketMapper.insertTicket(t);
-	}
-	
-	@Transactional
-	public void editTicket(Ticket t){
-		this.ticketMapper.updateTicket(t);
-	}
-	
-	@Transactional
-	public Page<Ticket> queryTicketsByPage(Page<Ticket> page){
-		page.setTotalRecord(this.ticketMapper.selectTicketsSum(page));
-		page.setResults(this.ticketMapper.selectTicketsByPage(page));
-		return page;
-	}
-	
-	@Transactional
-	public void removeTicketById(int id){
-		this.ticketMapper.deleteTicketById(id);
-	}
-	
-	@Transactional
-	public int queryTicketsBySum(Page<Ticket> page){
-		return this.ticketMapper.selectTicketsSum(page);
-	}
-
-	/**
-	 * END Ticket
-	 */
-	
-	/**
-	 * BEGIN TicketComment
-	 */
-	@Transactional
-	public List<TicketComment> queryTicketComment(TicketComment tc){
-		return this.ticketCommentMapper.selectTicketComment(tc);
-	}
-	
-	@Transactional
-	public void createTicketComment(TicketComment tc){
-		this.ticketCommentMapper.insertTicketComment(tc);
-	}
-	
-	@Transactional
-	public void editTicketComment(TicketComment tc){
-		this.ticketCommentMapper.updateTicketComment(tc);
-	}
-	
-	@Transactional
-	public Page<TicketComment> queryTicketCommentsByPage(Page<TicketComment> page){
-		page.setTotalRecord(this.ticketCommentMapper.selectTicketCommentsSum(page));
-		page.setResults(this.ticketCommentMapper.selectTicketCommentsByPage(page));
-		return page;
-	}
-	
-	@Transactional
-	public void removeTicketCommentById(int id){
-		this.ticketCommentMapper.deleteTicketCommentById(id);
-	}
-	
-	@Transactional
-	public void removeTicketCommentByTicketId(int id){
-		this.ticketCommentMapper.deleteTicketCommentByTicketId(id);
-	}
-	
-	@Transactional
-	public int queryTicketCommentsBySum(Page<TicketComment> page){
-		return this.ticketCommentMapper.selectTicketCommentsSum(page);
-	}
-
-	/**
-	 * END TicketComment
-	 */
 	
 	// Check Pending Warning Order
 	@Transactional 
