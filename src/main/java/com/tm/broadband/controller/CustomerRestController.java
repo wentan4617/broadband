@@ -1074,18 +1074,18 @@ public class CustomerRestController {
 	}
 	
 	
-	@RequestMapping("/plans/hardware/loading/{select_plan_type}")
-	public List<Hardware>  loadingHardwares(
-			@PathVariable("select_plan_type") String select_plan_type) {
+	@RequestMapping("/plans/hardware/loading")
+	public List<Hardware>  loadingHardwares(HttpSession session) {
 		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
 		hardware.getParams().put("hardware_type", "router");
-		if ("ADSL".equals(select_plan_type)) {
+		if ("ADSL".equals(customerReg.getSelect_plan_type())) {
 			hardware.getParams().put("router_adsl", true);
-		} else if ("VDSL".equals(select_plan_type)) {
+		} else if ("VDSL".equals(customerReg.getSelect_plan_type())) {
 			hardware.getParams().put("router_vdsl", true);
-		} else if ("UFB".equals(select_plan_type)) {
+		} else if ("UFB".equals(customerReg.getSelect_plan_type())) {
 			hardware.getParams().put("router_ufb", true);
 		}
 		

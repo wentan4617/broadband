@@ -32,7 +32,7 @@
 				$('#text-error').text(json.errorMap[key]);
 				$('#alert-error').show('normal');
 			} else {
-				var $input = $('#' + key.replace('.', '\\.'));
+				var $input = $('#' + key.replace('.', '\\.')); //console.log(key);
 				var input_placement = $input.attr('data-placement'); // console.log(input_placement);
 				lastErr = $input;
 				$input

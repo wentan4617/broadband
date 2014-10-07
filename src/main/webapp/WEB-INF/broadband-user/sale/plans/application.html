@@ -50,7 +50,7 @@
 					<.=select_customer_type=='personal'?'Homeline':'Businessline'.> Number <span class="text-danger">(*)</span>
 				</label>
 				<div class="col-md-4">
-					<input type="text" id="customerOrder.transition_porting_number" value="<.=transition_porting_number.>" class="form-control" />
+					<input type="text" id="customerOrder.transition_porting_number" value="<.=transition_porting_number.>" class="form-control" data-error-field/>
 				</div>
 			</div>
 
@@ -59,10 +59,10 @@
 					Provider Name <span class="text-danger">(*)</span>
 				</label>
 				<div class="col-md-4">
-					<select id="customerOrder.transition_provider_name" class="selectpicker show-tick form-control" data-error-field>
-					<. var names = ['Telecom', 'Vodafone', 'Orcon', 'Slingshot', 'Snap', 'Flip', 'Woosh', 'Telnet', 'megaTel', 'Other'];
+					<select id="transition_provider_name" class="selectpicker show-tick form-control" data-error-field>
+					<. var names = ['Telecom', 'Vodafone', 'Orcon', 'Slingshot', 'Snap', 'Flip', 'Woosh', 'Telnet', 'megaTel', '2talk', 'Other'];
 						for (var i = 0, len = names.length; i < len; i++) {
-							if (transition_provider_name == names[i]) {.>
+							if (_transition_provider_name == names[i]) {.>
 						<option value="<.=names[i].>" selected="selected"><.=names[i].></option>
 							<.} else { .>
 						<option value="<.=names[i].>"><.=names[i].></option>
@@ -70,6 +70,12 @@
 						}
 					.>
 					</select>
+				</div>
+			</div>
+			<div class="form-group" id="other_container" style="<.=transition_provider_name=='Other'?'display:block':'display:none'.>">
+				<label class="control-label col-md-4"></label>
+				<div class="col-md-4">
+					<input type="text" id="customerOrder.transition_provider_name" value="<.=transition_provider_name.>" class="form-control" placeholder="Put your provider name." data-error-field />
 				</div>
 			</div>
 			<div class="form-group">
@@ -98,7 +104,7 @@
 		<hr />
 		<h4 class="text-success"><.=select_customer_type=='personal'?'Personal Information':'Group/Organization Information'.></h4>
 		<hr />
-		
+
 		<.if (select_customer_type == 'personal') { .>
 		
 		<div class="form-group">
@@ -215,6 +221,7 @@
 							
 		<.}.>
 
+
 		<!-- For ID Purpose Only -->
 
 		<hr />
@@ -261,11 +268,26 @@
 		
 		<div class="form-group">
 			<label for="connection_date" class="control-label col-md-4">Connection date</label>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<p class="form-control-static">
 					<label>
 						<input type="radio" name="connection_date" value="ASAP"/> <!-- checked="checked" -->
 						&nbsp; <strong>ASAP</strong>
+					</label>
+				</p>
+			</div>
+		</div>
+		<div class="form-group">
+			<label for="am" class="control-label col-md-4"></label>
+			<div class="col-md-3">
+				<p class="form-control-static">
+					<label>
+						<input type="radio" name="am" value="AM" checked="checked"/> <!-- checked="checked" -->
+						&nbsp; <strong>AM</strong>
+					</label>&nbsp;
+					<label>
+						<input type="radio" name="am" value="PM"/> <!-- checked="checked" -->
+						&nbsp; <strong>PM</strong>
 					</label>
 				</p>
 			</div>

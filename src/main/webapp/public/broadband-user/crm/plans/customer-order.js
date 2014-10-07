@@ -113,7 +113,7 @@
 	};
 		
 	function loadingPlans() {
-		var url = ctx + '/broadband-user/sale/plans/loading';
+		var url = ctx + '/broadband-user/crm/plans/loading';
 		$.get(url, function(planTypeMap){ //console.log(select_plan_type);
 			
 			var planMap = planTypeMap[select_plan_type]; //console.log(planMap);
@@ -132,7 +132,7 @@
 			$('#select-plan').html(tmpl('select_plan_tmpl', o));
 			
 			// loadingModems
-			var url = ctx + '/broadband-user/sale/plans/hardware/loading/'; //console.log(url);
+			var url = ctx + '/broadband-user/crm/plans/hardware/loading/'; //console.log(url);
 			$.get(url, function(hardwares){ //console.log(hardwares);
 				modems = hardwares;
 				flushApplication();
@@ -615,9 +615,9 @@
 	function confirm() {
 		
 		if (select_customer_type == 'personal') {
-			var url = ctx + '/broadband-user/sale/plans/order/confirm/personal';
+			var url = ctx + '/broadband-user/crm/plans/order/confirm/personal';
 		} else if (select_customer_type == 'business') {
-			var url = ctx + '/broadband-user/sale/plans/order/confirm/business';
+			var url = ctx + '/broadband-user/crm/plans/order/confirm/business';
 		}
 		
 		var l = Ladda.create(this); l.start();

@@ -11,18 +11,30 @@ body {
 	background: url("../images/top.png") no-repeat;
 }
 
+.cyberpark-home-bg {
+	background: url("../images/cyberpark_home_bg.jpg");
+}
+.cyberpark-home-bg img {
+	margin: 0 auto;
+	padding: 60px 10px 30px;
+}
+
+.cyberpark-home-bg a {
+	margin: 0 auto;
+}
+
 .phone {
 	display: inline-block;
-	width: 30px;
-	height: 30px;
+	width: 25px;
+	height: 25px;
 	background: url("../images/phone.png") no-repeat;
 	background-size: contain;
 	margin-bottom: -5px;
 }
 .without_phone {
 	display: inline-block;
-	width: 30px;
-	height: 30px;
+	width: 25px;
+	height: 25px;
 	background: url("../images/without_phone.png") no-repeat;
 	background-size: contain;
 	margin-bottom: -5px;

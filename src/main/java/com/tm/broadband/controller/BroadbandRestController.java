@@ -42,18 +42,37 @@ public class BroadbandRestController {
 	public Broadband checkAddressSale(HttpSession session
 			, @PathVariable("address") String address) {
 		
+		System.out.println("customerRegSale check address");
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
-		if (customerRegSale != null) {
-			System.out.println("this is old customerReg");
-			return returnBroadband(address, customerRegSale);
-		} else {
-			System.out.println("this is new customerReg");
+		if (customerRegSale == null) {
+			System.out.println("this is new customerRegSale, 1");
 			customerRegSale = new Customer();
+			customerRegSale.setSelect_customer_type("personal");
 			customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
-			customerRegSale.setSelect_plan_id(0);
-			customerRegSale.setSelect_plan_type("0");
 			session.setAttribute("customerRegSale", customerRegSale);
 			return returnBroadband(address, customerRegSale);
+		} else {
+			System.out.println("this is old customerRegSale");
+			return returnBroadband(address, customerRegSale);
+		}
+	}
+	
+	@RequestMapping("/crm/plans/address/check/{address}")
+	public Broadband checkAddressAdmin(HttpSession session
+			, @PathVariable("address") String address) {
+		
+		System.out.println("customerRegAdmin check address");
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		if (customerRegAdmin == null) {
+			System.out.println("this is new customerRegAdmin, 1");
+			customerRegAdmin = new Customer();
+			customerRegAdmin.setSelect_customer_type("personal");
+			customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			session.setAttribute("customerRegAdmin", customerRegAdmin);
+			return returnBroadband(address, customerRegAdmin);
+		} else {
+			System.out.println("this is old customerRegAdmin");
+			return returnBroadband(address, customerRegAdmin);
 		}
 	}
 	

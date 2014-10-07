@@ -33,7 +33,6 @@ import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
-@SessionAttributes(value= {"orderCustomer", "orderCustomerOrderDetails"})
 public class SaleRestController {
 	
 	private CRMService crmService;
@@ -146,23 +145,28 @@ public class SaleRestController {
 	
 	
 	
-	@RequestMapping("/broadband-user/sale/plans/loading/{select_plan_id}/{select_plan_type}/{select_customer_type}")
-	public Map<String, Map<String, List<Plan>>>  loadingPlans(
-			@PathVariable("select_plan_id") Integer id,
-			@PathVariable("select_plan_type") String type, 
-			@PathVariable("select_customer_type") String clasz, 
-			HttpSession session) {
+	@RequestMapping("/broadband-user/sale/plans/loading")
+	public Map<String, Map<String, List<Plan>>> loadingPlans(HttpSession session) {
 		
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
 		
 		Plan plan = new Plan();
-		plan.getParams().put("plan_type", type);
-		plan.getParams().put("plan_class", clasz);
+		plan.getParams().put("plan_type", customerRegSale.getSelect_plan_type());
+		plan.getParams().put("plan_class", customerRegSale.getSelect_customer_type());
 		plan.getParams().put("plan_status", "selling");
-		plan.getParams().put("plan_group_false", "plan-topup");
+		System.out.println("customerRegSale.getSelect_plan_group(): " + customerRegSale.getSelect_plan_group());
+		if ("plan-topup".equals(customerRegSale.getSelect_plan_group())) {
+			System.out.println("topup");
+			plan.getParams().put("plan_group", "plan-topup");
+		} else {
+			System.out.println("!!!topup");
+			plan.getParams().put("plan_group_false", "plan-topup");
+		}
 		plan.getParams().put("orderby", "order by plan_price");
 		
-		if ("VDSL".equals(type) && customerRegSale.getCustomerOrder().getSale_id() != null) {
+		if ("VDSL".equals(customerRegSale.getSelect_plan_type()) 
+				&& customerRegSale.getCustomerOrder().getSale_id() != null
+				&& "personal".equals(customerRegSale.getSelect_customer_type())) {
 			plan.getParams().put("id", 42);
 		}
 		
@@ -217,14 +221,20 @@ public class SaleRestController {
 	}
 	
 	
-	@RequestMapping("/broadband-user/sale/plans/hardware/loading/{hardware_class}")
-	public List<Hardware>  loadingHardwares(
-			@PathVariable("hardware_class") String hardware_class) {
+	@RequestMapping("/broadband-user/sale/plans/hardware/loading")
+	public List<Hardware> loadingHardwares(HttpSession session) {
 		
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
 		Hardware hardware = new Hardware();
 		hardware.getParams().put("hardware_status", "selling");
 		hardware.getParams().put("hardware_type", "router");
-		hardware.getParams().put("hardware_class", hardware_class);
+		if ("ADSL".equals(customerRegSale.getSelect_plan_type())) {
+			hardware.getParams().put("router_adsl", true);
+		} else if ("VDSL".equals(customerRegSale.getSelect_plan_type())) {
+			hardware.getParams().put("router_vdsl", true);
+		} else if ("UFB".equals(customerRegSale.getSelect_plan_type())) {
+			hardware.getParams().put("router_ufb", true);
+		}
 		
 		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		
@@ -274,15 +284,7 @@ public class SaleRestController {
 		customerRegSale.setIdentity_number(customer.getIdentity_number());
 		customerRegSale.setCustomer_type(customer.getCustomer_type());
 		
-		customerRegSale.getOrganization().setOrg_type(customer.getOrganization().getOrg_type());
-		customerRegSale.getOrganization().setOrg_name(customer.getOrganization().getOrg_name());
-		customerRegSale.getOrganization().setOrg_trading_name(customer.getOrganization().getOrg_trading_name());
-		customerRegSale.getOrganization().setOrg_register_no(customer.getOrganization().getOrg_register_no());
-		customerRegSale.getOrganization().setOrg_incoporate_date(customer.getOrganization().getOrg_incoporate_date());
-		customerRegSale.getOrganization().setHolder_name(customer.getOrganization().getHolder_name());
-		customerRegSale.getOrganization().setHolder_job_title(customer.getOrganization().getHolder_job_title());
-		customerRegSale.getOrganization().setHolder_phone(customer.getOrganization().getHolder_phone());
-		customerRegSale.getOrganization().setHolder_email(customer.getOrganization().getHolder_email());
+		customerRegSale.setOrganization(customer.getOrganization());
 		
 		customerRegSale.setCustomerOrder(customer.getCustomerOrder());
 		

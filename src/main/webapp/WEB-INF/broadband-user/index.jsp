@@ -66,11 +66,7 @@ hr {
 		                    	</li>
 								<li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/crm/customer/personal/create">Create Personal Customer</a>
-								</li>
-								<li>
-		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx }/broadband-user/crm/customer/business/create">Create Business Customer</a>
+		                    		<a href="${ctx }/broadband-user/crm/plans">New Order</a>
 								</li>
 		                    </ul>
 		                    <hr/>
@@ -298,7 +294,7 @@ hr {
 		                    	</li> --%>
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-		                    		<a href="${ctx}/broadband-user/sale/plans/select-customer-business">New Ordering Online (PAD | PC)</a>
+		                    		<a href="${ctx}/broadband-user/sale/plans">New Ordering Online (PAD | PC)</a>
 		                    	</li>
 		                    </ul>
 					  	</div>

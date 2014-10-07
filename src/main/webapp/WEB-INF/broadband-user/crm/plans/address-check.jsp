@@ -4,16 +4,16 @@
 <%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %>  
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="../header.jsp" />
+<jsp:include page="../../header.jsp" />
 
-<c:if test="${customerRegSale.customerOrder.sale_id == 10023}">
+<c:if test="${customerRegAdmin.customerOrder.sale_id == 10023}">
 	<div class="cyberpark-home-bg" >
-		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu2${customerRegSale.language }.png" style="margin: -20px auto 10px;padding: 0;" >
+		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/zhongqiu2${customerRegAdmin.language }.png" style="margin: -20px auto 10px;padding: 0;" >
 	</div>
 </c:if>
-<c:if test="${customerRegSale.customerOrder.sale_id == 20023}">
+<c:if test="${customerRegAdmin.customerOrder.sale_id == 20023}">
 	<div class="cyberpark-home-bg" >
-		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/3monthgift${customerRegSale.language }.jpg" style="margin: -20px auto 10px;padding: 0;" >
+		<img class="img-responsive" src="${ctx }/public/bootstrap3/images/3monthgift${customerRegAdmin.language }.jpg" style="margin: -20px auto 10px;padding: 0;" >
 	</div>
 </c:if>
 
@@ -38,7 +38,7 @@
 	<div class="row" style="margin-top:30px;">
 		<div class="col-md-6 col-md-offset-3 col-xs-12 col-sm-12">
 			<div class="input-group">
-				<input id="address" value="${customerRegSale.address }" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
+				<input id="address" value="${customerRegAdmin.address }" type="text" class="form-control input-lg" placeholder="Put your address here" /> 
 				<span class="input-group-btn">
 					<button class="btn btn-success btn-lg ladda-button" data-style="zoom-in" type="button" id="goCheck">
 						<span class="ladda-label glyphicon glyphicon-search"></span>
@@ -49,10 +49,10 @@
 	</div>
 	
 	<p class="text-center">
-		<a href="${ctx }/broadband-user/sale/plans/address/clear" class="btn btn-link">Clear Address</a>
+		<a href="${ctx }/broadband-user/crm/plans/address/clear" class="btn btn-link">Clear Address</a>
 	</p>
 	
-	<c:if test="${customerRegSale.customerOrder.sale_id == 10023}">
+	<c:if test="${customerRegAdmin.customerOrder.sale_id == 10023}">
 	
 	<div class="panel panel-success">
 		<div class="panel-heading">
@@ -146,13 +146,13 @@
 <jsp:include page="resultAddressCheck.html" />
 </script>
 
-<jsp:include page="../footer.jsp" />
-<jsp:include page="../script.jsp" />
+<jsp:include page="../../footer.jsp" />
+<jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/address-check.js?ver=2014107659"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/address-check.js?ver=2014107659"></script>
 <script src="https://maps.google.com/maps/api/js?sensor=false&libraries=places&region=NZ" type="text/javascript"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/autoCompleteAddress.js"></script>
 <jsp:include page="../../footer-end.jsp" />

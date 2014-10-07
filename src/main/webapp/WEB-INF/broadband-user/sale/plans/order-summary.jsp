@@ -15,9 +15,8 @@
 <div class="container" style="margin-top:20px;">
 
 	<div class="hidden-xs hidden-sm">
-		<ul class="nav nav-pills nav-wizard" style="width: 750px; margin: 0 auto;">
-			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li>
-			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
+		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
+			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
 			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
 		</ul>
@@ -69,6 +68,8 @@
 				</div>
 			</div>
 			
+			
+			
 			<c:if test="${customerRegSale.customer_type == 'business' }">
 			
 			<hr style="margin-top:0;"/>
@@ -114,6 +115,18 @@
 				<div class="col-sm-4"><strong>Email</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerRegSale.organization.holder_email }</strong></div>
 			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Identity Type</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegSale.identity_type }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Identity Number</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegSale.identity_number }</strong></div>
+			</div>
+			<div class="row" style="margin-top:5px;">
+				<div class="col-sm-4"><strong>Connection Date</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegSale.customerOrder.connection_date }</strong></div>
+			</div>
 			
 			</c:if>
 			
@@ -131,14 +144,14 @@
 				<div class="col-sm-4"><strong>Email</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerRegSale.email }</strong></div>
 			</div>
-			<%-- <div class="row" style="margin-top:5px;">
+			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Type</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerRegSale.identity_type }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Number</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerRegSale.identity_number }</strong></div>
-			</div> --%>
+			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Connection Date</strong></div>
 				<div class="col-sm-6"><strong class="text-info">${customerRegSale.customerOrder.connection_date }</strong></div>
@@ -151,7 +164,7 @@
 				<h2>Transition</h2>
 				<hr style="margin-top:0;"/>
 				<div class="row" >
-					<div class="col-sm-4"><strong>Homeline Number</strong></div>
+					<div class="col-sm-4"><strong>Phoneline Number</strong></div>
 					<div class="col-sm-6"><strong class="text-info">${customerRegSale.customerOrder.transition_porting_number }</strong></div>
 				</div>
 				<div class="row" style="margin-top:5px;">
@@ -177,9 +190,19 @@
 						<th>Service / Product</th>
 						<th>Data</th>
 						<!-- <th>Term</th> -->
-						<th>Monthly Charge</th>
+						<th>
+							<c:choose>
+								<c:when test="${customerRegSale.select_plan_group == 'plan-topup' }">
+								Weekly Charge
+								</c:when>
+								<c:otherwise>
+								Monthly Charge
+								</c:otherwise>
+							</c:choose>
+							
+						</th>
 						<th>Qty</th>
-						<th>Subtotal</th>
+						<th>Sub Total</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -207,9 +230,9 @@
 									<th>&nbsp;</th>
 									<th>&nbsp;</th>
 									<!-- <th>&nbsp;</th> -->
-									<th>Unit Price</th>
+									<th>One-off Charge</th>
 									<th>Qty</th>
-									<th>Subtotal</th>
+									<th>Sub Total</th>
 								</tr>
 							</c:when>
 							<c:otherwise>
@@ -301,14 +324,14 @@
 								<td>Order Price</td>
 								<td>
 									NZ$ 
-									<fmt:formatNumber value="${customerRegSale.customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
+									<fmt:formatNumber value="${(customerRegSale.customerOrder.order_total_price + customerRegSale.customerOrder.discount_price)/1.15}" type="number" pattern="#,##0.00" />
 								</td>
 							</tr>
 							<tr>
 								<td>Plus GST at 15% </td>
 								<td>
 									NZ$ 
-									<fmt:formatNumber value="${customerRegSale.customerOrder.order_total_price * 0.15}" type="number" pattern="#,##0.00" />
+									<fmt:formatNumber value="${(customerRegSale.customerOrder.order_total_price + customerRegSale.customerOrder.discount_price)/1.15 * 0.15}" type="number" pattern="#,##0.00" />
 								</td>
 							</tr>
 							<tr>
@@ -316,20 +339,18 @@
 								<td>
 									<strong class="text-success">
 										NZ$ 
-										<fmt:formatNumber value="${customerRegSale.customerOrder.order_total_price * 1.15 }" type="number" pattern="#,##0.00" />
+										<fmt:formatNumber value="${customerRegSale.customerOrder.order_total_price}" type="number" pattern="#,##0.00" />
 									</strong>
 								</td>
 							</tr>
 												
 							</c:when>
 						</c:choose>
-							
 						</tbody>
 					</table>
 				</div>
 			</div>
 			
-			<c:if test="${customerRegSale.customer_type == 'personal' }">
 			
 			<hr>
 			<h4 class="text-success">
@@ -341,8 +362,8 @@
 			
 			<div id="alertContainer"></div>
 					
-			<div id="tempAlertSuccessContainer" style="display:none;">
-				<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none;">
+			<div id="tempAlertSuccessContainer" style="display:none">
+				<div id="alert-success" class="alert alert-success alert-dismissable fade in" style="display:none">
 					<button type="button" class="close" data-dismiss="alert" aria-hidden="true" >&times;</button>
 					<span id="text-success"></span>
 				</div>
@@ -375,8 +396,6 @@
 					</c:forEach>
 				</c:if>
 			</div>
-			
-			</c:if>
 			
 			<hr/>
 			
@@ -444,29 +463,15 @@
 			</form>
 		
 			<hr/>
-						
-						
+			
 			<div class="row">
 				<div class="col-md-2 hidden-xs hidden-sm">
 					<a href="${ctx }/broadband-user/sale/plans/order" class="btn btn-success btn-lg btn-block">Back</a>
 				</div>
 				<div class="col-md-2 col-md-offset-8">
-					<%-- <form class="form-horizontal" action="${ctx }/broadband-user/sale/plans/order/dps" method="post" id="checkoutForm">
-						
-						<div class="btn-group dropup btn-block">
-							<button type="button" class="btn btn-success btn-lg btn-block dropdown-toggle" data-toggle="dropdown">
-								Checkout <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu" >
-								<li><a href="javascript:void(0);" id="online_payment">Online Payment</a></li>
-								<li><a href="javascript:void(0);" id="bank_depoist">Bank Deposit</a></li>
-							</ul>
-						</div>
-					</form> --%>
 					<a  class="btn btn-success btn-lg btn-block"  data-toggle="modal" data-target="#save_order_model" id="confirm_order_btn"  >Bank Deposit</a>
 				</div>
-				
-			</div>		
+			</div>
 			
 		</div>
 		
@@ -530,5 +535,5 @@ var ctx = '${ctx}';
 var total_vprice = new Number('${total_vprice}');
 var order_price = new Number('${customerRegSale.customerOrder.order_total_price}');
 </script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/order-summary.js?ver=2014822747"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/order-summary.js?ver=2014107902"></script>
 <jsp:include page="../../footer-end.jsp" />

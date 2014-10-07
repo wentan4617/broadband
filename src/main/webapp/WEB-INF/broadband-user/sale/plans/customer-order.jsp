@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
-<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -11,7 +9,6 @@
 	width: 100%;
 	padding: 10px 20px;
 }
-
 .affix {
 	width:293px;
 	top:30px;
@@ -21,14 +18,14 @@
 <div class="container" style="margin-top:20px;">
 
 	<div class="hidden-xs hidden-sm">
-		<ul class="nav nav-pills nav-wizard" style="width: 650px; margin: 0 auto;">
-			<!-- <li><a href="javascript:void(0);"><span class="glyphicon glyphicon-star"></span> Select One Plans</a><div class="nav-arrow"></div></li> -->
+		<ul class="nav nav-pills nav-wizard" style="width: 550px; margin: 0 auto;">
 			<li><a href="javascript:void(0);"><span class="glyphicon glyphicon-search"></span> Check Address</a><div class="nav-arrow"></div></li>
-			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application of ${customerRegSale.select_customer_type=='personal'?'Personal':'Business' }</a><div class="nav-arrow"></div></li>
+			<li class="active"><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-pencil"></span> Fill in Application</a><div class="nav-arrow"></div></li>
 			<li><div class="nav-wedge"></div><a href="javascript:void(0);"><span class="glyphicon glyphicon-eye-open"></span> Review & Checkout</a></li>
 		</ul>
 		<hr>
 	</div>
+	
 	
 	<form id="customerInfoFrom" class="form-horizontal">
 	
@@ -53,22 +50,28 @@
 
 <script type="text/html" id="select_plan_tmpl" 
 data-ctx="${ctx }" 
+data-select_plan_group="${customerRegSale.select_plan_group}"
 data-select_plan_id="${customerRegSale.select_plan_id}" 
 data-select_plan_type="${customerRegSale.select_plan_type }"
 data-select_customer_type="${customerRegSale.select_customer_type }"
-data-sale-id="${customerRegSale.customerOrder.sale_id }">
+data-sale-id="${customerRegSale.customerOrder.sale_id }"
+data-promotion="${customerRegSale.customerOrder.promotion }">
 <jsp:include page="select-plan.html" />
 </script>
-<script type="text/html" id="open_term_tmpl">
+<script type="text/html" id="open_term_tmpl"
+data-contract="${customerRegSale.customerOrder.contract }">
 <jsp:include page="open-term.html" />
 </script>
-<script type="text/html" id="prepay_month_tmpl">
+<script type="text/html" id="prepay_month_tmpl"
+data-prepay_months="${customerRegSale.customerOrder.prepay_months }">
 <jsp:include page="prepay-month.html" />
 </script>
-<script type="text/html" id="select_modem_tmpl">
+<script type="text/html" id="select_modem_tmpl"
+data-hardware_id_selected="${customerRegSale.customerOrder.hardware_id_selected }">
 <jsp:include page="select-modem.html" />
 </script>
-<script type="text/html" id="broadband_options_tmpl">
+<script type="text/html" id="broadband_options_tmpl"
+data-order_broadband_type="${customerRegSale.customerOrder.order_broadband_type }">
 <jsp:include page="broadband-options.html" />
 </script>
 <script type="text/html" id="application_tmpl" 
@@ -79,6 +82,7 @@ data-first_name="${customerRegSale.first_name }"
 data-last_name="${customerRegSale.last_name }"
 data-identity_type="${customerRegSale.identity_type }"
 data-identity_number="${customerRegSale.identity_number }"
+data-_transition_provider_name="${customerRegSale.customerOrder._transition_provider_name }"
 data-transition_provider_name="${customerRegSale.customerOrder.transition_provider_name }"
 data-transition_account_holder_name="${customerRegSale.customerOrder.transition_account_holder_name }"
 data-transition_account_number="${customerRegSale.customerOrder.transition_account_number }"
@@ -106,5 +110,5 @@ data-holder_email="${customerRegSale.organization.holder_email }">
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/customer-order.js?ver=2014941943"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/customer-order.js?ver=2014107742"></script>
 <jsp:include page="../../footer-end.jsp" />

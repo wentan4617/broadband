@@ -37,6 +37,7 @@ public class CallInternationalRate implements Serializable {
 	/*
 	 * END RELATED PROPERTIES
 	 */
+	
 	public CallInternationalRate() {
 
 	}
