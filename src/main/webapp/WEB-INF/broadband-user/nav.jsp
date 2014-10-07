@@ -59,15 +59,9 @@
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/crm/customer/personal/create">
+								<a href="${ctx}/broadband-user/crm/plans">
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-									Create Personal Customer
-								</a>
-							</li>
-							<li>
-								<a href="${ctx}/broadband-user/crm/customer/business/create">
-									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-									Create Business Customer
+									New Order
 								</a>
 							</li>
 							<li class="divider"></li>
@@ -271,14 +265,8 @@
 									View Online Orders (PAD | PC)
 								</a>
 							</li>
-							<%-- <li>
-								<a href="${ctx}/broadband-user/sale/online/ordering/plans/personal"><!--  -->
-									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
-									Ordering Online (PAD | PC)
-								</a>
-							</li> --%>
 							<li>
-								<a href="${ctx}/broadband-user/sale/plans/select-customer-business">
+								<a href="${ctx}/broadband-user/sale/plans">
 									<span class="glyphicon glyphicon-plus" style="padding-right:10px;"></span>
 									New Ordering Online (PAD | PC)
 								</a>

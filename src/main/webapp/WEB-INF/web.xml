@@ -202,6 +202,7 @@
 		<url-pattern>/broadband-user/crm/customer/edit/*</url-pattern>
 		<url-pattern>/broadband-user/crm/customer-service-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/crm/ticket/view</url-pattern>
+		<!-- <url-pattern>/broadband-user/crm/plans/*</url-pattern> -->
 		<!-- CRM Module END -->
 
 		<!-- Billing Module BEGIN -->

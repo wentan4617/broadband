@@ -48,19 +48,26 @@
 </style>
 
 <div class="container" style="margin-top:20px;">
+
+	<div class="page-header">
+		<h1>VoIP Rates</h1>
+	</div>
+
 	<div class="row" style="margin-bottom:20px;">
 		
 		<div class="col-md-9 col-xs-12 col-sm-12">
-		
+
+			
+
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" id="rates">
-				<li class="active"><a href="#personal-rates" data-toggle="tab" data-type="p"><strong>Personal Rates</strong></a></li>
-				<li><a href="#business-rates" data-toggle="tab" data-type="b"><strong>Business Rates</strong></a></li>
+				<li class="active"><a href="#personal-voip-rates" data-toggle="tab" data-type="pv"><strong>Personal VoIP Rates</strong></a></li>
+				<li><a href="#business-voip-rates" data-toggle="tab" data-type="bv"><strong>Business VoIP Rates</strong></a></li>
 			</ul>
 
 			<!-- Tab panes -->
 			<div class="tab-content panel panel-success">
-				<div class="panel-body tab-pane fade in active" id="personal-rates" >	
+				<div class="panel-body tab-pane fade in active" id="personal-voip-rates" >	
 				
 					<table class="table table-bordered">
 						<thead>
@@ -73,8 +80,8 @@
 						<tbody>
 							<tr>
 								<td>Free</td>
-								<td>$ 0.06</td>
-								<td>$ 0.19</td>
+								<td>Free</td>
+								<td>$ 0.10</td>
 							</tr>
 						</tbody>
 					</table>		
@@ -83,7 +90,7 @@
 						<div class="panel-heading">
 							<h4 class="panel-title">International</h4>
 						</div>
-						<c:if test="${fn:length(letterCirs) > 0}">
+						<c:if test="${fn:length(letterVrs) > 0}">
 							<table class="table table-bordered">
 								<thead>
 									<tr>
@@ -93,16 +100,16 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach var="lCir" items="${letterCirs }">
-										<c:if test="${fn:length(lCir.cirs) > 0 }">
-											<tr class="active" id="${lCir.letter}p">
-												<td colspan="3">${lCir.letter}</td>
+									<c:forEach var="lVr" items="${letterVrs }">
+										<c:if test="${fn:length(lVr.vrs) > 0 }">
+											<tr class="active" id="${lVr.letter}p">
+												<td colspan="3">${lVr.letter}</td>
 											</tr>
-											<c:forEach var="cir" items="${lCir.cirs }">
+											<c:forEach var="vr" items="${lVr.vrs }">
 												<tr>
-													<td>${cir.area_name}</td>
-													<td>${cir.area_prefix}</td>
-													<td>$ ${cir.rate_cost}</td>
+													<td>${vr.area_name}</td>
+													<td>${vr.area_prefix}</td>
+													<td>$ ${vr.billed_per_min}</td>
 												</tr>
 											</c:forEach>
 										</c:if>
@@ -115,7 +122,7 @@
 				</div>
 				
 				
-				<div class="panel-body tab-pane fade" id="business-rates" >
+				<div class="panel-body tab-pane fade" id="business-voip-rates" >
 				
 					<table class="table table-bordered">
 						<thead>
@@ -127,9 +134,9 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td>$ 0.03</td>
-								<td>$ 0.06</td>
-								<td>$ 0.19</td>
+								<td>Free</td>
+								<td>$ 0.04</td>
+								<td>$ 0.10</td>
 							</tr>
 						</tbody>
 					</table>		
@@ -138,7 +145,7 @@
 						<div class="panel-heading">
 							<h4 class="panel-title">International</h4>
 						</div>
-						<c:if test="${fn:length(letterCirs) > 0}">
+						<c:if test="${fn:length(letterVrs) > 0}">
 							<table class="table table-bordered">
 								<thead>
 									<tr>
@@ -148,16 +155,16 @@
 									</tr>
 								</thead>
 								<tbody>
-									<c:forEach var="lCir" items="${letterCirs }">
-										<c:if test="${fn:length(lCir.cirs) > 0 }">
-											<tr class="active" id="${lCir.letter}b">
-												<td colspan="3">${lCir.letter}</td>
+									<c:forEach var="lVr" items="${letterVrs }">
+										<c:if test="${fn:length(lVr.vrs) > 0 }">
+											<tr class="active" id="${lVr.letter}b">
+												<td colspan="3">${lVr.letter}</td>
 											</tr>
-											<c:forEach var="cir" items="${lCir.cirs }">
+											<c:forEach var="vr" items="${lVr.vrs }">
 												<tr>
-													<td>${cir.area_name}</td>
-													<td>${cir.area_prefix}</td>
-													<td>$ ${cir.rate_cost}</td>
+													<td>${vr.area_name}</td>
+													<td>${vr.area_prefix}</td>
+													<td>$ ${vr.billed_per_min}</td>
 												</tr>
 											</c:forEach>
 										</c:if>
@@ -168,15 +175,19 @@
 					</div>
 				</div>
 				
+				
+				
+				
+				
 			</div>			
 		</div>
 		<div class="col-md-3 hidden-xs hidden-sm">
 			 <div data-spy="affix" data-offset-top="100">
 				<ul class="pagination" style="margin-top:0;">
-					<c:forEach var="lCir" items="${letterCirs }" varStatus="item">
-						<c:if test="${fn:length(lCir.cirs) > 0 }">
+					<c:forEach var="lVr" items="${letterVrs }" varStatus="item">
+						<c:if test="${fn:length(lVr.vrs) > 0 }">
 							<li>
-								<a href="#${lCir.letter}p" style="${item.last ? 'width:80px;height:35px;' : 'width:40px;height:35px;'}" data-letter="${lCir.letter }">${lCir.letter }</a>
+								<a href="#${lVr.letter}p" style="${item.last ? 'width:80px;height:35px;' : 'width:40px;height:35px;'}" data-letter="${lVr.letter }">${lVr.letter }</a>
 							</li>
 						</c:if>
 					</c:forEach>

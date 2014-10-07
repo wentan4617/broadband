@@ -72,11 +72,11 @@
 		<include refid="vOSVoIPRateWhere"/>
 	</select>
 	
-	<select id="selectVOSVoIPRatesGroupBy" resultType="CallInternationalRate">
+	<select id="selectVOSVoIPRatesGroupBy" resultType="VOSVoIPRate">
 		select 
 			rate_type, area_name,  area_prefix, billed_rate, billed_cycle, billed_per_min
 		from tm_vos_voip_rates
-		GROUP BY rate_type, area_name, billed_rate
+		GROUP BY rate_type, area_name, billed_per_min
 	</select>
 
 	<!-- // END SELECT AREA -->

@@ -1,20 +1,8 @@
 (function($){
 	
-	$(':checkbox, :radio').iCheck({
+	$(':checkbox').iCheck({
 		checkboxClass: 'icheckbox_square-green',
 		radioClass: 'iradio_square-green'
-	});
-	
-	$('input[name="card_type"]').on('ifChecked',function(){
-		$('#card_type').val($(this).val());
-	});
-	
-	$('#confirm_order_btn').click(function(){
-		$('input[name="holder_name"]').val($('#holder_name').val());
-		$('input[name="card_number"]').val($('#card_number').val());
-		$('input[name="security_code"]').val($('#security_code').val());
-		$('input[name="expiry_month"]').val($('#expiry_month').val());
-		$('input[name="expiry_year"]').val($('#expiry_year').val());
 	});
 	
 	$('#online_payment').click(function(){
@@ -28,12 +16,16 @@
 	$('#bank_depoist').click(function(){
 		if ($('#termckb').prop('checked')) {
 			var $form = $('#checkoutForm');
-			$form.attr('action', ctx + '/broadband-user/sale/plans/confirm/save');
+			$form.attr('action', ctx + '/broadband-user/crm/plans/order/bankdeposit');
 			$form.submit();
 		} else {
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}
 	});
+	
+	
+	
+	
 	
 	var i = 0;
 	
@@ -51,7 +43,8 @@
 				, card_number: parent.find("#card_number" + index).val()
 				, index: index
 			}; // console.log(voucher);
-			var l = Ladda.create(this); l.start();
+			var l = Ladda.create(this);
+		 	l.start();
 		 	$.post(ctx + '/plans/plan-topup/online-pay-by-voucher', voucher, function(json){
 				if (!$.jsonValidation(json, 'top')) {
 					var v = json.model;
@@ -73,7 +66,8 @@
 				serial_number: $(this).attr('data-voucher-serial-number')
 				, card_number: $(this).attr('data-voucher-card-number')
 			}; // console.log(voucher);
-			var l = Ladda.create(this); l.start();
+			var l = Ladda.create(this);
+		 	l.start();
 		 	$.post(ctx + '/plans/plan-topup/cancel-voucher-apply', voucher, function(json){
 		 		if (!$.jsonValidation(json)) {
 		 			var v = json.model;

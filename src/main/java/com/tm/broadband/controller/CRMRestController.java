@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -59,9 +60,9 @@ import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
+import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
-@SessionAttributes({ "customer", "customerOrder", "hardwares", "plans" })//
 public class CRMRestController {
 
 	private CRMService crmService;
@@ -2510,4 +2511,289 @@ public class CRMRestController {
 		
 	}
 	// END Topup Account Credit By Voucher
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	@RequestMapping("/broadband-user/crm/plans/loading")
+	public Map<String, Map<String, List<Plan>>> loadingPlans(HttpSession session) {
+		
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		
+		Plan plan = new Plan();
+		plan.getParams().put("plan_type", customerRegAdmin.getSelect_plan_type());
+		plan.getParams().put("plan_class", customerRegAdmin.getSelect_customer_type());
+		//plan.getParams().put("plan_status", "selling");
+		System.out.println("customerRegAdmin.getSelect_plan_group(): " + customerRegAdmin.getSelect_plan_group());
+		if ("plan-topup".equals(customerRegAdmin.getSelect_plan_group())) {
+			System.out.println("topup");
+			plan.getParams().put("plan_group", "plan-topup");
+		} else {
+			System.out.println("!!!topup");
+			plan.getParams().put("plan_group_false", "plan-topup");
+		}
+		plan.getParams().put("orderby", "order by plan_price");
+		
+		if ("VDSL".equals(customerRegAdmin.getSelect_plan_type()) 
+				&& customerRegAdmin.getCustomerOrder().getSale_id() != null
+				&& "personal".equals(customerRegAdmin.getSelect_customer_type())) {
+			plan.getParams().put("id", 42);
+		}
+		
+		List<Plan> plans = this.planService.queryPlans(plan);
+		
+		Map<String, Map<String, List<Plan>>> planTypeMap = new HashMap<String, Map<String, List<Plan>>>();
+		
+		this.wiredPlanMapBySort(planTypeMap, plans);
+		
+		return planTypeMap;
+	}
+	
+	private void wiredPlanMapBySort(Map<String, Map<String, List<Plan>>> planTypeMap, List<Plan> plans) {
+		if (plans != null) {
+			for (Plan p: plans) {
+				Map<String, List<Plan>> planMap = planTypeMap.get(p.getPlan_type());
+				if (planMap == null) {
+					planMap = new HashMap<String, List<Plan>>();	
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = new ArrayList<Plan>();
+						plansClothed.add(p);
+						planMap.put("plansClothed", plansClothed);
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = new ArrayList<Plan>();
+						plansNaked.add(p);
+						planMap.put("plansNaked", plansNaked);
+					}
+					planTypeMap.put(p.getPlan_type(), planMap);
+				} else {
+					if ("CLOTHED".equals(p.getPlan_sort())) {
+						List<Plan> plansClothed = planMap.get("plansClothed");
+						if (plansClothed == null) {
+							plansClothed = new ArrayList<Plan>();
+							plansClothed.add(p);
+							planMap.put("plansClothed", plansClothed);
+						} else {
+							plansClothed.add(p);
+						}
+					} else if("NAKED".equals(p.getPlan_sort())) {
+						List<Plan> plansNaked = planMap.get("plansNaked");
+						if (plansNaked == null) {
+							plansNaked = new ArrayList<Plan>();
+							plansNaked.add(p);
+							planMap.put("plansNaked", plansNaked);
+						} else {
+							plansNaked.add(p);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	@RequestMapping("/broadband-user/crm/plans/hardware/loading")
+	public List<Hardware> loadingHardwares(HttpSession session) {
+		
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		Hardware hardware = new Hardware();
+		hardware.getParams().put("hardware_status", "selling");
+		hardware.getParams().put("hardware_type", "router");
+		if ("ADSL".equals(customerRegAdmin.getSelect_plan_type())) {
+			hardware.getParams().put("router_adsl", true);
+		} else if ("VDSL".equals(customerRegAdmin.getSelect_plan_type())) {
+			hardware.getParams().put("router_vdsl", true);
+		} else if ("UFB".equals(customerRegAdmin.getSelect_plan_type())) {
+			hardware.getParams().put("router_ufb", true);
+		}
+		
+		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
+		
+		return hardwares;
+	}
+	
+	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		json.setModel(customer);
+		
+		if (result.hasErrors()) {
+			json.setJSONErrorMap(result);
+			if (!"transition".equals(customer.getCustomerOrder().getOrder_broadband_type())) {
+				json.getErrorMap().remove("customerOrder.transition_porting_number");
+				json.getErrorMap().remove("customerOrder.transition_provider_name");
+				json.getErrorMap().remove("customerOrder.transition_account_number");
+				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
+			}
+			
+			if (json.isHasErrors()) return json;
+		}
+
+		Customer cValid = new Customer();
+		cValid.getParams().put("where", "query_exist_customer_by_mobile");
+		cValid.getParams().put("cellphone", customer.getCellphone());
+		int count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("cellphone", "is already in use");
+			return json;
+		}
+		
+		cValid.getParams().put("where", "query_exist_customer_by_email");
+		cValid.getParams().put("email", customer.getEmail());
+		count = this.crmService.queryExistCustomer(cValid);
+
+		if (count > 0) {
+			json.getErrorMap().put("email", "is already in use");
+			return json;
+		}
+		json.setUrl("");
+		// Recycle
+		cValid = null;
+		
+		return json;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/plans/order/confirm/personal", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmPersonal(
+			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		
+		customerRegAdmin.setCellphone(customer.getCellphone());
+		customerRegAdmin.setEmail(customer.getEmail());
+		customerRegAdmin.setTitle(customer.getTitle());
+		customerRegAdmin.setFirst_name(customer.getFirst_name());
+		customerRegAdmin.setLast_name(customer.getLast_name());
+		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
+		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
+		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
+		
+		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerRegAdmin, result);
+		
+		this.crmService.doPlansOrderConfirm(customerRegAdmin);
+		
+		json.setUrl("/broadband-user/crm/plans/order/summary");
+		
+		return json;
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/plans/order/confirm/business", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmBusiness(
+			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		
+		customerRegAdmin.setCellphone(customer.getCellphone());
+		customerRegAdmin.setEmail(customer.getEmail());
+		customerRegAdmin.setTitle(customer.getTitle());
+		customerRegAdmin.setFirst_name(customer.getFirst_name());
+		customerRegAdmin.setLast_name(customer.getLast_name());
+		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
+		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
+		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
+		
+		customerRegAdmin.setOrganization(customer.getOrganization());
+		
+		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerRegAdmin, result);
+		
+		this.crmService.doPlansOrderConfirm(customerRegAdmin);
+		
+		json.setUrl("/broadband-user/crm/plans/order/summary");
+		
+		return json;
+	}	
 }

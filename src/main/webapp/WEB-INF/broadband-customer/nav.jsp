@@ -35,7 +35,8 @@
 					<ul class="dropdown-menu">
 			            <li><a href="${ctx }/about-us">About CyberPark</a></li>
 		             	<li><a href="${ctx }/voucher">Voucher Checking</a></li>
-			            <li><a href="${ctx }/calling-rates">Calling Rates</a></li>
+			            <li><a href="${ctx }/phone-calling-rates">Phone Calling Rates</a></li>
+			            <li><a href="${ctx }/voip-calling-rates">VoIP Calling Rates</a></li>
 			            <li><a href="${ctx }/wifi-solution" >Wifi Solution</a></li>
 			            <li><a href="${ctx }/e-commerce" >E-Commerce</a></li>
 		             	<li><a href="${ctx }/term-and-conditions">Terms & Conditions</a></li>

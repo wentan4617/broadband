@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="../header.jsp" />
+<jsp:include page="../../header.jsp" />
 
 <style>
 .topup-list li {
@@ -50,65 +50,65 @@
 
 <script type="text/html" id="select_plan_tmpl" 
 data-ctx="${ctx }" 
-data-select_plan_group="${customerReg.select_plan_group}"
-data-select_plan_id="${customerReg.select_plan_id}" 
-data-select_plan_type="${customerReg.select_plan_type }"
-data-select_customer_type="${customerReg.select_customer_type }"
-data-sale-id="${customerReg.customerOrder.sale_id }"
-data-promotion="${customerReg.customerOrder.promotion }">
+data-select_plan_group="${customerRegAdmin.select_plan_group}"
+data-select_plan_id="${customerRegAdmin.select_plan_id}" 
+data-select_plan_type="${customerRegAdmin.select_plan_type }"
+data-select_customer_type="${customerRegAdmin.select_customer_type }"
+data-sale-id="${customerRegAdmin.customerOrder.sale_id }"
+data-promotion="${customerRegAdmin.customerOrder.promotion }">
 <jsp:include page="select-plan.html" />
 </script>
 <script type="text/html" id="open_term_tmpl"
-data-contract="${customerReg.customerOrder.contract }">
+data-contract="${customerRegAdmin.customerOrder.contract }">
 <jsp:include page="open-term.html" />
 </script>
 <script type="text/html" id="prepay_month_tmpl"
-data-prepay_months="${customerReg.customerOrder.prepay_months }">
+data-prepay_months="${customerRegAdmin.customerOrder.prepay_months }">
 <jsp:include page="prepay-month.html" />
 </script>
 <script type="text/html" id="select_modem_tmpl"
-data-hardware_id_selected="${customerReg.customerOrder.hardware_id_selected }">
+data-hardware_id_selected="${customerRegAdmin.customerOrder.hardware_id_selected }">
 <jsp:include page="select-modem.html" />
 </script>
 <script type="text/html" id="broadband_options_tmpl"
-data-order_broadband_type="${customerReg.customerOrder.order_broadband_type }">
+data-order_broadband_type="${customerRegAdmin.customerOrder.order_broadband_type }">
 <jsp:include page="broadband-options.html" />
 </script>
 <script type="text/html" id="application_tmpl" 
-data-cellphone="${customerReg.cellphone }"
-data-email="${customerReg.email }"
-data-title="${customerReg.title }"
-data-first_name="${customerReg.first_name }"
-data-last_name="${customerReg.last_name }"
-data-identity_type="${customerReg.identity_type }"
-data-identity_number="${customerReg.identity_number }"
-data-_transition_provider_name="${customerReg.customerOrder._transition_provider_name }"
-data-transition_provider_name="${customerReg.customerOrder.transition_provider_name }"
-data-transition_account_holder_name="${customerReg.customerOrder.transition_account_holder_name }"
-data-transition_account_number="${customerReg.customerOrder.transition_account_number }"
-data-transition_porting_number="${customerReg.customerOrder.transition_porting_number }"
-data-org_type="${customerReg.organization.org_type }"
-data-org_name="${customerReg.organization.org_name }"
-data-org_trading_name="${customerReg.organization.org_trading_name }"
-data-org_register_no="${customerReg.organization.org_register_no }"
-data-org_incoporate_date="${customerReg.organization.org_incoporate_date }"
-data-holder_name="${customerReg.organization.holder_name }"
-data-holder_job_title="${customerReg.organization.holder_job_title }"
-data-holder_phone="${customerReg.organization.holder_phone }"
-data-holder_email="${customerReg.organization.holder_email }">
+data-cellphone="${customerRegAdmin.cellphone }"
+data-email="${customerRegAdmin.email }"
+data-title="${customerRegAdmin.title }"
+data-first_name="${customerRegAdmin.first_name }"
+data-last_name="${customerRegAdmin.last_name }"
+data-identity_type="${customerRegAdmin.identity_type }"
+data-identity_number="${customerRegAdmin.identity_number }"
+data-_transition_provider_name="${customerRegAdmin.customerOrder._transition_provider_name }"
+data-transition_provider_name="${customerRegAdmin.customerOrder.transition_provider_name }"
+data-transition_account_holder_name="${customerRegAdmin.customerOrder.transition_account_holder_name }"
+data-transition_account_number="${customerRegAdmin.customerOrder.transition_account_number }"
+data-transition_porting_number="${customerRegAdmin.customerOrder.transition_porting_number }"
+data-org_type="${customerRegAdmin.organization.org_type }"
+data-org_name="${customerRegAdmin.organization.org_name }"
+data-org_trading_name="${customerRegAdmin.organization.org_trading_name }"
+data-org_register_no="${customerRegAdmin.organization.org_register_no }"
+data-org_incoporate_date="${customerRegAdmin.organization.org_incoporate_date }"
+data-holder_name="${customerRegAdmin.organization.holder_name }"
+data-holder_job_title="${customerRegAdmin.organization.holder_job_title }"
+data-holder_phone="${customerRegAdmin.organization.holder_phone }"
+data-holder_email="${customerRegAdmin.organization.holder_email }">
 <jsp:include page="application.html" />
 </script>
-<script type="text/html" id="order_modal_tmpl" data-customer-address="${customerReg.address }">
+<script type="text/html" id="order_modal_tmpl" data-customer-address="${customerRegAdmin.address }">
 <jsp:include page="order-modal.html" />
 </script>
 
-<jsp:include page="../footer.jsp" />
-<jsp:include page="../script.jsp" />
+<jsp:include page="../../footer.jsp" />
+<jsp:include page="script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014107734"></script>
-<jsp:include page="../footer-end.jsp" />
+<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/customer-order.js?ver=2014107742"></script>
+<jsp:include page="../../footer-end.jsp" />

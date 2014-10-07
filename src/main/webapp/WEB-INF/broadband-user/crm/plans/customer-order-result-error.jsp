@@ -3,14 +3,14 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<jsp:include page="../header.jsp" />
+<jsp:include page="../../header.jsp" />
 
 <div class="container" style="padding-bottom: 200px; padding-top: 20px;">
 	<c:if test="${responseBean == null || responseBean.success != '1' }">
 		<div class="alert alert-warning">
 			<h1>Sorry, the payment is failure.</h1>
 			<h2>
-				<a href="${ctx }/plans/order/summary">Click Here</a> to return to the order confirm page.
+				<a href="${ctx }/order/${orderPlan.plan_class }/confirm">Click Here</a> to return to the order confirm page.
 			</h2>
 			<p>&nbsp;</p>
 			<p>
@@ -21,6 +21,6 @@
 </div>
 
 
-<jsp:include page="../footer.jsp" />
+<jsp:include page="../../footer.jsp" />
 <%-- <jsp:include page="script.jsp" /> --%>
-<jsp:include page="../footer-end.jsp" />
+<jsp:include page="../../footer-end.jsp" />

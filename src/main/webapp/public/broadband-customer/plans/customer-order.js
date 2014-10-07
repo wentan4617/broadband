@@ -132,7 +132,7 @@
 			$('#select-plan').html(tmpl('select_plan_tmpl', o));
 			
 			// loadingModems
-			var url = ctx + '/plans/hardware/loading/' + select_plan_type; //console.log(url);
+			var url = ctx + '/plans/hardware/loading'; //console.log(url);
 			$.get(url, function(hardwares){ //console.log(hardwares);
 				modems = hardwares;
 				flushApplication();
@@ -665,7 +665,7 @@
 			customer.organization.holder_email = $('#organization\\.holder_email').val();
 		}
 	 	
-		console.log(customer);
+		//console.log(customer);
 		//console.log(JSON.stringify(customer));
 		
 	 	$.ajax({

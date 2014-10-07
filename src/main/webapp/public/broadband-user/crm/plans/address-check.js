@@ -16,7 +16,7 @@
 		address = $.trim(address.replace(/[\/]/g,' ').replace(/[\\]/g,' ')); //console.log(address);
 		if (address != '') {
 			var l = Ladda.create(this); l.start();
-			$.get(ctx + '/sale/plans/address/check/' + address, function(broadband){ //console.log(broadband);
+			$.get(ctx + '/crm/plans/address/check/' + address, function(broadband){ //console.log(broadband);
 				broadband.ctx = ctx;
 				broadband.type = select_plan_type;
 				broadband.selected_id = select_plan_id;
@@ -24,17 +24,17 @@
 				$('#checkResult').html(tmpl('result_tmpl', broadband));
 				if (broadband.adsl_available) { //alert('adsl');
 					$('#adsl').click(function(){
-						window.location.href = ctx + '/broadband-user/sale/plans/define/ADSL';
+						window.location.href = ctx + '/broadband-user/crm/plans/define/ADSL';
 					});
 				}
 				if (broadband.vdsl_available) {
 					$('#vdsl').click(function(){ //alert('vdsl');
-						window.location.href = ctx + '/broadband-user/sale/plans/define/VDSL';
+						window.location.href = ctx + '/broadband-user/crm/plans/define/VDSL';
 					});
 				}
 				if (broadband.ufb_available) {
 					$('#ufb').click(function(){ //alert('ufb');
-						window.location.href = ctx + '/broadband-user/sale/plans/define/UFB';
+						window.location.href = ctx + '/broadband-user/crm/plans/define/UFB';
 					});
 				}
 		   	}).always(function(){ l.stop(); });

@@ -48,6 +48,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
@@ -1031,8 +1032,8 @@ public class CustomerController {
 		return "broadband-customer/chorus-googlemap";
 	}
 	
-	@RequestMapping("/calling-rates")
-	public String callingRates(Model model) {
+	@RequestMapping("/phone-calling-rates")
+	public String phoneCallingRates(Model model) {
 		
 		List<CallInternationalRate> letterCirs = new ArrayList<CallInternationalRate>();
 		letterCirs.add(new CallInternationalRate("A"));
@@ -1083,7 +1084,64 @@ public class CustomerController {
 		}
 		model.addAttribute("letterCirs", letterCirs);
 		
-		return "broadband-customer/calling-rates";
+		
+		
+		return "broadband-customer/phone-calling-rates";
+	}
+	
+	@RequestMapping("/voip-calling-rates")
+	public String voipCallingRates(Model model) {
+		
+		List<VOSVoIPRate> letterVrs = new ArrayList<VOSVoIPRate>();
+		letterVrs.add(new VOSVoIPRate("A"));
+		letterVrs.add(new VOSVoIPRate("B"));
+		letterVrs.add(new VOSVoIPRate("C"));
+		letterVrs.add(new VOSVoIPRate("D"));
+		letterVrs.add(new VOSVoIPRate("E"));
+		letterVrs.add(new VOSVoIPRate("F"));
+		letterVrs.add(new VOSVoIPRate("G"));
+		letterVrs.add(new VOSVoIPRate("H"));
+		letterVrs.add(new VOSVoIPRate("I"));
+		letterVrs.add(new VOSVoIPRate("J"));
+		letterVrs.add(new VOSVoIPRate("K"));
+		letterVrs.add(new VOSVoIPRate("L"));
+		letterVrs.add(new VOSVoIPRate("M"));
+		letterVrs.add(new VOSVoIPRate("N"));
+		letterVrs.add(new VOSVoIPRate("O"));
+		letterVrs.add(new VOSVoIPRate("P"));
+		letterVrs.add(new VOSVoIPRate("Q"));
+		letterVrs.add(new VOSVoIPRate("R"));
+		letterVrs.add(new VOSVoIPRate("S"));
+		letterVrs.add(new VOSVoIPRate("T"));
+		letterVrs.add(new VOSVoIPRate("U"));
+		letterVrs.add(new VOSVoIPRate("V"));
+		letterVrs.add(new VOSVoIPRate("W"));
+		letterVrs.add(new VOSVoIPRate("X"));
+		letterVrs.add(new VOSVoIPRate("Y"));
+		letterVrs.add(new VOSVoIPRate("Z"));
+		letterVrs.add(new VOSVoIPRate("Other"));
+		
+		List<VOSVoIPRate> vrs = this.billingService.queryVOSVoIPRatesGroupBy();
+		if (vrs != null) {
+			for (VOSVoIPRate vr: vrs) {
+				boolean b = false;
+				for (VOSVoIPRate lvr: letterVrs) {	
+					if (!"".equals(vr.getArea_name())
+							&& lvr.getLetter().equals(String.valueOf(vr.getArea_name().toUpperCase().charAt(0)))) {
+						//System.out.println(lCir.getLetter() + ", " + cir.getArea_name().toUpperCase().charAt(0));
+						lvr.getVrs().add(vr);
+						b = true;
+						break;
+					} 
+				}
+				if (!b) {
+					letterVrs.get(letterVrs.size() - 1).getVrs().add(vr);
+				}
+			}
+		}
+		model.addAttribute("letterVrs", letterVrs);
+		
+		return "broadband-customer/voip-calling-rates";
 	}
 
 	@RequestMapping(value = "/voucher")
@@ -1272,6 +1330,36 @@ public class CustomerController {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// 1
 	
 	@RequestMapping("/plans/define/{type}")
@@ -1299,6 +1387,8 @@ public class CustomerController {
 			session.setAttribute("customerReg", customerReg);
 		} else {
 			customerReg.setSelect_plan_group("");
+			customerReg.setSelect_customer_type("personal");
+			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
 		}
 		
 		List<Plan> plans = null;
@@ -1418,11 +1508,9 @@ public class CustomerController {
 	public String toOrderPlan(Model model, HttpSession session) {
 		
 		String url = "broadband-customer/plans/customer-order";
-		
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
-		
 		if (!customerReg.isServiceAvailable()) {
-			System.out.println("customer.isServiceAvailable(): " + customerReg.isServiceAvailable());
+			System.out.println("customerReg.isServiceAvailable(): " + customerReg.isServiceAvailable());
 			String type = "broadband";
 			if ("ADSL".equals(customerReg.getSelect_plan_type())) {
 				type = "broadband";
@@ -1433,7 +1521,6 @@ public class CustomerController {
 			}
 			url = "redirect:/plans/" + type;
 		}
-		
 		return url;
 	}
 	
@@ -1521,12 +1608,12 @@ public class CustomerController {
 	@RequestMapping(value = "/plans/order/dps", method = RequestMethod.POST)
 	public String planOrderDPS(Model model, HttpServletRequest req, HttpSession session, RedirectAttributes attr) { 
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
-		Double orderTotalPrice = customer.getCustomerOrder().getOrder_total_price();
+		Double orderTotalPrice = customerReg.getCustomerOrder().getOrder_total_price();
 		Double vprice = 0d;
 		
-		for (Voucher vQuery: customer.getVouchers()) {
+		for (Voucher vQuery: customerReg.getVouchers()) {
 			orderTotalPrice -= vQuery.getFace_value();
 			vprice += vQuery.getFace_value();
 		}
@@ -1535,7 +1622,7 @@ public class CustomerController {
 		
 		if (orderTotalPrice > 0) {
 			
-			customer.setBalance(vprice + orderTotalPrice);
+			customerReg.setBalance(vprice + orderTotalPrice);
 			
 			GenerateRequest gr = new GenerateRequest();
 
@@ -1554,16 +1641,15 @@ public class CustomerController {
 		} else {
 			redirectUrl = "/plans/order/result/success";
 			
-			customer.setStatus("active");
-			customer.setCustomer_type("personal");
-			customer.setUser_name(customer.getLogin_name());
-			customer.setPassword(TMUtils.generateRandomString(6));
-			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
-			customer.setBalance(Math.abs(vprice));
+			customerReg.setStatus("active");
+			customerReg.setUser_name(customerReg.getLogin_name());
+			customerReg.setPassword(TMUtils.generateRandomString(6));
+			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
+			customerReg.setBalance(Math.abs(vprice));
 			
 			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 			
-			for (Voucher vQuery: customer.getVouchers()) {
+			for (Voucher vQuery: customerReg.getVouchers()) {
 				CustomerTransaction ctVoucher = new CustomerTransaction();
 				ctVoucher.setAmount(vQuery.getFace_value());
 				ctVoucher.setTransaction_type("purchare");
@@ -1572,30 +1658,30 @@ public class CustomerController {
 				cts.add(ctVoucher);
 			}
 
-			customer.getCustomerOrder().setOrder_status("paid");
-			this.crmService.registerCustomer(customer, cts);
+			customerReg.getCustomerOrder().setOrder_status("paid");
+			this.crmService.registerCustomer(customerReg, cts);
 			
-			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
-			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+			String receiptPath = this.crmService.createReceiptPDFByDetails(customerReg);
+			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
-			applicationEmail.setAddressee(customer.getEmail());
+			MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerInvoice(), companyDetail);
+			applicationEmail.setAddressee(customerReg.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+			applicationEmail.setAttachName("receipt_" + customerReg.getCustomerOrder().getId() + ".pdf");
 			applicationEmail.setAttachPath(receiptPath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 			// get sms register template from db
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customerReg, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent());
 
 			Response responseBean = new Response();
 			responseBean.setSuccess("1");
@@ -1616,7 +1702,7 @@ public class CustomerController {
 
 		Response responseBean = null;
 		
-		Customer customer = (Customer) session.getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 
 		if (result != null)
 			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
@@ -1625,11 +1711,10 @@ public class CustomerController {
 			
 			url = "redirect:/plans/order/result/success";
 			
-			customer.setStatus("active");
-			customer.setCustomer_type("personal");
-			customer.setUser_name(customer.getLogin_name());
-			customer.setPassword(TMUtils.generateRandomString(6));
-			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
+			customerReg.setStatus("active");
+			customerReg.setUser_name(customerReg.getLogin_name());
+			customerReg.setPassword(TMUtils.generateRandomString(6));
+			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
 			
 			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 
@@ -1652,7 +1737,7 @@ public class CustomerController {
 			
 			cts.add(customerTransaction);
 			
-			for (Voucher vQuery: customer.getVouchers()) {
+			for (Voucher vQuery: customerReg.getVouchers()) {
 				CustomerTransaction ctVoucher = new CustomerTransaction();
 				ctVoucher.setAmount(vQuery.getFace_value());
 				ctVoucher.setTransaction_type("purchare");
@@ -1661,30 +1746,30 @@ public class CustomerController {
 				cts.add(ctVoucher);
 			}
 			
-			customer.getCustomerOrder().setOrder_status("paid");
-			this.crmService.registerCustomer(customer, cts);
+			customerReg.getCustomerOrder().setOrder_status("paid");
+			this.crmService.registerCustomer(customerReg, cts);
 			
-			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
-			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+			String receiptPath = this.crmService.createReceiptPDFByDetails(customerReg);
+			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
 			
 			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
-			applicationEmail.setAddressee(customer.getEmail());
+			MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerInvoice(), companyDetail);
+			applicationEmail.setAddressee(customerReg.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			// binding attachment name & path to email
-			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+			applicationEmail.setAttachName("receipt_" + customerReg.getCustomerOrder().getId() + ".pdf");
 			applicationEmail.setAttachPath(receiptPath);
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
 			// get sms register template from db
 			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customerReg, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent());
 			//status.setComplete();
 		} else {
 
@@ -1696,7 +1781,7 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/plans/order/result")
-	public String planOrderRtoOrderResult(HttpSession session) {
+	public String planOrderToOrderResult(HttpSession session) {
 		session.removeAttribute("customerReg");
 		return "broadband-customer/plans/customer-order-result-success";
 	}
