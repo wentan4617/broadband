@@ -59,8 +59,8 @@
 		</tr>
 		<tr>
 			<th>Reference</th>
-			<th>Create Date</th>
-			<th>Due Date</th>
+			<th style="width:94px;">Create Date</th>
+			<th style="width:94px;">Due Date</th>
 			<th>Payable</th>
 			<th>Credit</th>
 			<th>Paid</th>
@@ -151,7 +151,7 @@
 					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 		.>
 					<td>
-						<div class="btn-group">
+						<div class="btn-group" style="height:44px; width:118px;">
 							<. if(invoice.payment_status == 'pending'){ .>
 								<button type="button" class="btn btn-warning btn-xs" data-name="make_payment_<.= invoice.id .>">Pending</button>
 								<button type="button" class="btn btn-warning btn-xs dropdown-toggle" data-toggle="dropdown">

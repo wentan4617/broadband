@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.VOSVoIPCallRecordMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="vOSVoIPCallRecordColumns">
+		vosvipcr.`id`						as vosvipcr_id,
+		vosvipcr.`call_start`				as vosvipcr_call_start,
+		vosvipcr.`ori_number`				as vosvipcr_ori_number,
+		vosvipcr.`dest_number`				as vosvipcr_dest_number,
+		vosvipcr.`call_length`				as vosvipcr_call_length,
+		vosvipcr.`charge_length`			as vosvipcr_charge_length,
+		vosvipcr.`call_fee`					as vosvipcr_call_fee,
+		vosvipcr.`call_cost`				as vosvipcr_call_cost,
+		vosvipcr.`call_type`				as vosvipcr_call_type,
+		vosvipcr.`area_prefix`				as vosvipcr_area_prefix
+	</sql>
+
+	<resultMap type="VOSVoIPCallRecord" id="vOSVoIPCallRecordResultMap">
+		<id property="id" column="vosvipcr_id" />
+		<result property="call_start" column="vosvipcr_call_start" />
+		<result property="ori_number" column="vosvipcr_ori_number" />
+		<result property="dest_number" column="vosvipcr_dest_number" />
+		<result property="call_length" column="vosvipcr_call_length" />
+		<result property="charge_length" column="vosvipcr_charge_length" />
+		<result property="call_fee" column="vosvipcr_call_fee" />
+		<result property="call_cost" column="vosvipcr_call_cost" />
+		<result property="call_type" column="vosvipcr_call_type" />
+		<result property="area_prefix" column="vosvipcr_area_prefix" />
+	</resultMap>
+
+	<sql id="vOSVoIPCallRecordWhere">
+		<where>
+			<if test="params.id != null">vosvipcr.id = #{params.id}</if>
+			<if test="params.call_start != null">and vosvipcr.call_start = #{params.call_start}</if>
+			<if test="params.ori_number != null">and vosvipcr.ori_number = #{params.ori_number}</if>
+			<if test="params.dest_number != null">and vosvipcr.dest_number = #{params.dest_number}</if>
+			<if test="params.call_length != null">and vosvipcr.call_length = #{params.call_length}</if>
+			<if test="params.charge_length != null">and vosvipcr.charge_length = #{params.charge_length}</if>
+			<if test="params.call_fee != null">and vosvipcr.call_fee = #{params.call_fee}</if>
+			<if test="params.call_cost != null">and vosvipcr.call_cost = #{params.call_cost}</if>
+			<if test="params.call_type != null">and vosvipcr.call_type = #{params.call_type}</if>
+			<if test="params.area_prefix != null">and vosvipcr.area_prefix = #{params.area_prefix}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord" resultType="VOSVoIPCallRecord">
+		select * from tm_vos_voip_call_record as vosvipcr
+		<include refid="vOSVoIPCallRecordWhere"/>
+	</select>
+
+	<!-- select vOSVoIPCallRecord page -->
+	<select id="selectVOSVoIPCallRecordsByPage" parameterType="Page" resultMap="vOSVoIPCallRecordResultMap">
+		select 
+			<include refid="vOSVoIPCallRecordColumns"/>
+			from tm_vos_voip_call_record as vosvipcr
+			<include refid="vOSVoIPCallRecordWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select vOSVoIPCallRecord amount -->
+	<select id="selectVOSVoIPCallRecordsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_vos_voip_call_record as vosvipcr
+		<include refid="vOSVoIPCallRecordWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_vos_voip_call_record`(
+			`id`, `call_start`, `ori_number`, `dest_number`, `call_length`, 
+			`charge_length`, `call_fee`, `call_cost`, `call_type`, `area_prefix`
+		) VALUES (
+			#{id}, #{call_start}, #{ori_number}, #{dest_number}, #{call_length}, 
+			#{charge_length}, #{call_fee}, #{call_cost}, #{call_type}, #{area_prefix}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update vOSVoIPCallRecord -->
+	<update id="updateVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord">
+		update tm_vos_voip_call_record
+		<set>
+			<if test="call_start != null">call_start = #{call_start},</if>
+			<if test="ori_number != null">ori_number = #{ori_number},</if>
+			<if test="dest_number != null">dest_number = #{dest_number},</if>
+			<if test="call_length != null">call_length = #{call_length},</if>
+			<if test="charge_length != null">charge_length = #{charge_length},</if>
+			<if test="call_fee != null">call_fee = #{call_fee},</if>
+			<if test="call_cost != null">call_cost = #{call_cost},</if>
+			<if test="call_type != null">call_type = #{call_type},</if>
+			<if test="area_prefix != null">area_prefix = #{area_prefix}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteVOSVoIPCallRecordById" parameterType="int">
+		DELETE FROM tm_vos_voip_call_record WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

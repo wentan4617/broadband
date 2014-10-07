@@ -35,6 +35,9 @@
 							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/callplus" class="btn btn-default ${callplusInsertedActive }">
 								Callplus Inserted&nbsp;<span class="badge">${callplusInsertedSum}</span>
 							</a>
+							<a href="${ctx}/broadband-user/manual-manipulation/call-billing-record/view/1/inserted/vosVoIP" class="btn btn-default ${vosVoIPInsertedActive }">
+								VOS VoIP Inserted&nbsp;<span class="badge">${vosVoIPInsertedSum}</span>
+							</a>
 						</div>
 					</div>
 				</div>
@@ -158,6 +161,7 @@
 							<select name="billing_type" draggable="true" class="form-control col-md-6 input-sm">
 								<option value="chorus">Chorus Billing</option>
 								<option value="callplus">Callplus Billing</option>
+								<option value="vos-voip">VOS VoIP Billing</option>
 							</select>
 						</div>
 					</div>

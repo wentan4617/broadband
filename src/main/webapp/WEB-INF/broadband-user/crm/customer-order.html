@@ -44,10 +44,10 @@
 		<h4 class="text-success">Order Information</h4>
 			<br/>
 			<. var regenerateOrderingStatus = 'pending,pending-warning,paid,ordering-pending,ordering-paid';
-			   if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) { .>
+			   if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) { .>
 			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
 			<. } .>
-			<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && (customerOrder[i].order_using_start==null && (customerOrder[i].receipt_pdf_path!=null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0))))) { .>
+			<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (customerOrder[i].receipt_pdf_path!=null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0))))) { .>
 			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_receipt" data-type="regenerate-receipt" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Receipt</a>
 			<. } .>
 			<br/>
@@ -134,7 +134,7 @@
 						var status = [
 							'pending','pending-warning','paid','ordering-pending','ordering-paid',
 							'rfs','using','overflow','suspended','waiting-for-disconnect','disconnected',
-							'void'
+							'void','upgrade'
 						];
 						for(var s=0; s<status.length; s++){
 							if(customerOrder[i].order_status == status[s]){
@@ -1355,7 +1355,7 @@
 						<div class="form-group">
 							<label class="control-label col-md-4">Detail Name</label>
 							<div class="col-md-6">
-								<input data-name="detail_name_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Name" />
+								<input data-name="phone_name_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Name" />
 							</div>
 						</div>
 						<div class="form-group">
