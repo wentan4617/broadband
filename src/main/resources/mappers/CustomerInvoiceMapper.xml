@@ -283,7 +283,7 @@
 	<!-- SELECT AREA -->
 	
 	<select id="selectCustomerInvoicesBalanceByCidAndStatus" resultType="double">
-		select sum(balance) from tm_customer_invoice where customer_id = #{0} and status = #{1}
+		select sum(balance) from tm_customer_invoice where customer_id = #{0} 
 	</select>
 	
 	<!-- select customer invoice page -->

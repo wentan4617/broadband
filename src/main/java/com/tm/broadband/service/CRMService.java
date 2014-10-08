@@ -556,8 +556,12 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 	}
 	
 	@Transactional
-	public Customer queryCustomerWhenLogin(Customer customer) {
-		return this.customerMapper.selectCustomer(customer);
+	public Customer queryCustomerWhenLogin(Customer c) {
+		Customer customer = this.customerMapper.selectCustomer(c);
+		if ("business".equals(customer.getCustomer_type())) {
+			customer.setOrganization(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
+		}
+		return customer;
 	}
 	
 	@Transactional
