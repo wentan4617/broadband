@@ -199,6 +199,14 @@
 											</label>
 										</li>
 									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="crm/plans, crm/plans/*" data-type="checkbox_customer" /> New order
+											</label>
+										</li>
+									</ul>
 								</div>
 								<div class="col-md-3" data-module="billing">
 									<ul class="list-unstyled">

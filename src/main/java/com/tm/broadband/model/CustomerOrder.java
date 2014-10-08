@@ -73,6 +73,11 @@ public class CustomerOrder implements Serializable {
 	private Date disconnected_date;
 	private String connection_date;
 	private String contract;
+	private Integer inviter_customer_id;
+	private Integer inviter_user_id;
+	private Double inviter_rate;
+	private Double invitee_rate;
+
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -615,6 +620,38 @@ public class CustomerOrder implements Serializable {
 
 	public void setHardware_id_selected(Integer hardware_id_selected) {
 		this.hardware_id_selected = hardware_id_selected;
+	}
+
+	public Integer getInviter_customer_id() {
+		return inviter_customer_id;
+	}
+
+	public void setInviter_customer_id(Integer inviter_customer_id) {
+		this.inviter_customer_id = inviter_customer_id;
+	}
+
+	public Integer getInviter_user_id() {
+		return inviter_user_id;
+	}
+
+	public void setInviter_user_id(Integer inviter_user_id) {
+		this.inviter_user_id = inviter_user_id;
+	}
+
+	public Double getInviter_rate() {
+		return inviter_rate;
+	}
+
+	public void setInviter_rate(Double inviter_rate) {
+		this.inviter_rate = inviter_rate;
+	}
+
+	public Double getInvitee_rate() {
+		return invitee_rate;
+	}
+
+	public void setInvitee_rate(Double invitee_rate) {
+		this.invitee_rate = invitee_rate;
 	}
 
 }
