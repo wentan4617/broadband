@@ -685,22 +685,22 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/customer/home")
-	public String customerHome(Model model, HttpServletRequest req) {
+	public String customerHome(Model model, HttpSession session) {
 		
 		model.addAttribute("home", "active");
 		
-		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+		Customer customerSession = (Customer) session.getAttribute("customerSession");
 		
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("where", "query_status_no_discard_cancel");
-		coQuery.getParams().put("customer_id", customer.getId());
+		coQuery.getParams().put("customer_id", customerSession.getId());
 		coQuery.getParams().put("order_status", "discard");
 		coQuery.getParams().put("order_status_1", "cancel");
 		
 		List<CustomerOrder> customerOrders = this.crmService.queryCustomerOrders(coQuery);
-		customer.setCustomerOrders(customerOrders);
+		customerSession.setCustomerOrders(customerOrders);
 		
-		customer.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customer.getId(), "unpaid"));
+		customerSession.getCustomerInvoice().setBalance(this.crmService.queryCustomerInvoicesBalanceByCid(customerSession.getId(), "unpaid"));
 		
 		model.addAttribute("customerOrders", customerOrders);
 		

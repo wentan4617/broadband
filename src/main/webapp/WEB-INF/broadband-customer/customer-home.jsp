@@ -27,14 +27,29 @@
 				<div class="panel-body">
 					<div class="page-header" style="margin-top: 0;">
 						<h3 class="text-success">
-							Personal Information 
+							<c:choose>
+								<c:when test="${customerSession.customer_type == 'personal' }">
+									Personal Information 
+								</c:when>
+								<c:when test="${customerSession.customer_type == 'business' }">
+									Business Information 
+								</c:when>
+							</c:choose>
+							
 						</h3>
 					</div>
 					<div class="row">
 						<div class="col-md-12">
 							<ul class="list-unstyled personal-info" style="font-size:18px;">
-								<li><strong class="text-info">${customerSession.login_name }</strong></li>
-								<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
+								<c:choose>
+									<c:when test="${customerSession.customer_type == 'personal' }">
+										<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
+									</c:when>
+									<c:when test="${customerSession.customer_type == 'business' }">
+										<li><strong class="text-info">${customerSession.organization.org_name }</strong></li>
+									</c:when>
+								</c:choose>
+								
 								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
 								<li><strong class="text-info">${customerSession.cellphone }</strong></li>
 								<li><strong class="text-info">${customerSession.address }</strong></li>
