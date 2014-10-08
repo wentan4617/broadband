@@ -113,7 +113,11 @@
 		co.`receipt_pdf_path`					as co_receipt_pdf_path,
 		co.`disconnected_date` 					as co_disconnected_date,
 		co.`connection_date`					as co_connection_date,
-		co.`contract`							as co_contract
+		co.`contract`							as co_contract,
+		co.`inviter_customer_id`				as co_inviter_customer_id,
+		co.`inviter_user_id`					as co_inviter_user_id,
+		co.`inviter_rate`						as co_inviter_rate,
+		co.`invitee_rate`						as co_invitee_rate
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -156,6 +160,10 @@
 		<result property="disconnected_date" column="co_disconnected_date" />
 		<result property="connection_date" column="co_connection_date" />
 		<result property="contract" column="co_contract" />
+		<result property="inviter_customer_id" column="co_inviter_customer_id" />
+		<result property="inviter_user_id" column="co_inviter_user_id" />
+		<result property="inviter_rate" column="co_inviter_rate" />
+		<result property="invitee_rate" column="co_invitee_rate" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -413,7 +421,10 @@
 		<result property="disconnected_date" column="co_disconnected_date" />
 		<result property="connection_date" column="co_connection_date" />
 		<result property="contract" column="co_contract" />
-		
+		<result property="inviter_customer_id" column="co_inviter_customer_id" />
+		<result property="inviter_user_id" column="co_inviter_user_id" />
+		<result property="inviter_rate" column="co_inviter_rate" />
+		<result property="invitee_rate" column="co_invitee_rate" />
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
 	</resultMap>
@@ -526,7 +537,10 @@
 		<result property="disconnected_date" column="co_disconnected_date" />
 		<result property="connection_date" column="co_connection_date" />
 		<result property="contract" column="co_contract" />
-		
+		<result property="inviter_customer_id" column="co_inviter_customer_id" />
+		<result property="inviter_user_id" column="co_inviter_user_id" />
+		<result property="inviter_rate" column="co_inviter_rate" />
+		<result property="invitee_rate" column="co_invitee_rate" />
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
 	
@@ -595,7 +609,10 @@
 		<result property="disconnected_date" column="co_disconnected_date" />
 		<result property="connection_date" column="co_connection_date" />
 		<result property="contract" column="co_contract" />
-		
+		<result property="inviter_customer_id" column="co_inviter_customer_id" />
+		<result property="inviter_user_id" column="co_inviter_user_id" />
+		<result property="inviter_rate" column="co_inviter_rate" />
+		<result property="invitee_rate" column="co_invitee_rate" />
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
 	</resultMap>
@@ -646,7 +663,8 @@
 			`order_due`, `pstn_count`, `pstn_rental_amount`, `term_period`, `pppoe_loginname`, `pppoe_password`,
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
-			`receipt_pdf_path`,`disconnected_date`,`connection_date`,`contract`)
+			`receipt_pdf_path`,`disconnected_date`,`connection_date`,`contract`,`inviter_customer_id`,`inviter_user_id`,
+			`inviter_rate`,`invitee_rate`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
@@ -655,7 +673,8 @@
 			#{order_due}, #{pstn_count}, #{pstn_rental_amount}, #{term_period}, #{pppoe_loginname}, #{pppoe_password},
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
-			#{receipt_pdf_path},#{disconnected_date},#{connection_date},#{contract})
+			#{receipt_pdf_path},#{disconnected_date},#{connection_date},#{contract},#{inviter_customer_id},#{inviter_user_id},
+			#{inviter_rate},#{invitee_rate})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -706,7 +725,11 @@
 			<if test="receipt_pdf_path != null">receipt_pdf_path=#{receipt_pdf_path},</if>
 			<if test="disconnected_date != null">disconnected_date=#{disconnected_date},</if>
 			<if test="connection_date != null">connection_date=#{connection_date},</if>
-			<if test="contract != null">contract=#{contract}</if>
+			<if test="contract != null">contract=#{contract},</if>
+			<if test="inviter_customer_id != null">inviter_customer_id=#{inviter_customer_id},</if>
+			<if test="inviter_user_id != null">inviter_user_id=#{inviter_user_id},</if>
+			<if test="inviter_rate != null">inviter_rate=#{inviter_rate},</if>
+			<if test="invitee_rate != null">invitee_rate=#{invitee_rate}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
