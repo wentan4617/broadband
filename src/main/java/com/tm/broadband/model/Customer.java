@@ -108,6 +108,7 @@ public class Customer implements Serializable {
 	private Voucher voucher = new Voucher();
 	private List<Voucher> vouchers = new ArrayList<Voucher>();
 	private Broadband broadband;
+	private InviteRates ir;
 	private Plan plan;
 
 	private String id_ck;
@@ -670,6 +671,14 @@ public class Customer implements Serializable {
 
 	public void setSelect_plan_group(String select_plan_group) {
 		this.select_plan_group = select_plan_group;
+	}
+
+	public InviteRates getIr() {
+		return ir;
+	}
+
+	public void setIr(InviteRates ir) {
+		this.ir = ir;
 	}
 
 

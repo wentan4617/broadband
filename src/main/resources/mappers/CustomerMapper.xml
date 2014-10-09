@@ -273,6 +273,9 @@
 					<if test="params.status != null">c.status = #{params.status}</if>
 					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
 				</when>
+				<when test="params.where == 'query_exist_customer_by_id'">
+					<if test="params.id != null">c.id = #{params.id}</if>
+				</when>
 				<when test="params.where == 'query_exist_customer_by_mobile'">
 					<if test="params.cellphone != null">c.cellphone = #{params.cellphone}</if>
 				</when>

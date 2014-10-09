@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.InviteRatesMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="inviteRatesColumns">
+		ir.`inviter_user_rate`				as ir_inviter_user_rate,
+		ir.`inviter_customer_rate`			as ir_inviter_customer_rate,
+		ir.`invitee_rate`					as ir_invitee_rate
+	</sql>
+
+	<resultMap type="InviteRates" id="inviteRatesResultMap">
+		<id property="inviter_user_rate" column="ir_inviter_user_rate" />
+		<result property="inviter_customer_rate" column="ir_inviter_customer_rate" />
+		<result property="invitee_rate" column="ir_invitee_rate" />
+	</resultMap>
+
+	<sql id="inviteRatesWhere">
+		<where>
+			<if test="params.inviter_user_rate != null">ir.inviter_user_rate = #{params.inviter_user_rate}</if>
+			<if test="params.inviter_customer_rate != null">and ir.inviter_customer_rate = #{params.inviter_customer_rate}</if>
+			<if test="params.invitee_rate != null">and ir.invitee_rate = #{params.invitee_rate}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectInviteRates" parameterType="InviteRates" resultType="InviteRates">
+		select * from tm_invite_rates as ir
+		<include refid="inviteRatesWhere"/>
+	</select>
+
+	<!-- select inviteRates page -->
+	<select id="selectInviteRatessByPage" parameterType="Page" resultMap="inviteRatesResultMap">
+		select 
+			<include refid="inviteRatesColumns"/>
+			from tm_invite_rates as ir
+			<include refid="inviteRatesWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select inviteRates amount -->
+	<select id="selectInviteRatessSum" parameterType="Page" resultType="int">
+		select count(*) from tm_invite_rates as ir
+		<include refid="inviteRatesWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertInviteRates" parameterType="InviteRates" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_invite_rates`(
+			`inviter_user_rate`, `inviter_customer_rate`, `invitee_rate` 
+		) VALUES (
+			#{inviter_user_rate}, #{inviter_customer_rate}, #{invitee_rate} }
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update inviteRates -->
+	<update id="updateInviteRates" parameterType="InviteRates">
+		update tm_invite_rates
+		<set>
+			<if test="inviter_customer_rate != null">inviter_customer_rate = #{inviter_customer_rate},</if>
+			<if test="invitee_rate != null">invitee_rate = #{invitee_rate}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteInviteRatesById" parameterType="int">
+		DELETE FROM tm_invite_rates WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

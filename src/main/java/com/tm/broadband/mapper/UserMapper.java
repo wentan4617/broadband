@@ -27,6 +27,7 @@ public interface UserMapper {
 	User selectUserLogin(User user);
 	List<User> selectUsersByPage(Page<User> page);
 	int selectUsersSum(Page<User> user);
+	int selectExistUser(User user);
 	int selectExistUserByName(String login_name);
 	int selectExistNotSelfUserfByName(String login_name, int id);
 	User selectUserById(int id);

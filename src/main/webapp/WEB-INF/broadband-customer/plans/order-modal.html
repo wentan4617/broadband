@@ -56,7 +56,7 @@
 				<div class="col-md-6">
 					<p class="bg-success text-center text-success" style="font-weight:bold;margin-bottom: 0;">Save</p>
 					<p class="bg-success text-center text-success" style="font-size: 30px;font-weight:bold;">
-						$ <.=price.discount_price + price.save_service_price + price.save_modem_price.>
+						$ <.=price.discount_price + price.save_service_price + price.save_modem_price + price.promotion_price.>
 					</p>
 				</div>
 			</div>
@@ -66,7 +66,11 @@
 					NZ$
 				</span>
 				<span style="font-size: 54px;font-weight: bold;">
-					<.=price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price.>
+					<.
+					var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
+					var final_total = total - price.promotion_price;
+					.>
+					<.=final_total.>
 					<.if (select_customer_type == 'business') {.>
 					<span style="font-size: 12px;">+GST</span>
 					<.}.>

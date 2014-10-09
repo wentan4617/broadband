@@ -223,8 +223,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this
-				.getOrder_create_date());
+		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -234,8 +233,7 @@ public class CustomerOrder implements Serializable {
 
 	public String getOrder_using_start_str() {
 		if (this.getOrder_using_start() != null) {
-			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this
-					.getOrder_using_start()));
+			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start()));
 		}
 		return order_using_start_str;
 	}
@@ -248,8 +246,7 @@ public class CustomerOrder implements Serializable {
 		return customerOrderDetails;
 	}
 
-	public void setCustomerOrderDetails(
-			List<CustomerOrderDetail> customerOrderDetails) {
+	public void setCustomerOrderDetails(List<CustomerOrderDetail> customerOrderDetails) {
 		this.customerOrderDetails = customerOrderDetails;
 	}
 
@@ -266,13 +263,11 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getNext_invoice_create_date_str() {
-		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this
-				.getNext_invoice_create_date()));
+		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this.getNext_invoice_create_date()));
 		return next_invoice_create_date_str;
 	}
 
-	public void setNext_invoice_create_date_str(
-			String next_invoice_create_date_str) {
+	public void setNext_invoice_create_date_str(String next_invoice_create_date_str) {
 		this.next_invoice_create_date_str = next_invoice_create_date_str;
 	}
 

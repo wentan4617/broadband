@@ -58,6 +58,9 @@ data-sale-id="${customerReg.customerOrder.sale_id }"
 data-promotion="${customerReg.customerOrder.promotion }">
 <jsp:include page="select-plan.html" />
 </script>
+<script type="text/html" id="promotion_code_tmpl">
+<jsp:include page="promotion_code.html" />
+</script>
 <script type="text/html" id="open_term_tmpl"
 data-contract="${customerReg.customerOrder.contract }">
 <jsp:include page="open-term.html" />
@@ -110,5 +113,5 @@ data-holder_email="${customerReg.organization.holder_email }">
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014107734"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=2014109803"></script>
 <jsp:include page="../footer-end.jsp" />

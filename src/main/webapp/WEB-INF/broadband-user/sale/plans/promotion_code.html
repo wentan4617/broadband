@@ -1,0 +1,12 @@
+
+<.
+var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
+if (has_promotion_code) {
+	var price_promotion = parseInt(total * promotion_rates);
+.>
+<span style="font-size: 18px; font-weight: bold;">
+	current promotion code will save <span class="text-success">$<.=price_promotion.>.</span>
+	<a href="javascript:void(0);" class="btn btn-danger" id="cancel-promotion"><span class="glyphicon glyphicon-trash"></span></a>
+</span>
+<. } .>
+	

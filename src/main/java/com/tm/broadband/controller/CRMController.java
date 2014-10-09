@@ -1504,7 +1504,7 @@ public class CRMController {
 	
 	@RequestMapping(value = "/broadband-user/crm/plans")
 	public String crmPlans(HttpSession session){
-		session.removeAttribute("customerRegAdminAdmin");
+		session.removeAttribute("customerRegAdmin");
 		return "broadband-user/crm/plans/plans";
 	}
 	
@@ -1512,65 +1512,65 @@ public class CRMController {
 	@RequestMapping(value = "/broadband-user/crm/plans/topup")
 	public String crmPlansTopup(HttpSession session){
 		System.out.println("this is new customerRegAdminAdmin, Topup");
-		Customer customerRegAdminAdmin = new Customer();
-		customerRegAdminAdmin.setSelect_plan_group("plan-topup");
-		customerRegAdminAdmin.setSelect_customer_type("personal");
-		customerRegAdminAdmin.getCustomerOrder().setOrder_broadband_type("transition");
-		session.setAttribute("customerRegAdminAdmin", customerRegAdminAdmin);
+		Customer customerRegAdmin = new Customer();
+		customerRegAdmin.setSelect_plan_group("plan-topup");
+		customerRegAdmin.setSelect_customer_type("personal");
+		customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");
+		session.setAttribute("customerRegAdmin", customerRegAdmin);
 		return "redirect:/broadband-user/crm/plans/address-check";
 	}
 	
 	// personal
 	@RequestMapping(value = "/broadband-user/crm/plans/personal")
 	public String crmPlansPersonal(HttpSession session){
-		System.out.println("this is new customerRegAdminAdmin, Personal");
-		Customer customerRegAdminAdmin = new Customer();
-		customerRegAdminAdmin.setSelect_plan_group("");
-		customerRegAdminAdmin.setSelect_customer_type("personal");
-		customerRegAdminAdmin.getCustomerOrder().setOrder_broadband_type("transition");
-		session.setAttribute("customerRegAdminAdmin", customerRegAdminAdmin);
+		System.out.println("this is new customerRegAdmin, Personal");
+		Customer customerRegAdmin = new Customer();
+		customerRegAdmin.setSelect_plan_group("");
+		customerRegAdmin.setSelect_customer_type("personal");
+		customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");
+		session.setAttribute("customerRegAdmin", customerRegAdmin);
 		return "redirect:/broadband-user/crm/plans/address-check";
 	}
 		
 	// business
 	@RequestMapping(value = "/broadband-user/crm/plans/business")
 	public String crmPlansBusiness(HttpSession session){
-		System.out.println("this is new customerRegAdminAdmin, Business");
-		Customer customerRegAdminAdmin = new Customer();
-		customerRegAdminAdmin.setSelect_plan_group("");
-		customerRegAdminAdmin.setSelect_customer_type("business");
-		customerRegAdminAdmin.getCustomerOrder().setOrder_broadband_type("transition");
-		session.setAttribute("customerRegAdminAdmin", customerRegAdminAdmin);
+		System.out.println("this is new customerRegAdmin, Business");
+		Customer customerRegAdmin = new Customer();
+		customerRegAdmin.setSelect_plan_group("");
+		customerRegAdmin.setSelect_customer_type("business");
+		customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");
+		session.setAttribute("customerRegAdmin", customerRegAdmin);
 		return "redirect:/broadband-user/crm/plans/address-check";
 	}
 		
 	// promotion ipadmini
 	@RequestMapping(value = "/broadband-user/crm/plans/promotion/ipadmini")
 	public String crmPlansPromotioniPadMini(HttpSession session){
-		System.out.println("this is new customerRegAdminAdmin, promotion ipadmini");
-		Customer customerRegAdminAdmin = new Customer();
-		customerRegAdminAdmin.setSelect_plan_group("");
-		customerRegAdminAdmin.setSelect_customer_type("personal");
-		customerRegAdminAdmin.getCustomerOrder().setOrder_broadband_type("transition");
-		customerRegAdminAdmin.getCustomerOrder().setSale_id(10023);
-		customerRegAdminAdmin.getCustomerOrder().setPromotion(true);
-		customerRegAdminAdmin.setLanguage("en");
-		session.setAttribute("customerRegAdminAdmin", customerRegAdminAdmin);
+		System.out.println("this is new customerRegAdmin, promotion ipadmini");
+		Customer customerRegAdmin = new Customer();
+		customerRegAdmin.setSelect_plan_group("");
+		customerRegAdmin.setSelect_customer_type("personal");
+		customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");
+		customerRegAdmin.getCustomerOrder().setSale_id(10023);
+		customerRegAdmin.getCustomerOrder().setPromotion(true);
+		customerRegAdmin.setLanguage("en");
+		session.setAttribute("customerRegAdmin", customerRegAdmin);
 		return "redirect:/broadband-user/crm/plans/address-check";
 	}
 		
 	// promotion hd
 	@RequestMapping(value = "/broadband-user/crm/plans/promotion/hd")
 	public String crmPlansPromotionHD(HttpSession session){
-		System.out.println("this is new customerRegAdminAdmin, promotion hd");
-		Customer customerRegAdminAdmin = new Customer();
-		customerRegAdminAdmin.setSelect_plan_group("");
-		customerRegAdminAdmin.setSelect_customer_type("personal");
-		customerRegAdminAdmin.getCustomerOrder().setOrder_broadband_type("transition");
-		customerRegAdminAdmin.getCustomerOrder().setSale_id(20023);
-		customerRegAdminAdmin.getCustomerOrder().setPromotion(true);
-		customerRegAdminAdmin.setLanguage("en");
-		session.setAttribute("customerRegAdminAdmin", customerRegAdminAdmin);
+		System.out.println("this is new customerRegAdmin, promotion hd");
+		Customer customerRegAdmin = new Customer();
+		customerRegAdmin.setSelect_plan_group("");
+		customerRegAdmin.setSelect_customer_type("personal");
+		customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");
+		customerRegAdmin.getCustomerOrder().setSale_id(20023);
+		customerRegAdmin.getCustomerOrder().setPromotion(true);
+		customerRegAdmin.setLanguage("en");
+		session.setAttribute("customerRegAdmin", customerRegAdmin);
 		return "redirect:/broadband-user/crm/plans/address-check";
 	}
 	
@@ -1585,8 +1585,8 @@ public class CRMController {
 	
 	@RequestMapping("/broadband-user/crm/plans/define/{type}")
 	public String plansDefineType(HttpSession session, @PathVariable("type") String type) {
-		Customer customerRegAdminAdmin = (Customer) session.getAttribute("customerRegAdminAdmin");
-		customerRegAdminAdmin.setSelect_plan_type(type);
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		customerRegAdmin.setSelect_plan_type(type);
 		return "redirect:/broadband-user/crm/plans/order";
 	}
 	
@@ -1594,7 +1594,7 @@ public class CRMController {
 	
 	@RequestMapping("/broadband-user/crm/plans/address/clear") 
 	public String addressClear(HttpSession session) {
-		session.removeAttribute("customerRegAdminAdmin");
+		session.removeAttribute("customerRegAdmin");
 		return "redirect:/broadband-user/crm/plans";
 	}	
 	
@@ -1604,9 +1604,9 @@ public class CRMController {
 	public String toOrderPlan(Model model, HttpSession session) {
 		
 		String url = "broadband-user/crm/plans/customer-order";
-		Customer customerRegAdminAdmin = (Customer) session.getAttribute("customerRegAdminAdmin");
-		if (!customerRegAdminAdmin.isServiceAvailable()) {
-			System.out.println("customerRegAdminAdmin.isServiceAvailable(): " + customerRegAdminAdmin.isServiceAvailable());
+		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		if (!customerRegAdmin.isServiceAvailable()) {
+			System.out.println("customerRegAdmin.isServiceAvailable(): " + customerRegAdmin.isServiceAvailable());
 			url = "redirect:/broadband-user/crm/plans";
 		}
 		return url;

@@ -15,14 +15,11 @@
 				Please check your email. Your receipt or ordering form will send your email.
 			</p>
 			<p>
-				Now you can log on to CyberPark Customer Home, <a href="${ctx }/login"> please click here. </a>
-			</p>
-			<p>
 				Our customer service telephone number is <strong class="text-danger">0800 229 237</strong>
 			</p>
 			<p>&nbsp;</p>
 			<p>
-				<a href="${ctx }/home" class="btn btn-success">Go to Home Page</a>
+				<a href="${ctx }/broadband-user/crm/customer/view" class="btn btn-success">Go to CRM</a>
 			</p>
 		</div>
 	</c:if>
