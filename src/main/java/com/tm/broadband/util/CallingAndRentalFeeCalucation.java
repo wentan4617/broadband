@@ -69,7 +69,22 @@ public class CallingAndRentalFeeCalucation {
 		return TMUtils.bigAdd(totalAmountPayable, totalAmountIncl);
 	}
 	
-	// BEGIN CustomerCallRecord OPERATION
+	/**
+	 * BEGIN Chorus, Callplus OPERATION
+	 * @param ci
+	 * @param isRegenerate
+	 * @param pcms
+	 * @param pstn_number
+	 * @param cids
+	 * @param invoicePDF
+	 * @param totalPayableAmouont
+	 * @param customerCallRecordMapper
+	 * @param callInternationalRateMapper
+	 * @param customerCallingRecordCallplusMapper
+	 * @param ciMapper
+	 * @param customerType
+	 * @return
+	 */
 	public static Double ccrOperation(CustomerInvoice ci, Boolean isRegenerate
 			, List<CustomerOrderDetail> pcms
 			, String pstn_number, List<CustomerInvoiceDetail> cids
@@ -341,8 +356,314 @@ public class CallingAndRentalFeeCalucation {
 		// ADD TOTAL CALL FEE INTO INVOICE
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
-	// END CustomerCallRecord OPERATION
+	// END Chorus, Callplus OPERATION
 	
+	
+	/*public static Double voipCallOperation(CustomerInvoice ci
+			, Boolean isRegenerate
+			, List<CustomerOrderDetail> pcms
+			, String voip_number
+			, List<CustomerInvoiceDetail> cids
+			, InvoicePDFCreator invoicePDF
+			, Double totalPayableAmouont
+			, CustomerCallRecordMapper customerCallRecordMapper
+			, NZAreaCodeListMapper nzAreaCodeListMapper
+			, CustomerInvoiceMapper ciMapper
+			, String customerType){
+		
+		List<NZAreaCodeList> nzAreaCodeList = nzAreaCodeListMapper.selectNZAreaCodeList(null);
+		
+		String nineStartedLocalAreaCode = nzAreaCodeList.get(0).getNz_auckland_local_area_code();
+		String[] nineStartedLocalAreaCodes = nineStartedLocalAreaCode.split(",");
+		
+		// Total calling record
+		List<VOSVoIPCallRecord> vosVoIPCallRecords = new ArrayList<VOSVoIPCallRecord>();
+		// Total chargeable amount
+		Double totalAmountIncl = 0d;
+		// Total credit back
+		Double totalCreditBack = 0d;
+		
+		String callType = "";
+		
+		// BEGIN VOS VoIP Calling Record
+		VOSVoIPCallRecord vosVoIPCallRecordQuery = new VOSVoIPCallRecord();
+		vosVoIPCallRecordQuery.getParams().put("where", "query_call_records");
+		vosVoIPCallRecordQuery.getParams().put("orderby", "ORDER BY call_start ASC");
+		if(isRegenerate){
+			vosVoIPCallRecordQuery.getParams().put("invoice_id", ci.getId());
+		} else {
+			vosVoIPCallRecordQuery.getParams().put("invoice_id", null);
+		}
+		// PRODUCTION MODE CHANGE TO voip_number
+		vosVoIPCallRecordQuery.getParams().put("ori_number", //96272424
+				TMUtils.retrieveNonAreaCodeVoIPNumber(voip_number)
+		);
+
+		List<VOSVoIPCallRecord> vosVoIPCallRecordsQuery = new ArrayList<VOSVoIPCallRecord>();
+
+		for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecordsQuery) {
+			Console.log(vosVoIPCallRecord);
+		}
+
+		// ITERATIVELY ADD ALL CALL CHARGES
+		for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecordsQuery) {
+			
+			boolean isLocal = false;
+			
+			for (String startedLocalAreaCode : nineStartedLocalAreaCodes) {
+				
+				String destNumberFinal = TMUtils.retrieveNonAreaCodeVoIPNumber(vosVoIPCallRecord.getDest_number());
+				
+				destNumberFinal = destNumberFinal.substring(1);
+				
+				isLocal = destNumberFinal.startsWith(startedLocalAreaCode);
+				
+				if(isLocal){
+					
+					break;
+					
+				}
+				
+			}
+
+			// Residential local call free
+			if("personal".equals(customerType.toLowerCase()) && isLocal){
+				continue;
+			}
+			
+			VOSVoIPRate vosVoIPRate = new VOSVoIPRate();
+			switch (vosVoIPCallRecord.getCall_type()) {
+			case "International":
+				vosVoIPRate.getParams().put("area_prefix", vosVoIPCallRecord.getArea_prefix());
+				break;
+			case "National":
+				
+				break;
+			}
+			
+			if(vosVoIPCallRecord.getCall_type()){
+				vosVoIPRate.get
+			}
+			CallInternationalRate cir = new CallInternationalRate();
+			switch (ccr.getJuristiction()) {
+			case "O":	 OTH NETWORK & Mobile 
+				callType = "mobile";
+				cir.getParams().put("area_prefix", "2");
+				break;
+			case "L":	 Local (Auckland) 
+				callType = "local";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "N":	 National 
+				callType = "national";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "I":	 International 
+				callType = "international";
+				cir.getParams().put("area_prefix", ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
+				break;
+			}
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
+			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
+
+			Double costPerMinute = 1d;
+			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+			
+			// DURATION/SECONDS
+			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
+			
+			ccr.setCallType(TMUtils.strCapital(callType));
+			
+			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
+					isOnRate && duration>0){
+
+				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+				if(TMUtils.isReminder(String.valueOf(duration))){
+					String durationStr = String.valueOf(duration);
+					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+				}
+
+				// Process Present Calling Minutes
+				totalCreditBack = processPresentCallingMinutes(pcms
+						,cirs
+						,duration
+						,totalCreditBack
+						,costPerMinute
+						,callType);
+				
+				ccr.setAmount_incl(TMUtils.bigMultiply(duration, costPerMinute));
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, TMUtils.bigMultiply(duration, costPerMinute));
+				
+			} else {
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
+			}
+			
+			// END Rate Operation
+			
+			// FORMAT DURATION(second) TO TIME STYLE
+			ccr.setFormated_duration(duration<=0 ? "" : TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
+			ccrs.add(ccr);
+		}
+		
+		if(!isRegenerate){
+			if(ccrs!=null && ccrs.size()>0){
+				CustomerCallRecord ccrUpdate = new CustomerCallRecord();
+				if(ci.getId()==null){
+					ciMapper.insertCustomerInvoice(ci);
+				}
+				ccrUpdate.setInvoice_id(ci.getId());
+				ccrUpdate.getParams().put("where", "last_call_records");
+				ccrUpdate.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
+				ccrUpdate.getParams().put("invoice_id", null);
+				customerCallRecordMapper.updateCustomerCallRecord(ccrUpdate);
+				ccrUpdate = null;
+			}
+		}
+		
+		// END Chorus Style Calling Record
+		
+
+		// BEGIN Callplus Style Calling Record
+		CustomerCallingRecordCallplus ccrcQuery = new CustomerCallingRecordCallplus();
+		ccrcQuery.getParams().put("where", "query_last_calling_records");
+		ccrcQuery.getParams().put("orderby", "ORDER BY date ASC");
+		ccrcQuery.getParams().put("original_number", TMUtils.formatPhoneNumber(pstn_number));
+		if(isRegenerate){
+			ccrcQuery.getParams().put("invoice_id", ci.getId());
+		} else {
+			ccrcQuery.getParams().put("invoice_id", null);
+		}
+		List<CustomerCallingRecordCallplus> ccrcs = customerCallingRecordCallplusMapper.selectCustomerCallingRecordCallplus(ccrcQuery);
+		
+		for (CustomerCallingRecordCallplus ccrc : ccrcs) {
+
+			// Residential local call free
+			if("personal".equals(customerType.toLowerCase()) && "L".equals(ccrc.getType())){
+				continue;
+			}
+			
+			CallInternationalRate cir = new CallInternationalRate();
+			switch (ccrc.getType()) {
+			case "M":	 Mobile 
+				callType = "mobile";
+				cir.getParams().put("area_prefix", "2");
+				break;
+			case "MG":	 Mobile Gsm 
+				callType = "mobile";
+				cir.getParams().put("area_prefix", "2");
+				break;
+			case "L":	 Local (Auckland) 
+				callType = "local";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "S":	 Domestic 
+				callType = "national";
+				cir.getParams().put("area_prefix", "3");
+				break;
+			case "I":	 International 
+				callType = "international";
+				String fix_mobile_country[] = "Bangladesh,Malaysia,Cambodia,Singapore,Canada,South Korea,China,Usa,Hong Kong,Vietnam,India".split(",");
+				String fixMobileCountry = "";
+				for (String country : fix_mobile_country) {
+					if(ccrc.getDescription().contains(country)){
+						fixMobileCountry = country;
+					}
+				}
+				cir.getParams().put("area_name", "".equals(fixMobileCountry) ? ccrc.getDescription() : fixMobileCountry);
+				break;
+			}
+			
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
+			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
+
+			Double costPerMinute = 1d;
+//			if(is0900){} if(isFax){}
+//			if(isMobile){ costPerMinute = 0.19d ; }
+//			if(isNational){} if(isBusinessLocal){}
+			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+			
+			// duration = length / 60
+			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccrc.getLength(), 60d))));
+			
+			CustomerCallRecord ccr = new CustomerCallRecord();
+			ccr.setClear_service_id(ccrc.getOriginal_number());
+			ccr.setCharge_date_time(ccrc.getDate());
+			ccr.setPhone_called(ccrc.getDestination_number());
+			ccr.setBilling_description(ccrc.getDescription());
+			ccr.setCallType(TMUtils.strCapital(callType));
+			ccr.setAmount_incl(ccrc.getCharged_fee());
+
+			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
+					isOnRate){
+
+				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+				if(TMUtils.isReminder(String.valueOf(duration))){
+					String durationStr = String.valueOf(duration);
+					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+				}
+				
+				// Process Present Calling Minutes
+				totalCreditBack = processPresentCallingMinutes(pcms
+						,cirs
+						,duration
+						,totalCreditBack
+						,costPerMinute
+						,callType);
+				
+				ccr.setAmount_incl(TMUtils.bigMultiply(duration, costPerMinute));
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, TMUtils.bigMultiply(duration, costPerMinute));
+				
+			} else {
+				totalAmountIncl = TMUtils.bigAdd(totalAmountIncl, ccr.getAmount_incl());
+			}
+			
+			// END Rate Operation
+			
+			// FORMAT DURATION(second) TO TIME STYLE
+			ccr.setFormated_duration(TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(duration))).replace(".", ":"));
+			ccrs.add(ccr);
+			
+		}
+		
+		if(!isRegenerate){
+			if(ccrcs!=null && ccrcs.size()>0){
+				CustomerCallingRecordCallplus ccrcUpdate = new CustomerCallingRecordCallplus();
+				if(ci.getId()==null){
+					ciMapper.insertCustomerInvoice(ci);
+				}
+				ccrcUpdate.setInvoice_id(ci.getId());
+				ccrcUpdate.getParams().put("where", "last_calling_records");
+				ccrcUpdate.getParams().put("original_number", TMUtils.formatPhoneNumber(pstn_number));
+				ccrcUpdate.getParams().put("invoice_id", null);
+				customerCallingRecordCallplusMapper.updateCustomerCallingRecordCallplus(ccrcUpdate);
+				ccrcUpdate = null;
+			}
+		}
+		
+		// END Callplus Style Calling Record
+		
+		
+		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+		cid.setInvoice_detail_name("Calling Charge : ( " + pstn_number + " )");
+		cid.setInvoice_detail_price(TMUtils.bigSub(totalAmountIncl, totalCreditBack));
+		cid.setInvoice_detail_desc("Total Charge: "+ totalAmountIncl + "\nCredit Back: "+ TMUtils.fillDecimalPeriod(totalCreditBack));
+		cid.setInvoice_detail_unit(1);
+		cid.setInvoice_detail_type("calling-charge");
+		
+		cids.add(cid);
+		
+		invoicePDF.getCrrsMap().put(pstn_number, ccrs);
+		
+		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
+		
+		ccrTemp = null;
+		ccrsTemp = null;
+		ccrcQuery = null;
+		// ADD TOTAL CALL FEE INTO INVOICE
+		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
+	}
+	// END Chorus, Callplus OPERATION
+*/	
 	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
 			,List<CallInternationalRate> cirs
 			,Double duration
@@ -391,6 +712,17 @@ public class CallingAndRentalFeeCalucation {
 		return totalCreditBack;
 	}
 
+	/**
+	 * 
+	 * @param pcms
+	 * @param pcm
+	 * @param cirs
+	 * @param duration
+	 * @param totalCreditBack
+	 * @param costPerMinute
+	 * @param index
+	 * @return
+	 */
 	public static Double getCallingTotalCreditBack(List<CustomerOrderDetail> pcms
 			,CustomerOrderDetail pcm
 			,List<CallInternationalRate> cirs

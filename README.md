@@ -20,12 +20,32 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.3.1 2014-10-09
+
+* [order界面添加Generate Receipt Only按钮，点击只生成receipt.](steven)
+* 策划VOS拨打记录号码匹配处理及计算方式.(steven)
+    CRMService里需要添加该功能的方法有：
+        createNextCallingInvoicePDF（Undone）
+        createInvoicePDFBoth（Undone）
+        createTermPlanInvoiceByOrder（Undone）
+        createTopupPlanInvoiceByOrder（Undone）
+        
+* order底部添加一个按钮：Add Chorus Add-On，可以添加以下5种add on：
+	Call restrict with no Directory Access nat Res
+	Caller Display Monthly Charge per line Res
+	Call waiting nat Res
+    Faxability Monthly Rental Res
+	Smart Bundle package
+
+
+
+
+
 demand version 1.3.0 2014-10-08
 
 * [排查DDPay出账看看为什么生成账单，next_invoice_create_date以及flag没有变化.](steven)
 * [将后台invoice通过各种方式手动销帐改成可以指定金额.](steven)
 * [检查修改plan detail为什么名字不能更改.](steven)
-* 
 
 
 demand version 1.2.5 2014-10-01

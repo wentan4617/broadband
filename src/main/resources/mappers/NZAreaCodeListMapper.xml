@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.NZAreaCodeListMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="nZAreaCodeListColumns">
+		nzacl.`nz_auckland_local_area_code`				as nzacl_nz_auckland_local_area_code
+		nzacl.`nz_auckland_nine_non_local_area_code`	as nzacl_nz_auckland_nine_non_local_area_code
+	</sql>
+
+	<resultMap type="NZAreaCodeList" id="nZAreaCodeListResultMap">
+		<result property="nz_auckland_local_area_code" column="nzacl_nz_auckland_local_area_code" />
+		<result property="nz_auckland_nine_non_local_area_code" column="nzacl_nz_auckland_nine_non_local_area_code" />
+	</resultMap>
+
+	<sql id="nZAreaCodeListWhere">
+		<where>
+			<if test="params.nz_auckland_local_area_code != null">nzacl.nz_auckland_local_area_code = #{params.nz_auckland_local_area_code}</if>
+			<if test="params.nz_auckland_nine_non_local_area_code != null">nzacl.nz_auckland_nine_non_local_area_code = #{params.nz_auckland_nine_non_local_area_code}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectNZAreaCodeList" parameterType="NZAreaCodeList" resultType="NZAreaCodeList">
+		select * from tm_nz_area_code_list as nzacl
+		<include refid="nZAreaCodeListWhere"/>
+	</select>
+
+	<!-- select nZAreaCodeList page -->
+	<select id="selectNZAreaCodeListsByPage" parameterType="Page" resultMap="nZAreaCodeListResultMap">
+		select 
+			<include refid="nZAreaCodeListColumns"/>
+			from tm_nz_area_code_list as nzacl
+			<include refid="nZAreaCodeListWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select nZAreaCodeList amount -->
+	<select id="selectNZAreaCodeListsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_nz_area_code_list as nzacl
+		<include refid="nZAreaCodeListWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertNZAreaCodeList" parameterType="NZAreaCodeList" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_nz_area_code_list`(
+			`nz_auckland_local_area_code`, `nz_auckland_nine_non_local_area_code`
+		) VALUES (
+			#{nz_auckland_local_area_code}, #{nz_auckland_nine_non_local_area_code}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

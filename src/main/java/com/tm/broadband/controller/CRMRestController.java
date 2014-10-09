@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -1937,7 +1936,7 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Edit detail
+	// Pay off order
 	@RequestMapping(value = "/broadband-user/crm/customer/order/pay-off/receipt", method = RequestMethod.POST)
 	public JSONBean<String> doPayOffOrder(Model model,
 			@RequestParam("id") Integer id,
@@ -2030,6 +2029,46 @@ public class CRMRestController {
 		this.crmService.editCustomerOrder(co, pl);
 		
 		json.getSuccessMap().put("alert-success", "Order paid off succeccfully!");
+		return json;
+	}
+
+	// Generate order receipt
+	@RequestMapping(value = "/broadband-user/crm/customer/order/generate/receipt", method = RequestMethod.POST)
+	public JSONBean<String> doGenerateOrderReceipt(Model model,
+			@RequestParam("id") Integer id,
+			@RequestParam("customerId") Integer customerId,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+
+		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
+		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(customerId);
+		c.setCustomerOrder(c.getCustomerOrders().get(0));
+		c.setOrganization(org);
+		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
+		CustomerOrder co = new CustomerOrder();
+		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
+		co.setReceipt_pdf_path(receiptPath);
+		if("pending".equals(c.getCustomerOrder().getOrder_status())
+		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
+		  || "void".equals(c.getCustomerOrder().getOrder_status())){
+			co.setOrder_status("paid");
+		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
+			co.setOrder_status("ordering-paid");
+		}
+		
+		ProvisionLog pl = new ProvisionLog();
+		pl.setUser_id(user.getId());
+		pl.setProcess_datetime(new Date());
+		pl.setOrder_sort("customer-order");
+		pl.setOrder_id_customer(id);
+		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
+		co.getParams().put("id", id);
+		this.crmService.editCustomerOrder(co, pl);
+		
+		json.getSuccessMap().put("alert-success", "Order status to paid and generate a receipt succeccfully!");
 		return json;
 	}
 	

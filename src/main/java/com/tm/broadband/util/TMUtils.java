@@ -397,6 +397,52 @@ public class TMUtils {
 		return str;
 	}
 	
+	// Retrieve Non-Area code phone number
+	public static String retrieveNonAreaCodeVoIPNumber(String phone_number){
+
+		phone_number = TMUtils.formatPhoneNumber(phone_number);
+		
+		if(phone_number.startsWith("064")) {
+			
+			phone_number = phone_number.substring(3);
+			
+		} else if(phone_number.startsWith("64")) {
+			
+			phone_number = phone_number.substring(2);
+			
+		}
+
+		phone_number = TMUtils.formatPhoneNumber(phone_number);
+		
+		return phone_number;
+		
+	}
+
+	// Retrieve After Calculated VoIP charge minute(s)
+	public static int retrieveVoIPChargePerThreeMinutes(int duration){
+		
+		int durationFinal = 0;
+		
+		if(duration <= 60){
+			
+			durationFinal = 60; 
+			
+		} else if (duration > 60 && duration <= 240) {
+			
+			durationFinal = 240;
+			
+		} else if(duration > 240) {
+			
+			durationFinal = 60;
+			duration = duration - 60;
+			durationFinal = durationFinal + ((duration%180)!=0 ? 180 : 0);
+			durationFinal = durationFinal + ((duration/180) * 180);
+			
+		}
+		
+		return durationFinal;
+	}
+	
 	public static void printResultErrors(BindingResult result) {
 		if (result.hasErrors()) {
 			List<ObjectError> errors = result.getAllErrors();
@@ -422,7 +468,7 @@ public class TMUtils {
 		String day = dateArr[2];
 		StringBuffer finalDateStrBuff = new StringBuffer();
 		if(Integer.parseInt(day) < 10){
-			finalDateStrBuff.append(day.charAt(1)+"th ");
+			finalDateStrBuff.append(day.charAt(1)+(day.charAt(1)=='1' ? "st " : "th "));
 		} else {
 			finalDateStrBuff.append(day+"th ");
 		}
