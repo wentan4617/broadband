@@ -36,6 +36,7 @@ import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
 import com.tm.broadband.mapper.InviteRatesMapper;
 import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
+import com.tm.broadband.mapper.NZAreaCodeListMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
@@ -116,6 +117,7 @@ public class CRMService {
 	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
 	private InviteRatesMapper inviteRatesMapper;
 	private UserMapper userMapper;
+	private NZAreaCodeListMapper nzAreaCodeListMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -151,7 +153,8 @@ public class CRMService {
 			ManualManipulationRecordMapper manualManipulationRecordMapper,
 			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper,
 			InviteRatesMapper inviteRatesMapper,
-			UserMapper userMapper){
+			UserMapper userMapper,
+			NZAreaCodeListMapper nzAreaCodeListMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -180,6 +183,7 @@ public class CRMService {
 		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
 		this.inviteRatesMapper = inviteRatesMapper;
 		this.userMapper = userMapper;
+		this.nzAreaCodeListMapper = nzAreaCodeListMapper;
 	}
 	
 	
@@ -1569,6 +1573,7 @@ public class CRMService {
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 
 		List<String> pstn_numbers = new ArrayList<String>();
+		List<String> voip_numbers = new ArrayList<String>();
 		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
 
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
@@ -1576,11 +1581,30 @@ public class CRMService {
 		for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 
-			if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+			if("pstn".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
 				}
+				
+			}
+
+			if("voip".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
+					voip_numbers.add(cod.getPstn_number());
+				}
+				
+			}
+
+			if(!isFirst
+			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+				
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cids.add(cid);
 				
 			}
 			
@@ -1766,6 +1790,15 @@ public class CRMService {
 				
 			}
 		}
+		
+		/*if(voip_numbers.size() > 0){
+			
+			for (String voip_number : voip_numbers) {
+				
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				
+			}
+		}*/
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
@@ -2005,6 +2038,17 @@ public class CRMService {
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
 				}
+				
+			}
+
+			if(!isFirst
+			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+				
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cids.add(cid);
 				
 			}
 			
@@ -2553,6 +2597,14 @@ public class CRMService {
 			cid.setInvoice_detail_name(cod.getDetail_name());
 			cid.setInvoice_detail_unit(cod.getDetail_unit() == null ? 1 : cod.getDetail_unit());
 			cid.setInvoice_detail_type(cod.getDetail_type());
+
+			if(!isFirst
+			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+				
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cids.add(cid);
+				
+			}
 
 			// if detail type equals discount and detail expire date greater
 			// equal than today's date then go into if statement
@@ -3315,26 +3367,29 @@ public class CRMService {
 			for (CustomerInvoice ci : cisThirdFifth) {
 				
 				Customer c = this.queryCustomerById(ci.getCustomer_id());
-
-				// Prevent template pollution
-				Notification emailThirdFifthFinal = new Notification(emailThirdFifth.getTitle(), emailThirdFifth.getContent());
-				Notification smsThirdFifthFinal = new Notification(smsThirdFifth.getTitle(), smsThirdFifth.getContent());
 				
-				MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, c, ci, cd);
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(c.getEmail());
-				applicationEmail.setSubject(emailThirdFifthFinal.getTitle());
-				applicationEmail.setContent(emailThirdFifthFinal.getContent());
-				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+				if("personal".equals(c.getCustomer_type())){
 
-				// get sms register template from db
-				MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, c, ci, cd);
-				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsThirdFifthFinal.getContent());
-				
-//				Console.log(ci);
+					// Prevent template pollution
+					Notification emailThirdFifthFinal = new Notification(emailThirdFifth.getTitle(), emailThirdFifth.getContent());
+					Notification smsThirdFifthFinal = new Notification(smsThirdFifth.getTitle(), smsThirdFifth.getContent());
+					
+					MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, c, ci, cd);
+					ApplicationEmail applicationEmail = new ApplicationEmail();
+					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setSubject(emailThirdFifthFinal.getTitle());
+					applicationEmail.setContent(emailThirdFifthFinal.getContent());
+					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+					applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+					// get sms register template from db
+					MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, c, ci, cd);
+					// send sms to customer's mobile phone
+					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsThirdFifthFinal.getContent());
+					
+//					Console.log(ci);
+				}
 			}
 
 //			System.out.println("cisEighthNinth: ");
@@ -3346,24 +3401,28 @@ public class CRMService {
 				ci.setSuspend_date_str(TMUtils.dateFormatYYYYMMDD(calSuspend.getTime()));
 				
 				Customer c = this.queryCustomerById(ci.getCustomer_id());
-
-				// Prevent template pollution
-				Notification emailEighthNinthFinal = new Notification(emailEighthNinth.getTitle(), emailEighthNinth.getContent());
-				Notification smsEighthNinthFinal = new Notification(smsEighthNinth.getTitle(), smsEighthNinth.getContent());
 				
-				MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, c, ci, cd);
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(c.getEmail());
-				applicationEmail.setSubject(emailEighthNinthFinal.getTitle());
-				applicationEmail.setContent(emailEighthNinthFinal.getContent());
-				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-				// get sms register template from db
-				MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, c, ci, cd);
-				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsEighthNinthFinal.getContent());
+				if("personal".equals(c.getCustomer_type())){
+	
+					// Prevent template pollution
+					Notification emailEighthNinthFinal = new Notification(emailEighthNinth.getTitle(), emailEighthNinth.getContent());
+					Notification smsEighthNinthFinal = new Notification(smsEighthNinth.getTitle(), smsEighthNinth.getContent());
+					
+					MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, c, ci, cd);
+					ApplicationEmail applicationEmail = new ApplicationEmail();
+					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setSubject(emailEighthNinthFinal.getTitle());
+					applicationEmail.setContent(emailEighthNinthFinal.getContent());
+					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+					applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+	
+					// get sms register template from db
+					MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, c, ci, cd);
+					// send sms to customer's mobile phone
+					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsEighthNinthFinal.getContent());
+					
+				}
 				
 				
 //				Console.log(ci);
@@ -3378,24 +3437,28 @@ public class CRMService {
 				ci.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(calDisconnect.getTime()));
 				
 				Customer c = this.queryCustomerById(ci.getCustomer_id());
-
-				// Prevent template pollution
-				Notification emailTenthFinal = new Notification(emailTenth.getTitle(), emailTenth.getContent());
-				Notification smsTenthFinal = new Notification(smsTenth.getTitle(), smsTenth.getContent());
 				
-				MailRetriever.mailAtValueRetriever(emailTenthFinal, c, ci, cd);
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(c.getEmail());
-				applicationEmail.setSubject(emailTenthFinal.getTitle());
-				applicationEmail.setContent(emailTenthFinal.getContent());
-				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-
-				// get sms register template from db
-				MailRetriever.mailAtValueRetriever(smsTenthFinal, c, ci, cd);
-				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsTenthFinal.getContent());
+				if("personal".equals(c.getCustomer_type())){
+	
+					// Prevent template pollution
+					Notification emailTenthFinal = new Notification(emailTenth.getTitle(), emailTenth.getContent());
+					Notification smsTenthFinal = new Notification(smsTenth.getTitle(), smsTenth.getContent());
+					
+					MailRetriever.mailAtValueRetriever(emailTenthFinal, c, ci, cd);
+					ApplicationEmail applicationEmail = new ApplicationEmail();
+					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setSubject(emailTenthFinal.getTitle());
+					applicationEmail.setContent(emailTenthFinal.getContent());
+					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+					applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+	
+					// get sms register template from db
+					MailRetriever.mailAtValueRetriever(smsTenthFinal, c, ci, cd);
+					// send sms to customer's mobile phone
+					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsTenthFinal.getContent());
+					
+				}
 				
 //				Console.log(ci);
 			}

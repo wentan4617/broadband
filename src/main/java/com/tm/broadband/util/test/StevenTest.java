@@ -1,8 +1,8 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.tm.broadband.util.SimpleMapperCreator;
 
 import com.tm.broadband.util.SimpleMapperCreator;
 
@@ -164,6 +164,7 @@ public class StevenTest {
 //		System.out.println("asdasdsd$".contains("$"));
 		
 		
+
 		SimpleMapperCreator smc = new SimpleMapperCreator();
 		smc.setAuthor("CyberPark");
 		smc.setModel("InviteRates");
@@ -185,5 +186,20 @@ public class StevenTest {
 //		cal.add(Calendar.DATE, -2);
 //		System.out.println(cal.getTime());
 		
+		/***
+		 * 
+		 * 1. Filter prefixes
+		 * 		0064-, 0064, 64-, 64
+		 * 
+		 */
+//		String phone_number = "92818799";
+//		
+////		System.out.println(TMUtils.retrieveNonAreaCodeVoIPNumber(phone_number));
+//		
+//		Double call_minutes = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.retrieveVoIPChargePerThreeMinutes(10)/60)));
+//		
+//		System.out.println(call_minutes);
+		
 	}
+	
 }

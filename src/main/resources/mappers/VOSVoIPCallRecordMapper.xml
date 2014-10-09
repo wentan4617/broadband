@@ -44,16 +44,30 @@
 
 	<sql id="vOSVoIPCallRecordWhere">
 		<where>
-			<if test="params.id != null">vosvipcr.id = #{params.id}</if>
-			<if test="params.call_start != null">and vosvipcr.call_start = #{params.call_start}</if>
-			<if test="params.ori_number != null">and vosvipcr.ori_number = #{params.ori_number}</if>
-			<if test="params.dest_number != null">and vosvipcr.dest_number = #{params.dest_number}</if>
-			<if test="params.call_length != null">and vosvipcr.call_length = #{params.call_length}</if>
-			<if test="params.charge_length != null">and vosvipcr.charge_length = #{params.charge_length}</if>
-			<if test="params.call_fee != null">and vosvipcr.call_fee = #{params.call_fee}</if>
-			<if test="params.call_cost != null">and vosvipcr.call_cost = #{params.call_cost}</if>
-			<if test="params.call_type != null">and vosvipcr.call_type = #{params.call_type}</if>
-			<if test="params.area_prefix != null">and vosvipcr.area_prefix = #{params.area_prefix}</if>
+			<choose>
+				<when test="params.where == 'query_call_records'">
+					<if test="params.last_month != null">vosvipcr.statement_date >= #{params.last_month}</if>
+					<if test="params.ori_number != null">and vosvipcr.ori_number LIKE CONCAT('%', '${params.ori_number}')</if>
+					<if test="params.invoice_id != null">
+						AND vosvipcr.invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND vosvipcr.invoice_id IS NULL
+					</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">vosvipcr.id = #{params.id}</if>
+					<if test="params.call_start != null">and vosvipcr.call_start = #{params.call_start}</if>
+					<if test="params.ori_number != null">and vosvipcr.ori_number = #{params.ori_number}</if>
+					<if test="params.dest_number != null">and vosvipcr.dest_number = #{params.dest_number}</if>
+					<if test="params.call_length != null">and vosvipcr.call_length = #{params.call_length}</if>
+					<if test="params.charge_length != null">and vosvipcr.charge_length = #{params.charge_length}</if>
+					<if test="params.call_fee != null">and vosvipcr.call_fee = #{params.call_fee}</if>
+					<if test="params.call_cost != null">and vosvipcr.call_cost = #{params.call_cost}</if>
+					<if test="params.call_type != null">and vosvipcr.call_type = #{params.call_type}</if>
+					<if test="params.area_prefix != null">and vosvipcr.area_prefix = #{params.area_prefix}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 

@@ -238,7 +238,6 @@
 						,'order_pay_way':order_pay_way
 						,'order_total_price':order_total_price
 					};
-					console.log('asdsad');
 					$.post(ctx+'/broadband-user/crm/customer/order/pay-off/receipt', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json");
@@ -249,6 +248,30 @@
 					$.getCustomerOrder();
 					$.getCustomerInfo();
 					$.getTxPage(1);
+				});
+
+				// Generate order receipt
+				// Get generate order receipt Dialog
+				$('a[data-name="'+co[i].id+'_generate_order_receipt"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					var total_price =  new Number($('#'+this.id+'_order_total_price').attr('data-val'));
+					$('#generateOrderReceiptModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="generateOrderReceiptModalBtn_'+co[i].id+'"]').click(function(){
+
+					var data = {
+						'id':this.id
+						,'customerId':customerId
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/generate/receipt', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+				});
+				// Reset button when hidden regenerate most recent invoice dialog
+				$('#generateOrderReceiptModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_generate_order_receipt"]').button('reset');
+					$.getCustomerOrder();
 				});
 				
 				// Regenerate most recent invoice
