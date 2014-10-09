@@ -33,6 +33,7 @@ import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
+import com.tm.broadband.mapper.InviteRatesMapper;
 import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
@@ -41,6 +42,7 @@ import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
 import com.tm.broadband.mapper.TicketCommentMapper;
 import com.tm.broadband.mapper.TicketMapper;
+import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
@@ -55,6 +57,7 @@ import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.ManualManipulationRecord;
@@ -111,6 +114,8 @@ public class CRMService {
 	private TicketCommentMapper ticketCommentMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
+	private InviteRatesMapper inviteRatesMapper;
+	private UserMapper userMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -144,7 +149,9 @@ public class CRMService {
 			TicketMapper ticketMapper,
 			TicketCommentMapper ticketCommentMapper,
 			ManualManipulationRecordMapper manualManipulationRecordMapper,
-			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper){
+			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper,
+			InviteRatesMapper inviteRatesMapper,
+			UserMapper userMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -171,10 +178,12 @@ public class CRMService {
 		this.ticketCommentMapper = ticketCommentMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
+		this.inviteRatesMapper = inviteRatesMapper;
+		this.userMapper = userMapper;
 	}
 	
 	
-public void doOrderConfirm(Customer customer, Plan plan) {
+	public void doOrderConfirm(Customer customer, Plan plan) {
 		
 		customer.getCustomerOrder().setCustomerOrderDetails(new ArrayList<CustomerOrderDetail>());
 		customer.getCustomerOrder().setOrder_create_date(new Date());
@@ -3687,14 +3696,46 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			}
 		}
 		
-		if ("personal".equals(customer.getCustomer_type())) {
-			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue());
-		} else if ("business".equals(customer.getCustomer_type())) {
-			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue());
+		// promotion
+		Double promotion_price = 0d;
+		
+		if (customer.getIr() != null) {
+			
+			if (customer.getIr().isIs_customer()) {
+				customerOrder.setInviter_customer_id(Integer.parseInt(customer.getIr().getPromotion_code()));
+				customerOrder.setInviter_rate(customer.getIr().getInviter_customer_rate());
+				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());
+			} else if (customer.getIr().isIs_user()) {
+				customerOrder.setInviter_user_id(Integer.parseInt(customer.getIr().getPromotion_code()));
+				customerOrder.setInviter_rate(customer.getIr().getInviter_user_rate());
+				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());
+			}			
+			
+			CustomerOrderDetail cod_promotion = new CustomerOrderDetail();
+			cod_promotion.setDetail_name("Promotion Discount");
+			cod_promotion.setDetail_type("discount");
+			cod_promotion.setDetail_desc(customer.getIr().getInvitee_rate().intValue() + "% off the total price. all-forms");
+			
+			Double total = 0d;
+			if ("personal".equals(customer.getCustomer_type())) {
+				total = plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue();
+			} else if ("business".equals(customer.getCustomer_type())) {
+				total = (plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue();
+			}
+			
+			promotion_price = total * customer.getIr().getInvitee_rate()/100;
+			cod_promotion.setDetail_price(new Double(promotion_price.intValue()));
+			cod_promotion.setDetail_unit(1);
+			
+			customerOrder.getCustomerOrderDetails().add(cod_promotion);
+			
 		}
 		
-		
-		
+		if ("personal".equals(customer.getCustomer_type())) {
+			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue() - promotion_price.intValue());
+		} else if ("business".equals(customer.getCustomer_type())) {
+			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue() - promotion_price.intValue());
+		}
 		
 	}
 	
@@ -3749,6 +3790,37 @@ public void doOrderConfirm(Customer customer, Plan plan) {
 			String content){
 
 		this.smserService.sendSMSByAsynchronousMode(cellphone, content);
+	}
+	
+	
+	
+	
+	@Transactional
+	public InviteRates applyPromotionCode(String code) {
+	
+		InviteRates ir = null;
+		
+		Customer cQ = new Customer();
+		cQ.getParams().put("where", "query_exist_customer_by_id");
+		cQ.getParams().put("id", code);
+		
+		int count = this.customerMapper.selectExistCustomer(cQ);
+		if (count > 0) {
+			ir = this.inviteRatesMapper.selectInviteRates(new InviteRates()).get(0);
+			ir.setIs_customer(true);
+			ir.setPromotion_code(code);
+		} else {
+			User uQ = new User();
+			uQ.getParams().put("id", code);
+			count = this.userMapper.selectExistUser(uQ);
+			if (count > 0) {
+				ir = this.inviteRatesMapper.selectInviteRates(new InviteRates()).get(0);
+				ir.setIs_user(true);
+				ir.setPromotion_code(code);
+			}
+		}
+		
+		return ir;
 	}
 	
 }

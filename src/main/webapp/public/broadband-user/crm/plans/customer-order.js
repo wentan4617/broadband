@@ -100,6 +100,8 @@
 	} //console.log(hardware_id_selected);
 	var hardware_value_selected = 'withoutmodem';
 	var broadband_value_selected = broadband_options_tmpl.attr('data-order_broadband_type');
+	var has_promotion_code = false;
+	var promotion_rates = 0;
 	
 	var price = {
 		plan_price: 0
@@ -107,6 +109,7 @@
 		, addons_price: 0
 		, modem_price: 0
 		, discount_price: 0
+		, promotion_price: 0
 		
 		, save_service_price: 0
 		, save_modem_price: 0
@@ -130,6 +133,30 @@
 				, plansNaked: plansNaked
 			};
 			$('#select-plan').html(tmpl('select_plan_tmpl', o));
+			
+			// promotion code 
+			
+			$('#code_apply').click(function(){
+				var code = $('#promotion_code').val();
+				var ir = {
+					promotion_code: code	
+				};
+				var l = Ladda.create(this); l.start();
+				$.post(ctx + '/broadband-user/crm/plans/order/apply/promotion-code', ir, function(json){
+					if (!$.jsonValidation(json)) { 
+						var ir = json.model; //console.log(ir);
+						if (ir != null) {
+							has_promotion_code = true;
+							promotion_rates = ir.invitee_rate/100;
+						} else {
+							has_promotion_code = false;
+						}
+						flushOrderModal();
+						
+					} 
+					
+				}).always(function(){ l.stop(); });	
+			});
 			
 			// loadingModems
 			var url = ctx + '/broadband-user/crm/plans/hardware/loading/'; //console.log(url);
@@ -201,6 +228,30 @@
 	}
 	
 	loadingPlans();
+	
+	function flushPromotion() {
+		if (has_promotion_code) {
+			var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
+			price.promotion_price = parseInt(total * promotion_rates);
+		} else {
+			price.promotion_price = 0;
+		} //console.log(price);
+		
+		var o = {
+			price: price
+			, prepay_months: prepay_months
+			, has_promotion_code: has_promotion_code
+			, promotion_rates: promotion_rates
+		};
+		$('#promotion_content').html(tmpl('promotion_code_tmpl', o));
+		$('#cancel-promotion').click(function(){
+			$.post(ctx + '/broadband-user/crm/plans/order/cancel/promotion-code', function(){
+				has_promotion_code = false;
+				$('#promotion_content').html('');
+				flushOrderModal();
+			});
+		});
+	}
 	
 	function flushOpenTerm() {
 		var o = {
@@ -584,6 +635,9 @@
 	//flushBroadbandOptions();
 	
 	function flushOrderModal() {
+		
+		flushPromotion();
+		
 		var o = {
 			ctx: ctx
 			, sale_id: sale_id
@@ -601,10 +655,11 @@
 			, order_broadband_type: order_broadband_type
 			, prepay_months: prepay_months
 			, discount_desc: discount_desc
-		};
-		//console.log(obj.price);
+			, has_promotion_code: has_promotion_code
+			, promotion_rates: promotion_rates
+		}; //console.log(o);
 		$('#order-modal').html(tmpl('order_modal_tmpl', o));
-		
+	
 		$('#get-it-now').click(confirm);
 	}
 	

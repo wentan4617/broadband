@@ -23,6 +23,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
+import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.CRMService;
@@ -30,6 +31,7 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
+import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
@@ -239,6 +241,40 @@ public class SaleRestController {
 		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
 		
 		return hardwares;
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/plans/order/apply/promotion-code", method = RequestMethod.POST)
+	public JSONBean<InviteRates> applyPromotionCode(HttpSession session,	
+			@Validated(value = { PromotionCodeValidatedMark.class }) InviteRates irates, BindingResult result) {
+		
+		JSONBean<InviteRates> json = new JSONBean<InviteRates>();
+		json.setModel(irates);
+		
+		if (result.hasErrors()) {
+			json.setJSONErrorMap(result);
+			return json;
+		}
+		
+		InviteRates ir = this.crmService.applyPromotionCode(irates.getPromotion_code());
+		System.out.println("ir: " + ir);
+		
+		if (ir == null) {
+			json.getErrorMap().put("promotion_code", "Sorry dear, this is invalid promotion code.");
+			return json;
+		}
+		
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		
+		customerRegSale.setIr(ir);
+		json.setModel(ir);
+		
+		return json;
+	}
+	
+	@RequestMapping(value = "/broadband-user/sale/plans/order/cancel/promotion-code", method = RequestMethod.POST)
+	public void cancelPromotionCode(HttpSession session) {
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		customerRegSale.setIr(null);
 	}
 	
 	@RequestMapping(value = "/broadband-user/sale/plans/order/confirm/personal", method = RequestMethod.POST)

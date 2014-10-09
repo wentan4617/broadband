@@ -4,6 +4,8 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.tm.broadband.util.SimpleMapperCreator;
+
 
 public class StevenTest {
 	
@@ -162,11 +164,11 @@ public class StevenTest {
 //		System.out.println("asdasdsd$".contains("$"));
 		
 		
-//		SimpleMapperCreator smc = new SimpleMapperCreator();
-//		smc.setAuthor("CyberPark");
-//		smc.setModel("VOSVoIPCallRecord");
-//		smc.setTable("tm_vos_voip_call_record");
-//		smc.initial();
+		SimpleMapperCreator smc = new SimpleMapperCreator();
+		smc.setAuthor("CyberPark");
+		smc.setModel("InviteRates");
+		smc.setTable("tm_invite_rates");
+		smc.initial();
 		
 //		String str = "cyberpark/ccc/asd";
 //		System.out.println(str.substring(0, str.lastIndexOf("/")+1));

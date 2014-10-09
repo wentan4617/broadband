@@ -58,6 +58,11 @@
 		select count(*) from tm_user 
 	</select>
 	
+	<select id="selectExistUser" resultType="int">
+		select count(*) from tm_user 
+		<include refid="userWhere"/>
+	</select>
+	
 	<!-- when create user, check same name -->
 	<select id="selectExistUserByName" resultType="int">
 		select count(*) from tm_user where login_name = #{0} 
@@ -65,7 +70,7 @@
 	
 	<!-- select one user by id -->
 	<select id="selectUserById" resultType="User">
-		SELECT * FROM `tm_user` WHERE  id = #{0}
+		SELECT * FROM `tm_user` WHERE id = #{0}
 	</select>
 	
 	<!-- select user -->

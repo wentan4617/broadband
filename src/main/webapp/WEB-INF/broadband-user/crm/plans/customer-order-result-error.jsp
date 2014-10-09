@@ -10,7 +10,7 @@
 		<div class="alert alert-warning">
 			<h1>Sorry, the payment is failure.</h1>
 			<h2>
-				<a href="${ctx }/order/${orderPlan.plan_class }/confirm">Click Here</a> to return to the order confirm page.
+				<a href="${ctx }/broadband-user/crm/plans/order/summary">Click Here</a> to return to the order confirm page.
 			</h2>
 			<p>&nbsp;</p>
 			<p>
