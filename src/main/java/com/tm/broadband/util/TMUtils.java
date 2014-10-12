@@ -417,6 +417,23 @@ public class TMUtils {
 		return phone_number;
 		
 	}
+	
+	// Retrieve Area code phone number
+	public static String retrieveAreaCodeVoIPNumber(String phone_number){
+
+		phone_number = TMUtils.formatPhoneNumber(phone_number);
+		
+		if(phone_number.startsWith("064")) {
+			
+			phone_number = phone_number.substring(1);
+			
+		}
+
+		phone_number = TMUtils.formatPhoneNumber(phone_number);
+		
+		return phone_number;
+		
+	}
 
 	// Retrieve After Calculated VoIP charge minute(s)
 	public static int retrieveVoIPChargePerThreeMinutes(int duration){

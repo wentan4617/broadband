@@ -20,6 +20,33 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.3.6 2014-10-13
+
+* [屏蔽USA Alaska，ALASKA.](steven)
+
+
+
+
+demand version 1.3.5 2014-10-12
+
+
+* VoIP计算赠送拨打分钟数顺序：
+    1. Local                        本地
+    2. National                     国内
+    3. NZ Mobile                    NZ手机
+    4. Mobile+Fixed Line            手机&固话
+    5. Fixed Line                   固话
+    6. International                国际
+
+
+
+demand version 1.3.3 2014-10-10
+
+* [Business 添加一个判断，在service giving之后的一个月开始出账单.](steven)
+* [North大华加上8月的credit，然后重新出一张匹配上一张账单的当月账单.](steven)
+
+
+
 demand version 1.3.1 2014-10-09
 
 * [order界面添加Generate Receipt Only按钮，点击只生成receipt.](steven)
@@ -36,8 +63,6 @@ demand version 1.3.1 2014-10-09
 	Call waiting nat Res
     Faxability Monthly Rental Res
 	Smart Bundle package
-
-
 
 
 

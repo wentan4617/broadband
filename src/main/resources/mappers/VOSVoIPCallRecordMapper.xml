@@ -26,7 +26,8 @@
 		vosvipcr.`call_fee`					as vosvipcr_call_fee,
 		vosvipcr.`call_cost`				as vosvipcr_call_cost,
 		vosvipcr.`call_type`				as vosvipcr_call_type,
-		vosvipcr.`area_prefix`				as vosvipcr_area_prefix
+		vosvipcr.`area_prefix`				as vosvipcr_area_prefix,
+		vosvipcr.`invoice_id`				as vosvipcr_invoice_id
 	</sql>
 
 	<resultMap type="VOSVoIPCallRecord" id="vOSVoIPCallRecordResultMap">
@@ -40,13 +41,13 @@
 		<result property="call_cost" column="vosvipcr_call_cost" />
 		<result property="call_type" column="vosvipcr_call_type" />
 		<result property="area_prefix" column="vosvipcr_area_prefix" />
+		<result property="invoice_id" column="vosvipcr_invoice_id" />
 	</resultMap>
 
 	<sql id="vOSVoIPCallRecordWhere">
 		<where>
 			<choose>
 				<when test="params.where == 'query_call_records'">
-					<if test="params.last_month != null">vosvipcr.statement_date >= #{params.last_month}</if>
 					<if test="params.ori_number != null">and vosvipcr.ori_number LIKE CONCAT('%', '${params.ori_number}')</if>
 					<if test="params.invoice_id != null">
 						AND vosvipcr.invoice_id = #{params.invoice_id}
@@ -66,6 +67,7 @@
 					<if test="params.call_cost != null">and vosvipcr.call_cost = #{params.call_cost}</if>
 					<if test="params.call_type != null">and vosvipcr.call_type = #{params.call_type}</if>
 					<if test="params.area_prefix != null">and vosvipcr.area_prefix = #{params.area_prefix}</if>
+					<if test="params.invoice_id != null">and vosvipcr.invoice_id = #{params.invoice_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -107,10 +109,10 @@
 	<insert id="insertVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_vos_voip_call_record`(
 			`id`, `call_start`, `ori_number`, `dest_number`, `call_length`, 
-			`charge_length`, `call_fee`, `call_cost`, `call_type`, `area_prefix`
+			`charge_length`, `call_fee`, `call_cost`, `call_type`, `area_prefix`, `invoice_id`
 		) VALUES (
 			#{id}, #{call_start}, #{ori_number}, #{dest_number}, #{call_length}, 
-			#{charge_length}, #{call_fee}, #{call_cost}, #{call_type}, #{area_prefix}
+			#{charge_length}, #{call_fee}, #{call_cost}, #{call_type}, #{area_prefix}, #{invoice_id}
 		)
 	</insert>
 
@@ -132,10 +134,24 @@
 			<if test="call_fee != null">call_fee = #{call_fee},</if>
 			<if test="call_cost != null">call_cost = #{call_cost},</if>
 			<if test="call_type != null">call_type = #{call_type},</if>
-			<if test="area_prefix != null">area_prefix = #{area_prefix}</if>
+			<if test="area_prefix != null">area_prefix = #{area_prefix},</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id}</if>
 		</set>
 		<where>
-			<if test="params.id != null">id = #{params.id}</if>
+			<choose>
+				<when test="params.where == 'last_call_records'">
+					and ori_number = #{params.ori_number}
+					<if test="params.invoice_id != null">
+						AND invoice_id = #{params.invoice_id}
+					</if>
+					<if test="params.invoice_id == null">
+						AND invoice_id IS NULL
+					</if>
+				</when>
+				<otherwise>
+					<if test="params.id != null">id = #{params.id}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</update>
 

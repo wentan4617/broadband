@@ -45,6 +45,7 @@ import com.tm.broadband.mapper.TicketCommentMapper;
 import com.tm.broadband.mapper.TicketMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
+import com.tm.broadband.mapper.VOSVoIPRateMapper;
 import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
@@ -115,6 +116,7 @@ public class CRMService {
 	private TicketCommentMapper ticketCommentMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
+	private VOSVoIPRateMapper vosVoIPRateMapper;
 	private InviteRatesMapper inviteRatesMapper;
 	private UserMapper userMapper;
 	private NZAreaCodeListMapper nzAreaCodeListMapper;
@@ -152,6 +154,7 @@ public class CRMService {
 			TicketCommentMapper ticketCommentMapper,
 			ManualManipulationRecordMapper manualManipulationRecordMapper,
 			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper,
+			VOSVoIPRateMapper vosVoIPRateMapper,
 			InviteRatesMapper inviteRatesMapper,
 			UserMapper userMapper,
 			NZAreaCodeListMapper nzAreaCodeListMapper){
@@ -181,6 +184,7 @@ public class CRMService {
 		this.ticketCommentMapper = ticketCommentMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
+		this.vosVoIPRateMapper = vosVoIPRateMapper;
 		this.inviteRatesMapper = inviteRatesMapper;
 		this.userMapper = userMapper;
 		this.nzAreaCodeListMapper = nzAreaCodeListMapper;
@@ -1184,10 +1188,12 @@ public class CRMService {
 				
 				List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 
-				List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+				List<CustomerOrderDetail> pcmsPSTN = new ArrayList<CustomerOrderDetail>();
+				List<CustomerOrderDetail> pcmsVoIP = new ArrayList<CustomerOrderDetail>();
 				List<CustomerOrderDetail> cods = co.getCustomerOrderDetails();
 
 				List<String> pstn_numbers = new ArrayList<String>();
+				List<String> voip_numbers = new ArrayList<String>();
 
 				Double totalCreditBack = 0d;
 				Double totalAmountPayable = 0d;
@@ -1196,11 +1202,29 @@ public class CRMService {
 					
 					CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 
-
 					if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+						
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
+						cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+						cids.add(cid);
+						
+					}
+
+					if("pstn".equals(cod.getDetail_type())){
 						
 						if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 							pstn_numbers.add(cod.getPstn_number());
+						}
+						
+						cid = null;
+						continue;
+						
+					} else if("voip".equals(cod.getDetail_type())){
+						
+						if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
+							voip_numbers.add(cod.getPstn_number());
 						}
 						
 						cid = null;
@@ -1213,7 +1237,17 @@ public class CRMService {
 						cid.setInvoice_detail_unit(cod.getDetail_unit());
 						cid.setInvoice_detail_type(cod.getDetail_type());
 						cids.add(cid);
-						pcms.add(cod);
+						
+						if(cod.getDetail_desc().endsWith("voip")){
+							
+							pcmsVoIP.add(cod);
+							
+						} else {
+							
+							pcmsPSTN.add(cod);
+							
+						}
+						
 						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 						
 						cid = null;
@@ -1247,7 +1281,15 @@ public class CRMService {
 						
 						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer().getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer().getCustomer_type());
+						
+					}
+				}
+				
+				if(voip_numbers.size() > 0){
+					
+					for (String voip_number : voip_numbers) {
+						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer().getCustomer_type());
 						
 					}
 				}
@@ -1498,7 +1540,7 @@ public class CRMService {
 		
 		// Current invoice
 		CustomerInvoice ci = new CustomerInvoice();
-		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
+//		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
 		
 		// Previous invoice's preparation
 		CustomerInvoice ciPreQuery = new CustomerInvoice();
@@ -1524,7 +1566,7 @@ public class CRMService {
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
 				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
-				System.out.println("due_date_ci_!null: "+ci.getDue_date());
+//				System.out.println("due_date_ci_!null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			} else if(ci == null){
 				ci = new CustomerInvoice();
@@ -1532,7 +1574,7 @@ public class CRMService {
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
 				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
-				System.out.println("due_date_ci_null: "+ci.getDue_date());
+//				System.out.println("due_date_ci_null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			}
 		} else {
@@ -1549,7 +1591,7 @@ public class CRMService {
 			ci.setOrder_id(co.getId());
 			ci.setCreate_date(invoiceCreateDay);
 			ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 2));
-			System.out.println("!regenerate: "+ci.getDue_date());
+//			System.out.println("!regenerate: "+ci.getDue_date());
 			ciMapper.insertCustomerInvoice(ci);
 			// Set id for invoice's update
 		}
@@ -1574,7 +1616,8 @@ public class CRMService {
 
 		List<String> pstn_numbers = new ArrayList<String>();
 		List<String> voip_numbers = new ArrayList<String>();
-		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+		List<CustomerOrderDetail> pcmsVoIP = new ArrayList<CustomerOrderDetail>();
+		List<CustomerOrderDetail> pcmsPSTN = new ArrayList<CustomerOrderDetail>();
 
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		
@@ -1608,6 +1651,29 @@ public class CRMService {
 				
 			}
 			
+			if("present-calling-minutes".equals(cod.getDetail_type())){
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
+				cid.setInvoice_detail_unit(1);
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cids.add(cid);
+				
+				if(cod.getDetail_desc().endsWith("voip")){
+					
+					pcmsVoIP.add(cod);
+					
+				} else {
+					
+					pcmsPSTN.add(cod);
+					
+				}
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+				continue;
+			}
+			
 			if(isFirst){
 				
 				if("plan-topup".equals(cod.getDetail_type())){
@@ -1616,9 +1682,9 @@ public class CRMService {
 					Calendar cal = Calendar.getInstance(Locale.CHINA);
 					cal.setTime(co.getOrder_using_start());
 					cal.add(Calendar.WEEK_OF_MONTH, 1);
-					System.out.println("cal.add(Calendar.WEEK_OF_MONTH, 1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
+//					System.out.println("cal.add(Calendar.WEEK_OF_MONTH, 1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 					cal.add(Calendar.DAY_OF_WEEK, -1);
-					System.out.println("cal.add(Calendar.DAY_OF_WEEK, -1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
+//					System.out.println("cal.add(Calendar.DAY_OF_WEEK, -1): "+TMUtils.dateFormatYYYYMMDD(cal.getTime()));
 					Date startFrom = co.getOrder_using_start();
 					Date endTo = cal.getTime();
 					cid.setInvoice_detail_desc(TMUtils.retrieveMonthAbbrWithDate(startFrom)+" - "+TMUtils.retrieveMonthAbbrWithDate(endTo));
@@ -1786,19 +1852,18 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
 				
 			}
 		}
 		
-		/*if(voip_numbers.size() > 0){
+		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, c.getCustomer_type());
 				
 			}
-		}*/
+		}
 		
 		// truncate unnecessary reminders, left only two reminders, e.g. 1.0001 change to 1.00
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
@@ -1925,8 +1990,25 @@ public class CRMService {
 			boolean is_Next_Invoice = true;
 			
 			for (CustomerOrder co : cos) {
-				createTermPlanInvoiceByOrder(co
-						, isRegenerateInvoice, is_Next_Invoice);
+				
+				if("business".equals(co.getCustomer().getCustomer_type())){
+					
+					Calendar lastMonthMaxDate = Calendar.getInstance();
+					lastMonthMaxDate.add(Calendar.MONTH, -1);
+					lastMonthMaxDate.set(Calendar.DATE, lastMonthMaxDate.getActualMaximum(Calendar.DATE));
+					
+					long serviceGiving = co.getOrder_using_start().getTime();
+					long lastMonthMaxDateLong = lastMonthMaxDate.getTimeInMillis();
+					
+					// If Business Service Given Greater Than Last Month's Max Date then Move Forward To Next Order.
+					if(serviceGiving > lastMonthMaxDateLong){
+						continue;
+					}
+					
+					
+				}	
+				
+				createTermPlanInvoiceByOrder(co, isRegenerateInvoice, is_Next_Invoice);
 			}
 		}
 	}
@@ -1942,7 +2024,7 @@ public class CRMService {
 		
 		// Current invoice
 		CustomerInvoice ci = new CustomerInvoice();
-		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
+//		System.out.println("isRegenerateInvoice: " + isRegenerateInvoice);
 		
 		// Previous invoice's preparation
 		CustomerInvoice ciPreQuery = new CustomerInvoice();
@@ -1968,7 +2050,7 @@ public class CRMService {
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
 				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
-				System.out.println("due_date_ci_!null: "+ci.getDue_date());
+//				System.out.println("due_date_ci_!null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			} else if(ci == null){
 				ci = new CustomerInvoice();
@@ -1976,7 +2058,7 @@ public class CRMService {
 				ci.setOrder_id(co.getId());
 				ci.setCreate_date(new Date());
 				ci.setDue_date(TMUtils.getInvoiceDueDate(ci.getCreate_date(), 6));
-				System.out.println("due_date_ci_null: "+ci.getDue_date());
+//				System.out.println("due_date_ci_null: "+ci.getDue_date());
 				ciMapper.insertCustomerInvoice(ci);
 			}
 		} else {
@@ -1993,7 +2075,7 @@ public class CRMService {
 			ci.setOrder_id(co.getId());
 			ci.setCreate_date(invoiceCreateDay);
 			ci.setDue_date(TMUtils.getInvoiceDueDate(invoiceCreateDay, 6));
-			System.out.println("!regenerate: "+ci.getDue_date());
+//			System.out.println("!regenerate: "+ci.getDue_date());
 			ciMapper.insertCustomerInvoice(ci);
 			// Set id for invoice's update
 		}
@@ -2025,7 +2107,9 @@ public class CRMService {
 		Double totalCreditBack = 0d;
 
 		List<String> pstn_numbers = new ArrayList<String>();
-		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+		List<String> voip_numbers = new ArrayList<String>();
+		List<CustomerOrderDetail> pcmsPSTN = new ArrayList<CustomerOrderDetail>();
+		List<CustomerOrderDetail> pcmsVoIP = new ArrayList<CustomerOrderDetail>();
 
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		
@@ -2033,10 +2117,18 @@ public class CRMService {
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 
 
-			if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+			if("pstn".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
+				}
+				
+			}
+
+			if("voip".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
+					voip_numbers.add(cod.getPstn_number());
 				}
 				
 			}
@@ -2078,13 +2170,23 @@ public class CRMService {
 				continue;
 				
 			} else if("present-calling-minutes".equals(cod.getDetail_type())){
+				
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
 				cid.setInvoice_detail_unit(1);
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
-				pcms.add(cod);
+				
+				if(cod.getDetail_desc().endsWith("voip")){
+					
+					pcmsVoIP.add(cod);
+					
+				} else {
+					
+					pcmsPSTN.add(cod);
+					
+				}
 				
 				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
@@ -2217,8 +2319,8 @@ public class CRMService {
 
 				// If plan-term type, then add detail into invoice detail
 				if("plan-term".equals(cod.getDetail_type())){
-					System.out.println("!isRegenerateInvoice: "+!isRegenerateInvoice);
-					System.out.println("isRegenerateInvoice && \"paid\".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date()): "+(isRegenerateInvoice && "paid".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date())));
+//					System.out.println("!isRegenerateInvoice: "+!isRegenerateInvoice);
+//					System.out.println("isRegenerateInvoice && \"paid\".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date()): "+(isRegenerateInvoice && "paid".equals(cpi.getStatus()) && TMUtils.isSameMonth(cpi.getCreate_date(), new Date())));
 					if(!isRegenerateInvoice || (isRegenerateInvoice && "unpaid".equals(ci.getStatus())) || (isRegenerateInvoice && "paid".equals(cpi != null ? cpi.getStatus() : "paid") && ! (cpi != null ? TMUtils.isSameMonth(cpi.getCreate_date(), new Date()) : false))){
 
 						// If contains calling-only then this is a calling record invoice
@@ -2378,6 +2480,8 @@ public class CRMService {
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(c);
 		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+
+
 		
 		if(pstn_numbers.size() > 0){
 			
@@ -2385,7 +2489,16 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				
+			}
+		}
+
+		if(voip_numbers.size() > 0){
+			
+			for (String voip_number : voip_numbers) {
+				
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, c.getCustomer_type());
 				
 			}
 		}
@@ -2568,7 +2681,7 @@ public class CRMService {
 			cpi = null;
 		}
 		boolean isFirst = cpi==null ? true : false;
-		System.out.println("isFirst: "+isFirst);
+//		System.out.println("isFirst: "+isFirst);
 		
 		// detail holder begin
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
@@ -2579,15 +2692,25 @@ public class CRMService {
 		Double totalCreditBack = 0d;
 		
 		List<String> pstn_numbers = new ArrayList<String>();
-		List<CustomerOrderDetail> pcms = new ArrayList<CustomerOrderDetail>();
+		List<String> voip_numbers = new ArrayList<String>();
+		List<CustomerOrderDetail> pcmsPSTN = new ArrayList<CustomerOrderDetail>();
+		List<CustomerOrderDetail> pcmsVoIP = new ArrayList<CustomerOrderDetail>();
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		
 		for (CustomerOrderDetail cod: customerOrderDetails) {
 
-			if("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())){
+			if("pstn".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
+				}
+				
+			}
+
+			if("voip".equals(cod.getDetail_type())){
+				
+				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
+					voip_numbers.add(cod.getPstn_number());
 				}
 				
 			}
@@ -2600,7 +2723,10 @@ public class CRMService {
 
 			if(!isFirst
 			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
-				
+
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
 				
@@ -2636,7 +2762,17 @@ public class CRMService {
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
-					pcms.add(cod);
+					
+					if(cod.getDetail_desc().endsWith("voip")){
+						
+						pcmsVoIP.add(cod);
+						
+					} else {
+						
+						pcmsPSTN.add(cod);
+						
+					}
+					
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
 				// Termed & No Termed
@@ -2732,7 +2868,7 @@ public class CRMService {
 				
 				if (cod.getDetail_type()!=null && cod.getDetail_type().contains("plan-") 
 						 && !isRegenerate) {
-					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
+//					System.out.println("is_Next_Invoice: "+is_Next_Invoice);
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = is_Next_Invoice ? 1 : cod.getDetail_unit();
 					int nextInvoiceDay = -7;
@@ -2819,7 +2955,15 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcms, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customer.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customer.getCustomer_type());
+				
+			}
+		}
+		
+		if(voip_numbers.size() > 0){
+			
+			for (String voip_number : voip_numbers) {
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customer.getCustomer_type());
 				
 			}
 		}
@@ -3143,9 +3287,9 @@ public class CRMService {
 			}
 		}
 		
-		System.out.println("totalAmountPayable: "+totalAmountPayable);
-		System.out.println("totalCreditBack: "+totalCreditBack);
-		System.out.println("c.getBalance(): "+c.getBalance());
+//		System.out.println("totalAmountPayable: "+totalAmountPayable);
+//		System.out.println("totalCreditBack: "+totalCreditBack);
+//		System.out.println("c.getBalance(): "+c.getBalance());
 		
 		totalCreditBack = Double.parseDouble(TMUtils.fillDecimalPeriod(totalCreditBack));
 		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));

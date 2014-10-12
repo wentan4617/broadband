@@ -1090,6 +1090,7 @@
 					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#addDetailModal_'+this.id).modal('show');
 				});
+				
 				$('select[data-name="'+co[i].id+'_detail_type"]').change(function(){
 					$('div[data-name="'+this.id+'_detail_modal_body"]').css('display','none');
 					$('div[data-type="'+this.id+'_'+$(this).val()+'_modal_body"]').css('display','');
@@ -1161,6 +1162,56 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_add_detail"]').button('reset');
 					$.getCustomerOrder();
 				});
+				/*
+				 *	END Add detail
+				 */
+				
+				/*
+				 *	BEGIN Add detail
+				 */
+				$('a[data-name="'+co[i].id+'_add_provision_detail"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="addProvisionDetailModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('#addProvisionDetailModal_'+this.id).modal('show');
+				});
+				
+				$('select[data-name="'+co[i].id+'_detail_type"]').change(function(){
+					$('div[data-name="'+this.id+'_detail_modal_body"]').css('display','none');
+					$('div[data-type="'+this.id+'_'+$(this).val()+'_modal_body"]').css('display','');
+					$('a[data-name="addProvisionDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).val());
+				});
+				
+				// Submit to rest controller
+				$('a[data-name="addProvisionDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					this.id = $(this).attr('data-id');
+					var detail_type = $(this).attr('data-type');
+					var data = {};
+					
+					var url = '';
+					if(detail_type == 'present-calling-minutes'){
+						data = {
+								'order_id':this.id
+								,'customer_id':customerId
+								,'charge_amount':$('input[data-name="'+this.id+'_provision_charge_amount"]').val()+''
+								,'calling_minutes':$('input[data-name="'+this.id+'_provision_calling_minutes"]').val()+''
+								,'calling_country':$('select[data-name="'+this.id+'_provision_calling_country"]').val()+''
+						};
+						url = ctx+'/broadband-user/crm/customer/order/offer-calling-minutes/save';
+					}
+					
+					if(detail_type != 'none'){
+						$.post(url, data, function(json){
+							$.jsonValidation(json, 'left');
+						}, "json");
+					}
+					
+				});
+				// Reset button when hidden order add detail dialog
+				$('#addProvisionDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_add_provision_detail"]').button('reset');
+					$.getCustomerOrder();
+				});
+				
 				/*
 				 *	END Add detail
 				 */

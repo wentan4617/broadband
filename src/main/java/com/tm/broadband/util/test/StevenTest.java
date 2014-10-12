@@ -3,8 +3,8 @@ package com.tm.broadband.util.test;
 import java.text.ParseException;
 
 import com.tm.broadband.util.SimpleMapperCreator;
-
 import com.tm.broadband.util.SimpleMapperCreator;
+import com.tm.broadband.util.TMUtils;
 
 
 public class StevenTest {
@@ -165,11 +165,11 @@ public class StevenTest {
 		
 		
 
-		SimpleMapperCreator smc = new SimpleMapperCreator();
-		smc.setAuthor("CyberPark");
-		smc.setModel("InviteRates");
-		smc.setTable("tm_invite_rates");
-		smc.initial();
+//		SimpleMapperCreator smc = new SimpleMapperCreator();
+//		smc.setAuthor("CyberPark");
+//		smc.setModel("InviteRates");
+//		smc.setTable("tm_invite_rates");
+//		smc.initial();
 		
 //		String str = "cyberpark/ccc/asd";
 //		System.out.println(str.substring(0, str.lastIndexOf("/")+1));
@@ -199,6 +199,7 @@ public class StevenTest {
 //		Double call_minutes = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.retrieveVoIPChargePerThreeMinutes(10)/60)));
 //		
 //		System.out.println(call_minutes);
+		
 		
 	}
 	
