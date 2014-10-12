@@ -8,6 +8,13 @@ import com.tm.broadband.model.Page;
 
 public interface InviteRatesMapper {
 
+/**
+ * mapping tm_invite_rates, inviteRates DAO component
+ * 
+ * @author CyberPark
+ * 
+  */
+
 	/* SELECT AREA */
 
 	List<InviteRates> selectInviteRates(InviteRates ir);

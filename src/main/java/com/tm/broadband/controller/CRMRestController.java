@@ -337,11 +337,6 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 
-		Integer customer_id = null;
-		Integer order_id = null;
-		Double paid_amount = null;
-		String process_sort = null;
-
 		// BEGIN INVOICE ASSIGNMENT
 		CustomerInvoice ci = this.crmService.queryCustomerInvoiceById(invoice_id);
 		ci.getParams().put("id", ci.getId());
@@ -357,22 +352,25 @@ public class CRMRestController {
 			this.crmService.editCustomerInvoice(ci);
 			return json;
 		}
-		customer_id = ci.getCustomer_id();
-		order_id = ci.getOrder_id();
-		paid_amount = eliminate_amount;
+		
+		Double amount_paid = TMUtils.bigAdd(ci.getAmount_paid(), eliminate_amount);
+		Double balance = TMUtils.bigSub(ci.getFinal_payable_amount(), amount_paid);
+		
+		Integer customer_id = ci.getCustomer_id();
+		Integer order_id = ci.getOrder_id();
 
-		ci.setAmount_paid(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getAmount_paid())));
-		ci.setFinal_payable_amount(Double.parseDouble(TMUtils.fillDecimalPeriod(ci.getFinal_payable_amount())));
+		if("CyberPark Credit".equals(process_way)){
+			ci.setFinal_payable_amount(TMUtils.bigSub(ci.getFinal_payable_amount(), eliminate_amount));
+		} else {
+			ci.setAmount_paid(amount_paid);
+		}
 
-		// Assign (paid plus eliminate amount) to paid, make this invoice paid
-		// (off)
-		ci.setAmount_paid(TMUtils.bigAdd(ci.getAmount_paid(), paid_amount));
 		// Assign balance as 0.0, make this invoice paid off
 
-		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		ci.setBalance(balance);
 		// If balance equals to 0d then paid else not_pay_off, make this invoice
 		// paid (off)
-		if (ci.getBalance() <= 0d) {
+		if ((ci.getBalance() <= 0d) || ("CyberPark Credit".equals(process_way) && balance<=0d)) {
 			ci.setStatus("paid");
 		} else {
 			ci.setStatus("not_pay_off");
@@ -380,6 +378,7 @@ public class CRMRestController {
 		// END INVOICE ASSIGNMENT
 
 		// Get order_type
+		String process_sort = null;
 		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
 		case "order-term":
 			process_sort = "plan-term";
@@ -397,8 +396,8 @@ public class CRMRestController {
 		// BEGIN TRANSACTION ASSIGNMENT
 		CustomerTransaction ct = new CustomerTransaction();
 		// Assign invoice's paid amount to transaction's amount
-		ct.setAmount(paid_amount);
-		ct.setAmount_settlement(paid_amount);
+		ct.setAmount(eliminate_amount);
+		ct.setAmount_settlement(eliminate_amount);
 		// Assign card_name as ddpay
 		ct.setCard_name(process_way);
 		// Assign transaction's sort as type's return from order by order_id
@@ -1433,11 +1432,15 @@ public class CRMRestController {
 		JSONBean<String> json = new JSONBean<String>();
 
 		if (TMUtils.isNumber(calling_minutes)
-				&& !"".trim().equals(calling_country)) {
+		&&  !"".equals(calling_country.trim())) {
+			
+			String detail_name = "";
+			detail_name = calling_country.split("-")[0];
+			detail_name = detail_name.split(",")[0];
+			
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
-			customerOrderDetail.setDetail_name(calling_minutes
-					+ " minutes to " + calling_country.split("-")[0]);
+			customerOrderDetail.setDetail_name(calling_minutes+" minutes to " + detail_name);
 			customerOrderDetail.setDetail_type("present-calling-minutes");
 			customerOrderDetail.setDetail_desc(calling_country);
 			customerOrderDetail.setDetail_price(charge_amount);
@@ -1446,15 +1449,13 @@ public class CRMRestController {
 			User user = (User) req.getSession().getAttribute("userSession");
 			customerOrderDetail.setUser_id(user.getId());
 			this.crmService.createCustomerOrderDetail(customerOrderDetail);
+			
 			// Create Customer Order Detail Discount is successful.
-			json.getSuccessMap().put(
-					"alert-success",
-					"Free Calling Minutes had been attached to related order! Order Id: "
-							+ order_id);
+			json.getSuccessMap().put("alert-success", "Free Calling Minutes had been attached to related order! Order Id: "+order_id);
+			
 		} else {
-			json.getErrorMap()
-					.put("alert-error",
-							"Calling Minutes Format Incorrect! Must be digital numbers");
+			
+			json.getErrorMap().put("alert-error", "Calling Minutes Format Incorrect! Must be digital numbers");
 		}
 
 		return json;
