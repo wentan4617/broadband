@@ -28,28 +28,28 @@
 	    
 	    <ul class="list-inline" style="margin:0 auto; width: 320px;">
 			<li>
-				<a title="Facebook" target="_blank" href="https://www.facebook.com/pages/Cyberpark/223261207861301" >
-					<img alt="facebook" src="${ctx }/public/bootstrap3/images/facebook-icon.png" />
+				<a target="_blank" href="https://www.facebook.com/pages/Cyberpark/223261207861301" >
+					<img src="${ctx }/public/bootstrap3/images/facebook-icon.png" alt="Our Broadband Covers Whole Nation" title="Our Broadband Covers Whole Nation"/>
 				</a>
 			</li>
 			<li>
-				<a title="Google Plus" target="_blank" href="https://plus.google.com/113358993092406471657/posts" rel="publisher">
-					<img alt="google-plus" src="${ctx }/public/bootstrap3/images/google-plus-icon.png" />
+				<a target="_blank" href="https://plus.google.com/113358993092406471657/posts" rel="publisher">
+					<img src="${ctx }/public/bootstrap3/images/google-plus-icon.png" alt="Our Customers Are Now Enjoying Nation's Highest Broadband Speed" title="Our Customers Are Now Enjoying Nation's Highest Broadband Speed"/>
 				</a>
 			</li>
 			<li>
-				<a title="Twitter" target="_blank" href="https://twitter.com/CyberparkNZ">
-					<img alt="twitter" src="${ctx }/public/bootstrap3/images/twitter-icon.png" />
+				<a target="_blank" href="https://twitter.com/CyberparkNZ">
+					<img src="${ctx }/public/bootstrap3/images/twitter-icon.png" alt="Join Us To Have An Unforgetable Internet Surfing Experience" title="Join Us To Have An Unforgetable Internet Surfing Experience"/>
 				</a>
 			</li>
 			<li>
-				<a title="YouTube" target="_blank" href="http://www.youtube.com/channel/UCTmXMdGEUxYRwlxw3SjZePA">
-					<img alt="youtube" src="${ctx }/public/bootstrap3/images/youtube-icon.png" />
+				<a target="_blank" href="http://www.youtube.com/channel/UCTmXMdGEUxYRwlxw3SjZePA">
+					<img src="${ctx }/public/bootstrap3/images/youtube-icon.png" alt="Our Customer's Testimonials Is The Best Thing We've Got" title="Our Customer's Testimonials Is The Best Thing We've Got"/>
 				</a>
 			</li>
 		</ul>
 		
-		<img alt="" src="${ctx }/public/bootstrap3/images/cyberpark-2d-code.jpg" class="img-responsive" width="160px" height="160px" style="margin:20px auto;">
+		<img src="${ctx }/public/bootstrap3/images/cyberpark-2d-code.jpg" class="img-responsive" width="160px" height="160px" style="margin:20px auto;" alt="Most Reliable NZ ISP Provider" title="Most Reliable NZ ISP Provider">
 	</div>
 </div>
 <a id="scrollUp" href="#top" title="" style="position: fixed; z-index: 2147483647;"></a>

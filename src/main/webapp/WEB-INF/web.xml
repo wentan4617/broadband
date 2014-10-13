@@ -242,6 +242,7 @@
 		<url-pattern>/broadband-user/system/company-detail/edit</url-pattern>
 		<url-pattern>/broadband-user/system/seo/edit</url-pattern>
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
+		<url-pattern>/broadband-user/system/ir/edit</url-pattern>
 		<!-- System Module END -->
 
 		<!-- Sales Module BEGIN -->

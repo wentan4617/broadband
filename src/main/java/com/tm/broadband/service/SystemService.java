@@ -9,12 +9,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.InviteRatesMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.SEOMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
@@ -36,6 +38,7 @@ public class SystemService {
 	private CustomerMapper customerMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 	private SEOMapper seoMapper;
+	private InviteRatesMapper inviteRatesMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
@@ -43,13 +46,15 @@ public class SystemService {
 			CompanyDetailMapper companyDetailMapper,
 			CustomerMapper customerMapper,
 			ManualManipulationRecordMapper manualManipulationRecordMapper,
-			SEOMapper seoMapper) {
+			SEOMapper seoMapper,
+			InviteRatesMapper inviteRatesMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
 		this.companyDetailMapper = companyDetailMapper;
 		this.customerMapper = customerMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 		this.seoMapper = seoMapper;
+		this.inviteRatesMapper = inviteRatesMapper;
 	}
 
 	public SystemService() {
@@ -268,4 +273,24 @@ public class SystemService {
 		this.manualManipulationRecordMapper.updateManualManipulationRecord(cir);
 	}
 	// END ManualManipulationRecord
+
+	
+	/*
+	 * InviteRates Service Begin
+	 */
+
+	@Transactional
+	public void editInviteRate(InviteRates ir) {
+		this.inviteRatesMapper.updateInviteRates(ir);
+	}
+	
+	@Transactional
+	public InviteRates queryInviteRate() {
+		List<InviteRates> irs = this.inviteRatesMapper.selectInviteRates(new InviteRates());
+		return irs != null && irs.size() > 0 ? irs.get(0) : null;
+	}
+
+	/*
+	 * InviteRates Service End
+	 */
 }

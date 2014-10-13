@@ -21,7 +21,6 @@ import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.pdf.InvoicePDFCreator;
-import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -126,10 +125,6 @@ public class CallingAndRentalFeeCalucation {
 
 		List<CustomerCallRecord> ccrsTemp = customerCallRecordMapper.selectCustomerCallRecord(ccrTemp);
 
-		for (CustomerCallRecord customerCallRecord : ccrsTemp) {
-			Console.log(customerCallRecord);
-		}
-
 		// ITERATIVELY ADD ALL CALL CHARGES
 		for (CustomerCallRecord ccr : ccrsTemp) {
 
@@ -147,25 +142,27 @@ public class CallingAndRentalFeeCalucation {
 			CallInternationalRate cir = new CallInternationalRate();
 			switch (ccr.getJuristiction()) {
 			case "O":	/* OTH NETWORK & Mobile */
-				callType = "mobile";
+				callType = "Mobile";
 				cir.getParams().put("area_prefix", "2");
 				break;
 			case "L":	/* Local (Auckland) */
-				callType = "local";
-				cir.getParams().put("area_prefix", "3");
+				callType = "Local";
+				cir.getParams().put("area_prefix", "0");
+				cir.getParams().put("rate_type", "Local");
 				break;
 			case "N":	/* National */
-				callType = "national";
+				callType = "Domestic";
 				cir.getParams().put("area_prefix", "3");
+				cir.getParams().put("rate_type", "Domestic");
 				break;
 			case "I":	/* International */
-				callType = "international";
+				callType = "International";
 				cir.getParams().put("area_prefix", ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
 				break;
 			}
 			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
 			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
-
+			
 			Double costPerMinute = 1d;
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
 			
@@ -245,23 +242,25 @@ public class CallingAndRentalFeeCalucation {
 			CallInternationalRate cir = new CallInternationalRate();
 			switch (ccrc.getType()) {
 			case "M":	/* Mobile */
-				callType = "mobile";
+				callType = "Mobile";
 				cir.getParams().put("area_prefix", "2");
 				break;
 			case "MG":	/* Mobile Gsm */
-				callType = "mobile";
+				callType = "Mobile";
 				cir.getParams().put("area_prefix", "2");
 				break;
 			case "L":	/* Local (Auckland) */
-				callType = "local";
-				cir.getParams().put("area_prefix", "3");
+				callType = "Local";
+				cir.getParams().put("area_prefix", "0");
+				cir.getParams().put("rate_type", "Local");
 				break;
 			case "S":	/* Domestic */
-				callType = "national";
+				callType = "Domestic";
 				cir.getParams().put("area_prefix", "3");
+				cir.getParams().put("rate_type", "Domestic");
 				break;
 			case "I":	/* International */
-				callType = "international";
+				callType = "International";
 				String fix_mobile_country[] = "Bangladesh,Malaysia,Cambodia,Singapore,Canada,South Korea,China,Usa,Hong Kong,Vietnam,India".split(",");
 				String fixMobileCountry = "";
 				for (String country : fix_mobile_country) {
@@ -486,7 +485,8 @@ public class CallingAndRentalFeeCalucation {
 			}
 
 			// Residential local call free
-			if("personal".equals(customerType.toLowerCase()) && isLocal){
+			if(("personal".equals(customerType.toLowerCase()) || "business".equals(customerType.toLowerCase()))
+			&& isLocal){
 				continue;
 			}
 			
@@ -615,11 +615,13 @@ public class CallingAndRentalFeeCalucation {
 				String cirRateType = vosVoIPRates.get(0).getRate_type().toUpperCase();
 				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
 				
+				boolean isNotCounted = true;
 				
 				// If is Local
 				if(
 				   isLocal
-				&& pcmDetailDesc.startsWith("LOCAL")){
+				&& pcmDetailDesc.startsWith("LOCAL")
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -627,11 +629,16 @@ public class CallingAndRentalFeeCalucation {
 					
 					}
 					
+					isNotCounted = false;
+					
+				}
+
 				// If is National
-				} else if(
+				if(
 				   pcmDetailDesc.startsWith("NATIONAL")
 				&& "NATIONAL".equals(cirRateType)
-				&& "NZ NATIONAL".equals(cirAreaName)){
+				&& "NZ NATIONAL".equals(cirAreaName)
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -639,22 +646,31 @@ public class CallingAndRentalFeeCalucation {
 					
 					}
 					
+					isNotCounted = false;
+					
+				}
+
 				// If is NZ Mobile
-				} else if(
+				if(
 				   pcmDetailDesc.startsWith("MOBILE")
 				&& "NATIONAL".equals(cirRateType)
-				&& "NZ MOBILE".equals(cirAreaName)){
+				&& "NZ MOBILE".equals(cirAreaName)
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
 						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
 					
 					}
-				
+					
+					isNotCounted = false;
+					
+				}
+
 				// If is Both Mobile+Fixed Line Countries
-				} else if(
-					pcmDetailDesc.contains("-")
-			    || ("BANGLADESH".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("BANGLADESH"))
+				if(
+					pcmDetailDesc.contains("-") &&
+			    (("BANGLADESH".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("BANGLADESH"))
 			    || ("MALAYSIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("MALAYSIA"))
 			    || ("CAMBODIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CAMBODIA"))
 			    || ("SINGAPORE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SINGAPORE"))
@@ -664,18 +680,23 @@ public class CallingAndRentalFeeCalucation {
 			    || ("USA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("USA") && !cirAreaName.contains("ALASKA"))
 			    || ("HONG KONG".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("HONG KONG"))
 			    || ("VIETNAM".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("VIETNAM"))
-			    || ("INDIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("INDIA"))){
+			    || ("INDIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("INDIA")))
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
 						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
 					
 					}
-				
+					
+					isNotCounted = false;
+					
+				}
+
 				// If is Fixed Line Countries
-				} else if(
-				   pcmDetailDesc.contains("-")
-			    || ("ARGENTINA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("ARGENTINA") && isNotMobileAndSpecial(cirAreaName))
+				if(
+					pcmDetailDesc.contains("-") &&
+				(("ARGENTINA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("ARGENTINA") && isNotMobileAndSpecial(cirAreaName))
 			    || ("GERMANY".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("GERMANY") && isNotMobileAndSpecial(cirAreaName))
 			    || ("LAOS".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("LAOS") && isNotMobileAndSpecial(cirAreaName))
 			    || ("SOUTH AFRICA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SOUTH AFRICA") && isNotMobileAndSpecial(cirAreaName))
@@ -703,7 +724,8 @@ public class CallingAndRentalFeeCalucation {
 			    || ("JAPAN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("JAPAN") && isNotMobileAndSpecial(cirAreaName))
 			    || ("RUSSIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("RUSSIA") && isNotMobileAndSpecial(cirAreaName))
 			    || ("UNITED KINGDOM".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("UNITED KINGDOM") && isNotMobileAndSpecial(cirAreaName))
-			    || ("FRANCE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName))){
+			    || ("FRANCE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName)))
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -711,16 +733,73 @@ public class CallingAndRentalFeeCalucation {
 					
 					}
 					
+					isNotCounted = false;
+					
+				}
+
+				// If is 40 Countries
+				if(
+				   pcmDetailDesc.contains("40 COUNTRIES") &&
+			    ((cirAreaName.contains("BANGLADESH")) || (cirAreaName.contains("MALAYSIA"))
+			    || (cirAreaName.contains("CAMBODIA")) || (cirAreaName.contains("SINGAPORE"))
+			    || (cirAreaName.contains("CANADA")) || (cirAreaName.contains("KOREA") && cirAreaName.contains("SOUTH"))
+			    || (cirAreaName.contains("CHINA")) || (cirAreaName.contains("USA") && !cirAreaName.contains("ALASKA"))
+			    || (cirAreaName.contains("HONG KONG")) || (cirAreaName.contains("VIETNAM"))
+			    || (cirAreaName.contains("INDIA"))
+			    || (cirAreaName.contains("ARGENTINA") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("GERMANY") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("LAOS") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("SOUTH AFRICA") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("AUSTRALIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("GREECE") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("NETHERLANDS") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("SPAIN") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("BELGIUM") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("INDONESIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("NORWAY") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("SWEDEN") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("BRAZIL") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("IRELAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("PAKISTAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("SWITZERLAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("CYPRUS") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("ISRAEL") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("POLAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("TAIWAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("CZECH") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("ITALY") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("PORTUGAL") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("THAILAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("DENMARK") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("JAPAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("RUSSIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("UNITED KINGDOM") && isNotMobileAndSpecial(cirAreaName))
+			    || (cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName)))
+				&& isNotCounted){
+					
+					if(pcm.getDetail_calling_minute()>0){
+						
+						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+					
+					}
+					
+					isNotCounted = false;
+					
+				}
+				
 				// If is International
-				} else if(
+				if(
 				   pcmDetailDesc.startsWith("INTERNATIONAL")
-				&& "INTERNATIONAL".equals(cirRateType)){
+				&& "INTERNATIONAL".equals(cirRateType)
+				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
 						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
 					
 					}
+					
+					isNotCounted = false;
 					
 				}
 				

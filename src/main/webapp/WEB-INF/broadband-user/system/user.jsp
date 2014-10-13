@@ -20,6 +20,12 @@
 				<div class="panel-body">
 					<form:form modelAttribute="user" method="post" action="${ctx}${action }" class="form-horizontal">
 						<form:hidden path="id"/>
+						<c:if test="${user!=null}">
+						<div class="form-group">
+							<label for="login_name" class="control-label col-md-4">User Id</label>
+							<p class="form-control-static col-md-3">${user.id}</p>
+						</div>
+						</c:if>
 						<div class="form-group">
 							<label for="login_name" class="control-label col-md-4">Login Name</label>
 							<div class="col-md-3">
@@ -426,6 +432,14 @@
 										<li>
 											<label> 
 												<form:checkbox path="authArray" value="system/chart/customer-register" data-type="checkbox_system" /> Chart(Register Customer)
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/ir/edit" data-type="checkbox_system" /> Edit Invite Rates
 											</label>
 										</li>
 									</ul>

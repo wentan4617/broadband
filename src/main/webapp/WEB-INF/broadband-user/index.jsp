@@ -270,6 +270,13 @@ hr {
 		                    		<a href="${ctx }/broadband-user/system/chart/customer-register/0">Chart(Register Customer)</a>
 		                    	</li>
 		                    </ul>
+		                    <hr/>
+		                    <ul class="list-unstyled">
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+		                    		<a href="${ctx }/broadband-user/system/ir/edit">Edit Invite Rates</a>
+		                    	</li>
+		                    </ul>
 					  	</div>
 					</div>
 				</div>
