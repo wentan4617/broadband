@@ -1,0 +1,128 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h3 class="panel-title">Select Add-Ons</h3>
+	</div>
+	<div class="panel-body">
+		<ul class="nav nav-tabs" id="plans">
+			<li class="active">
+				<a href="#pstn-phone" data-toggle="tab" style="padding: 6px;">PSTN Phone</a>
+			</li>
+			<li>
+				<a href="#voip-phone" data-toggle="tab" style="padding: 6px;">VoIP Phone</a>
+			</li>
+			<li>
+				<a href="#hardware" data-toggle="tab" style="padding: 6px;">Hardware</a>
+			</li>
+			<li>
+				<a href="#calling" data-toggle="tab" style="padding: 6px;">Calling</a>
+			</li>
+		</ul>
+		
+		<div class="tab-content">
+			<div class="tab-pane fade in active" id="pstn-phone">
+				<div class="form-group" style="margin-top:20px;">
+					<label for="pstn_name" class="control-label col-md-3">
+						PSTN Name <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="pstn_name" value="" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="pstn_number" class="control-label col-md-3">
+						PSTN Number <span class="text-danger"></span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="pstn_number" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="pstn_price" class="control-label col-md-3">
+						PSTN Price <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="pstn_price" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-2 col-md-offset-3">
+						<a href="javascript:void(0);" class="btn btn-success btn-block" id="pstn_btn">Add</a>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="voip-phone">
+				<div class="form-group" style="margin-top:20px;">
+					<label for="voip_name" class="control-label col-md-3">
+						VoIP Name <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="voip_name" value="" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="voip_number" class="control-label col-md-3">
+						VoIP Number <span class="text-danger"></span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="voip_number" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="voip_password" class="control-label col-md-3">
+						VoIP Password <span class="text-danger"></span>
+					</label>
+					<div class="col-md-4">
+						<input type="password" id="voip_password" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="voip_price" class="control-label col-md-3">
+						VoIP Price <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="voip_price" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-2 col-md-offset-3">
+						<a href="javascript:void(0);" class="btn btn-success btn-block" id="voip_btn">Add</a>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="hardware">
+				<div class="form-group" style="margin-top:20px;">
+					<label for="hardware_name" class="control-label col-md-3">
+						Hardware <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-8">
+						<select id="hardware_name" class="selectpicker show-tick form-control" data-error-field>
+						<.if (hardwares != null && hardwares.length > 0) {
+							for (var i = 0, len = hardwares.length; i < len; i++) {
+								var hardware = hardwares[i];
+						.>
+							<option value="<.=hardware.hardware_name.>" data-price="<.=hardware.hardware_price.>"><.=hardware.hardware_name.></option>
+						<.
+							}
+						}.>
+						</select>
+					</div>
+				</div>
+				<div class="form-group">
+					<label for="hardware_price" class="control-label col-md-3">
+						Hardware Price <span class="text-danger">(*)</span>
+					</label>
+					<div class="col-md-4">
+						<input type="text" id="hardware_price" class="form-control" data-error-field />
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-md-2 col-md-offset-3">
+						<a href="javascript:void(0);" class="btn btn-success btn-block" id="hardware_btn">Add</a>
+					</div>
+				</div>
+			</div>
+			<div class="tab-pane fade" id="calling"></div>
+		</div>
+	</div>
+	<div id="addons-table"></div>
+</div>

@@ -1,0 +1,28 @@
+<.if (addons.length > 0) {.>
+<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Unit Price</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	<.for (var i = 0, len = addons.length; i < len; i++) {
+		var addon = addons[i];
+	.>
+		<tr>
+			<td><.=addon.detail_name.></td>
+			<td><.=addon.detail_type.></td>
+			<td><.=addon.detail_price.></td>
+			<td>
+				<a href="javascript:void(0);" class="btn btn-xs btn-danger" data-name="addon_remove" data-id="<.=addon.id.>">
+					<span class="glyphicon glyphicon-trash"></span>
+				</a>
+			</td>
+		</tr>
+	<.}.>
+	</tbody>
+</table>
+<.}.>

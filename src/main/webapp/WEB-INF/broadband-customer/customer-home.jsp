@@ -41,6 +41,13 @@
 					<div class="row">
 						<div class="col-md-12">
 							<ul class="list-unstyled personal-info" style="font-size:18px;">
+								<li>
+									<strong class="text-info">
+										${customerSession.id }
+									</strong>
+									
+									<button id="asPromotion" type="button" class="btn btn-xs btn-warning" data-container="body" data-toggle="popover" data-placement="right" data-content="This is your promotion number, if your friend when applying cyberpark broadband services to fill it, you can get a discount every month a certain amount each other."><span class="glyphicon glyphicon-question-sign"></span></button>
+								</li>
 								<c:choose>
 									<c:when test="${customerSession.customer_type == 'personal' }">
 										<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
@@ -244,6 +251,8 @@
 		}, 'json');
 	});
 	// END PayWay
+	
+	$('#asPromotion').popover();
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

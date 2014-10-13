@@ -198,7 +198,7 @@
 						plan.plan_name = plan.plan_name.replace(/Homeline/g, 'VoIP Homeline');
 						naked = (plan.pstn_count = 0) > 0 ? false : true;
 						has_voip = (plan.voip_count = 1) > 0 ? true : false;
-					} else { console.log('normal');
+					} else { //console.log('normal');
 						naked = plan.pstn_count > 0 ? false : true;
 						has_voip = plan.voip_count > 0 ? true : false;
 					}
