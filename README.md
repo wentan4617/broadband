@@ -20,15 +20,25 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.3.7 2014-10-14
+
+* Invite Rates & Rules:
+    Inviter Gained Order Total Rates:
+       Customer:    2%       2 layer
+       User Agent:  5%       1 layer
+
+    Invitee Gained Order Total Rates:
+       Customer:    3%
+
+
+
 demand version 1.3.6 2014-10-13
 
 * [屏蔽USA Alaska，ALASKA.](steven)
 
 
 
-
 demand version 1.3.5 2014-10-12
-
 
 * VoIP计算赠送拨打分钟数顺序：
     1. Local                        本地
@@ -50,14 +60,14 @@ demand version 1.3.3 2014-10-10
 demand version 1.3.1 2014-10-09
 
 * [order界面添加Generate Receipt Only按钮，点击只生成receipt.](steven)
-* 策划VOS拨打记录号码匹配处理及计算方式.(steven)
+* [策划VOS拨打记录号码匹配处理及计算方式.](steven)
     CRMService里需要添加该功能的方法有：
         createNextCallingInvoicePDF（Undone）
         createInvoicePDFBoth（Undone）
         createTermPlanInvoiceByOrder（Undone）
         createTopupPlanInvoiceByOrder（Undone）
         
-* order底部添加一个按钮：Add Chorus Add-On，可以添加以下5种add on：
+* order底部添加一个按钮：Add Chorus Add-On，可以添加以下5种add on（由于Chorus每月自动统计该Detail，功能取消）：
 	Call restrict with no Directory Access nat Res
 	Caller Display Monthly Charge per line Res
 	Call waiting nat Res
@@ -105,11 +115,11 @@ demand version 1.2.0 2014-09-19
 
 demand version 1.1.9 2014-09-18
 * [Agent的commission做判断，如果是一个月的plan则amount paid * 0.45，如果是3个月及以上的预付月份则](steven)
-    Unit个月：plan detail price + ((Unit - 3) * plan detail price * commission)
+Unit个月：plan detail price + ((Unit - 3) * plan detail price * commission)
 * [CRM里所需升级：（仅system-developer权限能使用](steven)
-    transaction添加删除按钮
-    invoice添加删除按钮.关联删除相关invoice detail
-    service giving和next invoice create添加日期置空按钮
+transaction添加删除按钮
+invoice添加删除按钮.关联删除相关invoice detail
+service giving和next invoice create添加日期置空按钮
     
 
 demand version 1.1.8 2014-09-16

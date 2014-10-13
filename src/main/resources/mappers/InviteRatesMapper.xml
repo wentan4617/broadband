@@ -17,21 +17,15 @@
 	<!-- DEFINITION AREA -->
 
 	<sql id="inviteRatesColumns">
-		ir.`inviter_user_rate`				as ir_inviter_user_rate,
-		ir.`inviter_customer_rate`				as ir_inviter_customer_rate,
-		ir.`invitee_rate`				as ir_invitee_rate,
-		ir.`is_user`				as ir_is_user,
-		ir.`is_customer`				as ir_is_customer,
-		ir.`promotion_code`				as ir_promotion_code
+		ir.`inviter_user_rate`			as ir_inviter_user_rate,
+		ir.`inviter_customer_rate`		as ir_inviter_customer_rate,
+		ir.`invitee_rate`				as ir_invitee_rate
 	</sql>
 
 	<resultMap type="InviteRates" id="inviteRatesResultMap">
-		<id property="inviter_user_rate" column="ir_inviter_user_rate" />
+		<result property="inviter_user_rate" column="ir_inviter_user_rate" />
 		<result property="inviter_customer_rate" column="ir_inviter_customer_rate" />
 		<result property="invitee_rate" column="ir_invitee_rate" />
-		<result property="is_user" column="ir_is_user" />
-		<result property="is_customer" column="ir_is_customer" />
-		<result property="promotion_code" column="ir_promotion_code" />
 	</resultMap>
 
 	<sql id="inviteRatesWhere">
@@ -39,9 +33,6 @@
 			<if test="params.inviter_user_rate != null">ir.inviter_user_rate = #{params.inviter_user_rate}</if>
 			<if test="params.inviter_customer_rate != null">and ir.inviter_customer_rate = #{params.inviter_customer_rate}</if>
 			<if test="params.invitee_rate != null">and ir.invitee_rate = #{params.invitee_rate}</if>
-			<if test="params.is_user != null">and ir.is_user = #{params.is_user}</if>
-			<if test="params.is_customer != null">and ir.is_customer = #{params.is_customer}</if>
-			<if test="params.promotion_code != null">and ir.promotion_code = #{params.promotion_code}</if>
 		</where>
 	</sql>
 
@@ -80,11 +71,9 @@
 
 	<insert id="insertInviteRates" parameterType="InviteRates" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_invite_rates`(
-			`inviter_user_rate`, `inviter_customer_rate`, `invitee_rate`, `is_user`, 
-			`is_customer`, `promotion_code`
+			`inviter_user_rate`, `inviter_customer_rate`, `invitee_rate`
 		) VALUES (
-			#{inviter_user_rate}, #{inviter_customer_rate}, #{invitee_rate}, #{is_user}, 
-			#{is_customer}, #{promotion_code}
+			#{inviter_user_rate}, #{inviter_customer_rate}, #{invitee_rate}
 		)
 	</insert>
 
@@ -98,15 +87,10 @@
 	<update id="updateInviteRates" parameterType="InviteRates">
 		update tm_invite_rates
 		<set>
+			<if test="inviter_user_rate != null">inviter_user_rate = #{inviter_user_rate},</if>
 			<if test="inviter_customer_rate != null">inviter_customer_rate = #{inviter_customer_rate},</if>
-			<if test="invitee_rate != null">invitee_rate = #{invitee_rate},</if>
-			<if test="is_user != null">is_user = #{is_user},</if>
-			<if test="is_customer != null">is_customer = #{is_customer},</if>
-			<if test="promotion_code != null">promotion_code = #{promotion_code}</if>
+			<if test="invitee_rate != null">invitee_rate = #{invitee_rate}</if>
 		</set>
-		<where>
-			<if test="params.id != null">id = #{params.id}</if>
-		</where>
 	</update>
 
 	<!-- // END UPDATE AREA -->
@@ -114,9 +98,6 @@
 	<!-- =================================================================================== -->
 	<!-- DELETE AREA -->
 
-	<delete id="deleteInviteRatesById" parameterType="int">
-		DELETE FROM tm_invite_rates WHERE id = #{0}
-	</delete>
 
 	<!-- // END DELETE AREA -->
 

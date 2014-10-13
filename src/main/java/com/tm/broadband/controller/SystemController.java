@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.SEO;
@@ -381,6 +382,47 @@ public class SystemController {
 	/*
 	 * SEO Controller end
 	 */
+	
+	/*
+	 * InviteRates Controller begin
+	 */
+
+	@RequestMapping(value = "/broadband-user/system/ir/edit")
+	public String toInviteRates(Model model) {
+
+		model.addAttribute("panelheading", "Invite Rates Edit");
+		model.addAttribute("action", "/broadband-user/system/ir/edit");
+
+		InviteRates ir = this.systemService.queryInviteRate();
+
+		model.addAttribute("ir", ir);
+
+		return "broadband-user/system/invite_rates";
+	}
+	
+	@RequestMapping(value = "/broadband-user/system/ir/edit", method = RequestMethod.POST)
+	public String doInviteRatesEdit(
+			Model model,
+			@ModelAttribute("ir") InviteRates ir,
+			BindingResult result, HttpServletRequest req,
+			RedirectAttributes attr) {
+		model.addAttribute("panelheading", "Invite Rates Edit");
+		model.addAttribute("action", "/broadband-user/system/ir/edit");
+
+		if (result.hasErrors()) {
+			return "/broadband-user/system/invite_rates";
+		}
+
+		this.systemService.editInviteRate(ir);
+
+		attr.addFlashAttribute("success", "Edit Invite Rates successful.");
+
+		return "redirect:/broadband-user/system/ir/edit";
+	}
+	/*
+	 * InviteRates Controller end
+	 */
+	
 	
 	/**
 	 * 
