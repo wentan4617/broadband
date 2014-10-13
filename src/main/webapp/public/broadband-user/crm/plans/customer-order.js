@@ -49,6 +49,7 @@
 	
 	var plan = {};
 	var modems = [];
+	var addons = [];
 	var modem_selected = null;
 	var naked = false;
 	var has_voip = false;
@@ -152,9 +153,7 @@
 							has_promotion_code = false;
 						}
 						flushOrderModal();
-						
 					} 
-					
 				}).always(function(){ l.stop(); });	
 			});
 			
@@ -163,6 +162,7 @@
 			$.get(url, function(hardwares){ //console.log(hardwares);
 				modems = hardwares;
 				flushApplication();
+				flushAddons();
 				
 				$('div[data-plan-id]').click(function(){ //alert('a');
 					$('div[data-plan-id]').removeClass('alert-danger').addClass('alert-success');
@@ -198,7 +198,7 @@
 						plan.plan_name = plan.plan_name.replace(/Homeline/g, 'VoIP Homeline');
 						naked = (plan.pstn_count = 0) > 0 ? false : true;
 						has_voip = (plan.voip_count = 1) > 0 ? true : false;
-					} else { console.log('normal');
+					} else { // console.log('normal');
 						naked = plan.pstn_count > 0 ? false : true;
 						has_voip = plan.voip_count > 0 ? true : false;
 					}
@@ -554,6 +554,93 @@
 		
 		$('input[name="connection_date"]').iCheck('check');
 		
+	}
+	
+	function flushAddons() {
+		var o = { 
+			ctx: ctx 
+			, hardwares: modems
+		};
+		$('#addons').html(tmpl('addons_tmpl', o));
+		$('#hardware_name').selectpicker();
+		
+		$('#pstn_btn').click(function(){ 
+			var detail = {
+				id: addons.length
+				, detail_name: $('#pstn_name').val()
+				, detail_type: 'pstn'
+				, detail_price: Number($('#pstn_price').val())
+				, detail_unit: 1
+				, pstn_number: $('#pstn_number').val()
+			}; //console.log(detail);
+			var json = { errorMap: {}, successMap: {}, hasErrors: false };
+			if (detail.detail_name == '') { json.errorMap['pstn_name'] = 'is not empty'; json.hasErrors = true; }
+			if (isNaN(detail.detail_price)) { json.errorMap['pstn_price'] = 'must be number'; json.hasErrors = true; }
+			if (!$.jsonValidation(json, 'right')) {
+				addons.push(detail); //console.log(addons);
+				price.addons_price += Number(detail.detail_price);
+				flushAddonsTable();
+			}
+		});
+		
+		$('#voip_btn').click(function(){
+			var detail = {
+				id: addons.length
+				, detail_name: $('#voip_name').val()
+				, detail_type: 'voip'
+				, detail_price: Number($('#voip_price').val())
+				, detail_unit: 1
+				, pstn_number: $('#voip_number').val()
+				, voip_password: $('#voip_password').val()
+			}; //console.log(detail);
+			var json = { errorMap: {}, successMap: {}, hasErrors: false };
+			if (detail.detail_name == '') { json.errorMap['voip_name'] = 'is not empty'; json.hasErrors = true; }
+			if (isNaN(detail.detail_price)) { json.errorMap['voip_price'] = 'must be number'; json.hasErrors = true; }
+			if (!$.jsonValidation(json, 'right')) {
+				addons.push(detail); //console.log(addons);
+				price.addons_price += Number(detail.detail_price);
+				flushAddonsTable();
+			}
+		});
+		
+		$('#hardware_btn').click(function(){
+			var detail = {
+				id: addons.length
+				, detail_name: $('#hardware_name').val()
+				, detail_type: 'hardware-router'
+				, detail_price: Number($('#hardware_price').val())
+				, detail_unit: 1
+				, is_post: 0
+			}; //console.log(detail);
+			var json = { errorMap: {}, successMap: {}, hasErrors: false };
+			if (detail.detail_name == '') { json.errorMap['hardware_name'] = 'is not empty'; json.hasErrors = true; }
+			if (isNaN(detail.detail_price)) { json.errorMap['hardware_price'] = 'must be number'; json.hasErrors = true; }
+			if (!$.jsonValidation(json, 'right')) {
+				addons.push(detail); //console.log(addons);
+				price.addons_price += Number(detail.detail_price);
+				flushAddonsTable();
+			}
+		});
+		
+		flushAddonsTable();
+	}
+	
+	function flushAddonsTable() {
+		var o = {
+			addons: addons
+		};
+		$('#addons-table').html(tmpl('addons_table_tmpl', o));
+		$('a[data-name="addon_remove"]').click(function(){
+			var id = $(this).attr('data-id'); //console.log(id);
+			$.each(addons, function(i){
+				if (id == this.id) {
+					addons.splice(i, 1);
+					price.addons_price -= Number(this.detail_price);
+					return false;
+				}
+			});
+			flushAddonsTable();
+		});
 	}
 	
 	//flushApplication();

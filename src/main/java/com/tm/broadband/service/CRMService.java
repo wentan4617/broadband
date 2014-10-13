@@ -3896,7 +3896,7 @@ public class CRMService {
 					cod_hd.setIs_post(0);
 					cod_hd.setDetail_type("hardware-router");
 					
-					customerOrder.setHardware_post(1);
+					customerOrder.setHardware_post(customerOrder.getHardware_post() != null ? customerOrder.getHardware_post() + 1 : 1);
 					customerOrder.getCustomerOrderDetails().add(cod_hd);
 				}
 			

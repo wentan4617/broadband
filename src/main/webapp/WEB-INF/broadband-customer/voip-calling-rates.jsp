@@ -61,8 +61,8 @@
 
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" id="rates">
-				<li class="active"><a href="#personal-voip-rates" data-toggle="tab" data-type="pv"><strong>Personal VoIP Rates</strong></a></li>
-				<li><a href="#business-voip-rates" data-toggle="tab" data-type="bv"><strong>Business VoIP Rates</strong></a></li>
+				<li class="active"><a href="#personal-voip-rates" data-toggle="tab" data-type="p"><strong>Personal VoIP Rates</strong></a></li>
+				<li><a href="#business-voip-rates" data-toggle="tab" data-type="b"><strong>Business VoIP Rates</strong></a></li>
 			</ul>
 
 			<!-- Tab panes -->

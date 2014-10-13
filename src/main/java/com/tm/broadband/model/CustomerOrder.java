@@ -100,6 +100,7 @@ public class CustomerOrder implements Serializable {
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
+	private List<CustomerOrderDetail> addons;
 	private CustomerOrderDetail cod;
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
@@ -647,6 +648,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setInvitee_rate(Double invitee_rate) {
 		this.invitee_rate = invitee_rate;
+	}
+
+	public List<CustomerOrderDetail> getAddons() {
+		return addons;
+	}
+
+	public void setAddons(List<CustomerOrderDetail> addons) {
+		this.addons = addons;
 	}
 
 }

@@ -61,7 +61,7 @@
 			}
 		});
 		$.each(json.successMap, function(key){
-			if (key == "alert-success") {
+			if (key == 'alert-success') {
 				$('#alertContainer').html($('#tempAlertSuccessContainer').html());
 				$('#text-success').text(json.successMap[key]);
 				$('#alert-success').show('normal');

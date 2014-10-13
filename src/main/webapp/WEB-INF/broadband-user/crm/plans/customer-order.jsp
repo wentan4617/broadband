@@ -31,12 +31,14 @@
 	
 		<div class="row">
 			<div class="col-md-9 col-sm-12 col-xs-12">
+				<div id="addons"></div>
 				<div id="select-plan"></div>
 				<div id="open-term"></div>
 				<div id="prepay-month"></div>
 				<div id="select-modem"></div>
 				<div id="broadband-options"></div>
 				<div id="application"></div>
+				
 			</div>
 			<!-- order-modal -->
 			<div class="col-md-3 hidden-xs hidden-sm" style="padding: 0;">
@@ -101,6 +103,14 @@ data-holder_phone="${customerRegAdmin.organization.holder_phone }"
 data-holder_email="${customerRegAdmin.organization.holder_email }">
 <jsp:include page="application.html" />
 </script>
+
+<script type="text/html" id="addons_tmpl">
+<jsp:include page="addons.html" />
+</script>
+<script type="text/html" id="addons_table_tmpl">
+<jsp:include page="addons-table.html" />
+</script>
+
 <script type="text/html" id="order_modal_tmpl" data-customer-address="${customerRegAdmin.address }">
 <jsp:include page="order-modal.html" />
 </script>
@@ -113,5 +123,5 @@ data-holder_email="${customerRegAdmin.organization.holder_email }">
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/customer-order.js?ver=20141091211"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/customer-order.js?ver=20141013912"></script>
 <jsp:include page="../../footer-end.jsp" />
