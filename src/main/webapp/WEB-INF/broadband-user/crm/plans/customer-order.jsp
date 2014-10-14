@@ -31,8 +31,9 @@
 	
 		<div class="row">
 			<div class="col-md-9 col-sm-12 col-xs-12">
-				<div id="addons"></div>
+				
 				<div id="select-plan"></div>
+				<div id="addons"></div>
 				<div id="open-term"></div>
 				<div id="prepay-month"></div>
 				<div id="select-modem"></div>

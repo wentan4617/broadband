@@ -101,6 +101,8 @@ public class CustomerOrder implements Serializable {
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
 	private List<CustomerOrderDetail> addons;
+	private List<CustomerOrderDetail> monthly_cods = new ArrayList<CustomerOrderDetail>();
+	private List<CustomerOrderDetail> oneoff_cods = new ArrayList<CustomerOrderDetail>();
 	private CustomerOrderDetail cod;
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
@@ -656,6 +658,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setAddons(List<CustomerOrderDetail> addons) {
 		this.addons = addons;
+	}
+
+	public List<CustomerOrderDetail> getMonthly_cods() {
+		return monthly_cods;
+	}
+
+	public void setMonthly_cods(List<CustomerOrderDetail> monthly_cods) {
+		this.monthly_cods = monthly_cods;
+	}
+
+	public List<CustomerOrderDetail> getOneoff_cods() {
+		return oneoff_cods;
+	}
+
+	public void setOneoff_cods(List<CustomerOrderDetail> oneoff_cods) {
+		this.oneoff_cods = oneoff_cods;
 	}
 
 }

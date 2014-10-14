@@ -2830,7 +2830,9 @@ public class CRMRestController {
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		User userSession = (User) session.getAttribute("userSession");
 		
+		customerRegAdmin.setCurrentOperateUserid(userSession.getId());
 		customerRegAdmin.setCellphone(customer.getCellphone());
 		customerRegAdmin.setEmail(customer.getEmail());
 		customerRegAdmin.setTitle(customer.getTitle());
@@ -2857,7 +2859,9 @@ public class CRMRestController {
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		User userSession = (User) session.getAttribute("userSession");
 		
+		customerRegAdmin.setCurrentOperateUserid(userSession.getId());
 		customerRegAdmin.setCellphone(customer.getCellphone());
 		customerRegAdmin.setEmail(customer.getEmail());
 		customerRegAdmin.setTitle(customer.getTitle());

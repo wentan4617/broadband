@@ -26,6 +26,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.util.TMUtils;
@@ -283,7 +284,9 @@ public class SaleRestController {
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		User userSession = (User) session.getAttribute("userSession");
 		
+		customerRegSale.setCurrentOperateUserid(userSession.getId());
 		customerRegSale.setCellphone(customer.getCellphone());
 		customerRegSale.setEmail(customer.getEmail());
 		customerRegSale.setTitle(customer.getTitle());
@@ -310,7 +313,9 @@ public class SaleRestController {
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		User userSession = (User) session.getAttribute("userSession");
 		
+		customerRegSale.setCurrentOperateUserid(userSession.getId());
 		customerRegSale.setCellphone(customer.getCellphone());
 		customerRegSale.setEmail(customer.getEmail());
 		customerRegSale.setTitle(customer.getTitle());

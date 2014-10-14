@@ -3618,6 +3618,7 @@ public class CRMService {
 		Double modem_price = 0d;
 		Double service_price = 0d;
 		Double discount_price = 0d;
+		Double addons_price = 0d;
 		
 		CustomerOrder customerOrder = customer.getCustomerOrder();
 		Plan plan = customerOrder.getPlan();
@@ -3631,6 +3632,7 @@ public class CRMService {
 
 		plan_price = plan.getPlan_price();
 		CustomerOrderDetail cod_plan = new CustomerOrderDetail();
+		cod_plan.setMonthly(true);
 		cod_plan.setDetail_name(plan.getPlan_name());
 		cod_plan.setDetail_price(plan.getPlan_price());
 		cod_plan.setDetail_data_flow(plan.getData_flow());
@@ -3668,6 +3670,7 @@ public class CRMService {
 		
 		if (discount_price > 0d) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
+			cod_discount.setMonthly(false);
 			if (customerOrder.getPrepay_months() == 3) {
 				cod_discount.setDetail_name("Prepay 3 Months Discount");
 				cod_discount.setDetail_desc("3% off the total price of 3 months plan. all-forms");
@@ -3693,6 +3696,7 @@ public class CRMService {
 			service_price = plan.getTransition_fee();
 			
 			CustomerOrderDetail cod_trans = new CustomerOrderDetail();
+			cod_trans.setMonthly(false);
 			cod_trans.setDetail_name("Broadband Transition");
 			cod_trans.setDetail_price(plan.getTransition_fee());
 			cod_trans.setDetail_type("transition");
@@ -3703,6 +3707,7 @@ public class CRMService {
 		}  else if ("new-connection".equals(customerOrder.getOrder_broadband_type())) {
 			
 			CustomerOrderDetail cod_conn = new CustomerOrderDetail();
+			cod_conn.setMonthly(false);
 			cod_conn.setDetail_name("Broadband New Connection");
 			
 			if ("personal".equals(customer.getCustomer_type())) {
@@ -3749,6 +3754,7 @@ public class CRMService {
 			service_price = plan.getJackpot_fee();
 			
 			CustomerOrderDetail cod_jackpot = new CustomerOrderDetail();
+			cod_jackpot.setMonthly(false);
 			cod_jackpot.setDetail_name("Broadband New Connection & Phone Jack Installation");
 			cod_jackpot.setDetail_price(plan.getJackpot_fee());
 			cod_jackpot.setDetail_type("jackpot");
@@ -3765,6 +3771,7 @@ public class CRMService {
 			for (int i = 0; i < plan.getPstn_count(); i++) {
 				
 				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
+				cod_pstn.setMonthly(false);
 				if ("business".equals(customer.getCustomer_type())) {
 					cod_pstn.setDetail_name("BusinessLine");
 				} else {
@@ -3787,6 +3794,7 @@ public class CRMService {
 			for (int i = 0; i < plan.getVoip_count(); i++) {
 				
 				CustomerOrderDetail cod_voip = new CustomerOrderDetail();
+				cod_voip.setMonthly(false);
 				cod_voip.setDetail_name("VoIP Homeline");
 				cod_voip.setDetail_type("voip");
 				cod_voip.setDetail_price(0d);
@@ -3798,53 +3806,6 @@ public class CRMService {
 		
 		}
 		
-		// add-ons
-		if ("VDSL".equals(customer.getSelect_plan_type())) {
-			
-			if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 10023) {
-				
-				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
-				cod_addons.setDetail_name("200 calling minutes of 40 countries");
-				cod_addons.setDetail_type("present-calling-minutes");
-				cod_addons.setDetail_desc("international");
-				cod_addons.setDetail_calling_minute(200);
-				cod_addons.setDetail_price(0d);
-				cod_addons.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_addons);
-				
-				CustomerOrderDetail cod_ipad = new CustomerOrderDetail();
-				cod_ipad.setDetail_name("Apple iPad Mini 16G");
-				cod_ipad.setDetail_type("hardware");
-				cod_ipad.setDetail_price(0d);
-				cod_ipad.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_ipad);
-				
-			} else if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
-				
-				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
-				cod_addons.setDetail_name("100 calling minutes of 40 countries");
-				cod_addons.setDetail_type("present-calling-minutes");
-				cod_addons.setDetail_desc("international");
-				cod_addons.setDetail_calling_minute(100);
-				cod_addons.setDetail_price(0d);
-				cod_addons.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_addons);
-				
-				CustomerOrderDetail cod_hd = new CustomerOrderDetail();
-				cod_hd.setDetail_name("1 TB Portable Hard Drive");
-				cod_hd.setDetail_type("hardware");
-				cod_hd.setDetail_price(0d);
-				cod_hd.setDetail_unit(1);
-				
-				customerOrder.getCustomerOrderDetails().add(cod_hd);
-				
-			}
-			
-		}
-		
 		// add modem
 		
 		if (customerOrder.getHardwares() != null && customerOrder.getHardwares().size() > 0) {
@@ -3854,6 +3815,7 @@ public class CRMService {
 				if (chd != null) {
 					
 					CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+					cod_hd.setMonthly(false);
 					cod_hd.setDetail_name(chd.getHardware_name());
 					cod_hd.setDetail_price(chd.getHardware_price());
 					
@@ -3903,6 +3865,67 @@ public class CRMService {
 			}
 		}
 		
+		// add-ons
+		
+		if ("VDSL".equals(customer.getSelect_plan_type())) {
+			
+			if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 10023) {
+				
+				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
+				cod_addons.setMonthly(true);
+				cod_addons.setDetail_name("200 calling minutes of 40 countries");
+				cod_addons.setDetail_type("present-calling-minutes");
+				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_calling_minute(200);
+				cod_addons.setDetail_price(0d);
+				cod_addons.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_addons);
+				
+				CustomerOrderDetail cod_ipad = new CustomerOrderDetail();
+				cod_ipad.setMonthly(false);
+				cod_ipad.setDetail_name("Apple iPad Mini 16G");
+				cod_ipad.setDetail_type("hardware");
+				cod_ipad.setDetail_price(0d);
+				cod_ipad.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_ipad);
+				
+			} else if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+				
+				CustomerOrderDetail cod_addons = new CustomerOrderDetail();
+				cod_addons.setMonthly(true);
+				cod_addons.setDetail_name("100 calling minutes of 40 countries");
+				cod_addons.setDetail_type("present-calling-minutes");
+				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_calling_minute(100);
+				cod_addons.setDetail_price(0d);
+				cod_addons.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_addons);
+				
+				CustomerOrderDetail cod_hd = new CustomerOrderDetail();
+				cod_hd.setMonthly(false);
+				cod_hd.setDetail_name("1 TB Portable Hard Drive");
+				cod_hd.setDetail_type("hardware");
+				cod_hd.setDetail_price(0d);
+				cod_hd.setDetail_unit(1);
+				
+				customerOrder.getCustomerOrderDetails().add(cod_hd);
+				
+			}
+			
+		}
+		
+		if (customerOrder.getAddons() != null && customerOrder.getAddons().size() > 0) {
+			
+			for (CustomerOrderDetail cod_addon: customerOrder.getAddons()) {
+				cod_addon.setUser_id(customer.getCurrentOperateUserid());
+				addons_price += cod_addon.getDetail_price();
+				customerOrder.getCustomerOrderDetails().add(cod_addon);
+			}
+		}
+		
 		// promotion
 		Double promotion_price = 0d;
 		
@@ -3919,15 +3942,16 @@ public class CRMService {
 			}			
 			
 			CustomerOrderDetail cod_promotion = new CustomerOrderDetail();
+			cod_promotion.setMonthly(false);
 			cod_promotion.setDetail_name("Promotion Discount");
 			cod_promotion.setDetail_type("discount");
 			cod_promotion.setDetail_desc(customer.getIr().getInvitee_rate().intValue() + "% off the total price. all-forms");
 			
 			Double total = 0d;
 			if ("personal".equals(customer.getCustomer_type())) {
-				total = plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue();
+				total = plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue() + addons_price.intValue();
 			} else if ("business".equals(customer.getCustomer_type())) {
-				total = (plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue();
+				total = (plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue()) * 1.15 - discount_price.intValue();
 			}
 			
 			promotion_price = total * customer.getIr().getInvitee_rate()/100;
@@ -3938,10 +3962,20 @@ public class CRMService {
 			
 		}
 		
+		// monthly or one-off detail
+		
+		for (CustomerOrderDetail cod: customerOrder.getCustomerOrderDetails()) {
+			if (cod.getMonthly()) {
+				customerOrder.getMonthly_cods().add(cod);
+			} else {
+				customerOrder.getOneoff_cods().add(cod);
+			}
+		}
+		
 		if ("personal".equals(customer.getCustomer_type())) {
-			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue() - promotion_price.intValue());
+			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue() - discount_price.intValue() - promotion_price.intValue());
 		} else if ("business".equals(customer.getCustomer_type())) {
-			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue()) * 1.15 - discount_price.intValue() - promotion_price.intValue());
+			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue()) * 1.15 - discount_price.intValue() - promotion_price.intValue());
 		}
 		
 	}

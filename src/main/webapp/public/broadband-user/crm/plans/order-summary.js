@@ -22,10 +22,7 @@
 			alert("You must agree to CyberPark terms, in order to continue to buy and register as a member.");
 		}
 	});
-	
-	
-	
-	
+
 	
 	var i = 0;
 	
