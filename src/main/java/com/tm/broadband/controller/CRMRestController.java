@@ -1419,7 +1419,7 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Add discount
+	// Add free calling minutes
 	@RequestMapping(value = "/broadband-user/crm/customer/order/offer-calling-minutes/save", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailCallingMinutesCreate(
 			Model model, @RequestParam("order_id") int order_id,
@@ -1457,6 +1457,33 @@ public class CRMRestController {
 			
 			json.getErrorMap().put("alert-error", "Calling Minutes Format Incorrect! Must be digital numbers");
 		}
+
+		return json;
+	}
+
+	// Add Static IP
+	@RequestMapping(value = "/broadband-user/crm/customer/order/static-ip/save", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailStaticIPCreate(
+			Model model, @RequestParam("order_id") int order_id,
+			@RequestParam("customer_id") int customer_id,
+			@RequestParam("static_ip_name") String static_ip_name,
+			@RequestParam("static_ip_charge_fee") Double static_ip_charge_fee,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+			
+			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
+			customerOrderDetail.setOrder_id(order_id);
+			customerOrderDetail.setDetail_name(static_ip_name);
+			customerOrderDetail.setDetail_type("static-ip");
+			customerOrderDetail.setDetail_price(static_ip_charge_fee);
+			customerOrderDetail.setDetail_unit(1);
+			User user = (User) req.getSession().getAttribute("userSession");
+			customerOrderDetail.setUser_id(user.getId());
+			this.crmService.createCustomerOrderDetail(customerOrderDetail);
+			
+			// Create Customer Order Detail Discount is successful.
+			json.getSuccessMap().put("alert-success", "Static IP had been attached to related order! Order Id: "+order_id);
 
 		return json;
 	}

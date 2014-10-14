@@ -740,8 +740,9 @@
 							<tr class="<.= customerOrderDetail[d].detail_type=='discount' ? 'alert alert-warning' :
 											customerOrderDetail[d].detail_type=='debit' ? 'alert alert-danger' :
 											 customerOrderDetail[d].detail_type=='present-calling-minutes' ? 'alert alert-info' :
-											  customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
-											   customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
+											  customerOrderDetail[d].detail_type=='static-ip' ? 'alert alert-info' :
+											   customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
+											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
 								<td data-name="<.= customerOrderDetail[d].id .>_detail_name" data-val="<.= customerOrderDetail[d].detail_name .>" >
 									<.= customerOrderDetail[d].detail_name .>
 				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip'){		.>
@@ -872,8 +873,8 @@
 				<.
 					if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){
 				.>
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width" data-name="<.= customerOrder[i].id .>_add_detail">
-						  <span class="glyphicon glyphicon-plus"></span> Add Detail
+						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_add_detail">
+						  <span class="glyphicon glyphicon-plus"></span> Add Detail ( ACCOUNTANT TEAM )
 						</a>
 						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width" data-name="<.= customerOrder[i].id .>_add_product">
 						  <span class="glyphicon glyphicon-plus"></span> Add Product
@@ -1521,7 +1522,6 @@
 									<option value="none">---choose one---</option>
 									<option value="discount">Credit</option>
 									<option value="debit">Debit</option>
-									<option value="present-calling-minutes">Offer Calling Minutes</option>
 									<option value="early-termination-debit">Early Termination Charge</option>
 									<option value="termination-credit">Termination Refund</option>
 								</select>
@@ -1650,150 +1650,6 @@
 						</div>
 					</div>
 					
-					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_present-calling-minutes_modal_body" style="display:none;">
-						<div class="form-group">
-							<label class="control-label col-md-4">Charge Fee</label>
-							<div class="col-md-6">
-								<div class="input-group">
-									<span class="input-group-addon">$</span>
-									<input data-name="<.= customerOrder[i].id .>_charge_amount" value="0.00" class="form-control input-sm" />
-								</div>
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-md-4">Calling Minutes</label>
-							<div class="col-md-6">
-								<input data-name="<.= customerOrder[i].id .>_calling_minutes" class="form-control input-sm" placeholder="Calling Minutes" />
-							</div>
-						</div>
-						<div class="form-group">
-							<label class="control-label col-md-4">Calling Type</label>
-							<div class="col-md-6">
-								<select data-name="<.= customerOrder[i].id .>_calling_country" class="form-control input-sm" style="height:26px; padding:0 10px;">
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">-------------------------VoIP-------------------------</option>
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Domestic ---</option>
-										<option value="local,voip">Local</option>
-										<option value="national,voip">National</option>
-										<option value="mobile,voip">Mobile</option>
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- International ---</option>
-										<option value="international,voip">International (Mobile + Fixed line)</option>
-								
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Mobile + Fixed line ---</option>
-										<option value="Bangladesh-both,voip" >Bangladesh</option>
-										<option value="Malaysia-both,voip" >Malaysia</option>
-										<option value="Cambodia-both,voip" >Cambodia</option>
-										<option value="Singapore-both,voip" >Singapore</option>
-										<option value="Canada-both,voip" >Canada</option>
-										<option value="Korea-both,voip" >South Korea</option>
-										<option value="China-both,voip" >China</option>
-										<option value="USA-both,voip" >USA (Not Include Alaska)</option>
-										<option value="Hong Kong-both,voip" >Hong Kong</option>
-										<option value="Vietnam-both,voip" >Vietnam</option>
-										<option value="India-both,voip" >India</option>
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Fixed line ---</option>
-										<option value="Argentina-fixedline,54,voip">Argentina</option>
-										<option value="Germany-fixedline,49,voip">Germany</option>
-										<option value="Laos-fixedline,856,voip">Laos</option>
-										<option value="South Africa-fixedline,27,voip">South Africa</option>
-										<option value="Australia-fixedline,61,voip">Australia</option>
-										<option value="Greece-fixedline,30,voip">Greece</option>
-										<option value="Netherlands-fixedline,31,voip">Netherlands</option>
-										<option value="Spain-fixedline,34,voip">Spain</option>
-										<option value="Belgium-fixedline,32,voip">Belgium</option>
-										<option value="Indonesia-fixedline,62,voip">Indonesia</option>
-										<option value="Norway-fixedline,47,voip">Norway</option>
-										<option value="Sweden-fixedline,46,voip">Sweden</option>
-										<option value="Brazil-fixedline,55,voip">Brazil</option>
-										<option value="Ireland-fixedline,353,voip">Ireland</option>
-										<option value="Pakistan-fixedline,92,voip">Pakistan</option>
-										<option value="Switzerland-fixedline,41,voip">Switzerland</option>
-										<option value="Cyprus-fixedline,357,voip">Cyprus</option>
-										<option value="Israel-fixedline,972,voip">Israel</option>
-										<option value="Poland-fixedline,48,voip">Poland</option>
-										<option value="Taiwan-fixedline,886,voip">Taiwan</option>
-										<option value="Czech-fixedline,420,voip">Czech</option>
-										<option value="Italy-fixedline,39,voip">Italy</option>
-										<option value="Portugal-fixedline,351,voip">Portugal</option>
-										<option value="Thailand-fixedline,66,voip">Thailand</option>
-										<option value="Denmark-fixedline,45,voip">Denmark</option>
-										<option value="Japan-fixedline,81,voip">Japan</option>
-										<option value="Russia-fixedline,7,voip">Russia</option>
-										<option value="United Kingdom-fixedline,44,voip">United Kingdom</option>
-										<option value="France-fixedline,33,voip">France</option>
-										<option disabled="disabled"></option>
-										
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">-------------------------PSTN-------------------------</option>
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Domestic ---</option>
-										<option value="local">Local</option>
-										<option value="national">National</option>
-										<option value="mobile">Mobile</option>
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- International ---</option>
-										<option value="international">International (Mobile + Fixed line)</option>
-								
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Mobile + Fixed line ---</option>
-										<option value="Bangladesh-both" >Bangladesh</option>
-										<option value="Malaysia-both" >Malaysia</option>
-										<option value="Cambodia-both" >Cambodia</option>
-										<option value="Singapore-both" >Singapore</option>
-										<option value="Canada-both" >Canada</option>
-										<option value="Korea-both" >South Korea</option>
-										<option value="China-both" >China</option>
-										<option value="USA-both" >USA</option>
-										<option value="Hong Kong-both" >Hong Kong</option>
-										<option value="Vietnam-both" >Vietnam</option>
-										<option value="India-both" >India</option>
-										
-										<option disabled="disabled"></option>
-										<option disabled="disabled">--- Fixed line ---</option>
-										<option value="Argentina-fixedline,54">Argentina</option>
-										<option value="Germany-fixedline,49">Germany</option>
-										<option value="Laos-fixedline,856">Laos</option>
-										<option value="South Africa-fixedline,27">South Africa</option>
-										<option value="Australia-fixedline,61">Australia</option>
-										<option value="Greece-fixedline,30">Greece</option>
-										<option value="Netherlands-fixedline,31">Netherlands</option>
-										<option value="Spain-fixedline,34">Spain</option>
-										<option value="Belgium-fixedline,32">Belgium</option>
-										<option value="Indonesia-fixedline,62">Indonesia</option>
-										<option value="Norway-fixedline,47">Norway</option>
-										<option value="Sweden-fixedline,46">Sweden</option>
-										<option value="Brazil-fixedline,55">Brazil</option>
-										<option value="Ireland-fixedline,353">Ireland</option>
-										<option value="Pakistan-fixedline,92">Pakistan</option>
-										<option value="Switzerland-fixedline,41">Switzerland</option>
-										<option value="Cyprus-fixedline,357">Cyprus</option>
-										<option value="Israel-fixedline,972">Israel</option>
-										<option value="Poland-fixedline,48">Poland</option>
-										<option value="Taiwan-fixedline,886">Taiwan</option>
-										<option value="Czech-fixedline,420">Czech</option>
-										<option value="Italy-fixedline,39">Italy</option>
-										<option value="Portugal-fixedline,351">Portugal</option>
-										<option value="Thailand-fixedline,66">Thailand</option>
-										<option value="Denmark-fixedline,45">Denmark</option>
-										<option value="Japan-fixedline,81">Japan</option>
-										<option value="Russia-fixedline,7">Russia</option>
-										<option value="United Kingdom-fixedline,44">United Kingdom</option>
-										<option value="France-fixedline,33">France</option>
-										
-										
-								</select>
-							</div>
-						</div>
-					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" data-name="addDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Add Detail</a>
 					</div>
@@ -1821,6 +1677,7 @@
 								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_detail_type" class="form-control input-sm">
 									<option value="none">---choose one---</option>
 									<option value="present-calling-minutes">Offer Calling Minutes</option>
+									<option value="static-ip">Static IP</option>
 								</select>
 							</div>
 						</div>
@@ -1829,6 +1686,23 @@
 						<p>
 							Please choose a type to add into this order!
 						</p>
+					</div>
+					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_static-ip_modal_body" style="display:none;">
+						<div class="form-group">
+							<label class="control-label col-md-4">Charge Fee (Per Month)</label>
+							<div class="col-md-6">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input data-name="<.= customerOrder[i].id .>_static_ip_charge_fee" value="0.00" class="form-control input-sm" />
+								</div>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Name</label>
+							<div class="col-md-6">
+								<input data-name="<.= customerOrder[i].id .>_static_ip_name" value="Static IP" class="form-control input-sm" placeholder="Static IP Name" />
+							</div>
+						</div>
 					</div>
 					<div class="modal-body" data-name="<.= customerOrder[i].id .>_detail_modal_body" data-type="<.= customerOrder[i].id .>_present-calling-minutes_modal_body" style="display:none;">
 						<div class="form-group">
@@ -1972,8 +1846,6 @@
 										<option value="Russia-fixedline,7">Russia</option>
 										<option value="United Kingdom-fixedline,44">United Kingdom</option>
 										<option value="France-fixedline,33">France</option>
-										
-										
 								</select>
 							</div>
 						</div>
