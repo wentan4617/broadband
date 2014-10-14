@@ -189,7 +189,6 @@
 					<tr>
 						<th>Service / Product</th>
 						<th>Data</th>
-						<!-- <th>Term</th> -->
 						<th>
 							<c:choose>
 								<c:when test="${customerRegAdmin.select_plan_group == 'plan-topup' }">
@@ -199,73 +198,72 @@
 								Monthly Charge
 								</c:otherwise>
 							</c:choose>
-							
 						</th>
 						<th>Qty</th>
 						<th>Sub Total</th>
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="detail" items="${customerRegAdmin.customerOrder.customerOrderDetails }">
-						<c:choose>
-							<c:when test="${fn:contains(detail.detail_type, 'plan-') }">
-								<tr>
-									<td>
-										${detail.detail_name }
-									</td>
-									<td>
-										<c:choose>
-											<c:when test="${detail.detail_data_flow < 0 }">Unlimited</c:when>
-											<c:otherwise>${detail.detail_data_flow } GB</c:otherwise>
-										</c:choose>
-									</td>
-									<%-- <td>${detail.detail_term_period }</td> --%>
-									<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
-									<td>${detail.detail_unit }</td>
-									<td>
-										<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-									</td>
-								</tr>
-								<tr>
-									<th>&nbsp;</th>
-									<th>&nbsp;</th>
-									<!-- <th>&nbsp;</th> -->
-									<th>One-off Charge</th>
-									<th>Qty</th>
-									<th>Sub Total</th>
-								</tr>
-							</c:when>
-							<c:otherwise>
-								<tr>
-									<td>
-										${detail.detail_name }&nbsp;
-										<c:if test="${detail.detail_type == 'pstn' || detail.detail_type == 'voip'}">
-											<c:if test="${detail.pstn_number != null && detail.pstn_number != '' }">
-												<strong class="text-danger">(${detail.pstn_number })</strong>
-											</c:if>
-										</c:if>
-									</td>
-									<td>&nbsp;</td>
-									<!-- <td>&nbsp;</td> -->
-									<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
-									<td>${detail.detail_unit }</td>
-									<td>
-										<c:choose>
-											<c:when test="${detail.detail_type == 'discount' }">
-												<span class="text-success">
-													-<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-												</span>
-											</c:when>
-											<c:otherwise>
-												<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
-											</c:otherwise>
-										</c:choose>
-									</td>
-								</tr>
-							</c:otherwise>
-						</c:choose>
-						
-					</c:forEach>
+				
+				<c:forEach var="detail" items="${customerRegAdmin.customerOrder.monthly_cods }">
+					<tr>
+						<td>
+							${detail.detail_name }
+						</td>
+						<td>
+							<c:if test="${detail.detail_data_flow != null }">
+								<c:choose>
+									<c:when test="${detail.detail_data_flow < 0 }">Unlimited</c:when>
+									<c:otherwise>${detail.detail_data_flow } GB</c:otherwise>
+								</c:choose>
+							</c:if>
+						</td>
+						<%-- <td>${detail.detail_term_period }</td> --%>
+						<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+						<td>${detail.detail_unit }</td>
+						<td>
+							<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+						</td>
+					</tr>
+				</c:forEach>
+				
+				<tr>
+					<th>&nbsp;</th>
+					<th>&nbsp;</th>
+					<th>One-off Charge</th>
+					<th>Qty</th>
+					<th>Sub Total</th>
+				</tr>
+				
+				<c:forEach var="detail" items="${customerRegAdmin.customerOrder.oneoff_cods }">
+					<tr>
+						<td>
+							${detail.detail_name }&nbsp;
+							<c:if test="${detail.detail_type == 'pstn' || detail.detail_type == 'voip'}">
+								<c:if test="${detail.pstn_number != null && detail.pstn_number != '' }">
+									<strong class="text-danger">(${detail.pstn_number })</strong>
+								</c:if>
+							</c:if>
+						</td>
+						<td>&nbsp;</td>
+						<td><fmt:formatNumber value="${detail.detail_price }" type="number" pattern="#,##0.00" /></td>
+						<td>${detail.detail_unit }</td>
+						<td>
+							<c:choose>
+								<c:when test="${detail.detail_type == 'discount' }">
+									<span class="text-success">
+										-<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+									</span>
+								</c:when>
+								<c:otherwise>
+									<fmt:formatNumber value="${detail.detail_price * detail.detail_unit}" type="number" pattern="#,##0.00" />
+								</c:otherwise>
+							</c:choose>
+						</td>
+					</tr>
+				</c:forEach>
+					
+					
 				</tbody>
 			</table>
 			</div>
@@ -410,10 +408,10 @@
 			<hr/>
 			<div class="row">
 				<div class="col-md-2 hidden-xs hidden-sm">
-					<a href="${ctx }/plans/order" class="btn btn-success btn-lg btn-block">Back</a>
+					<a href="${ctx }/broadband-user/crm/plans/order" class="btn btn-success btn-lg btn-block">Back</a>
 				</div>
 				<div class="col-md-2 col-md-offset-8">
-					<form class="form-horizontal" action="${ctx }/plans/order/dps" method="post" id="checkoutForm">
+					<form class="form-horizontal" action="${ctx }/broadband-user/crm/plans/order/dps" method="post" id="checkoutForm">
 						
 						<div class="btn-group dropup btn-block">
 							<button type="button" class="btn btn-success btn-lg btn-block dropdown-toggle" data-toggle="dropdown">
