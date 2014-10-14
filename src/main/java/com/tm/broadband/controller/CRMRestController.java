@@ -2117,6 +2117,7 @@ public class CRMRestController {
 			page.getParams().put("email", customerQuery.getEmail());
 			page.getParams().put("address", customerQuery.getAddress());
 			page.getParams().put("pstn", customerQuery.getPstn());
+			page.getParams().put("voip", customerQuery.getVoip());
 			page.getParams().put("order_id", customerQuery.getOrder_id());
 			page.getParams().put("invoice_id", customerQuery.getInvoice_id());
 			page.getParams().put("customer_type", customerQuery.getCustomer_type());
