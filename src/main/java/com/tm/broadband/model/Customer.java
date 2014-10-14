@@ -144,6 +144,7 @@ public class Customer implements Serializable {
 	private String select_customer_type;
 	private String select_plan_group;
 	private String language;
+	private Integer currentOperateUserid;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -679,6 +680,14 @@ public class Customer implements Serializable {
 
 	public void setIr(InviteRates ir) {
 		this.ir = ir;
+	}
+
+	public Integer getCurrentOperateUserid() {
+		return currentOperateUserid;
+	}
+
+	public void setCurrentOperateUserid(Integer currentOperateUserid) {
+		this.currentOperateUserid = currentOperateUserid;
 	}
 
 
