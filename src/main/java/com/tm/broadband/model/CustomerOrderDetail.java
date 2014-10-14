@@ -57,6 +57,7 @@ public class CustomerOrderDetail implements Serializable {
 	private CustomerOrder customerOrder;
 	private String detail_expired_str;
 	private String voip_assign_date_str;
+	private Boolean monthly; 
 	
 	
 	/*
@@ -327,6 +328,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setVoip_assign_date_str(String voip_assign_date_str) {
 		this.voip_assign_date_str = voip_assign_date_str;
+	}
+
+	public Boolean getMonthly() {
+		return monthly;
+	}
+
+	public void setMonthly(Boolean monthly) {
+		this.monthly = monthly;
 	}
 	
 	

@@ -231,7 +231,7 @@
 	
 	function flushPromotion() {
 		if (has_promotion_code) {
-			var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
+			var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price + price.addons_price;
 			price.promotion_price = parseInt(total * promotion_rates);
 		} else {
 			price.promotion_price = 0;
@@ -562,7 +562,7 @@
 			, hardwares: modems
 		};
 		$('#addons').html(tmpl('addons_tmpl', o));
-		$('#hardware_name').selectpicker();
+		$('#hardware_name, #calling_type').selectpicker();
 		
 		$('#pstn_btn').click(function(){ 
 			var detail = {
@@ -580,6 +580,7 @@
 				addons.push(detail); //console.log(addons);
 				price.addons_price += Number(detail.detail_price);
 				flushAddonsTable();
+				flushOrderModal();
 			}
 		});
 		
@@ -600,6 +601,7 @@
 				addons.push(detail); //console.log(addons);
 				price.addons_price += Number(detail.detail_price);
 				flushAddonsTable();
+				flushOrderModal();
 			}
 		});
 		
@@ -619,10 +621,36 @@
 				addons.push(detail); //console.log(addons);
 				price.addons_price += Number(detail.detail_price);
 				flushAddonsTable();
+				flushOrderModal();
+			}
+		});
+		
+		$('#calling_btn').click(function(){
+			//console.log(this.value);
+			var detail = {
+				id: addons.length
+				, detail_name: $('#calling_minutes').val() + ' minutes to ' + $('#calling_type').val().split(',')[0]
+				, detail_desc: $('#calling_type').val()
+				, detail_calling_minute: Number($('#calling_minutes').val())
+				, detail_type: 'present-calling-minutes'
+				, detail_price: Number($('#change_fee').val())
+				, detail_unit: 1
+				, monthly: true
+			}; //console.log(detail);
+			var json = { errorMap: {}, successMap: {}, hasErrors: false };
+			if (isNaN(detail.detail_price)) { json.errorMap['change_fee'] = 'must be number'; json.hasErrors = true; }
+			if (isNaN(detail.detail_calling_minute) || detail.detail_calling_minute <= 0) { json.errorMap['calling_minutes'] = 'must be number and > 0'; json.hasErrors = true; }
+			if (detail.detail_desc == '') { json.errorMap['calling_type'] = 'must be choose one'; json.hasErrors = true; }
+			if (!$.jsonValidation(json, 'right')) {
+				addons.push(detail); //console.log(addons);
+				price.addons_price += Number(detail.detail_price);
+				flushAddonsTable();
+				flushOrderModal();
 			}
 		});
 		
 		flushAddonsTable();
+		flushOrderModal();
 	}
 	
 	function flushAddonsTable() {
@@ -640,6 +668,7 @@
 				}
 			});
 			flushAddonsTable();
+			flushOrderModal();
 		});
 	}
 	
@@ -783,6 +812,7 @@
 				, promotion: promotion
 				, hardwares: [modem_selected]
 				, hardware_id_selected: hardware_id_selected
+				, addons: addons
 			}
 			, organization: {}
 		};
