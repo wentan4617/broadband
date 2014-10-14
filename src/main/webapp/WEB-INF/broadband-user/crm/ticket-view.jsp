@@ -379,16 +379,6 @@ tbody td {text-align:center;}
 			
 			$('span[data-toggle="tooltip"]').tooltip();
 			
-			$('a[data-name="viewTicketBtn"]').click(function(){
-				var id = $(this).attr('data-id');
-				var tr = $('#afterClickViewTicketBtn_'+id);
-				tr.removeClass('danger warning info');
-				tr.css({'fontSize':'12px', 'fontWeight':'normal'});
-				
-				window.location.href='${ctx}/broadband-user/crm/ticket/edit/'+id;
-			});
-			
-			
 	   	});
 	}
 	doPage(1);

@@ -39,6 +39,7 @@ public class User implements Serializable {
 	private String email;
 	private Boolean is_provision;
 	private Double agent_commission_rates;
+	private Double invite_commission;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -164,6 +165,14 @@ public class User implements Serializable {
 
 	public void setAgent_commission_rates(Double agent_commission_rates) {
 		this.agent_commission_rates = agent_commission_rates;
+	}
+
+	public Double getInvite_commission() {
+		return invite_commission;
+	}
+
+	public void setInvite_commission(Double invite_commission) {
+		this.invite_commission = invite_commission;
 	}
 
 

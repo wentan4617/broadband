@@ -1119,15 +1119,6 @@
 								,'monthlyCharge':$('span[data-name="'+this.id+'_detail_plan_monthly_price"]').attr('data-val')+''
 						};
 						url = ctx+'/broadband-user/crm/customer/order/detail/termination-credit/save';
-					} else if(detail_type == 'present-calling-minutes'){
-						data = {
-								'order_id':this.id
-								,'customer_id':customerId
-								,'charge_amount':$('input[data-name="'+this.id+'_charge_amount"]').val()+''
-								,'calling_minutes':$('input[data-name="'+this.id+'_calling_minutes"]').val()+''
-								,'calling_country':$('select[data-name="'+this.id+'_calling_country"]').val()+''
-						};
-						url = ctx+'/broadband-user/crm/customer/order/offer-calling-minutes/save';
 					} else {
 						var detail_name = $('input[data-name="'+this.id+'_'+detail_type+'_name"]').val();
 						var detail_price = $('input[data-name="'+this.id+'_'+detail_type+'_price"]').val();
@@ -1197,6 +1188,14 @@
 								,'calling_country':$('select[data-name="'+this.id+'_provision_calling_country"]').val()+''
 						};
 						url = ctx+'/broadband-user/crm/customer/order/offer-calling-minutes/save';
+					} else if(detail_type == 'static-ip'){
+						data = {
+								'order_id':this.id
+								,'customer_id':customerId
+								,'static_ip_name':$('input[data-name="'+this.id+'_static_ip_name"]').val()+''
+								,'static_ip_charge_fee':$('input[data-name="'+this.id+'_static_ip_charge_fee"]').val()+''
+						};
+						url = ctx+'/broadband-user/crm/customer/order/static-ip/save';
 					}
 					
 					if(detail_type != 'none'){

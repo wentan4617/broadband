@@ -1267,7 +1267,21 @@ public class CRMService {
 						
 						cid = null;
 						continue;
-
+						
+					// Static IP
+					} else if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
+						
+						cid.setInvoice_detail_name(cod.getDetail_name());
+						cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+						cid.setInvoice_detail_unit(cod.getDetail_unit());
+						cid.setInvoice_detail_type(cod.getDetail_type());
+						cids.add(cid);
+						
+						totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+						
+						cid = null;
+						continue;
+						
 					// Else if unexpired then add order detail(s) into invoice detail(s)
 					}
 				}
@@ -1624,7 +1638,7 @@ public class CRMService {
 		for (CustomerOrderDetail cod : co.getCustomerOrderDetails()) {
 			CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 
-			if("pstn".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && "pstn".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
@@ -1632,7 +1646,7 @@ public class CRMService {
 				
 			}
 
-			if("voip".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && "voip".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					voip_numbers.add(cod.getPstn_number());
@@ -1641,7 +1655,7 @@ public class CRMService {
 			}
 
 			if(!isFirst
-			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+			&& (cod.getDetail_type()!=null && "pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
 				
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
@@ -1651,7 +1665,7 @@ public class CRMService {
 				
 			}
 			
-			if("present-calling-minutes".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
@@ -1673,10 +1687,23 @@ public class CRMService {
 				
 				continue;
 			}
+
+			// Static IP
+			if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
+				
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cids.add(cid);
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+			}
 			
 			if(isFirst){
 				
-				if("plan-topup".equals(cod.getDetail_type())){
+				if(cod.getDetail_type()!=null && "plan-topup".equals(cod.getDetail_type())){
 					
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					Calendar cal = Calendar.getInstance(Locale.CHINA);
@@ -1699,7 +1726,7 @@ public class CRMService {
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
 					
 				} else {
-					if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+					if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 						
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -1734,7 +1761,7 @@ public class CRMService {
 				ci.setLast_invoice_id(cpi.getId());
 				ci.setLastCustomerInvoice(cpi);
 				
-				if("plan-topup".equals(cod.getDetail_type())){
+				if(cod.getDetail_type()!=null && "plan-topup".equals(cod.getDetail_type())){
 					
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					Calendar cal = Calendar.getInstance(Locale.CHINA);
@@ -1764,7 +1791,7 @@ public class CRMService {
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, subTotalPrice);
 					
 				} else {
-					if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+					if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 						
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -1794,7 +1821,7 @@ public class CRMService {
 				}
 			}
 			
-			if("plan-topup".equals(cod.getDetail_type()) && !isRegenerateInvoice){
+			if(cod.getDetail_type()!=null && "plan-topup".equals(cod.getDetail_type()) && !isRegenerateInvoice){
 				
 				int nextInvoiceWeek = 1;
 				int nextInvoiceDay = -2;
@@ -2191,13 +2218,25 @@ public class CRMService {
 				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
 				continue;
+			
+			// Static IP
+			} else if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
+				
+				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cids.add(cid);
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
 			}
 			
 //			System.out.println("isFirst: " + isFirst);
 			// If first invoice then add all order details into invoice details
 			if(isFirst){
 				
-				if("plan-term".equals(cod.getDetail_type())){
+				if(cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type())){
 //					System.out.println("isNotFirst");
 //					System.out.println();
 					
@@ -2253,7 +2292,7 @@ public class CRMService {
 					continue;
 
 				// Else if discount and unexpired then do add discount
-				} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+				} else if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 					
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -2266,7 +2305,7 @@ public class CRMService {
 					continue;
 					
 				// Else add all non plan-term, discount, termination-credit, early-termination-debit type details into invoice details
-				} else if(!"discount".equals(cod.getDetail_type())
+				} else if(cod.getDetail_type()!=null && !"discount".equals(cod.getDetail_type())
 						  && !"termination-credit".equals(cod.getDetail_type())
 						  && !"early-termination-debit".equals(cod.getDetail_type())
 						  && !"present-calling-minutes".equals(cod.getDetail_type())) {
@@ -2283,7 +2322,7 @@ public class CRMService {
 					continue;
 				}
 				
-				if ("plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && c.getCustomer_type().equals("business")) {
+				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && c.getCustomer_type().equals("business")) {
 					
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
@@ -2374,7 +2413,7 @@ public class CRMService {
 					continue;
 
 				// Else if discount and unexpired then do add discount
-				} else if("discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
+				} else if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
 					
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_discount(cod.getDetail_price());
@@ -2404,7 +2443,7 @@ public class CRMService {
 				
 			}
 			
-			if ("plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice) {
+			if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice) {
 				
 				// if is next invoice then plus one month else plus unit month(s)
 				int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
@@ -2699,7 +2738,7 @@ public class CRMService {
 		
 		for (CustomerOrderDetail cod: customerOrderDetails) {
 
-			if("pstn".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && "pstn".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					pstn_numbers.add(cod.getPstn_number());
@@ -2707,7 +2746,7 @@ public class CRMService {
 				
 			}
 
-			if("voip".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && "voip".equals(cod.getDetail_type())){
 				
 				if((cod.getPstn_number()!=null && !"".equals(cod.getPstn_number().trim()))){
 					voip_numbers.add(cod.getPstn_number());
@@ -2722,7 +2761,7 @@ public class CRMService {
 			cid.setInvoice_detail_type(cod.getDetail_type());
 
 			if(!isFirst
-			&& ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+			&& cod.getDetail_type()!=null && ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
 
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
@@ -2734,8 +2773,8 @@ public class CRMService {
 
 			// if detail type equals discount and detail expire date greater
 			// equal than today's date then go into if statement
-			if ("discount".equals(cod.getDetail_type())
-					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+			if ((cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()))
+					&& (cod.getDetail_expired()!=null && cod.getDetail_expired().getTime() >= System.currentTimeMillis())) {
 				
 				cid.setInvoice_detail_discount(cod.getDetail_price());
 				cid.setInvoice_detail_type(cod.getDetail_type());
@@ -2746,7 +2785,7 @@ public class CRMService {
 				cids.add(cid);
 				// else if detail type is discount then this discount is expired
 				// and will not be add to the invoice detail list
-			} else if (!"discount".equals(cod.getDetail_type())) {
+			} else if (cod.getDetail_type()!=null && !"discount".equals(cod.getDetail_type())) {
 				if(cod.getDetail_type()!=null && "termination-credit".equals(cod.getDetail_type())){
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
@@ -2763,7 +2802,7 @@ public class CRMService {
 					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					
-					if(cod.getDetail_desc().endsWith("voip")){
+					if(cod.getDetail_desc()!=null && cod.getDetail_desc().endsWith("voip")){
 						
 						pcmsVoIP.add(cod);
 						
@@ -2772,6 +2811,16 @@ public class CRMService {
 						pcmsPSTN.add(cod);
 						
 					}
+					
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+				// Static IP
+				} else if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
+					cids.add(cid);
 					
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
@@ -3061,7 +3110,6 @@ public class CRMService {
 		// Deleting repeated invoices
 //		this.ciMapper.deleteCustomerInvoiceByRepeat();
 
-		
 		if(!isRegenerate){
 			
 			// call mail at value retriever
@@ -3213,6 +3261,24 @@ public class CRMService {
 	public String serviceGivenPaid(Customer c, Organization org, CustomerOrder co, CompanyDetail cd, User u){
 		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(co.getId());
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
+		
+		CustomerOrder coQuery = this.queryCustomerOrderById(co.getId());
+		// If is customer invite customer
+		if(coQuery.getInviter_customer_id()!=null){
+			Double customer_inviter_gained_commission = TMUtils.bigMultiply(TMUtils.bigDivide(coQuery.getInviter_rate(), 100d), coQuery.getOrder_total_price());
+			Customer cUpdate = this.queryCustomerById(coQuery.getInviter_customer_id());
+			cUpdate.setBalance(TMUtils.bigAdd(cUpdate.getBalance()!=null ? cUpdate.getBalance() : 0d, customer_inviter_gained_commission));
+			cUpdate.getParams().put("id", cUpdate.getId());
+			this.editCustomer(cUpdate);
+		}
+		// If is user invite customer
+		if(coQuery.getInviter_user_id()!=null){
+			Double user_inviter_gained_commission = TMUtils.bigMultiply(TMUtils.bigDivide(coQuery.getInviter_rate(), 100d), coQuery.getOrder_total_price());
+			User uUpdate = this.userMapper.selectUserById(coQuery.getInviter_user_id());
+			uUpdate.setInvite_commission(user_inviter_gained_commission);
+			uUpdate.getParams().put("id", uUpdate.getId());
+			this.userMapper.updateUser(uUpdate);
+		}
 		
 		
 		Double totalCreditBack = 0d;

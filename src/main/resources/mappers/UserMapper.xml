@@ -33,6 +33,7 @@
 					<if test="params.email != null">and email = #{params.email}</if>
 					<if test="params.is_provision != null">and is_provision = #{params.is_provision}</if>
 					<if test="params.agent_commission_rates != null">and agent_commission_rates = #{params.agent_commission_rates}</if>
+					<if test="params.invite_commission != null">and invite_commission = #{params.invite_commission}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -97,9 +98,9 @@
 	
 	<insert id="insertUser" parameterType="User">
 		insert into tm_user(
-			login_name,password,user_name,user_role,memo,auth,cellphone,email,is_provision,agent_commission_rates
+			login_name,password,user_name,user_role,memo,auth,cellphone,email,is_provision,agent_commission_rates,invite_commission
 		) values (
-			#{login_name},#{password},#{user_name},#{user_role},#{memo},#{auth},#{cellphone},#{email},#{is_provision},#{agent_commission_rates}
+			#{login_name},#{password},#{user_name},#{user_role},#{memo},#{auth},#{cellphone},#{email},#{is_provision},#{agent_commission_rates},#{invite_commission}
 		)
 	</insert>
 	
@@ -120,7 +121,8 @@
 			<if test="cellphone != null">`cellphone`=#{cellphone},</if>
 			<if test="email != null">`email`=#{email},</if>
 			<if test="is_provision != null">`is_provision`=#{is_provision},</if>
-			<if test="agent_commission_rates != null">`agent_commission_rates`=#{agent_commission_rates}</if>
+			<if test="agent_commission_rates != null">`agent_commission_rates`=#{agent_commission_rates},</if>
+			<if test="invite_commission != null">`invite_commission`=#{invite_commission}</if>
 		</set>
 		<where>
 			<if test="params.id != null">`id`=#{params.id}</if>
