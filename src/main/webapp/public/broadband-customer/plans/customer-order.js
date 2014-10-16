@@ -364,14 +364,14 @@
 				
 				//select_modem_container.hide('fast');
 				
-				if (has_voip) {
+				if (has_voip) { //console.log('has voip');
 					$.each(modems, function(){
 						if (this.support_voip) {
 							modem_selected = $.extend({}, this);
 							return false;
 						}
 					});
-				} else {
+				} else { //console.log('no voip');
 					$.each(modems, function(){
 						modem_selected = $.extend({}, this);
 						return false;

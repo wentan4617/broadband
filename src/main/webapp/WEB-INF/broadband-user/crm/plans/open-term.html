@@ -4,7 +4,11 @@
 		<.if (select_plan_group == 'plan-topup') {.>
 			Open Term
 		<.} else {.>
+			<.if (select_customer_type == 'personal') {.>
 			Open Term Or Contract 12 Months
+			<.} else if (select_customer_type == 'business') {.>
+			Contract 12 Months
+			<.}.>
 		<.}.>
 		</h4>
 	</div>
