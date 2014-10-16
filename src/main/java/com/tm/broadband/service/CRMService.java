@@ -1023,7 +1023,8 @@ public class CRMService {
 		ci.setAmount_paid((Double) map.get("amount_paid"));
 		ci.setAmount_payable((Double) map.get("amount_payable"));
 		ci.setFinal_payable_amount((Double) map.get("final_amount_payable"));
-		ci.setBalance((Double) map.get("balance")); 
+		ci.setBalance((Double) map.get("balance"));
+		ci.setInvoice_type("general-invoice");
 		ci.getParams().put("id", ci.getId());
 		
 		this.ciMapper.updateCustomerInvoice(ci);
@@ -1134,9 +1135,10 @@ public class CRMService {
 			
 			
 			CustomerInvoice ci = new CustomerInvoice();
-			ci.getParams().put("where", "by_max_id");
+			ci.getParams().put("where", "by_max_id_with_invoice_type");
 			ci.getParams().put("customer_id", co.getCustomer().getId());
 			ci.getParams().put("order_id", co.getId());
+			ci.getParams().put("invoice_type", "general-invoice");
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 			
 			// call mail at value retriever
@@ -1348,6 +1350,7 @@ public class CRMService {
 						e.printStackTrace();
 					}
 					ci.setInvoice_pdf_path(filePath);
+					ci.setInvoice_type("calling-invoice");
 					ci.getParams().put("id", ci.getId());
 					this.ciMapper.updateCustomerInvoice(ci);
 					
@@ -1921,6 +1924,7 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+		ci.setInvoice_type("general-invoice");
 		ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
@@ -2632,6 +2636,7 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
+		ci.setInvoice_type("general-invoice");
 		ciMapper.updateCustomerInvoice(ci);
 
 		// Deleting repeated invoices
@@ -2947,7 +2952,7 @@ public class CRMService {
 		// Automatically assign previous invoice's prepayment to current invoice if have
 		if(!isFirst){
 			// If previous invoice's balance less than zero
-			if(cpi.getBalance()<0){
+			if(cpi.getBalance()!=null && cpi.getBalance()<0){
 				
 				CustomerInvoice cpiUpdate = new CustomerInvoice();
 				
@@ -3021,7 +3026,7 @@ public class CRMService {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if(cpi!=null && cpi.getBalance()>0 && "business".equals(customer.getCustomer_type())){
+		if(cpi!=null && cpi.getBalance()!=null && cpi.getBalance()>0 && (customer.getCustomer_type()!=null && "business".equals(customer.getCustomer_type()))){
 			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
 		}
 
@@ -3103,7 +3108,8 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		
+
+		ci.setInvoice_type("general-invoice");
 		ci.getParams().put("id", ci.getId());
 		this.ciMapper.updateCustomerInvoice(ci);
 
@@ -3559,6 +3565,7 @@ public class CRMService {
 		Date tenth = calTenth.getTime();
 		
 		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("invoice_type", "general-invoice");
 		ciQuery.getParams().put("where", "create_date2_status2_due_date_is_not_null");
 		ciQuery.getParams().put("status", "unpaid");
 		ciQuery.getParams().put("status2", "overdue");

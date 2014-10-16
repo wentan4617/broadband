@@ -22,7 +22,9 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.3.9 2014-10-16
 
-* 
+* 服务器每生成一张账单，则在Xero生成同样的账单.(steven)
+* 修改invoice的paid.(steven)
+* 修改transaction的amount和settle_amount.(steven)
 
 
 
