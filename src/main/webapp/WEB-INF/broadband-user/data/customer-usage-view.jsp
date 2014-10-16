@@ -93,7 +93,6 @@
 <jsp:include page="../script.jsp" />
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/Chart.min.js"></script>
-<script type="text/javascript" src="http://www.google.com/jsapi"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/chartkick.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
