@@ -314,7 +314,18 @@
 					<if test="params.pstn != null">
 						and c.id IN(
 									SELECT customer_id FROM tm_customer_order WHERE id IN(
-										SELECT order_id FROM tm_customer_order_detail WHERE pstn_number LIKE CONCAT('%', '${params.pstn}', '%')
+										SELECT order_id FROM tm_customer_order_detail
+										WHERE pstn_number LIKE CONCAT('%', '${params.pstn}', '%')
+										AND detail_type='pstn'
+									)
+								)
+					</if>
+					<if test="params.voip != null">
+						and c.id IN(
+									SELECT customer_id FROM tm_customer_order WHERE id IN(
+										SELECT order_id FROM tm_customer_order_detail
+										WHERE pstn_number LIKE CONCAT('%', '${params.voip}', '%')
+										AND detail_type='voip'
 									)
 								)
 					</if>

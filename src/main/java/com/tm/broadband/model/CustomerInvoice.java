@@ -39,6 +39,9 @@ public class CustomerInvoice implements Serializable {
 	private String paid_type;
 	private Integer last_invoice_id;
 	private String payment_status;
+	private Integer original_order_id;
+	private Integer original_customer_id;
+	private String invoice_type;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -314,6 +317,30 @@ public class CustomerInvoice implements Serializable {
 
 	public void setDisconnected_date_str(String disconnected_date_str) {
 		this.disconnected_date_str = disconnected_date_str;
+	}
+
+	public Integer getOriginal_order_id() {
+		return original_order_id;
+	}
+
+	public void setOriginal_order_id(Integer original_order_id) {
+		this.original_order_id = original_order_id;
+	}
+
+	public Integer getOriginal_customer_id() {
+		return original_customer_id;
+	}
+
+	public void setOriginal_customer_id(Integer original_customer_id) {
+		this.original_customer_id = original_customer_id;
+	}
+
+	public String getInvoice_type() {
+		return invoice_type;
+	}
+
+	public void setInvoice_type(String invoice_type) {
+		this.invoice_type = invoice_type;
 	}
 
 }

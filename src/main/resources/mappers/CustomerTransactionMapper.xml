@@ -110,13 +110,13 @@
 			`auth_code`, `cardholder_name`, `card_name`, `card_number`, `client_info`, 
 			`currency_input`, `amount_settlement`, `expiry_date`, `dps_txn_ref`, 
 			`merchant_reference`, `response_text`, `success`,  `txnMac`, 
-			`transaction_type`, `transaction_sort`, `executor`) 
+			`transaction_type`, `transaction_sort`, `executor`, `inviter_id`)
 		VALUES (
 			#{customer_id}, #{order_id}, #{invoice_id}, #{transaction_date}, #{amount}, 
 			#{auth_code}, #{cardholder_name}, #{card_name}, #{card_number}, #{client_info},
 			#{currency_input}, #{amount_settlement}, #{expiry_date}, #{dps_txn_ref},
 			#{merchant_reference}, #{response_text}, #{success}, #{txnMac},
-			#{transaction_type}, #{transaction_sort}, #{executor})
+			#{transaction_type}, #{transaction_sort}, #{executor}, #{inviter_id})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -133,6 +133,8 @@
 			<if test="transaction_date != null">`transaction_date`=#{transaction_date},</if>
 			<if test="amount != null">`amount`=#{amount},</if>
 			<if test="transaction_sort != null">`transaction_sort`=#{transaction_sort}</if>
+			<if test="executor != null">`executor`=#{executor}</if>
+			<if test="inviter_id != null">`inviter_id`=#{inviter_id}</if>
 		</set>
 		<include refid="where"/>
 	</update>

@@ -20,6 +20,25 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.3.9 2014-10-16
+
+* 
+
+
+
+
+demand version 1.3.8 2014-10-15
+
+* 制作invoice反关联配合修改invoice状态，用以重新生成之前的账单.(steven)
+    1. 将customer_id及order_id存放至original_customer_id及original_order_id字段.
+    2. 将customer_id及order_id清空.
+    完成以上两步，则invoice反关联成功.
+
+* 制作列出反关联的invoice，用以还原反关联的invoice.(steven)
+    1. 将该customer反关联的invoice全都列出
+
+
+
 demand version 1.3.7 2014-10-14
 
 * Invite Rates & Rules:

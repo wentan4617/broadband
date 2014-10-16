@@ -119,6 +119,7 @@ public class Customer implements Serializable {
 	private String cvlan_ck;
 	private String email_ck;
 	private String pstn_ck;
+	private String voip_ck;
 	private String order_id_ck;
 	private String invoice_id_ck;
 	private String broadband_asid_ck;
@@ -132,6 +133,7 @@ public class Customer implements Serializable {
 	private boolean serviceAvailable;
 	
 	private String pstn;
+	private String voip;
 	private String order_id;
 	private String invoice_id;
 	private String broadband_asid;
@@ -688,6 +690,22 @@ public class Customer implements Serializable {
 
 	public void setCurrentOperateUserid(Integer currentOperateUserid) {
 		this.currentOperateUserid = currentOperateUserid;
+	}
+
+	public String getVoip_ck() {
+		return voip_ck;
+	}
+
+	public void setVoip_ck(String voip_ck) {
+		this.voip_ck = voip_ck;
+	}
+
+	public String getVoip() {
+		return voip;
+	}
+
+	public void setVoip(String voip) {
+		this.voip = voip;
 	}
 
 

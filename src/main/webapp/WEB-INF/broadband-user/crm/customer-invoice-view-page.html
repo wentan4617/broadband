@@ -46,18 +46,44 @@
 .bad-debit:hover{
 	background:rgba(77,83,96,0.35);
 }
+
+.xs-btn-width {
+	width:150px;
+}
+
+.xs-btn-width-long {
+	width:180px;
+}
+
+.bootstrap-select.btn-group, .bootstrap-select.btn-group[class*="span"] {
+	margin-bottom: 0;
+}
+
 </style>
-<. if (invoicePage.results != null && invoicePage.results.length > 0) { .>
+<div>
 <table class="table">
-<. for (var o = 0, len = orderIds.length; o < len; o++){ .>
 	<thead>
 		<tr>
-			<th colspan="11">
+			<th colspan="12">
 				<!-- In the external page, assign orderIds as obj's attribute -->
-				<h3 class="text-success" style="margin: 2px;"><strong>Order Serial:&nbsp;<small><.=orderIds[o].></small></strong></h3>
+				<h3 class="text-success" style="margin: 2px;">
+					<strong>Order Serial:&nbsp;<small><.=orderIds[o].></small></strong>
+					<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+					<select class="selectpicker" data-name="unbind_invoice_selecter">
+					    <option value="0">------------Operation------------</option>
+					    <option value="unbind-invoice">Unbind Invoice</option>
+					</select>
+					&nbsp;
+					<a href="javascript:void(0);" class="btn btn-warning btn-xs xs-btn-width-long" data-name="invoice_need_to_be_bind" data-customer-id="<.= customer_id .>">Invoice(s) Need To Be Bind</a>
+					
+					<. } .>
+				</h3>
+				<br/>
+				<div class="pull-right text-danger" style="font-size:24px;">Total Balance: $<.= Number(totalBalance).toFixed(2) .></div>
 			</th>
 		</tr>
 		<tr>
+			<th><input type="checkbox" id="checkbox_invoices_top" /></th>
 			<th>Reference</th>
 			<th style="width:94px;">Create Date</th>
 			<th style="width:94px;">Due Date</th>
@@ -73,6 +99,12 @@
 			<. } .>
 		</tr>
 	</thead>
+<. if (invoicePage.results != null && invoicePage.results.length <= 0) { .>
+	<tbody></tbody>
+</table>
+<. } .>
+<. if (invoicePage.results != null && invoicePage.results.length > 0) { .>
+<. for (var o = 0, len = orderIds.length; o < len; o++){ .>
 	<tbody>
 		<.
 			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
@@ -87,6 +119,7 @@
 							var txAmount_paid = new Number(tx.amount);
 		.>
 							<tr>
+								<td>&nbsp;</td>
 								<td>Transaction# - <.= tx.id .></td>
 								<td><.= tx.transaction_date_str .></td>
 								<td>&nbsp;</td>
@@ -124,6 +157,9 @@
 									invoice.status=='paid' ? 'paid' :
 									invoice.status=='void' ? 'void' :
 									invoice.status=='bad-debit' ? 'bad-debit' : '' .>" >
+					<td>
+						<input type="checkbox" name="checkbox_invoices" value="<.= invoice.id .>"/>
+					</td>
 					<td>Invoice# - <.= invoice.id .></td>
 					<td><.= invoice.create_date_str .></td>
 		<.
@@ -145,7 +181,23 @@
 					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
 					<td><strong>-<.= invoiceAmount_paid.toFixed(2) .></strong></td>
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
-					<td><strong><.= invoice.status .></strong></td>
+					<td>
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+						<. var invoice_status_arr = ['unpaid','not_pay_off','paid','overdue','void','bad-debit']; .>
+						<. var invoice_status_arr2 = ['Unpaid','Not Pay Off','Paid','Overdue','Void','Bad Debit']; .>
+						<select data-name="invoice_status_selecter_<.= invoice.id .>" data-id="<.= invoice.id .>" class="form-control input-sm">
+						<. for(var is=0; is<invoice_status_arr.length; is++){ .>
+							<. if(invoice.status==invoice_status_arr[is]){ .>
+							<option value="<.= invoice_status_arr[is] .>" selected="selected"><.= invoice_status_arr2[is] .></option>
+							<. } else { .>
+							<option value="<.= invoice_status_arr[is] .>"><.= invoice_status_arr2[is] .></option>
+							<. } .>
+						<. } .>
+						</select>
+						<. } else { .>
+						<strong><.= invoice.status .></strong>
+						<. } .>
+					</td>
 		<. 
 					if((invoice.status=='unpaid' || invoice.status=='not_pay_off' || invoice.status=='overdue')
 					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
@@ -367,6 +419,33 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
+
+		<!-- Change invoice status Modal -->
+		<div class="modal fade" id="changeInvoiceStatusModal_<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="changeInvoiceStatusModalLabel_<.= invoice.id .>" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="changeInvoiceStatusModalLabel_<.= invoice.id .>" >
+								Change the status
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="text-warning">
+							Sure to switch this invoice's status?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="changeInvoiceStatusModalBtn_<.= invoice.id .>" data-id="<.= invoice.id .>" data-dismiss="modal">Switch</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+		
+		
 		
 	<. } .>
 <. } .>
@@ -388,8 +467,65 @@
 			</td>
 		</tr>
 	</tfoot>
-</table>
-
 <. } else { .>
 	<div class="alert alert-warning">No records have been found.</div>
 <. } .>
+
+		<!-- Unbind invoice Modal -->
+		<div class="modal fade" id="unbindInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="unbindInvoiceModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="unbindInvoiceModalLabel" >
+								Unbind the invoice(s)
+						</h4>
+					</div>
+					<div class="modal-body">
+						<form class="form-horizontal">
+							<div class="form-group">
+								<p class="text-warning">
+									Unbind the selected invoice(s)
+								</p>
+							</div>
+						</form>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="unbindInvoiceModalBtn" data-dismiss="modal">Unbind</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+
+		<!-- Invoice need to be bind Modal -->
+		<div class="modal fade" id="invoiceNeedToBeBindModal" tabindex="-1" role="dialog" aria-labelledby="invoiceNeedToBeBindModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1200px;">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="row">
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title text-danger" id="invoiceNeedToBeBindModalLabel" >
+											Bind the invoice(s)
+									</h4>
+								</div>
+								<div class="panel-body">
+									<form class="form-horizontal" data-name="bind_invoice_form">
+									</form>
+								</div>
+								<div class="panel-footer col-md-12">
+									<a href="javascript:void(0);" class="btn btn-sm btn-success col-md-offset-5" data-name="invoiceNeedToBeBindModalBtn" data-dismiss="modal">Bind</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->

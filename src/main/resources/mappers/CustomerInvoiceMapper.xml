@@ -185,6 +185,9 @@
 					<if test="params.payment_status != null">and payment_status = #{params.payment_status}</if>
 					<if test="params.create_date != null">and date(create_date) = date(#{params.create_date})</if>
 					<if test="params.due_date != null">and date(due_date) = date(#{params.due_date})</if>
+					<if test="params.original_order_id != null">and original_order_id = #{params.original_order_id}</if>
+					<if test="params.original_customer_id != null">and original_customer_id = #{params.original_customer_id}</if>
+					<if test="params.invoice_type != null">and invoice_type = #{params.invoice_type}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -205,7 +208,10 @@
 		i.`paid_date`				as i_paid_date,
 		i.`paid_type`				as i_paid_type,
 		i.`last_invoice_id`			as i_last_invoice_id,
-		i.`payment_status`			as i_payment_status
+		i.`payment_status`			as i_payment_status,
+		i.`original_order_id`		as i_original_order_id,
+		i.`original_customer_id`	as i_original_customer_id,
+		i.`invoice_type`			as i_invoice_type
 	</sql>
 	<sql id="customerLastInvoiceColumns">
 		li.`id`							as li_id,
@@ -222,7 +228,10 @@
 		li.`paid_date`					as li_paid_date,
 		li.`paid_type`					as li_paid_type,
 		li.`last_invoice_id`			as li_last_invoice_id,
-		li.`payment_status`				as li_payment_status
+		li.`payment_status`				as li_payment_status,
+		li.`original_order_id`			as li_original_order_id,
+		li.`original_customer_id`		as li_original_customer_id,
+		li.`invoice_type`				as li_invoice_type
 	</sql>
 	<sql id="customerColumns">
 		c.`id` 				as c_id, 
@@ -357,6 +366,9 @@
 		<result property="paid_type" column="i_paid_type" />
 		<result property="last_invoice_id" column="i_last_invoice_id" />
 		<result property="payment_status" column="i_payment_status" />
+		<result property="original_order_id" column="i_original_order_id" />
+		<result property="original_customer_id" column="i_original_customer_id" />
+		<result property="invoice_type" column="i_invoice_type" />
 		
 		<association property="customer" javaType="Customer">
 			<id property="id" column="c_id" />
@@ -435,6 +447,9 @@
 			<result property="paid_type" column="li_paid_type" />
 			<result property="last_invoice_id" column="li_last_invoice_id" />
 			<result property="payment_status" column="li_payment_status" />
+			<result property="original_customer_id" column="li_original_customer_id" />
+			<result property="original_order_id" column="li_original_order_id" />
+			<result property="invoice_type" column="li_invoice_type" />
 		</association>
 	</resultMap>
 	
@@ -493,11 +508,13 @@
 		INSERT INTO `tm_customer_invoice`(
 			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
 			`final_payable_amount`, `amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
-			`paid_date`, `paid_type`, `last_invoice_id`, `payment_status`) 
+			`paid_date`, `paid_type`, `last_invoice_id`, `payment_status`, `original_order_id`,
+			`original_customer_id`, `invoice_type`) 
 		VALUES (
 			#{invoice_serial}, #{customer_id}, #{order_id}, #{create_date}, #{due_date},
 			#{final_payable_amount}, #{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
-			#{paid_date}, #{paid_type}, #{last_invoice_id}, #{payment_status})
+			#{paid_date}, #{paid_type}, #{last_invoice_id}, #{payment_status}, #{original_order_id},
+			#{original_customer_id}, #{invoice_type})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -522,7 +539,15 @@
 			<if test="paid_date != null">`paid_date`=#{paid_date},</if>
 			<if test="paid_type != null">`paid_type`=#{paid_type},</if>
 			<if test="last_invoice_id != null">`last_invoice_id`=#{last_invoice_id},</if>
-			<if test="payment_status != null">`payment_status`=#{payment_status}</if>
+			<if test="payment_status != null">`payment_status`=#{payment_status},</if>
+			<if test="original_order_id != null">`original_order_id`=#{original_order_id},</if>
+			<if test="original_customer_id != null">`original_customer_id`=#{original_customer_id},</if>
+			<if test="invoice_type != null">`invoice_type`=#{invoice_type},</if>
+			<if test="params.customer_id_null == 'true'">`customer_id`=null,</if>
+			<if test="params.order_id_null == 'true'">`order_id`=null,</if>
+			<if test="params.original_customer_id_null == 'true'">`original_customer_id`=null,</if>
+			<if test="params.original_order_id_null == 'true'">`original_order_id`=null,</if>
+			<if test="params.invoice_type_null == 'true'">`invoice_type`=null</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>
