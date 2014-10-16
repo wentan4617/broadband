@@ -43,6 +43,7 @@ public class CustomerTransaction implements Serializable {
 	private String transaction_type;
 	private String transaction_sort;
 	private Integer executor;
+	private Integer inviter_id;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -283,6 +284,14 @@ public class CustomerTransaction implements Serializable {
 
 	public void setExecutor(Integer executor) {
 		this.executor = executor;
+	}
+
+	public Integer getInviter_id() {
+		return inviter_id;
+	}
+
+	public void setInviter_id(Integer inviter_id) {
+		this.inviter_id = inviter_id;
 	}
 
 }

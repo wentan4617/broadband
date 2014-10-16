@@ -3270,6 +3270,15 @@ public class CRMService {
 			cUpdate.setBalance(TMUtils.bigAdd(cUpdate.getBalance()!=null ? cUpdate.getBalance() : 0d, customer_inviter_gained_commission));
 			cUpdate.getParams().put("id", cUpdate.getId());
 			this.editCustomer(cUpdate);
+			
+			CustomerTransaction ctCreate = new CustomerTransaction();
+			ctCreate.setCustomer_id(cUpdate.getId());
+			ctCreate.setTransaction_date(new Date());
+			ctCreate.setAmount(customer_inviter_gained_commission);
+			ctCreate.setAmount_settlement(customer_inviter_gained_commission);
+			ctCreate.setCurrency_input("Inviter Commission");
+			ctCreate.setCard_name("Inviter Commission(Customer)");
+			this.createCustomerTransaction(ctCreate);
 		}
 		// If is user invite customer
 		if(coQuery.getInviter_user_id()!=null){
@@ -3278,6 +3287,15 @@ public class CRMService {
 			uUpdate.setInvite_commission(user_inviter_gained_commission);
 			uUpdate.getParams().put("id", uUpdate.getId());
 			this.userMapper.updateUser(uUpdate);
+			
+			CustomerTransaction ctCreate = new CustomerTransaction();
+			ctCreate.setCustomer_id(uUpdate.getId());
+			ctCreate.setTransaction_date(new Date());
+			ctCreate.setAmount(user_inviter_gained_commission);
+			ctCreate.setAmount_settlement(user_inviter_gained_commission);
+			ctCreate.setCurrency_input("Inviter Commission");
+			ctCreate.setCard_name("Inviter Commission(Customer)");
+			this.createCustomerTransaction(ctCreate);
 		}
 		
 		

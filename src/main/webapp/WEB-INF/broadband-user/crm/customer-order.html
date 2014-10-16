@@ -791,7 +791,17 @@
 							<.
 								}
 							.>
-							<td class="align-right"><strong><.= customerOrderDetail[d].detail_expired_str .></strong></td>
+							<td width="139px">
+								<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')
+								   && customerOrderDetail[d].detail_expired_str!='') { .>
+								<div class="input-group date col-md-12" id="<.= customerOrder[i].id .>" data-detail-id="<.= customerOrderDetail[d].id .>" data-name="<.= customerOrderDetail[d].id .>_order_detail_expired_date_datepicker">
+									<input data-val="<.= customerOrderDetail[d].detail_expired_str .>" data-name="<.= customerOrderDetail[d].id .>_order_detail_expired_date_input_picker" class="form-control input-sm" />
+									<span class="input-group-addon" style="height:26px; padding:0 10px;"><i class="glyphicon glyphicon-calendar"></i></span>
+								</div>
+								<. } else { .>
+								<strong><.= customerOrderDetail[d].detail_expired_str .></strong>
+								<. } .>
+							</td>
 							<td>&nbsp;
 								<.
 									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant' || user_id == 10007)
@@ -1425,6 +1435,31 @@
 		</div>
 		<!-- /.modal -->
 	</form>
+
+	<!-- Change Detail Expired Date Modal -->
+	<div class="modal fade" id="changeDetailExpiredDateModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="changeDetailExpiredDateModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="changeDetailExpiredDateModalLabel">
+						<strong>Change Detail Expired Date</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Sure to change this detail's expired date?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a data-name="changeDetailExpiredDateModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Change</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<!-- Remove Detail Modal -->
 	<div class="modal fade" id="removeDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDetailModalLabel" aria-hidden="true">

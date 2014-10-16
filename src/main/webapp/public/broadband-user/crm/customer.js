@@ -1368,6 +1368,46 @@
 				    
 				    // if service giving date is null then assign new Date(), else assign service giving date 
 				}).datepicker('setDate', order_using_start_input || new Date());
+				
+				for(var iCod=0; iCod<co[i].customerOrderDetails.length; iCod++){
+					var cod = co[i].customerOrderDetails[iCod];
+					
+					// Order detail expired Datepicker
+					var order_detail_expired_date_input = $('input[data-name="'+cod.id+'_order_detail_expired_date_input_picker"]').attr('data-val');
+					$('div[data-name="'+cod.id+'_order_detail_expired_date_datepicker"]').datepicker({
+					    format: "yyyy-mm-dd",
+					    autoclose: true,
+					    todayHighlight: true
+					    
+					    // if detail expired date is null then assign new Date(), else assign service giving date 
+					}).datepicker('setDate', order_detail_expired_date_input || new Date());
+					
+					$('div[data-name="'+cod.id+'_order_detail_expired_date_datepicker"]').datepicker().on('changeDate', function(ev){
+						$('a[data-name="changeDetailExpiredDateModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-detail-id'));
+						$('#changeDetailExpiredDateModal_'+this.id).modal('show');
+					});
+					
+				}
+				
+				// Submit to rest controller
+				$('a[data-name="changeDetailExpiredDateModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					var detail_id = $(this).attr('data-detail-id');
+					var expired_date = $('input[data-name="'+detail_id+'_order_detail_expired_date_input_picker"]').val();
+					
+					var data = {
+							'detail_id': detail_id
+							,'expired_date': expired_date
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/detail/expired_date/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden order remove discount dialog
+				$('#changeDetailExpiredDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
+				
 				/*
 				 *	END Datepicker area
 				 */
@@ -1465,13 +1505,183 @@
 			map.customer_id = customerId;
 			map.orderIds = orderIds;
 			map.user_role = user_role;
+			var totalBalance = 0;
+			for(var i=0; i<map.invoicePage.results.length; i++){
+				totalBalance += map.invoicePage.results[i].balance;
+			}
+			map.totalBalance = totalBalance;
 	   		var $table = $('#invoice_detail');
 			$table.html(tmpl('invoice_table_tmpl', map));
 			$table.find('tfoot a').click(function(){
 				$.getInvoicePage($(this).attr('data-pageNo'));
 			});
 			
+			$('#checkbox_invoices_top').click(function(){
+				var b = $(this).prop('checked');
+				if(b){
+					$('input[name="checkbox_invoices"]').prop('checked', true);
+				} else {
+					$('input[name="checkbox_invoices"]').prop('checked', false);
+				}
+			});
+			
+			$('.selectpicker').selectpicker();
+			
 			$('a[data-toggle="tooltip"]').tooltip();
+
+			// BEGIN bind invoice
+			$('a[data-name="invoice_need_to_be_bind"]').click(function(){
+				
+				var customer_id = $(this).attr('data-customer-id');
+				
+				var data = {
+					'customer_id': customer_id
+				};
+
+				$.get(ctx+'/broadband-user/crm/customer/invoice/show_by_customer_id', data, function(json){
+					
+					var data = json.models;
+					
+					var htmlContent = 
+						'<div class="form-group col-md-12">'+
+							'<p class="text-warning">'+
+								'Bind the selected invoice(s)'+
+							'</p>'+
+						'</div>'+
+						'<div class="form-group col-md-12">'+
+							'<div class="col-md-1"><input type="checkbox" id="checkbox_bind_invoices_top" /></div>'+
+						'</div>'+
+						'<div class="form-group col-md-12">'+
+							'<div class="col-md-1">&nbsp;</div>'+
+							'<div class="col-md-1"><p class="form-control-static"><strong>Invoice #</strong></p></div>'+
+							'<div class="col-md-2"><p class="form-control-static"><strong>Create Date</strong></p></div>'+
+							'<div class="col-md-2"><p class="form-control-static"><strong>Due Date</strong></p></div>'+
+							'<div class="col-md-1"><p class="form-control-static"><strong>Payable</strong></p></div>'+
+							'<div class="col-md-1"><p class="form-control-static"><strong>Credit</strong></p></div>'+
+							'<div class="col-md-1"><p class="form-control-static"><strong>Paid</strong></p></div>'+
+							'<div class="col-md-1"><p class="form-control-static"><strong>Balance</strong></p></div>'+
+							'<div class="col-md-2"><p class="form-control-static"><strong>Status</strong></p></div>'+
+						'</div>';
+					
+					for(var i=0; i<data.length; i++){
+						var invoiceAmount_payable = new Number(data[i].amount_payable).toFixed(2);
+						var invoiceCredit_back = new Number(data[i].amount_payable - data[i].final_payable_amount).toFixed(2);
+						var invoiceAmount_paid = new Number(data[i].amount_paid).toFixed(2);
+						var invoiceBalance = new Number(data[i].balance).toFixed(2);
+						htmlContent += '<div class="form-group col-md-12">'+
+							'<div class="col-md-1"><input type="checkbox" name="checkbox_bind_invoices" value="'+data[i].id+'"/></div>'+
+							'<div class="col-md-1"><p class="form-control-static">'+data[i].id+'</p></div>'+
+							'<div class="col-md-2"><p class="form-control-static">'+data[i].create_date_str+'</p></div>'+
+							'<div class="col-md-2"><p class="form-control-static">'+data[i].due_date_str+'</p></div>'+
+							'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_payable+'</p></div>'+
+							'<div class="col-md-1"><p class="form-control-static">'+invoiceCredit_back+'</p></div>'+
+							'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_paid+'</p></div>'+
+							'<div class="col-md-1"><p class="form-control-static">'+invoiceBalance+'</p></div>'+
+							'<div class="col-md-2"><p class="form-control-static">'+data[i].status+'</p></div>'+
+						'</div>';
+					}
+					
+					
+					$('form[data-name="bind_invoice_form"]').html(htmlContent);
+					
+					$('#checkbox_bind_invoices_top').click(function(){
+						var b = $(this).prop('checked');
+						if(b){
+							$('input[name="checkbox_bind_invoices"]').prop('checked', true);
+						} else {
+							$('input[name="checkbox_bind_invoices"]').prop('checked', false);
+						}
+					});
+				});
+				
+				
+				$('#invoiceNeedToBeBindModal').modal('show');
+			});
+			
+			$('a[data-name="invoiceNeedToBeBindModalBtn"]').click(function(){
+
+				var operation_type = 'bind-invoice';
+				var checked_invoice_ids_str = '';
+				var checked_invoice_ids_arr = [];
+
+				$('input[name="checkbox_bind_invoices"]:checked').each(function(){
+					if(checked_invoice_ids_arr.toString().indexOf(this.value) == -1){
+						checked_invoice_ids_arr.push(this.value);
+					}
+				});
+				
+				for(var i=0; i<checked_invoice_ids_arr.length; i++){
+					
+					checked_invoice_ids_str += checked_invoice_ids_arr[i];
+					
+					if(i<checked_invoice_ids_arr.length-1){
+						checked_invoice_ids_str += ',';
+					}
+				}
+
+				var data = {
+					'operation_type': operation_type,
+					'checked_invoice_ids_str': checked_invoice_ids_str
+				};
+				
+				console.log(data);
+				
+				$.post(ctx+'/broadband-user/crm/customer/invoice/operation-type/edit', data, function(json){
+					$.jsonValidation(json, 'left');
+				});
+				
+			});
+			
+			$('#invoiceNeedToBeBindModal').on('hidden.bs.modal',function(){
+				$.getInvoicePage(pageNo);
+			});
+			
+			// BEGIN unbind invoice
+			$('select[data-name="unbind_invoice_selecter"]').change(function(){
+
+				var operation_type = '';
+				var checked_invoice_ids_str = '';
+				var checked_invoice_ids_arr = [];
+				
+				$('input[name="checkbox_invoices"]:checked').each(function(){
+					checked_invoice_ids_arr.push(this.value);
+				});
+				
+				for(var i=0; i<checked_invoice_ids_arr.length; i++){
+					
+					checked_invoice_ids_str += checked_invoice_ids_arr[i];
+					
+					if(i<checked_invoice_ids_arr.length-1){
+						checked_invoice_ids_str += ',';
+					}
+				}
+				
+				if($(this).val()=='unbind-invoice'){
+					operation_type = 'unbind-invoice';
+					$('a[data-name="unbindInvoiceModalBtn"]').attr('operation_type', operation_type);
+					$('a[data-name="unbindInvoiceModalBtn"]').attr('checked_invoice_ids_str', checked_invoice_ids_str);
+					$('#unbindInvoiceModal').modal('show');
+				}
+				
+			});
+			
+			$('a[data-name="unbindInvoiceModalBtn"]').click(function(){
+
+				var data = {
+					'operation_type': $(this).attr('operation_type'),
+					'checked_invoice_ids_str': $(this).attr('checked_invoice_ids_str')
+				};
+				
+				$.post(ctx+'/broadband-user/crm/customer/invoice/operation-type/edit', data, function(json){
+					$.jsonValidation(json, 'left');
+				});
+				
+			});
+			
+			$('#unbindInvoiceModal').on('hidden.bs.modal',function(){
+				$.getInvoicePage(pageNo);
+			});
+			
 			
 			// Iterating and binding all invoice's id to specific buttons
 			for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
@@ -1664,6 +1874,33 @@
 				$('#removeInvoiceModal_'+invoice.id+'').on('hidden.bs.modal', function(){
 					$.getInvoicePage(pageNo);
 				});
+
+				
+				// BEGIN change invoice status
+				
+				$('select[data-name="invoice_status_selecter_'+invoice.id+'"]').change(function(){
+					$('a[data-name="changeInvoiceStatusModalBtn_'+$(this).attr('data-id')+'"]').attr('data-status', $(this).val());
+					$('#changeInvoiceStatusModal_'+$(this).attr('data-id')).modal('show');
+				});
+				
+				$('a[data-name="changeInvoiceStatusModalBtn_'+invoice.id+'"]').click(function(){
+					
+					var ci_id = $(this).attr('data-id');
+					var ci_status = $(this).attr('data-status');
+
+					var data = {
+						'ci_id': ci_id,
+						'ci_status': ci_status
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/invoice/status/edit', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, 'json');
+					
+				});
+				$('#changeInvoiceStatusModal_'+invoice.id).on('hidden.bs.modal', function(){
+					$.getInvoicePage(pageNo);
+				});				
 				
 			}
 			

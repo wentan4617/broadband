@@ -1599,6 +1599,140 @@ public class CRMRestController {
 		return json;
 	}
 
+	// Change invoice status
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/status/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerInvoiceStatusEdit(Model model,
+			@RequestParam("ci_id") int ci_id,
+			@RequestParam("ci_status") String ci_status,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerInvoice ciUpdate = new CustomerInvoice();
+		ciUpdate.getParams().put("id", ci_id);
+		ciUpdate.setStatus(ci_status);
+		
+		this.crmService.editCustomerInvoice(ciUpdate);
+		// Change Customer invoice status is successful.
+		
+		json.getSuccessMap().put("alert-success", "Change invoice status to "+ci_status+" successfully!");
+
+		return json;
+	}
+
+	// Show invoice(s) by customer_id
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/show_by_customer_id")
+	public JSONBean<CustomerInvoice> showCustomerInvoiceByCustomerId(Model model,
+			@RequestParam("customer_id") int customer_id,
+			RedirectAttributes attr) {
+
+		JSONBean<CustomerInvoice> json = new JSONBean<CustomerInvoice>();
+		
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("original_customer_id", customer_id);
+		List<CustomerInvoice> cis = this.crmService.queryCustomerInvoices(ciQuery);
+		json.setModels(cis);
+
+		return json;
+	}
+
+	// Change detail expired date
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/expired_date/edit")
+	public JSONBean<CustomerOrderDetail> editCustomerOrderDetailExpiredDate(Model model,
+			@RequestParam("detail_id") int detail_id,
+			@RequestParam("expired_date") String expired_date,
+			RedirectAttributes attr) {
+
+		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
+		
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.setDetail_expired(TMUtils.parseDateYYYYMMDD(expired_date));
+		codUpdate.getParams().put("id", detail_id);
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Change detail expired date successfully!");
+
+		return json;
+	}
+
+	// Invoice Operations
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/operation-type/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerInvoiceOperationTypeEdit(Model model,
+			@RequestParam("operation_type") String operation_type,
+			@RequestParam("checked_invoice_ids_str") String checked_invoice_ids_str,
+			RedirectAttributes attr) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		String msg = "";
+		String msg_type = "alert-error";
+		String [] invoice_ids = checked_invoice_ids_str.split(",");
+		
+		if(checked_invoice_ids_str!=null && !"".equals(checked_invoice_ids_str.trim())){
+			
+			switch (operation_type) {
+			case "unbind-invoice":
+				for (String invoice_id : invoice_ids) {
+					
+					CustomerInvoice ciQuery = new CustomerInvoice();
+					ciQuery = this.crmService.queryCustomerInvoiceById(Integer.parseInt(invoice_id));
+					
+					CustomerInvoice ciUpdate = new CustomerInvoice();
+					ciUpdate.setOriginal_customer_id(ciQuery.getCustomer_id());
+					ciUpdate.setOriginal_order_id(ciQuery.getOrder_id());
+					ciUpdate.getParams().put("customer_id_null", "true");
+					ciUpdate.getParams().put("order_id_null", "true");
+					ciUpdate.getParams().put("id", invoice_id);
+					this.crmService.editCustomerInvoice(ciUpdate);
+					
+				}
+				msg_type = "alert-success";
+				msg = "Successfully unbind selected invoice(s)!";
+				break;
+			case "bind-invoice":
+				for (String invoice_id : invoice_ids) {
+					
+					CustomerInvoice ciQuery = new CustomerInvoice();
+					ciQuery = this.crmService.queryCustomerInvoiceById(Integer.parseInt(invoice_id));
+					
+					CustomerInvoice ciUpdate = new CustomerInvoice();
+					ciUpdate.setCustomer_id(ciQuery.getOriginal_customer_id());
+					ciUpdate.setOrder_id(ciQuery.getOriginal_order_id());
+					ciUpdate.getParams().put("original_customer_id_null", "true");
+					ciUpdate.getParams().put("original_order_id_null", "true");
+					ciUpdate.getParams().put("id", invoice_id);
+					this.crmService.editCustomerInvoice(ciUpdate);
+					
+				}
+				msg_type = "alert-success";
+				msg = "Successfully bind selected invoice(s)!";
+				break;
+			default:
+				msg_type = "alert-error";
+				msg = "Please choose an operation type!";
+				break;
+			}
+			
+		} else {
+			
+			msg_type = "alert-error";
+			msg = "Please select at less one invoice to continue!";
+			
+		}
+		
+		if("alert-success".equals(msg_type)){
+			
+			json.getSuccessMap().put(msg_type, msg);
+			
+		} else {
+			
+			json.getErrorMap().put(msg_type, msg);
+			
+		}
+
+		return json;
+	}
+
 	// Add phone number
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/phone_number/save", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPhoneNumberCreate(Model model,
