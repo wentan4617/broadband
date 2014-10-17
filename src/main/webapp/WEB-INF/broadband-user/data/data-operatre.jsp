@@ -22,9 +22,11 @@
 						  		</span>
 							</div>
 						</div>
+						<c:if test="${userSession.user_role=='system-developer'}">
 						<div class="col-md-3">
 							<a class="btn btn-success" id="calculator">Calculator All Vlans Data Flow Everyday</a>
 						</div>
+						</c:if>
 					</div>
 				</div>
 			</div>
