@@ -19,6 +19,9 @@ public class CustomerInvoiceOverduePenaltyEachMonth {
 	public CustomerInvoiceOverduePenaltyEachMonth(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerInvoiceOverduePenaltyEachMonth(){
+	}
 
 	public void createInvoiceOverduePenalty() throws ParseException {
         this.crmService.createInvoiceOverduePenalty();

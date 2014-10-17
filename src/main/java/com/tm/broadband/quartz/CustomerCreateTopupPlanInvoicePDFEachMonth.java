@@ -19,6 +19,9 @@ public class CustomerCreateTopupPlanInvoicePDFEachMonth {
 	public CustomerCreateTopupPlanInvoicePDFEachMonth(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerCreateTopupPlanInvoicePDFEachMonth(){
+	}
 
 	public void createTopupInvoicePDF() throws ParseException {
         

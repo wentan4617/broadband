@@ -22,6 +22,9 @@ public class CustomerCheckPendingWarningOrderEachFiveDays {
 	public CustomerCheckPendingWarningOrderEachFiveDays(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerCheckPendingWarningOrderEachFiveDays(){
+	}
 
 	public void checkPendingWarningOrderPDF() throws ParseException {
 

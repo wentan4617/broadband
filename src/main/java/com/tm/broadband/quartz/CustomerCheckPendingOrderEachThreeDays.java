@@ -22,6 +22,9 @@ public class CustomerCheckPendingOrderEachThreeDays {
 	public CustomerCheckPendingOrderEachThreeDays(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerCheckPendingOrderEachThreeDays(){
+	}
 
 	public void checkPendingOrderPDF() throws ParseException {
 

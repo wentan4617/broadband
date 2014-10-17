@@ -19,6 +19,9 @@ public class CustomerUpdateInvoiceOverdue2BadDebit {
 	public CustomerUpdateInvoiceOverdue2BadDebit(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerUpdateInvoiceOverdue2BadDebit(){
+	}
 
 	public void customerUpdateInvoiceOverdue2BadDebit() throws ParseException {
         this.crmService.customerUpdateInvoiceOverdue2BadDebit();
