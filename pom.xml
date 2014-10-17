@@ -16,8 +16,8 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-		<!-- Spring -->
-		<spring-framework.version>4.0.4.RELEASE</spring-framework.version>
+		<!-- Spring 4.1.1.RELEASE,4.0.4.RELEASE -->
+		<spring-framework.version>4.1.1.RELEASE</spring-framework.version>
 		<spring-batch.version>2.2.1.RELEASE</spring-batch.version>
 		<spring-ws.version>2.1.4.RELEASE</spring-ws.version>
 
@@ -35,8 +35,8 @@
 		<servlet.version>3.0.1</servlet.version>
 		<j2ee.version>7.0</j2ee.version>
 
-		<!-- Bean validation -->
-		<hibernate-validator.version>4.3.1.Final</hibernate-validator.version>
+		<!-- Bean validation 5.1.2.Final, 4.3.1.Final -->
+		<hibernate-validator.version>5.1.2.Final</hibernate-validator.version>
 
 		<!-- database drive -->
 		<mysql.connector.version>5.1.26</mysql.connector.version>
@@ -226,17 +226,28 @@
 		</dependency>
 
 		<!-- springmvc 处理json数据依赖的包 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.codehaus.jackson</groupId>
 			<artifactId>jackson-mapper-asl</artifactId>
 			<version>1.9.13</version>
-		</dependency>
+		</dependency> -->
+		<dependency>
+	<groupId>com.fasterxml.jackson.datatype</groupId>
+	<artifactId>jackson-datatype-joda</artifactId>
+	<version>2.4.3</version>
+</dependency>
+		
 
 		<!-- time schedule -->
 		<dependency>
-			<groupId>org.opensymphony.quartz</groupId>
-			<artifactId>quartz-all</artifactId>
-			<version>1.6.1</version>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz-jobs</artifactId>
+			<version>2.2.1</version>
 		</dependency>
 
 		<!-- spring-ws -->
@@ -258,9 +269,6 @@
 			<version>4.3</version>
 		</dependency>
 
-		<!-- dom4j -->
-		<!-- <dependency> <groupId>dom4j</groupId> <artifactId>dom4j</artifactId> 
-			<version>1.6.1</version> </dependency> -->
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>

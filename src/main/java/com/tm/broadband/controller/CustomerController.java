@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.codehaus.jackson.map.ObjectMapper;
+//import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -1229,7 +1229,7 @@ public class CustomerController {
 		
 		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
 		
-		System.out.println("customer: " + new ObjectMapper().writeValueAsString(customer));
+		//System.out.println("customer: " + new ObjectMapper().writeValueAsString(customer));
 
 		Response responseBean = null;
 

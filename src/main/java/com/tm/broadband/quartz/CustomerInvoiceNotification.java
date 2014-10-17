@@ -19,6 +19,9 @@ public class CustomerInvoiceNotification {
 	public CustomerInvoiceNotification(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerInvoiceNotification(){
+	}
 
 	public void checkInvoiceNotification() throws ParseException {
 		crmService.checkInvoiceNotification();

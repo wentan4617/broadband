@@ -19,6 +19,9 @@ public class CustomerCreateNextCallingInvoicePDF {
 	public CustomerCreateNextCallingInvoicePDF(CRMService crmService){
 		this.crmService = crmService;
 	}
+	
+	public CustomerCreateNextCallingInvoicePDF(){
+	}
 
 	public void createNextCallingInvoicePDF() throws ParseException {
         

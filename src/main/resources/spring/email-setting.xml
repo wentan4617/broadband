@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- SET default mail properties -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="mail.cyberpark.co.nz" />
+		<!-- <property name="host" value="smtp.gmail.com" /> -->
+		<property name="protocol" value="smtp" />
+		<property name="port" value="25" />
+		<!-- <property name="port" value="465" /> -->
+		<!-- need to change before publish 465-->
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+                <!-- <prop key="mail.smtp.starttls.enable">true</prop> -->
+				<!-- <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop> -->
+				<prop key="mail.smtp.socketFactory.fallback">false</prop>
+				<prop key="mail.smtp.timeout">120000</prop>
+				<prop key="mail.smtp.connectiontimeout">120000</prop>
+				<!-- true for Gamil -->
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Asyn send Eamil -->
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="10" />
+		<property name="maxPoolSize" value="30" />
+	</bean>
+
+	<!-- You can have some pre-configured messagess also which are ready to send -->
+	<bean id="preConfiguredMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="to" value="xxx@gmail.com"></property>
+		<property name="from" value="xxx@sina.com"></property>
+		<property name="subject" value="Test email from sina." />
+	</bean>
+	
+</beans>
