@@ -1369,6 +1369,42 @@
 				    // if service giving date is null then assign new Date(), else assign service giving date 
 				}).datepicker('setDate', order_using_start_input || new Date());
 				
+				// Order next invoice create Datepicker
+				var order_next_invoice_create_input = $('input[data-name="'+co[i].id+'_order_next_invoice_create_date_input_picker"]').attr('data-val');
+				$('div[data-name="'+co[i].id+'_order_next_invoice_create_date_datepicker"]').datepicker({
+				    format: "yyyy-mm-dd",
+				    autoclose: true,
+				    todayHighlight: true
+				    
+				    // if order next invoice create date is null then assign new Date(), else assign order next invoice create date
+				}).datepicker('setDate', order_next_invoice_create_input || new Date());
+				
+				$('div[data-name="'+co[i].id+'_order_next_invoice_create_date_datepicker"]').datepicker().on('changeDate', function(ev){
+					$('a[data-name="changeNextInvoiceCreateDateModalBtn_'+this.id+'"]').attr('data-id', this.id);
+					$('#changeNextInvoiceCreateDateModal_'+this.id).modal('show');
+				});
+				
+				$('a[data-name="changeNextInvoiceCreateDateModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					var order_id = $(this).attr('data-id');
+					var next_invoice_create_date_str = $('input[data-name="'+order_id+'_order_next_invoice_create_date_input_picker"]').val();
+					
+					var data = {
+							'order_id': order_id
+							,'next_invoice_create_date_str': next_invoice_create_date_str
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/next_invoice_create_date/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+					
+				});
+				
+				// Reset button when hidden order remove discount dialog
+				$('#changeNextInvoiceCreateDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
+				
+				
 				for(var iCod=0; iCod<co[i].customerOrderDetails.length; iCod++){
 					var cod = co[i].customerOrderDetails[iCod];
 					
@@ -1448,6 +1484,35 @@
 				$.getTxPage(pageNo);
 				$.getInvoicePage(1);
 			});
+			
+
+			
+			$('a[data-name="edit_transaction_amount"]').click(function(){
+				$('a[data-name="editTransactionAmountModalBtn"]').prop('id',this.id);
+				$('input[data-name="transaction_amount_input"]').val($(this).attr('data-val'));
+				$('#editTransactionAmountModal').modal('show');
+			});
+			
+			$('a[data-name="editTransactionAmountModalBtn"]').click(function(){
+
+				var transaction_id = this.id;
+				var transaction_amount = $('input[data-name="transaction_amount_input"]').val();
+				
+				var data = {
+					'transaction_id': transaction_id,
+					'transaction_amount': transaction_amount
+				};
+				
+				$.post(ctx+'/broadband-user/crm/customer/transaction/amount/edit', data, function(json){
+					$.jsonValidation(json, 'left');
+				});
+				
+			});
+			
+			$('#editTransactionAmountModal').on('hidden.bs.modal',function(){
+				$.getTxPage(pageNo);
+			});
+			
 			
 		}, "json");
 	};
@@ -1686,9 +1751,38 @@
 			// Iterating and binding all invoice's id to specific buttons
 			for (var i = 0, invoiceLen = map.invoicePage.results.length; i < invoiceLen; i++) {
 				
+				var invoice = map.invoicePage.results[i];
+				
+				$('a[data-name="'+invoice.id+'_edit_paid_amount"]').click(function(){
+					$('#editInvoicePaidAmountModal_'+this.id).modal('show');
+				});
+				
+				$('a[data-name="editInvoicePaidAmountModalBtn_'+invoice.id+'"]').click(function(){
+
+					var invoice_id = this.id;
+					var amount_paid = $('input[data-name="invoice_paid_amount_input_'+this.id+'"]').val();
+					
+					var data = {
+						'invoice_id': invoice_id,
+						'amount_paid': amount_paid
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/invoice/paid_amount/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					});
+					
+					console.log(data);
+					
+				});
+				
+				$('#editInvoicePaidAmountModal_'+invoice.id).on('hidden.bs.modal',function(){
+					$.getInvoicePage(pageNo);
+				});
+				
+				
+				
 				// BEGIN generate invoice
 				// Binding every generateUrl button's click event by assign them specific invoice's id
-				var invoice = map.invoicePage.results[i];
 				$('a[data-name="generateUrl_'+invoice.id+'"]').click(function(){
 					$('#regenerateInvoiceModal_'+this.id).modal('show');
 				});

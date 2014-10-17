@@ -635,6 +635,11 @@ public class CRMService {
 	public List<CustomerInvoiceDetail> queryCustomerInvoiceDetailsByCustomerInvoiceId(int id) {
 		return this.ciDetailMapper.selectCustomerInvoiceDetailsByCustomerInvoiceId(id);
 	}
+
+	@Transactional
+	public void editCustomerTransaction(CustomerTransaction ct){
+		this.customerTransactionMapper.updateCustomerTransaction(ct);
+	}
 	
 	@Transactional
 	public Page<CustomerTransaction> queryCustomerTransactionsByPage(Page<CustomerTransaction> page) {

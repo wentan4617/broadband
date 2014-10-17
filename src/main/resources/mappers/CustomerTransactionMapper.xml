@@ -47,7 +47,7 @@
 	
 	<sql id="where">
 		<where>
-			<if test="params.id != null">`id`=#{id}</if>
+			<if test="params.id != null">`id`=#{params.id}</if>
 			<if test="params.customer_id != null">and `customer_id`=#{params.customer_id}</if>
 			<if test="params.order_id != null">and `order_id`=#{params.order_id}</if>
 			<choose>
@@ -132,6 +132,7 @@
 			<if test="customerInvoice != null and customerInvoice.id != null">`invoice_id`=#{customerInvoice.id},</if>
 			<if test="transaction_date != null">`transaction_date`=#{transaction_date},</if>
 			<if test="amount != null">`amount`=#{amount},</if>
+			<if test="amount_settlement != null">`amount_settlement`=#{amount_settlement},</if>
 			<if test="transaction_sort != null">`transaction_sort`=#{transaction_sort}</if>
 			<if test="executor != null">`executor`=#{executor}</if>
 			<if test="inviter_id != null">`inviter_id`=#{inviter_id}</if>
