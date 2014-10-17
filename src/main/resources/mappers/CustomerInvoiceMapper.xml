@@ -124,6 +124,14 @@
 						AND order_id=#{params.order_id}
 					)
 				</when>
+				<when test="params.where == 'by_max_id_with_invoice_type'">
+					id=(
+						SELECT MAX(id) FROM tm_customer_invoice 
+						WHERE customer_id=#{params.customer_id}
+						AND order_id=#{params.order_id}
+					)
+					AND invoice_type=#{params.invoice_type}
+				</when>
 				<when test="params.where == 'by_second_id'">
 					id=(
 						SELECT MAX(id) FROM tm_customer_invoice
@@ -167,6 +175,7 @@
 						SELECT id FROM tm_customer_order
 						WHERE (is_ddpay is NULL or is_ddpay=false)
 					)
+					and invoice_type = #{params.invoice_type}
 				</when>
 				<when test="params.where == 'create_date2_status2_due_date_is_not_null'">
 					and (date(create_date) = date(#{params.create_date}) or date(create_date) = date(#{params.create_date2}))
@@ -176,6 +185,7 @@
 						SELECT id FROM tm_customer_order
 						WHERE (is_ddpay is NULL or is_ddpay=false)
 					)
+					and invoice_type = #{params.invoice_type}
 				</when>
 				<otherwise>
 					<if test="params.id != null">id = #{params.id}</if>

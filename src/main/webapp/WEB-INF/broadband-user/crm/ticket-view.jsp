@@ -309,6 +309,7 @@ tbody td {text-align:center;}
 												<option value="application">Application</option>
 												<option value="booking-appointment">Booking Appointment</option>
 												<option value="announcement">Announcement</option>
+												<option value="voip">VoIP</option>
 											</select>
 										</div>
 									</div>

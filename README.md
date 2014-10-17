@@ -22,8 +22,23 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.3.9 2014-10-16
 
-* 
-
+* 服务器每生成一张账单，则在Xero生成同样的账单.(steven)
+* [invoice的已付金额加一个铅笔点击可以修改.](steven)
+* [transaction的amount添加一个铅笔点击可以修改，在controller要同时修改transaction的amount和settle_amount.](steven)
+* [order的next invoice create date添加一个Calendar，点击可以修改日期.](steven)
+* order detail后面添加可以修改基本信息的铅笔点击可以修改，根据detail_type来显示除基本信息外的输入框:(steven)
+    1. plan-term, plan-no-term, plan-topup:
+        detail_plan_type, detail_plan_sort, detail_data_flow
+    2. pstn:
+        pstn_number
+    3. voip:
+        pstn_number, voip_password, voip_assign_date
+    4. hardware-router
+        
+    
+    
+* 添加debit或credit时不需要指定unit，自动设为1.(steven)
+* 在导入
 
 
 

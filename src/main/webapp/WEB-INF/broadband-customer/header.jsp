@@ -19,6 +19,11 @@
     <link href="${ctx}/public/bootstrap3/css/skins/all.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-nav-wizard.css?ver=20149131504" rel="stylesheet" type="text/css" />
+    <link rel="apple-touch-icon" href="${ctx}/public/bootstrap3/images/apple-touch-icon-iphone.png" />
+	<link rel="apple-touch-icon" sizes="57x57" href="${ctx}/public/bootstrap3/images/apple-touch-icon-small.png" />
+	<link rel="apple-touch-icon" sizes="72x72" href="${ctx}/public/bootstrap3/images/apple-touch-icon-middle.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="${ctx}/public/bootstrap3/images/apple-touch-icon-large.png" />
+	<link rel="apple-touch-icon" sizes="144x144" href="${ctx}/public/bootstrap3/images/apple-touch-icon-large.png" />
     <!--[if lt IE 9]>
     	<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       	<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>

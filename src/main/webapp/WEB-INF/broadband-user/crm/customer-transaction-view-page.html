@@ -33,7 +33,14 @@
 			<td><.= tx.transaction_date_str .></td>
 			<td><.= tx.card_name .></td>
 			<td><.= tx.transaction_sort .></td>
-			<td style="text-align:center;"><.= txAmount.toFixed(2) .></td>
+			<td style="text-align:center;">
+				<.= txAmount.toFixed(2) .>
+				<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+				<a id="<.= tx.id .>" class="btn btn-warning btn-xs" data-val="<.= txAmount.toFixed(2) .>" data-name="edit_transaction_amount">
+				  	<span class="glyphicon glyphicon-pencil"></span>
+				</a>
+				<. } .>
+			</td>
 			<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 				<td style="text-align:center;">
 					<a id="<.= tx.id .>" data-name="remove_transaction_btn" class="btn btn-danger btn-xs" href="javascript:void(0);">
@@ -88,6 +95,42 @@
 	</div>
 	<!-- /.modal-dialog -->
 </div>
+<!-- /.modal -->
+
+<!-- Transaction Amount Modal -->
+<form class="form-horizontal">
+<div class="modal fade" id="editTransactionAmountModal" tabindex="-1" role="dialog" aria-labelledby="editTransactionAmountModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="panel panel-success">
+						<div class="panel-heading">
+							<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+							<h4 class="modal-title text-danger" id="editTransactionAmountModalLabel" >
+									Edit Transaction Amount
+							</h4>
+						</div>
+						<div class="panel-body">
+							<div class="form-group">
+								<label class="control-label col-md-6" style="text-align:right;">Transaction Amount</label>
+								<div class="col-md-4">
+									<input class="form-control" data-name="transaction_amount_input"/>
+								</div>
+							</div>
+						</div>
+						<div class="panel-footer col-md-12">
+							<a href="javascript:void(0);" class="btn btn-sm btn-success col-md-offset-5" data-name="editTransactionAmountModalBtn" data-dismiss="modal">Edit</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+</form>
 <!-- /.modal -->
 
 <. } else { .>

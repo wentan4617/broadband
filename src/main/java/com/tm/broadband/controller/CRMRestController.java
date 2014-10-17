@@ -1655,6 +1655,67 @@ public class CRMRestController {
 		return json;
 	}
 
+	// Edit Invoice Paid Amount
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/paid_amount/edit")
+	public JSONBean<CustomerInvoice> editInvoicePaidAmount(Model model,
+			@RequestParam("invoice_id") int invoice_id,
+			@RequestParam("amount_paid") Double amount_paid,
+			RedirectAttributes attr) {
+
+		JSONBean<CustomerInvoice> json = new JSONBean<CustomerInvoice>();
+		CustomerInvoice ciUpdate = new CustomerInvoice();
+		ciUpdate.setAmount_paid(amount_paid);
+		ciUpdate.getParams().put("id", invoice_id);
+		this.crmService.editCustomerInvoice(ciUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Edit invoice paid amount successfully!");
+
+		return json;
+	}
+
+	// Edit Transaction Amount
+	@RequestMapping(value = "/broadband-user/crm/customer/transaction/amount/edit")
+	public JSONBean<CustomerTransaction> editTransactionAmount(Model model,
+			@RequestParam("transaction_id") int transaction_id,
+			@RequestParam("transaction_amount") Double transaction_amount,
+			RedirectAttributes attr) {
+
+		JSONBean<CustomerTransaction> json = new JSONBean<CustomerTransaction>();
+		CustomerTransaction ctUpdate = new CustomerTransaction();
+		ctUpdate.setAmount(transaction_amount);
+		ctUpdate.setAmount_settlement(transaction_amount);
+		ctUpdate.getParams().put("id", transaction_id);
+		this.crmService.editCustomerTransaction(ctUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Edit transaction amount successfully!");
+
+		return json;
+	}
+
+	// Edit Next Invoice Create Date
+	@RequestMapping(value = "/broadband-user/crm/customer/order/next_invoice_create_date/edit")
+	public JSONBean<CustomerOrder> editNextInvoiceCreateDate(Model model,
+			@RequestParam("order_id") int order_id,
+			@RequestParam("next_invoice_create_date_str") String next_invoice_create_date_str,
+			RedirectAttributes attr) {
+
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		Date next_invoice_create_date = TMUtils.parseDateYYYYMMDD(next_invoice_create_date_str);
+		Calendar calNextInvoiceCreateDateFlag = Calendar.getInstance();
+		calNextInvoiceCreateDateFlag.setTime(next_invoice_create_date);
+		calNextInvoiceCreateDateFlag.add(Calendar.DATE, 7);
+		
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.setNext_invoice_create_date(next_invoice_create_date);
+		coUpdate.setNext_invoice_create_date_flag(calNextInvoiceCreateDateFlag.getTime());
+		coUpdate.getParams().put("id", order_id);
+		this.crmService.editCustomerOrder(coUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Edit next invoice create date successfully!");
+
+		return json;
+	}
+
 	// Invoice Operations
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/operation-type/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerInvoiceOperationTypeEdit(Model model,
@@ -1716,7 +1777,7 @@ public class CRMRestController {
 		} else {
 			
 			msg_type = "alert-error";
-			msg = "Please select at less one invoice to continue!";
+			msg = "Please select at least one invoice to continue!";
 			
 		}
 		

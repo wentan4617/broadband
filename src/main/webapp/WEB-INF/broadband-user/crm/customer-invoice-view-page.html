@@ -179,7 +179,14 @@
 		.>
 					<td><strong><.= invoiceAmount_payable.toFixed(2) .></strong></td>
 					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
-					<td><strong>-<.= invoiceAmount_paid.toFixed(2) .></strong></td>
+					<td>
+						<strong>-<.= invoiceAmount_paid.toFixed(2) .></strong>
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= invoiceAmount_paid.toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
+						  	<span class="glyphicon glyphicon-pencil"></span> 
+						</a>
+						<. } .>
+					</td>
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
 					<td>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
@@ -443,6 +450,42 @@
 			</div>
 			<!-- /.modal-dialog -->
 		</div>
+		<!-- /.modal -->
+
+		<!-- Change Invoice Paid Amount Modal -->
+		<form class="form-horizontal">
+		<div class="modal fade" id="editInvoicePaidAmountModal_<.= invoice.id .>" tabindex="-1" role="dialog" aria-labelledby="editInvoicePaidAmountModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<div class="row">
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+									<h4 class="modal-title text-danger" id="editInvoicePaidAmountModalLabel" >
+											Edit Invoice Paid Amount
+									</h4>
+								</div>
+								<div class="panel-body">
+									<div class="form-group">
+										<label class="control-label col-md-6" style="text-align:right;">Paid Amount</label>
+										<div class="col-md-4">
+											<input class="form-control" data-name="invoice_paid_amount_input_<.= invoice.id .>" value="<.= invoiceAmount_paid.toFixed(2) .>"/>
+										</div>
+									</div>
+								</div>
+								<div class="panel-footer col-md-12">
+									<a href="javascript:void(0);" id="<.= invoice.id .>" class="btn btn-sm btn-success col-md-offset-5" data-name="editInvoicePaidAmountModalBtn_<.= invoice.id .>" data-dismiss="modal">Edit</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		</form>
 		<!-- /.modal -->
 		
 		
