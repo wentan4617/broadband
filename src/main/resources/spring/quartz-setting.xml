@@ -199,6 +199,28 @@
 	</bean>
 	<!-- // customerInvoiceNotification -->
 	
+	<!-- BEGIN sendNextTermPlanInvoicePDF -->
+	<!-- normal business Bean -->
+	<bean name="customerSendTermPlanInvoicePDFEachMonth" class="com.tm.broadband.quartz.CustomerSendTermPlanInvoicePDFEachMonth" />
+	<!-- assignment -->
+	<bean id="customerSendTermPlanInvoicePDFEachMonthJob"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="customerSendTermPlanInvoicePDFEachMonth" />
+		<property name="targetMethod" value="sendTermPlanInvoicePDF" />
+	</bean>
+	<!-- trigger -->
+	<bean id="customerSendTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="customerSendTermPlanInvoicePDFEachMonthJob" />
+		<property name="cronExpression" value="0 10 13 10 * ?"></property>
+		<!-- every 1 minute -->
+		<!-- 0 */1 * * * ? -->
+		<!-- every 30 seconds -->
+		<!-- 0-59/30 * * * * ? -->
+		<!-- every month's 10th 1:10 p.m. -->
+		<!-- 0 10 13 10 * ? -->
+	</bean>
+	<!-- END sendNextTermPlanInvoicePDF -->
+	
 	
 	<!-- QuartaTest -->
 	<bean name="quartaTest" class="com.tm.broadband.quartz.QuartaTest" />
@@ -222,6 +244,8 @@
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
 				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
+
+				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 				
 				<ref bean="customerInvoiceOverduePenaltyEachMonthTrigger" />
 				<ref bean="customerCheckPendingOrderEachThreeDaysTrigger" />

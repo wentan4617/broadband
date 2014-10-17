@@ -33,10 +33,7 @@ demand version 1.3.9 2014-10-16
         pstn_number
     3. voip:
         pstn_number, voip_password, voip_assign_date
-    4. hardware-router
-        
-    
-    
+
 * 添加debit或credit时不需要指定unit，自动设为1.(steven)
 * 在导入
 
