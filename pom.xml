@@ -308,7 +308,6 @@
 		</dependency>
 		
 		
-		
 		<dependency>
 			<groupId>net.oauth.core</groupId>
 			<artifactId>oauth-consumer</artifactId>
