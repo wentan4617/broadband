@@ -17,13 +17,18 @@
  */
 package com.rossjourdain.util.xero;
 
-import com.sun.xml.internal.ws.streaming.DOMStreamReader;
+
+//import com.sun.xml.internal.ws.streaming.DOMStreamReader;
+
 import java.util.List;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
+
 import net.oauth.OAuthProblemException;
+
 import org.w3c.dom.Element;
 
 /**
@@ -70,7 +75,7 @@ public class XeroClientException extends Exception {
 
   private void unmarshalAdditionalData() {
 
-    try {
+    /*try {
 
       Element e = (Element) apiException.getElements().getDataContractBase();
       String elementType = e.getAttribute("xsi:type");
@@ -108,7 +113,7 @@ public class XeroClientException extends Exception {
 
     } catch (JAXBException ex) {
       ex.printStackTrace();
-    }
+    }*/
 
   }
 

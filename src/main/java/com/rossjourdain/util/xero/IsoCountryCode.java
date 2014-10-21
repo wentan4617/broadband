@@ -367,7 +367,7 @@ public enum IsoCountryCode {
     AW,
 
     /**
-     * \u00c3¡­LAND ISLANDS
+     * 
      * 
      */
     AX,
