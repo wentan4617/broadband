@@ -128,7 +128,7 @@
 	<!-- // createNextTopupPlanInvoicePDF -->
 	
 	
-	<!-- BEGIN customerUpdateInvoiceUnpaid2Overdue -->
+	<!-- customerUpdateInvoiceUnpaid2Overdue -->
 	<bean name="customerUpdateInvoiceUnpaid2Overdue" class="com.tm.broadband.quartz.CustomerUpdateInvoiceUnpaid2Overdue" />
 	<bean id="customerUpdateInvoiceUnpaid2OverdueJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -146,7 +146,7 @@
 	<!-- // customerUpdateInvoiceUnpaid2Overdue -->
 	
 	
-	<!-- BEGIN customerCreateInvoiceOverdue2BadDebit -->
+	<!-- customerCreateInvoiceOverdue2BadDebit -->
 	<bean name="customerUpdateInvoiceOverdue2BadDebit" class="com.tm.broadband.quartz.CustomerUpdateInvoiceOverdue2BadDebit" />
 	<bean id="customerUpdateInvoiceOverdue2BadDebitJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -164,7 +164,7 @@
 	<!-- // customerCreateInvoiceOverdue2BadDebit -->
 	
 	
-	<!-- BEGIN createNextCallingInvoicePDF -->
+	<!-- createNextCallingInvoicePDF -->
 	<bean name="customerCreateNextCallingInvoicePDF" class="com.tm.broadband.quartz.CustomerCreateNextCallingInvoicePDF" />
 	<bean id="customerCreateNextCallingInvoicePDFJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -182,7 +182,7 @@
 	<!-- // createNextCallingInvoicePDF -->
 	
 	
-	<!-- BEGIN customerInvoiceNotification -->
+	<!-- customerInvoiceNotification -->
 	<bean name="customerInvoiceNotification" class="com.tm.broadband.quartz.CustomerInvoiceNotification" />
 	<bean id="customerInvoiceNotificationJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
@@ -200,15 +200,12 @@
 	<!-- // customerInvoiceNotification -->
 	
 	<!-- BEGIN sendNextTermPlanInvoicePDF -->
-	<!-- normal business Bean -->
 	<bean name="customerSendTermPlanInvoicePDFEachMonth" class="com.tm.broadband.quartz.CustomerSendTermPlanInvoicePDFEachMonth" />
-	<!-- assignment -->
 	<bean id="customerSendTermPlanInvoicePDFEachMonthJob"
 		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 		<property name="targetObject" ref="customerSendTermPlanInvoicePDFEachMonth" />
 		<property name="targetMethod" value="sendTermPlanInvoicePDF" />
 	</bean>
-	<!-- trigger -->
 	<bean id="customerSendTermPlanInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="customerSendTermPlanInvoicePDFEachMonthJob" />
 		<property name="cronExpression" value="0 10 13 10 * ?"></property>
@@ -219,7 +216,7 @@
 		<!-- every month's 10th 1:10 p.m. -->
 		<!-- 0 10 13 10 * ? -->
 	</bean>
-	<!-- END sendNextTermPlanInvoicePDF -->
+	<!-- // sendNextTermPlanInvoicePDF -->
 	
 	
 	<!-- QuartaTest -->
