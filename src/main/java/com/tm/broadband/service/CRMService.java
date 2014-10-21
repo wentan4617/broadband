@@ -4053,7 +4053,7 @@ public class CRMService {
 				cod_addons.setMonthly(true);
 				cod_addons.setDetail_name("200 calling minutes of 40 countries");
 				cod_addons.setDetail_type("present-calling-minutes");
-				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_desc("40 countries,voip");
 				cod_addons.setDetail_calling_minute(200);
 				cod_addons.setDetail_price(0d);
 				cod_addons.setDetail_unit(1);
@@ -4075,7 +4075,7 @@ public class CRMService {
 				cod_addons.setMonthly(true);
 				cod_addons.setDetail_name("100 calling minutes of 40 countries");
 				cod_addons.setDetail_type("present-calling-minutes");
-				cod_addons.setDetail_desc("international");
+				cod_addons.setDetail_desc("40 countries,voip");
 				cod_addons.setDetail_calling_minute(100);
 				cod_addons.setDetail_price(0d);
 				cod_addons.setDetail_unit(1);
@@ -4205,8 +4205,7 @@ public class CRMService {
 		return json;
 	}
 	
-	public void sendCustomerSMSByCellphone(String cellphone,
-			String content){
+	public void sendCustomerSMSByCellphone(String cellphone, String content){
 
 		this.smserService.sendSMSByAsynchronousMode(cellphone, content);
 	}
