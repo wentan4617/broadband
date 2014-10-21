@@ -20,33 +20,63 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
-demand version 1.3.9 2014-10-16
+demand version 1.4.1 2014-10-21
 
+* transaction添加一个invoice id下拉选项，更改选项关联到指定invoice上.
+    步骤：
+    1. transaction amount必须与原invoice的paid amount一致
+    2. 原invoice状态必须为paid，目标invoice状态必须为unpaid且paid amount为0
+    3. 原invoice的final payable必须与目标invoice的final payable一致
+    4. 设置原invoice的balance为paid amount的值，paid amount为0，如果due date小于今天则状态为unpaid，否则为overdue
+    5. 设置目标invoice的paid amount为transaction amount的值，balance为0
+    6. 设置transaction的invoice id为目标invoice的id
+    7. 更新transaction、原invoice、目标invoice
+
+
+
+
+demand version 1.4.0 2014-10-20
+
+* 检查看invoice due date为何不显示，数据库里有数据.(steven)
+* 重新生成invoice的postSingleInvoice已完毕，剩下所有自动的postMultiInvoices还未做.(steven)
+
+
+
+demand version 1.4.0 2014-10-18
+
+* 添加debit或credit时不需要指定unit，自动设为1.(steven)
+* billing里列出所有now()时间之前未出的in service订单的账单.(steven)
 * 服务器每生成一张账单，则在Xero生成同样的账单.(steven)
-* [invoice的已付金额加一个铅笔点击可以修改.](steven)
-* [transaction的amount添加一个铅笔点击可以修改，在controller要同时修改transaction的amount和settle_amount.](steven)
-* [order的next invoice create date添加一个Calendar，点击可以修改日期.](steven)
+* 在导入chorus add on账单时判断，如果应付金额小于等于0则不计入.(steven)
 * order detail后面添加可以修改基本信息的铅笔点击可以修改，根据detail_type来显示除基本信息外的输入框:(steven)
+    基本信息：detail_name, detail_price, detail_type
     1. plan-term, plan-no-term, plan-topup:
-        detail_plan_type, detail_plan_sort, detail_data_flow
+        detail_plan_type, detail_plan_sort, detail_data_flow, detail_plan_group
     2. pstn:
         pstn_number
     3. voip:
         pstn_number, voip_password, voip_assign_date
+    4. present-calling-minutes:
+        detail_desc, detail_calling_minute
 
-* 添加debit或credit时不需要指定unit，自动设为1.(steven)
-* 在导入
+
+
+demand version 1.3.9 2014-10-16
+
+* [invoice的已付金额加一个铅笔点击可以修改.](steven)
+* [transaction的amount添加一个铅笔点击可以修改，在controller要同时修改transaction的amount和settle_amount.](steven)
+* [order的next invoice create date添加一个Calendar，点击可以修改日期.](steven)
 
 
 
 demand version 1.3.8 2014-10-15
 
-* 制作invoice反关联配合修改invoice状态，用以重新生成之前的账单.(steven)
+* [制作invoice反关联配合修改invoice状态，用以重新生成之前的账单.](steven)
     1. 将customer_id及order_id存放至original_customer_id及original_order_id字段.
     2. 将customer_id及order_id清空.
     完成以上两步，则invoice反关联成功.
 
-* 制作列出反关联的invoice，用以还原反关联的invoice.(steven)
+* [制作列出反关联的invoice，用以还原反关联的invoice.](steven)
     1. 将该customer反关联的invoice全都列出
 
 

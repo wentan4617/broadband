@@ -23,12 +23,14 @@
 					<h4 class="panel-title">
 						Manual Generated Termed Invoices View
 						<div class="pull-right">
+							<c:if test="${userSession.user_role=='system-developer'}">
 							<button class="btn btn-success btn-xs" data-name="manually_generate_all_ddpay_invoices_btn" data-toggle="tooltip" data-placement="bottom" data-original-title="Manually Generate All DDPay Order's Next Invoice">
 								<strong>&nbsp;GENERATE All DDPAY ORDER'S NEXT INVOICE&nbsp;<span class="glyphicon glyphicon-arrow-up"></span></strong>
 							</button>&nbsp;&nbsp;
 							<button class="btn btn-success btn-xs" data-name="manually_generate_all_non_ddpay_invoices_btn" data-toggle="tooltip" data-placement="bottom" data-original-title="Manually Generate All Non DDPay Order's Next Invoice">
 								<strong>&nbsp;GENERATE All NON DDPAY ORDER'S NEXT INVOICE&nbsp;<span class="glyphicon glyphicon-arrow-up"></span></strong>
 							</button>
+							</c:if>
 						</div>
 					</h4>
 				</div>

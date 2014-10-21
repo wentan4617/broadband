@@ -24,7 +24,6 @@ public class CustomerCreateNextCallingInvoicePDF {
 	}
 
 	public void createNextCallingInvoicePDF() throws ParseException {
-        
         this.crmService.createNextCallingInvoicePDF();
     } 
 } 

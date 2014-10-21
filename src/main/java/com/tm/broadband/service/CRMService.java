@@ -1,6 +1,8 @@
 package com.tm.broadband.service;
 
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
+import com.rossjourdain.util.xero.XeroClient;
+import com.rossjourdain.util.xero.XeroClientProperties;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CompanyDetailMapper;
@@ -81,6 +85,7 @@ import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.CallingAndRentalFeeCalucation;
 import com.tm.broadband.util.MailRetriever;
+import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -1041,6 +1046,16 @@ public class CRMService {
 			,Notification notificationEmail
 			,Notification notificationSMS) {
 
+        // Prepare the Xero Client
+        XeroClient xeroClient = null;
+        try {
+            XeroClientProperties clientProperties = new XeroClientProperties();
+            clientProperties.load(new FileInputStream("xeroApi.properties"));
+            xeroClient = new XeroClient(clientProperties);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
 		customerOrder = this.customerOrderMapper.selectCustomerOrderById(customerOrder.getId());
 		createInvoicePDFBoth(customerOrder
 				,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
@@ -1049,17 +1064,31 @@ public class CRMService {
 	}
 
 	@Transactional 
-	public void createNextInvoice(CustomerOrder customerOrderParam) throws ParseException{
+	public List<Map<String, Object>> createNextInvoice(CustomerOrder customerOrderParam) throws ParseException{
 		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 		List<CustomerOrder> customerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
 
+        // Prepare the Xero Client
+        XeroClient xeroClient = null;
+        try {
+            XeroClientProperties clientProperties = new XeroClientProperties();
+    		String propertyFile = TMUtils.createPath("broadband" + File.separator + "properties" + File.separator + "xeroApi.properties");
+            clientProperties.load(new FileInputStream(propertyFile));
+            xeroClient = new XeroClient(clientProperties);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        
+        List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
+
 		for (CustomerOrder customerOrder : customerOrders) {
 			//System.out.println(customerOrder.getId() + ":" + customerOrder.getNext_invoice_create_date());
-			createInvoicePDFBoth(customerOrder
+			Map<String, Object> resultMap = createInvoicePDFBoth(customerOrder
 					,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					,new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
 					, true, false);	// true : next invoice
+			resultMaps.add(resultMap);
 		}
 		
 		// BEGIN TOPUP NOTIFICATION
@@ -1114,6 +1143,8 @@ public class CRMService {
 //		topupNotificationEmail = null;
 //		topupNotificationSMS = null;
 		// END TOPUP NOTIFICATION
+		
+		return resultMaps;
 		
 	}
 	
@@ -1190,6 +1221,8 @@ public class CRMService {
 		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coTemp);
 		
 		if(cos!=null && cos.size()>0){
+
+			List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
 			
 			for (CustomerOrder co : cos) {
 				
@@ -1360,6 +1393,15 @@ public class CRMService {
 					this.ciMapper.updateCustomerInvoice(ci);
 					
 				}
+				
+				Map<String, Object> resultMap = new HashMap<String, Object>();
+				resultMap.put("customer", co.getCustomer());
+				resultMap.put("customerInvoice", ci);
+				resultMaps.add(resultMap);
+			}
+			
+			if(resultMaps.size()>0){
+				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
 			}
 			
 		}
@@ -1535,6 +1577,8 @@ public class CRMService {
 		// If found any order(s)
 		if(cos.size() > 0){
 			
+			List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
+			
 			Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 			
@@ -1542,17 +1586,26 @@ public class CRMService {
 			boolean is_Next_Invoice = true;
 			
 			for (CustomerOrder co : cos) {
-				createTopupPlanInvoiceByOrder(co
+				
+				Map<String, Object> resultMap = createTopupPlanInvoiceByOrder(co
 						, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 						, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
 						, isRegenerateInvoice
 						, is_Next_Invoice);
+				
+				resultMaps.add(resultMap);
+				
 			}
+			
+			if(resultMaps.size()>0){
+				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+			}
+			
 		}
 	}
 	
 	@Transactional
-	public void createTopupPlanInvoiceByOrder(CustomerOrder co,
+	public Map<String, Object> createTopupPlanInvoiceByOrder(CustomerOrder co,
 			Notification notificationEmailFinal,
 			Notification notificationSMSFinal,
 			boolean isRegenerateInvoice,
@@ -1954,6 +2007,11 @@ public class CRMService {
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
 		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("customer", c);
+		resultMap.put("customerInvoice", ci);
+		return resultMap;
+		
 	}
 
 	@Transactional
@@ -2001,7 +2059,10 @@ public class CRMService {
         customerOrder.getParams().put("order_term_type", "order-term");
         
         // call Service Method
-		createNextInvoice(customerOrder);
+		List<Map<String, Object>> resultMaps = createNextInvoice(customerOrder);
+		if(resultMaps.size()>0){
+			Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+		}
 	}
 
 	@Transactional
@@ -2021,6 +2082,8 @@ public class CRMService {
 		
 		// If found any order(s)
 		if(cos.size() > 0){
+			
+			List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
 			
 			boolean isRegenerateInvoice = false;
 			boolean is_Next_Invoice = true;
@@ -2044,13 +2107,20 @@ public class CRMService {
 					
 				}	
 				
-				createTermPlanInvoiceByOrder(co, isRegenerateInvoice, is_Next_Invoice);
+				Map<String, Object> resultMap = createTermPlanInvoiceByOrder(co, isRegenerateInvoice, is_Next_Invoice);
+				resultMaps.add(resultMap);
+				
 			}
+			
+			if(resultMaps.size()>0){
+				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+			}
+			
 		}
 	}
 
 	@Transactional
-	public void createTermPlanInvoiceByOrder(CustomerOrder co
+	public Map<String, Object> createTermPlanInvoiceByOrder(CustomerOrder co
 			,boolean isRegenerateInvoice, boolean is_Next_Invoice) throws ParseException{
 		
 		// BEGIN get usable beans
@@ -2647,13 +2717,19 @@ public class CRMService {
 		// Deleting repeated invoices
 //		ciMapper.deleteCustomerInvoiceByRepeat();
 		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("customer", c);
+		resultMap.put("customerInvoice", ci);
+		
+		return resultMap;
+		
 	}
 	
 	
 	@Transactional
-	public void createInvoicePDFBoth(CustomerOrder customerOrder
-			,Notification notificationEmailFinal
-			,Notification notificationSMSFinal, Boolean is_Next_Invoice, boolean isRegenerate){
+	public Map<String, Object> createInvoicePDFBoth(CustomerOrder customerOrder
+			, Notification notificationEmailFinal
+			, Notification notificationSMSFinal, Boolean is_Next_Invoice, boolean isRegenerate){
 		// store company detail begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
@@ -3140,6 +3216,12 @@ public class CRMService {
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMSFinal.getContent());
 		}
+		
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		resultMap.put("customer", customer);
+		resultMap.put("customerInvoice", ci);
+		
+		return resultMap;
 	}
 	
 	/**

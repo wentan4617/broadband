@@ -20,6 +20,19 @@
 	<sql id="pageWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'card_name3'">
+					(card_name = #{params.card_name}
+					or
+					card_name = #{params.card_name2}
+					or
+					card_name Like CONCAT('${params.card_name3}', '%'))
+					<if test="params.transaction_date_month != null">
+						and DATE_FORMAT(transaction_date,'%Y-%m')=DATE_FORMAT(#{params.transaction_date_month},'%Y-%m')
+					</if>
+					<if test="params.transaction_date_year != null">
+						and DATE_FORMAT(transaction_date,'%Y')=DATE_FORMAT(#{params.transaction_date_year},'%Y')
+					</if>
+				</when>
 				<when test="params.where == 'card_name2'">
 					(card_name = #{params.card_name}
 					or

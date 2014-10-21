@@ -445,9 +445,10 @@ public class BillingController {
 			model.addAttribute("page", page);
 			
 		} else if("accountCredit".equals(cardName)){
-			page.getParams().put("where", "card_name2");
+			page.getParams().put("where", "card_name3");
 			page.getParams().put("card_name", "account-credit");
 			page.getParams().put("card_name2", "Account Credit");
+			page.getParams().put("card_name3", "Account Credit# - ");
 			page = this.crmService.queryCustomerTransactionsByPage(page);
 			model.addAttribute("page", page);
 			
@@ -520,8 +521,10 @@ public class BillingController {
 		Integer sumA2A = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
 		model.addAttribute("a2aSum", sumA2A);
 
+		pageStatusSum.getParams().put("where", "card_name3");
 		pageStatusSum.getParams().put("card_name", "account-credit");
 		pageStatusSum.getParams().put("card_name2", "Account Credit");
+		pageStatusSum.getParams().put("card_name3", "Account Credit# - ");
 		Integer sumAccountCredit = this.crmService.queryCustomerTransactionsSumByPage(pageStatusSum);
 		model.addAttribute("accountCreditSum", sumAccountCredit);
 		pageStatusSum = null;

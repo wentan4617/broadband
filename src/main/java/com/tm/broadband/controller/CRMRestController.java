@@ -1,6 +1,8 @@
 package com.tm.broadband.controller;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -29,10 +31,28 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itextpdf.text.DocumentException;
+import com.rossjourdain.util.xero.ArrayOfCreditNote;
+import com.rossjourdain.util.xero.ArrayOfInvoice;
+import com.rossjourdain.util.xero.ArrayOfLineItem;
+import com.rossjourdain.util.xero.ArrayOfPhone;
+import com.rossjourdain.util.xero.Contact;
+import com.rossjourdain.util.xero.CreditNote;
+import com.rossjourdain.util.xero.CreditNoteType;
+import com.rossjourdain.util.xero.Invoice;
+import com.rossjourdain.util.xero.InvoiceStatus;
+import com.rossjourdain.util.xero.InvoiceType;
+import com.rossjourdain.util.xero.LineItem;
+import com.rossjourdain.util.xero.Phone;
+import com.rossjourdain.util.xero.PhoneTypeCodeType;
+import com.rossjourdain.util.xero.XeroClient;
+import com.rossjourdain.util.xero.XeroClientException;
+import com.rossjourdain.util.xero.XeroClientProperties;
+import com.rossjourdain.util.xero.XeroClientUnexpectedException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerServiceRecord;
@@ -57,7 +77,9 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
+import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
@@ -1892,18 +1914,24 @@ public class CRMRestController {
 	public JSONBean<String> doManuallyGenerateTermedOrderInvoice(Model model,
 			@RequestParam("id") int id,
 			@RequestParam("generateType") String generateType,
-			RedirectAttributes attr) {
+			RedirectAttributes attr,
+			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
-
+		
 		try {
-			this.crmService.createTermPlanInvoiceByOrder(co
+			Map<String, Object> resultMap = this.crmService.createTermPlanInvoiceByOrder(co
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
-			json.getSuccessMap().put("alert-success",
-					"Manually Generate Termed Invoice is successful");
+			
+			Customer c = (Customer) resultMap.get("customer");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
+			
+			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
@@ -1916,23 +1944,28 @@ public class CRMRestController {
 	public JSONBean<String> doManuallyGenerateNoTermOrderInvoice(Model model,
 			@RequestParam("id") int id,
 			@RequestParam("generateType") String generateType,
-			RedirectAttributes attr) {
+			RedirectAttributes attr,
+			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
-			Notification notificationEmail = this.systemService
-					.queryNotificationBySort("invoice", "email");
-			Notification notificationSMS = this.systemService
-					.queryNotificationBySort("invoice", "sms");
-			this.crmService.createInvoicePDFBoth(co, notificationEmail,
+			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
+			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
+			Map<String, Object> resultMap = this.crmService.createInvoicePDFBoth(co, notificationEmail,
 					notificationSMS,
 					isRegenerateInvoice ? false : true,
 					isRegenerateInvoice);
-			json.getSuccessMap().put("alert-success",
-					"Manually Generate No Term Invoice is successful");
+			
+			Customer c = (Customer) resultMap.get("customer");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
+			
+			
+			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1945,7 +1978,8 @@ public class CRMRestController {
 	public JSONBean<String> doManuallyGenerateTopupOrderInvoice(Model model,
 			@RequestParam("id") int id,
 			@RequestParam("generateType") String generateType,
-			RedirectAttributes attr) {
+			RedirectAttributes attr,
+			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
@@ -1954,11 +1988,16 @@ public class CRMRestController {
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			this.crmService.createTopupPlanInvoiceByOrder(co
+			Map<String, Object> resultMap = this.crmService.createTopupPlanInvoiceByOrder(co
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
+			
+			Customer c = (Customer) resultMap.get("customer");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {

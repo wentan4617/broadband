@@ -232,10 +232,10 @@
 			<version>1.9.13</version>
 		</dependency> -->
 		<dependency>
-	<groupId>com.fasterxml.jackson.datatype</groupId>
-	<artifactId>jackson-datatype-joda</artifactId>
-	<version>2.4.3</version>
-</dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-joda</artifactId>
+			<version>2.4.3</version>
+		</dependency>
 		
 
 		<!-- time schedule -->
@@ -306,6 +306,25 @@
 			<artifactId>scala-library</artifactId>
 			<version>2.10.4</version>
 		</dependency>
+		
+		
+		
+		<dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth-consumer</artifactId>
+			<version>20100527</version>
+		</dependency>
+		<dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth-httpclient3</artifactId>
+			<version>20090617</version>
+		</dependency>
+		<dependency>
+			<groupId>com.sun.xml.bind</groupId>
+			<artifactId>jaxb-impl</artifactId>
+			<version>2.2.4-1</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -324,5 +343,12 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>oauth</id>
+			<name>OAuth Repository</name>
+			<url>http://oauth.googlecode.com/svn/code/maven</url>
+		</repository>
+	</repositories>
 
 </project>
