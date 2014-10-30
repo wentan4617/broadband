@@ -44,9 +44,12 @@
 		<h4 class="text-success">Order Information</h4>
 			<br/>
 			<. var regenerateOrderingStatus = 'pending,pending-warning,paid,ordering-pending,ordering-paid';
-			   if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) { .>
+				/*if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) {*/
+			.>
 			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
-			<. } .>
+			<.
+				/*}*/
+			.>
 			<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (customerOrder[i].receipt_pdf_path!=null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0))))) { .>
 			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_receipt" data-type="regenerate-receipt" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Receipt</a>
 			<. } .>
@@ -88,6 +91,13 @@
 			<strong>Topup Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_topup_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_generate_topup_invoice" data-type="generate">Generate next invoice</a>&nbsp;&nbsp;
+		<. } .>
+		<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
+			<br/><br/>
+			<strong>Xero Operations:</strong>
+			<br/><br/>
+			<strong>Send 2 Xero:</strong>&nbsp;<input type="checkbox" id="<.= customerOrder[i].id .>" name="<.= customerOrder[i].id .>_switch-is-send-xero-invoice" checked="checked">&nbsp;&nbsp;
+			<strong>Status 2 Xero:</strong>&nbsp;<input type="checkbox" id="<.= customerOrder[i].id .>" name="<.= customerOrder[i].id .>_switch-xero-invoice-status" checked="checked">&nbsp;&nbsp;
 		<. } .>
 		<hr/>
 
@@ -739,7 +749,11 @@
 					<th class="align-right">Detail Price</th>
 					<th class="align-right">Unit</th>
 					<th class="align-right">Detail Expired</th>
-					<th>&nbsp;</th>
+					<th>
+						<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_view_delete_detail" data-toggle="tooltip" data-placement="bottom" data-original-title="View deleted order details">
+						  	<span class="glyphicon glyphicon-eye" style="font-family:Arial;">View Records (<strong data-name="<.= customerOrder[i].id .>_deleted_detail_record_count"></strong>)</span> 
+						</a>
+					</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -794,7 +808,7 @@
 							<.
 								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 							.>
-									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="plan-detail_<.= customerOrder[i].id .>" data-plan-name="<.= customerOrderDetail[d].detail_name .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
+									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="<.= customerOrderDetail[d].id .>_order_detail_unit" data-name="plan-detail_<.= customerOrder[i].id .>" data-plan-name="<.= customerOrderDetail[d].detail_name .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
 							<.
 								} else {
 							.>
@@ -815,68 +829,69 @@
 							</td>
 							<td>&nbsp;
 								<.
-									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant' || user_id == 10007)
-										&&
-										(customerOrderDetail[d].detail_type=='plan-term'
+									if(customerOrderDetail[d].detail_type=='plan-term'
 										|| customerOrderDetail[d].detail_type=='plan-no-term'
-										|| customerOrderDetail[d].detail_type=='plan-topup')
+										|| customerOrderDetail[d].detail_type=='plan-topup'
 									){
 								.>
 									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
+									  	<span class="glyphicon glyphicon-edit"></span> 
+									</a>
+								<.
+									}
+									for(var u=0; u<users.length; u++){
+										if(users[u].id == customerOrderDetail[d].user_id){
+								.>
+										<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Provider: <.= users[u].user_name .>. Role: <.=  users[u].user_role .>">
+								  			<span class="glyphicon glyphicon-search"></span>
+										</a>
+								<.
+										}
+									}
+									if(customerOrderDetail[d].detail_type!='voip'
+									&& customerOrderDetail[d].detail_type!='pstn'
+									&& customerOrderDetail[d].detail_type.indexOf('plan-') == -1){
+								.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_common_detail" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <.= customerOrderDetail[d].detail_type .>">
 									  	<span class="glyphicon glyphicon-pencil"></span> 
 									</a>
 								<.
 									}
-									if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')
-										&&
-										(customerOrderDetail[d].detail_type=='discount'
-										|| customerOrderDetail[d].detail_type=='debit'
-										|| customerOrderDetail[d].detail_type=='present-calling-minutes'
-										|| customerOrderDetail[d].detail_type=='early-termination-debit'
-										|| customerOrderDetail[d].detail_type=='termination-credit')
-									){
+									if(customerOrderDetail[d].detail_type=='super-free-calling'){
 								.>
-									<.
-										for(var u=0; u<users.length; u++){
-											if(users[u].id == customerOrderDetail[d].user_id){
-									.>
-											<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Provider: <.= users[u].user_name .>. Role: <.=  users[u].user_role .>">
-									  			<span class="glyphicon glyphicon-search"></span>
-											</a>
-									<.
-											}
-										}
-										if(customerOrderDetail[d].detail_type=='early-termination-debit' || customerOrderDetail[d].detail_type=='termination-credit'){
-									.>
-												<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="<.= customerOrderDetail[d].detail_plan_memo .> <.= customerOrderDetail[d].detail_desc .>">
-										  			<span class="glyphicon glyphicon-eye-open"></span>
-												</a>
-									<.
-										}
-									.>
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_recombine_super_calling_minutes" data-desc="<.= customerOrderDetail[d].detail_desc .>" data-calling-minute="<.= customerOrderDetail[d].detail_calling_minute .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Recombine Super Calling Minutes">
+							  			<span class="glyphicon glyphicon-th"></span>
+									</a>
+								<.
+									}
+									if(customerOrderDetail[d].detail_type=='early-termination-debit' || customerOrderDetail[d].detail_type=='termination-credit'){
+								.>
+									<a class="btn btn-primary btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="<.= customerOrderDetail[d].detail_plan_memo .> <.= customerOrderDetail[d].detail_desc .>">
+							  			<span class="glyphicon glyphicon-eye-open"></span>
+									</a>
 								<.
 									}
 									if(customerOrderDetail[d].detail_type=='pstn'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>">
-									  	<span class="glyphicon glyphicon-edit"></span> PSTN
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>">
+									  	<span class="glyphicon glyphicon-edit"></span>
 									</a>
 								<.
 									}
 									if(customerOrderDetail[d].detail_type=='voip'){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-voip-password="<.= customerOrderDetail[d].voip_password .>" data-voip-assign-date="<.= customerOrderDetail[d].voip_assign_date_str .>">
-									  	<span class="glyphicon glyphicon-edit"></span> VoIP
+									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-voip-password="<.= customerOrderDetail[d].voip_password .>" data-voip-assign-date="<.= customerOrderDetail[d].voip_assign_date_str .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>">
+									  	<span class="glyphicon glyphicon-edit"></span>
 									</a>
 								<.
 									}
-									if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){
+									/*if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){*/
 								.>
 									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs pull-right" data-name="<.= customerOrder[i].id .>_remove_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Delete this <.= customerOrderDetail[d].detail_type .>">
 									  	<span class="glyphicon glyphicon-trash"></span> 
 									</a>
 								<.
-									}
+									/*}*/
 								.>
 							</td>
 						</tr>
@@ -892,7 +907,7 @@
 						  <span class="glyphicon glyphicon-plus"></span> Add PSTN OR VoIP
 						</a>
 				<.
-					if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){
+					/*if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){*/
 				.>
 						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_add_detail">
 						  <span class="glyphicon glyphicon-plus"></span> Add Detail ( ACCOUNTANT TEAM )
@@ -901,7 +916,7 @@
 						  <span class="glyphicon glyphicon-plus"></span> Add Product
 						</a>
 				<.
-					}
+					/*}*/
 				.>
 						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_add_provision_detail">
 						  <span class="glyphicon glyphicon-plus"></span> Add Detail ( PROVISION TEAM )
@@ -1435,6 +1450,15 @@
 								<input data-name="<.= customerOrder[i].id .>_update_voip_assign_date" class="form-control input-sm" placeholder="VoIP Assign Date" />
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Monthly Price</label>
+							<div class="col-md-6">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input data-name="update_phone_monthly_price_<.= customerOrder[i].id .>" class="form-control input-sm" value="0.00" />
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" data-name="updatePhoneModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Update Phone</a>
@@ -1445,6 +1469,62 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
+	</form>
+
+	<!-- Edit Common Detail Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editCommonDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCommonDetailModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editCommonDetailModalLabel">
+							<strong>Edit Common Detail</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Name</label>
+							<div class="col-md-6">
+								<input data-name="update_detail_name_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Name" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Detail Price</label>
+							<div class="col-md-6">
+								<input data-name="update_detail_price_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Price" />
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a data-name="editCommonDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Edit</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+
+	<!-- Recombine Super Calling Minutes Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="recombineSuperCallingMinutesModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="recombineSuperCallingMinutesModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="recombineSuperCallingMinutesModalLabel">
+							<strong>Recombine Specific Areas</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="row" id="super_free_calling_regions_<.= customerOrder[i].id .>">
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a data-name="recombineSuperCallingMinutesModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Recombine</a>
+					</div>
+				</div>
+			</div>
+		</div>
 	</form>
 
 	<!-- Change Next Invoice Create Date Modal -->
@@ -1498,6 +1578,7 @@
 	<!-- /.modal -->
 
 	<!-- Remove Detail Modal -->
+	<form class="form-horizontal">
 	<div class="modal fade" id="removeDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDetailModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -1508,9 +1589,17 @@
 					</h4>
 				</div>
 				<div class="modal-body">
-					<p>
-						Are you sure you want to remove this detail?
-					</p>
+					<div>
+						<p class="form-control-static">
+							Sure to remove this detail?
+						</p>
+					</div>
+					<div class="form-group">
+						<label class="control-label col-md-4">Delete Reason(Optional)</label>
+						<div class="col-md-6">
+							<textarea data-name="<.= customerOrder[i].id .>_delete_reason" class="form-control input-sm" placeholder="Delete Reason" style="resize:none;"></textarea>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<a id="<.= customerOrder[i].id .>" data-name="removeDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Remove Detail</a>
@@ -1520,6 +1609,7 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+	</form>
 	<!-- /.modal -->
 
 	<!-- Add Phone Modal -->
@@ -1565,6 +1655,15 @@
 							<label class="control-label col-md-4">VoIP Assign Date</label>
 							<div class="col-md-6">
 								<input data-name="<.= customerOrder[i].id .>_voip_assign_date" class="form-control input-sm" placeholder="VoIP Assign Date" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Monthly Price</label>
+							<div class="col-md-6">
+								<div class="input-group">
+									<span class="input-group-addon">$</span>
+									<input data-name="<.= customerOrder[i].id .>_phone_monthly_price" class="form-control input-sm" value="0.00" />
+								</div>
 							</div>
 						</div>
 					</div>
@@ -1798,6 +1897,8 @@
 										
 										<option disabled="disabled"></option>
 										<option disabled="disabled">-------------------------VoIP-------------------------</option>
+										<option disabled="disabled"></option>
+										<option value="super-free-calling">Super Free Calling</option>
 										<option disabled="disabled"></option>
 										<option disabled="disabled">--- Domestic ---</option>
 										<option value="local,voip">Local</option>
@@ -2045,6 +2146,36 @@
 	</div>
 	<!-- /.modal -->
 
+	<!-- View Deleted Order Details Modal -->
+	<div class="modal fade" id="viewDeletedOrderDetailsModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="viewDeletedOrderDetailsModalLabel" aria-hidden="true">
+		<div class="modal-dialog" style="width:1200px;">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="row">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+								<h4 class="modal-title" id="viewDeletedOrderDetailsModalLabel">
+									<strong>Deleted Order Details List</strong>
+								</h4>
+							</div>
+							<div class="panel-body">
+								<form class="form-horizontal" data-name="deleted_order_details_form">
+								</form>
+							</div>
+							<div class="panel-footer col-md-12">
+								<a href="javascript:void(0);" class="btn btn-success col-md-offset-5" data-dismiss="modal">Close</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
 	<!-- Edit Is DDPay Modal -->
 	<form class="form-horizontal">
 		<div class="modal fade" id="editIsDDPayModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editIsDDPayModalLabel" aria-hidden="true">
@@ -2118,6 +2249,12 @@
 							<label class="control-label col-md-3">Data Flow</label>
 							<div class="col-md-2">
 								<input class="form-control input-sm" type="text" data-name="data_flow_<.= customerOrder[i].id .>" placeholder="0.0" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Detail Unit</label>
+							<div class="col-md-2">
+								<input class="form-control input-sm" type="text" data-name="detail_plan_unit_<.= customerOrder[i].id .>" />
 							</div>
 						</div>
 					</div>

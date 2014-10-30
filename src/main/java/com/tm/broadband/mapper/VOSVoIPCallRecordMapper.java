@@ -20,6 +20,7 @@ public interface VOSVoIPCallRecordMapper {
 	List<VOSVoIPCallRecord> selectVOSVoIPCallRecord(VOSVoIPCallRecord vosvipcr);
 	List<VOSVoIPCallRecord> selectVOSVoIPCallRecordsByPage(Page<VOSVoIPCallRecord> page);
 	int selectVOSVoIPCallRecordsSum(Page<VOSVoIPCallRecord> page);
+	List<VOSVoIPCallRecord> selectVOSVoIPCallRecordsByCallStart(VOSVoIPCallRecord vvcr);
 
 	/* // END SELECT AREA */
 	/* =================================================================================== */

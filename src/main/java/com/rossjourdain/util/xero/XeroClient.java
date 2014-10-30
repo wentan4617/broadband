@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
+import com.itextpdf.text.log.SysoCounter;
+
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -32,7 +34,7 @@ import net.oauth.OAuthProblemException;
 import net.oauth.ParameterStyle;
 import net.oauth.client.OAuthClient;
 import net.oauth.client.OAuthResponseMessage;
-import net.oauth.client.httpclient3.HttpClient3;
+import net.oauth.client.httpclient3.*;
 import net.oauth.signature.RSA_SHA1;
 
 /**
@@ -58,6 +60,10 @@ public class XeroClient {
         this.consumerKey = clientProperties.getConsumerKey();
         this.consumerSecret = clientProperties.getConsumerSecret();
         this.privateKey = clientProperties.getPrivateKey();
+        System.out.println("endpointUrl: " + endpointUrl);
+        System.out.println("consumerKey: " + consumerKey);
+        System.out.println("consumerSecret: " + consumerSecret);
+        System.out.println("privateKey: " + privateKey);
     }
 
     public OAuthAccessor buildAccessor() {
@@ -145,10 +151,20 @@ public class XeroClient {
             OAuthClient client = new OAuthClient(new HttpClient3());
             OAuthAccessor accessor = buildAccessor();
             String contactsString = XeroXmlManager.invoicesToXml(arrayOfInvoices);
+            
+            System.out.println("----------------------------------------------contactsString:" + contactsString);
+            System.out.println(contactsString);
+            System.out.println("client: " + client.toString());
+           
             OAuthMessage response = client.invoke(accessor, OAuthMessage.POST, endpointUrl + "Invoices", OAuth.newList("xml", contactsString));
+           
+            System.out.println("++++++++++++++++++++++++++++++++++++++++++++++response: "+response);
         } catch (OAuthProblemException ex) {
+        	ex.printStackTrace();
+        	System.out.println("ex.getHttpStatusCode(): " + ex.getHttpStatusCode());
             throw new XeroClientException("Error posting invoices", ex);
         } catch (Exception ex) {
+        	ex.printStackTrace();
             throw new XeroClientUnexpectedException("", ex);
         }
     }

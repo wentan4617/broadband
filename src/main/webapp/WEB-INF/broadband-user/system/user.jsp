@@ -209,7 +209,7 @@
 									<ul class="list-unstyled">
 										<li>
 											<label> 
-												<form:checkbox path="authArray" value="crm/plans, crm/plans/*" data-type="checkbox_customer" /> New order
+												<form:checkbox path="authArray" value="crm/plans" data-type="checkbox_customer" /> New order
 											</label>
 										</li>
 									</ul>
@@ -288,6 +288,14 @@
 											</label>
 										</li>
 									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="billing/chart/calling-statistic/" data-type="checkbox_billing" /> Chart(Calling Statistic)
+											</label>
+										</li>
+									</ul>
 								</div>
 								<div class="col-md-3" data-module="provision">
 									<ul class="list-unstyled">
@@ -320,6 +328,14 @@
 										<li>
 											<label> 
 												<form:checkbox path="authArray" value="provision/sale/view" data-type="checkbox_provision" /> View Sales
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="provision/number-couldnot-find" data-type="checkbox_provision" /> View Provision Exceptions
 											</label>
 										</li>
 									</ul>

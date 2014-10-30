@@ -1,7 +1,14 @@
 package com.tm.broadband.util.test;
 
-import java.io.File;
 import java.text.ParseException;
+import java.util.Calendar;
+import java.util.List;
+
+import com.tm.broadband.model.CustomerCallRecord;
+import com.tm.broadband.model.CustomerChorusBroadbandASIDRecord;
+import com.tm.broadband.util.CallingRecordUtility;
+import com.tm.broadband.util.SimpleMapperCreator;
+import com.tm.broadband.util.TMUtils;
 
 
 public class StevenTest {
@@ -164,9 +171,11 @@ public class StevenTest {
 
 //		SimpleMapperCreator smc = new SimpleMapperCreator();
 //		smc.setAuthor("CyberPark");
-//		smc.setModel("InviteRates");
-//		smc.setTable("tm_invite_rates");
+//		smc.setModel("CustomerChorusBroadbandASIDRecord");
+//		smc.setTable("tm_customer_chorus_broadband_asid_record");
 //		smc.initial();
+		
+		
 		
 //		String str = "cyberpark/ccc/asd";
 //		System.out.println(str.substring(0, str.lastIndexOf("/")+1));
@@ -196,6 +205,32 @@ public class StevenTest {
 //		Double call_minutes = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.retrieveVoIPChargePerThreeMinutes(10)/60)));
 //		
 //		System.out.println(call_minutes);
+		
+		
+//		List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs("E:\\项目\\ISP项目开发\\拨打记录账单\\账单电话拨打细目\\TMS_20140928_EB05.csv");
+//		for (CustomerCallRecord ccr : ccrs) {
+//			
+//			if(ccr.getClear_service_id().toString().startsWith("1")){
+//				
+//				CustomerChorusBroadbandASIDRecord ccbasidr = new CustomerChorusBroadbandASIDRecord();
+//				ccbasidr.setStatement_date(ccr.getStatement_date());
+//				ccbasidr.setRecord_type(ccr.getRecord_type());
+//				ccbasidr.setClear_service_id(ccr.getClear_service_id());
+//				ccbasidr.setDate_from(ccr.getDate_from());
+//				ccbasidr.setDate_to(ccr.getDate_to());
+//				ccbasidr.setCharge_date_time(ccr.getCharge_date_time());
+//				ccbasidr.setDuration(ccr.getDuration());
+//				ccbasidr.setOot_id(ccr.getOot_id());
+//				ccbasidr.setBilling_description(ccr.getBilling_description());
+//				ccbasidr.setAmount_excl(ccr.getAmount_excl());
+//				ccbasidr.setAmount_incl(ccr.getAmount_incl());
+//				ccbasidr.setJuristiction(ccr.getJuristiction());
+//				ccbasidr.setPhone_called(ccr.getPhone_called());
+//				Console.log(ccbasidr);
+//				
+//			}
+//		}
+		
 		
 		
 	}

@@ -77,6 +77,8 @@ public class CustomerOrder implements Serializable {
 	private Integer inviter_user_id;
 	private Double inviter_rate;
 	private Double invitee_rate;
+	private String xero_invoice_status;
+	private Boolean is_send_xero_invoice;
 
 
 	/*
@@ -674,6 +676,22 @@ public class CustomerOrder implements Serializable {
 
 	public void setOneoff_cods(List<CustomerOrderDetail> oneoff_cods) {
 		this.oneoff_cods = oneoff_cods;
+	}
+
+	public String getXero_invoice_status() {
+		return xero_invoice_status;
+	}
+
+	public void setXero_invoice_status(String xero_invoice_status) {
+		this.xero_invoice_status = xero_invoice_status;
+	}
+
+	public Boolean getIs_send_xero_invoice() {
+		return is_send_xero_invoice;
+	}
+
+	public void setIs_send_xero_invoice(Boolean is_send_xero_invoice) {
+		this.is_send_xero_invoice = is_send_xero_invoice;
 	}
 
 }

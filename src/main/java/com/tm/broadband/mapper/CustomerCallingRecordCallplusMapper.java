@@ -20,6 +20,7 @@ public interface CustomerCallingRecordCallplusMapper {
 	List<CustomerCallingRecordCallplus> selectCustomerCallingRecordCallplussByPage(Page<CustomerCallingRecordCallplus> page);
 	int selectCustomerCallingRecordCallplussSum(Page<CustomerCallingRecordCallplus> page);
 	CustomerCallingRecordCallplus selectCustomerCallingRecordCallplusById(int id);
+	List<CustomerCallingRecordCallplus> selectCustomerCallingRecordCallplussByDate(CustomerCallingRecordCallplus ccrc);
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */

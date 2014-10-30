@@ -2,10 +2,11 @@ package com.tm.broadband.controller;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,11 +21,16 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.ContactUs;
+import com.tm.broadband.model.CustomerCallRecord;
+import com.tm.broadband.model.CustomerCallingRecordCallplus;
+import com.tm.broadband.model.CustomerChorusBroadbandASIDRecord;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.VOSVoIPCallRecord;
+import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.ProvisionService;
@@ -37,14 +43,16 @@ public class ProvisionController {
 	private MailerService mailerService;
 	private SystemService systemService;
 	private CRMService crmService;
+	private BillingService billingService;
 
 	@Autowired
 	public ProvisionController(ProvisionService provisionService, MailerService mailerService, SystemService systemService,
-			CRMService crmService) {
+			CRMService crmService, BillingService billingService) {
 		this.provisionService = provisionService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.crmService = crmService;
+		this.billingService = billingService;
 	}
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/view/{pageNo}/{order_status}")
@@ -324,6 +332,157 @@ public class ProvisionController {
 		this.systemService.queryUsersByPage(page);
 		model.addAttribute("page", page);
 		return "broadband-user/sale/sales-view";
+	}
+
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value = "/broadband-user/provision/number-couldnot-find/{billingType}/{statusType}")
+	public String toMonthlyBillingExceptions(Model model,
+			@PathVariable(value = "billingType") String billingType,
+			@PathVariable(value = "statusType") String statusType) {
+		
+		model.addAttribute("panelheading", "Monthly Billing Statistics");
+		
+		Map<String, Object> resultMap = this.billingService.queryMonthlyCallingStatistics(billingType, statusType);
+		
+		Calendar calLastMonth = Calendar.getInstance();
+		calLastMonth.add(Calendar.MONTH, -1);
+		
+		int chorusUnmatchedSize = 0;
+		int ncaUnmatchedSize = 0;
+		int vosUnmatchedSize = 0;
+		int asidUnmatchedSize = 0;
+		
+		int chorusDisconnectedSize = 0;
+		int ncaDisconnectedSize = 0;
+		int vosDisconnectedSize = 0;
+		int asidDisconnectedSize = 0;
+
+		
+		if("unmatched".equals(statusType)){
+
+			// Unmatched
+			List<CustomerCallRecord> chorusUnmatched = (List<CustomerCallRecord>) resultMap.get("chorusUnmatched");
+			model.addAttribute("chorusUnmatched", chorusUnmatched);
+			
+			List<CustomerCallingRecordCallplus> ncaUnmatched = (List<CustomerCallingRecordCallplus>) resultMap.get("ncaUnmatched");
+			model.addAttribute("ncaUnmatched", ncaUnmatched);
+			
+			List<VOSVoIPCallRecord> vosUnmatched = (List<VOSVoIPCallRecord>) resultMap.get("vosUnmatched");
+			model.addAttribute("vosUnmatched", vosUnmatched);
+			
+			List<VOSVoIPCallRecord> asidUnmatched = (List<VOSVoIPCallRecord>) resultMap.get("asidUnmatched");
+			model.addAttribute("asidUnmatched", asidUnmatched);
+			
+		}
+		
+		CustomerCallRecord chorusUnmatchedQuery = new CustomerCallRecord();
+		chorusUnmatchedQuery.getParams().put("where", "query_unmatched_records");
+		chorusUnmatchedQuery.getParams().put("groupby", "group by clear_service_id");
+		chorusUnmatchedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerCallRecord> ccrsUnmatched = this.billingService.queryCustomerCallRecords(chorusUnmatchedQuery);
+		chorusUnmatchedSize = ccrsUnmatched!=null ? ccrsUnmatched.size() : 0;
+		
+		CustomerCallingRecordCallplus ncaUnmatchedQuery = new CustomerCallingRecordCallplus();
+		ncaUnmatchedQuery.getParams().put("where", "query_unmatched_records");
+		ncaUnmatchedQuery.getParams().put("groupby", "group by original_number");
+		ncaUnmatchedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerCallingRecordCallplus> ccrcsUnmatched = this.billingService.queryCustomerCallingRecordCallpluss(ncaUnmatchedQuery);
+		ncaUnmatchedSize = ccrcsUnmatched!=null ? ccrcsUnmatched.size() : 0;
+		
+		VOSVoIPCallRecord vosUnmatchedQuery = new VOSVoIPCallRecord();
+		vosUnmatchedQuery.getParams().put("where", "query_unmatched_records");
+		vosUnmatchedQuery.getParams().put("groupby", "group by ori_number");
+		vosUnmatchedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<VOSVoIPCallRecord> vossUnmatched = this.billingService.queryVOSVoIPCallRecord(vosUnmatchedQuery);
+		vosUnmatchedSize = vossUnmatched!=null ? vossUnmatched.size() : 0;
+		
+		CustomerChorusBroadbandASIDRecord asidQuery = new CustomerChorusBroadbandASIDRecord();
+		asidQuery.getParams().put("where", "query_unmatched_records");
+		asidQuery.getParams().put("groupby", "group by clear_service_id");
+		asidQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerChorusBroadbandASIDRecord> asidsUnmatched = this.billingService.queryCustomerChorusBroadbandASIDRecords(asidQuery);
+		asidUnmatchedSize = asidsUnmatched!=null ? asidsUnmatched.size() : 0;
+		
+		
+
+		if("disconnected".equals(statusType)){
+	
+			// Disconnected
+			List<CustomerCallRecord> chorusDisconnected = (List<CustomerCallRecord>) resultMap.get("chorusDisconnected");
+			model.addAttribute("chorusDisconnected", chorusDisconnected);
+			
+			List<CustomerCallingRecordCallplus> ncaDisconnected = (List<CustomerCallingRecordCallplus>) resultMap.get("ncaDisconnected");
+			model.addAttribute("ncaDisconnected", ncaDisconnected);
+			
+			List<VOSVoIPCallRecord> vosDisconnected = (List<VOSVoIPCallRecord>) resultMap.get("vosDisconnected");
+			model.addAttribute("vosDisconnected", vosDisconnected);
+			
+			List<VOSVoIPCallRecord> asidDisconnected = (List<VOSVoIPCallRecord>) resultMap.get("asidDisconnected");
+			model.addAttribute("asidDisconnected", asidDisconnected);
+			
+		}
+		
+		CustomerCallRecord ccrDisconnectedQuery = new CustomerCallRecord();
+		ccrDisconnectedQuery.getParams().put("where", "query_disconnected_records");
+		ccrDisconnectedQuery.getParams().put("groupby", "group by clear_service_id");
+		ccrDisconnectedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerCallRecord> ccrsDisconnected = this.billingService.queryCustomerCallRecords(ccrDisconnectedQuery);
+		chorusDisconnectedSize = ccrsDisconnected!=null ? ccrsDisconnected.size() : 0;
+		
+		CustomerCallingRecordCallplus ncaDisconnectedQuery = new CustomerCallingRecordCallplus();
+		ncaDisconnectedQuery.getParams().put("where", "query_disconnected_records");
+		ncaDisconnectedQuery.getParams().put("groupby", "group by original_number");
+		ncaDisconnectedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerCallingRecordCallplus> ccrcsDisconnected = this.billingService.queryCustomerCallingRecordCallpluss(ncaDisconnectedQuery);
+		ncaDisconnectedSize = ccrcsDisconnected!=null ? ccrcsDisconnected.size() : 0;
+		
+		VOSVoIPCallRecord vosDisconnectedQuery = new VOSVoIPCallRecord();
+		vosDisconnectedQuery.getParams().put("where", "query_disconnected_records");
+		vosDisconnectedQuery.getParams().put("groupby", "group by ori_number");
+		vosDisconnectedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<VOSVoIPCallRecord> vossDisconnected = this.billingService.queryVOSVoIPCallRecord(vosDisconnectedQuery);
+		vosDisconnectedSize = vossDisconnected!=null ? vossDisconnected.size() : 0;
+		
+		CustomerChorusBroadbandASIDRecord asidDisconnectedQuery = new CustomerChorusBroadbandASIDRecord();
+		asidDisconnectedQuery.getParams().put("where", "query_disconnected_records");
+		asidDisconnectedQuery.getParams().put("groupby", "group by clear_service_id");
+		asidDisconnectedQuery.getParams().put("last_month_date", calLastMonth.getTime());
+		List<CustomerChorusBroadbandASIDRecord> asidsDisconnected = this.billingService.queryCustomerChorusBroadbandASIDRecords(asidDisconnectedQuery);
+		asidDisconnectedSize = asidsDisconnected!=null ? asidsDisconnected.size() : 0;
+		
+		
+		if("unmatched".equals(statusType)){
+
+			model.addAttribute("chorusUnmatchedSize", chorusUnmatchedSize);
+
+			model.addAttribute("ncaUnmatchedSize", ncaUnmatchedSize);
+
+			model.addAttribute("vosUnmatchedSize", vosUnmatchedSize);
+
+			model.addAttribute("asidUnmatchedSize", asidUnmatchedSize);
+			
+		}
+		
+		if("disconnected".equals(statusType)){
+
+			model.addAttribute("chorusDisconnectedSize", chorusDisconnectedSize);
+
+			model.addAttribute("ncaDisconnectedSize", ncaDisconnectedSize);
+
+			model.addAttribute("vosDisconnectedSize", vosDisconnectedSize);
+
+			model.addAttribute("asidDisconnectedSize", asidDisconnectedSize);
+			
+		}
+		
+		model.addAttribute("allUnmatchedSize", chorusUnmatchedSize+ncaUnmatchedSize+vosUnmatchedSize+asidUnmatchedSize);
+		model.addAttribute("allDisconnectedSize", chorusDisconnectedSize+ncaDisconnectedSize+vosDisconnectedSize+asidDisconnectedSize);
+		model.addAttribute("billingType", billingType);
+		model.addAttribute("statusType", statusType);
+		model.addAttribute(billingType+"Active", "active");
+		model.addAttribute(statusType+"Active", "active");
+		
+		return "broadband-user/provision/number-couldnot-find";
 	}
 
 }

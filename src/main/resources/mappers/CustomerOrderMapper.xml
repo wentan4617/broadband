@@ -117,7 +117,9 @@
 		co.`inviter_customer_id`				as co_inviter_customer_id,
 		co.`inviter_user_id`					as co_inviter_user_id,
 		co.`inviter_rate`						as co_inviter_rate,
-		co.`invitee_rate`						as co_invitee_rate
+		co.`invitee_rate`						as co_invitee_rate,
+		co.`xero_invoice_status` 				as co_xero_invoice_status,
+		co.`is_send_xero_invoice` 				as co_is_send_xero_invoice
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -164,6 +166,8 @@
 		<result property="inviter_user_id" column="co_inviter_user_id" />
 		<result property="inviter_rate" column="co_inviter_rate" />
 		<result property="invitee_rate" column="co_invitee_rate" />
+		<result property="xero_invoice_status" column="co_xero_invoice_status" />
+		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -425,6 +429,8 @@
 		<result property="inviter_user_id" column="co_inviter_user_id" />
 		<result property="inviter_rate" column="co_inviter_rate" />
 		<result property="invitee_rate" column="co_invitee_rate" />
+		<result property="xero_invoice_status" column="co_xero_invoice_status" />
+		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
 	</resultMap>
@@ -541,6 +547,8 @@
 		<result property="inviter_user_id" column="co_inviter_user_id" />
 		<result property="inviter_rate" column="co_inviter_rate" />
 		<result property="invitee_rate" column="co_invitee_rate" />
+		<result property="xero_invoice_status" column="co_xero_invoice_status" />
+		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
 	
@@ -613,6 +621,8 @@
 		<result property="inviter_user_id" column="co_inviter_user_id" />
 		<result property="inviter_rate" column="co_inviter_rate" />
 		<result property="invitee_rate" column="co_invitee_rate" />
+		<result property="xero_invoice_status" column="co_xero_invoice_status" />
+		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		<association property="customer" resultMap="customerResultMap"/>
 		<collection property="customerOrderDetails" resultMap="customerOrderDetailResultMap" />
 	</resultMap>
@@ -664,7 +674,7 @@
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
 			`receipt_pdf_path`,`disconnected_date`,`connection_date`,`contract`,`inviter_customer_id`,`inviter_user_id`,
-			`inviter_rate`,`invitee_rate`)
+			`inviter_rate`,`invitee_rate`, `xero_invoice_status`, `is_send_xero_invoice`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type},
@@ -674,7 +684,7 @@
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
 			#{receipt_pdf_path},#{disconnected_date},#{connection_date},#{contract},#{inviter_customer_id},#{inviter_user_id},
-			#{inviter_rate},#{invitee_rate})
+			#{inviter_rate},#{invitee_rate},#{xero_invoice_status},#{is_send_xero_invoice})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -729,7 +739,9 @@
 			<if test="inviter_customer_id != null">inviter_customer_id=#{inviter_customer_id},</if>
 			<if test="inviter_user_id != null">inviter_user_id=#{inviter_user_id},</if>
 			<if test="inviter_rate != null">inviter_rate=#{inviter_rate},</if>
-			<if test="invitee_rate != null">invitee_rate=#{invitee_rate}</if>
+			<if test="invitee_rate != null">invitee_rate=#{invitee_rate},</if>
+			<if test="xero_invoice_status != null">xero_invoice_status=#{xero_invoice_status},</if>
+			<if test="is_send_xero_invoice != null">is_send_xero_invoice=#{is_send_xero_invoice}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id=#{params.id}</if>

@@ -218,6 +218,7 @@
 		<url-pattern>/broadband-user/billing/voucher-file-upload-record/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/early-termination-charge/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/termination-refund/view/*</url-pattern>
+		<url-pattern>/broadband-user/billing/chart/calling-statistic/*</url-pattern>
 		<!-- Billing Module END -->
 
 		<!-- Provision Module BEGIN -->
@@ -225,6 +226,7 @@
 		<url-pattern>/broadband-user/provision/customer/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/contact-us/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/sale/view/*</url-pattern>
+		<url-pattern>/broadband-user/provision/number-couldnot-find/*</url-pattern>
 		<!-- Provision Module END -->
 
 		<!-- Data Module BEGIN -->

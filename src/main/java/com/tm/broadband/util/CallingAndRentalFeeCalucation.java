@@ -47,6 +47,10 @@ public class CallingAndRentalFeeCalucation {
 		if(ccrs!=null && ccrs.size()>0){
 			for (CustomerCallRecord ccr : ccrs) {
 				
+				if(ccr.getAmount_incl()!=null && ccr.getAmount_incl()<=0){
+					continue;
+				}
+				
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 				cid.setInvoice_detail_name(ccr.getBilling_description());
 				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
@@ -456,8 +460,7 @@ public class CallingAndRentalFeeCalucation {
 		);
 
 		List<VOSVoIPCallRecord> vosVoIPCallRecordsQuery =  vosVoIPCallRecordMapper.selectVOSVoIPCallRecord(vosVoIPCallRecordQuery);
-		
-		
+
 		// ITERATIVELY ADD ALL CALL CHARGES
 		for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecordsQuery) {
 			
@@ -485,8 +488,9 @@ public class CallingAndRentalFeeCalucation {
 			}
 
 			// Residential local call free
-			if(("personal".equals(customerType.toLowerCase()) || "business".equals(customerType.toLowerCase()))
-			&& isLocal){
+			if((("personal".equals(customerType.toLowerCase()) && "NATIONAL".equals(vosVoIPCallRecord.getCall_type().toUpperCase()) && !vosVoIPCallRecord.getArea_prefix().equals(642))
+			   ||("business".equals(customerType.toLowerCase())) && isLocal)
+			){
 				continue;
 			}
 			
@@ -609,18 +613,33 @@ public class CallingAndRentalFeeCalucation {
 			
 			int index = 0;
 			
+			boolean isNotCounted = true;
+			
 			for (CustomerOrderDetail pcm : pcms) {
+				
+//				System.out.println("\npcm.getDetail_calling_minute():"+pcm.getDetail_calling_minute()+"\n");
+//				System.out.println("pcm.getDetail_desc():"+pcm.getDetail_desc()+"");
+				
+				if(pcm.getDetail_calling_minute()<=0){
+					index++;
+					continue;
+				}
+				
 				
 				String cirAreaName = vosVoIPRates.get(0).getArea_name().toUpperCase();
 				String cirRateType = vosVoIPRates.get(0).getRate_type().toUpperCase();
 				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
 				
-				boolean isNotCounted = true;
+//				System.out.println("dest_number: "+dest_number);
+//				
+//				System.out.println("\ntotalCreditBack: "+totalCreditBack);
+//				System.out.println("cirAreaName: "+cirAreaName);
+//				System.out.println("cirRateType: "+cirRateType);
 				
 				// If is Local
 				if(
 				   isLocal
-				&& pcmDetailDesc.startsWith("LOCAL")
+				&& (pcmDetailDesc.startsWith("LOCAL") || pcmDetailDesc.contains("super-local,voip".toUpperCase()))
 				&& isNotCounted){
 					
 					if(pcm.getDetail_calling_minute()>0){
@@ -635,7 +654,7 @@ public class CallingAndRentalFeeCalucation {
 
 				// If is National
 				if(
-				   pcmDetailDesc.startsWith("NATIONAL")
+				   (pcmDetailDesc.startsWith("NATIONAL") || pcmDetailDesc.contains("super-national,voip".toUpperCase()))
 				&& "NATIONAL".equals(cirRateType)
 				&& "NZ NATIONAL".equals(cirAreaName)
 				&& isNotCounted){
@@ -647,12 +666,11 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 
 				// If is NZ Mobile
 				if(
-				   pcmDetailDesc.startsWith("MOBILE")
+				   (pcmDetailDesc.startsWith("MOBILE") || pcmDetailDesc.contains("super-mobile,voip".toUpperCase()))
 				&& "NATIONAL".equals(cirRateType)
 				&& "NZ MOBILE".equals(cirAreaName)
 				&& isNotCounted){
@@ -664,24 +682,24 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 
 				// If is Both Mobile+Fixed Line Countries
 				if(
-					pcmDetailDesc.contains("-") &&
-			    (("BANGLADESH".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("BANGLADESH"))
-			    || ("MALAYSIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("MALAYSIA"))
-			    || ("CAMBODIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CAMBODIA"))
-			    || ("SINGAPORE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SINGAPORE"))
-			    || ("CANADA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CANADA"))
-			    || ("KOREA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("KOREA") && cirAreaName.contains("SOUTH"))
-			    || ("CHINA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CHINA"))
-			    || ("USA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("USA") && !cirAreaName.contains("ALASKA"))
-			    || ("HONG KONG".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("HONG KONG"))
-			    || ("VIETNAM".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("VIETNAM"))
-			    || ("INDIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("INDIA")))
+			    ((("BANGLADESH".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Bangladesh-both,voip".toUpperCase())) && cirAreaName.contains("BANGLADESH"))
+			    || (("MALAYSIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Malaysia-both,voip".toUpperCase())) && cirAreaName.contains("MALAYSIA"))
+			    || (("CAMBODIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Cambodia-both,voip".toUpperCase())) && cirAreaName.contains("CAMBODIA"))
+			    || (("SINGAPORE".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Singapore-both,voip".toUpperCase())) && cirAreaName.contains("SINGAPORE"))
+			    || (("CANADA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Canada-both,voip".toUpperCase())) && cirAreaName.contains("CANADA"))
+			    || (("KOREA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Korea-both,voip".toUpperCase())) && cirAreaName.contains("KOREA") && cirAreaName.contains("SOUTH"))
+			    || (("CHINA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-China-both,voip".toUpperCase())) && cirAreaName.contains("CHINA"))
+			    || (("USA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-USA-both,voip".toUpperCase())) && cirAreaName.contains("USA") && !cirAreaName.contains("ALASKA"))
+			    || (("HONG KONG".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Hong-Kong-both,voip".toUpperCase())) && cirAreaName.contains("HONG KONG"))
+			    || (("VIETNAM".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Vietnam-both,voip".toUpperCase())) && cirAreaName.contains("VIETNAM"))
+			    || (("INDIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-India-both,voip".toUpperCase())) && cirAreaName.contains("INDIA")))
 				&& isNotCounted){
+					
+//					System.out.println("\nMobile+Fixed Line: "+cirAreaName);
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -690,42 +708,42 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 
 				// If is Fixed Line Countries
 				if(
-					pcmDetailDesc.contains("-") &&
-				(("ARGENTINA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("ARGENTINA") && isNotMobileAndSpecial(cirAreaName))
-			    || ("GERMANY".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("GERMANY") && isNotMobileAndSpecial(cirAreaName))
-			    || ("LAOS".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("LAOS") && isNotMobileAndSpecial(cirAreaName))
-			    || ("SOUTH AFRICA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SOUTH AFRICA") && isNotMobileAndSpecial(cirAreaName))
-			    || ("AUSTRALIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("AUSTRALIA") && isNotMobileAndSpecial(cirAreaName))
-			    || ("GREECE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("GREECE") && isNotMobileAndSpecial(cirAreaName))
-			    || ("NETHERLANDS".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("NETHERLANDS") && isNotMobileAndSpecial(cirAreaName))
-			    || ("SPAIN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SPAIN") && isNotMobileAndSpecial(cirAreaName))
-			    || ("BELGIUM".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("BELGIUM") && isNotMobileAndSpecial(cirAreaName))
-			    || ("INDONESIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("INDONESIA") && isNotMobileAndSpecial(cirAreaName))
-			    || ("NORWAY".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("NORWAY") && isNotMobileAndSpecial(cirAreaName))
-			    || ("SWEDEN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SWEDEN") && isNotMobileAndSpecial(cirAreaName))
-			    || ("BRAZIL".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("BRAZIL") && isNotMobileAndSpecial(cirAreaName))
-			    || ("IRELAND".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("IRELAND") && isNotMobileAndSpecial(cirAreaName))
-			    || ("PAKISTAN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("PAKISTAN") && isNotMobileAndSpecial(cirAreaName))
-			    || ("SWITZERLAND".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("SWITZERLAND") && isNotMobileAndSpecial(cirAreaName))
-			    || ("CYPRUS".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CYPRUS") && isNotMobileAndSpecial(cirAreaName))
-			    || ("ISRAEL".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("ISRAEL") && isNotMobileAndSpecial(cirAreaName))
-			    || ("POLAND".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("POLAND") && isNotMobileAndSpecial(cirAreaName))
-			    || ("TAIWAN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("TAIWAN") && isNotMobileAndSpecial(cirAreaName))
-			    || ("CZECH".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("CZECH") && isNotMobileAndSpecial(cirAreaName))
-			    || ("ITALY".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("ITALY") && isNotMobileAndSpecial(cirAreaName))
-			    || ("PORTUGAL".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("PORTUGAL") && isNotMobileAndSpecial(cirAreaName))
-			    || ("THAILAND".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("THAILAND") && isNotMobileAndSpecial(cirAreaName))
-			    || ("DENMARK".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("DENMARK") && isNotMobileAndSpecial(cirAreaName))
-			    || ("JAPAN".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("JAPAN") && isNotMobileAndSpecial(cirAreaName))
-			    || ("RUSSIA".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("RUSSIA") && isNotMobileAndSpecial(cirAreaName))
-			    || ("UNITED KINGDOM".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("UNITED KINGDOM") && isNotMobileAndSpecial(cirAreaName))
-			    || ("FRANCE".equals(pcmDetailDesc.split("-")[0]) && cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName)))
+				((("ARGENTINA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Argentina-fixedline,54,voip".toUpperCase())) && cirAreaName.contains("ARGENTINA") && isNotMobileAndSpecial(cirAreaName))
+			    || (("GERMANY".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Germany-fixedline,49,voip".toUpperCase())) && cirAreaName.contains("GERMANY") && isNotMobileAndSpecial(cirAreaName))
+			    || (("LAOS".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Laos-fixedline,856,voip".toUpperCase())) && cirAreaName.contains("LAOS") && isNotMobileAndSpecial(cirAreaName))
+			    || (("SOUTH AFRICA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-South-Africa-fixedline,27,voip".toUpperCase())) && cirAreaName.contains("SOUTH AFRICA") && isNotMobileAndSpecial(cirAreaName))
+			    || (("AUSTRALIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Australia-fixedline,61,voip".toUpperCase())) && cirAreaName.contains("AUSTRALIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (("GREECE".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Greece-fixedline,30,voip".toUpperCase())) && cirAreaName.contains("GREECE") && isNotMobileAndSpecial(cirAreaName))
+			    || (("NETHERLANDS".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Netherlands-fixedline,31,voip".toUpperCase())) && cirAreaName.contains("NETHERLANDS") && isNotMobileAndSpecial(cirAreaName))
+			    || (("SPAIN".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Spain-fixedline,34,voip".toUpperCase())) && cirAreaName.contains("SPAIN") && isNotMobileAndSpecial(cirAreaName))
+			    || (("BELGIUM".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Belgium-fixedline,32,voip".toUpperCase())) && cirAreaName.contains("BELGIUM") && isNotMobileAndSpecial(cirAreaName))
+			    || (("INDONESIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Indonesia-fixedline,62,voip".toUpperCase())) && cirAreaName.contains("INDONESIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (("NORWAY".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Norway-fixedline,47,voip".toUpperCase())) && cirAreaName.contains("NORWAY") && isNotMobileAndSpecial(cirAreaName))
+			    || (("SWEDEN".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Sweden-fixedline,46,voip".toUpperCase())) && cirAreaName.contains("SWEDEN") && isNotMobileAndSpecial(cirAreaName))
+			    || (("BRAZIL".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Brazil-fixedline,55,voip".toUpperCase())) && cirAreaName.contains("BRAZIL") && isNotMobileAndSpecial(cirAreaName))
+			    || (("IRELAND".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Ireland-fixedline,353,voip".toUpperCase())) && cirAreaName.contains("IRELAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (("PAKISTAN".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Pakistan-fixedline,92,voip".toUpperCase())) && cirAreaName.contains("PAKISTAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (("SWITZERLAND".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Switzerland-fixedline,41,voip".toUpperCase())) && cirAreaName.contains("SWITZERLAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (("CYPRUS".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Cyprus-fixedline,357,voip".toUpperCase())) && cirAreaName.contains("CYPRUS") && isNotMobileAndSpecial(cirAreaName))
+			    || (("ISRAEL".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Israel-fixedline,972,voip".toUpperCase())) && cirAreaName.contains("ISRAEL") && isNotMobileAndSpecial(cirAreaName))
+			    || (("POLAND".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Poland-fixedline,48,voip".toUpperCase())) && cirAreaName.contains("POLAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (("TAIWAN".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Taiwan-fixedline,886,voip".toUpperCase())) && cirAreaName.contains("TAIWAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (("CZECH".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Czech-fixedline,420,voip".toUpperCase())) && cirAreaName.contains("CZECH") && isNotMobileAndSpecial(cirAreaName))
+			    || (("ITALY".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Italy-fixedline,39,voip".toUpperCase())) && cirAreaName.contains("ITALY") && isNotMobileAndSpecial(cirAreaName))
+			    || (("PORTUGAL".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Portugal-fixedline,351,voip".toUpperCase())) && cirAreaName.contains("PORTUGAL") && isNotMobileAndSpecial(cirAreaName))
+			    || (("THAILAND".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Thailand-fixedline,66,voip".toUpperCase())) && cirAreaName.contains("THAILAND") && isNotMobileAndSpecial(cirAreaName))
+			    || (("DENMARK".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Denmark-fixedline,45,voip".toUpperCase())) && cirAreaName.contains("DENMARK") && isNotMobileAndSpecial(cirAreaName))
+			    || (("JAPAN".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Japan-fixedline,81,voip".toUpperCase())) && cirAreaName.contains("JAPAN") && isNotMobileAndSpecial(cirAreaName))
+			    || (("RUSSIA".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-Russia-fixedline,7,voip".toUpperCase())) && cirAreaName.contains("RUSSIA") && isNotMobileAndSpecial(cirAreaName))
+			    || (("UNITED KINGDOM".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-United Kingdom-fixedline,44,voip".toUpperCase())) && cirAreaName.contains("UNITED KINGDOM") && isNotMobileAndSpecial(cirAreaName))
+			    || (("FRANCE".equals(pcmDetailDesc.split("-")[0]) || pcmDetailDesc.contains("super-France-fixedline,33,voip".toUpperCase())) && cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName)))
 				&& isNotCounted){
+					
+//					System.out.println("Fixed Line: "+cirAreaName);
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -734,12 +752,11 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 
 				// If is 40 Countries
 				if(
-				   pcmDetailDesc.contains("40 COUNTRIES") &&
+				   (pcmDetailDesc.contains("40 COUNTRIES") || pcmDetailDesc.contains("super-40-countries,voip".toUpperCase())) &&
 			    ((cirAreaName.contains("BANGLADESH")) || (cirAreaName.contains("MALAYSIA"))
 			    || (cirAreaName.contains("CAMBODIA")) || (cirAreaName.contains("SINGAPORE"))
 			    || (cirAreaName.contains("CANADA")) || (cirAreaName.contains("KOREA") && cirAreaName.contains("SOUTH"))
@@ -777,6 +794,8 @@ public class CallingAndRentalFeeCalucation {
 			    || (cirAreaName.contains("FRANCE") && isNotMobileAndSpecial(cirAreaName)))
 				&& isNotCounted){
 					
+//					System.out.println("40 Countries: "+cirAreaName);
+					
 					if(pcm.getDetail_calling_minute()>0){
 						
 						totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
@@ -784,14 +803,15 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 				
 				// If is International
 				if(
-				   pcmDetailDesc.startsWith("INTERNATIONAL")
+				   (pcmDetailDesc.startsWith("INTERNATIONAL") || pcmDetailDesc.startsWith("super-international,voip".toUpperCase()))
 				&& "INTERNATIONAL".equals(cirRateType)
 				&& isNotCounted){
+					
+//					System.out.println("INTERNATIONAL: "+cirRateType);
 					
 					if(pcm.getDetail_calling_minute()>0){
 						
@@ -800,7 +820,6 @@ public class CallingAndRentalFeeCalucation {
 					}
 					
 					isNotCounted = false;
-					
 				}
 				
 				// Increment For Left Present Calling Minutes

@@ -47,6 +47,32 @@
 	<sql id="vOSVoIPCallRecordWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_disconnected_records'">
+					vosvipcr.ori_number IN(
+						SELECT REPLACE(REPLACE(REPLACE(pstn_number,'-',''),'(',''),')','') FROM tm_customer_order_detail
+						WHERE pstn_number IS NOT NULL
+						AND detail_type='voip'
+						AND order_id IN(
+							SELECT id FROM tm_customer_order
+							WHERE order_status='disconnected'
+						)
+					)
+					AND vosvipcr.invoice_id IS NULL
+					AND DATE_FORMAT(vosvipcr.call_start,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
+					AND vosvipcr.call_cost&gt;0
+				</when>
+				<when test="params.where == 'query_unmatched_records'">
+					vosvipcr.ori_number NOT IN(
+						SELECT REPLACE(REPLACE(REPLACE(pstn_number,'-',''),'(',''),')','') FROM tm_customer_order_detail
+						WHERE pstn_number IS NOT NULL
+						AND detail_type='voip'
+					)
+					AND vosvipcr.invoice_id IS NULL
+					AND vosvipcr.ori_number NOT LIKE '0800%'
+					AND vosvipcr.ori_number not in(CONCAT('${params.not_in_ori_number}'))
+					AND DATE_FORMAT(vosvipcr.call_start,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
+					AND vosvipcr.call_cost&gt;0
+				</when>
 				<when test="params.where == 'query_call_records'">
 					<if test="params.ori_number != null">and vosvipcr.ori_number LIKE CONCAT('%', '${params.ori_number}')</if>
 					<if test="params.invoice_id != null">
@@ -78,10 +104,20 @@
 	<!-- =================================================================================== -->
 
 	<!-- SELECT AREA -->
+	
+	<select id="selectVOSVoIPCallRecordsByCallStart" parameterType="VOSVoIPCallRecord" resultType="VOSVoIPCallRecord">
+		select * from tm_vos_voip_call_record
+		<where>
+			<if test="params.call_start != null">
+				DATE_FORMAT(call_start,'%Y-%m') = DATE_FORMAT(#{params.call_start},'%Y-%m')
+			</if>
+		</where>
+	</select>
 
 	<select id="selectVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord" resultType="VOSVoIPCallRecord">
 		select * from tm_vos_voip_call_record as vosvipcr
 		<include refid="vOSVoIPCallRecordWhere"/>
+		<if test="params.groupby != null">${params.groupby}</if>
 	</select>
 
 	<!-- select vOSVoIPCallRecord page -->

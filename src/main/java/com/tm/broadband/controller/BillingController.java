@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -1405,4 +1406,68 @@ public class BillingController {
 		
 		return "broadband-user/sale/commission-chart";
 	}
+	
+
+	
+	/**
+	 * Billing Monthly Calling Statistics
+	 */
+	@RequestMapping(value = "/broadband-user/billing/chart/calling-statistic/{callingType}/{yearMonth}")
+	public String toChartMonthlyCallingStatistics(Model model,
+			@PathVariable(value = "callingType") String callingType,
+			@PathVariable(value = "yearMonth") String yearMonth) {
+		
+		model.addAttribute("panelheading", "Monthly Calling Statistics");
+		
+		/**
+		 * MONTHLY STATISTIC BEGIN
+		 */
+
+		Integer year = null;
+		Integer month = null;
+		
+		if(yearMonth.equals("0")){
+			Calendar c = Calendar.getInstance(Locale.CHINA);
+			// get this year
+			year = c.get(Calendar.YEAR);
+			// get this month
+			month = c.get(Calendar.MONTH)+1;
+			yearMonth = year.toString()+"-"+month.toString();
+		} else {
+			String[] temp = yearMonth.split("-");
+			year = Integer.parseInt(temp[0]);
+			month = Integer.parseInt(temp[1]);
+		}
+		
+		// BEGIN CALLING AMOUNT
+		
+		Double callingBuyingAmount = 0d;
+		Double callingSellingAmount = 0d;
+		
+		List<StatisticBilling> monthBillingCallingAmountInvoices = new ArrayList<StatisticBilling>();
+		TMUtils.thisMonthDateForBillingStatistic(year, month, monthBillingCallingAmountInvoices);
+		
+		Map<String, Object> resultMap = this.billingService.queryMonthlyCallingStatistics(callingType, callingBuyingAmount, callingSellingAmount, monthBillingCallingAmountInvoices);
+		
+		callingBuyingAmount = (Double) resultMap.get("buyingAmount");
+		callingSellingAmount = (Double) resultMap.get("sellingAmount");
+		
+		model.addAttribute("monthlyBuyingAmount", callingBuyingAmount);
+		model.addAttribute("monthlySellingAmount", callingSellingAmount);
+		model.addAttribute("callingType", callingType);
+		
+		model.addAttribute(callingType+"Active", "active");
+		// END CALLING AMOUNT
+		
+		
+		model.addAttribute("yearMonth",yearMonth);
+		
+		/**
+		 * MONTHLY STATISTIC END
+		 */
+		
+		
+		return "broadband-user/billing/calling-chart";
+	}
+	
 }

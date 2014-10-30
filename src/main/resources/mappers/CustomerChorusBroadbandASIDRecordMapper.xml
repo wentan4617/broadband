@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerChorusBroadbandASIDRecordMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerChorusBroadbandASIDRecordColumns">
+		ccbasidr.`statement_date`			as ccbasidr_statement_date,
+		ccbasidr.`record_type`				as ccbasidr_record_type,
+		ccbasidr.`clear_service_id`			as ccbasidr_clear_service_id,
+		ccbasidr.`date_from`				as ccbasidr_date_from,
+		ccbasidr.`date_to`					as ccbasidr_date_to,
+		ccbasidr.`charge_date_time`			as ccbasidr_charge_date_time,
+		ccbasidr.`duration`					as ccbasidr_duration,
+		ccbasidr.`oot_id`					as ccbasidr_oot_id,
+		ccbasidr.`billing_description`		as ccbasidr_billing_description,
+		ccbasidr.`amount_excl`				as ccbasidr_amount_excl,
+		ccbasidr.`amount_incl`				as ccbasidr_amount_incl,
+		ccbasidr.`juristiction`				as ccbasidr_juristiction,
+		ccbasidr.`phone_called`				as ccbasidr_phone_called,
+		ccbasidr.`upload_date`				as ccbasidr_upload_date,
+		ccbasidr.`invoice_id`				as ccbasidr_invoice_id
+	</sql>
+
+	<resultMap type="CustomerChorusBroadbandASIDRecord" id="customerChorusBroadbandASIDRecordResultMap">
+		<id property="statement_date" column="ccbasidr_statement_date" />
+		<result property="record_type" column="ccbasidr_record_type" />
+		<result property="clear_service_id" column="ccbasidr_clear_service_id" />
+		<result property="date_from" column="ccbasidr_date_from" />
+		<result property="date_to" column="ccbasidr_date_to" />
+		<result property="charge_date_time" column="ccbasidr_charge_date_time" />
+		<result property="duration" column="ccbasidr_duration" />
+		<result property="oot_id" column="ccbasidr_oot_id" />
+		<result property="billing_description" column="ccbasidr_billing_description" />
+		<result property="amount_excl" column="ccbasidr_amount_excl" />
+		<result property="amount_incl" column="ccbasidr_amount_incl" />
+		<result property="juristiction" column="ccbasidr_juristiction" />
+		<result property="phone_called" column="ccbasidr_phone_called" />
+		<result property="upload_date" column="ccbasidr_upload_date" />
+		<result property="invoice_id" column="ccbasidr_invoice_id" />
+	</resultMap>
+
+	<sql id="customerChorusBroadbandASIDRecordWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_disconnected_records'">
+					ccbasidr.clear_service_id IN(
+						SELECT broadband_asid FROM tm_customer_order
+						WHERE order_status='disconnected'
+					)
+					AND DATE_FORMAT(ccbasidr.statement_date,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
+					AND ccbasidr.amount_incl&gt;0
+				</when>
+				<when test="params.where == 'query_unmatched_records'">
+					ccbasidr.clear_service_id NOT IN(
+						SELECT broadband_asid FROM tm_customer_order
+						WHERE broadband_asid IS NOT NULL
+						AND broadband_asid != ''
+					)
+					AND DATE_FORMAT(ccbasidr.statement_date,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
+					AND ccbasidr.amount_incl&gt;0
+				</when>
+				<otherwise>
+					<if test="params.statement_date != null">ccbasidr.statement_date = #{params.statement_date}</if>
+					<if test="params.record_type != null">and ccbasidr.record_type = #{params.record_type}</if>
+					<if test="params.clear_service_id != null">and ccbasidr.clear_service_id = #{params.clear_service_id}</if>
+					<if test="params.date_from != null">and ccbasidr.date_from = #{params.date_from}</if>
+					<if test="params.date_to != null">and ccbasidr.date_to = #{params.date_to}</if>
+					<if test="params.charge_date_time != null">and ccbasidr.charge_date_time = #{params.charge_date_time}</if>
+					<if test="params.duration != null">and ccbasidr.duration = #{params.duration}</if>
+					<if test="params.oot_id != null">and ccbasidr.oot_id = #{params.oot_id}</if>
+					<if test="params.billing_description != null">and ccbasidr.billing_description = #{params.billing_description}</if>
+					<if test="params.amount_excl != null">and ccbasidr.amount_excl = #{params.amount_excl}</if>
+					<if test="params.amount_incl != null">and ccbasidr.amount_incl = #{params.amount_incl}</if>
+					<if test="params.juristiction != null">and ccbasidr.juristiction = #{params.juristiction}</if>
+					<if test="params.phone_called != null">and ccbasidr.phone_called = #{params.phone_called}</if>
+					<if test="params.upload_date != null">and ccbasidr.upload_date = #{params.upload_date}</if>
+					<if test="params.invoice_id != null">and ccbasidr.invoice_id = #{params.invoice_id}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerChorusBroadbandASIDRecord" parameterType="CustomerChorusBroadbandASIDRecord" resultType="CustomerChorusBroadbandASIDRecord">
+		select * from tm_customer_chorus_broadband_asid_record as ccbasidr
+		<include refid="customerChorusBroadbandASIDRecordWhere"/>
+		<if test="params.groupby != null">${params.groupby}</if>
+	</select>
+
+	<!-- select customerChorusBroadbandASIDRecord page -->
+	<select id="selectCustomerChorusBroadbandASIDRecordsByPage" parameterType="Page" resultMap="customerChorusBroadbandASIDRecordResultMap">
+		select 
+			<include refid="customerChorusBroadbandASIDRecordColumns"/>
+			from tm_customer_chorus_broadband_asid_record as ccbasidr
+			<include refid="customerChorusBroadbandASIDRecordWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerChorusBroadbandASIDRecord amount -->
+	<select id="selectCustomerChorusBroadbandASIDRecordsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_chorus_broadband_asid_record as ccbasidr
+		<include refid="customerChorusBroadbandASIDRecordWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerChorusBroadbandASIDRecord" parameterType="CustomerChorusBroadbandASIDRecord" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_chorus_broadband_asid_record`(
+			`statement_date`, `record_type`, `clear_service_id`, `date_from`, `date_to`, 
+			`charge_date_time`, `duration`, `oot_id`, `billing_description`, `amount_excl`, 
+			`amount_incl`, `juristiction`, `phone_called`, `upload_date`, `invoice_id`
+		) VALUES (
+			#{statement_date}, #{record_type}, #{clear_service_id}, #{date_from}, #{date_to}, 
+			#{charge_date_time}, #{duration}, #{oot_id}, #{billing_description}, #{amount_excl}, 
+			#{amount_incl}, #{juristiction}, #{phone_called}, #{upload_date}, #{invoice_id}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerChorusBroadbandASIDRecord -->
+	<update id="updateCustomerChorusBroadbandASIDRecord" parameterType="CustomerChorusBroadbandASIDRecord">
+		update tm_customer_chorus_broadband_asid_record
+		<set>
+			<if test="record_type != null">record_type = #{record_type},</if>
+			<if test="clear_service_id != null">clear_service_id = #{clear_service_id},</if>
+			<if test="date_from != null">date_from = #{date_from},</if>
+			<if test="date_to != null">date_to = #{date_to},</if>
+			<if test="charge_date_time != null">charge_date_time = #{charge_date_time},</if>
+			<if test="duration != null">duration = #{duration},</if>
+			<if test="oot_id != null">oot_id = #{oot_id},</if>
+			<if test="billing_description != null">billing_description = #{billing_description},</if>
+			<if test="amount_excl != null">amount_excl = #{amount_excl},</if>
+			<if test="amount_incl != null">amount_incl = #{amount_incl},</if>
+			<if test="juristiction != null">juristiction = #{juristiction},</if>
+			<if test="phone_called != null">phone_called = #{phone_called},</if>
+			<if test="upload_date != null">upload_date = #{upload_date},</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerChorusBroadbandASIDRecord" parameterType="CustomerChorusBroadbandASIDRecord">
+		DELETE FROM tm_customer_chorus_broadband_asid_record
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.statement_date != null">and statement_date = #{params.statement_date}</if>
+			<if test="params.record_type != null">and record_type = #{params.record_type}</if>
+			<if test="params.clear_service_id != null">and clear_service_id = #{params.clear_service_id}</if>
+			<if test="params.date_from != null">and date_from = #{params.date_from}</if>
+			<if test="params.date_to != null">and date_to = #{params.date_to}</if>
+			<if test="params.charge_date_time != null">and charge_date_time = #{params.charge_date_time}</if>
+			<if test="params.duration != null">and duration = #{params.duration}</if>
+			<if test="params.oot_id != null">and oot_id = #{params.oot_id}</if>
+			<if test="params.billing_description != null">and billing_description = #{params.billing_description}</if>
+			<if test="params.amount_excl != null">and amount_excl = #{params.amount_excl}</if>
+			<if test="params.amount_incl != null">and amount_incl = #{params.amount_incl}</if>
+			<if test="params.phone_called != null">and phone_called = #{params.phone_called}</if>
+			<if test="params.juristiction != null">and juristiction = #{params.juristiction}</if>
+			<if test="params.upload_date != null">and upload_date = #{params.upload_date}</if>
+			<if test="params.invoice_id != null">and invoice_id = #{params.invoice_id}</if>
+		</where>
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

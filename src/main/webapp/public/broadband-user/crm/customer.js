@@ -209,6 +209,54 @@
 				/*
 				 *	BEGIN customer order area
 				 */
+				
+				
+				var data = {
+					'order_id':co[i].id
+				};
+				
+				var is_send_xero_invoice = co[i].is_send_xero_invoice;
+				$("input[name='"+co[i].id+"_switch-is-send-xero-invoice']").bootstrapSwitch({
+					onText:'<span class="glyphicon glyphicon-ok"></span>',
+					offText:'<span class="glyphicon glyphicon-ban-circle"></span>',
+					state:is_send_xero_invoice==null||is_send_xero_invoice ? true : false
+				});
+				$('input[name="'+co[i].id+'_switch-is-send-xero-invoice"]').on('switchChange.bootstrapSwitch', function(event, state) {
+					
+					var data = {
+						'order_id':this.id,
+						'is_send_xero_invoice':state ? true : false
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/is_send_invoice_2_xero/edit', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+					
+				});
+				
+				var xero_invoice_status = co[i].xero_invoice_status;
+				$("input[name='"+co[i].id+"_switch-xero-invoice-status']").bootstrapSwitch({
+					onText:'<span class="glyphicon glyphicon-certificate"></span>',
+					offText:'<span class="glyphicon glyphicon-inbox"></span>',
+					state:xero_invoice_status==null||xero_invoice_status=='AUTHORISED' ? true : false
+				});
+				$('input[name="'+co[i].id+'_switch-xero-invoice-status"]').on('switchChange.bootstrapSwitch', function(event, state) {
+					
+					var data = {
+						'order_id':this.id,
+						'xero_invoice_status':state ? true : false
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/xero_invoice_status/edit', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+					
+				});
+
+				$.post(ctx+'/broadband-user/crm/customer/order/deleted_detail_record_count', data, function(map){
+					$('strong[data-name="'+map.order_id+'_deleted_detail_record_count"]').html(map.sum);
+				}, "json");
+				
 
 				// Pay off this order
 				// Get Pay off this order Dialog
@@ -906,6 +954,7 @@
 					$('a[data-name="updatePhoneModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
 					$('input[data-name="phone_name_'+this.id+'"]').val($(this).attr('data-detail-name'));
 					$('input[data-name="phone_number_'+this.id+'"]').val($(this).attr('data-val'));
+					$('input[data-name="update_phone_monthly_price_'+this.id+'"]').val(Number($(this).attr('data-detail-price')).toFixed(2));
 					if($(this).attr('data-type')=='voip'){
 						$('input[data-name="'+this.id+'_update_voip_password"]').val($(this).attr('data-voip-password'));
 						$('input[data-name="'+this.id+'_update_voip_assign_date"]').val($(this).attr('data-voip-assign-date'));
@@ -923,12 +972,14 @@
 					var order_detail_id = $(this).attr('data-detail-id');
 					var detail_name = $('input[data-name="phone_name_'+this.id+'"]').val();
 					var phone_number = $('input[data-name="phone_number_'+this.id+'"]').val();
+					var phone_monthly_price = $('input[data-name="update_phone_monthly_price_'+this.id+'"]').val();
 					var phone_type = $(this).attr('data-type');
 					var data = {
 							'order_detail_id':order_detail_id
 							,'detail_name':detail_name+''
 							,'phone_number':phone_number+''
 							,'phone_type':phone_type+''
+							,'phone_monthly_price':phone_monthly_price+''
 					};
 					if(phone_type=='voip'){
 						var voip_password = $('input[data-name="'+this.id+'_update_voip_password"]').val();
@@ -965,7 +1016,8 @@
 					$('input[data-name="detail_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_type"]').attr('data-val'));
 					$('input[data-name="detail_plan_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_type"]').attr('data-val'));
 					$('input[data-name="detail_plan_sort_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_sort"]').attr('data-val'));
-					$('input[data-name="detail_price_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_price"]').attr('data-val'));
+					$('input[data-name="detail_price_'+this.id+'"]').val(Number($('td[data-name="'+$(this).attr('data-id')+'_detail_price"]').attr('data-val')).toFixed(2));
+					$('input[data-name="detail_plan_unit_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_order_detail_unit"]').attr('data-val'));
 					$('input[data-name="data_flow_'+this.id+'"]').val($('span[data-name="'+$(this).attr('data-id')+'_data_flow"]').attr('data-val'));
 					$('#editDetailModal_'+this.id).modal('show');
 				});
@@ -980,7 +1032,8 @@
 						'detail_plan_type':$('input[data-name="detail_plan_type_'+this.id+'"]').val(),
 						'detail_plan_sort':$('input[data-name="detail_plan_sort_'+this.id+'"]').val(),
 						'detail_price':$('input[data-name="detail_price_'+this.id+'"]').val(),
-						'detail_data_flow':$('input[data-name="data_flow_'+this.id+'"]').val()
+						'detail_data_flow':$('input[data-name="data_flow_'+this.id+'"]').val(),
+						'detail_unit':$('input[data-name="detail_plan_unit_'+this.id+'"]').val()
 					};
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/plan/edit', data, function(json){
@@ -995,6 +1048,128 @@
 				/*
 				 * END Edit detail
 				 */
+
+				/*
+				 * BEGIN Edit common detail
+				 */
+				$('a[data-name="'+co[i].id+'_edit_common_detail"]').click(function(){
+					$('input[data-name="update_detail_name_'+this.id+'"]').val($(this).attr('data-detail-name'));
+					$('input[data-name="update_detail_price_'+this.id+'"]').val($(this).attr('data-detail-price'));
+					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').prop('id',this.id);
+					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').attr('data-id',$(this).attr('data-id'));
+					$('#editCommonDetailModal_'+this.id).modal('show');
+				});
+				
+				$('a[data-name="editCommonDetailModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var detail_id = $(this).attr('data-id');
+					var detail_name = $('input[data-name="update_detail_name_'+this.id+'"]').val();
+					var detail_price = $('input[data-name="update_detail_price_'+this.id+'"]').val();
+					
+					var data = {
+						'id':detail_id,
+						'detail_name':detail_name,
+						'detail_price':detail_price
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+					
+				});
+				// Reset button when hidden Edit Detail dialog
+				$('#editCommonDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
+				/*
+				 * END Edit common detail
+				 */
+				
+
+				/*
+				 * BEGIN Recombine Super Calling Minutes
+				 */
+				$('a[data-name="'+co[i].id+'_recombine_super_calling_minutes"]').click(function(){
+					var allSuperFreeCallingsArr = 'super-local,voip=super-national,voip=super-mobile,voip=super-40-countries,voip=super-international,voip=super-Bangladesh-both,voip=super-Malaysia-both,voip=super-Cambodia-both,voip=super-Singapore-both,voip=super-Canada-both,voip=super-Korea-both,voip=super-China-both,voip=super-USA-both,voip=super-Hong-Kong-both,voip=super-Vietnam-both,voip=super-India-both,voip=super-Argentina-fixedline,54,voip=super-Germany-fixedline,49,voip=super-Laos-fixedline,856,voip=super-South-Africa-fixedline,27,voip=super-Australia-fixedline,61,voip=super-Greece-fixedline,30,voip=super-Netherlands-fixedline,31,voip=super-Spain-fixedline,34,voip=super-Belgium-fixedline,32,voip=super-Indonesia-fixedline,62,voip=super-Norway-fixedline,47,voip=super-Sweden-fixedline,46,voip=super-Brazil-fixedline,55,voip=super-Ireland-fixedline,353,voip=super-Pakistan-fixedline,92,voip=super-Switzerland-fixedline,41,voip=super-Cyprus-fixedline,357,voip=super-Israel-fixedline,972,voip=super-Poland-fixedline,48,voip=super-Taiwan-fixedline,886,voip=super-Czech-fixedline,420,voip=super-Italy-fixedline,39,voip=super-Portugal-fixedline,351,voip=super-Thailand-fixedline,66,voip=super-Denmark-fixedline,45,voip=super-Japan-fixedline,81,voip=super-Russia-fixedline,7,voip=super-United Kingdom-fixedline,44,voip=super-France-fixedline,33,voip'.split('=');
+					var allBindedSuperFreeCallingsStr = $(this).attr('data-desc');
+					
+					var allSuperFreeCallingsHTML = '';
+
+					allSuperFreeCallingsHTML+=
+					'<div class="col-md-12">'+
+						'<input type="checkbox" id="super_free_calling_regions_checkbox_top" />&nbsp;All'+
+					'</div><br/>';
+					
+					// Get Unbind Super Free Callings
+					for (var s = 0; s < allSuperFreeCallingsArr.length; s++) {
+						
+						allSuperFreeCallingsHTML+='<br/>';
+						
+						var allSuperFreeCallingsFinal = allSuperFreeCallingsArr[s].substr(allSuperFreeCallingsArr[s].indexOf('-')+1, allSuperFreeCallingsArr[s].length);
+						allSuperFreeCallingsFinal = allSuperFreeCallingsFinal.substr(0, allSuperFreeCallingsFinal.indexOf(','));
+						
+						if(allBindedSuperFreeCallingsStr.indexOf(allSuperFreeCallingsArr[s])!=-1){
+							allSuperFreeCallingsHTML+=
+							'<div class="col-md-6">'+
+								'<input type="checkbox" name="super_free_calling_regions_checkbox" value="'+allSuperFreeCallingsArr[s]+'" checked="checked" />&nbsp;'+allSuperFreeCallingsFinal+
+							'</div>';
+						} else {
+							allSuperFreeCallingsHTML+=
+							'<div class="col-md-6">'+
+								'<input type="checkbox" name="super_free_calling_regions_checkbox" value="'+allSuperFreeCallingsArr[s]+'" />&nbsp;'+allSuperFreeCallingsFinal+
+							'</div>';
+						}
+						
+					}
+					
+					$('#super_free_calling_regions_'+this.id).html(allSuperFreeCallingsHTML);
+					
+					$(':radio,:checkbox').iCheck({
+						checkboxClass : 'icheckbox_square-green',
+						radioClass : 'iradio_square-green'
+					});
+					
+					$('#super_free_calling_regions_checkbox_top').on("ifChecked", function(){
+						$('input[name="super_free_calling_regions_checkbox"]').iCheck("check");
+					});
+					
+					$('#super_free_calling_regions_checkbox_top').on("ifUnchecked", function(){
+						$('input[name="super_free_calling_regions_checkbox"]').iCheck("uncheck");
+					});
+					
+					
+					$('a[data-name="recombineSuperCallingMinutesModalBtn_'+this.id+'"]').prop('id',this.id);
+					$('a[data-name="recombineSuperCallingMinutesModalBtn_'+this.id+'"]').attr('data-id',$(this).attr('data-id'));
+					$('#recombineSuperCallingMinutesModal_'+this.id).modal('show');
+				});
+				
+				$('a[data-name="recombineSuperCallingMinutesModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var detail_id = $(this).attr('data-id');
+					var detail_desc = '';
+					$('input[name="super_free_calling_regions_checkbox"]:checked').each(function(){
+						detail_desc+=$(this).val()+'=';
+					});
+					detail_desc = detail_desc.substr(0, detail_desc.length-1);
+					
+					var data = {
+						'id':detail_id,
+						'detail_desc':detail_desc
+					};
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+					
+				});
+				// Reset button when hidden Edit Detail dialog
+				$('#recombineSuperCallingMinutesModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
+				/*
+				 * END Recombine Super Calling Minutes
+				 */
+				
 				
 				/*
 				 *	BEGIN Remove detail
@@ -1008,10 +1183,12 @@
 				// Submit to rest controller
 				$('a[data-name="removeDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					var order_detail_id = $(this).attr('data-detail-id');
+					var delete_reason = $('textarea[data-name="'+this.id+'_delete_reason"]').val();
 					var data = {
 							'order_detail_id':order_detail_id
 							,'customer_id':customerId
 							,'detail_type':$(this).attr('data-type')
+							,'delete_reason':delete_reason
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/remove', data, function(json){
 						$.jsonValidation(json, 'left');
@@ -1050,6 +1227,7 @@
 					this.id = $(this).attr('data-id');
 					var detail_name = $('input[data-name="'+this.id+'_detail_name"]').val();
 					var phone_number = $('input[data-name="'+this.id+'_phone_number"]').val();
+					var phone_monthly_price = $('input[data-name="'+this.id+'_phone_monthly_price"]').val();
 					var phone_type = $('select[data-name="'+this.id+'_phone_type"]').val();
 					var voip_password = $('input[data-name="'+this.id+'_voip_password"]').val();
 					var voip_assign_date = $('input[data-name="'+this.id+'_voip_assign_date"]').val();
@@ -1060,7 +1238,10 @@
 						,'phone_type':phone_type+''
 						,'voip_password':voip_password+''
 						,'voip_assign_date':voip_assign_date+''
+						,'phone_monthly_price':phone_monthly_price+''
 					};
+					
+					console.log(data);
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/phone_number/save', data, function(json){
 						$.jsonValidation(json, 'left');
@@ -1327,6 +1508,101 @@
 				/*
 				 *	END customer order detail(s) area
 				 */
+				
+				
+				/*
+// 				 *	BEGIN Deleted Order Details List
+				 */
+				$('a[data-name="'+co[i].id+'_view_delete_detail"]').click(function(){
+					
+					var order_id = this.id
+					
+					var data = {
+						'order_id':order_id
+					};
+					
+					$.get(ctx+'/broadband-user/crm/customer/order/detail/delete_record', data, function(json){
+						
+						var coddrs = json.model.coddrs;
+						var users = json.model.users;
+						
+						var coddrHTML = '<div class="form-group col-md-12">'+
+											'<div class="col-md-2"><p class="form-control-static"><strong>Detail Name</strong></p></div>'+
+											'<div class="col-md-2"><p class="form-control-static"><strong>Detail Type</strong></p></div>'+
+											'<div class="col-md-2"><p class="form-control-static"><strong>Executor</strong></p></div>'+
+											'<div class="col-md-2"><p class="form-control-static"><strong>Executed Date</strong></p></div>'+
+											'<div class="col-md-2"><p class="form-control-static"><strong>Deleted Reason</strong></p></div>'+
+											'<div class="col-md-2"><p class="form-control-static" style="text-align:right;"><strong>Recoverable</strong></p></div>'+
+										'</div>';
+						
+						for (var i=0; i<coddrs.length; i++) {
+							
+							var coddr = coddrs[i];
+							var is_recoverable = coddrs[i].is_recoverable;
+							var detail_id = coddrs[i].detail_id;
+							var detail_name = coddrs[i].detail_name;
+							var detail_type = coddrs[i].detail_type;
+							var executor_id = coddrs[i].executor_id;
+							var executor = '';
+							for(var u=0; u<users.length; u++){
+								if(users[u].id == coddrs[i].executor_id){
+									executor = users[u].user_name;
+								}
+							}
+							
+							var is_recoverable_col_btn = '<a class="btn btn-danger btn-xs pull-right" data-name="'+i+'_recover_detail" data-detail-id="'+detail_id+'" data-dismiss="modal">'+
+														 	'<span class="glyphicon glyphicon-refresh"></span>'+
+														 '</a>';
+							
+							var is_authorized = user_role=='system-developer' || user_role=='administrator' || user_role=='accountant' || user_id==executor_id;
+							
+							var is_recoverable_col = is_recoverable&&is_authorized ? is_recoverable_col_btn : '';
+							
+							var executed_date_str = coddrs[i].executed_date_str;
+							var delete_reason = coddrs[i].delete_reason;
+							coddrHTML += '<div class="form-group col-md-12">'+
+											 '<div class="col-md-2"><p class="form-control-static">'+detail_name+'</p></div>'+
+											 '<div class="col-md-2"><p class="form-control-static">'+detail_type+'</p></div>'+
+											 '<div class="col-md-2"><p class="form-control-static">'+executor+'</p></div>'+
+											 '<div class="col-md-2"><p class="form-control-static">'+executed_date_str+'</p></div>'+
+											 '<div class="col-md-2"><textarea class="form-control" rows="4" disabled="disabled" style="resize:none;">'+delete_reason+'</textarea></div>'+
+											 '<div class="col-md-2">'+is_recoverable_col+'</div>'+
+										 '</div>';
+							
+						}
+						
+						
+						$('form[data-name="deleted_order_details_form"]').html(coddrHTML);
+						
+						
+						for (var i=0; i<coddrs.length; i++) {
+
+							$('a[data-name="'+i+'_recover_detail"]').click(function(){
+								
+								var detail_id = $(this).attr('data-detail-id');
+								
+								var data = {
+									'detail_id':detail_id
+								};
+								
+								$.post(ctx+'/broadband-user/crm/customer/order/detail/recover', data, function(json){
+									$.jsonValidation(json, 'left');
+								}, "json");
+								
+							});
+							
+						}
+						
+						
+						$('#viewDeletedOrderDetailsModal_'+order_id).modal('show');
+						
+					}, "json");
+					
+				});
+				
+				$('#viewDeletedOrderDetailsModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
 				 
 				 
 				/*
@@ -1634,16 +1910,16 @@
 						var invoiceAmount_paid = new Number(data[i].amount_paid).toFixed(2);
 						var invoiceBalance = new Number(data[i].balance).toFixed(2);
 						htmlContent += '<div class="form-group col-md-12">'+
-							'<div class="col-md-1"><input type="checkbox" name="checkbox_bind_invoices" value="'+data[i].id+'"/></div>'+
-							'<div class="col-md-1"><p class="form-control-static">'+data[i].id+'</p></div>'+
-							'<div class="col-md-2"><p class="form-control-static">'+data[i].create_date_str+'</p></div>'+
-							'<div class="col-md-2"><p class="form-control-static">'+data[i].due_date_str+'</p></div>'+
-							'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_payable+'</p></div>'+
-							'<div class="col-md-1"><p class="form-control-static">'+invoiceCredit_back+'</p></div>'+
-							'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_paid+'</p></div>'+
-							'<div class="col-md-1"><p class="form-control-static">'+invoiceBalance+'</p></div>'+
-							'<div class="col-md-2"><p class="form-control-static">'+data[i].status+'</p></div>'+
-						'</div>';
+											'<div class="col-md-1"><input type="checkbox" name="checkbox_bind_invoices" value="'+data[i].id+'"/></div>'+
+											'<div class="col-md-1"><p class="form-control-static">'+data[i].id+'</p></div>'+
+											'<div class="col-md-2"><p class="form-control-static">'+data[i].create_date_str+'</p></div>'+
+											'<div class="col-md-2"><p class="form-control-static">'+data[i].due_date_str+'</p></div>'+
+											'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_payable+'</p></div>'+
+											'<div class="col-md-1"><p class="form-control-static">'+invoiceCredit_back+'</p></div>'+
+											'<div class="col-md-1"><p class="form-control-static">'+invoiceAmount_paid+'</p></div>'+
+											'<div class="col-md-1"><p class="form-control-static">'+invoiceBalance+'</p></div>'+
+											'<div class="col-md-2"><p class="form-control-static">'+data[i].status+'</p></div>'+
+										'</div>';
 					}
 					
 					

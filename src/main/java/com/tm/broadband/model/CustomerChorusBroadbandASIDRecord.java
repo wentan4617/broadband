@@ -7,7 +7,7 @@ import java.util.Map;
 
 import com.tm.broadband.util.TMUtils;
 
-public class CustomerCallRecord implements Serializable {
+public class CustomerChorusBroadbandASIDRecord implements Serializable {
 
 	/**
 	 * 
