@@ -20,9 +20,27 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.4.4 2014-10-28
+
+* [分别列出CHORUS，NCA，VOS三种拨打账单的买入，卖出价格差值.](steven)
+* [需要新建一张tm_chorus_broadband_asid表，将每个月的broadband_asid导进数据库，以供比配.](steven)
+* [添加一个界面，列出未绑定的CHORUS，NCA，VOS，以及ASID的记录，并且要分类：Disconnected为未绑定且断开服务的记录，Unmatched为未绑定且未匹配的记录.](steven)
+
+
+
+
 demand version 1.4.1 2014-10-21
 
-* transaction添加一个invoice id下拉选项，更改选项关联到指定invoice上.
+* [新增一种超级free calling minutes，可以任意组合赠送的拨打分钟数.](steven)
+* [在tm_customer_order_detail_delete_record表上添加一个字段：is_recoverable，为true则显示可逆操作按钮，点击后detail出现在order里.](steven)
+* [新增tm_customer_order_detail_recoverable_list表，字段：id包括detail所使用的所有字段，配合delete_record表的is_recoverable字段使用.](steven)
+* [添加tm_customer_order_detail_delete_record，字段有：id, order_id, detail_name, detail_type, delete_reason，存放order_detail的删除记录.](steven)
+* customer_order_detail表新增一个字段：credit_note，给credit时记录原因.(steven)
+* [在order表上添加一个字段：xero_invoice_status，用来向Xero发送invoice时判断该invoice是InvoiceStatus.DRAFT还是InvoiceStatus.AUTHORISED.](steven)
+* [在order表上添加一个字段：is_send_xero_invoice，如果为true则发送invoice至xero.](steven)
+* 添加一张transaction_can_redo_list表，字段有：id,transaction_id, invoice_id, credit, paid.(steven)
+* transaction添加一个字段can_redo，如果为true则transaction列表显示Redo按钮，点击后去transaction_can_redo_list取出相关数据并开始重做.(steven)
+* transaction添加一个invoice id下拉选项，更改选项关联到指定invoice上.(steven)
     步骤：
     1. transaction amount必须与原invoice的paid amount一致
     2. 原invoice状态必须为paid，目标invoice状态必须为unpaid且paid amount为0
@@ -32,6 +50,7 @@ demand version 1.4.1 2014-10-21
     6. 设置transaction的invoice id为目标invoice的id
     7. 更新transaction、原invoice、目标invoice
 
+* 
 
 
 

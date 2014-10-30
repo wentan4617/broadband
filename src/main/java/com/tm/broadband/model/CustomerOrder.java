@@ -77,6 +77,8 @@ public class CustomerOrder implements Serializable {
 	private Integer inviter_user_id;
 	private Double inviter_rate;
 	private Double invitee_rate;
+	private String xero_invoice_status;
+	private Boolean is_send_xero_invoice;
 
 	private String address;
 	private String mobile;
@@ -731,6 +733,22 @@ public class CustomerOrder implements Serializable {
 	public void setOrder_create_date_yyyymmddhhmmss(
 			String order_create_date_yyyymmddhhmmss) {
 		this.order_create_date_yyyymmddhhmmss = order_create_date_yyyymmddhhmmss;
+	}
+
+	public String getXero_invoice_status() {
+		return xero_invoice_status;
+	}
+
+	public void setXero_invoice_status(String xero_invoice_status) {
+		this.xero_invoice_status = xero_invoice_status;
+	}
+
+	public Boolean getIs_send_xero_invoice() {
+		return is_send_xero_invoice;
+	}
+
+	public void setIs_send_xero_invoice(Boolean is_send_xero_invoice) {
+		this.is_send_xero_invoice = is_send_xero_invoice;
 	}
 
 }

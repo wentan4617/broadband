@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderDetailDeleteRecordColumns">
+		coddr.`id`						as coddr_id,
+		coddr.`order_id`				as coddr_order_id,
+		coddr.`detail_id`				as coddr_detail_id,
+		coddr.`detail_name`				as coddr_detail_name,
+		coddr.`detail_type`				as coddr_detail_type,
+		coddr.`executor_id`				as coddr_executor_id,
+		coddr.`executed_date`			as coddr_executed_date,
+		coddr.`delete_reason`			as coddr_delete_reason,
+		coddr.`is_recoverable`			as coddr_is_recoverable
+	</sql>
+
+	<resultMap type="CustomerOrderDetailDeleteRecord" id="customerOrderDetailDeleteRecordResultMap">
+		<id property="id" column="coddr_id" />
+		<result property="order_id" column="coddr_order_id" />
+		<result property="detail_id" column="coddr_detail_id" />
+		<result property="detail_name" column="coddr_detail_name" />
+		<result property="detail_type" column="coddr_detail_type" />
+		<result property="executor_id" column="coddr_executor_id" />
+		<result property="executed_date" column="coddr_executed_date" />
+		<result property="delete_reason" column="coddr_delete_reason" />
+		<result property="is_recoverable" column="coddr_is_recoverable" />
+	</resultMap>
+
+	<sql id="customerOrderDetailDeleteRecordWhere">
+		<where>
+			<if test="params.id != null">coddr.id = #{params.id}</if>
+			<if test="params.order_id != null">and coddr.order_id = #{params.order_id}</if>
+			<if test="params.detail_id != null">and coddr.detail_id = #{params.detail_id}</if>
+			<if test="params.detail_name != null">and coddr.detail_name = #{params.detail_name}</if>
+			<if test="params.detail_type != null">and coddr.detail_type = #{params.detail_type}</if>
+			<if test="params.executor_id != null">and coddr.executor_id = #{params.executor_id}</if>
+			<if test="params.executed_date != null">and coddr.executed_date = #{params.executed_date}</if>
+			<if test="params.delete_reason != null">and coddr.delete_reason = #{params.delete_reason}</if>
+			<if test="params.is_recoverable != null">and coddr.is_recoverable = #{params.is_recoverable}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderDetailDeleteRecord" parameterType="CustomerOrderDetailDeleteRecord" resultType="CustomerOrderDetailDeleteRecord">
+		select * from tm_customer_order_detail_delete_record as coddr
+		<include refid="customerOrderDetailDeleteRecordWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+	</select>
+
+	<!-- select customerOrderDetailDeleteRecord page -->
+	<select id="selectCustomerOrderDetailDeleteRecordsByPage" parameterType="Page" resultMap="customerOrderDetailDeleteRecordResultMap">
+		select 
+			<include refid="customerOrderDetailDeleteRecordColumns"/>
+			from tm_customer_order_detail_delete_record as coddr
+			<include refid="customerOrderDetailDeleteRecordWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderDetailDeleteRecord amount -->
+	<select id="selectCustomerOrderDetailDeleteRecordsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_detail_delete_record as coddr
+		<include refid="customerOrderDetailDeleteRecordWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderDetailDeleteRecord" parameterType="CustomerOrderDetailDeleteRecord" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_detail_delete_record`(
+			`id`, `order_id`, `detail_id`, `detail_name`, `detail_type`, `executor_id`, 
+			`executed_date`, `delete_reason`, `is_recoverable`
+		) VALUES (
+			#{id}, #{order_id}, #{detail_id}, #{detail_name}, #{detail_type}, #{executor_id}, 
+			#{executed_date}, #{delete_reason}, #{is_recoverable}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderDetailDeleteRecord -->
+	<update id="updateCustomerOrderDetailDeleteRecord" parameterType="CustomerOrderDetailDeleteRecord">
+		update tm_customer_order_detail_delete_record
+		<set>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="detail_id != null">detail_id = #{detail_id},</if>
+			<if test="detail_name != null">detail_name = #{detail_name},</if>
+			<if test="detail_type != null">detail_type = #{detail_type},</if>
+			<if test="executor_id != null">executor_id = #{executor_id},</if>
+			<if test="executed_date != null">executed_date = #{executed_date},</if>
+			<if test="delete_reason != null">delete_reason = #{delete_reason},</if>
+			<if test="is_recoverable != null">is_recoverable = #{is_recoverable}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderDetailDeleteRecordByDetailId" parameterType="int">
+		DELETE FROM tm_customer_order_detail_delete_record WHERE detail_id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

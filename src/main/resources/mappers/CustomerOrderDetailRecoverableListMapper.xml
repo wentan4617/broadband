@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderDetailRecoverableListColumns">
+		codrl.`id`								as codrl_id,
+		codrl.`order_id`						as codrl_order_id,
+		codrl.`detail_id`						as codrl_detail_id,
+		codrl.`detail_name`						as codrl_detail_name,
+		codrl.`detail_desc`						as codrl_detail_desc,
+		codrl.`detail_price`					as codrl_detail_price,
+		codrl.`detail_data_flow`				as codrl_detail_data_flow,
+		codrl.`detail_plan_status`				as codrl_detail_plan_status,
+		codrl.`detail_plan_type`				as codrl_detail_plan_type,
+		codrl.`detail_plan_sort`				as codrl_detail_plan_sort,
+		codrl.`detail_plan_group`				as codrl_detail_plan_group,
+		codrl.`detail_plan_class`				as codrl_detail_plan_class,
+		codrl.`detail_plan_new_connection_fee`	as codrl_detail_plan_new_connection_fee,
+		codrl.`detail_term_period`				as codrl_detail_term_period,
+		codrl.`detail_topup_data_flow`			as codrl_detail_topup_data_flow,
+		codrl.`detail_topup_fee`				as codrl_detail_topup_fee,
+		codrl.`detail_plan_memo`				as codrl_detail_plan_memo,
+		codrl.`detail_unit`						as codrl_detail_unit,
+		codrl.`detail_calling_minute`			as codrl_detail_calling_minute,
+		codrl.`detail_type`						as codrl_detail_type,
+		codrl.`detail_is_next_pay`				as codrl_detail_is_next_pay,
+		codrl.`detail_expired`					as codrl_detail_expired,
+		codrl.`is_post`							as codrl_is_post,
+		codrl.`hardware_comment`				as codrl_hardware_comment,
+		codrl.`track_code`						as codrl_track_code,
+		codrl.`pstn_number`						as codrl_pstn_number,
+		codrl.`user_id`							as codrl_user_id,
+		codrl.`voip_password`					as codrl_voip_password,
+		codrl.`voip_assign_date`				as codrl_voip_assign_date
+	</sql>
+
+	<resultMap type="CustomerOrderDetailRecoverableList" id="customerOrderDetailRecoverableListResultMap">
+		<id property="id" column="codrl_id" />
+		<result property="order_id" column="codrl_order_id" />
+		<result property="detail_id" column="codrl_detail_id" />
+		<result property="detail_name" column="codrl_detail_name" />
+		<result property="detail_desc" column="codrl_detail_desc" />
+		<result property="detail_price" column="codrl_detail_price" />
+		<result property="detail_data_flow" column="codrl_detail_data_flow" />
+		<result property="detail_plan_status" column="codrl_detail_plan_status" />
+		<result property="detail_plan_type" column="codrl_detail_plan_type" />
+		<result property="detail_plan_sort" column="codrl_detail_plan_sort" />
+		<result property="detail_plan_group" column="codrl_detail_plan_group" />
+		<result property="detail_plan_class" column="codrl_detail_plan_class" />
+		<result property="detail_plan_new_connection_fee" column="codrl_detail_plan_new_connection_fee" />
+		<result property="detail_term_period" column="codrl_detail_term_period" />
+		<result property="detail_topup_data_flow" column="codrl_detail_topup_data_flow" />
+		<result property="detail_topup_fee" column="codrl_detail_topup_fee" />
+		<result property="detail_plan_memo" column="codrl_detail_plan_memo" />
+		<result property="detail_unit" column="codrl_detail_unit" />
+		<result property="detail_calling_minute" column="codrl_detail_calling_minute" />
+		<result property="detail_type" column="codrl_detail_type" />
+		<result property="detail_is_next_pay" column="codrl_detail_is_next_pay" />
+		<result property="detail_expired" column="codrl_detail_expired" />
+		<result property="is_post" column="codrl_is_post" />
+		<result property="hardware_comment" column="codrl_hardware_comment" />
+		<result property="track_code" column="codrl_track_code" />
+		<result property="pstn_number" column="codrl_pstn_number" />
+		<result property="user_id" column="codrl_user_id" />
+		<result property="voip_password" column="codrl_voip_password" />
+		<result property="voip_assign_date" column="codrl_voip_assign_date" />
+	</resultMap>
+
+	<sql id="customerOrderDetailRecoverableListWhere">
+		<where>
+			<if test="params.id != null">codrl.id = #{params.id}</if>
+			<if test="params.order_id != null">and codrl.order_id = #{params.order_id}</if>
+			<if test="params.detail_id != null">and codrl.detail_id = #{params.detail_id}</if>
+			<if test="params.detail_name != null">and codrl.detail_name = #{params.detail_name}</if>
+			<if test="params.detail_desc != null">and codrl.detail_desc = #{params.detail_desc}</if>
+			<if test="params.detail_price != null">and codrl.detail_price = #{params.detail_price}</if>
+			<if test="params.detail_data_flow != null">and codrl.detail_data_flow = #{params.detail_data_flow}</if>
+			<if test="params.detail_plan_status != null">and codrl.detail_plan_status = #{params.detail_plan_status}</if>
+			<if test="params.detail_plan_type != null">and codrl.detail_plan_type = #{params.detail_plan_type}</if>
+			<if test="params.detail_plan_sort != null">and codrl.detail_plan_sort = #{params.detail_plan_sort}</if>
+			<if test="params.detail_plan_group != null">and codrl.detail_plan_group = #{params.detail_plan_group}</if>
+			<if test="params.detail_plan_class != null">and codrl.detail_plan_class = #{params.detail_plan_class}</if>
+			<if test="params.detail_plan_new_connection_fee != null">and codrl.detail_plan_new_connection_fee = #{params.detail_plan_new_connection_fee}</if>
+			<if test="params.detail_term_period != null">and codrl.detail_term_period = #{params.detail_term_period}</if>
+			<if test="params.detail_topup_data_flow != null">and codrl.detail_topup_data_flow = #{params.detail_topup_data_flow}</if>
+			<if test="params.detail_topup_fee != null">and codrl.detail_topup_fee = #{params.detail_topup_fee}</if>
+			<if test="params.detail_plan_memo != null">and codrl.detail_plan_memo = #{params.detail_plan_memo}</if>
+			<if test="params.detail_unit != null">and codrl.detail_unit = #{params.detail_unit}</if>
+			<if test="params.detail_calling_minute != null">and codrl.detail_calling_minute = #{params.detail_calling_minute}</if>
+			<if test="params.detail_type != null">and codrl.detail_type = #{params.detail_type}</if>
+			<if test="params.detail_is_next_pay != null">and codrl.detail_is_next_pay = #{params.detail_is_next_pay}</if>
+			<if test="params.detail_expired != null">and codrl.detail_expired = #{params.detail_expired}</if>
+			<if test="params.is_post != null">and codrl.is_post = #{params.is_post}</if>
+			<if test="params.hardware_comment != null">and codrl.hardware_comment = #{params.hardware_comment}</if>
+			<if test="params.track_code != null">and codrl.track_code = #{params.track_code}</if>
+			<if test="params.pstn_number != null">and codrl.pstn_number = #{params.pstn_number}</if>
+			<if test="params.user_id != null">and codrl.user_id = #{params.user_id}</if>
+			<if test="params.voip_password != null">and codrl.voip_password = #{params.voip_password}</if>
+			<if test="params.voip_assign_date != null">and codrl.voip_assign_date = #{params.voip_assign_date}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderDetailRecoverableList" parameterType="CustomerOrderDetailRecoverableList" resultType="CustomerOrderDetailRecoverableList">
+		select * from tm_customer_order_detail_recoverable_list as codrl
+		<include refid="customerOrderDetailRecoverableListWhere"/>
+	</select>
+
+	<!-- select customerOrderDetailRecoverableList page -->
+	<select id="selectCustomerOrderDetailRecoverableListsByPage" parameterType="Page" resultMap="customerOrderDetailRecoverableListResultMap">
+		select 
+			<include refid="customerOrderDetailRecoverableListColumns"/>
+			from tm_customer_order_detail_recoverable_list as codrl
+			<include refid="customerOrderDetailRecoverableListWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderDetailRecoverableList amount -->
+	<select id="selectCustomerOrderDetailRecoverableListsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_detail_recoverable_list as codrl
+		<include refid="customerOrderDetailRecoverableListWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderDetailRecoverableList" parameterType="CustomerOrderDetailRecoverableList" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_detail_recoverable_list`(
+			`id`, `order_id`, `detail_id`, `detail_name`, `detail_desc`, 
+			`detail_price`, `detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
+			`detail_plan_group`, `detail_plan_class`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
+			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_calling_minute`, `detail_type`, 
+			`detail_is_next_pay`, `detail_expired`, `is_post`, `hardware_comment`, `track_code`, 
+			`pstn_number`, `user_id`, `voip_password`, `voip_assign_date`
+		) VALUES (
+			#{id}, #{order_id}, #{detail_id}, #{detail_name}, #{detail_desc}, 
+			#{detail_price}, #{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
+			#{detail_plan_group}, #{detail_plan_class}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow}, 
+			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_calling_minute}, #{detail_type}, 
+			#{detail_is_next_pay}, #{detail_expired}, #{is_post}, #{hardware_comment}, #{track_code}, 
+			#{pstn_number}, #{user_id}, #{voip_password}, #{voip_assign_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderDetailRecoverableList -->
+	<update id="updateCustomerOrderDetailRecoverableList" parameterType="CustomerOrderDetailRecoverableList">
+		update tm_customer_order_detail_recoverable_list
+		<set>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="detail_id != null">detail_id = #{detail_id},</if>
+			<if test="detail_name != null">detail_name = #{detail_name},</if>
+			<if test="detail_desc != null">detail_desc = #{detail_desc},</if>
+			<if test="detail_price != null">detail_price = #{detail_price},</if>
+			<if test="detail_data_flow != null">detail_data_flow = #{detail_data_flow},</if>
+			<if test="detail_plan_status != null">detail_plan_status = #{detail_plan_status},</if>
+			<if test="detail_plan_type != null">detail_plan_type = #{detail_plan_type},</if>
+			<if test="detail_plan_sort != null">detail_plan_sort = #{detail_plan_sort},</if>
+			<if test="detail_plan_group != null">detail_plan_group = #{detail_plan_group},</if>
+			<if test="detail_plan_class != null">detail_plan_class = #{detail_plan_class},</if>
+			<if test="detail_plan_new_connection_fee != null">detail_plan_new_connection_fee = #{detail_plan_new_connection_fee},</if>
+			<if test="detail_term_period != null">detail_term_period = #{detail_term_period},</if>
+			<if test="detail_topup_data_flow != null">detail_topup_data_flow = #{detail_topup_data_flow},</if>
+			<if test="detail_topup_fee != null">detail_topup_fee = #{detail_topup_fee},</if>
+			<if test="detail_plan_memo != null">detail_plan_memo = #{detail_plan_memo},</if>
+			<if test="detail_unit != null">detail_unit = #{detail_unit},</if>
+			<if test="detail_calling_minute != null">detail_calling_minute = #{detail_calling_minute},</if>
+			<if test="detail_type != null">detail_type = #{detail_type},</if>
+			<if test="detail_is_next_pay != null">detail_is_next_pay = #{detail_is_next_pay},</if>
+			<if test="detail_expired != null">detail_expired = #{detail_expired},</if>
+			<if test="is_post != null">is_post = #{is_post},</if>
+			<if test="hardware_comment != null">hardware_comment = #{hardware_comment},</if>
+			<if test="track_code != null">track_code = #{track_code},</if>
+			<if test="pstn_number != null">pstn_number = #{pstn_number},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="voip_password != null">voip_password = #{voip_password},</if>
+			<if test="voip_assign_date != null">voip_assign_date = #{voip_assign_date}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderDetailRecoverableListByDetailId" parameterType="int">
+		DELETE FROM tm_customer_order_detail_recoverable_list WHERE detail_id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

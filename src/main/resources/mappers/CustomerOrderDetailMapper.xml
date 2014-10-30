@@ -52,6 +52,13 @@
 				<otherwise>
 					<if test="params.id != null">cod.id = #{params.id}</if>
 					<if test="params.order_id != null">cod.order_id = #{params.order_id}</if>
+					<if test="params.detail_name != null">cod.detail_name = #{params.detail_name}</if>
+					<if test="params.detail_desc != null">cod.detail_desc = #{params.detail_desc}</if>
+					<if test="params.detail_price != null">cod.detail_price = #{params.detail_price}</if>
+					<if test="params.detail_unit != null">cod.detail_unit = #{params.detail_unit}</if>
+					<if test="params.pstn_number != null">cod.pstn_number = #{params.pstn_number}</if>
+					<if test="params.detail_type != null">cod.detail_type = #{params.detail_type}</if>
+					<if test="params.user_id != null">cod.user_id = #{params.user_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -69,7 +76,7 @@
 	<select id="selectCustomerOrderDetailsByOrderId" parameterType="int" resultType="CustomerOrderDetail">
 		SELECT * FROM `tm_customer_order_detail` WHERE order_id = #{0}
 	</select>
-	
+
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
@@ -141,7 +148,4 @@
 	</delete>
 	<!-- // END DELETE AREA -->
 
-	
-	
-	
 </mapper>

@@ -1,8 +1,6 @@
 package com.tm.broadband.controller;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -31,30 +29,14 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.itextpdf.text.DocumentException;
-import com.rossjourdain.util.xero.ArrayOfCreditNote;
-import com.rossjourdain.util.xero.ArrayOfInvoice;
-import com.rossjourdain.util.xero.ArrayOfLineItem;
-import com.rossjourdain.util.xero.ArrayOfPhone;
-import com.rossjourdain.util.xero.Contact;
-import com.rossjourdain.util.xero.CreditNote;
-import com.rossjourdain.util.xero.CreditNoteType;
-import com.rossjourdain.util.xero.Invoice;
-import com.rossjourdain.util.xero.InvoiceStatus;
-import com.rossjourdain.util.xero.InvoiceType;
-import com.rossjourdain.util.xero.LineItem;
-import com.rossjourdain.util.xero.Phone;
-import com.rossjourdain.util.xero.PhoneTypeCodeType;
-import com.rossjourdain.util.xero.XeroClient;
-import com.rossjourdain.util.xero.XeroClientException;
-import com.rossjourdain.util.xero.XeroClientProperties;
-import com.rossjourdain.util.xero.XeroClientUnexpectedException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
-import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
+import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
@@ -79,7 +61,6 @@ import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
@@ -606,6 +587,8 @@ public class CRMRestController {
 		
 		String msg = null;
 		
+		User user = (User) req.getSession().getAttribute("userSession");
+		
 		if(product_type.indexOf("plan") >= 0){
 			
 			Plan planQuery = new Plan();
@@ -627,6 +610,7 @@ public class CRMRestController {
 			codCreate.setDetail_plan_group(plan.getPlan_group());
 			codCreate.setDetail_type(plan.getPlan_group());
 			codCreate.setDetail_plan_new_connection_fee(plan.getPlan_new_connection_fee());
+			codCreate.setUser_id(user.getId());
 			
 			this.crmService.createCustomerOrderDetail(codCreate);
 			
@@ -646,6 +630,7 @@ public class CRMRestController {
 			codCreate.setDetail_desc(hardware.getHardware_desc());
 			codCreate.setDetail_type("hardware-router");
 			codCreate.setIs_post(0);
+			codCreate.setUser_id(user.getId());
 			
 			this.crmService.createCustomerOrderDetail(codCreate);
 			
@@ -1396,6 +1381,7 @@ public class CRMRestController {
 			@RequestParam("detail_name") String detail_name,
 			@RequestParam("phone_number") String phone_number,
 			@RequestParam("phone_type") String phone_type,
+			@RequestParam("phone_monthly_price") Double phone_monthly_price,
 			@RequestParam("voip_password") String voip_password,
 			@RequestParam("voip_assign_date") String voip_assign_date,
 			RedirectAttributes attr) {
@@ -1411,7 +1397,7 @@ public class CRMRestController {
 		cod.setDetail_name(detail_name);
 		cod.setPstn_number(phone_number);
 		cod.setDetail_unit(1);
-		cod.setDetail_price(0d);
+		cod.setDetail_price(phone_monthly_price);
 		cod.setDetail_type(phone_type);
 		
 		if("voip".equals(phone_type)){
@@ -1457,14 +1443,30 @@ public class CRMRestController {
 		&&  !"".equals(calling_country.trim())) {
 			
 			String detail_name = "";
-			detail_name = calling_country.split("-")[0];
-			detail_name = detail_name.split(",")[0];
+			String detail_type = "";
+			String detail_desc = "";
+			
+			if("super-free-calling".equals(calling_country)){
+				
+				detail_name = calling_minutes+" minutes to selected area";
+				detail_type = "super-free-calling";
+				detail_desc = "super-local,voip=super-national,voip=super-mobile,voip=super-40-countries,voip=super-international,voip=super-Bangladesh-both,voip=super-Malaysia-both,voip=super-Cambodia-both,voip=super-Singapore-both,voip=super-Canada-both,voip=super-Korea-both,voip=super-China-both,voip=super-USA-both,voip=super-Hong-Kong-both,voip=super-Vietnam-both,voip=super-India-both,voip=super-Argentina-fixedline,54,voip=super-Germany-fixedline,49,voip=super-Laos-fixedline,856,voip=super-South-Africa-fixedline,27,voip=super-Australia-fixedline,61,voip=super-Greece-fixedline,30,voip=super-Netherlands-fixedline,31,voip=super-Spain-fixedline,34,voip=super-Belgium-fixedline,32,voip=super-Indonesia-fixedline,62,voip=super-Norway-fixedline,47,voip=super-Sweden-fixedline,46,voip=super-Brazil-fixedline,55,voip=super-Ireland-fixedline,353,voip=super-Pakistan-fixedline,92,voip=super-Switzerland-fixedline,41,voip=super-Cyprus-fixedline,357,voip=super-Israel-fixedline,972,voip=super-Poland-fixedline,48,voip=super-Taiwan-fixedline,886,voip=super-Czech-fixedline,420,voip=super-Italy-fixedline,39,voip=super-Portugal-fixedline,351,voip=super-Thailand-fixedline,66,voip=super-Denmark-fixedline,45,voip=super-Japan-fixedline,81,voip=super-Russia-fixedline,7,voip=super-United Kingdom-fixedline,44,voip=super-France-fixedline,33,voip";
+				
+			} else {
+				
+				detail_name = calling_country.split("-")[0];
+				detail_name = detail_name.split(",")[0];
+				detail_name = calling_minutes+" minutes to " + detail_name;
+				detail_type = "present-calling-minutes";
+				detail_desc = calling_country;
+				
+			}
 			
 			CustomerOrderDetail customerOrderDetail = new CustomerOrderDetail();
 			customerOrderDetail.setOrder_id(order_id);
-			customerOrderDetail.setDetail_name(calling_minutes+" minutes to " + detail_name);
-			customerOrderDetail.setDetail_type("present-calling-minutes");
-			customerOrderDetail.setDetail_desc(calling_country);
+			customerOrderDetail.setDetail_name(detail_name);
+			customerOrderDetail.setDetail_type(detail_type);
+			customerOrderDetail.setDetail_desc(detail_desc);
 			customerOrderDetail.setDetail_price(charge_amount);
 			customerOrderDetail.setDetail_calling_minute(Integer.parseInt(calling_minutes));
 			customerOrderDetail.setDetail_unit(1);
@@ -1575,9 +1577,64 @@ public class CRMRestController {
 			@RequestParam("order_detail_id") int order_detail_id,
 			@RequestParam("customer_id") int customer_id,
 			@RequestParam("detail_type") String detail_type,
-			RedirectAttributes attr) {
+			@RequestParam("delete_reason") String delete_reason,
+			RedirectAttributes attr,
+			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
+		
+		// 1. Retrieve CustomerOrderDetail
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("id", order_detail_id);
+		codQuery = this.crmService.queryCustomerOrderDetail(codQuery);
+		
+		// 2. Copy Detail And Paste Into Recoverable List
+		CustomerOrderDetailRecoverableList codrl = new CustomerOrderDetailRecoverableList();
+		codrl.setOrder_id(codQuery.getOrder_id());
+		codrl.setDetail_id(codQuery.getId());
+		codrl.setDetail_name(codQuery.getDetail_name());
+		codrl.setDetail_desc(codQuery.getDetail_desc());
+		codrl.setDetail_price(codQuery.getDetail_price());
+		codrl.setDetail_data_flow(codQuery.getDetail_data_flow());
+		codrl.setDetail_plan_status(codQuery.getDetail_plan_status());
+		codrl.setDetail_plan_type(codQuery.getDetail_plan_type());
+		codrl.setDetail_plan_sort(codQuery.getDetail_plan_sort());
+		codrl.setDetail_plan_group(codQuery.getDetail_plan_group());
+		codrl.setDetail_plan_class(codQuery.getDetail_plan_class());
+		codrl.setDetail_plan_new_connection_fee(codQuery.getDetail_plan_new_connection_fee());
+		codrl.setDetail_term_period(codQuery.getDetail_term_period());
+		codrl.setDetail_topup_data_flow(codQuery.getDetail_topup_data_flow());
+		codrl.setDetail_topup_fee(codQuery.getDetail_topup_fee());
+		codrl.setDetail_plan_memo(codQuery.getDetail_plan_memo());
+		codrl.setDetail_unit(codQuery.getDetail_unit());
+		codrl.setDetail_calling_minute(codQuery.getDetail_calling_minute());
+		codrl.setDetail_type(codQuery.getDetail_type());
+		codrl.setDetail_is_next_pay(codQuery.getDetail_is_next_pay());
+		codrl.setDetail_expired(codQuery.getDetail_expired());
+		codrl.setIs_post(codQuery.getIs_post());
+		codrl.setHardware_comment(codQuery.getHardware_comment());
+		codrl.setTrack_code(codQuery.getTrack_code());
+		codrl.setPstn_number(codQuery.getPstn_number());
+		codrl.setUser_id(codQuery.getUser_id());
+		codrl.setVoip_password(codQuery.getVoip_password());
+		codrl.setVoip_assign_date(codQuery.getVoip_assign_date());
+		this.crmService.createCustomerOrderDetailRecoverableList(codrl);
+
+		User user = (User) request.getSession().getAttribute("userSession");
+		
+		// 3. Insert necessary informations into CustomerOrderDetailDeleteRecord
+		CustomerOrderDetailDeleteRecord coddr = new CustomerOrderDetailDeleteRecord();
+		coddr.setDelete_reason(delete_reason);
+		coddr.setDetail_id(codQuery.getId());
+		coddr.setDetail_name(codQuery.getDetail_name());
+		coddr.setDetail_type(codQuery.getDetail_type());
+		coddr.setExecutor_id(user.getId());
+		coddr.setExecuted_date(new Date());
+		coddr.setOrder_id(codQuery.getOrder_id());
+		coddr.setIs_recoverable(true);
+		this.crmService.createCustomerOrderDetailDeleteRecord(coddr);
+		
+		
 
 		this.crmService.removeCustomerOrderDetailById(order_detail_id);
 		// Remove Customer Order Detail Discount is successful.
@@ -1585,6 +1642,58 @@ public class CRMRestController {
 						: "early-termination-debit".equals(detail_type) ? "Early Termination Charge"
 						: "termination-credit".equals(detail_type) ? "Termination Refund" : detail_type;
 		json.getSuccessMap().put("alert-success", "Selected " + detailType + " had been detached from related order!");
+
+		return json;
+	}
+
+	// Remove discount
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/recover", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailRecover(Model model,
+			@RequestParam("detail_id") int detail_id) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		// 1. Retrieve RecoverableOrderDetail
+		CustomerOrderDetailRecoverableList codrlQuery = new CustomerOrderDetailRecoverableList();
+		codrlQuery.getParams().put("detail_id", detail_id);
+		codrlQuery = this.crmService.queryCustomerOrderDetailRecoverableList(codrlQuery);
+		
+		// 2. Copy Recoverable Detail And Paste Into OrderDetail
+		CustomerOrderDetail codCreate = new CustomerOrderDetail();
+		codCreate.setOrder_id(codrlQuery.getOrder_id());
+		codCreate.setDetail_name(codrlQuery.getDetail_name());
+		codCreate.setDetail_desc(codrlQuery.getDetail_desc());
+		codCreate.setDetail_price(codrlQuery.getDetail_price());
+		codCreate.setDetail_data_flow(codrlQuery.getDetail_data_flow());
+		codCreate.setDetail_plan_status(codrlQuery.getDetail_plan_status());
+		codCreate.setDetail_plan_type(codrlQuery.getDetail_plan_type());
+		codCreate.setDetail_plan_sort(codrlQuery.getDetail_plan_sort());
+		codCreate.setDetail_plan_group(codrlQuery.getDetail_plan_group());
+		codCreate.setDetail_plan_class(codrlQuery.getDetail_plan_class());
+		codCreate.setDetail_plan_new_connection_fee(codrlQuery.getDetail_plan_new_connection_fee());
+		codCreate.setDetail_term_period(codrlQuery.getDetail_term_period());
+		codCreate.setDetail_topup_data_flow(codrlQuery.getDetail_topup_data_flow());
+		codCreate.setDetail_topup_fee(codrlQuery.getDetail_topup_fee());
+		codCreate.setDetail_plan_memo(codrlQuery.getDetail_plan_memo());
+		codCreate.setDetail_unit(codrlQuery.getDetail_unit());
+		codCreate.setDetail_calling_minute(codrlQuery.getDetail_calling_minute());
+		codCreate.setDetail_type(codrlQuery.getDetail_type());
+		codCreate.setDetail_is_next_pay(codrlQuery.getDetail_is_next_pay());
+		codCreate.setDetail_expired(codrlQuery.getDetail_expired());
+		codCreate.setIs_post(codrlQuery.getIs_post());
+		codCreate.setHardware_comment(codrlQuery.getHardware_comment());
+		codCreate.setTrack_code(codrlQuery.getTrack_code());
+		codCreate.setPstn_number(codrlQuery.getPstn_number());
+		codCreate.setUser_id(codrlQuery.getUser_id());
+		codCreate.setVoip_password(codrlQuery.getVoip_password());
+		codCreate.setVoip_assign_date(codrlQuery.getVoip_assign_date());
+		this.crmService.createCustomerOrderDetail(codCreate);
+		
+		// 3. Clean Deleted Record & Recoverable Record
+		this.crmService.removeCustomerOrderDetailDeleteRecordByDetailId(detail_id);
+		this.crmService.removeCustomerOrderDetailRecoverableListByDetailId(detail_id);
+		
+		json.getSuccessMap().put("alert-success", "Selected Detail had been recovered to related order!");
 
 		return json;
 	}
@@ -1822,6 +1931,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("detail_name") String detail_name,
 			@RequestParam("phone_number") String phone_number,
+			@RequestParam("phone_monthly_price") Double phone_monthly_price,
 			@RequestParam("phone_type") String phone_type,
 			@RequestParam("voip_password") String voip_password,
 			@RequestParam("voip_assign_date") String voip_assign_date,
@@ -1839,8 +1949,10 @@ public class CRMRestController {
 		cod.setDetail_name(detail_name);
 		cod.setPstn_number(phone_number);
 		cod.setDetail_unit(1);
-		cod.setDetail_price(0d);
+		cod.setDetail_price(phone_monthly_price);
 		cod.setDetail_type(phone_type);
+		User user = (User) req.getSession().getAttribute("userSession");
+		cod.setUser_id(user.getId());
 		
 		if("voip".equals(phone_type)){
 			
@@ -1865,6 +1977,32 @@ public class CRMRestController {
 		json.getSuccessMap().put("alert-success", "Add new "+phone_type+" successfully!");
 
 		return json;
+	}
+
+	// GetDeleteOrderDetailsByOrderId
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/delete_record")
+	public JSONBean<Map<String, Object>> getDeletedOrderDetailsByOrderId(Model model,
+			@RequestParam("order_id") Integer order_id) {
+
+		JSONBean<Map<String, Object>> json = new JSONBean<Map<String, Object>>();
+		
+		CustomerOrderDetailDeleteRecord coddrQuery = new CustomerOrderDetailDeleteRecord();
+		coddrQuery.getParams().put("orderby", "order by executed_date DESC");
+		coddrQuery.getParams().put("order_id", order_id);
+		List<CustomerOrderDetailDeleteRecord> coddrs = this.crmService.queryCustomerOrderDetailDeleteRecords(coddrQuery);
+		
+		Map<String, Object> jsonMap = new HashMap<String, Object>();
+		
+		List<User> users = this.systemService.queryUser();
+		
+		jsonMap.put("users", users);
+		jsonMap.put("coddrs", coddrs);
+		
+		json.setModel(jsonMap);
+		
+		
+		return json;
+		
 	}
 
 	// Regenerate invoice PDF
@@ -1929,7 +2067,11 @@ public class CRMRestController {
 			Customer c = (Customer) resultMap.get("customer");
 			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
 			
-			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
+			if(ci.getFinal_payable_amount()>0){
+				System.out.println("============================== TERMED INVOICE ON THE WAY 2 XERO ==============================");
+				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
+			}
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
@@ -1961,8 +2103,12 @@ public class CRMRestController {
 			
 			Customer c = (Customer) resultMap.get("customer");
 			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
-			
-			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
+
+			if(ci.getFinal_payable_amount()>0){
+				System.out.println("============================== NON-TERMED INVOICE ON THE WAY 2 XERO ==============================");
+				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
+			}
 			
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
@@ -1996,8 +2142,12 @@ public class CRMRestController {
 			
 			Customer c = (Customer) resultMap.get("customer");
 			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
-			
-			Post2Xero.postSingleInvoice(request, c, ci, "Broadband Monthly Payment");
+
+			if(ci.getFinal_payable_amount()>0){
+				System.out.println("============================== TOPUP INVOICE ON THE WAY 2 XERO ==============================");
+				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
+			}
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {
@@ -2185,7 +2335,23 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Edit detail
+	// Get Deleted Detail Record Counts
+	@RequestMapping(value = "/broadband-user/crm/customer/order/deleted_detail_record_count", method = RequestMethod.POST)
+	public Map<String, Object> getDeletedDetailRecordCounts(Model model,
+			@RequestParam("order_id") Integer order_id) {
+		
+		Page<CustomerOrderDetailDeleteRecord> page = new Page<CustomerOrderDetailDeleteRecord>();
+		page.getParams().put("order_id", order_id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("order_id", order_id);
+		map.put("sum", this.crmService.queryCustomerOrderDetailDeleteRecordsSumByPage(page));
+		
+		return map;
+		
+	}
+
+	// Edit detail plan
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/plan/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPlanEdit(Model model,
 			CustomerOrderDetail cod,
@@ -2197,6 +2363,55 @@ public class CRMRestController {
 		this.crmService.editCustomerOrderDetail(cod);
 		
 		json.getSuccessMap().put("alert-success", "Plan detail edited successfully!");
+		return json;
+	}
+
+	// Edit detail
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderDetailEdit(Model model,
+			CustomerOrderDetail cod,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		cod.getParams().put("id", cod.getId());
+		this.crmService.editCustomerOrderDetail(cod);
+		
+		json.getSuccessMap().put("alert-success", "Detail edited successfully!");
+		return json;
+	}
+
+	// Switch Is Send Invoice 2 Xero
+	@RequestMapping(value = "/broadband-user/crm/customer/order/is_send_invoice_2_xero/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderIsSendInvoice2XeroEdit(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("is_send_xero_invoice") Boolean is_send_xero_invoice) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.getParams().put("id", order_id);
+		coUpdate.setIs_send_xero_invoice(is_send_xero_invoice);
+		this.crmService.editCustomerOrder(coUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Switch Send Invoice 2 Xero to "+(is_send_xero_invoice ? "ACTIVE" : "DISABLED")+" successfully!");
+		return json;
+	}
+
+	// Switch Xero Invoice Status
+	@RequestMapping(value = "/broadband-user/crm/customer/order/xero_invoice_status/edit", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderXeroInvoiceStatusEdit(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("xero_invoice_status") Boolean xero_invoice_status) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.getParams().put("id", order_id);
+		coUpdate.setXero_invoice_status(xero_invoice_status ? "AUTHORISED" : "DRAFT");
+		this.crmService.editCustomerOrder(coUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Switch Invoice Status Xero 2 Xero to "+(xero_invoice_status ? "AUTHORISED" : "DRAFT")+" successfully!");
 		return json;
 	}
 

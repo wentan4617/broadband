@@ -287,6 +287,10 @@ public class ManualManipulationController {
 		
 		this.billingService.insertCustomerCallRecord(billingFileId, billing_type, statementDate, filePath);
 		
+		if("chorus-broadband-asid".equals(billing_type)){
+			billing_type = "chorus";
+		}
+		
 		return "redirect:/broadband-user/manual-manipulation/call-billing-record/view/" + pageNo + "/" + status + "/" + billing_type;
 	}
 	

@@ -318,6 +318,13 @@
 			<artifactId>oauth-httpclient3</artifactId>
 			<version>20090617</version>
 		</dependency>
+	
+		<!-- <dependency>
+			<groupId>net.oauth.core</groupId>
+			<artifactId>oauth-httpclient4</artifactId>
+			<version>20090531</version>
+		</dependency> -->
+	
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>

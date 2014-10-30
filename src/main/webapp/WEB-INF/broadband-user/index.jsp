@@ -10,6 +10,9 @@
 .panel-success {
 	min-height: 240px;
 }
+.first-row-panel-success {
+	min-height: 300px;
+}
 hr {
 	margin:0 0 5px 0;
 }
@@ -29,7 +32,7 @@ hr {
 				<div class="col-md-6">
 				
 					<!-- CRM Module -->
-					<div class="panel panel-success">
+					<div class="panel panel-success first-row-panel-success">
 				  		<div class="panel-heading">
 				  			<h3 class="panel-title"><strong class="text-success">CRM</strong></h3>
 				  		</div>
@@ -70,7 +73,7 @@ hr {
 				<div class="col-md-6">
 				
 					<!-- Provision Module -->
-					<div class="panel panel-success">
+					<div class="panel panel-success first-row-panel-success">
 				  		<div class="panel-heading">
 				  			<h3 class="panel-title"><strong class="text-success">Provision</strong></h3>
 				  		</div>
@@ -98,6 +101,13 @@ hr {
 		                    		<a href="${ctx }/broadband-user/provision/contact-us/view/1/new">
 		                    			View Contact Us <span class="badge" style="background:red;">${newContactUsSum}</span>
 		                    		</a>
+		                    	</li>
+		                    </ul>
+		                    <hr>
+		                    <ul class="list-unstyled">
+								<li>
+		                    		<span class="glyphicon glyphicon-screenshot" ></span> 
+		                    		<a href="${ctx }/broadband-user/provision/number-couldnot-find/chorus/unmatched">View Provision Exceptions</a>
 		                    	</li>
 		                    </ul>
 					  	</div>
@@ -245,7 +255,7 @@ hr {
 		<div class="col-md-6">
 		
 			<!-- Billing Module -->
-			<div class="panel panel-success">
+			<div class="panel panel-success first-row-panel-success">
 		  		<div class="panel-heading">
 		  			<h3 class="panel-title"><strong class="text-success">Billing</strong></h3>
 		  		</div>
@@ -300,6 +310,13 @@ hr {
 								<li>
 		                    		<span class="glyphicon glyphicon-briefcase" ></span> 
 		                    		<a href="${ctx }/broadband-user/billing/chart/annual-invoice-statistic/business/0">Chart(Annually Business)</a>
+		                    	</li>
+							</ul>
+			  				<hr/>
+			  				<ul class="list-unstyled">
+								<li>
+		                    		<span class="glyphicon glyphicon-phone-alt" ></span> 
+		                    		<a href="${ctx }/broadband-user/billing/chart/calling-statistic/all/0">Chart(Calling Statistic)</a>
 		                    	</li>
 							</ul>
 			  			</div>

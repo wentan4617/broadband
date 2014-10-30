@@ -59,6 +59,7 @@ public class CustomerCallingRecordCallplus implements Serializable {
 	}
 
 	public void setDate(Date date) {
+		this.setDate_str(TMUtils.dateFormatYYYYMMDD(date));
 		this.date = date;
 	}
 
@@ -111,7 +112,6 @@ public class CustomerCallingRecordCallplus implements Serializable {
 	}
 
 	public String getDate_str() {
-		this.setDate_str(TMUtils.dateFormatYYYYMMDDHHMMSS(this.getDate()));
 		return date_str;
 	}
 

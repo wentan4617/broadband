@@ -31,7 +31,9 @@ import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
+import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
 import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
@@ -58,6 +60,8 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
+import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
@@ -125,6 +129,8 @@ public class CRMService {
 	private InviteRatesMapper inviteRatesMapper;
 	private UserMapper userMapper;
 	private NZAreaCodeListMapper nzAreaCodeListMapper;
+	private CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper;
+	private CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -162,7 +168,9 @@ public class CRMService {
 			VOSVoIPRateMapper vosVoIPRateMapper,
 			InviteRatesMapper inviteRatesMapper,
 			UserMapper userMapper,
-			NZAreaCodeListMapper nzAreaCodeListMapper){
+			NZAreaCodeListMapper nzAreaCodeListMapper,
+			CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper,
+			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -193,6 +201,8 @@ public class CRMService {
 		this.inviteRatesMapper = inviteRatesMapper;
 		this.userMapper = userMapper;
 		this.nzAreaCodeListMapper = nzAreaCodeListMapper;
+		this.customerOrderDetailDeleteRecordMapper = customerOrderDetailDeleteRecordMapper;
+		this.customerOrderDetailRecoverableListMapper = customerOrderDetailRecoverableListMapper;
 	}
 	
 	
@@ -870,6 +880,90 @@ public class CRMService {
 	 * end customer invoice
 	 * */
 	
+	/*
+	 * customer order detail delete record
+	 * */
+	public void createCustomerOrderDetailDeleteRecord(CustomerOrderDetailDeleteRecord coddr){
+		this.customerOrderDetailDeleteRecordMapper.insertCustomerOrderDetailDeleteRecord(coddr);
+	}
+	
+	public CustomerOrderDetailDeleteRecord queryCustomerOrderDetailDeleteRecord(CustomerOrderDetailDeleteRecord coddr) {
+		List<CustomerOrderDetailDeleteRecord> coddrs = this.customerOrderDetailDeleteRecordMapper.selectCustomerOrderDetailDeleteRecord(coddr);
+		return coddrs!=null && coddrs.size()>0 ? coddrs.get(0) : null;
+	}
+	
+	public List<CustomerOrderDetailDeleteRecord> queryCustomerOrderDetailDeleteRecords(CustomerOrderDetailDeleteRecord coddr) {
+		return this.customerOrderDetailDeleteRecordMapper.selectCustomerOrderDetailDeleteRecord(coddr);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderDetailDeleteRecord> queryCustomerOrderDetailDeleteRecordsByPage(Page<CustomerOrderDetailDeleteRecord> page){
+		page.setTotalRecord(this.customerOrderDetailDeleteRecordMapper.selectCustomerOrderDetailDeleteRecordsSum(page));
+		page.setResults(this.customerOrderDetailDeleteRecordMapper.selectCustomerOrderDetailDeleteRecordsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderDetailDeleteRecordsSumByPage(Page<CustomerOrderDetailDeleteRecord> page){
+		return this.customerOrderDetailDeleteRecordMapper.selectCustomerOrderDetailDeleteRecordsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderDetailDeleteRecord(CustomerOrderDetailDeleteRecord coddr){
+		this.customerOrderDetailDeleteRecordMapper.updateCustomerOrderDetailDeleteRecord(coddr);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderDetailDeleteRecordByDetailId(int id){
+		this.customerOrderDetailDeleteRecordMapper.deleteCustomerOrderDetailDeleteRecordByDetailId(id);
+	}
+	/*
+	 * end customer order detail delete record
+	 * */
+	
+	
+	/*
+	 * customer order detail recoverable list
+	 * */
+	
+	public void createCustomerOrderDetailRecoverableList(CustomerOrderDetailRecoverableList codrl){
+		this.customerOrderDetailRecoverableListMapper.insertCustomerOrderDetailRecoverableList(codrl);
+	}
+	
+	public CustomerOrderDetailRecoverableList queryCustomerOrderDetailRecoverableList(CustomerOrderDetailRecoverableList codrl) {
+		List<CustomerOrderDetailRecoverableList> codrls = this.customerOrderDetailRecoverableListMapper.selectCustomerOrderDetailRecoverableList(codrl);
+		return codrls!=null && codrls.size()>0 ? codrls.get(0) : null;
+	}
+	
+	public List<CustomerOrderDetailRecoverableList> queryCustomerOrderDetailRecoverableLists(CustomerOrderDetailRecoverableList codrl) {
+		return this.customerOrderDetailRecoverableListMapper.selectCustomerOrderDetailRecoverableList(codrl);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderDetailRecoverableList> queryCustomerOrderDetailRecoverableListsByPage(Page<CustomerOrderDetailRecoverableList> page){
+		page.setTotalRecord(this.customerOrderDetailRecoverableListMapper.selectCustomerOrderDetailRecoverableListsSum(page));
+		page.setResults(this.customerOrderDetailRecoverableListMapper.selectCustomerOrderDetailRecoverableListsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderDetailRecoverableListsSumByPage(Page<CustomerOrderDetailRecoverableList> page){
+		return this.customerOrderDetailRecoverableListMapper.selectCustomerOrderDetailRecoverableListsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderDetailRecoverableList(CustomerOrderDetailRecoverableList codrl){
+		this.customerOrderDetailRecoverableListMapper.updateCustomerOrderDetailRecoverableList(codrl);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderDetailRecoverableListByDetailId(int id){
+		this.customerOrderDetailRecoverableListMapper.deleteCustomerOrderDetailRecoverableListByDetailId(id);
+	}
+	
+	/*
+	 * end customer order detail recoverable list
+	 * */
+	
+	
 	/**
 	 * BEGIN Ticket
 	 */
@@ -1294,7 +1388,7 @@ public class CRMService {
 						cid = null;
 						continue;
 						
-					} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+					} else if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 						cid.setInvoice_detail_name(cod.getDetail_name());
 						cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 						cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
@@ -1421,10 +1515,14 @@ public class CRMService {
 				Map<String, Object> resultMap = new HashMap<String, Object>();
 				resultMap.put("customer", co.getCustomer());
 				resultMap.put("customerInvoice", ci);
-				resultMaps.add(resultMap);
+				resultMap.put("customerOrder", co);
+				if(co.getIs_ddpay()==null || !co.getIs_ddpay()){
+					resultMaps.add(resultMap);
+				}
 			}
 			
 			if(resultMaps.size()>0){
+				
 				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
 			}
 			
@@ -1617,7 +1715,9 @@ public class CRMService {
 						, isRegenerateInvoice
 						, is_Next_Invoice);
 				
-				resultMaps.add(resultMap);
+				if(co.getIs_ddpay()==null || !co.getIs_ddpay()){
+					resultMaps.add(resultMap);
+				}
 				
 			}
 			
@@ -1748,9 +1848,11 @@ public class CRMService {
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
 				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+				
 			}
 			
-			if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+			if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
@@ -2034,6 +2136,7 @@ public class CRMService {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("customer", c);
 		resultMap.put("customerInvoice", ci);
+		resultMap.put("customerOrder", co);
 		return resultMap;
 		
 	}
@@ -2129,10 +2232,13 @@ public class CRMService {
 					}
 					
 					
+					
 				}	
 				
 				Map<String, Object> resultMap = createTermPlanInvoiceByOrder(co, isRegenerateInvoice, is_Next_Invoice);
-				resultMaps.add(resultMap);
+				if(co.getIs_ddpay()==null || !co.getIs_ddpay()){
+					resultMaps.add(resultMap);
+				}
 				
 			}
 			
@@ -2272,6 +2378,8 @@ public class CRMService {
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
 				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+				
 			}
 			
 			
@@ -2299,7 +2407,7 @@ public class CRMService {
 
 				continue;
 				
-			} else if("present-calling-minutes".equals(cod.getDetail_type())){
+			} else if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 				
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
@@ -2411,7 +2519,8 @@ public class CRMService {
 				} else if(cod.getDetail_type()!=null && !"discount".equals(cod.getDetail_type())
 						  && !"termination-credit".equals(cod.getDetail_type())
 						  && !"early-termination-debit".equals(cod.getDetail_type())
-						  && !"present-calling-minutes".equals(cod.getDetail_type())) {
+						  && !"present-calling-minutes".equals(cod.getDetail_type())
+						  && !"super-free-calling".equals(cod.getDetail_type())) {
 
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_price(cod.getDetail_price());
@@ -2744,6 +2853,7 @@ public class CRMService {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("customer", c);
 		resultMap.put("customerInvoice", ci);
+		resultMap.put("customerOrder", co);
 		
 		return resultMap;
 		
@@ -2879,6 +2989,8 @@ public class CRMService {
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
 				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+				
 			}
 
 			// if detail type equals discount and detail expire date greater
@@ -2904,7 +3016,7 @@ public class CRMService {
 					cid.setInvoice_detail_type(cod.getDetail_type());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
-				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+				} else if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 					cid.setInvoice_detail_name(cod.getDetail_name());
 					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 					cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
@@ -3244,6 +3356,7 @@ public class CRMService {
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		resultMap.put("customer", customer);
 		resultMap.put("customerInvoice", ci);
+		resultMap.put("customerOrder", customerOrder);
 		
 		return resultMap;
 	}
@@ -3251,6 +3364,15 @@ public class CRMService {
 	/**
 	 * BEGIN CustomerOrderDetail
 	 */
+	
+	public CustomerOrderDetail queryCustomerOrderDetail(CustomerOrderDetail cod){
+		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetails(cod);
+		return cods!=null && cods.size()>0 ? cods.get(0) : null;
+	}
+	
+	public List<CustomerOrderDetail> queryCustomerOrderDetails(CustomerOrderDetail cod){
+		return this.customerOrderDetailMapper.selectCustomerOrderDetails(cod);
+	}
 	
 	public List<CustomerOrderDetail> queryCustomerOrderDetailsByOrderId(int order_id){
 		return this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(order_id);
@@ -3454,7 +3576,7 @@ public class CRMService {
 					cid.setInvoice_detail_desc(cod.getDetail_desc());
 					cids.add(cid);
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
-				} else if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+				} else if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cids.add(cid);
 				} else {

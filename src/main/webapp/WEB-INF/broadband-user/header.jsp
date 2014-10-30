@@ -13,6 +13,7 @@
     <link href="${ctx}/public/bootstrap3/css/user.css" rel="stylesheet" type="text/css"  />
     <link href="${ctx}/public/bootstrap3/css/datepicker3.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/bootstrap-select.min.css" rel="stylesheet" type="text/css" />
+    <link href="${ctx}/public/bootstrap3/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/skins/all.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/ladda-themeless.min.css" rel="stylesheet" type="text/css" />
     <link href="${ctx}/public/bootstrap3/css/jquery.fileupload.css" rel="stylesheet" type="text/css" />

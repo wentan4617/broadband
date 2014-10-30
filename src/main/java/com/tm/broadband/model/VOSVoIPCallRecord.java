@@ -55,7 +55,7 @@ public class VOSVoIPCallRecord implements Serializable {
 		return call_start;
 	}
 	public void setCall_start(Date call_start) {
-		this.setCall_start_str(TMUtils.dateFormatYYYYMMDD(this.getCall_start()));
+		this.setCall_start_str(TMUtils.dateFormatYYYYMMDD(call_start));
 		this.call_start = call_start;
 	}
 	public String getOri_number() {

@@ -122,6 +122,8 @@
 		, co.`mobile`							as co_mobile
 		, co.`email`							as co_email
 		, co.`customer_type`					as co_customer_type
+		, co.`xero_invoice_status` 				as co_xero_invoice_status
+		, co.`is_send_xero_invoice` 			as co_is_send_xero_invoice
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -172,9 +174,70 @@
 		<result property="mobile" column="co_mobile" />
 		<result property="email" column="co_email" />
 		<result property="customer_type" column="co_customer_type" />
+		<result property="xero_invoice_status" column="co_xero_invoice_status" />
+		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 		<association property="organization" resultMap="organizationResultMap"/>
+	</resultMap>
+	
+	<sql id="customerOrderDetailColumns">
+		cod.`id` 								as cod_id, 
+		cod.`order_id` 							as cod_order_id, 
+		cod.`detail_name` 						as cod_detail_name,
+		cod.`detail_desc` 						as cod_detail_desc, 
+		cod.`detail_price` 						as cod_detail_price,
+		cod.`detail_data_flow` 					as cod_detail_data_flow, 
+		cod.`detail_plan_status` 				as cod_detail_plan_status,
+		cod.`detail_plan_type` 					as cod_detail_plan_type, 
+		cod.`detail_plan_sort` 					as cod_detail_plan_sort,
+		cod.`detail_plan_group` 				as cod_detail_plan_group,
+		cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee,
+		cod.`detail_term_period` 				as cod_detail_term_period,
+		cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow,
+		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
+		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
+		cod.`detail_unit` 						as cod_detail_unit,
+		cod.`detail_calling_minute` 			as cod_detail_calling_minute,
+		cod.`detail_type` 						as cod_detail_type,
+		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
+		cod.`detail_expired`					as cod_detail_expired,
+		cod.`is_post`							as cod_is_post,
+		cod.`hardware_comment`					as cod_hardware_comment,
+		cod.`track_code`						as cod_track_code,
+		cod.`pstn_number` 						as cod_pstn_number,
+		cod.`user_id` 							as cod_user_id,
+		cod.`voip_password` 					as cod_voip_password,
+		cod.`voip_assign_date` 					as cod_voip_assign_date
+	</sql>
+	<resultMap type="CustomerOrderDetail" id="customerOrderDetailResultMap">
+		<id property="id" column="cod_id" />
+		<id property="order_id" column="cod_order_id" />
+		<result property="detail_name" column="cod_detail_name" />
+		<result property="detail_desc" column="cod_detail_desc" />
+		<result property="detail_price" column="cod_detail_price" />
+		<result property="detail_data_flow" column="cod_detail_data_flow" />
+		<result property="detail_plan_status" column="cod_detail_plan_status" />
+		<result property="detail_plan_type" column="cod_detail_plan_type" />
+		<result property="detail_plan_sort" column="cod_detail_plan_sort" />
+		<result property="detail_plan_group" column="cod_detail_plan_group" />
+		<result property="detail_plan_new_connection_fee" column="cod_detail_plan_new_connection_fee" />
+		<result property="detail_term_period" column="cod_detail_term_period" />
+		<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow" />
+		<result property="detail_topup_fee" column="cod_detail_topup_fee" />
+		<result property="detail_plan_memo" column="cod_detail_plan_memo" />
+		<result property="detail_unit" column="cod_detail_unit" />
+		<result property="detail_calling_minute" column="cod_detail_calling_minute" />
+		<result property="detail_type" column="cod_detail_type" />
+		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
+		<result property="detail_expired" column="cod_detail_expired" />
+		<result property="is_post" column="cod_is_post" />
+		<result property="hardware_comment" column="cod_hardware_comment" />
+		<result property="track_code" column="cod_track_code" />
+		<result property="pstn_number" column="cod_pstn_number" />
+		<result property="user_id" column="cod_user_id" />
+		<result property="voip_password" column="cod_voip_password" />
+		<result property="voip_assign_date" column="cod_voip_assign_date" />
 	</resultMap>
 	
 	<sql id="organizationColumns">
@@ -320,7 +383,7 @@
 		left join tm_organization as o on o.order_id = co.id
 		<include refid="customerOrderWhere"/>
 	</select>
-	
+		
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
@@ -334,7 +397,7 @@
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
 			`receipt_pdf_path`, `disconnected_date`, `connection_date`, `contract`, `inviter_customer_id`, `inviter_user_id`,
-			`inviter_rate`, `invitee_rate`, `address`, `mobile`, `email`, `customer_type`)
+			`inviter_rate`, `invitee_rate`, `address`, `mobile`, `email`, `customer_type`, `xero_invoice_status`, `is_send_xero_invoice`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type}, #{transition_provider_name}, #{transition_account_holder_name},
@@ -343,7 +406,7 @@
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
 			#{receipt_pdf_path}, #{disconnected_date}, #{connection_date}, #{contract}, #{inviter_customer_id}, #{inviter_user_id},
-			#{inviter_rate}, #{invitee_rate}, #{address}, #{mobile}, #{email}, #{customer_type})
+			#{inviter_rate}, #{invitee_rate}, #{address}, #{mobile}, #{email}, #{customer_type}, #{xero_invoice_status},#{is_send_xero_invoice})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -399,7 +462,9 @@
 			<if test="address != null">address = #{address},</if>
 			<if test="mobile != null">mobile = #{mobile},</if>
 			<if test="email != null">email = #{email},</if>
-			<if test="customer_type != null">customer_type = #{customer_type}</if>
+			<if test="customer_type != null">customer_type = #{customer_type},</if>
+			<if test="xero_invoice_status != null">xero_invoice_status = #{xero_invoice_status},</if>
+			<if test="is_send_xero_invoice != null">is_send_xero_invoice = #{is_send_xero_invoice}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
