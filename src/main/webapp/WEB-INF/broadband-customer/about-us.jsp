@@ -8,9 +8,6 @@
 #navhead {
 	margin-bottom:0;
 }
-</style>
-<style>
-
 .affix {
 	width: 263px;
 	top: 0;
@@ -31,8 +28,8 @@
 
 <div class="container">
 	<div class="row" style="margin-bottom:20px;">
-		
 		<div class="col-md-9 col-xs-12 col-sm-12">
+		
 			<section id="overview">
 				<div class="page-header">
 					<div class="home-title">
@@ -53,6 +50,7 @@
 					Top-up or no term plans’ users can recharge their accounts by Top-up Vouchers, Credit Cards, Direct debts, account to account, or Paypal systems. Other broadband plans’ selectors also can use the electric business payment methods. Professional Wifi Coverage broadband plans provide more convenience to your Wifi users, at the same time, our IT team can help you to produce your advertisement to be your free Wifi’s registration pages. Moreover, these IT services can also assist to build up and keep your royal customers.
 				</p>
 			</section>
+			
 			<section id="service">
 				<div class="page-header">
 					<div class="home-title">
@@ -69,6 +67,7 @@
 					Telecommunication package plans achieve all your specific Telecommunication requirements base on a lowest cost. Qualified and professional services let you feel we are standing beside with you and your business.
 				</p>
 			</section>
+			
 			<section id="contact">
 				<div class="page-header">
 					<div class="home-title">
@@ -110,37 +109,37 @@
 						
 						<form class="form-horizontal" id="contactUsForm">
 							<div class="form-group">
-								<label for="first_name" class="control-label col-md-2">First Name *</label>
+								<label for="first_name" class="control-label col-md-2">First name <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
-									<input id="first_name" class="form-control" placeholder="First Name" data-error-field/>
+									<input id="first_name" class="form-control" placeholder="First name" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="last_name" class="control-label col-md-2">Last Name *</label>
+								<label for="last_name" class="control-label col-md-2">Last name <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
-									<input id="last_name" class="form-control" placeholder="Last Name" data-error-field/>
+									<input id="last_name" class="form-control" placeholder="Last name" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="email" class="control-label col-md-2">Email*</label>
+								<label for="email" class="control-label col-md-2">Email <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
-									<input id="email" class="form-control" placeholder="Email" data-error-field/>
+									<input id="email" class="form-control" placeholder="e.g. cyebrpark@gmail.com" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="cellphone" class="control-label col-md-2">Mobile</label>
 								<div class="col-md-6">
-									<input id="cellphone" class="form-control" placeholder="Cellphone" data-error-field/>
+									<input id="cellphone" class="form-control" placeholder="e.g. 0211405369" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="phone" class="control-label col-md-2">Phone</label>
 								<div class="col-md-6">
-									<input id="phone" class="form-control" placeholder="Phone" data-error-field/>
+									<input id="phone" class="form-control" placeholder="e.g. 095701596" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="content" class="control-label col-md-2">Your request*</label>
+								<label for="content" class="control-label col-md-2">Your request <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
 									<textarea id="content" class="form-control" rows="6" data-error-field></textarea>
 								</div>
@@ -154,7 +153,7 @@
 							<div class="form-group">
 								<label for="code" class="control-label col-md-2"></label>
 								<div class="col-md-3">
-									<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
+									<img id="codeImage" style="cursor:pointer" alt="Verification Code" src="kaptcha.jpg" />
 								</div>
 								<div class="col-md-5">
 									<a href="javascript:void(0);" id="codeLink">Not clear? Change other code.</a>
@@ -162,9 +161,8 @@
 							</div>
 							<hr/>
 							<div class="form-group">
-								<div class="col-md-2"></div>
-								<div class="col-md-3">
-									<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="submit-btn">Submit Request</button>
+								<div class="col-md-3 col-md-offset-2">
+									<button type="submit" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="submit-btn">Submit Request</button>
 								</div>
 							</div>
 						</form>
@@ -183,7 +181,7 @@
 			
 		</div>
 		<div class="col-md-3 hidden-xs hidden-sm">
-			 <div class="navbar-example panel panel-default" style="margin-top:40px;" data-spy="affix" data-offset-top="150">
+			 <div class="navbar-example panel panel-default" style="margin-top:40px" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">
 						<a href="#overview">CyberPark Overview</a>
@@ -207,17 +205,12 @@
 <jsp:include page="script.jsp" />
 <script type="text/javascript">
 (function($){
+	
 	$('body').scrollspy({ target: '.navbar-example' });
 	
-	$(document).keypress(function(e){
-		if ($('#contactUsForm input:focus').length > 0 && event.keyCode == 13) {
-			$('#submit-btn').trigger('click');
-		}
-	});
-	
-	$('#submit-btn').on("click", function(){
-		var $btn = $(this);
-		$btn.button('loading');
+	$('#submit-btn').on("click", function(e){
+		e.preventDefault();
+		var l = Ladda.create(this); l.start();
 		var data = {
 			first_name: $('#first_name').val()
 			, last_name: $('#last_name').val()
@@ -228,16 +221,14 @@
 			, code: $('#code').val()
 		};
 		$.post('${ctx}/contact-us', data, function(json){
-			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random() * 100));
 			$.jsonValidation(json, 'right');
 			$('.form-control').val('');
-		}, 'json').always(function () {
-			$btn.button('reset');
-	    });
+		}, 'json').always(function() { l.stop(); });
 	});
 	
 	$('#codeImage,#codeLink').click(function(){
-		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random() * 100));
 	});
 })(jQuery);
 </script>

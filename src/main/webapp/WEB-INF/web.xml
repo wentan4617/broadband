@@ -110,22 +110,6 @@
 		<filter-name>encodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
-
-	<!-- customer order session filter -->
-	<filter>
-		<filter-name>CustomerOrderSessionFilter</filter-name>
-		<filter-class>com.tm.broadband.filter.CustomerOrderSessionFilter</filter-class>
-	</filter>
-	<filter-mapping>
-		<filter-name>CustomerOrderSessionFilter</filter-name>
-		<!-- <url-pattern>/order</url-pattern> -->
-		<url-pattern>/order/personal/confirm</url-pattern>
-		<url-pattern>/order/business/confirm</url-pattern>
-		<url-pattern>/order/plan-term/personal/save</url-pattern>
-		<url-pattern>/order/plan-term/business/save</url-pattern>
-		<url-pattern>/order/checkout</url-pattern>
-		<url-pattern>/order/result/*</url-pattern>
-	</filter-mapping>
 	
 	<!-- customerReg filter -->
 	<filter>
@@ -138,9 +122,9 @@
 		<url-pattern>/plans/order</url-pattern>
 		<url-pattern>/plans/address/clear</url-pattern>
 		<url-pattern>/plans/order/summary</url-pattern>
-		<url-pattern>/plans/order/bankdeposit</url-pattern>
-		<url-pattern>/plans/order/dps</url-pattern>
-		<url-pattern>/plans/order/result/success</url-pattern>
+		<!-- <url-pattern>/plans/order/bankdeposit</url-pattern>
+		<url-pattern>/plans/order/dps</url-pattern> 
+		<url-pattern>/plans/order/result/success</url-pattern>-->
 	</filter-mapping>
 
 	<!-- customer session filter -->
@@ -151,11 +135,11 @@
 	<filter-mapping>
 		<filter-name>CustomerSessionFilter</filter-name>
 		<url-pattern>/customer/home</url-pattern>
-		<url-pattern>/customer/data</url-pattern>
-		<url-pattern>/customer/details/*</url-pattern>
-		<url-pattern>/customer/payment/*</url-pattern>
-		<url-pattern>/customer/billing/*</url-pattern>
-		<url-pattern>/customer/ordering-form/checkout</url-pattern>
+		<url-pattern>/customer/orders/*</url-pattern>
+		<url-pattern>/customer/new-order/*</url-pattern>
+		<url-pattern>/customer/change-password</url-pattern>
+		
+		<!-- <url-pattern>/customer/ordering-form/checkout</url-pattern> -->
 		<url-pattern>/customer/invoice/checkout</url-pattern>
 		<url-pattern>/customer/topup/checkout</url-pattern>
 	</filter-mapping>

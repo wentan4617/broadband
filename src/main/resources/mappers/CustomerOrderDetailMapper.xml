@@ -14,17 +14,66 @@
 
 <mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailMapper">
 	
-	<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+	<!-- DEFINITION AREA -->
+	
+	<sql id="customerOrderDetailColumns">
+		cod.`id` 								as cod_id
+		, cod.`order_id` 						as cod_order_id
+		, cod.`detail_name` 					as cod_detail_name
+		, cod.`detail_desc` 					as cod_detail_desc
+		, cod.`detail_price` 					as cod_detail_price
+		, cod.`detail_data_flow` 				as cod_detail_data_flow
+		, cod.`detail_plan_status` 				as cod_detail_plan_status
+		, cod.`detail_plan_type` 				as cod_detail_plan_type
+		, cod.`detail_plan_sort` 				as cod_detail_plan_sort
+		, cod.`detail_plan_group` 				as cod_detail_plan_group
+		, cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee
+		, cod.`detail_term_period` 				as cod_detail_term_period
+		, cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow
+		, cod.`detail_topup_fee` 				as cod_detail_topup_fee
+		, cod.`detail_plan_memo` 				as cod_detail_plan_memo
+		, cod.`detail_unit` 					as cod_detail_unit
+		, cod.`detail_calling_minute` 			as cod_detail_calling_minute
+		, cod.`detail_type` 					as cod_detail_type
+		, cod.`detail_is_next_pay`				as cod_detail_is_next_pay
+		, cod.`detail_expired`					as cod_detail_expired
+		, cod.`is_post`							as cod_is_post
+		, cod.`hardware_comment`				as cod_hardware_comment
+		, cod.`track_code`						as cod_track_code
+		, cod.`pstn_number` 					as cod_pstn_number
+		, cod.`user_id` 						as cod_user_id
+		, cod.`voip_password` 					as cod_voip_password
+		, cod.`voip_assign_date` 				as cod_voip_assign_date
+	</sql>
+	
+	<sql id="customerOrderDetailWhere">
+		<where>
+			<choose>
+				<otherwise>
+					<if test="params.id != null">cod.id = #{params.id}</if>
+					<if test="params.order_id != null">cod.order_id = #{params.order_id}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
+	<!-- // DEFINITION AREA -->
 	<!-- =================================================================================== -->
 	<!-- SELECT AREA -->
+	
+	<select id="selectCustomerOrderDetails" parameterType="CustomerOrderDetail" resultType="CustomerOrderDetail">
+		select * from `tm_customer_order_detail` as cod
+		<include refid="customerOrderDetailWhere"/>
+	</select>
+	
 	<select id="selectCustomerOrderDetailsByOrderId" parameterType="int" resultType="CustomerOrderDetail">
 		SELECT * FROM `tm_customer_order_detail` WHERE order_id = #{0}
 	</select>
+	
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->
 	<!-- INSERT AREA -->
-	
-	<!-- create customer order -->
+
 	<insert id="insertCustomerOrderDetail" parameterType="CustomerOrderDetail" >
 		INSERT INTO `tm_customer_order_detail`(
 			`order_id`, `detail_name`, `detail_desc`, `detail_price`, 

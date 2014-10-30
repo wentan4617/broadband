@@ -14,9 +14,7 @@ body {
 	bottom: 20px;
 	right: 20px;
 	height: 38px;
-	/* Height of image */
 	width: 38px;
-	/* Width of image */
 	background: url("../images/top.png") no-repeat;
 }
 
@@ -30,14 +28,8 @@ body {
 }
 
 #navhead {
-	margin-bottom:20px;
+	margin-bottom: 20px;
 }
-
-.list-menu h4 {
-	margin-top: 15px;
-	margin-bottom: 15px;
-}
-
 
 .customer-panel-height {
 	min-height: 500px;
@@ -50,6 +42,7 @@ body {
 .cyberpark-home-bg {
 	background: url("../images/cyberpark_home_bg.jpg");
 }
+
 .cyberpark-home-bg img {
 	margin: 0 auto;
 	padding: 60px 10px 30px;
@@ -59,25 +52,58 @@ body {
 	margin: 0 auto;
 }
 
-@media (min-width : 768px) .bs-docs-masthead {
-	padding: 80px 0;
+@media ( min-width : 768px) .bs-docs-masthead {
+	padding
+	:
+	 
+	80
+	px
+	 
+	0;
 }
 
-@media (min-width: 768px)
-.bs-docs-header {
-padding-top: 60px;
-padding-bottom: 60px;
-font-size: 24px;
-text-align: left;
+@media ( min-width : 768px) .bs-docs-header {
+	padding-top
+	:
+	 
+	60
+	px
+	;
+	
+
+	padding-bottom
+	:
+	 
+	60
+	px
+	;
+	
+
+	font-size
+	:
+	 
+	24
+	px
+	;
+	
+
+	text-align
+	:
+	 
+	left
+	;
+	
+
 }
+
 .bs-docs-header {
-margin-bottom: 40px;
-font-size: 20px;
-position: relative;
-padding: 30px 15px;
-color: #fff;
-text-align: center;
-text-shadow: 0 1px 0 rgba(0,0,0,.1);
+	margin-bottom: 40px;
+	font-size: 20px;
+	position: relative;
+	padding: 30px 15px;
+	color: #fff;
+	text-align: center;
+	text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
 }
 
 .bs-docs-masthead, .bs-docs-booticon {
@@ -110,38 +136,31 @@ text-shadow: 0 1px 0 rgba(0,0,0,.1);
 	border-color: #fff;
 }
 
-.btn-outline-inverse:hover, .btn-outline-inverse:focus, .btn-outline-inverse:active {
-color: #03764b;
-text-shadow: none;
-background-color: #fff;
-border-color: #fff;
+.btn-outline-inverse:hover, .btn-outline-inverse:focus,
+	.btn-outline-inverse:active {
+	color: #03764b;
+	text-shadow: none;
+	background-color: #fff;
+	border-color: #fff;
 }
 
-a[title="Facebook"]:hover img,
-a[title="Twitter"]:hover img,
-a[title="Google Plus"]:hover img,
-a[title="YouTube"]:hover img{
+a[title="Facebook"]:hover img, a[title="Twitter"]:hover img, a[title="Google Plus"]:hover img,
+	a[title="YouTube"]:hover img {
 	opacity: 1;
 }
 
-a[title="Facebook"] img,
-a[title="Twitter"] img,
-a[title="Google Plus"] img,
-a[title="YouTube"] img{
+a[title="Facebook"] img, a[title="Twitter"] img, a[title="Google Plus"] img,
+	a[title="YouTube"] img {
 	opacity: 0.5;
 }
 
-a[title="adsl"] img,
-a[title="vdsl"] img,
-a[title="ufb"] img,
-a[title="topup"] img{
+a[title="adsl"] img, a[title="vdsl"] img, a[title="ufb"] img, a[title="topup"] img
+	{
 	opacity: 0.7;
 }
 
-a[title="adsl"]:hover img,
-a[title="vdsl"]:hover img,
-a[title="ufb"]:hover img,
-a[title="topup"]:hover img{
+a[title="adsl"]:hover img, a[title="vdsl"]:hover img, a[title="ufb"]:hover img,
+	a[title="topup"]:hover img {
 	opacity: 1;
 }
 
@@ -153,6 +172,7 @@ a[title="topup"]:hover img{
 	background-size: contain;
 	margin-bottom: -5px;
 }
+
 .without_phone {
 	display: inline-block;
 	width: 25px;
@@ -164,7 +184,7 @@ a[title="topup"]:hover img{
 
 .carbonad {
 	padding: 20px;
-	background: rgba(0,0,0,.4) !important;
+	background: rgba(0, 0, 0, .4) !important;
 	border: 0 !important;
 	border-radius: 4px;
 }
@@ -180,8 +200,14 @@ a[title="topup"]:hover img{
 	background-color: #5a4080;
 	border-color: #5a4080;
 }
+
 .btn-purple {
 	color: #fff;
 	background-color: #7d64a1;
 	border-color: #7d64a1;
+}
+
+.follow-us-on{
+	padding:3px 20px;
+	display:block;
 }

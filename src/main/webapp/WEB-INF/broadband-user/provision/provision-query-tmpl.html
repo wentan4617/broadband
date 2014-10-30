@@ -1,0 +1,106 @@
+<div class="panel-body">
+	<div class="btn-group">
+
+		<!-- New Order -->
+		<div class="btn-group">
+			<a href="javascript:void(0)" data-parent="new-order" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> 
+				New Order <span class="badge"><.=pendingSum + paidSum + pendingWarningSum.></span> <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="javascript:void(0)" data-for-parent="new-order" data-status="pending"> 
+						Pending <span class="badge"><.=pendingSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="new-order" data-status="paid"> 
+						Paid <span class="badge"><.=paidSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="new-order" data-status="pending-warning"> 
+						Pending Warning <span class="badge"><.=pendingWarningSum.></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Provision -->
+		<div class="btn-group">
+			<a href="javascript:void(0)" data-parent="provision" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> 
+				Provision <span class="badge"><.=orderingPendingSum + orderingPaidSum + rfsSum.></span> <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="javascript:void(0)" data-for-parent="provision" data-status="ordering-pending"> 
+						Ordering Pending <span class="badge"><.=orderingPendingSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="provision" data-status="ordering-paid"> 
+						Ordering Paid <span class="badge"><.=orderingPaidSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="provision" data-status="rfs"> 
+						RFS <span class="badge"><.=rfsSum.></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- In Service -->
+		<a href="javascript:void(0)" data-parent="in-service" data-for-parent="in-service" data-status="using" class="btn btn-default"> 
+			In Service <span class="badge"><.=usingSum.></span>
+		</a>
+
+		<!-- Suspension -->
+		<div class="btn-group">
+			<a href="javascript:void(0)" data-parent="suspension" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> 
+				Suspension <span class="badge"><.=overflowSum + suspendedSum.></span> <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="javascript:void(0)" data-for-parent="suspension" data-status="overflow"> 
+						Over Flow <span class="badge"><.=overflowSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="suspension" data-status="suspended"> 
+						Suspended <span class="badge"><.=suspendedSum.></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Disconnect -->
+		<div class="btn-group">
+			<a href="javascript:void(0)" data-parent="disconnect" class="btn btn-default dropdown-toggle" data-toggle="dropdown"> 
+				Disconnect <span class="badge"><.=waitingForDisconnectSum + disconnectedSum.></span> <span class="caret"></span>
+			</a>
+			<ul class="dropdown-menu">
+				<li>
+					<a href="javascript:void(0)" data-for-parent="disconnect" data-status="waiting-for-disconnect"> 
+						Waiting For Disconnect <span class="badge"><.=waitingForDisconnectSum.></span>
+					</a>
+				</li>
+				<li>
+					<a href="javascript:void(0)" data-for-parent="disconnect" data-status="disconnected"> 
+						Disconnected <span class="badge"><.=disconnectedSum.></span>
+					</a>
+				</li>
+			</ul>
+		</div>
+
+		<!-- Void Order -->
+		<a href="javascript:void(0)" data-parent="void" data-for-parent="void" data-status="void" class="btn btn-default"> 
+			Void Order <span class="badge"><.=voidSum.></span>
+		</a>
+
+		<!-- Upgrade Order -->
+		<a href="javascript:void(0)" data-parent="upgrade" data-for-parent="upgrade" data-status="upgrade" class="btn btn-default">
+			Order Upgrade <span class="badge"><.=upgradeSum.></span>
+		</a>
+
+	</div>
+</div>

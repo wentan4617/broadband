@@ -29,6 +29,7 @@
 		, o.`holder_job_title`		as o_holder_job_title
 		, o.`holder_phone`			as o_holder_phone
 		, o.`holder_email`			as o_holder_email
+		, o.`order_id`				as o_order_id
 	</sql>
 	<resultMap type="Organization" id="organizationResultMap">
 		<id property="customer_id" column="o_customer_id"/>
@@ -42,6 +43,7 @@
 		<result property="holder_job_title" column="o_holder_job_title"/>
 		<result property="holder_phone" column="o_holder_phone"/>
 		<result property="holder_email" column="o_holder_email"/>
+		<result property="order_id" column="o_order_id"/>
 	</resultMap>
 	
 	<!-- // DEFINITION AREA -->
@@ -77,10 +79,10 @@
 	<insert id="insertOrganization" parameterType="Organization">
 		INSERT INTO `tm_organization`(
 		`customer_id`, `org_name`, `org_type`, `org_trading_name`, `org_register_no`, `org_incoporate_date`,
-		`org_trading_months`, `holder_name`, `holder_job_title`, `holder_phone`, `holder_email`)
+		`org_trading_months`, `holder_name`, `holder_job_title`, `holder_phone`, `holder_email`, `order_id`)
 		VALUES (
 		#{customer_id}, #{org_name}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, 
-		#{org_trading_months}, #{holder_name}, #{holder_job_title}, #{holder_phone}, #{holder_email})
+		#{org_trading_months}, #{holder_name}, #{holder_job_title}, #{holder_phone}, #{holder_email}, #{order_id})
 	</insert>
 
 	<!-- // END INSERT AREA -->
@@ -102,10 +104,11 @@
 			<if test="holder_name != null">holder_name = #{holder_name},</if>
 			<if test="holder_job_title != null">holder_job_title = #{holder_job_title},</if>
 			<if test="holder_phone != null">holder_phone = #{holder_phone},</if>
-			<if test="holder_email != null">holder_email = #{holder_email}</if>
+			<if test="holder_email != null">holder_email = #{holder_email},</if>
+			<if test="order_id != null">order_id = #{order_id}</if>
 		</set>
 		<where>
-			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+			<if test="params.customer_id != null">customer_id = #{params.customer_id}</if>
 		</where>
 	</update>
 

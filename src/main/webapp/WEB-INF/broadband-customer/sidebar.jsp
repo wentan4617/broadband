@@ -4,10 +4,7 @@
 
 <div class="list-group">
 	<a href="${ctx }/customer/home" class="list-group-item ${home }">Home</a>
-	<a href="${ctx }/customer/data" class="list-group-item ${data }">View Data Usage</a>
-	<a href="${ctx }/customer/billing/view" class="list-group-item ${bills }">View Billing</a>
-	<%-- <a href="${ctx }/customer/billing/discard/1"  class="list-group-item ${discard_bills }">Discard Billing</a> --%>
-	<%-- <a href="${ctx }/customer/payment" class="list-group-item ${payment }">Make Payment</a> --%>
-	
+	<a href="${ctx }/customer/orders" class="list-group-item ${orders }">View Orders</a>
+	<a href="${ctx }/customer/new-order" class="list-group-item ${neworder }">New Order</a>
 	<a href="${ctx }/customer/change-password" class="list-group-item ${change_password }">Change Password</a>
 </div>

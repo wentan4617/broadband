@@ -78,6 +78,10 @@ public class CustomerOrder implements Serializable {
 	private Double inviter_rate;
 	private Double invitee_rate;
 
+	private String address;
+	private String mobile;
+	private String email;
+	private String customer_type;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -88,6 +92,7 @@ public class CustomerOrder implements Serializable {
 	 */
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String order_create_date_str;
+	private String order_create_date_yyyymmddhhmmss;
 	private String order_using_start_str;
 	private String next_invoice_create_date_str;
 	private String next_invoice_create_date_flag_str;
@@ -95,6 +100,8 @@ public class CustomerOrder implements Serializable {
 	private String order_due_str;
 	private String disconnected_date_str;
 	private Customer customer;
+	//@Valid
+	private Organization organization = new Organization();
 	@Valid
 	private Plan plan;
 
@@ -674,6 +681,56 @@ public class CustomerOrder implements Serializable {
 
 	public void setOneoff_cods(List<CustomerOrderDetail> oneoff_cods) {
 		this.oneoff_cods = oneoff_cods;
+	}
+	
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getMobile() {
+		return mobile;
+	}
+
+	public void setMobile(String mobile) {
+		this.mobile = mobile;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getCustomer_type() {
+		return customer_type;
+	}
+
+	public void setCustomer_type(String customer_type) {
+		this.customer_type = customer_type;
+	}
+
+	public Organization getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
+	}
+
+	public String getOrder_create_date_yyyymmddhhmmss() {
+		order_create_date_yyyymmddhhmmss = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
+		return order_create_date_yyyymmddhhmmss;
+	}
+
+	public void setOrder_create_date_yyyymmddhhmmss(
+			String order_create_date_yyyymmddhhmmss) {
+		this.order_create_date_yyyymmddhhmmss = order_create_date_yyyymmddhhmmss;
 	}
 
 }

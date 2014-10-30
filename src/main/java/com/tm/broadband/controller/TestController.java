@@ -1,96 +1,75 @@
 package com.tm.broadband.controller;
 
-import java.io.IOException;
-import java.util.List;
+import java.text.DecimalFormat;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import javax.servlet.http.HttpSession;
+import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.tm.broadband.model.JSONBean;
-import com.tm.broadband.model.Page;
-import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.TestUser;
-import com.tm.broadband.model.User;
-import com.tm.broadband.service.SystemService;
-import com.tm.broadband.validator.mark.UserLoginValidatedMark;
+import com.tm.broadband.model.Customer;
+import com.tm.broadband.paymentexpress.GenerateRequest;
+import com.tm.broadband.paymentexpress.PayConfig;
+import com.tm.broadband.paymentexpress.PxPay;
+import com.tm.broadband.paymentexpress.Response;
+import com.tm.broadband.service.TestService;
+
 
 @Controller
 public class TestController {
-
-	private SystemService systemService;
-
+	
+	private TestService testService;
+	
 	@Autowired
-	public TestController(SystemService systemService) {
-		this.systemService = systemService;
-	}
-	
-	@RequestMapping("/test/json")
-	public String toTestJson() {
-		return "test/test-json";
-	}
-	
-	@RequestMapping("/test/alert")
-	public String redirectIndex(RedirectAttributes attr) {
-		attr.addFlashAttribute("success", "Welcome to CyberTech Broadband Manager System.");
-		return "redirect:/broadband-user/index";
-	}
-	
-	@RequestMapping(value = "/test/json",  method = RequestMethod.POST)
-	@ResponseBody //不加这个注解，报404
-	public JSONBean<User> doTestJson(
-			@Validated(UserLoginValidatedMark.class) User user, BindingResult result,
-			HttpServletRequest req) {
-		
-		JSONBean<User> json = new JSONBean<User>();
-		json.setModel(user);
-		
-		if (result.hasErrors()) {
-			
-			List<FieldError> fields = result.getFieldErrors();
-			for (FieldError field: fields) {
-				json.getErrorMap().put(field.getField(), field.getDefaultMessage());
-			}
-			return json;
-		}
-		
-		User userSession = this.systemService.queryUserLogin(user);
-
-		if (userSession == null) {
-			json.getErrorMap().put("alert-error", "Incorrect account or password");
-			return json;
-		}
-
-		req.getSession().setAttribute("userSession", userSession);
-		json.setUrl("/test/alert");
-		
-		return json;
-	}
-	
-	
-	@RequestMapping(value = "/test/plan/view")
-	public String planView(Model model) {
-		return "test/test-plan-view";
-	}
-	
-	
-	@RequestMapping(value = "/test/upload")
-	public String upload(Model model) {
-		return "test/test-file-upload";
+	public TestController(TestService testService) {
+		this.testService = testService;
 	}
 
+	@RequestMapping(value = "/test/dps")
+	public String testDPS() {
+		return "test/test-dps";
+	}
+	
+	@RequestMapping(value = "/test/dps/checkout", method = RequestMethod.POST)
+	public String orderingFormCheckout(HttpServletRequest req) {
+		
+		GenerateRequest gr = new GenerateRequest();
+		
+		gr.setAmountInput("1.00");
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+		
+		System.out.println("/test/dps/checkout: " + req.getRequestURL().toString());
+		gr.setUrlFail(req.getRequestURL().toString());
+		gr.setUrlSuccess(req.getRequestURL().toString());
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/test/dps/checkout")
+	public String toOrderingFormSuccess(
+			@RequestParam(value = "result", required = true) String result) throws Exception {
+		
+		System.out.println("result: " + result);
+
+		Response responseBean  = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+		
+		return "redirect:/test/dps";
+	}
+	
+	
+	@RequestMapping(value = "/test/customer/to/customerorder")
+	public String customertocustomerorder(){
+		
+		this.testService.moveCustomerToCustomerOrder();
+		return null;
+	}
 }

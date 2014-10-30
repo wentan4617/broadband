@@ -55,7 +55,8 @@ data-select_plan_id="${customerReg.select_plan_id}"
 data-select_plan_type="${customerReg.select_plan_type }"
 data-select_customer_type="${customerReg.select_customer_type }"
 data-sale-id="${customerReg.customerOrder.sale_id }"
-data-promotion="${customerReg.customerOrder.promotion }">
+data-promotion="${customerReg.customerOrder.promotion }"
+data-neworder="${customerReg.newOrder }">
 <jsp:include page="select-plan.html" />
 </script>
 <script type="text/html" id="promotion_code_tmpl">
@@ -94,7 +95,7 @@ data-org_type="${customerReg.organization.org_type }"
 data-org_name="${customerReg.organization.org_name }"
 data-org_trading_name="${customerReg.organization.org_trading_name }"
 data-org_register_no="${customerReg.organization.org_register_no }"
-data-org_incoporate_date="${customerReg.organization.org_incoporate_date }"
+data-org_incoporate_date="${customerReg.organization.org_incoporate_date_str }"
 data-holder_name="${customerReg.organization.holder_name }"
 data-holder_job_title="${customerReg.organization.holder_job_title }"
 data-holder_phone="${customerReg.organization.holder_phone }"
@@ -107,11 +108,5 @@ data-holder_email="${customerReg.organization.holder_email }">
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=201410161006"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20141022719"></script>
 <jsp:include page="../footer-end.jsp" />

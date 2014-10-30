@@ -7,6 +7,31 @@
 	
 	<div class="panel-body">
 	
+		<.if (neworder) {.>
+		
+		<!-- create account -->
+		<h4 class="text-success">Notice Mobile and Invoice Email</h4>
+		<hr />
+
+		<div class="form-group">
+			<label class="control-label col-md-4">
+				Notice Mobile 
+			</label>
+			<div class="col-md-4">
+				<input type="text" id="customerOrder.mobile" value="<.=cellphone.>" class="form-control" placeholder="e.g.: 0210800123" data-error-field />
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-4">
+				Invoice Email
+			</label>
+			<div class="col-md-4">
+				<input type="text" id="customerOrder.email" value="<.=email.>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field />
+			</div>
+		</div>
+		
+		<.} else {.>
+		
 		<!-- create account -->
 		<h4 class="text-success">Create <.=select_customer_type=='personal'?'Your':'Business'.> Account</h4>
 		<hr />
@@ -27,11 +52,10 @@
 				<input type="text" id="email" value="<.=email.>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field />
 			</div>
 		</div>
-
-		<!-- Broadband Options -->
-		<!-- <hr />
-		<h4 class="text-success">Broadband Options</h4>
-		<hr /> -->
+		
+		<.}.>
+	
+		
 
 		<!-- Transition Information -->
 		<div id="transitionContainer">
@@ -99,14 +123,16 @@
 		</div>
 
 
-		<!-- Personal Information -->
-
-		<hr />
-		<h4 class="text-success"><.=select_customer_type=='personal'?'Personal Information':'Group/Organization Information'.></h4>
-		<hr />
+		<!-- Information -->
 
 		<.if (select_customer_type == 'personal') { .>
 		
+			<.if (!neworder) {.>
+		
+		<hr />
+		<h4 class="text-success">Personal Information</h4>
+		<hr />
+			
 		<div class="form-group">
 			<label for="title" class="control-label col-md-4">Title</label>
 			<div class="col-md-2">
@@ -140,7 +166,13 @@
 			</div>
 		</div>
 		
+			<.}.>
+		
 		<.} else if (select_customer_type == 'business') {.>
+		
+		<hr />
+		<h4 class="text-success">Group/Organization Information</h4>
+		<hr />
 		
 		<div class="form-group">
 			<label for="organization.org_type" class="control-label col-md-4">Group/Organization Type</label>
@@ -180,7 +212,7 @@
 			<label for="organization.org_incoporate_date" class="control-label col-md-4">Date Incorporated</label>
 			<div class="col-md-4">
 				<div class="input-group date">
-			  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" class="form-control" class="form-control"  data-error-field />
+			  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" class="form-control" value="<.=org_incoporate_date.>" data-error-field />
 			  		<span class="input-group-addon">
 			  			<i class="glyphicon glyphicon-calendar"></i>
 			  		</span>
@@ -223,7 +255,9 @@
 
 
 		<!-- For ID Purpose Only -->
-
+		
+		<.if (!neworder) {.>
+		
 		<hr />
 		<h4 class="text-success">For ID Purpose Only</h4>
 		<hr />
@@ -253,6 +287,7 @@
 			</div>
 		</div>
 		
+		<.}.>
 		
 		<!-- Preferred connection date -->
 

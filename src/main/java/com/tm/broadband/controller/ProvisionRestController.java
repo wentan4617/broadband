@@ -6,11 +6,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Provision;
 import com.tm.broadband.service.ProvisionService;
 
 @RestController
@@ -21,6 +22,31 @@ public class ProvisionRestController {
 	@Autowired
 	public ProvisionRestController(ProvisionService provisionService) {
 		this.provisionService = provisionService;
+	}
+	
+	@RequestMapping(value = "/broadband-user/provision/query/loading")
+	public Provision provisionQueryLoading() {
+		
+		Provision provision = this.provisionService.queryOrdersSumAll();
+		return provision;
+	}
+	
+	@RequestMapping(value = "/broadband-user/provision/orders/loading/{pageNo}/{order_status}")
+	public Page<CustomerOrder> provisionOrdersLoading(
+			@PathVariable(value = "pageNo") int pageNo
+			, @PathVariable(value = "order_status") String order_status) {
+
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("where", "query_order_status");
+		page.getParams().put("orderby", "order by co.id desc");
+		page.getParams().put("status", "active");
+		page.getParams().put("order_status", order_status);
+		
+		this.provisionService.queryCustomerOrdersByPage(page);
+		
+		return page;
 	}
 	
 	@RequestMapping(value = "/broadband-user/provision/customer/order/{id}")

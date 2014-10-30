@@ -1,8 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt"%>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
 <jsp:include page="../header.jsp" />
@@ -11,290 +8,25 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-12">
-
-			<%-- <jsp:include page="provision-query.jsp" /> --%>
-
 			<div class="panel panel-success">
 				<div class="panel-heading">
-					<h4 class="panel-title">
-
-						${panelheading } &nbsp;
-						
-						<c:if test="${order_status == 'pending' }">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-									Operate <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" data-role="menu">
-									<li>
-										<a href="javascript:void(0);" id="pending_to_ordering" data-val="ordering-pending">
-											Order Status: 
-											<span class="text-danger">Pending to Ordering-Pending</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</c:if>
-						
-						<c:if test="${order_status == 'paid' }">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-									Operate <span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu" data-role="menu">
-									<li>
-										<a href="javascript:void(0);" id="paid_to_ordering" data-val="ordering-paid">
-											Order Status: 
-											<span class="text-danger">Paid to Ordering-Paid</span>
-										</a>
-									</li>
-								</ul>
-							</div>
-						</c:if>
-					</h4>
-
+					<h3 class="panel-title" id="provision-view-title"></h3>
 				</div>
-				
-				<div class="panel-body">
-					<div class="btn-group">
-					
-						<!-- New Order -->
-						<div class="btn-group">
-							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${pendingActive } ${paidActive } ${pendingWarningActive } dropdown-toggle" data-toggle="dropdown">
-								New Order
-								<span class="badge">${pendingSum+paidSum }</span>
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-					      		<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/pending" data-name="queryBtn" >
-										Pending <span class="badge">${pendingSum }</span>
-									</a>
-								</li>
-						      	<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/paid" data-name="queryBtn" >
-										Paid <span class="badge">${paidSum }</span>
-									</a>
-								</li>
-								<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/pending-warning" data-name="queryBtn" >
-										Pending Warning <span class="badge">${pendingWarningSum }</span>
-									</a>
-								</li>
-						    </ul>
-						</div>
-						
-						<!-- Provision -->
-						<div class="btn-group">
-							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${orderingPendingActive } ${orderingPaidActive } ${rfsActive } dropdown-toggle" data-toggle="dropdown">
-								Provision
-								<span class="badge">${orderingPendingSum + orderingPaidSum + rfsSum}</span>
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-					      		<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-pending" data-name="queryBtn" >
-										Ordering Pending <span class="badge">${orderingPendingSum }</span>
-									</a>
-								</li>
-						      	<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/ordering-paid" data-name="queryBtn" >
-										Ordering Paid <span class="badge">${orderingPaidSum }</span>
-									</a>
-								</li>
-								<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/rfs" data-name="queryBtn" >
-										RFS <span class="badge">${rfsSum }</span>
-									</a>
-								</li>
-						    </ul>
-						</div>
-						
-						<!-- In Service -->
-						<a href="${ctx }/broadband-user/provision/customer/view/1/using" data-name="queryBtn" class="btn btn-default ${usingActive }">
-							In Service <span class="badge">${usingSum }</span>
-						</a>
-						
-						<!-- Suspension -->
-						<div class="btn-group">
-							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${overflowActive } ${suspendedActive } dropdown-toggle" data-toggle="dropdown">
-								Suspension
-								<span class="badge">${overflowSum + suspendedSum}</span>
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-					      		<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/overflow" data-name="queryBtn" >
-										Over Flow <span class="badge">${overflowSum }</span>
-									</a>
-								</li>
-						      	<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/suspended" data-name="queryBtn" >
-										Suspended <span class="badge">${suspendedSum }</span>
-									</a>
-								</li>
-						    </ul>
-						</div>
-						
-						<!-- Disconnect -->
-						<div class="btn-group">
-							<a href="javascript:void(0);" data-name="queryBtn" class="btn btn-default ${waitingForDisconnectActive } ${disconnectedActive } dropdown-toggle" data-toggle="dropdown">
-								Disconnect
-								<span class="badge">${waitingForDisconnectSum + disconnectedSum}</span>
-								<span class="caret"></span>
-							</a>
-							<ul class="dropdown-menu">
-					      		<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/waiting-for-disconnect" data-name="queryBtn" >
-										Waiting For Disconnect <span class="badge">${waitingForDisconnectSum }</span>
-									</a>
-								</li>
-						      	<li>
-									<a href="${ctx }/broadband-user/provision/customer/view/1/disconnected" data-name="queryBtn" >
-										Disconnected <span class="badge">${disconnectedSum }</span>
-									</a>
-								</li>
-						    </ul>
-						</div>
-						
-						<!-- Void Order -->
-						<a href="${ctx }/broadband-user/provision/customer/view/1/void" data-name="queryBtn" class="btn btn-default ${voidActive }">
-							Void Order <span class="badge">${voidSum }</span>
-						</a>
-						
-						
-						<!-- Upgrade Order -->
-						<a href="${ctx }/broadband-user/provision/customer/view/1/upgrade" data-name="queryBtn" class="btn btn-default ${upgradeActive }">
-							Order Upgrade&nbsp;<span class="badge">${upgradeSum }</span>
-						</a>
-						
-					</div>
-				</div>
-				
-				<hr>
-				
-				<c:if test="${fn:length(page.results) > 0 }">
-					<form id="provisionForm" action="${ctx }/broadband-user/provision/customer/order/status" method="post">
-						<input type="hidden" id="process_way" name="process_way" />
-						<input type="hidden" id="order_status" name="order_status" value="${order_status}"/>
-						<input type="hidden" id="change_order_status" name="change_order_status" />
-						<table class="table">
-							<thead>
-								<tr>
-									<th><input type="checkbox" id="checkbox_orders_top" /></th>
-									<th>Order ID</th>
-									<th>Customer Name</th>
-									<th style="text-align:right;">Plan Price ($)</th>
-									<th style="text-align:center;">Create Date</th>
-									<c:if test="${rfsActive!=null}">
-										<th>RFS Date</th>
-									</c:if>
-									<th>Status</th>
-									<th>Type</th>
-									<th>Broadband Type</th>
-									<th>Service Giving</th>
-									<th>Post</th>
-								</tr>
-							</thead>
-							<tbody>
-								<c:forEach var="order" items="${page.results }">
-									<tr>
-										<td><input type="checkbox" name="checkbox_orders" value="${order.id}" /></td>
-										<td>
-											<a href="#" data-name="show_customer_order_info" data-id="${order.id}">${order.id}</a>
-										</td>
-										<td>
-											<a href="${ctx}/broadband-user/crm/customer/edit/${order.customer.id}" data-name="show_customer_info" data-id="${order.customer.id}"> 
-											
-												<c:choose>
-													<c:when test="${order.customer.customer_type == 'personal' }">
-														${order.customer.first_name } ${order.customer.last_name }
-													</c:when>
-													<c:when test="${order.customer.customer_type == 'business' }">
-														${order.customer.organization.org_name == null ? order.customer.id : order.customer.organization.org_name }
-													</c:when>
-												</c:choose>
-											</a>				
-										</td>
-										<td style="text-align:right;">
-											<c:if test="${order.order_total_price != null }">
-												<fmt:formatNumber value="${order.order_total_price }" type="number" pattern="#,##0.00" />
-											</c:if>
-										</td>
-										<td style="text-align:center;"><fmt:formatDate value="${order.order_create_date }" type="both" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-										<c:if test="${rfsActive!=null}">
-											<td><fmt:formatDate value="${order.rfs_date }" type="both" pattern="yyyy-MM-dd" /></td>
-										</c:if>
-										<td>${order.order_status }</td>
-										<td>${order.order_type }</td>
-										<td>${order.order_broadband_type }</td>
-										<td>
-											<fmt:formatDate value="${order.order_using_start }" type="both" pattern="yyyy-MM-dd" />
-										</td>
-										<td>
-											<c:if test="${order.hardware_post > 0}">
-												<a href="javascript:void(0);" data-toggle="tooltip" data-placement="bottom" data-original-title="hardware need to be post"><span class="glyphicon glyphicon-gift"></span></a>
-											</c:if>
-										</td>
-										
-									</tr>
-								</c:forEach>
-							</tbody>
-							<tfoot>
-								<tr>
-									<td colspan="11">
-										<ul class="pagination">
-											<c:forEach var="num" begin="1" end="${page.totalPage }" step="1">
-												<li class="${page.pageNo == num ? 'active' : ''}">
-													<a href="${ctx}/broadband-user/provision/customer/view/${num}/${order_status}">${num}</a>
-												</li>
-											</c:forEach>
-										</ul>
-									</td>
-								</tr>
-							</tfoot>
-						</table>
-					</form>
-				</c:if>
-				<c:if test="${fn:length(page.results) <= 0 }">
-					<div class="panel-body">
-						<div class="alert alert-warning">No records have been found.</div>
-					</div>
-				</c:if>
+				<div id="provision-query-tmpl"></div>
+				<div id="provision-orders-tmpl"></div>
 			</div>
 		</div>
 	</div>
 </div>
 
-<jsp:include page="../footer.jsp" />
-<jsp:include page="../script.jsp" />
-<script type="text/javascript">
-(function($) {
-
-	$('#checkbox_orders_top').click(function() {
-		var b = $(this).prop("checked");
-		if (b) {
-			$('input[name="checkbox_orders"]').prop("checked", true);
-		} else {
-			$('input[name="checkbox_orders"]').prop("checked", false);
-		}
-	});
-	
-	$('#pending_to_ordering').click(function(){
-		$('#process_way').val('pending to ordering-pending');
-		$('#change_order_status').val($(this).attr('data-val'));
-		$('#provisionForm').submit();
-	});
-
-	$('#paid_to_ordering').click(function() {
-		$('#process_way').val('paid to ordering-paid');
-		$('#change_order_status').val($(this).attr('data-val'));
-		$('#provisionForm').submit();
-	});
-	
-})(jQuery);
+<script type="text/html" id="provision_query_tmpl" data-ctx="${ctx }">
+<jsp:include page="provision-query-tmpl.html" />
+</script>
+<script type="text/html" id="provision_orders_tmpl">
+<jsp:include page="provision-orders-tmpl.html" />
 </script>
 
-<!-- provision customer order information model -->
-<jsp:include page="provision-customer-order-info.jsp" />
+<jsp:include page="../footer.jsp" />
+<jsp:include page="../script.jsp" />
+<script type="text/javascript" src="${ctx }/public/broadband-user/provision/provision-view.js"></script>
 <jsp:include page="../footer-end.jsp" />

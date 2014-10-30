@@ -498,27 +498,51 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public void saveCustomerOrder(Customer customer, CustomerOrder customerOrder) {
+	public void saveCustomerOrder(Customer customer, CustomerOrder customerOrder, List<CustomerTransaction> cts) {
 		
 		customer.setRegister_date(new Date(System.currentTimeMillis()));
 		customer.setActive_date(new Date(System.currentTimeMillis()));
 		
-		this.customerMapper.insertCustomer(customer);
-		
-		if ("business".equals(customer.getCustomer_type())) {
-			customer.getOrganization().setCustomer_id(customer.getId());
-			this.organizationMapper.insertOrganization(customer.getOrganization());
-			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() * 1.15);
+		if (!customer.getNewOrder()) {
+			this.customerMapper.insertCustomer(customer);
 		}
+			
 		customerOrder.setCustomer_id(customer.getId());
 		
 		System.out.println("customerOrder.getSale_id(): " + customerOrder.getSale_id());
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		
+		if ("business".equals(customerOrder.getCustomer_type())) {
+			customerOrder.getOrganization().setOrder_id(customerOrder.getId());
+			this.organizationMapper.insertOrganization(customerOrder.getOrganization());
+			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() * 1.15);
+		}
+		
 		for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
 			cod.setOrder_id(customerOrder.getId());
 			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
 		}
+		
+		if (cts != null) {
+			for (CustomerTransaction ct: cts) {
+				ct.setCustomer_id(customer.getId());
+				ct.setOrder_id(customer.getCustomerOrder().getId());
+				ct.setTransaction_date(new Date(System.currentTimeMillis()));
+				this.customerTransactionMapper.insertCustomerTransaction(ct);
+			}
+		}
+		
+		if (customer.getVouchers() != null) {
+			for (Voucher vQuery: customer.getVouchers()) {
+				vQuery.setStatus("used");
+				vQuery.setCustomer_id(customer.getId());
+				vQuery.setOrder_id(customerOrder.getId());
+				vQuery.getParams().put("serial_number", vQuery.getSerial_number());
+				vQuery.getParams().put("card_number", vQuery.getCard_number());
+				this.voucherMapper.updateVoucher(vQuery);
+			}
+		}
+		
 	}
 	
 	@Transactional
@@ -580,9 +604,9 @@ public class CRMService {
 	@Transactional
 	public Customer queryCustomerWhenLogin(Customer c) {
 		Customer customer = this.customerMapper.selectCustomer(c);
-		if ("business".equals(customer.getCustomer_type())) {
+		/*if ("business".equals(customer.getCustomer_type())) {
 			customer.setOrganization(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
-		}
+		}*/
 		return customer;
 	}
 	

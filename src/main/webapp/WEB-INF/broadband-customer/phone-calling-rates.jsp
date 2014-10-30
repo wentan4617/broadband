@@ -7,6 +7,9 @@
 <jsp:include page="header.jsp" />
 
 <style>
+#navhead {
+	margin-bottom:0;
+}
 .affix {
 	width: 263px;
 	top: 40px;
@@ -47,7 +50,7 @@
 }
 </style>
 
-<div class="container" style="margin-top:20px;">
+<div class="container" style="">
 
 	<div class="page-header">
 		<h1>Phone Rates</h1>

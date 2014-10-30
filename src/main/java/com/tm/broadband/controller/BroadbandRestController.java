@@ -2,11 +2,9 @@ package com.tm.broadband.controller;
 
 import javax.servlet.http.HttpSession;
 
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.tm.broadband.model.Broadband;
 import com.tm.broadband.model.Customer;
@@ -27,13 +25,14 @@ public class BroadbandRestController {
 		if (customerReg == null) {
 			System.out.println("this is new customerReg, 1");
 			customerReg = new Customer();
+			customerReg.setNewOrder(false);
 			customerReg.setSelect_customer_type("personal");
 			customerReg.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
 			customerReg.getCustomerOrder().setPromotion(false);
 			session.setAttribute("customerReg", customerReg);
 			return returnBroadband(address, customerReg);
 		} else {
-			System.out.println("this is old customerReg");
+			System.out.println("this is old customerReg, new order: " + customerReg.getNewOrder());
 			return returnBroadband(address, customerReg);
 		}
 	}
@@ -52,7 +51,7 @@ public class BroadbandRestController {
 			session.setAttribute("customerRegSale", customerRegSale);
 			return returnBroadband(address, customerRegSale);
 		} else {
-			System.out.println("this is old customerRegSale");
+			System.out.println("this is old customerReg, new order: " + customerRegSale.getNewOrder());
 			return returnBroadband(address, customerRegSale);
 		}
 	}
@@ -71,7 +70,7 @@ public class BroadbandRestController {
 			session.setAttribute("customerRegAdmin", customerRegAdmin);
 			return returnBroadband(address, customerRegAdmin);
 		} else {
-			System.out.println("this is old customerRegAdmin");
+			System.out.println("this is old customerReg, new order: " + customerRegAdmin.getNewOrder());
 			return returnBroadband(address, customerRegAdmin);
 		}
 	}

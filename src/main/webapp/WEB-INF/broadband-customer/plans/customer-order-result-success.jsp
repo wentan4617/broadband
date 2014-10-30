@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -15,7 +14,7 @@
 				Please check your email. Your receipt or ordering form will send your email.
 			</p>
 			<p>
-				Now you can log on to CyberPark Customer Home, <a href="${ctx }/login"> please click here. </a>
+				Now you can log on to CyberPark Customer Home, <a href="${ctx }/sign-in"> please click here. </a>
 			</p>
 			<p>
 				Our customer service telephone number is <strong class="text-danger">0800 229 237</strong>

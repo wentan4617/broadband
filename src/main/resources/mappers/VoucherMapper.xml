@@ -18,13 +18,14 @@
 	<!-- DEFINITION AREA -->
 	
 	<sql id="voucherColumns">
-		v.`serial_number` 		as v_serial_number,
-		v.`card_number` 		as v_card_number,
-		v.`face_value` 			as v_face_value,
-		v.`status` 				as v_status,
-		v.`comment` 			as v_comment,
-		v.`customer_id` 		as v_customer_id,
-		v.`post_to`				as v_post_to
+		v.`serial_number` 		as v_serial_number
+		, v.`card_number` 		as v_card_number
+		, v.`face_value` 		as v_face_value
+		, v.`status` 			as v_status
+		, v.`comment` 			as v_comment
+		, v.`customer_id` 		as v_customer_id
+		, v.`post_to`			as v_post_to
+		, v.`order_id`			as v_order_id
 	</sql>
 	
 	<resultMap type="Voucher" id="voucherResultMap">
@@ -35,6 +36,7 @@
 		<result property="comment" column="v_comment" />
 		<result property="customer_id" column="v_customer_id" />
 		<result property="post_to" column="v_post_to" />
+		<result property="order_id" column="v_order_id" />
 	</resultMap>
 	
 	<sql id="voucherWhere">
@@ -98,9 +100,9 @@
 
 	<insert id="insertVoucher" parameterType="Voucher" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_voucher`(
-			`serial_number`, `card_number`, `face_value`, `status`, `comment`, `customer_id`, `post_to`
+			`serial_number`, `card_number`, `face_value`, `status`, `comment`, `customer_id`, `post_to`, `order_id`
 		) VALUES (
-			#{serial_number}, #{card_number}, #{face_value}, #{status}, #{comment}, #{customer_id}, #{post_to}
+			#{serial_number}, #{card_number}, #{face_value}, #{status}, #{comment}, #{customer_id}, #{post_to}, #{order_id}
 		)
 	</insert>
 
@@ -120,7 +122,8 @@
 			<if test="status != null">status = #{status},</if>
 			<if test="comment != null">comment = #{comment},</if>
 			<if test="customer_id != null">customer_id = #{customer_id},</if>
-			<if test="post_to != null">post_to = #{post_to}</if>
+			<if test="post_to != null">post_to = #{post_to},</if>
+			<if test="order_id != null">order_id = #{order_id}</if>
 		</set>
 		<include refid="voucherWhere"/>
 	</update>

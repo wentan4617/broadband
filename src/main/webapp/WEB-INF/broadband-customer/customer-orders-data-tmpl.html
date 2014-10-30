@@ -1,0 +1,55 @@
+<div class="row" style="margin-top:10px;">
+	<div class="col-md-2">
+		<strong>Plan:</strong>
+	</div>
+	<div class="col-md-10">
+		<.=plan_name.>
+	</div>
+</div>
+<div class="row" style="margin-top:10px;">
+	<div class="col-md-2">
+		<strong>Data Quotation:</strong>
+	</div>
+	<div class="col-md-4">
+	<.if (Number(plan_data_flow) == -1) {.>
+		Unlimited
+	<.} else {.>
+		<.=plan_data_flow.> GB
+	<.}.>
+	</div>
+</div>
+<div class="row" style="margin-top:10px;">
+	<div class="col-md-2">
+		<strong>Current Date:</strong> 
+	</div>
+	<div class="col-md-3">
+		<div id="calculator_date<.=orderid.>" class="input-group date">
+	  		<input type="text" id="calculator_date" name="calculator_date" class="form-control" />
+	  		<span class="input-group-addon">
+	  			<i class="glyphicon glyphicon-calendar"></i>
+	  		</span>
+		</div>
+	</div>
+</div>
+<div class="row" style="margin-top:10px;">
+	<div class="col-md-6">
+		<div class="btn-group">
+			<button type="button" class="btn btn-default active" data-btn="view-btn<.=orderid.>" data-type="table">
+				<span class="glyphicon glyphicon-th"></span> Table
+			</button>
+		  	<button type="button" class="btn btn-default" data-btn="view-btn<.=orderid.>" data-type="chart">
+		  		<span class="glyphicon glyphicon-stats"></span> Chart
+		  	</button>
+		</div>
+	</div>
+</div>
+<hr />
+<div class="progress" style="height: 40px;">
+	<div id="usageProgress<.=orderid.>" class="progress-bar" style="padding: 10px">
+		<span id="usedPart<.=orderid.>" style="font-size: 18px"></span>
+	</div>
+	<span id="unusedPart"></span>
+</div>
+<div id="usageView<.=orderid.>"></div>
+<div id="usage_table<.=orderid.>"></div>
+<div id="usage_line<.=orderid.>" style="display:none" class="hidden-xs hidden-sm"></div>

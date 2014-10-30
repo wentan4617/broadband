@@ -1,6 +1,7 @@
 package com.tm.broadband.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +68,7 @@ public class CustomerInvoice implements Serializable {
 	private CustomerOrder customerOrder;
 	
 	private Double commission;
+	private List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 
 	/*
 	 * END RELATED PROPERTIES
@@ -341,6 +343,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setInvoice_type(String invoice_type) {
 		this.invoice_type = invoice_type;
+	}
+
+	public List<CustomerTransaction> getCts() {
+		return cts;
+	}
+
+	public void setCts(List<CustomerTransaction> cts) {
+		this.cts = cts;
 	}
 
 }

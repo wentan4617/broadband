@@ -15,14 +15,9 @@ import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.Provision;
 import com.tm.broadband.model.ProvisionLog;
 
-/**
- * Provision service
- * 
- * @author Cook1fan
- * 
- */
 @Service
 public class ProvisionService {
 	
@@ -46,6 +41,61 @@ public class ProvisionService {
 	}
 
 	public ProvisionService() {}
+
+	public Provision queryOrdersSumAll() {
+		
+		Provision provision = new Provision();
+		Page<CustomerOrder> p = new Page<CustomerOrder>();
+		p.getParams().put("where", "query_order_status");
+		p.getParams().put("status", "active");
+		
+		// New Order
+		p.getParams().put("order_status", "pending");
+		provision.setPendingSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "paid");
+		provision.setPaidSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "pending-warning");
+		provision.setPendingWarningSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		// Provision
+		p.getParams().put("order_status", "ordering-pending");
+		provision.setOrderingPendingSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "ordering-paid");
+		provision.setOrderingPaidSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "rfs");
+		provision.setRfsSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		// In Service
+		p.getParams().put("order_status", "using");
+		provision.setUsingSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		// Suspension
+		p.getParams().put("order_status", "overflow");
+		provision.setOverflowSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "suspended");
+		provision.setSuspendedSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "waiting-for-disconnect");
+		provision.setWaitingForDisconnectSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		p.getParams().put("order_status", "disconnected");
+		provision.setDisconnectedSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+		
+		// Void Order
+		p.getParams().put("order_status", "void");
+		provision.setVoidSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+				
+		// Upgrade Order
+		p.getParams().put("order_status", "upgrade");
+		provision.setUpgradeSum(this.customerOrderMapper.selectCustomerOrdersSum(p));
+				
+		return provision;
+	}
 	
 	@Transactional
 	public Page<CustomerOrder> queryCustomerOrdersByPage(Page<CustomerOrder> page) {

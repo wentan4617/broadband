@@ -12,7 +12,6 @@
 <!-- =================================================================================== -->
 <!-- DELETE AREA --><!-- // END DELETE AREA -->
 
-
 <mapper namespace="com.tm.broadband.mapper.CustomerTransactionMapper">
 	
 	<!-- DEFINITION AREA -->
@@ -80,6 +79,12 @@
 	<!-- =================================================================================== -->
 	
 	<!-- SELECT AREA -->
+	
+	<select id="selectCustomerTransactions" parameterType="CustomerTransaction" resultType="CustomerTransaction">
+		select * from tm_customer_transaction 
+		<include refid="where"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+	</select>
 	
 	<!-- select customer transaction page -->
 	<select id="selectCustomerTransactionsByPage" parameterType="Page" resultType="CustomerTransaction">

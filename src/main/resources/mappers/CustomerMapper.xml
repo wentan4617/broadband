@@ -18,31 +18,32 @@
 	<!-- DEFINITION AREA -->
 
 	<sql id="customerColumns">
-		c.`id` 				as c_id, 
-		c.`login_name` 		as c_login_name, 
-		c.`password` 		as c_password,
-		c.`md5_password` 	as c_md5_password,
-		c.`user_name` 		as c_user_name, 
-		c.`first_name` 		as c_first_name, 
-		c.`last_name` 		as c_last_name, 
-		c.`address` 		as c_address, 
-		c.`email` 			as c_email, 
-		c.`phone` 			as c_phone, 
-		c.`cellphone` 		as c_cellphone, 
-		c.`status` 			as c_status, 
-		c.`invoice_post` 	as c_invoice_post,
-		c.`register_date` 	as c_register_date, 
-		c.`active_date` 	as c_active_date, 
-		c.`balance` 		as c_balance,
-		c.`title`			as c_title,
-		c.`birth`			as c_birth,
-		c.`driver_licence`	as c_driver_licence,
-		c.`passport`		as c_passport,
-		c.`country`			as c_country,
-		c.`company_name`	as c_company_name,
-		c.`customer_type`	as c_customer_type,
-		c.`identity_type`	as c_identity_type,
-		c.`identity_number` as c_identity_number
+		c.`id` 					as c_id
+		, c.`login_name` 		as c_login_name
+		, c.`password` 			as c_password
+		, c.`md5_password` 		as c_md5_password
+		, c.`user_name` 		as c_user_name
+		, c.`first_name` 		as c_first_name
+		, c.`last_name` 		as c_last_name
+		, c.`address` 			as c_address
+		, c.`email` 			as c_email
+		, c.`phone` 			as c_phone
+		, c.`cellphone` 		as c_cellphone
+		, c.`status` 			as c_status
+		, c.`invoice_post` 		as c_invoice_post
+		, c.`register_date` 	as c_register_date
+		, c.`active_date` 		as c_active_date
+		, c.`balance` 			as c_balance
+		, c.`title`				as c_title
+		, c.`birth`				as c_birth
+		, c.`driver_licence`	as c_driver_licence
+		, c.`passport`			as c_passport
+		, c.`country`			as c_country
+		, c.`company_name`		as c_company_name
+		, c.`customer_type`		as c_customer_type
+		, c.`identity_type`		as c_identity_type
+		, c.`identity_number` 	as c_identity_number
+		, c.`result`			as c_result
 	</sql>
 	<resultMap type="Customer" id="customerResultMap">
 		<id property="id" column="c_id" />
@@ -70,184 +71,7 @@
 		<result property="customer_type" column="c_customer_type" />
 		<result property="identity_type" column="c_identity_type" />
 		<result property="identity_number" column="c_identity_number" />
-	</resultMap>
-	
-	<sql id="customerOrderColumns">
-		co.`id` 								as co_id, 
-		co.`order_serial` 						as co_order_serial, 
-		co.`customer_id` 						as co_customer_id, 
-		co.`order_total_price` 					as co_order_total_price, 
-		co.`order_create_date` 					as co_order_create_date, 
-		co.`order_status` 						as co_order_status, 
-		co.`order_using_start` 					as co_order_using_start,
-		co.`next_invoice_create_date` 			as co_next_invoice_create_date,
-		co.`next_invoice_create_date_flag` 		as co_next_invoice_create_date_flag,
-		co.`order_type` 						as co_order_type,
-		co.`order_broadband_type` 				as co_order_broadband_type,
-		co.`svlan`	 							as co_svlan,
-		co.`cvlan` 								as co_cvlan,
-		co.`transition_provider_name` 			as co_transition_provider_name,
-		co.`transition_account_holder_name`  	as co_transition_account_holder_name,
-		co.`transition_account_number`			as co_transition_account_number,
-		co.`transition_porting_number`			as co_transition_porting_number,
-		co.`hardware_post`						as co_hardware_post,
-		co.`order_due`							as co_order_due,
-		co.`pstn_count`							as co_pstn_count,
-		co.`pstn_rental_amount`					as co_pstn_rental_amount,
-		co.`term_period`						as co_term_period,
-		co.`pppoe_loginname`					as co_pppoe_loginname,
-		co.`pppoe_password`						as co_pppoe_password,
-		co.`sale_id`							as co_sale_id,
-		co.`order_pdf_path`						as co_order_pdf_path,
-		co.`credit_pdf_path`					as co_credit_pdf_path,
-		co.`signature`							as co_signature,
-		co.`optional_request`					as co_optional_request,
-		co.`broadband_asid`						as co_broadband_asid,
-		co.`rfs_date`							as co_rfs_date,
-		co.`previous_provider_invoice`			as co_previous_provider_invoice,
-		co.`user_id`							as co_user_id,
-		co.`ddpay_pdf_path`						as co_ddpay_pdf_path,
-		co.`is_ddpay`							as co_is_ddpay,
-		co.`ordering_form_pdf_path`				as co_ordering_form_pdf_path,
-		co.`receipt_pdf_path`					as co_receipt_pdf_path,
-		co.`disconnected_date`					as co_disconnected_date,
-		co.`connection_date`					as co_connection_date,
-		co.`contract`							as co_contract,
-		co.`inviter_customer_id`				as co_inviter_customer_id,
-		co.`inviter_user_id`					as co_inviter_user_id,
-		co.`inviter_rate`						as co_inviter_rate,
-		co.`invitee_rate`						as co_invitee_rate
-	</sql>
-	<resultMap type="CustomerOrder" id="customerOrderResultMap">
-		<id property="id" column="co_id" />
-		<result property="order_serial" column="co_order_serial" />
-		<result property="customer_id" column="co_customer_id" /> 
-		<result property="order_total_price" column="co_order_total_price" />
-		<result property="order_create_date" column="co_order_create_date" />
-		<result property="order_status" column="co_order_status" />
-		<result property="order_using_start" column="co_order_using_start" />
-		<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
-		<result property="next_invoice_create_date_flag" column="co_next_invoice_create_date_flag" />
-		<result property="order_type" column="co_order_type" />
-		<result property="order_broadband_type" column="co_order_broadband_type" />
-		<result property="svlan" column="co_svlan" />
-		<result property="cvlan" column="co_cvlan" />
-		<result property="transition_provider_name" column="co_transition_provider_name" />
-		<result property="transition_account_holder_name" column="co_transition_account_holder_name" />
-		<result property="transition_account_number" column="co_transition_account_number" />
-		<result property="transition_porting_number" column="co_transition_porting_number" />
-		<result property="hardware_post" column="co_hardware_post" />
-		<result property="order_due" column="co_order_due" />
-		<result property="pstn_count" column="co_pstn_count" />
-		<result property="pstn_rental_amount" column="co_pstn_rental_amount" />
-		<result property="term_period" column="co_term_period" />
-		<result property="pppoe_loginname" column="co_pppoe_loginname" />
-		<result property="pppoe_password" column="co_pppoe_password" />
-		<result property="sale_id" column="co_sale_id" />
-		<result property="order_pdf_path" column="co_order_pdf_path" />
-		<result property="credit_pdf_path" column="co_credit_pdf_path" />
-		<result property="signature" column="co_signature" />
-		<result property="optional_request" column="co_optional_request" />
-		<result property="broadband_asid" column="co_broadband_asid" />
-		<result property="rfs_date" column="co_rfs_date" />
-		<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
-		<result property="user_id" column="co_user_id" />
-		<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
-		<result property="is_ddpay" column="co_is_ddpay" />
-		<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
-		<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
-		<result property="disconnected_date" column="co_disconnected_date" />
-		<result property="connection_date" column="co_connection_date" />
-		<result property="contract" column="co_contract" />
-		<result property="inviter_customer_id" column="co_inviter_customer_id" />
-		<result property="inviter_user_id" column="co_inviter_user_id" />
-		<result property="inviter_rate" column="co_inviter_rate" />
-		<result property="invitee_rate" column="co_invitee_rate" />
-	</resultMap>
-	<sql id="customerOrderDetailColumns">
-		cod.`id` 								as cod_id, 
-		cod.`order_id` 							as cod_order_id, 
-		cod.`detail_name` 						as cod_detail_name,
-		cod.`detail_desc` 						as cod_detail_desc, 
-		cod.`detail_price` 						as cod_detail_price,
-		cod.`detail_data_flow` 					as cod_detail_data_flow, 
-		cod.`detail_plan_status` 				as cod_detail_plan_status,
-		cod.`detail_plan_type` 					as cod_detail_plan_type, 
-		cod.`detail_plan_sort` 					as cod_detail_plan_sort,
-		cod.`detail_plan_group` 				as cod_detail_plan_group,
-		cod.`detail_plan_new_connection_fee` 	as cod_detail_plan_new_connection_fee,
-		cod.`detail_term_period` 				as cod_detail_term_period,
-		cod.`detail_topup_data_flow` 			as cod_detail_topup_data_flow,
-		cod.`detail_topup_fee` 					as cod_detail_topup_fee,
-		cod.`detail_plan_memo` 					as cod_detail_plan_memo, 
-		cod.`detail_unit` 						as cod_detail_unit,
-		cod.`detail_calling_minute` 			as cod_detail_calling_minute,
-		cod.`detail_type` 						as cod_detail_type,
-		cod.`detail_is_next_pay`				as cod_detail_is_next_pay,
-		cod.`detail_expired`					as cod_detail_expired,
-		cod.`is_post`							as cod_is_post,
-		cod.`hardware_comment`					as cod_hardware_comment,
-		cod.`track_code`						as cod_track_code,
-		cod.`pstn_number` 						as cod_pstn_number,
-		cod.`user_id` 							as cod_user_id,
-		cod.`voip_password` 					as cod_voip_password,
-		cod.`voip_assign_date` 					as cod_voip_assign_date
-	</sql>
-	<resultMap type="CustomerOrderDetail" id="CustomerOrderDetailResultMap">
-		<id property="id" column="cod_id" />
-		<id property="order_id" column="cod_order_id" />
-		<result property="detail_name" column="cod_detail_name" />
-		<result property="detail_desc" column="cod_detail_desc" />
-		<result property="detail_price" column="cod_detail_price" />
-		<result property="detail_data_flow" column="cod_detail_data_flow" />
-		<result property="detail_plan_status" column="cod_detail_plan_status" />
-		<result property="detail_plan_type" column="cod_detail_plan_type" />
-		<result property="detail_plan_sort" column="cod_detail_plan_sort" />
-		<result property="detail_plan_group" column="cod_detail_plan_group" />
-		<result property="detail_plan_new_connection_fee" column="cod_detail_plan_new_connection_fee" />
-		<result property="detail_term_period" column="cod_detail_term_period" />
-		<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow" />
-		<result property="detail_topup_fee" column="cod_detail_topup_fee" />
-		<result property="detail_plan_memo" column="cod_detail_plan_memo" />
-		<result property="detail_unit" column="cod_detail_unit" />
-		<result property="detail_calling_minute" column="cod_detail_calling_minute" />
-		<result property="detail_type" column="cod_detail_type" />
-		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
-		<result property="detail_expired" column="cod_detail_expired" />
-		<result property="is_post" column="cod_is_post" />
-		<result property="hardware_comment" column="cod_hardware_comment" />
-		<result property="track_code" column="cod_track_code" />
-		<result property="pstn_number" column="cod_pstn_number" />
-		<result property="user_id" column="cod_user_id" />
-		<result property="voip_password" column="cod_voip_password" />
-		<result property="voip_assign_date" column="cod_voip_assign_date" />
-	</resultMap>
-	
-	<sql id="organizationColumns">
-		o.`customer_id`				as o_customer_id
-		, o.`org_name`				as o_org_name
-		, o.`org_type`				as o_org_type
-		, o.`org_trading_name`		as o_org_trading_name
-		, o.`org_register_no`		as o_org_register_no
-		, o.`org_incoporate_date`	as o_incoporate_date
-		, o.`org_trading_months`	as o_trading_months
-		, o.`holder_name`			as o_holder_name
-		, o.`holder_job_title`		as o_holder_job_title
-		, o.`holder_phone`			as o_holder_phone
-		, o.`holder_email`			as o_holder_email
-	</sql>
-	<resultMap type="Organization" id="organizationResultMap">
-		<id property="customer_id" column="o_customer_id"/>
-		<result property="org_name" column="o_org_name"/>
-		<result property="org_type" column="o_org_type"/>
-		<result property="org_trading_name" column="o_org_trading_name"/>
-		<result property="org_register_no" column="o_org_register_no"/>
-		<result property="org_incoporate_date" column="o_incoporate_date"/>
-		<result property="org_trading_months" column="o_trading_months"/>
-		<result property="holder_name" column="o_holder_name"/>
-		<result property="holder_job_title" column="o_holder_job_title"/>
-		<result property="holder_phone" column="o_holder_phone"/>
-		<result property="holder_email" column="o_holder_email"/>
+		<result property="result" column="c_result" />
 	</resultMap>
 	
 	<sql id="customerWhere">
@@ -263,13 +87,13 @@
 					and c.md5_password = #{params.md5_password}
 					and c.status = #{params.status}
 				</when>
-				<when test="params.where =='query_forgotten_password_email'">
+				<when test="params.where == 'query_forgotten_password_email'">
 					c.email = #{params.email} and c.status = #{params.status}
 				</when>
-				<when test="params.where =='query_forgotten_password_cellphone'">
+				<when test="params.where == 'query_forgotten_password_cellphone'">
 					c.cellphone = #{params.cellphone} and c.status = #{params.status}
 				</when>
-				<when test="params.where =='query_order_status'">
+				<when test="params.where == 'query_order_status'">
 					<if test="params.status != null">c.status = #{params.status}</if>
 					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
 				</when>
@@ -350,221 +174,62 @@
 					<if test="params.customer_type != null">and c.customer_type = #{params.customer_type}</if>
 				</otherwise>
 			</choose>
-			
 		</where>
 	</sql>
+	
 	<!-- // DEFINITION AREA -->
-	
 	<!-- =================================================================================== -->
-
 	<!-- SELECT AREA -->
-	
-	<select id="selectCustomer" parameterType="Customer" resultType="Customer">
-		select * from tm_customer as c
-		<include refid="customerWhere"/>
-	</select>
 	
 	<select id="selectCustomers" parameterType="Customer" resultType="Customer">
 		select * from tm_customer as c
 		<include refid="customerWhere"/>
 	</select>
 	
-	<!-- select customer page -->
-	<select id="selectCustomersByPage" parameterType="Page" resultMap="selectCustomersByPageResultMap">
+	<select id="selectCustomersByPage" parameterType="Page" resultMap="customerResultMap">
 		select 
-			<include refid="customerColumns"/>,
-			<include refid="organizationColumns"/>
+			<include refid="customerColumns"/>
 			from tm_customer as c
-		left join tm_customer_order as co on co.customer_id = c.id
-		left join tm_organization as o on o.customer_id = c.id
 		<include refid="customerWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
 	</select>
 
-	<!-- select customer amount -->
 	<select id="selectCustomersSum" parameterType="Page" resultType="int">
 		select count(*) from tm_customer as c
-		left join tm_customer_order as co on co.customer_id = c.id
-		left join tm_organization as o on o.customer_id = c.id
 		<include refid="customerWhere"/>
 	</select>
-	
-	<resultMap id="selectCustomersByPageResultMap" type="Customer">
-		<id property="id" column="c_id" />
-		<result property="login_name" column="c_login_name" />
-		<result property="password" column="c_password" />
-		<result property="md5_password" column="c_md5_password" />
-		<result property="user_name" column="c_user_name" />
-		<result property="first_name" column="c_first_name" />
-		<result property="last_name" column="c_last_name" />
-		<result property="address" column="c_address" />
-		<result property="email" column="c_email" />
-		<result property="phone" column="c_phone" />
-		<result property="cellphone" column="c_cellphone" />
-		<result property="status" column="c_status" />
-		<result property="invoice_post" column="c_invoice_post" />
-		<result property="register_date" column="c_register_date" />
-		<result property="active_date" column="c_active_date" />
-		<result property="balance" column="c_balance" />
-		<result property="title" column="c_title" />
-		<result property="birth" column="c_birth" />
-		<result property="driver_licence" column="c_driver_licence" />
-		<result property="passport" column="c_passport" />
-		<result property="country" column="c_country" />
-		<result property="company_name" column="c_company_name" />
-		<result property="customer_type" column="c_customer_type" />
-		<result property="identity_type" column="c_identity_type" />
-		<result property="identity_number" column="c_identity_number" />
-
-		<association property="organization" resultMap="organizationResultMap" />
-	</resultMap>
 	
 	<select id="selectExistCustomer" resultType="int">
 		select count(*) from tm_customer as c
 		<include refid="customerWhere"/>
 	</select>
-
-	<!-- select customers by id -->
-	<select id="selectCustomerById" parameterType="int" resultType="Customer">
-		select * from tm_customer where id = #{0}
-	</select>
 	
-	<!-- select customers by id, with customer order information -->
-	<select id="selectCustomerByIdWithCustomerOrder" resultMap="selectCustomerByIdWithCustomerOrderResultMap">
-		select
-			<include refid="customerColumns"/>,
-			<include refid="organizationColumns"/>,
-			<include refid="customerOrderColumns"/>,
-			<include refid="customerOrderDetailColumns"/>
-		from tm_customer as c
-		left join tm_organization as o on o.customer_id = c.id
-		left join tm_customer_order as co on co.customer_id = c.id
-		left join tm_customer_order_detail as cod on cod.order_id = co.id
-		where c.id = #{0}
-	</select>
-
-	<resultMap id="selectCustomerByIdWithCustomerOrderResultMap" type="Customer">
-		<id property="id" column="c_id" />
-		<result property="login_name" column="c_login_name" />
-		<result property="password" column="c_password" />
-		<result property="md5_password" column="c_md5_password" />
-		<result property="user_name" column="c_user_name" />
-		<result property="first_name" column="c_first_name" />
-		<result property="last_name" column="c_last_name" />
-		<result property="address" column="c_address" />
-		<result property="email" column="c_email" />
-		<result property="phone" column="c_phone" />
-		<result property="cellphone" column="c_cellphone" />
-		<result property="status" column="c_status" />
-		<result property="invoice_post" column="c_invoice_post" />
-		<result property="register_date" column="c_register_date" />
-		<result property="active_date" column="c_active_date" />
-		<result property="balance" column="c_balance" />
-		<result property="title" column="c_title" />
-		<result property="birth" column="c_birth" />
-		<result property="driver_licence" column="c_driver_licence" />
-		<result property="passport" column="c_passport" />
-		<result property="country" column="c_country" />
-		<result property="company_name" column="c_company_name" />
-		<result property="customer_type" column="c_customer_type" />
-		<result property="identity_type" column="c_identity_type" />
-		<result property="identity_number" column="c_identity_number" />
-
-		<association property="organization" resultMap="organizationResultMap" />
-		
-		<collection property="customerOrders" ofType="CustomerOrder" >
-			<id property="id" column="co_id" />
-			<result property="order_serial" column="co_order_serial" />
-			<result property="customer_id" column="co_customer_id" /> 
-			<result property="order_total_price" column="co_order_total_price" />
-			<result property="order_create_date" column="co_order_create_date" />
-			<result property="order_status" column="co_order_status" />
-			<result property="order_using_start" column="co_order_using_start" />
-			<result property="next_invoice_create_date" column="co_next_invoice_create_date" />
-			<result property="next_invoice_create_date_flag" column="co_next_invoice_create_date_flag" />
-			<result property="order_type" column="co_order_type" />
-			<result property="order_broadband_type" column="co_order_broadband_type" />
-			<result property="svlan" column="co_svlan" />
-			<result property="cvlan" column="co_cvlan" />
-			<result property="transition_provider_name" column="co_transition_provider_name" />
-			<result property="transition_account_holder_name" column="co_transition_account_holder_name" />
-			<result property="transition_account_number" column="co_transition_account_number" />
-			<result property="transition_porting_number" column="co_transition_porting_number" />
-			<result property="hardware_post" column="co_hardware_post" />
-			<result property="order_due" column="co_order_due" />
-			<result property="pstn_count" column="co_pstn_count" />
-			<result property="pstn_rental_amount" column="co_pstn_rental_amount" />
-			<result property="term_period" column="co_term_period" />
-			<result property="pppoe_loginname" column="co_pppoe_loginname" />
-			<result property="pppoe_password" column="co_pppoe_password" />
-			<result property="sale_id" column="co_sale_id" />
-			<result property="order_pdf_path" column="co_order_pdf_path" />
-			<result property="credit_pdf_path" column="co_credit_pdf_path" />
-			<result property="signature" column="co_signature" />
-			<result property="optional_request" column="co_optional_request" />
-			<result property="broadband_asid" column="co_broadband_asid" />
-			<result property="rfs_date" column="co_rfs_date" />
-			<result property="previous_provider_invoice" column="co_previous_provider_invoice" />
-			<result property="user_id" column="co_user_id" />
-			<result property="ddpay_pdf_path" column="co_ddpay_pdf_path" />
-			<result property="is_ddpay" column="co_is_ddpay" />
-			<result property="ordering_form_pdf_path" column="co_ordering_form_pdf_path" />
-			<result property="receipt_pdf_path" column="co_receipt_pdf_path" />
-			<result property="disconnected_date" column="co_disconnected_date" />
-			<result property="connection_date" column="co_connection_date" />
-			<result property="contract" column="co_contract" />
-			<result property="inviter_customer_id" column="co_inviter_customer_id" />
-			<result property="inviter_user_id" column="co_inviter_user_id" />
-			<result property="inviter_rate" column="co_inviter_rate" />
-			<result property="invitee_rate" column="co_invitee_rate" />
-			<collection property="customerOrderDetails" ofType="CustomerOrderDetail" resultMap="CustomerOrderDetailResultMap" />
-		</collection>
-		
-	</resultMap>
-	
-	<select id="selectCustomersByRegisterDate" parameterType="Date" resultType="Customer">
+	<!-- <select id="selectCustomersByRegisterDate" parameterType="Date" resultType="Customer">
 		select * from tm_customer where CONVERT(register_date, DATE) between CONVERT(#{0}, DATE) and CONVERT(#{1}, DATE)
-	</select>
+	</select> -->
 
 	<!-- // END SELECT AREA -->
-
 	<!-- =================================================================================== -->
-
 	<!-- INSERT AREA -->
-
-	<!-- when customer register or administrator create customer, insert customer  information -->
+	
 	<insert id="insertCustomer" parameterType="Customer" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer`(
 		`login_name`, `password`, `md5_password`, `user_name`, `first_name`, `last_name`,
-		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`,
-		`register_date`, `active_date`, `balance`, 
-		`title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`,
-		`identity_type`, `identity_number`)
+		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`, `register_date`, `active_date`, 
+		`balance`, `title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`,
+		`identity_type`, `identity_number`, `result`)
 		VALUES (
 		#{login_name}, #{password}, #{md5_password}, #{user_name}, #{first_name}, #{last_name}, 
-		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post},
-		#{register_date}, #{active_date}, #{balance},
-		#{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type},
-		#{identity_type}, #{identity_number})
+		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post}, #{register_date}, #{active_date}, 
+		#{balance}, #{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type},
+		#{identity_type}, #{identity_number}, #{result})
 	</insert>
 
 	<!-- // END INSERT AREA -->
-
 	<!-- =================================================================================== -->
-	
 	<!-- UPDATE AREA -->
 	
-	<!-- update customer status -->
-	<update id="updateCustomerStatus" parameterType="Customer">
-		update tm_customer set status = #{status}
-		<if test="status == 'active'">
-			, active_date = now()
-		</if>
-		where id = #{id}
-	</update>
-	
-	<!-- update customer -->
 	<update id="updateCustomer" parameterType="Customer">
 		update tm_customer
 		<set>
@@ -583,7 +248,6 @@
 			<if test="register_date != null">register_date = #{register_date},</if>
 			<if test="active_date != null">active_date = #{active_date},</if>
 			<if test="balance != null">balance = #{balance},</if>
-			
 			<if test="title != null">title = #{title},</if>
 			<if test="birth != null">birth = #{birth},</if>
 			<if test="driver_licence != null">driver_licence = #{driver_licence},</if>
@@ -592,19 +256,26 @@
 			<if test="company_name != null">company_name = #{company_name},</if>
 			<if test="customer_type != null">customer_type = #{customer_type},</if>
 			<if test="identity_type != null">identity_type = #{identity_type},</if>
-			<if test="identity_number != null">identity_number = #{identity_number}</if>
+			<if test="identity_number != null">identity_number = #{identity_number},</if>
+			<if test="result != null">result = #{result}</if>
 		</set>
 		<where>
-			<if test="params.id != null">id=#{params.id}</if>
-			<if test="params.email != null">or email=#{params.email}</if>
-			<if test="params.cellphone != null">or cellphone=#{params.cellphone}</if>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.email != null">or email = #{params.email}</if>
+			<if test="params.cellphone != null">or cellphone = #{params.cellphone}</if>
 		</where>
+	</update>
+	
+	<update id="updateCustomerStatus" parameterType="Customer">
+		update tm_customer set status = #{status}
+		<if test="status == 'active'">
+			, active_date = now()
+		</if>
+		where id = #{id}
 	</update>
 
 	<!-- // END UPDATE AREA -->
-
 	<!-- =================================================================================== -->
-
 	<!-- DELETE AREA -->
 	
 	<delete id="deleteCustomerById" parameterType="int">

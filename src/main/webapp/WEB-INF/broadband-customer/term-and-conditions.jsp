@@ -21,7 +21,7 @@
 			<ul class="nav nav-tabs">
 				<li class="active"><a href="#website" data-toggle="tab"><strong>CyberPark Limited</strong></a></li>
 				<li><a href="#a" data-toggle="tab"><strong>BUSINESS PLAN T&C</strong></a></li>
-				<li><a href="#b" data-toggle="tab"><strong>Business Line WIFI PLANS T&C</strong></a></li>
+				<li><a href="#b" data-toggle="tab"><strong>Business Line WI-FI PLANS T&C</strong></a></li>
 				<li><a href="#c" data-toggle="tab"><strong>PERSONALLINE T&C</strong></a></li>
 				<li><a href="#d" data-toggle="tab"><strong>UFB PLAN T&C</strong></a></li>
 			</ul>

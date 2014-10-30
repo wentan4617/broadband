@@ -7,6 +7,9 @@
 <jsp:include page="header.jsp" />
 
 <style>
+#navhead {
+	margin-bottom:0;
+}
 .affix {
 	width: 263px;
 	top: 40px;
@@ -47,7 +50,7 @@
 }
 </style>
 
-<div class="container" style="margin-top:20px;">
+<div class="container">
 
 	<div class="page-header">
 		<h1>VoIP Rates</h1>
@@ -56,8 +59,6 @@
 	<div class="row" style="margin-bottom:20px;">
 		
 		<div class="col-md-9 col-xs-12 col-sm-12">
-
-			
 
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs" id="rates">
