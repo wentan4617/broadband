@@ -7,9 +7,6 @@
 #navhead {
 	margin-bottom:0;
 }
-</style>
-<style>
-
 .affix {
 	width: 263px;
 	top: 0;

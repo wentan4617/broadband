@@ -34,6 +34,7 @@ public class Organization implements Serializable {
 	/*@Email(groups = { CustomerOrganizationValidatedMark.class})
 	@Length(max = 40, groups = { CustomerOrganizationValidatedMark.class })*/
 	private String holder_email;
+	private Integer order_id;
 
 	/*
 	 * BEGIN RELATED PROPERTIES
@@ -154,6 +155,14 @@ public class Organization implements Serializable {
 
 	public void setOrg_incoporate_date_str(String org_incoporate_date_str) {
 		this.org_incoporate_date_str = org_incoporate_date_str;
+	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
 	}
 	
 	

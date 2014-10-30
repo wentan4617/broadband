@@ -53,7 +53,7 @@
 						<hr/>
 						<div class="form-group">
 							<div class="col-sm-4 col-sm-offset-3">
-								<button type="button" data-loading-text="loading..." class="btn btn-success" id="change-btn">Change Password</button>
+								<button type="submit" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="change-btn">Change Password</button>
 							</div>
 						</div>
 					</form>
@@ -69,25 +69,22 @@
 <script type="text/javascript">
 (function($){
 	
-	$('#change-btn').on("click", function(){
+	$('#change-btn').on("click", function(e){
 		
-		var $btn = $(this);
-		$btn.button('loading');
+		e.preventDefault();
+		var l = Ladda.create(this); l.start();
 		var customer = {
 			old_password: $('#old_password').val()
 			, password: $('#password').val()
 			, ck_password: $('#ck_password').val()
 		};
 		$.post('${ctx}/customer/change-password', customer, function(json){
-			if (json.hasErrors) {
-				$.jsonValidation(json, 'right');
-			} else {
-				window.location.href='${ctx}' + json.url;
+			if (!$.jsonValidation(json, 'right')) {
+				window.location.href = '${ctx}' + json.url;
 			}
-		}, 'json').always(function () {
-			$btn.button('reset');
-	    });
+		}, 'json').always(function() { l.stop(); });
 	});
+	
 })(jQuery);
 </script>
 <jsp:include page="footer-end.jsp" />

@@ -3,14 +3,6 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
-<style>
-.follow-us-on{
-	padding:3px 20px;
-	display:block;
-}
-</style>
-
-
 <div class="navbar navbar-inverse navbar-static-top" id="navhead">
 	<div class="container">
 	
@@ -37,14 +29,14 @@
 		             	<li><a href="${ctx }/voucher">Voucher Checking</a></li>
 			            <li><a href="${ctx }/phone-calling-rates">Phone Calling Rates</a></li>
 			            <li><a href="${ctx }/voip-calling-rates">VoIP Calling Rates</a></li>
-			            <li><a href="${ctx }/wifi-solution" >Wifi Solution</a></li>
+			            <li><a href="${ctx }/wifi-solution" >Wi-Fi Solution</a></li>
 			            <li><a href="${ctx }/e-commerce" >E-Commerce</a></li>
-		             	<li><a href="${ctx }/term-and-conditions">Terms & Conditions</a></li>
+		             	<li><a href="${ctx }/term-and-conditions">Terms &amp; Conditions</a></li>
 		          	</ul>
 				</li>
-				<li><a href="${ctx }/about-us#contact" rel="nofollow"><span style="color:white;">0800 229 237</span></a></li>
+				<li><a href="${ctx }/about-us#contact" rel="nofollow"><span style="color: white">0800 229 237</span></a></li>
 				<li>
-					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Share<b class="caret"></b></a>
+					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Share <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 			            <li>
 			            	<a class="fb-share-button" data-href="https://www.facebook.com/pages/Cyberpark/223261207861301" data-type="button_count"></a>
@@ -60,36 +52,27 @@
 				</li>
 				<c:if test="${fn:length(customerReg.address) > 0 }">
 				<li>
-					<a href="${ctx }/plans/address-check" style="padding-top: 10px; padding-bottom: 5px;" rel="nofollow">
-						<span class="glyphicon glyphicon-map-marker" style="font-size: 24px; "></span>
+					<a href="${ctx }/plans/address-check" style="padding-top: 10px; padding-bottom: 5px" rel="nofollow">
+						<span class="glyphicon glyphicon-map-marker" style="font-size: 24px"></span>
 					</a>
 				</li>
 				</c:if>
 			</ul>
 			
-			
 			<p class="navbar-text navbar-right" >
 				<c:if test="${customerSession != null }">
 					<a href="${ctx }/customer/home" class="navbar-link" >
-						<span class="glyphicon glyphicon-user"></span>
-						<c:choose>
-							<c:when test="${customerSession.customer_type == 'personal' }">
-								${customerSession.first_name } ${customerSession.last_name }
-							</c:when>
-							<c:when test="${customerSession.customer_type == 'business' }">
-								${customerSession.organization.org_name }
-							</c:when>
-						</c:choose>
-					</a>
+						<span class="glyphicon glyphicon-user"></span> 
+						${customerSession.cellphone }
+					</a> 
 					<a href="${ctx}/signout" rel="nofollow" data-toggle="tooltip" data-placement="bottom" data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out"></span>
 					</a>
 				</c:if>
 				<c:if test="${customerSession == null }">
-					<a href="${ctx }/login" class="navbar-link" ><span class="glyphicon glyphicon-log-in"></span> Sign in</a>
+					<a href="${ctx }/sign-in" class="navbar-link" ><span class="glyphicon glyphicon-log-in"></span> Sign in</a>
 				</c:if>
 			</p>
-			
 			
 		</div>
 	</div>

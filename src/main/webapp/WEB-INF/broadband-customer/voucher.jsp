@@ -5,7 +5,9 @@
 <jsp:include page="header.jsp" />
 
 <style>
-
+#navhead {
+	margin-bottom:0;
+}
 .affix {
 	width: 263px;
 	top: 0;
@@ -26,8 +28,8 @@
 
 <div class="container">
 	<div class="row" style="margin-bottom:20px;">
+		<div class="col-md-12 col-xs-12 col-sm-12">
 		
-		<div class="col-md-9 col-xs-12 col-sm-12">
 			<section id="voucher">
 				<div class="page-header">
 					<div class="home-title">
@@ -55,21 +57,21 @@
 						
 						<form class="form-horizontal" id="voucherForm">
 							<div class="form-group">
-								<h4 class="col-md-12">Please provide us your CyberPark voucher's details to check its availability</h4>
+								<h4 class="col-md-9 col-md-offset-3">Please provide us your CyberPark voucher's details to check its availability</h4>
 							</div>
 							<div class="form-group">
-								<div class="col-md-12">
-									<img style="width:360px; height:200px; border-radius:30px 30px 30px 30px; box-shadow:5px 5px 5px rgba(0,0,0,.6);" title="Material" src="${ctx}/public/bootstrap3/images/top_up_card_30.png">
+								<div class="col-md-9 col-md-offset-3">
+									<img class="img-responsive" title="Material" src="${ctx}/public/bootstrap3/images/top_up_card_30.png">
 								</div>
 							</div><br/>
 							<div class="form-group">
-								<label for="pin_number" class="control-label col-md-3">Pin Number*</label>
+								<label for="pin_number" class="control-label col-md-3">Pin Number <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
 									<input type="text" id="pin_number" class="form-control" data-error-field />
 								</div>
 							</div>
 							<div class="form-group">
-								<label for="code" class="control-label col-md-3">Verification code*</label>
+								<label for="code" class="control-label col-md-3">Verification Code <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
 									<input id="code" class="form-control" placeholder="Input below box's characters" data-error-field/>
 								</div>
@@ -77,7 +79,7 @@
 							<div class="form-group">
 								<label for="code" class="control-label col-md-3"></label>
 								<div class="col-md-3">
-									<img id="codeImage" style="cursor:pointer;" alt="Verification Code" src="kaptcha.jpg" />
+									<img id="codeImage" style="cursor:pointer" alt="Verification Code" src="kaptcha.jpg" />
 								</div>
 								<div class="col-md-3">
 									<a href="javascript:void(0);" id="codeLink">Not clear?<br/>Change Another One.</a>
@@ -85,9 +87,8 @@
 							</div>
 							<hr/>
 							<div class="form-group">
-								<div class="col-md-2"></div>
-								<div class="col-md-3">
-									<button type="button" data-loading-text="loading..." class="btn btn-success btn-lg btn-block" id="submit-btn">Submit Request</button>
+								<div class="col-md-3 col-md-offset-3">
+									<button type="submit" class="btn btn-success btn-lg btn-block ladda-button" data-style="zoom-in" id="submit-btn">Submit Request</button>
 								</div>
 							</div>
 						</form>
@@ -120,31 +121,23 @@
 (function($){
 	$('body').scrollspy({ target: '.navbar-example' });
 	
-	$(document).keypress(function(e){
-		if ($('#voucherForm input:focus').length > 0 && event.keyCode == 13) {
-			$('#submit-btn').trigger('click');
-		}
-	});
-	
-	$('#submit-btn').on("click", function(){
-		var $btn = $(this);
-		$btn.button('loading');
+	$('#submit-btn').on('click', function(e){
+		e.preventDefault();
+		var l = Ladda.create(this); l.start();
 		var data = {
 			code: $('#code').val()
-			,serial_number: $('#serial_number').val()
-			,card_number: $('#pin_number').val()
+			, serial_number: $('#serial_number').val()
+			, card_number: $('#pin_number').val()
 		};
 		$.post('${ctx}/voucher', data, function(json){
-			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+			$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random() * 100));
 			$.jsonValidation(json, 'right');
 			$('.form-control').val('');
-		}, 'json').always(function () {
-			$btn.button('reset');
-	    });
+		}, 'json').always(function() { l.stop(); });
 	});
 	
 	$('#codeImage,#codeLink').click(function(){
-		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random()*100));
+		$('#codeImage').attr('src', 'kaptcha.jpg?' + Math.floor(Math.random() * 100));
 	});
 })(jQuery);
 </script>

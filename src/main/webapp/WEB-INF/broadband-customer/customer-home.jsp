@@ -12,30 +12,21 @@
 	padding:5px 0;
 }
 </style>
+
 <div class="container">
 	<div class="row">
 		<div class="col-md-3">
 			<jsp:include page="sidebar.jsp" />
 		</div>
-		<div class="col-md-9">
-			<div class="panel panel-success">
+		<div class="col-md-9 ">
+			<div class="panel panel-success customer-panel-height">
 				<div class="panel-heading">
-					<h3 class="panel-title">
-						Home
-					</h3>
+					<h3 class="panel-title">Home</h3>
 				</div>
 				<div class="panel-body">
 					<div class="page-header" style="margin-top: 0;">
 						<h3 class="text-success">
-							<c:choose>
-								<c:when test="${customerSession.customer_type == 'personal' }">
-									Personal Information 
-								</c:when>
-								<c:when test="${customerSession.customer_type == 'business' }">
-									Business Information 
-								</c:when>
-							</c:choose>
-							
+							Account Information 
 						</h3>
 					</div>
 					<div class="row">
@@ -45,12 +36,11 @@
 									<strong class="text-info">
 										${customerSession.id }
 									</strong>
-									
 									<button id="asPromotion" type="button" class="btn btn-xs btn-warning" data-container="body" data-toggle="popover" data-placement="right" data-content="This is your promotion number, if your friend when applying cyberpark broadband services to fill it, you can get a discount every month a certain amount each other."><span class="glyphicon glyphicon-question-sign"></span></button>
 								</li>
 								<c:choose>
 									<c:when test="${customerSession.customer_type == 'personal' }">
-										<li><strong class="text-info">${customerSession.first_name }&nbsp;${customerSession.last_name }</strong></li>
+										<li><strong class="text-info">${customerSession.first_name } ${customerSession.last_name }</strong></li>
 									</c:when>
 									<c:when test="${customerSession.customer_type == 'business' }">
 										<li><strong class="text-info">${customerSession.organization.org_name }</strong></li>
@@ -65,15 +55,10 @@
 					</div>
 					
 					<hr/>
-					<div class="page-header" style="margin-top: 0;">
-						<h3 class="text-success">
-							Account Information 
-						</h3>
-					</div>
 					
 					<div class="row">
 						<div class="col-md-4">
-							<strong class="text-info"> Current Credit: </strong> 
+							<strong class="text-info">Current Credit:</strong> 
 							<span class="glyphicon glyphicon-star"></span> NZ$ 
 							<strong class="text-success">
 								<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
@@ -86,12 +71,12 @@
 							  	</button>
 							  	<ul class="dropdown-menu" data-role="menu">
 							    	<li><a href="${ctx }/customer/topup"><span class="glyphicon glyphicon-credit-card"></span> Credit Card</a></li>
-							    	<li><a href="javascript:void(0);" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span> Voucher</a></li>
+							    	<li><a href="javascript:void(0)" data-name="pay_way_by" data-way="voucher"><span class="glyphicon glyphicon-tags"></span> Voucher</a></li>
 							  	</ul>
 							</div>
 						</div>
 					</div>
-					<div class="row" style="margin-top:10px;">
+					<%-- <div class="row" style="margin-top:10px;">
 						<div class="col-md-4">
 							<strong class="text-info">Invoice Balance: </strong> NZ$ 
 							<strong class="text-success">
@@ -101,80 +86,7 @@
 						<div class="col-md-3">
 							<a href="${ctx }/customer/billing/view" class="btn btn-success btn-block" >View Invoice</a>
 						</div>
-					</div>
-					<div class="row" style="margin-top:10px;">
-						<div class="col-md-4">
-							<c:if test="${(customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '') 
-								&& (customerSession.customerOrders[0].receipt_pdf_path == null || customerSession.customerOrders[0].receipt_pdf_path == '') }">
-							
-								<strong class="text-info">Ordering Form Balance: </strong> NZ$ 
-								<strong class="text-success">
-									<fmt:formatNumber value="${customerSession.customerOrders[0].order_total_price }" type="number" pattern="#,##0.00" />
-								</strong>
-							</c:if>
-						</div>
-						<div class="col-md-3">
-							<c:if test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
-								<a target="_blank" href="${ctx }/customer/home/ordering-form/pdf/download" class="btn btn-success btn-block">
-									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Form
-								</a>
-							</c:if>
-						</div>
-						<div class="col-md-3">
-							<c:choose>
-								<c:when test="${customerSession.customerOrders[0].receipt_pdf_path != null && customerSession.customerOrders[0].receipt_pdf_path != '' }">
-									<a target="_blank" href="${ctx }/customer/home/receipt/pdf/download" class="btn btn-success btn-block">
-										<span class="glyphicon glyphicon-floppy-save"></span> Ordering Receipt
-									</a>
-								</c:when>
-								<c:when test="${customerSession.customerOrders[0].ordering_form_pdf_path != null && customerSession.customerOrders[0].ordering_form_pdf_path != '' }">
-									<form action="${ctx }/customer/ordering-form/checkout" method="post" id="orderingForm">
-										<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
-									</form>
-								</c:when>
-							</c:choose>
-						</div>
-					</div>
-					
-					<hr />
-					<div class="page-header" style="margin-top: 0;">
-						<h3 class="text-success">
-							Plan Information 
-						</h3>
-					</div>
-					<c:if test="${fn:length(customerOrders) > 0}">
-						<c:forEach var="co" items="${customerOrders}">
-							<div class="well">
-								<ul class="list-unstyled personal-info">
-									<c:if test="${fn:length(co.customerOrderDetails) > 0 }">
-										<c:forEach var="cod" items="${co.customerOrderDetails }">
-											<c:if test="${fn:contains(cod.detail_type, 'plan-')}">
-												<li><hr style="margin:0;"/></li>
-												<li><h4 class="text-info" style="margin:0;">${cod.detail_name }</h4></li>
-												<li><hr style="margin:0;"/></li>
-											</c:if>
-											<c:if test="${fn:contains(cod.detail_type, 'hardware-')}">
-												<li><hr style="margin:0;"/></li>
-												<li>
-													<h4 class="text-info" style="margin:0;">
-														${cod.detail_name }&nbsp;&nbsp;&nbsp;
-														<c:if test="${cod.is_post == 1 }">
-															<span class="label label-warning">${cod.track_code }</span>
-														</c:if>
-														<c:if test="${cod.is_post == 0 }">
-															
-														</c:if>
-													</h4>
-												</li>
-											</c:if>
-										</c:forEach>
-									</c:if>
-								</ul>
-							</div>
-						</c:forEach>
-					</c:if>
-					<c:if test="${fn:length(customerOrders) < 0 }">
-					</c:if>
+					</div> --%>
 				</div>
 			</div>
 		</div>

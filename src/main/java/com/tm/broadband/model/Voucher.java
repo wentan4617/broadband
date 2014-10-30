@@ -30,6 +30,7 @@ public class Voucher implements Serializable {
 	private String comment;
 	private Integer customer_id;
 	private String post_to;
+	private Integer order_id;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -41,6 +42,7 @@ public class Voucher implements Serializable {
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private Integer index;
+	private String code;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -120,6 +122,22 @@ public class Voucher implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public Integer getOrder_id() {
+		return order_id;
+	}
+
+	public void setOrder_id(Integer order_id) {
+		this.order_id = order_id;
 	}
 
 }

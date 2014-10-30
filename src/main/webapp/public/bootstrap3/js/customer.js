@@ -13,13 +13,6 @@
 	
 	$('a[data-toggle="tooltip"]').tooltip();
 	
-	$('span[csserrorclass="error"]').each(function(i){
-		if (i == 0)
-			$(this).closest('div.form-group').find('.form-control').focus();
-		$(this).closest('div.form-group').addClass('has-error');
-		console.log('error');
-	});
-	
 	$.jsonValidation = function(json, placement) { // console.log(json);
 		placement = placement || 'top';
 		var $alertContainer = $('#alertContainer');

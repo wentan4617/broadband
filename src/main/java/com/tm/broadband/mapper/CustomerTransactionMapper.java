@@ -26,6 +26,8 @@ public interface CustomerTransactionMapper {
 	
 	/* SELECT AREA */
 	
+	List<CustomerTransaction> selectCustomerTransactions(CustomerTransaction customerTransactions);
+	
 	List<CustomerTransaction> selectCustomerTransactionsByPage(Page<CustomerTransaction> page);
 	int selectCustomerTransactionsSum(Page<CustomerTransaction> page);
 	

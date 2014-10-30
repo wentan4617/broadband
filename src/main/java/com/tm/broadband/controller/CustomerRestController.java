@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.google.code.kaptcha.Constants;
 import com.tm.broadband.email.ApplicationEmail;
@@ -44,6 +44,7 @@ import com.tm.broadband.model.Voucher;
 import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.CustomerService;
 import com.tm.broadband.service.DataService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
@@ -72,12 +73,17 @@ public class CustomerRestController {
 	private DataService dataService;
 	private BillingService billingService;
 	private PlanService planService;
+	private CustomerService customerService;
 
 	@Autowired
-	public CustomerRestController(CRMService crmService,
-			MailerService mailerService, SystemService systemService,
-			SmserService smserService, DataService dataService,
-			BillingService billingService, PlanService planService) {
+	public CustomerRestController(CRMService crmService
+			, MailerService mailerService
+			, SystemService systemService
+			, SmserService smserService
+			, DataService dataService
+			, BillingService billingService
+			, PlanService planService
+			, CustomerService customerService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.smserService = smserService;
@@ -85,18 +91,19 @@ public class CustomerRestController {
 		this.dataService = dataService;
 		this.billingService = billingService;
 		this.planService = planService;
+		this.customerService = customerService;
 	}
 	
-	@RequestMapping(value = "/login", method = RequestMethod.POST)
+	@RequestMapping(value = "/sign-in", method = RequestMethod.POST)
 	public JSONBean<Customer> login(
-			@Validated(CustomerLoginValidatedMark.class) Customer customer, BindingResult result, 
-			HttpServletRequest req) {
-		
+			@Validated(CustomerLoginValidatedMark.class) Customer customer,
+			BindingResult result, HttpSession session) {
+
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
-		
+
 		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
+			json.setJSONErrorMap(result);
 			return json;
 		}
 
@@ -105,14 +112,14 @@ public class CustomerRestController {
 		customer.getParams().put("email", customer.getLogin_name());
 		customer.getParams().put("password", customer.getPassword());
 		customer.getParams().put("status", "active");
-		Customer customerSession = this.crmService.queryCustomerWhenLogin(customer);
+		Customer customerSession = this.customerService.queryCustomer(customer);
 
 		if (customerSession == null) {
 			json.getErrorMap().put("alert-error", "Incorrect account or password");
 			return json;
 		}
-		
-		req.getSession().setAttribute("customerSession", customerSession);
+
+		session.setAttribute("customerSession", customerSession);
 		json.setUrl("/customer/home/redirect");
 
 		return json;
@@ -120,92 +127,159 @@ public class CustomerRestController {
 	
 	@RequestMapping(value = "/forgotten-password", method = RequestMethod.POST)
 	public JSONBean<Customer> forgottenPassword(
-			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer,
-			BindingResult result,
-			@RequestParam("code") String code,
-			HttpServletRequest req) {
-		
+			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer, BindingResult result
+			, HttpSession session) {
+
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		json.setModel(customer);
-		
+
 		// If contains script> value then this is a script injection
-		if(CheckScriptInjection.isScriptInjection(customer)){
+		if (CheckScriptInjection.isScriptInjection(customer)) {
 			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
 			return json;
 		}
-		
+
 		// if verification does not matched!
-		if(!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())){
+		if (!customer.getCode().equalsIgnoreCase(
+				session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
 			json.getErrorMap().put("code", "verification code does not matched!");
 			return json;
 		}
 
 		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
+			json.setJSONErrorMap(result);
 			return json;
 		}
-		
-		if ("email".equals(customer.getType())){
-			
-			customer.getParams().put("where", "query_forgotten_password_email");
-			customer.setEmail(customer.getLogin_name());
-			customer.getParams().put("email", customer.getLogin_name());
-			
-		} else if("cellphone".equals(customer.getType())){
-			
-			customer.getParams().put("where", "query_forgotten_password_cellphone");
-			customer.setCellphone(customer.getLogin_name());
-			customer.getParams().put("cellphone", customer.getLogin_name());
-			
-		}
-		customer.getParams().put("status", "active");
-		Customer customerSession = this.crmService.queryCustomer(customer);
 
-		if (customerSession == null) {
-			
-			json.getErrorMap().put("alert-error", "email".equals(customer.getType()) ? "The email address you've just given isn't existed!" : "The mobile number you've just given isn't existed!");
-			
+		if ("email".equals(customer.getType())) {
+
+			customer.getParams().put("where", "query_forgotten_password_email");
+			customer.getParams().put("email", customer.getLogin_name());
+			customer.getParams().put("status", "active");
+
+		} else if ("cellphone".equals(customer.getType())) {
+
+			customer.getParams().put("where", "query_forgotten_password_cellphone");
+			customer.getParams().put("cellphone", customer.getLogin_name());
+			customer.getParams().put("status", "active");
+
+		}
+
+		Customer customerResult = this.customerService.queryCustomer(customer);
+
+		if (customerResult == null) {
+
+			json.getErrorMap().put("alert-error", "email".equals(customer.getType()) ? "The email address you've just given isn't existed!"
+									: "The mobile number you've just given isn't existed!");
+
 		} else {
-			customer.setPassword(TMUtils.generateRandomString(6));
-			this.crmService.editCustomer(customer);
+
+			Customer cUpdate = new Customer();
+			cUpdate.setPassword(TMUtils.generateRandomString(6));
+			cUpdate.setMd5_password(DigestUtils.md5Hex(cUpdate.getPassword()));
+			cUpdate.getParams().put("id", customerResult.getId());
+			this.customerService.editCustomer(cUpdate);
 			
-			CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-			Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
-			
-			if("business".toUpperCase().equals(customer.getType().toUpperCase())){
-				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-				customer.setOrganization(org);
-				org = null;
-			}
-			
+			customerResult.setPassword(cUpdate.getPassword());
+
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+
 			String msg = "";
 
-			if ("email".equals(customer.getType())){
+			if ("email".equals(customer.getType())) {
 				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
-				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail); // call mail at value retriever
+				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
+				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail); // call mail at value retriever
 				ApplicationEmail applicationEmail = new ApplicationEmail();
-				applicationEmail.setAddressee(customer.getEmail());
+				applicationEmail.setAddressee(customerResult.getEmail());
 				applicationEmail.setSubject(notification.getTitle());
 				applicationEmail.setContent(notification.getContent());
 				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-				customer.getParams().put("email", customer.getLogin_name());
-			} else if ("cellphone".equals(customer.getType())){
+			} else if ("cellphone".equals(customer.getType())) {
 				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
-				notification = this.systemService.queryNotificationBySort("forgotten-password", "sms"); // get sms register template from db
-				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-				customer.getParams().put("cellphone", customer.getLogin_name());
+				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "sms");											
+				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail);
+				this.smserService.sendSMSByAsynchronousMode(customerResult.getCellphone(), notification.getContent());
 			}
-			
+
 			json.getSuccessMap().put("alert-success", msg);
-			
-			companyDetail = null;
-			notification = null;
-			
+
 		}
-		
-		customerSession = null;
-		
+
+		return json;
+	}
+	
+	@RequestMapping(value = "/contact-us", method = RequestMethod.POST)
+	public JSONBean<ContactUs> doContactUs(Model model,
+			@Validated(ContactUsValidatedMark.class) ContactUs contactUs, BindingResult result
+			, HttpSession session) {
+
+		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
+		json.setModel(contactUs);
+
+		// If contains script> value then this is a script injection
+		if (CheckScriptInjection.isScriptInjection(contactUs)) {
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
+			return json;
+		}
+
+		// if verification does not matched!
+		if (!contactUs.getCode().equalsIgnoreCase( session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
+			json.getErrorMap().put("code", "Authenticode code does not matched!");
+			return json;
+		}
+
+		if (result.hasErrors()) {
+			json.setJSONErrorMap(result);
+			return json;
+		}
+
+		contactUs.setStatus("new");
+		contactUs.setSubmit_date(new Date());
+		this.crmService.createContactUs(contactUs);
+
+		json.getSuccessMap().put("alert-success", "Your request has been submitted, we will respond you as fast as we can.");
+
+		return json;
+	}
+	
+	@RequestMapping(value = "/voucher", method = RequestMethod.POST)
+	public JSONBean<Voucher> doVoucherChecking(Model model, Voucher voucher,
+			HttpSession session) {
+
+		JSONBean<Voucher> json = new JSONBean<Voucher>();
+		json.setModel(voucher);
+
+		// If contains script> value then this is a script injection
+		if (CheckScriptInjection.isScriptInjection(voucher)) {
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
+			return json;
+		}
+
+		// if verification does not matched!
+		if (!voucher.getCode().equalsIgnoreCase(session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
+			json.getErrorMap().put("code", "Verification Code does not matched!");
+			return json;
+		}
+
+		// if verification does not matched!
+		if ("".equals(voucher.getCard_number().trim())) {
+			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
+			return json;
+		}
+
+		voucher.getParams().put("card_number", voucher.getCard_number());
+		voucher = this.billingService.queryVoucher(voucher);
+		if (voucher == null) {
+			json.getErrorMap().put("alert-error", "Pin Number not matched! Please double check your voucher's Pin Number.");
+		} else {
+			if ("used".equals(voucher.getStatus())) {
+				json.getErrorMap().put("alert-error", "This voucher has been used!");
+			} else if ("unused".equals(voucher.getStatus())) {
+				json.getSuccessMap().put("alert-success", "Congratulations! This voucher is available!");
+			}
+		}
+
 		return json;
 	}
 	
@@ -252,33 +326,7 @@ public class CustomerRestController {
 		return json;
 	}
 
-	@RequestMapping(value = "/order/personal", method = RequestMethod.POST)
-	public JSONBean<Customer> doOrderPersonal(Model model,
-			@Validated(value = { CustomerValidatedMark.class,
-					TransitionCustomerOrderValidatedMark.class }) @RequestBody Customer customer,
-			BindingResult result,
-			HttpServletRequest req) {
-
-		model.addAttribute("customer", customer);
-		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
-		json.setUrl("/order/personal/confirm");
-		
-		return json;
-	}	
 	
-	@RequestMapping(value = "/order/business", method = RequestMethod.POST)
-	public JSONBean<Customer> doOrderBusiness(Model model,
-			@Validated(value = { CustomerOrganizationValidatedMark.class,
-					TransitionCustomerOrderValidatedMark.class }) @RequestBody Customer customer,
-			BindingResult result,
-			HttpServletRequest req) {
-
-		model.addAttribute("customer", customer);
-		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
-		json.setUrl("/order/business/confirm");
-		
-		return json;
-	}
 	
 	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
 		
@@ -300,141 +348,45 @@ public class CustomerRestController {
 				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
 			}
 			
+			if (customer.getNewOrder()) {
+				System.out.println("new order, so remove some field");
+				json.getErrorMap().remove("cellphone");
+				json.getErrorMap().remove("email");
+				json.getErrorMap().remove("first_name");
+				json.getErrorMap().remove("last_name");
+				json.getErrorMap().remove("identity_number");
+			}
+			
 			if (json.isHasErrors()) return json;
 		}
 		
-		Customer cValid = new Customer();
-		cValid.getParams().put("where", "query_exist_customer_by_mobile");
-		cValid.getParams().put("cellphone", customer.getCellphone());
-		int count = this.crmService.queryExistCustomer(cValid);
+		if (!customer.getNewOrder()) {
+			Customer cValid = new Customer();
+			cValid.getParams().put("where", "query_exist_customer_by_mobile");
+			cValid.getParams().put("cellphone", customer.getCellphone());
+			int count = this.crmService.queryExistCustomer(cValid);
 
-		if (count > 0) {
-			json.getErrorMap().put("cellphone", "is already in use");
-			return json;
-		}
-		
-		cValid.getParams().put("where", "query_exist_customer_by_email");
-		cValid.getParams().put("email", customer.getEmail());
-		count = this.crmService.queryExistCustomer(cValid);
+			if (count > 0) {
+				json.getErrorMap().put("cellphone", "is already in use");
+				return json;
+			}
+			
+			cValid.getParams().put("where", "query_exist_customer_by_email");
+			cValid.getParams().put("email", customer.getEmail());
+			count = this.crmService.queryExistCustomer(cValid);
 
-		if (count > 0) {
-			json.getErrorMap().put("email", "is already in use");
-			return json;
+			if (count > 0) {
+				json.getErrorMap().put("email", "is already in use");
+				return json;
+			}
 		}
 		
 		return json;
 	}
 	
-	@RequestMapping(value = "/contact-us", method = RequestMethod.POST)
-	public JSONBean<ContactUs> doContactUs(Model model,
-			@Validated(ContactUsValidatedMark.class) ContactUs contactUs, BindingResult result, 
-			HttpServletRequest req) {
-		
-		JSONBean<ContactUs> json = new JSONBean<ContactUs>();
-		
-		// If contains script> value then this is a script injection
-		if (CheckScriptInjection.isScriptInjection(contactUs)) {
-			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
-			return json;
-		}
-		
-		// if verification does not matched!
-		if (!contactUs.getCode().equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
-			json.getErrorMap().put("code", "Authenticode code does not matched!");
-			return json;
-		}
-
-		if (result.hasErrors()) {
-			TMUtils.setJSONErrorMap(json, result);
-			return json;
-		}
-		
-		contactUs.setStatus("new");
-		contactUs.setSubmit_date(new Date());
-		this.crmService.createContactUs(contactUs);
-		
-		json.getSuccessMap().put("alert-success", "Your request has been submitted, we will respond you as fast as we can.");
-
-		return json;
-	}
 	
-	@RequestMapping("/customer/data/view/{calculator_date}")
-	public List<DateUsage> doCustomerUsageView(HttpServletRequest req,
-			@PathVariable("calculator_date") String calculator_date){
-		
-		List<DateUsage> dateUsages = new ArrayList<DateUsage>();
-		
-		try {
-			Customer customer = (Customer) req.getSession().getAttribute("customerSession");
-			CustomerOrder co = customer.getCustomerOrders().get(0);
-			String svlan = co.getSvlan()
-					, cvlan = co.getCvlan();
-			
-			if (svlan == null || cvlan == null) 
-				return null;
-			
-			String type = co.getCustomerOrderDetails().get(0).getDetail_plan_type();
-			
-			Calendar c = Calendar.getInstance();
-			
-			String[] date_array = calculator_date.split("-");
-			int year = Integer.parseInt(date_array[0]);
-			int month = Integer.parseInt(date_array[1]);
-			
-			c.set(Calendar.YEAR, year);
-			c.set(Calendar.MONTH, month-1);
-			
-			int days = TMUtils.judgeDay(year, month);
-
-			for (int i = 0; i < days; i++) {
-				c.set(Calendar.DAY_OF_MONTH, i + 1);
-				Date date = c.getTime();
-				
-				DateUsage dateUsage = new DateUsage();
-				dateUsage.setDate(TMUtils.dateFormatYYYYMMDD(date));
-				dateUsages.add(dateUsage);
-			}
-			
-			NetworkUsage u = new NetworkUsage();
-			String vlan = "";
-			u.getParams().put("where", "query_currentMonth");
-			if ("ADSL".equals(type)) {
-				vlan = "d" + svlan + "/" + String.valueOf(Integer.parseInt(cvlan) + 1600);
-			} else if ("VDSL".equals(type)){
-				vlan = "d" + svlan + "/" + cvlan;
-			} else if ("UFB".equals(type)) {
-				vlan = "u" + svlan + "/" + cvlan;
-			}
-			u.getParams().put("vlan", vlan);
-			u.getParams().put("currentYear", year);
-			u.getParams().put("currentMonth", month);
-			
-			List<NetworkUsage> usages = this.dataService.queryUsages(u);
-
-			if (usages != null && usages.size() > 0) {
-				for (NetworkUsage usage: usages) {
-					for (DateUsage dateUsage: dateUsages) {
-						//System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
-						if (dateUsage.getDate().equals(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
-							if (dateUsage.getUsage() != null) {
-								dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
-								dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
-							} else {
-								dateUsage.setUsage(usage);
-							}
-							System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
-							break;
-						}
-					}
-				}
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return dateUsages;
-		
-	}
+	
+	
 	
 	// BEGIN Voucher
 	@RequestMapping(value = "/customer/invoice/defray/voucher", method = RequestMethod.POST)
@@ -695,10 +647,10 @@ public class CustomerRestController {
 	}
 	
 	
-	@RequestMapping(value="/plans/plan-topup/online-pay-by-voucher", method = RequestMethod.POST)
+	@RequestMapping(value="/plans/order/online-pay-by-voucher", method = RequestMethod.POST)
 	public JSONBean<Voucher> onlinePayByVoucher(
 			@Validated(OnlinePayByVoucherValidatedMark.class) Voucher voucher, BindingResult result, 
-			HttpServletRequest req) {
+			HttpSession session) {
 		
 		JSONBean<Voucher> json = new JSONBean<Voucher>();
 		json.setModel(voucher);
@@ -721,21 +673,7 @@ public class CustomerRestController {
 			return json;
 		}
 		
-		Customer customer = (Customer) req.getSession().getAttribute("customer");
-		
-		if (customer != null) {
-			for (Voucher vQuery: customer.getVouchers()) {
-				if (vQuery.getSerial_number().equals(voucher.getSerial_number())
-						&& vQuery.getCard_number().equals(voucher.getCard_number())) {
-					json.getErrorMap().put("serial_number" + voucher.getIndex(), "Voucher has been applied.");
-					return json;
-				}
-			}
-			
-			customer.getVouchers().add(v);
-		}
-		
-		Customer customerReg = (Customer) req.getSession().getAttribute("customerReg");
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
 		
 		if (customerReg != null) {
 			for (Voucher vQuery: customerReg.getVouchers()) {
@@ -746,7 +684,7 @@ public class CustomerRestController {
 				}
 			}
 			
-			customer.getVouchers().add(v);
+			customerReg.getVouchers().add(v);
 		}
 		
 		json.setModel(v);
@@ -899,51 +837,7 @@ public class CustomerRestController {
 	}
 	// END Account Credit
 
-	// Voucher Checking
-	@RequestMapping(value = "/voucher", method = RequestMethod.POST)
-	public JSONBean<Voucher> doVoucherChecking(Model model
-			, Voucher voucher
-			, @RequestParam("code") String code
-			, HttpServletRequest req) {
-		
-		JSONBean<Voucher> json = new JSONBean<Voucher>();
-		
-		// If contains script> value then this is a script injection
-		if (CheckScriptInjection.isScriptInjection(voucher)) {
-			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
-			return json;
-		}
-		
-		// if verification does not matched!
-		if (!code.equalsIgnoreCase(req.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
-			json.getErrorMap().put("code", "Verification Code does not matched!");
-			return json;
-		}
-		
-		// if verification does not matched!
-		if ("".equals(voucher.getCard_number().toString().trim()) && !"".equals(voucher.getSerial_number().toString().trim())) {
-			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
-			return json;
-		} else if ("".equals(voucher.getCard_number().toString().trim()) && "".equals(voucher.getSerial_number().toString().trim())) {
-			json.getErrorMap().put("serial_number", "Serial Number Is Empty!");
-			json.getErrorMap().put("pin_number", "Pin Number Is Empty!");
-			return json;
-		}
-
-		voucher.getParams().put("card_number", voucher.getCard_number());
-		voucher = this.billingService.queryVoucher(voucher);
-		if(voucher==null){
-			json.getErrorMap().put("alert-error", "Pin Number not matched! Please double check your voucher's Pin Number.");
-		} else {
-			if("used".equals(voucher.getStatus())) {
-				json.getErrorMap().put("alert-error", "This voucher has been used!");
-			} else if("unused".equals(voucher.getStatus())) {
-				json.getSuccessMap().put("alert-success", "Congratulations! This voucher is available!");
-			}
-		}
-		
-		return json;
-	}
+	
 	
 	/**
 	 * CustomerBilling
@@ -1174,9 +1068,10 @@ public class CustomerRestController {
 		customerReg.setIdentity_number(customer.getIdentity_number());
 		customerReg.setCustomer_type(customer.getCustomer_type());
 		
-		customerReg.setOrganization(customer.getOrganization());
-		
 		customerReg.setCustomerOrder(customer.getCustomerOrder());
+		
+		customerReg.setOrganization(customer.getOrganization());
+		customerReg.getCustomerOrder().setOrganization(customer.getOrganization());
 		
 		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
 		
@@ -1186,5 +1081,146 @@ public class CustomerRestController {
 		
 		return json;
 	}	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// Customer Orders
+	@RequestMapping("/customer/orders/loading")
+	public List<CustomerOrder> customerOrdersLoading(HttpSession session) {
+		
+		Customer customerSession = (Customer) session.getAttribute("customerSession");
+		
+		CustomerOrder coQ = new CustomerOrder();
+		coQ.getParams().put("customer_id", customerSession.getId());
+		coQ.getParams().put("orderby", "order by order_create_date desc");
+		
+		List<CustomerOrder> orders = this.customerService.queryCustomerOrdersWithDetails(coQ);
+		
+		customerSession.setCustomerOrders(orders);
+		
+		return orders;
+	}
+	
+	@RequestMapping("/customer/orders/invoices/loading/{orderid}/{pageNo}")
+	public Page<CustomerInvoice> customerOrdersInvoicesLoading(HttpSession session
+			, @PathVariable("orderid") int orderid
+			, @PathVariable("pageNo") int pageNo) {
+		
+		Customer customerSession = (Customer) session.getAttribute("customerSession");
+		
+		Page<CustomerInvoice> page = new Page<CustomerInvoice>();
+		page.setPageNo(pageNo);
+		page.setPageSize(30);
+		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("customer_id", customerSession.getId());
+		page.getParams().put("order_id", orderid);
+		this.customerService.queryCustomerInvoicesByPageWithTransaction(page);
+		return page;
+	}
+	
+	@RequestMapping("/customer/orders/data/loading/{plan_type}/{svlan}/{cvlan}/{calculator_date}")
+	public List<DateUsage> doCustomerUsageView(HttpSession session
+			, @PathVariable("plan_type") String plan_type
+			, @PathVariable("svlan") String svlan
+			, @PathVariable("cvlan") String cvlan
+			, @PathVariable("calculator_date") String calculator_date){
+		
+		List<DateUsage> dateUsages = new ArrayList<DateUsage>();
+		
+		if (!"".equals(svlan) && !"".equals(cvlan)) {
+			Calendar cal = Calendar.getInstance();
+			String[] date_array = calculator_date.split("-");
+			int year = Integer.parseInt(date_array[0]);
+			int month = Integer.parseInt(date_array[1]);
+			cal.set(Calendar.YEAR, year);
+			cal.set(Calendar.MONTH, month - 1);
+			int days = TMUtils.judgeDay(year, month);
+
+			for (int i = 0; i < days; i++) {
+				cal.set(Calendar.DAY_OF_MONTH, i + 1);
+				Date date = cal.getTime();
+				DateUsage dateUsage = new DateUsage();
+				dateUsage.setDate(TMUtils.dateFormatYYYYMMDD(date));
+				dateUsages.add(dateUsage);
+			}
+
+			NetworkUsage u = new NetworkUsage();
+			String vlan = "";
+			u.getParams().put("where", "query_currentMonth");
+			if ("ADSL".equals(plan_type)) {
+				vlan = "d" + svlan + "/" + String.valueOf(Integer.parseInt(cvlan) + 1600);
+			} else if ("VDSL".equals(plan_type)) {
+				vlan = "d" + svlan + "/" + cvlan;
+			} else if ("UFB".equals(plan_type)) {
+				vlan = "u" + svlan + "/" + cvlan;
+			}
+			u.getParams().put("vlan", vlan);
+			u.getParams().put("currentYear", year);
+			u.getParams().put("currentMonth", month);
+
+			List<NetworkUsage> usages = this.dataService.queryUsages(u);
+
+			if (usages != null && usages.size() > 0) {
+				for (NetworkUsage usage : usages) {
+					for (DateUsage dateUsage : dateUsages) {
+						// System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+						if (dateUsage.getDate().equals(
+								TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()))) {
+							if (dateUsage.getUsage() != null) {
+								dateUsage.getUsage().setUpload(dateUsage.getUsage().getUpload() + usage.getUpload());
+								dateUsage.getUsage().setDownload(dateUsage.getUsage().getDownload() + usage.getDownload());
+							} else {
+								dateUsage.setUsage(usage);
+							}
+							// System.out.println(TMUtils.dateFormatYYYYMMDD(usage.getAccounting_date()));
+							break;
+						}
+					}
+				}
+			}
+
+		}
+		
+		return dateUsages;
+		
+	}
 
 }

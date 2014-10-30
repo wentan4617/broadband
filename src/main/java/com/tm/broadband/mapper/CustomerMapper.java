@@ -6,13 +6,6 @@ import java.util.List;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.Page;
 
-/**
- * mapping tm_customer, customer DAO component
- * 
- * @author Cook1fan
- *
- */
-
 /* SELECT AREA *//* // END SELECT AREA */
 /* =================================================================================== */
 /* INSERT AREA *//* // END INSERT AREA */

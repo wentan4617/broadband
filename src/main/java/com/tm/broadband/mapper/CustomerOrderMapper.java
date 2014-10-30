@@ -5,13 +5,6 @@ import java.util.List;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.Page;
 
-/**
- * mapping tm_customer_order
- * 
- * @author Cook1fan
- * 
- */
-
 /* SELECT AREA *//* // END SELECT AREA */
 /* =================================================================================== */
 /* INSERT AREA *//* // END INSERT AREA */
@@ -68,6 +61,8 @@ public interface CustomerOrderMapper {
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
 	/* DELETE AREA */
+	
 	void deleteCustomerOrderByCustomerId(int id);
+	
 	/* // END DELETE AREA */
 }

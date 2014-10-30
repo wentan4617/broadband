@@ -12,11 +12,8 @@
 	margin-bottom: 10px;
 }
 </style>
-<%-- <jsp:include page="carousel.jsp" /> --%>
 
 <jsp:include page="top-wrap.jsp" />
-
-<%-- <jsp:include page="welcome.jsp"/> --%>
 
 <div id="map_canvas" style="width:720px;height:600px;display:none;"></div>
 <script type="text/html" id="result_tmpl" data-ctx="${ctx }">

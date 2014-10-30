@@ -79,6 +79,7 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
 	private String identity_number;
+	private String result;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -126,6 +127,7 @@ public class Customer implements Serializable {
 
 	// password forget email,phone
 	private String type;
+	private String code;
 
 	// when create customer action option
 	private String action;
@@ -147,6 +149,7 @@ public class Customer implements Serializable {
 	private String select_plan_group;
 	private String language;
 	private Integer currentOperateUserid;
+	private Boolean newOrder;
 
 	/*
 	 * END RELATED PROPERTIES
@@ -708,6 +711,30 @@ public class Customer implements Serializable {
 		this.voip = voip;
 	}
 
+	public Boolean getNewOrder() {
+		return newOrder;
+	}
 
+	public void setNewOrder(Boolean newOrder) {
+		this.newOrder = newOrder;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
+	public String getResult() {
+		return result;
+	}
+
+	public void setResult(String result) {
+		this.result = result;
+	}
+
+	
 	
 }

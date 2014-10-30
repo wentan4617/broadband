@@ -8,6 +8,7 @@
 		, select_customer_type = select_plan_tmpl.attr('data-select_customer_type')
 		, sale_id = select_plan_tmpl.attr('data-sale-id')
 		, promotion = select_plan_tmpl.attr('data-promotion') == 'true' ? true : false
+		, neworder = select_plan_tmpl.attr('data-neworder') == 'true' ? true : false
 		
 		, customer_address = $('#order_modal_tmpl').attr('data-customer-address')
 		, select_modem_container = $('#select-modem')
@@ -486,6 +487,7 @@
 	function flushApplication() {
 		var o = { 
 			ctx: ctx 
+			, neworder: neworder
 			, select_customer_type: select_customer_type
 			, prepay_months: prepay_months
 			, plan: plan
@@ -696,6 +698,7 @@
 				, promotion: promotion
 				, hardwares: [modem_selected]
 				, hardware_id_selected: hardware_id_selected
+				, organization: {}
 			}
 			, organization: {}
 		};
@@ -718,6 +721,20 @@
 			customer.organization.holder_job_title = $('#organization\\.holder_job_title').val();
 			customer.organization.holder_phone = $('#organization\\.holder_phone').val();
 			customer.organization.holder_email = $('#organization\\.holder_email').val();
+		}
+		
+		if (neworder) {
+			customer.customerOrder.address = customer_address;
+			customer.customerOrder.mobile = $('#customerOrder\\.mobile').val();
+			customer.customerOrder.email = $('#customerOrder\\.email').val();
+			customer.cellphone = customer.customerOrder.mobile;
+			customer.email = customer.customerOrder.email;
+			customer.customerOrder.customer_type = select_customer_type;
+		} else {
+			customer.customerOrder.address = customer_address;
+			customer.customerOrder.mobile = $('#cellphone').val()
+			customer.customerOrder.email = $('#email').val();;
+			customer.customerOrder.customer_type = select_customer_type;
 		}
 	 	
 		//console.log(customer);

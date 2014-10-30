@@ -1,0 +1,114 @@
+<.if (results != null && results.length > 0) {.>
+<table class="table table-hover">
+	<thead>
+		<tr>
+		<th>Date</th>
+		<th>Due Date</th>
+		<th>Reference</th>
+		<th>Payable</th>
+		<th>Total Credit</th>
+		<th>Paid</th>
+		<th>Balance</th>
+		<th></th>
+		<th></th>
+	</tr>
+	</thead>
+	<.for (var i = 0, len = results.length; i < len; i++) {
+		var invoice = results[i];
+		var cts = invoice.cts;
+	.>
+	<.if (cts != null && cts.length > 0) {
+		for (var j = 0, jlen = cts.length; j < jlen; j++) {
+			var ct = cts[j];
+	.>
+	<tr>
+		<td><.=ct.transaction_date_str.></td>
+		<td></td>
+		<td><.=ct.card_name .></td>
+		<td></td>
+		<td></td>
+		<td>$ <.=Number(ct.amount).toFixed(2).></td>
+		<td></td>
+		<td></td>
+		<td></td>
+	</tr>
+	<.
+		}
+	}.>
+	
+	<tbody>
+	<.if (invoice.status == 'paid') {.>
+		<tr class="success">
+		<.} else if (invoice.status == 'unpaid' || invoice.status == 'not_pay_off' || invoice.status == 'overdue') {.>
+		<tr class="danger">
+		<.} else if (invoice.status == 'void' || invoice.status == 'bad-debit') {.>
+		<tr class="active">
+		<.}.>
+			<td><.=invoice.create_date_str.></td>
+			<td>
+		<.if (invoice.status == 'unpaid' || invoice.status == 'not_pay_off' || invoice.status == 'overdue') {.>
+				<.=invoice.due_date_str.>
+		<.}.>
+			</td>
+			<td>Invoice#-<.=invoice.id.></td>
+			<td>$ <.=Number(invoice.amount_payable).toFixed(2).></td>
+			<td>$ -<.=Number(invoice.amount_payable - invoice.final_payable_amount).toFixed(2).></td>
+			<td>$ -<.= new Number(invoice.amount_paid).toFixed(2) .></td>
+			<td>$ <.=Number(invoice.balance).toFixed(2).></td>
+			<td>
+		<.if (invoice.status == 'unpaid' || invoice.status == 'not_pay_off' || invoice.status == 'overdue') {.>	
+				<div class="btn-group">
+					<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+						Payment <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" role="menu">
+						<li>
+							<a href="javascript:void(0)" data-id="<.=invoice.id.>" data-balance="${invoice.balance}">
+								<span class="glyphicon glyphicon-credit-card"></span> Credit Card
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" data-id="<.=invoice.id.>" data-name="pay_way_by" data-way="voucher">
+								<span class="glyphicon glyphicon-tags"></span> Voucher
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" data-id="<.=invoice.id.>" data-name="pay_way_by" data-way="account-credit">
+								<span class="glyphicon glyphicon-star"></span> Account Credit
+							</a>
+						</li>
+					</ul>
+				</div>
+		<.}.>		
+			</td>
+			<td>
+		<.if (invoice.invoice_pdf_path != null) {.>
+				<a href="<.=ctx.>/broadband-customer/billing/invoice/pdf/download/<.=invoice.id.>" target="_blank" >
+					<span class="glyphicon glyphicon-cloud-download"></span>
+				</a>
+		<. }.>		
+			</td>
+		</tr>
+		<.}.>
+	</tbody>
+	
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+				<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+				<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+	
+</table>
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

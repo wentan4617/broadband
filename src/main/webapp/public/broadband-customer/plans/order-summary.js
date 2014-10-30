@@ -1,9 +1,6 @@
 (function($){
 	
-	$(':checkbox').iCheck({
-		checkboxClass : 'icheckbox_square-green',
-		radioClass : 'iradio_square-green'
-	});
+	$(':checkbox').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 	
 	$('#online_payment').click(function(){
 		if ($('#termckb').prop('checked')) {
@@ -23,10 +20,6 @@
 		}
 	});
 	
-	
-	
-	
-	
 	var i = 0;
 	
 	$('#addVoucher').click(function(){ // 
@@ -43,9 +36,8 @@
 				, card_number: parent.find("#card_number" + index).val()
 				, index: index
 			}; // console.log(voucher);
-			var l = Ladda.create(this);
-		 	l.start();
-		 	$.post(ctx + '/plans/plan-topup/online-pay-by-voucher', voucher, function(json){
+			var l = Ladda.create(this); l.start();
+		 	$.post(ctx + '/plans/order/online-pay-by-voucher', voucher, function(json){
 				if (!$.jsonValidation(json, 'top')) {
 					var v = json.model;
 					parent.empty();
@@ -66,8 +58,7 @@
 				serial_number: $(this).attr('data-voucher-serial-number')
 				, card_number: $(this).attr('data-voucher-card-number')
 			}; // console.log(voucher);
-			var l = Ladda.create(this);
-		 	l.start();
+			var l = Ladda.create(this); l.start();
 		 	$.post(ctx + '/plans/plan-topup/cancel-voucher-apply', voucher, function(json){
 		 		if (!$.jsonValidation(json)) {
 		 			var v = json.model;

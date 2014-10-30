@@ -7,9 +7,6 @@
 #navhead {
 	margin-bottom:0;
 }
-</style>
-<style>
-
 .affix {
 	width: 263px;
 	top: 0;
@@ -40,7 +37,7 @@
 		<div class="row">
 			
 			<div class="col-md-6">
-				<h1 class="text-left" style="font-size:28px;">CyberPark Wifi Solution</h1>
+				<h1 class="text-left" style="font-size:28px;">CyberPark Wi-Fi Solution</h1>
 				<p class="text-left hidden-xs"  style="font-size:14px;">
 				In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devises which can adopt internet wirelessly radio waves.
 				</p>
@@ -67,10 +64,6 @@
 					</h1>
 				</div>
 				<p>
-					  
-					 
-				</p>
-				<p>
 					There are more and more devises start to connect with WiFi radio waves, like Lap-top computers, smartphones, tablets, smart watch, security cameras, printer, video games, and so on. Because of these WiFi devises have been the common tools in people’s works and lives, WiFi has become one of people’s daily resources now.
 				</p>
 			</section>
@@ -78,7 +71,7 @@
 			<section id="wifi">
 				<div class="page-header">
 					<h1>
-						Differences between 3G (or 4G) and WiFi
+						Differences between 3G (or 4G) and Wi-Fi
 					</h1>
 				</div>
 				<p>
@@ -115,7 +108,7 @@
 			<section id="zone">
 				<div class="page-header">
 					<h1>
-						How does Wifi works in CyberPark WiFi Zone for commercial customers?
+						How does Wi-Fi works in CyberPark WiFi Zone for commercial customers?
 					</h1>
 				</div>
 				<p class="lead">
@@ -404,7 +397,7 @@
 						<a href="#introduction">Introduction</a>
 					</li>
 					<li>
-						<a href="#wifi">WIFI</a>
+						<a href="#wifi">WI-FI</a>
 					</li>
 					<li>
 						<a href="#wifi-coverage">WIFI Coverage</a>

@@ -1,5 +1,4 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -10,7 +9,7 @@
 		<div class="alert alert-warning">
 			<h1>Sorry, the payment is failure.</h1>
 			<h2>
-				<a href="${ctx }/plans/order/summary">Click Here</a> to return to the order confirm page.
+				<a href="${ctx }/sign-in">Click Here</a>. Now you can Sign in CyberPark Customer View Orders for payment.
 			</h2>
 			<p>&nbsp;</p>
 			<p>

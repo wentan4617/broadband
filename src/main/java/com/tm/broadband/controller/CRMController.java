@@ -1511,7 +1511,7 @@ public class CRMController {
 	// topup
 	@RequestMapping(value = "/broadband-user/crm/plans/topup")
 	public String crmPlansTopup(HttpSession session){
-		System.out.println("this is new customerRegAdminAdmin, Topup");
+		System.out.println("this is new customerRegAdmin, Topup");
 		Customer customerRegAdmin = new Customer();
 		customerRegAdmin.setSelect_plan_group("plan-topup");
 		customerRegAdmin.setSelect_customer_type("personal");
@@ -1632,7 +1632,7 @@ public class CRMController {
 		User user = (User) session.getAttribute("userSession");
 		customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
 	
-		this.crmService.saveCustomerOrder(customerRegAdmin, customerRegAdmin.getCustomerOrder());
+		this.crmService.saveCustomerOrder(customerRegAdmin, customerRegAdmin.getCustomerOrder(), null);
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");

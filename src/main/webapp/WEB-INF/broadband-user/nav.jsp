@@ -163,7 +163,7 @@
 							</li>
 							<li class="divider"></li>
 							<li>
-                    			<a href="${ctx }/broadband-user/provision/customer/view/1/paid">
+                    			<a href="${ctx }/broadband-user/provision/orders/view">
                     				<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
                     				Provision Customer Order
                     			</a>

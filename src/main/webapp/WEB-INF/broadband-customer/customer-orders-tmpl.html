@@ -1,0 +1,198 @@
+<div class="panel-group customer-panel-height" id="orders_accordion">
+	
+<.if (orders != null && orders.length > 0) {
+	for (var i = 0, len = orders.length; i < len; i++) {
+		var order = orders[i];
+		var details = order.customerOrderDetails;
+.>
+	<div class="panel panel-success ">
+		<div class="panel-heading">
+			<h4 class="panel-title">
+				<a data-toggle="collapse" data-parent="#orders_accordion" href="#order-collapse<.=order.id.>">
+					Order ID: #<.=order.id.> 
+					(<.if (order.order_status == 'pending') {.>
+						New Order - Pending
+					<.} else if (order.order_status == 'pending-warning'){.>
+						New Order - Pending Warning
+					<.} else if (order.order_status == 'paid'){.>
+						New Order - Paid
+					<.} else if (order.order_status == 'ordering-pending'){.>
+						Provision
+					<.} else if (order.order_status == 'ordering-paid'){.>
+						Provision
+					<.} else if (order.order_status == 'rfs'){.>
+						Provision - RFS
+					<.} else if (order.order_status == 'using'){.>
+						In Service
+					<.} else if (order.order_status == 'overflow'){.>
+						Suspension - Overflow
+					<.} else if (order.order_status == 'suspension'){.>
+						Suspension
+					<.} else if (order.order_status == 'waiting-for-disconnect'){.>
+						Disconnect - Waiting for disconnect 
+					<.} else if (order.order_status == 'disconnected'){.>
+						Disconnected
+					<.} else if (order.order_status == 'upgrade'){.>
+						Upgrade
+					<.} else if (order.order_status == 'change'){.>
+						Change
+					<.} else if (order.order_status == 'void'){.>
+						Void
+					<.}.>)
+				</a>
+			</h4>
+		</div>
+		<div id="order-collapse<.=order.id.>" class="panel-collapse collapse <.=i==0?'in':''.>">
+	
+			<div class="panel-body">
+				
+				<ul class="nav nav-tabs">
+					<li class="active">
+						<a href="#order<.=order.id.>" data-toggle="tab" data-tab="order">Order</a>
+					</li>
+					<li>
+						<a href="#invoices<.=order.id.>" data-toggle="tab" data-tab="invoices" data-order-id="<.=order.id.>" >Invoices</a>
+					</li>
+					<.if (order.svlan != null && order.svlan != '' && order.cvlan != null && order.cvlan != '') {.>
+					<li>
+						<a href="#datausage<.=order.id.>" data-toggle="tab" data-tab="datausage" data-order-id="<.=order.id.>">Data Usage</a>
+					</li>
+					<.}.>
+					
+				</ul>
+			
+				<div class="tab-content">
+					<div class="tab-pane fade in active" id="order<.=order.id.>">
+						<div class="row" style="margin-top:20px;">
+							<div class="col-md-3">
+								<strong>Address:</strong>
+							</div>
+							<div class="col-md-9">
+								<.=order.address.>
+							</div>
+						</div>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-md-3">
+								<strong>Notice Mobile:</strong>
+							</div>
+							<div class="col-md-3">
+								<.=order.mobile.>
+							</div>
+							<div class="col-md-3"></div>
+							<div class="col-md-3"></div>
+						</div>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-md-3">
+								<strong>Invoice Email:</strong>
+							</div>
+							<div class="col-md-3">
+								<.=order.email.>
+							</div>
+							<div class="col-md-3"></div>
+							<div class="col-md-3"></div>
+						</div>
+						<div class="row" style="margin-top:10px;">
+							<div class="col-md-3">
+								<strong>Create Date:</strong>
+							</div>
+							<div class="col-md-3">
+								<.=order.order_create_date_str.>
+							</div>
+							<div class="col-md-3"></div>
+							<div class="col-md-3"></div>
+						</div>
+						<hr/>
+						<div class="row">
+							<.if ((order.ordering_form_pdf_path != null && order.ordering_form_pdf_path != '')
+									&& (order.receipt_pdf_path == null || order.receipt_pdf_path == '')) {.>
+							<div class="col-md-3">
+								<strong class="text-info">Ordering Form Balance: </strong> 
+							</div>
+							<div class="col-md-3">
+								NZ$ 
+								<strong class="text-success">
+									<.=order.order_total_price.toFixed(2).>
+								</strong>
+							</div>
+							<.}.>
+							<.if (order.ordering_form_pdf_path != null && order.ordering_form_pdf_path != '') {.>
+							<div class="col-md-3">
+								<a target="_blank" href="<.=ctx.>/customer/orders/ordering-form/pdf/download/<.=order.id.>" class="btn btn-success btn-block">
+									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Form
+								</a>
+							</div>
+							<.}.>
+							<.if (order.receipt_pdf_path != null && order.receipt_pdf_path != '') {.>
+							<div class="col-md-3">
+								<a target="_blank" href="<.=ctx.>/customer/orders/receipt/pdf/download/<.=order.id.>" class="btn btn-success btn-block">
+									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Receipt
+								</a>
+							</div>
+							<.} else if (order.ordering_form_pdf_path != null && order.ordering_form_pdf_path != '') {.>
+							<div class="col-md-3">
+								<form action="<.=ctx.>/customer/ordering-form/checkout" method="post" id="orderingForm">
+									<input type="hidden" name="orderid" value="<.=order.id.>"/>
+									<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
+								</form>
+							</div>
+							<.}.>
+						</div>
+						<table class="table table-hover" style="margin-top:20px;">	
+							<tr>
+								<th>Name</th>
+								<th>Unit Price</th>
+								<th>Unit</th>
+								<th>Expired</th>
+							</tr>
+						<.for (var j = 0, jlen = details.length; j < jlen; j++) {
+							var detail = details[j];
+						.>
+							<.if (detail.detail_type == 'discount') {.>
+							<tr class="warning">
+								<td><.=detail.detail_name.></td>
+								<td>$ -<.=Number(detail.detail_price).toFixed(2).></td>
+								<td><.=detail.detail_unit.></td>
+								<td><.=detail.detail_expired_str.></td>
+							</tr>
+							<.} else {.>
+							<tr>
+								<td>
+									<.=detail.detail_name.>
+								<.if (detail.detail_plan_type == 'ADSL' || detail.detail_plan_type == 'VDSL' || detail.detail_plan_type == 'UFB') {.>
+									<input type="hidden" id="planname<.=order.id.>" value="<.=detail.detail_name.>"/>
+									<input type="hidden" id="plandataflow<.=order.id.>" value="<.=detail.detail_data_flow.>"/>
+									<input type="hidden" id="plantype<.=order.id.>" value="<.=detail.detail_plan_type.>"/>
+									<input type="hidden" id="plansvlan<.=order.id.>" value="<.=order.svlan.>"/>
+									<input type="hidden" id="plancvlan<.=order.id.>" value="<.=order.cvlan.>"/>
+								<.}.>
+								</td>
+								<td>$ <.=Number(detail.detail_price).toFixed(2).></td>
+								<td><.=detail.detail_unit.></td>
+								<td><.=detail.detail_expired_str.></td>
+							</tr>
+							<.}.>
+						<.}.>
+						</table>
+					
+					</div>
+					<div class="tab-pane fade" id="invoices<.=order.id.>"></div>
+					<.if (order.svlan != null && order.svlan != '' && order.cvlan != null && order.cvlan != '') {.>
+					<div class="tab-pane fade" id="datausage<.=order.id.>"></div>
+					<.}.>
+				</div>
+			</div>
+		</div>
+	</div>
+<.
+	}
+.>
+	
+<.} else {.>
+	<div class="panel panel-success">
+		<div class="panel-body">
+			<div class="alert alert-warning">No records have been found.</div>
+		</div>
+	</div>
+<.}.>
+	
+</div>

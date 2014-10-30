@@ -68,8 +68,6 @@
 				</div>
 			</div>
 			
-			
-			
 			<c:if test="${customerReg.customer_type == 'business' }">
 			
 			<hr style="margin-top:0;"/>
@@ -351,6 +349,8 @@
 				</div>
 			</div>
 			
+			<c:if test="${customerReg.customer_type == 'personal' }">
+			
 			
 			<hr>
 			<h4 class="text-success">
@@ -397,6 +397,8 @@
 				</c:if>
 			</div>
 			
+			</c:if>
+			
 			<hr>
 			<div class="row">
 				<div class="col-md-12 col-xs-12 col-sm-12">
@@ -439,22 +441,16 @@
 <script type="text/html" id="voucher_form_tmpl">
 <jsp:include page="../voucher-form.html" />
 </script>
-
 <script type="text/html" id="voucher_form_result_tmpl">
 <jsp:include page="../voucher-form-result.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 var ctx = '${ctx}';
-var total_vprice = new Number('${total_vprice}');
-var order_price = new Number('${customerReg.customerOrder.order_total_price}');
+var total_vprice = Number('${total_vprice}');
+var order_price = Number('${customerReg.customerOrder.order_total_price}');
 </script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js?ver=2014822747"></script>
-
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js?ver=20141029548"></script>
 <jsp:include page="../footer-end.jsp" />
