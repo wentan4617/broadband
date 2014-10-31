@@ -1121,6 +1121,7 @@ public class CRMService {
 		invoicePDF.setCo(co);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 
+
 		// set file path
 		Map<String, Object> map = null;
 		try {
@@ -1277,8 +1278,7 @@ public class CRMService {
 			ci.getParams().put("order_id", co.getId());
 			ci.getParams().put("invoice_type", "general-invoice");
 			ci = this.ciMapper.selectCustomerInvoice(ci);
-			
-			// call mail at value retriever
+
 
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -1300,6 +1300,7 @@ public class CRMService {
 			notificationEmailFinal = null;
 			notificationSMSFinal = null;
 			ci = null;
+
 		}
 		notificationEmail = null;
 		notificationSMS = null;
@@ -2030,7 +2031,7 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCo(co);
+
 		
 		if(pstn_numbers.size() > 0){
 			
@@ -2701,6 +2702,9 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
+
+	
+
 		invoicePDF.setCo(co);
 
 
@@ -3184,6 +3188,7 @@ public class CRMService {
 			}
 		}
 		
+
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCo(customerOrder);
 		invoicePDF.setCurrentCustomerInvoice(ci);
@@ -3305,6 +3310,7 @@ public class CRMService {
 		if(!isRegenerate){
 			
 			// call mail at value retriever
+
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
@@ -3379,6 +3385,14 @@ public class CRMService {
 	 * END CustomerTransaction
 	 */
 	
+
+	
+	
+	
+	/**
+	 * END Organization
+	 */
+
 
 	@Transactional 
 	public String queryCustomerPreviousProviderInvoiceFilePathById(int id){

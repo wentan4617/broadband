@@ -1,0 +1,87 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h3 class="panel-title">
+			Order ID: #<strong><.=id.></strong>
+		</h3>
+	</div>
+	<div class="panel-body">
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Hardware needs to be sent:</div>
+			<div class="col-md-7" id="hardware_post_<.=id.>"><.=hardware_post.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Create Date:</div>
+			<div class="col-md-7"><.=order_create_date_yyyymmddhhmmss.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Status:</div>
+			<div class="col-md-7"><span class="text-danger"><.=order_status.></span></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Type:</div>
+			<div class="col-md-7"><.=order_type.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Broadband Type:</div>
+			<div class="col-md-7"><.=order_broadband_type.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Total Price:</div>
+			<div class="col-md-7">$ <.=Number(order_total_price).toFixed(2).></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Due:</div>
+			<div class="col-md-7"><.=order_due_str.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Order Term Period:</div>
+			<div class="col-md-7"><.=term_period.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Transition Provider Name:</div>
+			<div class="col-md-7"><.=transition_provider_name.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Transition Account Holder Name:</div>
+			<div class="col-md-7"><.=transition_account_holder_name.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Transition Account Number:</div>
+			<div class="col-md-7"><.=transition_account_number.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Transition Porting Number:</div>
+			<div class="col-md-7"><.=transition_porting_number.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Note:</div>
+			<div class="col-md-7"><.=optional_request.></div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">RFS Date:</div>
+			<div class="col-md-7"><.=rfs_date_str.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Service Giving:</div>
+			<div class="col-md-7"><.=order_using_start_str.></div>
+		</div>
+		<hr>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Address:</div>
+			<div class="col-md-7"><.=address.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Notice Mobile:</div>
+			<div class="col-md-7"><.=mobile.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Invoice Email:</div>
+			<div class="col-md-7"><.=email.></div>
+		</div>
+		<div class="row">
+			<div class="col-md-5" style="font-weight: bold">Type:</div>
+			<div class="col-md-7"><.=customer_type.></div>
+		</div>
+	</div>
+</div>

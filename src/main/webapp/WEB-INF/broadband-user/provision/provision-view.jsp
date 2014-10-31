@@ -19,11 +19,37 @@
 	</div>
 </div>
 
-<script type="text/html" id="provision_query_tmpl" data-ctx="${ctx }">
+<div class="modal fade" id="provision-customer-order-info-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:1200px">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-5" id="customer-information-tmpl"></div>
+					<div class="col-md-7" id="customer-order-tmpl"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" id="customer-order-detail-tmpl"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/html" id="provision_query_tmpl" data-ctx="${ctx }" data-user_role="${userSession.user_role}">
 <jsp:include page="provision-query-tmpl.html" />
 </script>
 <script type="text/html" id="provision_orders_tmpl">
 <jsp:include page="provision-orders-tmpl.html" />
+</script>
+
+<script type="text/html" id="customer_information_tmpl">
+<jsp:include page="customer-information-tmpl.html" />
+</script>
+<script type="text/html" id="customer_order_tmpl">
+<jsp:include page="customer-order-tmpl.html" />
+</script>
+<script type="text/html" id="customer_order_detail_tmpl">
+<jsp:include page="customer-order-detail-tmpl.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />

@@ -1,0 +1,74 @@
+<div class="panel panel-success">
+	<div class="panel-heading">
+		<h3 class="panel-title">Order Details</h3>
+	</div>
+	<table class="table table-hover">
+		<thead>
+			<tr>
+				<th>Detail name</th>
+				<th>Detail type</th>
+				<th>Plan Type</th>
+				<th>Data flow</th>
+				<th>Detail Price</th>
+				<th>Unit</th>
+				<th>Expired</th>
+			</tr>
+		</thead>
+		<tbody>
+		<.
+		for (var i = 0, len = customerOrderDetails.length; i < len; i++) {
+			var cod = customerOrderDetails[i];
+		.>
+			<.if (cod.detail_type.indexOf('hardware-') > -1) {
+				if (cod.is_post != 1) {.>
+			<tr class="warning">
+			<.} else { .>
+			<tr class="success">	
+			<.} 
+			} else { .>
+			<tr>
+			<. } .>
+				<td>
+				<.if (cod.detail_type.indexOf('hardware-') > -1) { .>
+					<.if ( user_role != 'sales' && user_role != 'agent') { .>
+					<a href="javascript:void(0)">
+						<span class="glyphicon glyphicon-plus-sign" data-hardware data-id="<.=cod.id.>" data-status="close"></span>
+					</a>
+					<.}.>
+				<.}.>
+					<.=cod.detail_name.>
+				</td>
+				<td><.=cod.detail_type.></td>
+				<td><.=cod.detail_plan_type.></td>
+				<td>
+					<.if (cod.detail_data_flow < 0) { .>
+						Unlimited
+					<. } else { .>
+						<.=cod.detail_data_flow .>
+					<. } .>
+				</td>
+				<td ><strong><.= cod.detail_type=='discount'||cod.detail_type=='termination-credit' ? '-' : '' .><.=Number(cod.detail_price).toFixed(2) .></strong></td>
+				<td><.=cod.detail_unit.></td>
+				<td><strong><.=cod.detail_expired_str.></strong></td>
+			</tr>
+			<. if (cod.detail_type.indexOf('hardware-') > -1) {.>
+			<tr id="tr<.=cod.id.>" style="display:none;">
+				<td colspan="20">
+					<div>
+						<div class="col-md-2">
+							<input type="text" class="form-control" id="trackcode_<.=cod.id.>" placeholder="Post Track Code" value="<.=cod.track_code .>"/>
+						</div>
+						<div class="col-md-6">
+							<input type="text" class="form-control" id="comment_<.=cod.id.>" value="<.=cod.hardware_comment.>" />
+						</div>
+						<div class="col-md-1">
+							<button type="button" class="btn btn-success ladda-button" data-style="zoom-in" data-name="trackcode_btn" data-cod-id="<.=cod.id.>" data-cod-ispost="<.=cod.is_post.>">Save</button>
+						</div>
+					</div>
+				</td>
+			</tr>
+			<. } .>
+		<. } .>
+		</tbody>
+	</table>
+</div>

@@ -61,47 +61,7 @@ public class ProvisionController {
 		return "broadband-user/provision/provision-view";
 	}
 	
-	@RequestMapping(value = "/broadband-user/provision/customer/order/status", method = RequestMethod.POST)
-	public String changeCustomerOrderStatus(Model model,
-			@RequestParam(value = "checkbox_orders", required = false) String[] order_ids,
-			@RequestParam(value = "process_way") String process_way,
-			@RequestParam(value = "order_status") String order_status,
-			@RequestParam(value = "change_order_status") String change_order_status,
-			HttpServletRequest req, RedirectAttributes attr) {
-
-		if (order_ids == null) {
-			attr.addFlashAttribute("error", "Please choose one customer at least.");
-			return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
-		}
-		
-		User userSession = (User)req.getSession().getAttribute("userSession");
-		
-		List<CustomerOrder> list = new ArrayList<CustomerOrder>();
-		
-		for (String order_id : order_ids) {
-			
-			CustomerOrder customerOrder = new CustomerOrder();
-			customerOrder.setOrder_status(change_order_status);
-			customerOrder.getParams().put("id", Integer.parseInt(order_id));
-			
-			ProvisionLog log = new ProvisionLog();
-			log.setUser_id(userSession.getId());
-			log.setProcess_datetime(new Date(System.currentTimeMillis()));
-			log.setOrder_sort("customer-order");
-			log.setOrder_id_customer(Integer.parseInt(order_id));
-			log.setProcess_way(process_way);
-			
-			customerOrder.setTempProvsionLog(log);
-			
-			list.add(customerOrder);
-		}
-		
-		this.provisionService.changeCustomerOrderStatus(list);
-		
-		attr.addFlashAttribute("success", order_ids.length + " order of cusotmers are transformed status (" + process_way + ").");
-		
-		return "redirect:/broadband-user/provision/customer/view/1/" + order_status;
-	}
+	
 
 	
 	@RequestMapping(value = "/broadband-user/provision/view/{pageNo}")
@@ -219,7 +179,6 @@ public class ProvisionController {
 		int vosDisconnectedSize = 0;
 		int asidDisconnectedSize = 0;
 
-		
 		if("unmatched".equals(statusType)){
 
 			// Unmatched
