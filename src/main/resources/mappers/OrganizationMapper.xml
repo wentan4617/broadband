@@ -46,27 +46,35 @@
 		<result property="order_id" column="o_order_id"/>
 	</resultMap>
 	
+	<sql id="organizationWhere">
+		<where>
+			<choose>
+				<otherwise>
+					<if test="params.order_id != null">o.order_id = #{params.order_id}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+	
 	<!-- // DEFINITION AREA -->
 	
 	<!-- =================================================================================== -->
 
 	<!-- SELECT AREA -->
 	
-	<!-- select organization by customer_id -->
-	<select id="selectOrganizationByCustomerId" parameterType="int" resultType="Organization">
-		select * from tm_organization where customer_id = #{0}
+	<select id="selectOrganizations" parameterType="Organization" resultType="Organization">
+		select * from tm_organization as o
+		<include refid="organizationWhere"/>
 	</select>
 	
-	<!-- select organization page -->
 	<select id="selectOrganizationsByPage" parameterType="Page" resultType="Organization">
-		select * from tm_organization
+		select * from tm_organization as o
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
 	</select>
 
-	<!-- select organization amount -->
 	<select id="selectOrganizationsSum" parameterType="Page" resultType="int">
-		select count(*) from tm_organization
+		select count(*) from tm_organization as o
 	</select>
 
 	<!-- // END SELECT AREA -->

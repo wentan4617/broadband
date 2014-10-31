@@ -66,7 +66,8 @@ public class SaleService {
 	}
 	
 	public Organization queryOrganizationByCustomerId(int id){
-		return this.organizationMapper.selectOrganizationByCustomerId(id);
+		return null;
+		//return this.organizationMapper.selectOrganizationByCustomerId(id);
 	}
 	
 	public List<User> queryUsersWhoseIdExistInOrder(){

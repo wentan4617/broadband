@@ -10,10 +10,13 @@ import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.ContactUs;
+import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Provision;
 import com.tm.broadband.model.ProvisionLog;
@@ -24,18 +27,21 @@ public class ProvisionService {
 	private CustomerMapper customerMapper;
 	private CustomerOrderMapper customerOrderMapper;
 	private CustomerOrderDetailMapper customerOrderDetailMapper;
+	private OrganizationMapper organzaitionMapper;
 	private ProvisionLogMapper provisionLogMapper;
 	private ContactUsMapper contactUsMapper;
 	
 	@Autowired
-	public ProvisionService(CustomerMapper customerMapper, 
-			CustomerOrderMapper customerOrderMapper,
-			CustomerOrderDetailMapper customerOrderDetailMapper,
-			ProvisionLogMapper provisionLogMapper,
-			ContactUsMapper contactUsMapper) {
+	public ProvisionService(CustomerMapper customerMapper
+			, CustomerOrderMapper customerOrderMapper
+			, CustomerOrderDetailMapper customerOrderDetailMapper
+			, OrganizationMapper organzaitionMapper
+			, ProvisionLogMapper provisionLogMapper
+			, ContactUsMapper contactUsMapper ) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
+		this.organzaitionMapper = organzaitionMapper;
 		this.provisionLogMapper = provisionLogMapper;
 		this.contactUsMapper = contactUsMapper;
 	}
@@ -110,8 +116,22 @@ public class ProvisionService {
 	}
 	
 	@Transactional
-	public CustomerOrder queryCustomerOrderById(int id) {
-		return this.customerOrderMapper.selectCustomerOrderById(id);
+	public CustomerOrder queryCustomerOrderWithCustomerOrOrganizationWithDetails(int orderid) {
+		CustomerOrder coQ = new CustomerOrder();
+		coQ.getParams().put("id", orderid);
+		CustomerOrder order = this.customerOrderMapper.selectCustomerOrders(coQ).get(0);
+		Customer cQ = new Customer();
+		cQ.getParams().put("id", order.getCustomer_id());
+		order.setCustomer(this.customerMapper.selectCustomers(cQ).get(0));
+		if ("business".equals(order.getCustomer_type())) {
+			Organization oQ = new Organization();
+			cQ.getParams().put("order_id", order.getId());
+			order.setOrganization(this.organzaitionMapper.selectOrganizations(oQ).get(0));
+		}
+		CustomerOrderDetail codQ = new CustomerOrderDetail();
+		codQ.getParams().put("order_id", order.getId());
+		order.setCustomerOrderDetails(this.customerOrderDetailMapper.selectCustomerOrderDetails(codQ));
+		return order;
 	}
 	
 

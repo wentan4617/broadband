@@ -1136,7 +1136,7 @@ public class CRMService {
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
 		invoicePDF.setCurrentCustomerInvoice(ci);
-		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
+		//invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
 		// set file path
 		Map<String, Object> map = null;
@@ -1296,8 +1296,8 @@ public class CRMService {
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 			
 			// call mail at value retriever
-			Organization org = this.organizationMapper.selectOrganizationByCustomerId(co.getCustomer().getId());
-			co.getCustomer().setOrganization(org);
+			//Organization org = this.organizationMapper.selectOrganizationByCustomerId(co.getCustomer().getId());
+			//co.getCustomer().setOrganization(org);
 
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -1319,7 +1319,7 @@ public class CRMService {
 			notificationEmailFinal = null;
 			notificationSMSFinal = null;
 			ci = null;
-			org = null;
+			//org = null;
 		}
 		notificationEmail = null;
 		notificationSMS = null;
@@ -2058,7 +2058,7 @@ public class CRMService {
 		
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(c);
-		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+		//invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
 		
 		if(pstn_numbers.size() > 0){
 			
@@ -2730,7 +2730,7 @@ public class CRMService {
 		
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(c);
-		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+		//invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
 
 
 		
@@ -3213,10 +3213,10 @@ public class CRMService {
 			}
 		}
 		
-		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
+		//Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
 		invoicePDF.setCompanyDetail(companyDetail);
 		invoicePDF.setCustomer(customer);
-		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
+		//invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		
@@ -3336,7 +3336,7 @@ public class CRMService {
 		if(!isRegenerate){
 			
 			// call mail at value retriever
-			customer.setOrganization(org);
+			//customer.setOrganization(org);
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
@@ -3418,7 +3418,8 @@ public class CRMService {
 	
 	@Transactional
 	public Organization queryOrganizationByCustomerId(int customer_id){
-		return this.organizationMapper.selectOrganizationByCustomerId(customer_id);
+		return null;
+		//return this.organizationMapper.selectOrganizationByCustomerId(customer_id);
 	}
 	
 	@Transactional
