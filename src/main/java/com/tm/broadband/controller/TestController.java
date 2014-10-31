@@ -1,19 +1,13 @@
 package com.tm.broadband.controller;
 
-import java.text.DecimalFormat;
-
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.websocket.server.PathParam;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
@@ -66,10 +60,4 @@ public class TestController {
 	}
 	
 	
-	@RequestMapping(value = "/test/customer/to/customerorder")
-	public String customertocustomerorder(){
-		
-		this.testService.moveCustomerToCustomerOrder();
-		return null;
-	}
 }

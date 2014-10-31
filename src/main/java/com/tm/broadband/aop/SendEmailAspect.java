@@ -45,20 +45,20 @@ public class SendEmailAspect {
 		Object [] objs = jp.getArgs();
 		Customer customer = (Customer)objs[1];
 		
-		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
-		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
-		applicationEmail.setAttachPath(orderingPath);
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+//		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+//		Notification notification = this.systemService.queryNotificationBySort("online-ordering", "email");
+//		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
+//		ApplicationEmail applicationEmail = new ApplicationEmail();
+//		applicationEmail.setAddressee(customer.getEmail());
+//		applicationEmail.setSubject(notification.getTitle());
+//		applicationEmail.setContent(notification.getContent());
+//		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+//		applicationEmail.setAttachPath(orderingPath);
+//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//		notification = this.systemService.queryNotificationBySort("online-ordering", "sms"); // get sms register template from db
+//		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
+//		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
 	}
 
 }

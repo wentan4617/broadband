@@ -15,7 +15,7 @@
 				<div class="panel-heading">
 					<h4 class="panel-title">Customer View</h4>
 				</div>
-				<jsp:include page="customer-query.html" />
+				<jsp:include page="customer-order-query.html" />
 				<hr>
 				<div id="customer-view"></div>
 			</div>
@@ -24,7 +24,7 @@
 </div>
 
 <script type="text/html" id="customer_view_tmpl">
-<jsp:include page="customer-view-page.html" />
+<jsp:include page="customer-order-view-page.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />
@@ -33,14 +33,14 @@
 <script type="text/javascript">
 (function($){
 	
-	function doPage(pageNo, customer, btn) { //console.log(btn);
+	function doPage(pageNo, co, btn) { //console.log(btn);
 		btn && btn.button('loading');
-		$.get('${ctx}/broadband-user/crm/customer/view/' + pageNo, customer, function(page){ //console.log(page);
+		$.get('${ctx}/broadband-user/crm/customer/order/view/' + pageNo, co, function(page){ //console.log(page);
 			page.ctx = '${ctx}';
 	   		var $div = $('#customer-view');
 	   		$div.html(tmpl('customer_view_tmpl', page));
 	   		$div.find('tfoot a').click(function(){
-				doPage($(this).attr('data-pageNo'), customer);
+				doPage($(this).attr('data-pageNo'), co);
 			});
 	   		
 	   		$('#checkbox_customer_top').click(function(){
@@ -75,12 +75,12 @@
 	
 	$('#query').click(function(e){
 		e.preventDefault();
-		var customer = {};
+		var co = {};
 		$('input[data-role="query"]').each(function(){
 			var val = $(this).prop("checked");
 			if (val) {
 				var field = $(this).attr('data-id');
-				customer[field] = $('#' + field).val();
+				co[field] = $('#' + field).val();
 			}
 		});// console.log(customer);
 		$('a[data-id="customer_type"]').each(function(){
@@ -88,31 +88,31 @@
 				var val = $(this).hasClass('active');
 				if(val){
 					var field = $(this).attr('data-id');
-					customer[field] = $(this).attr('data-val');
-					//console.log(customer);
+					co[field] = $(this).attr('data-val');
+					//console.log(co);
 				}
 			}
 		});
-		doPage(1, customer, $(this));
+		doPage(1, co, $(this));
 	});
 
 	$('a[data-id="customer_type"]').click(function(){
-		var customer = {};
+		var co = {};
 		var field = $(this).attr('data-id');
 		$('input[data-role="query"]').each(function(){
 			var val = $(this).prop("checked");
 			if (val) {
 				var field = $(this).attr('data-id');
-				customer[field] = $('#' + field).val();
+				co[field] = $('#' + field).val();
 			}
-		});// console.log(customer);
+		});// console.log(co);
 		$('a[data-id="customer_type"]').removeClass('active');
 		$(this).addClass('active');
 		if($(this).attr('data-val')!='all'){
-			customer[field] = $(this).attr('data-val');
+			co[field] = $(this).attr('data-val');
 		}
-		console.log(customer);
-		doPage(1, customer, null);
+		console.log(co);
+		doPage(1, co, null);
 	});
 })(jQuery);
 </script>

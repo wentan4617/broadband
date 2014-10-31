@@ -77,11 +77,29 @@ public class CustomerOrder implements Serializable {
 	private Integer inviter_user_id;
 	private Double inviter_rate;
 	private Double invitee_rate;
+	
+	private String title;
+	private String first_name;
+	private String last_name;
+
+	private String org_name;
+	private String org_type;
+	private String org_trading_name;
+	private String org_register_no;
+	private Date org_incoporate_date;
+	private Integer org_trading_months;
+	private String holder_name;
+	private String holder_job_title;
+	private String holder_phone;
+	private String holder_email;
+
+	
 	private String xero_invoice_status;
 	private Boolean is_send_xero_invoice;
 
 	private String address;
 	private String mobile;
+	private String phone;
 	private String email;
 	private String customer_type;
 
@@ -92,6 +110,11 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String pstn;
+	private String voip;
+	private Integer invoice_id;
+	
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String order_create_date_str;
 	private String order_create_date_yyyymmddhhmmss;
@@ -102,10 +125,10 @@ public class CustomerOrder implements Serializable {
 	private String order_due_str;
 	private String disconnected_date_str;
 	private Customer customer;
-	//@Valid
-	private Organization organization = new Organization();
 	@Valid
 	private Plan plan;
+	
+	private String org_incoporate_date_str;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
@@ -175,6 +198,7 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public void setOrder_create_date(Date order_create_date) {
+		this.setOrder_create_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(order_create_date));
 		this.order_create_date = order_create_date;
 	}
 
@@ -235,7 +259,6 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_str() {
-		order_create_date_str = TMUtils.dateFormatYYYYMMDD(this.getOrder_create_date());
 		return order_create_date_str;
 	}
 
@@ -717,14 +740,6 @@ public class CustomerOrder implements Serializable {
 		this.customer_type = customer_type;
 	}
 
-	public Organization getOrganization() {
-		return organization;
-	}
-
-	public void setOrganization(Organization organization) {
-		this.organization = organization;
-	}
-
 	public String getOrder_create_date_yyyymmddhhmmss() {
 		order_create_date_yyyymmddhhmmss = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
 		return order_create_date_yyyymmddhhmmss;
@@ -749,6 +764,151 @@ public class CustomerOrder implements Serializable {
 
 	public void setIs_send_xero_invoice(Boolean is_send_xero_invoice) {
 		this.is_send_xero_invoice = is_send_xero_invoice;
+	}
+
+	public String getOrg_name() {
+		return org_name;
+	}
+
+	public void setOrg_name(String org_name) {
+		this.org_name = org_name;
+	}
+
+	public String getOrg_type() {
+		return org_type;
+	}
+
+	public void setOrg_type(String org_type) {
+		this.org_type = org_type;
+	}
+
+	public String getOrg_trading_name() {
+		return org_trading_name;
+	}
+
+	public void setOrg_trading_name(String org_trading_name) {
+		this.org_trading_name = org_trading_name;
+	}
+
+	public String getOrg_register_no() {
+		return org_register_no;
+	}
+
+	public void setOrg_register_no(String org_register_no) {
+		this.org_register_no = org_register_no;
+	}
+
+	public Date getOrg_incoporate_date() {
+		return org_incoporate_date;
+	}
+
+	public void setOrg_incoporate_date(Date org_incoporate_date) {
+		this.setOrg_incoporate_date_str(TMUtils.dateFormatYYYYMMDD(org_incoporate_date));
+		this.org_incoporate_date = org_incoporate_date;
+	}
+
+	public Integer getOrg_trading_months() {
+		return org_trading_months;
+	}
+
+	public void setOrg_trading_months(Integer org_trading_months) {
+		this.org_trading_months = org_trading_months;
+	}
+
+	public String getHolder_name() {
+		return holder_name;
+	}
+
+	public void setHolder_name(String holder_name) {
+		this.holder_name = holder_name;
+	}
+
+	public String getHolder_job_title() {
+		return holder_job_title;
+	}
+
+	public void setHolder_job_title(String holder_job_title) {
+		this.holder_job_title = holder_job_title;
+	}
+
+	public String getHolder_phone() {
+		return holder_phone;
+	}
+
+	public void setHolder_phone(String holder_phone) {
+		this.holder_phone = holder_phone;
+	}
+
+	public String getHolder_email() {
+		return holder_email;
+	}
+
+	public void setHolder_email(String holder_email) {
+		this.holder_email = holder_email;
+	}
+
+	public String getOrg_incoporate_date_str() {
+		return org_incoporate_date_str;
+	}
+
+	public void setOrg_incoporate_date_str(String org_incoporate_date_str) {
+		this.org_incoporate_date_str = org_incoporate_date_str;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public String getFirst_name() {
+		return first_name;
+	}
+
+	public void setFirst_name(String first_name) {
+		this.first_name = first_name;
+	}
+
+	public String getLast_name() {
+		return last_name;
+	}
+
+	public void setLast_name(String last_name) {
+		this.last_name = last_name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getPstn() {
+		return pstn;
+	}
+
+	public void setPstn(String pstn) {
+		this.pstn = pstn;
+	}
+
+	public String getVoip() {
+		return voip;
+	}
+
+	public void setVoip(String voip) {
+		this.voip = voip;
+	}
+
+	public Integer getInvoice_id() {
+		return invoice_id;
+	}
+
+	public void setInvoice_id(Integer invoice_id) {
+		this.invoice_id = invoice_id;
 	}
 
 }

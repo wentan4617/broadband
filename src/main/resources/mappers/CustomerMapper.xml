@@ -40,7 +40,6 @@
 		, c.`passport`			as c_passport
 		, c.`country`			as c_country
 		, c.`company_name`		as c_company_name
-		, c.`customer_type`		as c_customer_type
 		, c.`identity_type`		as c_identity_type
 		, c.`identity_number` 	as c_identity_number
 		, c.`result`			as c_result
@@ -68,7 +67,6 @@
 		<result property="passport" column="c_passport" />
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
-		<result property="customer_type" column="c_customer_type" />
 		<result property="identity_type" column="c_identity_type" />
 		<result property="identity_number" column="c_identity_number" />
 		<result property="result" column="c_result" />
@@ -77,6 +75,9 @@
 	<sql id="customerWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_by_start_end_reg_date'">
+					c.register_date BETWEEN #{params.register_date1} AND #{params.register_date2}
+				</when>
 				<when test="params.where == 'when_login'">
 					(c.cellphone = #{params.cellphone} or c.email = #{params.email})
 					and c.password = #{params.password}
@@ -171,7 +172,6 @@
 									WHERE id LIKE CONCAT('%', '${params.invoice_id}', '%')
 								)
 					</if>
-					<if test="params.customer_type != null">and c.customer_type = #{params.customer_type}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -213,12 +213,12 @@
 		INSERT INTO `tm_customer`(
 		`login_name`, `password`, `md5_password`, `user_name`, `first_name`, `last_name`,
 		`address`, `email`, `phone`, `cellphone`, `status`, `invoice_post`, `register_date`, `active_date`, 
-		`balance`, `title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`, `customer_type`,
+		`balance`, `title`, `birth`, `driver_licence`, `passport`, `country`, `company_name`,
 		`identity_type`, `identity_number`, `result`)
 		VALUES (
 		#{login_name}, #{password}, #{md5_password}, #{user_name}, #{first_name}, #{last_name}, 
 		#{address}, #{email}, #{phone}, #{cellphone}, #{status}, #{invoice_post}, #{register_date}, #{active_date}, 
-		#{balance}, #{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name}, #{customer_type},
+		#{balance}, #{title}, #{birth}, #{driver_licence}, #{passport}, #{country}, #{company_name},
 		#{identity_type}, #{identity_number}, #{result})
 	</insert>
 
@@ -250,7 +250,6 @@
 			<if test="passport != null">passport = #{passport},</if>
 			<if test="country != null">country = #{country},</if>
 			<if test="company_name != null">company_name = #{company_name},</if>
-			<if test="customer_type != null">customer_type = #{customer_type},</if>
 			<if test="identity_type != null">identity_type = #{identity_type},</if>
 			<if test="identity_number != null">identity_number = #{identity_number},</if>
 			<if test="result != null">result = #{result}</if>

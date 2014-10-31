@@ -15,7 +15,6 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -28,7 +27,6 @@ import com.tm.broadband.util.itext.ITextUtils;
 public class CreditPDFCreator extends ITextUtils {
 	private CustomerCredit cc;
 	private CustomerOrder co;
-	private Organization org;
 	
 	private BaseColor titleBGColor = new BaseColor(237,237,237);
 	private BaseColor titleBorderColor = new BaseColor(200,200,200);
@@ -38,10 +36,9 @@ public class CreditPDFCreator extends ITextUtils {
 	
 	public CreditPDFCreator() {}
 
-	public CreditPDFCreator(CustomerCredit cc, CustomerOrder co, Organization org) {
+	public CreditPDFCreator(CustomerCredit cc, CustomerOrder co) {
 		this.setCc(cc);
 		this.setCo(co);
-		this.setOrg(org);
 	}
 	
 	public String create() throws DocumentException, MalformedURLException, IOException{
@@ -183,10 +180,10 @@ public class CreditPDFCreator extends ITextUtils {
     	// END CONTACT DETAILS INNER TABLE PADDING TOP
 
         // BEGIN CONTACT DETAILS ROWS
-        if(this.cc.getCustomer().getCustomer_type().equals("business")){
+        if(this.getCo().getCustomer_type().equals("business")){
             addCol(contactDetailsInnerTable, "Organisation Name", 3, labelIndent, ITextFont.arial_normal_10, 0F, 0F, null);
-            addColBottomBorder(contactDetailsInnerTable, this.getOrg().getOrg_name(), 10, labelIndent, ITextFont.arial_normal_10, 0F, 1F, null, null);
-        } else if(this.cc.getCustomer().getCustomer_type().equals("personal")){
+            addColBottomBorder(contactDetailsInnerTable, this.getCo().getOrg_name(), 10, labelIndent, ITextFont.arial_normal_10, 0F, 1F, null, null);
+        } else if(this.getCo().getCustomer_type().equals("personal")){
             addCol(contactDetailsInnerTable, "First Name", 2, labelIndent, ITextFont.arial_normal_10, 0F, 0F, null);
             addColBottomBorder(contactDetailsInnerTable, this.cc.getCustomer().getFirst_name(), 4, labelIndent, ITextFont.arial_normal_10, 0F, 1F, null, null);
             addEmptyCol(contactDetailsInnerTable, 6F, 1);
@@ -514,14 +511,6 @@ public class CreditPDFCreator extends ITextUtils {
 
 	public void setCo(CustomerOrder co) {
 		this.co = co;
-	}
-
-	public Organization getOrg() {
-		return org;
-	}
-
-	public void setOrg(Organization org) {
-		this.org = org;
 	}
 
 }

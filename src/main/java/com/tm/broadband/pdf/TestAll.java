@@ -12,7 +12,6 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.util.TMUtils;
 
@@ -447,13 +446,12 @@ public class TestAll {
 		 * BEGIN TEST ReceiptPDFCreator
 		 */
 		Customer c = new Customer();
-		Organization org = new Organization();
 		CustomerOrder co = new CustomerOrder();
 		CustomerOrderDetail cod = new CustomerOrderDetail();
 		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		
 		// CUSTOMER type
-		c.setCustomer_type("business");
+		co.setCustomer_type("business");
 		// ORDER Broadband Type
 		// Necessary if broadband type is transition
 		co.setOrder_broadband_type("transition");
@@ -478,15 +476,15 @@ public class TestAll {
 		c.setCountry("New Zealand");
 		
 		// set org
-		org.setOrg_name("CyberPark");
-		org.setOrg_type("NZ Incoporated Company");
-		org.setOrg_trading_name("NZ Limited");
-		org.setOrg_register_no("NZ19876542");
-		org.setOrg_incoporate_date(new Date());
-		org.setHolder_name("Steve");
-		org.setHolder_job_title("Manager");
-		org.setHolder_phone("0210210213");
-		org.setHolder_email("Steve@gmail.com");
+		co.setOrg_name("CyberPark");
+		co.setOrg_type("NZ Incoporated Company");
+		co.setOrg_trading_name("NZ Limited");
+		co.setOrg_register_no("NZ19876542");
+		co.setOrg_incoporate_date(new Date());
+		co.setHolder_name("Steve");
+		co.setHolder_job_title("Manager");
+		co.setHolder_phone("0210210213");
+		co.setHolder_email("Steve@gmail.com");
 
 		// set order detail
 		// SET PLAN DETAIL
@@ -526,9 +524,7 @@ public class TestAll {
 		
 		// call OrderPDFCreator
 		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
-		oPDFCreator.setCustomer(c);
-		oPDFCreator.setOrg(org);
-		oPDFCreator.setCustomerOrder(co);
+		oPDFCreator.setCo(co);
 		
 		// create order PDF
 		System.out.println(oPDFCreator.create());

@@ -18,9 +18,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.TerminationRefund;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.User;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
@@ -34,8 +33,7 @@ import com.tm.broadband.util.itext.ITextUtils;
 public class TerminationRefundPDFCreator extends ITextUtils {
 
 	private CompanyDetail cd;
-    private Customer c;
-	private Organization org;
+	private CustomerOrder co;
 	private TerminationRefund etr;
 	private User u;
 
@@ -47,13 +45,11 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 	public TerminationRefundPDFCreator(){}
 	
 	public TerminationRefundPDFCreator(CompanyDetail cd
-			,Customer c
-			,Organization org
+			,CustomerOrder co
 			,TerminationRefund etr
 			,User u) {
 		this.cd = cd;
-		this.c = c;
-		this.org = org;
+		this.co = co;
 		this.etr = etr;
 		this.u = u;
 	}
@@ -65,7 +61,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 		String outputFile = TMUtils.createPath(
 				"broadband" 
 				+ File.separator
-				+ "customers" + File.separator + this.getC().getId()
+				+ "customers" + File.separator + this.getCo().getId()
 				+ File.separator + "termination_refund_" + this.getEtr().getId() + ".pdf");
 		
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
@@ -109,17 +105,17 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         
         String customerName = null;
 //        String customerTitle = null;
-        if("business".equals(this.getC().getCustomer_type())){
-        	customerName = org.getOrg_name();
+        if("business".equals(this.getCo().getCustomer_type())){
+        	customerName = this.getCo().getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getC().getTitle() != null ? this.getC().getTitle().toUpperCase()+" " : "";
-        	customerName += this.getC().getFirst_name()+" "+this.getC().getLast_name();
+        	customerName = this.getCo().getTitle() != null ? this.getCo().getTitle().toUpperCase()+" " : "";
+        	customerName += this.getCo().getFirst_name()+" "+this.getCo().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
 //        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
         addCol(headerTable, customerName.trim()).font(ITextFont.arial_bold_9).paddingTo("l", 30F).paddingTo("b", 10F).border(0).o();
-        String addressArr[] = this.getC().getAddress().split(",");
+        String addressArr[] = this.getCo().getAddress().split(",");
         for (String address : addressArr) {
             addCol(headerTable, address.trim()).font(ITextFont.arial_bold_8).paddingTo("l", 30F).border(0).o();
 		}
@@ -216,7 +212,7 @@ public class TerminationRefundPDFCreator extends ITextUtils {
         addEmptyCol(headerTable, 14F, colspan);
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Customer Id: ").colspan(2).font(ITextFont.arial_bold_8).o();
-        addCol(headerTable, this.getC().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(headerTable, this.getCo().getCustomer_id().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Refund No: ").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(headerTable, this.getEtr().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
@@ -245,22 +241,6 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 		this.cd = cd;
 	}
 
-	public Customer getC() {
-		return c;
-	}
-
-	public void setC(Customer c) {
-		this.c = c;
-	}
-
-	public Organization getOrg() {
-		return org;
-	}
-
-	public void setOrg(Organization org) {
-		this.org = org;
-	}
-
 	public TerminationRefund getEtr() {
 		return etr;
 	}
@@ -275,6 +255,14 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 
 	public void setU(User u) {
 		this.u = u;
+	}
+
+	public CustomerOrder getCo() {
+		return co;
+	}
+
+	public void setCo(CustomerOrder co) {
+		this.co = co;
 	}
 
 	

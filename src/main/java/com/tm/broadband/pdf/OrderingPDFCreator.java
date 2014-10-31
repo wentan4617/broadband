@@ -17,10 +17,8 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -31,9 +29,8 @@ import com.tm.broadband.util.itext.ITextUtils;
 * @author DONG CHEN
 */ 
 public class OrderingPDFCreator extends ITextUtils {
-	private Customer customer;
-	private Organization org;
-	private CustomerOrder customerOrder;
+	
+	private CustomerOrder co;
 	
 	private BaseColor titleBGColor = new BaseColor(220,221,221);
 	private BaseColor titleBorderColor = new BaseColor(159,159,159);
@@ -59,10 +56,8 @@ public class OrderingPDFCreator extends ITextUtils {
 	
 	public OrderingPDFCreator(){}
 	
-	public OrderingPDFCreator(Customer customer, CustomerOrder customerOrder, Organization org){
-		this.setCustomer(customer);
-		this.setCustomerOrder(customerOrder);
-		this.setOrg(org);
+	public OrderingPDFCreator(CustomerOrder co){
+		this.co = co;
 	}
 	
 	public Map<String, Object> create() throws DocumentException, IOException{
@@ -70,8 +65,8 @@ public class OrderingPDFCreator extends ITextUtils {
 		Map<String, Object> map = new HashMap<String, Object>();
 		
 		// DIFFERENTIATES ORDER DETAILS
-		if(this.getCustomerOrder().getCustomerOrderDetails().size()>0){
-			List<CustomerOrderDetail> cods = this.getCustomerOrder().getCustomerOrderDetails();
+		if(this.getCo().getCustomerOrderDetails().size()>0){
+			List<CustomerOrderDetail> cods = this.getCo().getCustomerOrderDetails();
 			for (CustomerOrderDetail  cod: cods) {
 				if(cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-term")
 				|| cod.getDetail_type()!= null && cod.getDetail_type().contains("plan-no-term")
@@ -114,8 +109,8 @@ public class OrderingPDFCreator extends ITextUtils {
         
 		// Output PDF Path, e.g.: ordering_form_600089.pdf
 		String outputFile = TMUtils.createPath("broadband" + File.separator
-				+ "customers" + File.separator + this.customer.getId()
-				+ File.separator + "ordering_form_" + this.customerOrder.getId()
+				+ "customers" + File.separator + this.getCo().getCustomer_id()
+				+ File.separator + "ordering_form_" + this.getCo().getId()
 				+ ".pdf");
         
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
@@ -138,7 +133,7 @@ public class OrderingPDFCreator extends ITextUtils {
 		document.add(createCustomerInfoTable(writer, document));
 		
 		// if order broadband type is transition
-		if(this.getCustomerOrder().getOrder_broadband_type()!=null && this.getCustomerOrder().getOrder_broadband_type().equals("transition")){
+		if(this.getCo().getOrder_broadband_type()!=null && this.getCo().getOrder_broadband_type().equals("transition")){
 			document.add(createTransitionInfoTable());
 		}
 		
@@ -204,24 +199,24 @@ public class OrderingPDFCreator extends ITextUtils {
     	// END CUSTOMER BASIC INFO PADDING TOP
         
         // BEGIN CUSTOMER BASIC INFORMATION
-        if(this.getCustomer().getCustomer_type().equals("personal")){
+        if(this.getCo().getCustomer_type().equals("personal")){
         	
         	// BEGIN PERSONAL BASIC INFORMATION
-            addCol(customerBasicInfoTable, (this.getCustomer().getTitle()!=null?this.getCustomer().getTitle()+" ":"")+this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+            addCol(customerBasicInfoTable, (this.getCo().getTitle()!=null?this.getCo().getTitle()+" ":"")+this.getCo().getFirst_name()+" "+this.getCo().getLast_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
             // END PERSONAL BASIC INFORMATION
             
-        } else if(this.getCustomer().getCustomer_type().equals("business")){
+        } else if(this.getCo().getCustomer_type().equals("business")){
         	
         	// BEGIN BUSINESS BASIC INFORMATION
-            addCol(customerBasicInfoTable, this.getOrg().getOrg_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+            addCol(customerBasicInfoTable, this.getCo().getOrg_name(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
         	// END BUSINESS BASIC INFORMATION
             
         }
         addCol(customerBasicInfoTable, "No.", 2, 0F, ITextFont.arial_colored_bold_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, String.valueOf(this.getCustomerOrder().getId()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, this.getCustomer().getAddress(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, String.valueOf(this.getCo().getId()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 4F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, this.getCo().getAddress(), 10, 10F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         addCol(customerBasicInfoTable, "Order Date", 2, 0F, ITextFont.arial_colored_bold_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
-        addCol(customerBasicInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCustomerOrder().getOrder_create_date()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
+        addCol(customerBasicInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCo().getOrder_create_date()), 2, 0F, ITextFont.arial_colored_normal_11, 0F, 0F, PdfPCell.ALIGN_LEFT);
         // END CUSTOMER BASIC INFORMATION
     	
     	// BEGIN CUSTOMER BASIC INFO PADDING BOTTOM
@@ -245,9 +240,9 @@ public class OrderingPDFCreator extends ITextUtils {
         PdfPTable customerInfoTable = newTable().columns(10).widthPercentage(102F).o();
         
         // BEGIN CUSTOMER INFO TITLE BAR
-        if(this.getCustomer().getCustomer_type()!=null && this.getCustomer().getCustomer_type().equals("personal")){
+        if(this.getCo().getCustomer_type()!=null && this.getCo().getCustomer_type().equals("personal")){
         	addTitleBar(customerInfoTable, "PERSONAL INFORMATION", ITextFont.arial_bold_12, titleBGColor, titleBorderColor, 10, 0F);
-        } else if(this.getCustomer().getCustomer_type().equals("business")){
+        } else if(this.getCo().getCustomer_type().equals("business")){
         	addTitleBar(customerInfoTable, "BUSINESS INFORMATION", ITextFont.arial_bold_12, titleBGColor, titleBorderColor, 10, 0F);
         }
         // END CUSTOMER INFO TITLE BAR
@@ -264,38 +259,30 @@ public class OrderingPDFCreator extends ITextUtils {
         // END PARAMETERS
         
         // BEGIN CUSTOMER(PERSONAL OR BUSINESS) INFO ROWS
-        if(this.getCustomer().getCustomer_type().equals("personal")){
+        if(this.getCo().getCustomer_type().equals("personal")){
         	
             // BEGIN PERSONAL INFO ROWS
         	addCol(customerInfoTable, "Phone", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getPhone(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getPhone(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Mobile", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getCellphone(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getMobile(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Email", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getEmail(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Date of Birth", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCustomer().getBirth()), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Driver License No.", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getDriver_licence(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Passport No.", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getPassport(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, "Passport Country or Origin", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getCustomer().getCountry(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getEmail(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
             // END PERSONAL INFO ROWS
             
-        } else if(this.getCustomer().getCustomer_type().equals("business")){
+        } else if(this.getCo().getCustomer_type().equals("business")){
         	
             // BEGIN BUSINESS INFO ROWS
         	addCol(customerInfoTable, "Organization Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getOrg_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Organization Type", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_type(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getOrg_type(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Trading Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_trading_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getOrg_trading_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Registration No.", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getOrg_register_no(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getOrg_register_no(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Date Incoporated", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getOrg().getOrg_incoporate_date()), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, TMUtils.retrieveMonthAbbrWithDate(this.getCo().getOrg_incoporate_date()), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
 
         	// BEGIN CUSTOMER INFO AREA ENDING PADDING BOTTOM
             addEmptyCol(customerInfoTable, 8F, 10);
@@ -309,13 +296,13 @@ public class OrderingPDFCreator extends ITextUtils {
         	// END CUSTOMER INFO AREA ENDING PADDING BOTTOM
             
         	addCol(customerInfoTable, "Full name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getHolder_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Job title", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_job_title(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getHolder_job_title(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Phone", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_phone(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getHolder_phone(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	addCol(customerInfoTable, "Email", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-        	addCol(customerInfoTable, this.getOrg().getHolder_email(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+        	addCol(customerInfoTable, this.getCo().getHolder_email(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         	// BEGIN HOLDER INFO ROWS
             
             // END BUSINESS INFO ROWS
@@ -353,13 +340,13 @@ public class OrderingPDFCreator extends ITextUtils {
     	// END TRANSITION PADDING TOP
         
     	addCol(orderPDFTitleTable, "Previous Provider Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_provider_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCo().getTransition_provider_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, "Account Holder Name", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_holder_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCo().getTransition_account_holder_name(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, "Account Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_account_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCo().getTransition_account_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
     	addCol(orderPDFTitleTable, "Porting Number", 3, labelIndent, ITextFont.arial_bold_8, rowPaddingTop, rowPaddingBottom, null);
-    	addCol(orderPDFTitleTable, this.getCustomerOrder().getTransition_porting_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
+    	addCol(orderPDFTitleTable, this.getCo().getTransition_porting_number(), 7, contentIndent, ITextFont.arial_normal_8, rowPaddingTop, rowPaddingBottom, null);
         // END TRANSITION INFO ROWS
 
     	// BEGIN DISTANCE BETWEEN CUSTOMER AGREEMENT TABLE TITLE AND ROW
@@ -436,9 +423,9 @@ public class OrderingPDFCreator extends ITextUtils {
 	        addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
 	        addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
 	        addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-	        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+	        addColBottomBorder(orderDetailTable, this.getCo().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
 	        addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-	        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+	        addColBottomBorder(orderDetailTable, this.getCo().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
 	        // END PLAN ROW HEADER
 
             for (CustomerOrderDetail cod : this.getCodPlans()) {
@@ -499,9 +486,9 @@ public class OrderingPDFCreator extends ITextUtils {
         addCol(orderDetailTable, "Qty", 1, 0F, ITextFont.arial_bold_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER);
         addCol(orderDetailTable, "Subtotal", 1, 0F, ITextFont.arial_bold_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT);
         addColBottomBorder(orderDetailTable, " ", 7, 0F, ITextFont.arial_normal_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_LEFT, borderColor);
-        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 0F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCo().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 0F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_CENTER, borderColor);
         addColBottomBorder(orderDetailTable, " ", 1, 0F, ITextFont.arial_normal_8, titlePaddingTop, titlePaddingBottom, PdfPCell.ALIGN_RIGHT, borderColor);
-        addColBottomBorder(orderDetailTable, this.getCustomer().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
+        addColBottomBorder(orderDetailTable, this.getCo().getCustomer_type().equals("business") ? "(plus GST)" : "(incl GST)", 1, 14F, ITextFont.arial_normal_7, titlePaddingTop, titlePaddingBottom, null, borderColor);
         // END ADD ON ROW HEADER
         
         if(this.getCodAddOns().size()>0){
@@ -538,7 +525,7 @@ public class OrderingPDFCreator extends ITextUtils {
          * END ADD ON LIST
          */
         
-        this.customerOrder.setOrder_total_price(totalPrice);
+        this.getCo().setOrder_total_price(totalPrice);
         // BEGIN transform before tax price and tax
         BigDecimal bdGSTRate = new BigDecimal(this.getGstRate());
         BigDecimal bdGSTRate2 = new BigDecimal(this.gstRate2);
@@ -547,7 +534,7 @@ public class OrderingPDFCreator extends ITextUtils {
         BigDecimal bdGST = new BigDecimal(gst.toString());
         // BEGIN Calculation Area
         
-        if(this.getCustomer().getCustomer_type().equals("business")){
+        if(this.getCo().getCustomer_type().equals("business")){
             
             // If business then totalPrice equals to beforeGSTPrice
             bdBeforeGSTPrice = new BigDecimal(totalPrice.toString());
@@ -590,10 +577,10 @@ public class OrderingPDFCreator extends ITextUtils {
     	// END SEPARATOR
         
         PdfPTable innerTable = newTable().columns(27).widthPercentage(100F).o();
-        if("personal".equals(customer.getCustomer_type())){
+        if("personal".equals(this.getCo().getCustomer_type())){
             addCol(innerTable, "Pay By Bank Deposit:").colspan(7).font(ITextFont.arial_normal_8).o();
             addCol(innerTable, "Please put your Ordering No.").colspan(9).font(ITextFont.arial_bold_8).o();
-            addCol(innerTable, String.valueOf(this.getCustomerOrder().getId())).colspan(3).font(ITextFont.arial_colored_normal_8).o();
+            addCol(innerTable, String.valueOf(this.getCo().getId())).colspan(3).font(ITextFont.arial_colored_normal_8).o();
             addCol(innerTable, "in the reference").colspan(8).font(ITextFont.arial_bold_8).o();
             
             addCol(innerTable, "Bank:").colspan(7).font(ITextFont.arial_normal_8).o();
@@ -625,7 +612,7 @@ public class OrderingPDFCreator extends ITextUtils {
         addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(beforeGSTPrice)), 1, 0F, ITextFont.arial_normal_9, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
         // END TOTAL BEFORE GST
         
-        if(this.getCustomer().getCustomer_type().equals("business")){
+        if(this.getCo().getCustomer_type().equals("business")){
             
             // BEGIN GST
             addCol(orderDetailTable, "GST at " + this.businessGST, 2, 0F, ITextFont.arial_bold_9, contentPaddingTop, 0F, PdfPCell.ALIGN_RIGHT);
@@ -718,30 +705,12 @@ public class OrderingPDFCreator extends ITextUtils {
         addCol(orderDetailTable, TMUtils.fillDecimalPeriod(String.valueOf(totalPrice))).font(ITextFont.arial_bold_8).alignH("r").o();
         // TOTAL AMOUNT END
         
-        this.customerOrder.setOrder_total_price(totalPrice);
+        this.getCo().setOrder_total_price(totalPrice);
         
         
         return orderDetailTable;
     }
 
-	public Customer getCustomer() {
-		return customer;
-	}
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-	public Organization getOrg() {
-		return org;
-	}
-	public void setOrg(Organization org) {
-		this.org = org;
-	}
-	public CustomerOrder getCustomerOrder() {
-		return customerOrder;
-	}
-	public void setCustomerOrder(CustomerOrder customerOrder) {
-		this.customerOrder = customerOrder;
-	}
 	public String getGstRate() {
 		return gstRate;
 	}
@@ -752,26 +721,12 @@ public class OrderingPDFCreator extends ITextUtils {
 		return codAddOns;
 	}
 
-    // BEGIN If Merge PDF Third Part
-//    public void mergePDF(String outputFile, String inputFile, String term) throws DocumentException, IOException{
-//    	String[] files = {inputFile, term }; 
-//    	Document document = new Document();
-//    	PdfCopy copy = new PdfCopy(document, new FileOutputStream(outputFile));
-//    	document.open();
-//    	PdfReader reader = null; 
-//    	int n; 
-//    	for (int i = 0; i < files.length; i++) {
-//    	  reader = new PdfReader(files[i]);
-//    	  n = reader.getNumberOfPages();
-//    	  for (int page = 0; page < n; ) {
-//    	    copy.addPage(copy.getImportedPage(reader, ++page));
-//    	  } 
-//    	}
-//    	copy.close();
-//    	reader.close();
-//    	document.close();
-//    }
-    // END If Merge PDF Third Part
-    
+	public CustomerOrder getCo() {
+		return co;
+	}
+
+	public void setCo(CustomerOrder co) {
+		this.co = co;
+	}
 	
 }

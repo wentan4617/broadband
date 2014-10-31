@@ -440,12 +440,14 @@ public class SystemController {
 		List<StatisticCustomer> weekRegisterStatistics = new ArrayList<StatisticCustomer>();
 		TMUtils.thisWeekDateForRegisterStatistic(weekRegisterStatistics);
 		
-		List<Customer> weekCustomers = this.systemService.queryCustomersByRegisterDate(
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("register_date1",
 				// monday
-				weekRegisterStatistics.get(0).getRegisterDate()
+				weekRegisterStatistics.get(0).getRegisterDate());
+		cQuery.getParams().put("register_date2",
 				// sunday
-				,weekRegisterStatistics.get(weekRegisterStatistics.size()-1).getRegisterDate()
-			);
+				weekRegisterStatistics.get(weekRegisterStatistics.size()-1).getRegisterDate());
+		List<Customer> weekCustomers = this.crmService.queryCustomers(cQuery);
 		for (StatisticCustomer registerCustomer : weekRegisterStatistics) {
 			for (Customer customer : weekCustomers) {
 				if(TMUtils.dateFormatYYYYMMDD(registerCustomer.getRegisterDate())
@@ -482,12 +484,14 @@ public class SystemController {
 		
 		List<StatisticCustomer> monthRegisterStatistics = new ArrayList<StatisticCustomer>();
 		TMUtils.thisMonthDateForRegisterStatistic(year, month, monthRegisterStatistics);
-		List<Customer> monthCustomers = this.systemService.queryCustomersByRegisterDate(
+		Customer cQueryMonth = new Customer();
+		cQueryMonth.getParams().put("register_date1",
 				// first date of month
-				monthRegisterStatistics.get(0).getRegisterDate()
+				monthRegisterStatistics.get(0).getRegisterDate());
+		cQueryMonth.getParams().put("register_date2",
 				// last date of month
-				,monthRegisterStatistics.get(monthRegisterStatistics.size()-1).getRegisterDate()
-			);
+				monthRegisterStatistics.get(monthRegisterStatistics.size()-1).getRegisterDate());
+		List<Customer> monthCustomers = this.crmService.queryCustomers(cQuery);
 		for (StatisticCustomer registerCustomer : monthRegisterStatistics) {
 			for (Customer customer : monthCustomers) {
 				

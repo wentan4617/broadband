@@ -44,7 +44,6 @@ import com.tm.broadband.mapper.ManualDefrayLogMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NZAreaCodeListMapper;
 import com.tm.broadband.mapper.NotificationMapper;
-import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.mapper.TerminationRefundMapper;
 import com.tm.broadband.mapper.TicketCommentMapper;
@@ -72,7 +71,6 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.ManualDefrayLog;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -110,7 +108,6 @@ public class CRMService {
 	private ProvisionLogMapper provisionLogMapper;
 	private CompanyDetailMapper companyDetailMapper;
 	private NotificationMapper notificationMapper;
-	private OrganizationMapper organizationMapper;
 	private ContactUsMapper contactUsMapper;
 	private ManualDefrayLogMapper manualDefrayLogMapper;
 	private CustomerCallRecordMapper customerCallRecordMapper;
@@ -150,7 +147,6 @@ public class CRMService {
 			MailerService mailerService,
 			NotificationMapper notificationMapper,
 			SmserService smserService,
-			OrganizationMapper organizationMapper,
 			ContactUsMapper contactUsMapper,
 			ManualDefrayLogMapper manualDefrayLogMapper,
 			CustomerCallRecordMapper customerCallRecordMapper,
@@ -182,7 +178,6 @@ public class CRMService {
 		this.mailerService = mailerService;
 		this.notificationMapper = notificationMapper;
 		this.smserService = smserService;
-		this.organizationMapper = organizationMapper;
 		this.contactUsMapper = contactUsMapper;
 		this.manualDefrayLogMapper = manualDefrayLogMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
@@ -391,11 +386,6 @@ public class CRMService {
 		this.customerMapper.insertCustomer(customer);
 		//System.out.println("customer id: " + customer.getId());
 		
-		if ("business".equals(customer.getCustomer_type())) {
-			customer.getOrganization().setCustomer_id(customer.getId());
-			this.organizationMapper.insertOrganization(customer.getOrganization());
-		}
-		
 		customer.getCustomerOrder().setCustomer_id(customer.getId());
 		
 		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
@@ -459,53 +449,51 @@ public class CRMService {
 		}
 	}
 	
-	public void registerCustomerCalling(Customer customer) {
-		
-		customer.setRegister_date(new Date());
-		customer.setActive_date(new Date());
-		
-		this.customerMapper.insertCustomer(customer);
-		//System.out.println("customer id: " + customer.getId());
-		
-		if ("business".equals(customer.getCustomer_type())) {
-			customer.getOrganization().setCustomer_id(customer.getId());
-			this.organizationMapper.insertOrganization(customer.getOrganization());
-			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
-			customer.getCustomerOrder().setIs_ddpay(true);
-		}
-		
-		customer.getCustomerOrder().setCustomer_id(customer.getId());
-		
-		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
-		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
-		
-		/*CustomerInvoice ci = new CustomerInvoice();
-		ci.setCustomer_id(customer.getId());
-		ci.setOrder_id(customer.getCustomerOrder().getId());
-		ci.setCreate_date(new Date(System.currentTimeMillis()));
-		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
-		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
-		ci.setAmount_paid(0d);
-		
-		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
-		ci.setStatus("unpaid");
-		
-		this.ciMapper.insertCustomerInvoice(ci);
-		customer.setCustomerInvoice(ci);*/
-		
-		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
-			cod.setOrder_id(customer.getCustomerOrder().getId());
-			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
-			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			//cid.setInvoice_id(ci.getId());
-			cid.setInvoice_detail_name(cod.getDetail_name());
-			cid.setInvoice_detail_desc(cod.getDetail_desc());
-			cid.setInvoice_detail_price(cod.getDetail_price());
-			cid.setInvoice_detail_unit(cod.getDetail_unit());
-			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
-		}
-		
-	}
+//	public void registerCustomerCalling(Customer customer, CustomerOrder co) {
+//		
+//		customer.setRegister_date(new Date());
+//		customer.setActive_date(new Date());
+//		
+//		this.customerMapper.insertCustomer(customer);
+//		//System.out.println("customer id: " + customer.getId());
+//		
+//		if ("business".equals(co.getCustomer_type())) {
+//			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
+//			customer.getCustomerOrder().setIs_ddpay(true);
+//		}
+//		
+//		customer.getCustomerOrder().setCustomer_id(customer.getId());
+//		
+//		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
+//		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
+//		
+//		/*CustomerInvoice ci = new CustomerInvoice();
+//		ci.setCustomer_id(customer.getId());
+//		ci.setOrder_id(customer.getCustomerOrder().getId());
+//		ci.setCreate_date(new Date(System.currentTimeMillis()));
+//		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
+//		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
+//		ci.setAmount_paid(0d);
+//		
+//		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
+//		ci.setStatus("unpaid");
+//		
+//		this.ciMapper.insertCustomerInvoice(ci);
+//		customer.setCustomerInvoice(ci);*/
+//		
+//		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
+//			cod.setOrder_id(customer.getCustomerOrder().getId());
+//			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
+//			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
+//			//cid.setInvoice_id(ci.getId());
+//			cid.setInvoice_detail_name(cod.getDetail_name());
+//			cid.setInvoice_detail_desc(cod.getDetail_desc());
+//			cid.setInvoice_detail_price(cod.getDetail_price());
+//			cid.setInvoice_detail_unit(cod.getDetail_unit());
+//			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
+//		}
+//		
+//	}
 	
 	@Transactional
 	public void saveCustomerOrder(Customer customer, CustomerOrder customerOrder, List<CustomerTransaction> cts) {
@@ -523,8 +511,6 @@ public class CRMService {
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		
 		if ("business".equals(customerOrder.getCustomer_type())) {
-			customerOrder.getOrganization().setOrder_id(customerOrder.getId());
-			this.organizationMapper.insertOrganization(customerOrder.getOrganization());
 			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() * 1.15);
 		}
 		
@@ -581,22 +567,34 @@ public class CRMService {
 
 	@Transactional
 	public Customer queryCustomer(Customer customer) {
-		return this.customerMapper.selectCustomer(customer);
+		List<Customer> cs = this.queryCustomers(customer);
+		return cs!=null && cs.size()>0 ? cs.get(0) : null;
 	}
 
 	@Transactional
 	public List<Customer> queryCustomers(Customer customer) {
 		return this.customerMapper.selectCustomers(customer);
 	}
-
-	@Transactional
-	public Customer queryCustomerById(int id) {
-		return this.customerMapper.selectCustomerById(id);
-	}
 	
 	@Transactional
 	public Customer queryCustomerByIdWithCustomerOrder(int id) {
-		return this.customerMapper.selectCustomerByIdWithCustomerOrder(id);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", id);
+		Customer c = this.queryCustomer(cQuery);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("customer_id", id);
+		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coQuery);
+		
+		// Retrieve 
+		for (int i=0; i<cos.size(); i++) {
+			CustomerOrderDetail codQuery = new CustomerOrderDetail();
+			codQuery.getParams().put("order_id", cos.get(i).getId());
+			List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetails(codQuery);
+			cos.get(i).setCustomerOrderDetails(cods);
+		}
+		
+		c.setCustomerOrders(cos);
+		return c;
 	}
 	
 	@Transactional
@@ -613,7 +611,7 @@ public class CRMService {
 	
 	@Transactional
 	public Customer queryCustomerWhenLogin(Customer c) {
-		Customer customer = this.customerMapper.selectCustomer(c);
+		Customer customer = this.queryCustomer(c);
 		/*if ("business".equals(customer.getCustomer_type())) {
 			customer.setOrganization(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 		}*/
@@ -710,10 +708,6 @@ public class CRMService {
 	@Transactional
 	public void editCustomer(Customer customer) {
 		this.customerMapper.updateCustomer(customer);
-		if ("business".equals(customer.getCustomer_type())) {
-			customer.getOrganization().getParams().put("customer_id", customer.getId());
-			this.organizationMapper.updateOrganization(customer.getOrganization());
-		}
 	}
 
 	@Transactional
@@ -749,19 +743,16 @@ public class CRMService {
 		// delete transaction
 		this.customerTransactionMapper.deleteCustomerTransactionByCustomerId(id);
 		
-		// delete related organization
-		this.organizationMapper.deleteOrganizationByCustomerId(id);
-		
 	}
 
-	@Transactional
-	public void createCustomer(Customer customer) {
-		this.customerMapper.insertCustomer(customer);
-		if ("business".equals(customer.getCustomer_type())) {
-			customer.getOrganization().setCustomer_id(customer.getId());
-			this.organizationMapper.insertOrganization(customer.getOrganization());
-		}
-	}
+//	@Transactional
+//	public void createCustomer(Customer customer) {
+//		this.customerMapper.insertCustomer(customer);
+//		if ("business".equals(customer.getCustomer_type())) {
+//			customer.getOrganization().setCustomer_id(customer.getId());
+//			this.organizationMapper.insertOrganization(customer.getOrganization());
+//		}
+//	}
 
 	@Transactional
 	public void createContactUs(ContactUs contactUs) {
@@ -803,11 +794,6 @@ public class CRMService {
 		// edit order detail
 		this.customerOrderDetailMapper.updateCustomerOrderDetail(cod);
 		
-	}
-	
-	@Transactional
-	public void editOrganization(Organization org){
-		this.organizationMapper.updateOrganization(org);
 	}
 
 	@Transactional 
@@ -1053,9 +1039,7 @@ public class CRMService {
 	public String createOrderingFormPDFByDetails(Customer c){
 		// call OrderPDFCreator
 		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
-		oPDFCreator.setCustomer(c);
-		oPDFCreator.setOrg(c.getOrganization());
-		oPDFCreator.setCustomerOrder(c.getCustomerOrder());
+		oPDFCreator.setCo(c.getCustomerOrder());
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
 		try {
@@ -1078,12 +1062,10 @@ public class CRMService {
 	/**
 	 * BEGIN createReceipt
 	 */
-	public String createReceiptPDFByDetails(Customer c){
+	public String createReceiptPDFByDetails(CustomerOrder co){
 		// call OrderPDFCreator
 		ReceiptPDFCreator rPDFCreator = new ReceiptPDFCreator();
-		rPDFCreator.setCustomer(c);
-		rPDFCreator.setOrg(c.getOrganization());
-		rPDFCreator.setCustomerOrder(c.getCustomerOrder());
+		rPDFCreator.setCo(co);
 
 		String pdfPath = "";
 		try {
@@ -1091,10 +1073,10 @@ public class CRMService {
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		CustomerOrder co = new CustomerOrder();
-		co.getParams().put("id", c.getCustomerOrder().getId());
-		co.setReceipt_pdf_path(pdfPath);
-		this.customerOrderMapper.updateCustomerOrder(co);
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.getParams().put("id", co.getId());
+		coUpdate.setReceipt_pdf_path(pdfPath);
+		this.customerOrderMapper.updateCustomerOrder(coUpdate);
 		
 		return pdfPath;
 	}
@@ -1116,7 +1098,9 @@ public class CRMService {
 		// get invoice details
 		ci.setCustomerInvoiceDetails(this.ciDetailMapper.selectCustomerInvoiceDetailsByCustomerInvoiceId(invoiceId));
 		// get customer details from invoice
-		Customer customer = ci.getCustomer();
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", ci.getOrder_id());
+		CustomerOrder co = this.queryCustomerOrder(coQuery);
 		// get necessary models end
 		
 		// If is overdue penalty
@@ -1134,9 +1118,8 @@ public class CRMService {
 		// initialize invoice's important informations
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCustomer(customer);
+		invoicePDF.setCo(co);
 		invoicePDF.setCurrentCustomerInvoice(ci);
-		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
 
 		// set file path
 		Map<String, Object> map = null;
@@ -1296,8 +1279,6 @@ public class CRMService {
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 			
 			// call mail at value retriever
-			Organization org = this.organizationMapper.selectOrganizationByCustomerId(co.getCustomer().getId());
-			co.getCustomer().setOrganization(org);
 
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, co.getCustomer(), co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
@@ -1309,7 +1290,7 @@ public class CRMService {
 			applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			
-			if("personal".equals(co.getCustomer().getCustomer_type())){
+			if("personal".equals(co.getCustomer_type())){
 				// get sms register template from db
 				MailRetriever.mailAtValueRetriever(notificationSMSFinal, co.getCustomer(), co, ci, companyDetail);
 				// send sms to customer's mobile phone
@@ -1319,7 +1300,6 @@ public class CRMService {
 			notificationEmailFinal = null;
 			notificationSMSFinal = null;
 			ci = null;
-			org = null;
 		}
 		notificationEmail = null;
 		notificationSMS = null;
@@ -1453,7 +1433,7 @@ public class CRMService {
 						
 						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer().getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 						
 					}
 				}
@@ -1461,7 +1441,7 @@ public class CRMService {
 				if(voip_numbers.size() > 0){
 					
 					for (String voip_number : voip_numbers) {
-						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer().getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
 						
 					}
 				}
@@ -1492,10 +1472,7 @@ public class CRMService {
 					}
 
 					invoicePDF.setCompanyDetail(companyDetail);
-					invoicePDF.setCustomer(co.getCustomer());
-					Organization org = new Organization();
-					org.setCustomer_id(co.getCustomer_id());
-					invoicePDF.setOrg(org);
+					invoicePDF.setCo(co);
 					invoicePDF.setCurrentCustomerInvoice(ci);
 					
 					String filePath = null;
@@ -1535,11 +1512,10 @@ public class CRMService {
 			, Date terminatedDate
 			, Integer executor_id) throws ParseException{
 		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
-		Customer c = co.getCustomer();
 		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(co.getOrder_using_start(), terminatedDate);
 		
 		EarlyTerminationCharge etc = new EarlyTerminationCharge();
-		etc.setCustomer_id(c.getId());
+		etc.setCustomer_id(co.getCustomer_id());
 		etc.setOrder_id(co.getId());
 		etc.setCreate_date(new Date());
 		etc.setService_given_date(co.getOrder_using_start());
@@ -1559,8 +1535,7 @@ public class CRMService {
 		String invoicePDFPath = "";
 		try {
 			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
-			Organization org = c.getOrganization();
-			invoicePDFPath = new EarlyTerminationChargePDFCreator(cd, c, org, etc).create();
+			invoicePDFPath = new EarlyTerminationChargePDFCreator(cd, co, etc).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -1573,11 +1548,10 @@ public class CRMService {
 	public void createTerminationRefundInvoice(Integer order_id
 			, Date terminatedDate, User u, String accountNo, String accountName, Double monthlyCharge, String productName) throws ParseException{
 		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
-		Customer c = co.getCustomer();
 		Map<String, Object> map = TMUtils.terminationRefundCalculations(terminatedDate, monthlyCharge);
 		
 		TerminationRefund tr = new TerminationRefund();
-		tr.setCustomer_id(c.getId());
+		tr.setCustomer_id(co.getCustomer_id());
 		tr.setOrder_id(co.getId());
 		tr.setCreate_date(new Date());
 		tr.setTermination_date(terminatedDate);
@@ -1597,8 +1571,7 @@ public class CRMService {
 		String refundPDFPath = "";
 		try {
 			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
-			Organization org = c.getOrganization();
-			refundPDFPath = new TerminationRefundPDFCreator(cd, c, org, tr, u).create();
+			refundPDFPath = new TerminationRefundPDFCreator(cd, co, tr, u).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -2057,8 +2030,7 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCustomer(c);
-		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+		invoicePDF.setCo(co);
 		
 		if(pstn_numbers.size() > 0){
 			
@@ -2066,7 +2038,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 				
 			}
 		}
@@ -2074,7 +2046,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
 				
 			}
 		}
@@ -2217,7 +2189,7 @@ public class CRMService {
 			
 			for (CustomerOrder co : cos) {
 				
-				if("business".equals(co.getCustomer().getCustomer_type())){
+				if("business".equals(co.getCustomer_type())){
 					
 					Calendar lastMonthMaxDate = Calendar.getInstance();
 					lastMonthMaxDate.add(Calendar.MONTH, -1);
@@ -2256,7 +2228,7 @@ public class CRMService {
 		// BEGIN get usable beans
 		// Customer
 		Customer c = co.getCustomer();
-		boolean isBusiness = "business".toUpperCase().equals(c.getCustomer_type().toUpperCase());
+		boolean isBusiness = "business".toUpperCase().equals(co.getCustomer_type().toUpperCase());
 		
 		// Current invoice
 		CustomerInvoice ci = new CustomerInvoice();
@@ -2534,7 +2506,7 @@ public class CRMService {
 					continue;
 				}
 				
-				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && c.getCustomer_type().equals("business")) {
+				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && co.getCustomer_type().equals("business")) {
 					
 					// if is next invoice then plus one month else plus unit month(s)
 					int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
@@ -2585,7 +2557,7 @@ public class CRMService {
 						
 						// If is old order than use old logic, service from 1th to last day of the month.
 						if((co.getOrder_serial()!=null && co.getOrder_serial().contains("old"))
-						  || c.getCustomer_type().equals("business")){
+						  || co.getCustomer_type().equals("business")){
 							// Add first day as begin date and last day as end date
 							cal.set(Calendar.DAY_OF_MONTH, 1);
 							startFrom = cal.getTime();
@@ -2729,8 +2701,7 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCustomer(c);
-		invoicePDF.setOrg(organizationMapper.selectOrganizationByCustomerId(c.getId()));
+		invoicePDF.setCo(co);
 
 
 		
@@ -2740,7 +2711,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 				
 			}
 		}
@@ -2749,7 +2720,7 @@ public class CRMService {
 			
 			for (String voip_number : voip_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, c.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
 				
 			}
 		}
@@ -2759,7 +2730,7 @@ public class CRMService {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if((cpi!=null && cpi.getBalance()>0) && "business".equals(c.getCustomer_type())){
+		if((cpi!=null && cpi.getBalance()>0) && "business".equals(co.getCustomer_type())){
 			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
 		}
 		
@@ -2870,7 +2841,7 @@ public class CRMService {
 
 		Customer customer = customerOrder.getCustomer();
 
-		boolean isBusiness = "business".toUpperCase().equals(customer.getCustomer_type().toUpperCase());
+		boolean isBusiness = "business".toUpperCase().equals(customerOrder.getCustomer_type().toUpperCase());
 		
 		// current invoice model
 		CustomerInvoice ci = new CustomerInvoice();
@@ -3068,7 +3039,7 @@ public class CRMService {
 						
 						// If is old order than use old logic, service from 1th to last day of the month.
 						if((customerOrder.getOrder_serial()!=null && customerOrder.getOrder_serial().contains("old"))
-						  || "business".equals(customer.getCustomer_type())){
+						  || "business".equals(customerOrder.getCustomer_type())){
 							// Add first day to last day
 							cal.set(Calendar.DAY_OF_MONTH, 1);
 							startFrom = cal.getTime();
@@ -3213,10 +3184,8 @@ public class CRMService {
 			}
 		}
 		
-		Organization org = this.organizationMapper.selectOrganizationByCustomerId(customer.getId());
 		invoicePDF.setCompanyDetail(companyDetail);
-		invoicePDF.setCustomer(customer);
-		invoicePDF.setOrg(this.organizationMapper.selectOrganizationByCustomerId(customer.getId()));
+		invoicePDF.setCo(customerOrder);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
 		
@@ -3226,7 +3195,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customer.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type());
 				
 			}
 		}
@@ -3234,7 +3203,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customer.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customerOrder.getCustomer_type());
 				
 			}
 		}
@@ -3243,7 +3212,7 @@ public class CRMService {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if(cpi!=null && cpi.getBalance()!=null && cpi.getBalance()>0 && (customer.getCustomer_type()!=null && "business".equals(customer.getCustomer_type()))){
+		if(cpi!=null && cpi.getBalance()!=null && cpi.getBalance()>0 && (customerOrder.getCustomer_type()!=null && "business".equals(customerOrder.getCustomer_type()))){
 			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
 		}
 
@@ -3336,7 +3305,6 @@ public class CRMService {
 		if(!isRegenerate){
 			
 			// call mail at value retriever
-			customer.setOrganization(org);
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(customer.getEmail());
@@ -3411,24 +3379,6 @@ public class CRMService {
 	 * END CustomerTransaction
 	 */
 	
-	
-	/**
-	 * BEGIN Organization
-	 */
-	
-	@Transactional
-	public Organization queryOrganizationByCustomerId(int customer_id){
-		return this.organizationMapper.selectOrganizationByCustomerId(customer_id);
-	}
-	
-	@Transactional
-	public void createOrganization(Organization org){
-		this.organizationMapper.insertOrganization(org);
-	}
-	
-	/**
-	 * END Organization
-	 */
 
 	@Transactional 
 	public String queryCustomerPreviousProviderInvoiceFilePathById(int id){
@@ -3497,7 +3447,7 @@ public class CRMService {
 	 * BEGIN CustomerServiceGivenPaid
 	 */
 	@Transactional
-	public String serviceGivenPaid(Customer c, Organization org, CustomerOrder co, CompanyDetail cd, User u){
+	public String serviceGivenPaid(Customer c, CustomerOrder co, CompanyDetail cd, User u){
 		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(co.getId());
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 		
@@ -3505,7 +3455,9 @@ public class CRMService {
 		// If is customer invite customer
 		if(coQuery.getInviter_customer_id()!=null){
 			Double customer_inviter_gained_commission = TMUtils.bigMultiply(TMUtils.bigDivide(coQuery.getInviter_rate(), 100d), coQuery.getOrder_total_price());
-			Customer cUpdate = this.queryCustomerById(coQuery.getInviter_customer_id());
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", coQuery.getInviter_customer_id());
+			Customer cUpdate = this.queryCustomer(cQuery);
 			cUpdate.setBalance(TMUtils.bigAdd(cUpdate.getBalance()!=null ? cUpdate.getBalance() : 0d, customer_inviter_gained_commission));
 			cUpdate.getParams().put("id", cUpdate.getId());
 			this.editCustomer(cUpdate);
@@ -3631,11 +3583,10 @@ public class CRMService {
 		
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(cd);
-		invoicePDF.setCustomer(c);
-		invoicePDF.setOrg(org);
+		invoicePDF.setCo(co);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 
-		ci.setAmount_payable("personal".toUpperCase().equals(c.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setAmount_payable("personal".toUpperCase().equals(co.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
 		ci.setFinal_payable_amount(TMUtils.bigSub(ci.getAmount_payable(), totalCreditBack));
 		Double amount_paid = c.getBalance()>=ci.getFinal_payable_amount() ? ci.getFinal_payable_amount() : ci.getAmount_paid() == null ? 0d : ci.getAmount_paid();
 		ci.setAmount_paid(amount_paid<=0 ? 0 : amount_paid);
@@ -3717,7 +3668,7 @@ public class CRMService {
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c,  customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
@@ -3736,7 +3687,7 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customerOrder, cd);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
@@ -3763,7 +3714,7 @@ public class CRMService {
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c,  customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
@@ -3771,7 +3722,7 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customerOrder, cd);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
 		}
@@ -3834,15 +3785,21 @@ public class CRMService {
 //			System.out.println("cisThirdFifth: ");
 			for (CustomerInvoice ci : cisThirdFifth) {
 				
-				Customer c = this.queryCustomerById(ci.getCustomer_id());
+				Customer cQuery = new Customer();
+				cQuery.getParams().put("id", ci.getCustomer_id());
+				Customer c = this.queryCustomer(cQuery);
 				
-				if("personal".equals(c.getCustomer_type())){
+				CustomerOrder coQuery = new CustomerOrder();
+				coQuery.getParams().put("id", ci.getOrder_id());
+				CustomerOrder co = this.queryCustomerOrder(coQuery);
+				
+				if("personal".equals(co.getCustomer_type())){
 
 					// Prevent template pollution
 					Notification emailThirdFifthFinal = new Notification(emailThirdFifth.getTitle(), emailThirdFifth.getContent());
 					Notification smsThirdFifthFinal = new Notification(smsThirdFifth.getTitle(), smsThirdFifth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
 					applicationEmail.setAddressee(c.getEmail());
 					applicationEmail.setSubject(emailThirdFifthFinal.getTitle());
@@ -3852,7 +3809,7 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, co, ci, cd);
 					// send sms to customer's mobile phone
 					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsThirdFifthFinal.getContent());
 					
@@ -3868,15 +3825,21 @@ public class CRMService {
 				calSuspend.add(Calendar.DATE, 9);
 				ci.setSuspend_date_str(TMUtils.dateFormatYYYYMMDD(calSuspend.getTime()));
 				
-				Customer c = this.queryCustomerById(ci.getCustomer_id());
+				Customer cQuery = new Customer();
+				cQuery.getParams().put("id", ci.getCustomer_id());
+				Customer c = this.queryCustomer(cQuery);
 				
-				if("personal".equals(c.getCustomer_type())){
+				CustomerOrder coQuery = new CustomerOrder();
+				coQuery.getParams().put("id", ci.getOrder_id());
+				CustomerOrder co = this.queryCustomerOrder(coQuery);
+				
+				if("personal".equals(co.getCustomer_type())){
 	
 					// Prevent template pollution
 					Notification emailEighthNinthFinal = new Notification(emailEighthNinth.getTitle(), emailEighthNinth.getContent());
 					Notification smsEighthNinthFinal = new Notification(smsEighthNinth.getTitle(), smsEighthNinth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
 					applicationEmail.setAddressee(c.getEmail());
 					applicationEmail.setSubject(emailEighthNinthFinal.getTitle());
@@ -3886,7 +3849,7 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 	
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, co, ci, cd);
 					// send sms to customer's mobile phone
 					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsEighthNinthFinal.getContent());
 					
@@ -3903,16 +3866,22 @@ public class CRMService {
 				calDisconnect.setTime(ci.getCreate_date());
 				calDisconnect.add(Calendar.DATE, 11);
 				ci.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(calDisconnect.getTime()));
+
+				Customer cQuery = new Customer();
+				cQuery.getParams().put("id", ci.getCustomer_id());
+				Customer c = this.queryCustomer(cQuery);
 				
-				Customer c = this.queryCustomerById(ci.getCustomer_id());
+				CustomerOrder coQuery = new CustomerOrder();
+				coQuery.getParams().put("id", ci.getOrder_id());
+				CustomerOrder co = this.queryCustomerOrder(coQuery);
 				
-				if("personal".equals(c.getCustomer_type())){
+				if("personal".equals(co.getCustomer_type())){
 	
 					// Prevent template pollution
 					Notification emailTenthFinal = new Notification(emailTenth.getTitle(), emailTenth.getContent());
 					Notification smsTenthFinal = new Notification(smsTenth.getTitle(), smsTenth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailTenthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailTenthFinal, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
 					applicationEmail.setAddressee(c.getEmail());
 					applicationEmail.setSubject(emailTenthFinal.getTitle());
@@ -3922,7 +3891,7 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 	
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsTenthFinal, c, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsTenthFinal, co, ci, cd);
 					// send sms to customer's mobile phone
 					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsTenthFinal.getContent());
 					
@@ -4034,7 +4003,7 @@ public class CRMService {
 			cod_conn.setMonthly(false);
 			cod_conn.setDetail_name("Broadband New Connection");
 			
-			if ("personal".equals(customer.getCustomer_type())) {
+			if ("personal".equals(customerOrder.getCustomer_type())) {
 				
 				if ("12 months contract".equals(customerOrder.getContract())) {
 					 if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
@@ -4062,7 +4031,7 @@ public class CRMService {
 						cod_conn.setDetail_price(0d);
 					}
 				}
-			} else if ("business".equals(customer.getCustomer_type())) {
+			} else if ("business".equals(customerOrder.getCustomer_type())) {
 				service_price = 0d;
 				cod_conn.setDetail_price(0d);
 			}
@@ -4096,7 +4065,7 @@ public class CRMService {
 				
 				CustomerOrderDetail cod_pstn = new CustomerOrderDetail();
 				cod_pstn.setMonthly(false);
-				if ("business".equals(customer.getCustomer_type())) {
+				if ("business".equals(customerOrder.getCustomer_type())) {
 					cod_pstn.setDetail_name("BusinessLine");
 				} else {
 					cod_pstn.setDetail_name("HomeLine");
@@ -4272,9 +4241,9 @@ public class CRMService {
 			cod_promotion.setDetail_desc(customer.getIr().getInvitee_rate().intValue() + "% off the total price. all-forms");
 			
 			Double total = 0d;
-			if ("personal".equals(customer.getCustomer_type())) {
+			if ("personal".equals(customerOrder.getCustomer_type())) {
 				total = plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() - discount_price.intValue() + addons_price.intValue();
-			} else if ("business".equals(customer.getCustomer_type())) {
+			} else if ("business".equals(customerOrder.getCustomer_type())) {
 				total = (plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue()) * 1.15 - discount_price.intValue();
 			}
 			
@@ -4296,9 +4265,9 @@ public class CRMService {
 			}
 		}
 		
-		if ("personal".equals(customer.getCustomer_type())) {
+		if ("personal".equals(customerOrder.getCustomer_type())) {
 			customerOrder.setOrder_total_price(plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue() - discount_price.intValue() - promotion_price.intValue());
-		} else if ("business".equals(customer.getCustomer_type())) {
+		} else if ("business".equals(customerOrder.getCustomer_type())) {
 			customerOrder.setOrder_total_price((plan_price * customerOrder.getPrepay_months() + service_price.intValue() + modem_price.intValue() + addons_price.intValue()) * 1.15 - discount_price.intValue() - promotion_price.intValue());
 		}
 		
@@ -4324,8 +4293,10 @@ public class CRMService {
 		}
 		
 		Double face_value = v.getFace_value();
-		
-		Customer c = this.queryCustomerById(customer_id);
+
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer c = this.queryCustomer(cQuery);
 		c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, face_value));
 		c.getParams().put("id", customer_id);
 		this.editCustomer(c);

@@ -16,7 +16,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -47,17 +45,13 @@ import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
-import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
-import com.tm.broadband.model.Voucher;
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
 import com.tm.broadband.paymentexpress.PxPay;
-import com.tm.broadband.paymentexpress.Response;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
@@ -87,19 +81,19 @@ public class CRMController {
 		this.smserService = smserService;
 	}
 
-	@RequestMapping("/broadband-user/crm/customer/view")
-	public String toCustomerView(SessionStatus status,
+	@RequestMapping("/broadband-user/crm/customer/order/view")
+	public String toCustomerOrderView(SessionStatus status,
 			Model model) {
 		status.setComplete();
 		
-		Page<Customer> cPageQuery = new Page<Customer>();
-		model.addAttribute("allSum", this.crmService.queryCustomersSumByPage(cPageQuery));
-		cPageQuery.getParams().put("customer_type", "personal");
-		model.addAttribute("personalSum", this.crmService.queryCustomersSumByPage(cPageQuery));
-		cPageQuery.getParams().put("customer_type", "business");
-		model.addAttribute("businessSum", this.crmService.queryCustomersSumByPage(cPageQuery));
+		Page<CustomerOrder> coPageQuery = new Page<CustomerOrder>();
+		model.addAttribute("allSum", this.crmService.queryCustomerOrdersSumByPage(coPageQuery));
+		coPageQuery.getParams().put("customer_type", "personal");
+		model.addAttribute("personalSum", this.crmService.queryCustomerOrdersSumByPage(coPageQuery));
+		coPageQuery.getParams().put("customer_type", "business");
+		model.addAttribute("businessSum", this.crmService.queryCustomerOrdersSumByPage(coPageQuery));
 		
-		return "broadband-user/crm/customer-view";
+		return "broadband-user/crm/customer-order-view";
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/edit/{id}")
@@ -227,24 +221,24 @@ public class CRMController {
      */
     
 	// send invoice PDF directly
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}/{customerId}")
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/send/{invoiceId}/{orderId}")
 	public String sendInvoicePDF(Model model,
 			@PathVariable(value = "invoiceId") int invoiceId,
-			@PathVariable(value = "customerId") int customerId) {
+			@PathVariable(value = "orderId") int orderId) {
 		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
-		Customer customer = this.crmService.queryCustomerById(customerId);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", orderId);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
 		Notification notification = this.systemService.queryNotificationBySort("invoice", "email");
 		CustomerInvoice inv = this.crmService.queryCustomerInvoiceById(invoiceId);
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
-		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
-		customer.setOrganization(org);
-		MailRetriever.mailAtValueRetriever(notification, customer, inv, company);
+		MailRetriever.mailAtValueRetriever(notification, co, inv, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setAddressee(co.getEmail());
 		// subject
 		applicationEmail.setSubject(notification.getTitle());
 		// content
@@ -257,12 +251,12 @@ public class CRMController {
 		// send mail
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
+		coQuery = null;
+		co = null;
 		filePath = null;
-		customer = null;
 		notification = null;
 		inv = null;
 		company = null;
-		org = null;
 		applicationEmail = null;
 		
 		return "broadband-user/progress-accomplished";
@@ -299,34 +293,34 @@ public class CRMController {
 	}
 	
 
-	@RequestMapping(value = "/broadband-user/crm/customer/order/create")
-	public String toCustomerOrderCreate(Model model,
-			@ModelAttribute("customer") Customer customer,
-			BindingResult result) {
-
-		if (result.hasErrors()) {
-			if ("personal".equals(customer.getCustomer_type())) {
-				return "broadband-user/crm/customer-create-personal";
-			} else if ("business".equals(customer.getType())) {
-				return "broadband-user/crm/customer-create-business";
-			}
-		}
-		model.addAttribute("customerOrder", new CustomerOrder());
-		
-		Plan plan = new Plan();
-		//plan.getParams().put("plan_status", "active");
-		plan.getParams().put("orderby", "order by plan_type");
-		plan.getParams().put("plan_class", customer.getCustomer_type());
-		List<Plan> plans = this.planService.queryPlans(plan);
-		model.addAttribute("plans", plans);
-
-		Hardware hardware = new Hardware();
-		//hardware.getParams().put("hardware_status", "active");
-		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
-		model.addAttribute("hardwares", hardwares);
-
-		return "broadband-user/crm/order-create";
-	}
+//	@RequestMapping(value = "/broadband-user/crm/customer/order/create")
+//	public String toCustomerOrderCreate(Model model,
+//			@ModelAttribute("customer") Customer customer,
+//			BindingResult result) {
+//
+//		if (result.hasErrors()) {
+//			if ("personal".equals(customer.getCustomer_type())) {
+//				return "broadband-user/crm/customer-create-personal";
+//			} else if ("business".equals(customer.getType())) {
+//				return "broadband-user/crm/customer-create-business";
+//			}
+//		}
+//		model.addAttribute("customerOrder", new CustomerOrder());
+//		
+//		Plan plan = new Plan();
+//		//plan.getParams().put("plan_status", "active");
+//		plan.getParams().put("orderby", "order by plan_type");
+//		plan.getParams().put("plan_class", customer.getCustomer_type());
+//		List<Plan> plans = this.planService.queryPlans(plan);
+//		model.addAttribute("plans", plans);
+//
+//		Hardware hardware = new Hardware();
+//		//hardware.getParams().put("hardware_status", "active");
+//		List<Hardware> hardwares = this.planService.queryHardwares(hardware);
+//		model.addAttribute("hardwares", hardwares);
+//
+//		return "broadband-user/crm/order-create";
+//	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/create", method = RequestMethod.POST)
 	public String doCustomerOrderCreate(Model model,
@@ -551,86 +545,86 @@ public class CRMController {
 		return "broadband-user/crm/order-create";
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
-	public String orderSave(Model model,
-			@ModelAttribute("customer") Customer customer, 
-			@ModelAttribute("customerOrder") CustomerOrder customerOrder,
-			RedirectAttributes attr, SessionStatus status,
-			HttpServletRequest req) {
-		
-		customer.setPassword(TMUtils.generateRandomString(6));
-		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
-		customer.setUser_name(customer.getLogin_name());
-		customerOrder.setOrder_status("pending");
-		customerOrder.setOrder_type(customerOrder.getPlan().getPlan_group().replace("plan", "order"));
-		
-		User user = (User) req.getSession().getAttribute("userSession");
-		customerOrder.setUser_id(user.getId());
-		
-		this.crmService.registerCustomerCalling(customer);
-		
-		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
-		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
-		applicationEmail.setAttachPath(orderingPath);
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-		
-		/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
-
-		String filePath = TMUtils.createPath(
-				"broadband" 
-				+ File.separator
-				+ "customers" + File.separator + customer.getId()
-				+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
-		
-		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-		customer.setOrganization(org);
-		// call mail at value retriever
-		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
-		applicationEmail.setAddressee(customer.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		// binding attachment name & path to email
-		applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
-		applicationEmail.setAttachPath(filePath);
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		
-		// get sms register template from db
-		notification = this.crmService.queryNotificationBySort("register-post-pay", "sms");
-		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
-		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());*/
-		//status.setComplete();
-		
-		if ("personal".equals(customer.getCustomer_type())) {
-			attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
-		} else if ("business".equals(customer.getCustomer_type())){
-			attr.addFlashAttribute("success", "Create Customer " + customer.getOrganization().getOrg_name() + " is successful.");
-		}
-		
-		
-		status.setComplete();
-		
-		user = null;
-		notification = null;
-		applicationEmail = null;
-		companyDetail = null;
-		/*org = null;*/
-		
-		return "redirect:/broadband-user/crm/customer/view";
-	}
+//	@RequestMapping(value = "/broadband-user/crm/customer/order/confirm/save")
+//	public String orderSave(Model model,
+//			@ModelAttribute("customer") Customer customer, 
+//			@ModelAttribute("customerOrder") CustomerOrder customerOrder,
+//			RedirectAttributes attr, SessionStatus status,
+//			HttpServletRequest req) {
+//		
+//		customer.setPassword(TMUtils.generateRandomString(6));
+//		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
+//		customer.setUser_name(customer.getLogin_name());
+//		customerOrder.setOrder_status("pending");
+//		customerOrder.setOrder_type(customerOrder.getPlan().getPlan_group().replace("plan", "order"));
+//		
+//		User user = (User) req.getSession().getAttribute("userSession");
+//		customerOrder.setUser_id(user.getId());
+//		
+//		this.crmService.registerCustomerCalling(customer, customerOrder);
+//		
+//		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+//		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerOrder.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+//		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail); // call mail at value retriever
+//		ApplicationEmail applicationEmail = new ApplicationEmail();
+//		applicationEmail.setAddressee(customer.getEmail());
+//		applicationEmail.setSubject(notification.getTitle());
+//		applicationEmail.setContent(notification.getContent());
+//		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+//		applicationEmail.setAttachPath(orderingPath);
+//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//		notification = this.systemService.queryNotificationBySort("personal".equals(customerOrder.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
+//		MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+//		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+//		
+//		/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+//
+//		String filePath = TMUtils.createPath(
+//				"broadband" 
+//				+ File.separator
+//				+ "customers" + File.separator + customer.getId()
+//				+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+//		
+//		Notification notification = this.crmService.queryNotificationBySort("register-post-pay", "email");
+//		ApplicationEmail applicationEmail = new ApplicationEmail();
+//		CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+//		customer.setOrganization(org);
+//		// call mail at value retriever
+//		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+//		applicationEmail.setAddressee(customer.getEmail());
+//		applicationEmail.setSubject(notification.getTitle());
+//		applicationEmail.setContent(notification.getContent());
+//		// binding attachment name & path to email
+//		applicationEmail.setAttachName("invoice_" + customer.getCustomerInvoice().getId() + ".pdf");
+//		applicationEmail.setAttachPath(filePath);
+//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//		
+//		// get sms register template from db
+//		notification = this.crmService.queryNotificationBySort("register-post-pay", "sms");
+//		MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+//		// send sms to customer's mobile phone
+//		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());*/
+//		//status.setComplete();
+//		
+//		if ("personal".equals(customerOrder.getCustomer_type())) {
+//			attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+//		} else if ("business".equals(customerOrder.getCustomer_type())){
+//			attr.addFlashAttribute("success", "Create Customer " + customerOrder.getOrg_name() + " is successful.");
+//		}
+//		
+//		
+//		status.setComplete();
+//		
+//		user = null;
+//		notification = null;
+//		applicationEmail = null;
+//		companyDetail = null;
+//		/*org = null;*/
+//		
+//		return "redirect:/broadband-user/crm/customer/view";
+//	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/checkout", method = RequestMethod.POST)
 	public String orderCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
@@ -638,7 +632,7 @@ public class CRMController {
 			@ModelAttribute("customerOrder") CustomerOrder customerOrder
 			) { // @Validated(CustomerValidatedMark.class)  , BindingResult result
 		
-		if ("business".equals(customer.getCustomer_type())) {
+		if ("business".equals(customerOrder.getCustomer_type())) {
 			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
 		}
 		
@@ -665,100 +659,100 @@ public class CRMController {
 		return "redirect:" + redirectUrl;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/order/checkout")
-	public String toSignupPayment(Model model,
-			@ModelAttribute("customer") Customer customer, 
-			@ModelAttribute("customerOrder") CustomerOrder customerOrder, 
-			RedirectAttributes attr,
-			@RequestParam(value = "result", required = true) String result,
-			SessionStatus status
-			) throws Exception {
-		
-		String url = "redirect:/order/result/error";
-
-		Response responseBean = null;
-
-		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-
-		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-			
-			url = "redirect:/broadband-user/crm/customer/view";
-			
-			customer.setStatus("active");
-			customer.setUser_name(customer.getLogin_name());
-			customer.setPassword(TMUtils.generateRandomString(6));
-			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
-			//customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
-			
-			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
-
-			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-			customerTransaction.setCard_name(responseBean.getCardName());
-			customerTransaction.setCard_number(responseBean.getCardNumber());
-			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-			customerTransaction.setResponse_text(responseBean.getResponseText());
-			customerTransaction.setSuccess(responseBean.getSuccess());
-			customerTransaction.setTxnMac(responseBean.getTxnMac());
-			customerTransaction.setTransaction_type(responseBean.getTxnType());
-			customerTransaction.setTransaction_sort(customer.getCustomerOrder().getPlan().getPlan_group());
-			
-			cts.add(customerTransaction);
-			
-			customer.getCustomerOrder().setOrder_status("paid");
-			this.crmService.registerCustomer(customer, cts);
-			
-			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
-			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
-			
-			/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
-
-			String filePath = TMUtils.createPath(
-					"broadband" 
-					+ File.separator
-					+ "customers" + File.separator + customer.getId()
-					+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");*/
-			
-			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
-			applicationEmail.setAddressee(customer.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			// binding attachment name & path to email
-			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
-			applicationEmail.setAttachPath(receiptPath);
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			
-			// get sms register template from db
-			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-			if ("personal".equals(customer.getCustomer_type())) {
-				attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
-			} else if ("business".equals(customer.getCustomer_type())){
-				attr.addFlashAttribute("success", "Create Customer " + customer.getOrganization().getOrg_name() + " is successful.");
-			}
-			status.setComplete();
-		} else {
-			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
-		}
-		
-		attr.addFlashAttribute("responseBean", responseBean);
-
-		return url; //"redirect:/order/result";
-	}
+//	@RequestMapping(value = "/broadband-user/crm/customer/order/checkout")
+//	public String toSignupPayment(Model model,
+//			@ModelAttribute("customer") Customer customer, 
+//			@ModelAttribute("customerOrder") CustomerOrder customerOrder, 
+//			RedirectAttributes attr,
+//			@RequestParam(value = "result", required = true) String result,
+//			SessionStatus status
+//			) throws Exception {
+//		
+//		String url = "redirect:/order/result/error";
+//
+//		Response responseBean = null;
+//
+//		if (result != null)
+//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+//
+//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+//			
+//			url = "redirect:/broadband-user/crm/customer/view";
+//			
+//			customer.setStatus("active");
+//			customer.setUser_name(customer.getLogin_name());
+//			customer.setPassword(TMUtils.generateRandomString(6));
+//			customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
+//			//customer.setBalance(plan.getTopup().getTopup_fee() == null ? 0 : plan.getTopup().getTopup_fee());
+//			
+//			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
+//
+//			CustomerTransaction customerTransaction = new CustomerTransaction();
+//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setAuth_code(responseBean.getAuthCode());
+//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+//			customerTransaction.setCard_name(responseBean.getCardName());
+//			customerTransaction.setCard_number(responseBean.getCardNumber());
+//			customerTransaction.setClient_info(responseBean.getClientInfo());
+//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+//			customerTransaction.setResponse_text(responseBean.getResponseText());
+//			customerTransaction.setSuccess(responseBean.getSuccess());
+//			customerTransaction.setTxnMac(responseBean.getTxnMac());
+//			customerTransaction.setTransaction_type(responseBean.getTxnType());
+//			customerTransaction.setTransaction_sort(customer.getCustomerOrder().getPlan().getPlan_group());
+//			
+//			cts.add(customerTransaction);
+//			
+//			customer.getCustomerOrder().setOrder_status("paid");
+//			this.crmService.registerCustomer(customer, cts);
+//			
+//			String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
+//			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+//			
+//			/*this.crmService.createInvoicePDFByInvoiceID(customer.getCustomerInvoice().getId(), false);
+//
+//			String filePath = TMUtils.createPath(
+//					"broadband" 
+//					+ File.separator
+//					+ "customers" + File.separator + customer.getId()
+//					+ File.separator + "invoice_" + customer.getCustomerInvoice().getId() + ".pdf");*/
+//			
+//			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//			// call mail at value retriever
+//			MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerInvoice(), companyDetail);
+//			applicationEmail.setAddressee(customer.getEmail());
+//			applicationEmail.setSubject(notification.getTitle());
+//			applicationEmail.setContent(notification.getContent());
+//			// binding attachment name & path to email
+//			applicationEmail.setAttachName("receipt_" + customer.getCustomerOrder().getId() + ".pdf");
+//			applicationEmail.setAttachPath(receiptPath);
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//			
+//			// get sms register template from db
+//			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+//			MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+//			if ("personal".equals(customerOrder.getCustomer_type())) {
+//				attr.addFlashAttribute("success", "Create Customer " + customer.getLast_name() + " " + customer.getFirst_name() + " is successful.");
+//			} else if ("business".equals(customerOrder.getCustomer_type())){
+//				attr.addFlashAttribute("success", "Create Customer " + customer.getOrganization().getOrg_name() + " is successful.");
+//			}
+//			status.setComplete();
+//		} else {
+//			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+//		}
+//		
+//		attr.addFlashAttribute("responseBean", responseBean);
+//
+//		return url; //"redirect:/order/result";
+//	}
 	
 	/**
 	 * END back-end create customer model
@@ -805,159 +799,161 @@ public class CRMController {
 		return "redirect:" + redirectUrl;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/result/{id}/{redirect_from}/{invoice_status}")
-	public String toSignupPayment(Model model
-			,@PathVariable("id") Integer id
-			,@PathVariable("redirect_from") String redirect_from
-			,@PathVariable("invoice_status") String invoice_status
-			, RedirectAttributes attr
-			,@RequestParam(value = "result", required = true) String result
-			,SessionStatus status
-			,HttpServletRequest req
-			) throws Exception {
-		
-		Response responseBean = null;
-		CustomerInvoice customerInvoice = null;
-		CustomerOrder customerOrder = null;
-		Integer customer_id = 0;
-		Integer order_id = 0;
-		String txSort = "";
-		
-		if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
-			customerInvoice = this.crmService.queryCustomerInvoiceById(id);
-			customer_id = customerInvoice.getCustomer_id();
-			order_id = customerInvoice.getOrder_id();
-			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerInvoice.getOrder_id());
-		} else if("agent_ordering".equals(redirect_from)) {
-			customerOrder = this.crmService.queryCustomerOrderById(id);
-			customer_id = customerOrder.getCustomer_id();
-			order_id = customerOrder.getId();
-			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerOrder.getId());
-		}
-		
-		Customer customer = this.crmService.queryCustomerById(customer_id);
-
-		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-
-		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-
-			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-			customerTransaction.setCard_name(responseBean.getCardName());
-			customerTransaction.setCard_number(responseBean.getCardNumber());
-			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-			customerTransaction.setResponse_text(responseBean.getResponseText());
-			customerTransaction.setSuccess(responseBean.getSuccess());
-			customerTransaction.setTxnMac(responseBean.getTxnMac());
-			customerTransaction.setTransaction_type(responseBean.getTxnType());
-			customerTransaction.setCustomer_id(customer.getId());
-			customerTransaction.setTransaction_sort(txSort);
-			customerTransaction.setOrder_id(order_id);
-			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
-			
-			if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
-				
-				customerTransaction.setInvoice_id(customerInvoice.getId());
-				
-				customerInvoice.setStatus("paid");
-				customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
-				customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
-				customerInvoice.getParams().put("id", id);
-				this.crmService.editCustomerInvoice(customerInvoice);
-				
-				this.crmService.createInvoicePDFByInvoiceID(id, false);
-				
-				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-				customer.setOrganization(org);
-				
-				// call mail at value retriever
-				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-				applicationEmail.setAddressee(customer.getEmail());
-				applicationEmail.setSubject(notification.getTitle());
-				applicationEmail.setContent(notification.getContent());
-				// binding attachment name & path to email
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-				
-				// get sms register template from db
-				notification = this.crmService.queryNotificationBySort("payment", "sms");
-				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-				
-				notification = null;
-				applicationEmail = null;
-				companyDetail = null;
-				org = null;
-				
-			} else if("agent_ordering".equals(redirect_from)) {
-				
-				customer.setBalance(TMUtils.bigAdd(customer.getBalance()==null ? 0d : customer.getBalance(), customerTransaction.getAmount()));
-				customer.getParams().put("id", customer.getId());
-				this.crmService.editCustomer(customer);
-				
-				customer.setCustomerOrder(customerOrder);
-				
-				CustomerOrder co = new CustomerOrder();
-				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-				customer.setOrganization(org);
-				String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
-				co.setReceipt_pdf_path(receiptPath);
-				if("pending".equals(customer.getCustomerOrder().getOrder_status())
-				  || "pending-warning".equals(customer.getCustomerOrder().getOrder_status())
-				  || "void".equals(customer.getCustomerOrder().getOrder_status())){
-					co.setOrder_status("paid");
-				} else if("ordering-pending".equals(customer.getCustomerOrder().getOrder_status())) {
-					co.setOrder_status("ordering-paid");
-				}
-				
-				User user = (User) req.getSession().getAttribute("userSession");
-				
-				ProvisionLog pl = new ProvisionLog();
-				pl.setUser_id(user.getId());
-				pl.setProcess_datetime(new Date());
-				pl.setOrder_sort("customer-order");
-				pl.setOrder_id_customer(id);
-				pl.setProcess_way(customer.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
-				co.getParams().put("id", id);
-				this.crmService.editCustomerOrder(co, pl);
-				
-			}
-			
-			this.crmService.createCustomerTransaction(customerTransaction);
-			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
-			
-		} else {
-			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
-		}
-		
-		responseBean = null;
-		customerInvoice = null;
-		Integer customerId = customer.getId();
-		customer = null;
-		
-		String url = "";
-		
-		if("crm_invoice".equals(redirect_from)){
-			url = "redirect:/broadband-user/crm/customer/edit/"+customerId;
-		} else if("agent_invoice".equals(redirect_from)){
-			url = "redirect:/broadband-user/agent/billing/invoice/view/1/"+invoice_status;
-		} else if("agent_ordering".equals(redirect_from)){
-			url = "redirect:/broadband-user/sale/online/ordering/view/1/0";
-		}
-		
-		return url;
-	}
+//	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/result/{id}/{redirect_from}/{invoice_status}")
+//	public String toSignupPayment(Model model
+//			,@PathVariable("id") Integer id
+//			,@PathVariable("redirect_from") String redirect_from
+//			,@PathVariable("invoice_status") String invoice_status
+//			, RedirectAttributes attr
+//			,@RequestParam(value = "result", required = true) String result
+//			,SessionStatus status
+//			,HttpServletRequest req
+//			) throws Exception {
+//		
+//		Response responseBean = null;
+//		CustomerInvoice customerInvoice = null;
+//		CustomerOrder customerOrder = null;
+//		Integer customer_id = 0;
+//		Integer order_id = 0;
+//		String txSort = "";
+//		
+//		if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
+//			customerInvoice = this.crmService.queryCustomerInvoiceById(id);
+//			customer_id = customerInvoice.getCustomer_id();
+//			order_id = customerInvoice.getOrder_id();
+//			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerInvoice.getOrder_id());
+//		} else if("agent_ordering".equals(redirect_from)) {
+//			customerOrder = this.crmService.queryCustomerOrderById(id);
+//			customer_id = customerOrder.getCustomer_id();
+//			order_id = customerOrder.getId();
+//			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerOrder.getId());
+//		}
+//		
+//		Customer cQuery = new Customer();
+//		cQuery.getParams().put("id", customer_id);
+//		Customer customer = this.crmService.queryCustomer(cQuery);
+//
+//		if (result != null)
+//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+//
+//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+//
+//			CustomerTransaction customerTransaction = new CustomerTransaction();
+//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setAuth_code(responseBean.getAuthCode());
+//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+//			customerTransaction.setCard_name(responseBean.getCardName());
+//			customerTransaction.setCard_number(responseBean.getCardNumber());
+//			customerTransaction.setClient_info(responseBean.getClientInfo());
+//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+//			customerTransaction.setResponse_text(responseBean.getResponseText());
+//			customerTransaction.setSuccess(responseBean.getSuccess());
+//			customerTransaction.setTxnMac(responseBean.getTxnMac());
+//			customerTransaction.setTransaction_type(responseBean.getTxnType());
+//			customerTransaction.setCustomer_id(customer.getId());
+//			customerTransaction.setTransaction_sort(txSort);
+//			customerTransaction.setOrder_id(order_id);
+//			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+//			
+//			if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
+//				
+//				customerTransaction.setInvoice_id(customerInvoice.getId());
+//				
+//				customerInvoice.setStatus("paid");
+//				customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
+//				customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+//				customerInvoice.getParams().put("id", id);
+//				this.crmService.editCustomerInvoice(customerInvoice);
+//				
+//				this.crmService.createInvoicePDFByInvoiceID(id, false);
+//				
+//				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+//				ApplicationEmail applicationEmail = new ApplicationEmail();
+//				CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+//				customer.setOrganization(org);
+//				
+//				// call mail at value retriever
+//				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+//				applicationEmail.setAddressee(customer.getEmail());
+//				applicationEmail.setSubject(notification.getTitle());
+//				applicationEmail.setContent(notification.getContent());
+//				// binding attachment name & path to email
+//				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//				
+//				// get sms register template from db
+//				notification = this.crmService.queryNotificationBySort("payment", "sms");
+//				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+//				// send sms to customer's mobile phone
+//				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+//				
+//				notification = null;
+//				applicationEmail = null;
+//				companyDetail = null;
+//				org = null;
+//				
+//			} else if("agent_ordering".equals(redirect_from)) {
+//				
+//				customer.setBalance(TMUtils.bigAdd(customer.getBalance()==null ? 0d : customer.getBalance(), customerTransaction.getAmount()));
+//				customer.getParams().put("id", customer.getId());
+//				this.crmService.editCustomer(customer);
+//				
+//				customer.setCustomerOrder(customerOrder);
+//				
+//				CustomerOrder co = new CustomerOrder();
+//				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
+//				customer.setOrganization(org);
+//				String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
+//				co.setReceipt_pdf_path(receiptPath);
+//				if("pending".equals(customer.getCustomerOrder().getOrder_status())
+//				  || "pending-warning".equals(customer.getCustomerOrder().getOrder_status())
+//				  || "void".equals(customer.getCustomerOrder().getOrder_status())){
+//					co.setOrder_status("paid");
+//				} else if("ordering-pending".equals(customer.getCustomerOrder().getOrder_status())) {
+//					co.setOrder_status("ordering-paid");
+//				}
+//				
+//				User user = (User) req.getSession().getAttribute("userSession");
+//				
+//				ProvisionLog pl = new ProvisionLog();
+//				pl.setUser_id(user.getId());
+//				pl.setProcess_datetime(new Date());
+//				pl.setOrder_sort("customer-order");
+//				pl.setOrder_id_customer(id);
+//				pl.setProcess_way(customer.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
+//				co.getParams().put("id", id);
+//				this.crmService.editCustomerOrder(co, pl);
+//				
+//			}
+//			
+//			this.crmService.createCustomerTransaction(customerTransaction);
+//			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+//			
+//		} else {
+//			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+//		}
+//		
+//		responseBean = null;
+//		customerInvoice = null;
+//		Integer customerId = customer.getId();
+//		customer = null;
+//		
+//		String url = "";
+//		
+//		if("crm_invoice".equals(redirect_from)){
+//			url = "redirect:/broadband-user/crm/customer/edit/"+customerId;
+//		} else if("agent_invoice".equals(redirect_from)){
+//			url = "redirect:/broadband-user/agent/billing/invoice/view/1/"+invoice_status;
+//		} else if("agent_ordering".equals(redirect_from)){
+//			url = "redirect:/broadband-user/sale/online/ordering/view/1/0";
+//		}
+//		
+//		return url;
+//	}
 	
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit")
@@ -994,60 +990,62 @@ public class CRMController {
 		return "redirect:" + redirectUrl;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit/{customer_id}")
-	public String toSignupTopupAccountCredit(Model model
-			,@PathVariable("customer_id") Integer customer_id
-			, RedirectAttributes attr
-			,@RequestParam(value = "result", required = true) String result
-			,SessionStatus status
-			) throws Exception {
-		
-		Response responseBean = null;
-		
-		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-
-
-		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-			
-			Customer customer = this.crmService.queryCustomerById(customer_id);
-			Customer cUpdate = new Customer();
-			cUpdate.setBalance(TMUtils.bigAdd(customer.getBalance()!=null ? customer.getBalance() : 0d, Double.parseDouble(responseBean.getAmountSettlement())));
-			cUpdate.getParams().put("id", customer_id);
-			this.crmService.editCustomer(cUpdate);
-
-			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-			customerTransaction.setCard_name(responseBean.getCardName());
-			customerTransaction.setCard_number(responseBean.getCardNumber());
-			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-			customerTransaction.setResponse_text(responseBean.getResponseText());
-			customerTransaction.setSuccess(responseBean.getSuccess());
-			customerTransaction.setTxnMac(responseBean.getTxnMac());
-			customerTransaction.setTransaction_type(responseBean.getTxnType());
-			customerTransaction.setCustomer_id(customer.getId());
-			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
-			this.crmService.createCustomerTransaction(customerTransaction);
-			
-			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
-
-			customer = null;
-			
-		} else {
-			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
-		}
-		
-		responseBean = null;
-		
-		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
-	}
+//	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit/{customer_id}")
+//	public String toSignupTopupAccountCredit(Model model
+//			,@PathVariable("customer_id") Integer customer_id
+//			, RedirectAttributes attr
+//			,@RequestParam(value = "result", required = true) String result
+//			,SessionStatus status
+//			) throws Exception {
+//		
+//		Response responseBean = null;
+//		
+//		if (result != null)
+//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+//
+//
+//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+//			
+//			Customer cQuery = new Customer();
+//			cQuery.getParams().put("id", customer_id);
+//			Customer customer = this.crmService.queryCustomer(cQuery);
+//			Customer cUpdate = new Customer();
+//			cUpdate.setBalance(TMUtils.bigAdd(customer.getBalance()!=null ? customer.getBalance() : 0d, Double.parseDouble(responseBean.getAmountSettlement())));
+//			cUpdate.getParams().put("id", customer_id);
+//			this.crmService.editCustomer(cUpdate);
+//
+//			CustomerTransaction customerTransaction = new CustomerTransaction();
+//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setAuth_code(responseBean.getAuthCode());
+//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+//			customerTransaction.setCard_name(responseBean.getCardName());
+//			customerTransaction.setCard_number(responseBean.getCardNumber());
+//			customerTransaction.setClient_info(responseBean.getClientInfo());
+//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+//			customerTransaction.setResponse_text(responseBean.getResponseText());
+//			customerTransaction.setSuccess(responseBean.getSuccess());
+//			customerTransaction.setTxnMac(responseBean.getTxnMac());
+//			customerTransaction.setTransaction_type(responseBean.getTxnType());
+//			customerTransaction.setCustomer_id(customer.getId());
+//			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+//			this.crmService.createCustomerTransaction(customerTransaction);
+//			
+//			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+//
+//			customer = null;
+//			
+//		} else {
+//			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+//		}
+//		
+//		responseBean = null;
+//		
+//		return "redirect:/broadband-user/crm/customer/edit/"+customer_id;
+//	}
 
 	/**
 	 * END Payment
@@ -1617,231 +1615,231 @@ public class CRMController {
 		return "broadband-user/crm/plans/order-summary";
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/plans/order/bankdeposit", method = RequestMethod.POST)
-	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
-		
-		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
-		
-		customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
-		customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
-		customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
-		customerRegAdmin.setStatus("active");
-		customerRegAdmin.getCustomerOrder().setOrder_status("pending");
-		customerRegAdmin.setBalance(0d);
-		
-		User user = (User) session.getAttribute("userSession");
-		customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
-	
-		this.crmService.saveCustomerOrder(customerRegAdmin, customerRegAdmin.getCustomerOrder(), null);
-		
-		Response responseBean = new Response();
-		responseBean.setSuccess("1");
-		attr.addFlashAttribute("responseBean", responseBean);
-		
-		System.out.println("1 :" + customerRegAdmin.getCustomerOrder().getOrder_total_price());
-		
-		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
-		
-		System.out.println("2 :" + customerRegAdmin.getCustomerOrder().getOrder_total_price());
-		
-		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
-		MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail); // call mail at value retriever
-		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customerRegAdmin.getEmail());
-		applicationEmail.setSubject(notification.getTitle());
-		applicationEmail.setContent(notification.getContent());
-		applicationEmail.setAttachName("ordering_form_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
-		applicationEmail.setAttachPath(orderingPath);
-		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-		notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
-		MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-		
-		return "redirect:/broadband-user/crm/plans/order/result";
-	}
-	
-	
-	@RequestMapping(value = "/broadband-user/crm/plans/order/dps", method = RequestMethod.POST)
-	public String planOrderDPS(Model model, HttpServletRequest req, HttpSession session, RedirectAttributes attr) { 
-		
-		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
-		
-		Double orderTotalPrice = customerRegAdmin.getCustomerOrder().getOrder_total_price();
-		Double vprice = 0d;
-		
-		for (Voucher vQuery: customerRegAdmin.getVouchers()) {
-			orderTotalPrice -= vQuery.getFace_value();
-			vprice += vQuery.getFace_value();
-		}
-		
-		String redirectUrl = "";
-		
-		if (orderTotalPrice > 0) {
-			
-			customerRegAdmin.setBalance(vprice + orderTotalPrice);
-			
-			GenerateRequest gr = new GenerateRequest();
-
-			gr.setAmountInput(new DecimalFormat("#.00").format(orderTotalPrice));
-			//gr.setAmountInput("1.00");
-			gr.setCurrencyInput("NZD");
-			gr.setTxnType("Purchase");
-			
-			System.out.println(req.getRequestURL().toString());
-			gr.setUrlFail(req.getRequestURL().toString());
-			gr.setUrlSuccess(req.getRequestURL().toString());
-
-			redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
-			System.out.println(redirectUrl);
-
-		} else {
-			redirectUrl = "/broadband-user/crm/plans/order/result/success";
-			
-			customerRegAdmin.setStatus("active");
-			customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
-			customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
-			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
-			customerRegAdmin.setBalance(Math.abs(vprice));
-			
-			User user = (User) session.getAttribute("userSession");
-			customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
-			
-			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
-			
-			for (Voucher vQuery: customerRegAdmin.getVouchers()) {
-				CustomerTransaction ctVoucher = new CustomerTransaction();
-				ctVoucher.setAmount(vQuery.getFace_value());
-				ctVoucher.setTransaction_type("purchare");
-				ctVoucher.setTransaction_sort("voucher");
-				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
-				cts.add(ctVoucher);
-			}
-
-			customerRegAdmin.getCustomerOrder().setOrder_status("paid");
-			this.crmService.registerCustomer(customerRegAdmin, cts);
-			
-			String receiptPath = this.crmService.createReceiptPDFByDetails(customerRegAdmin);
-			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
-			
-			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerInvoice(), companyDetail);
-			applicationEmail.setAddressee(customerRegAdmin.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			// binding attachment name & path to email
-			applicationEmail.setAttachName("receipt_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
-			applicationEmail.setAttachPath(receiptPath);
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			
-			// get sms register template from db
-			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent());
-
-			Response responseBean = new Response();
-			responseBean.setSuccess("1");
-			attr.addFlashAttribute("responseBean", responseBean);
-
-		}
-
-		return "redirect:" + redirectUrl;
-	}
+//	@RequestMapping(value = "/broadband-user/crm/plans/order/bankdeposit", method = RequestMethod.POST)
+//	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
+//		
+//		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+//		
+//		customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
+//		customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
+//		customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
+//		customerRegAdmin.setStatus("active");
+//		customerRegAdmin.getCustomerOrder().setOrder_status("pending");
+//		customerRegAdmin.setBalance(0d);
+//		
+//		User user = (User) session.getAttribute("userSession");
+//		customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
+//	
+//		this.crmService.saveCustomerOrder(customerRegAdmin, customerRegAdmin.getCustomerOrder(), null);
+//		
+//		Response responseBean = new Response();
+//		responseBean.setSuccess("1");
+//		attr.addFlashAttribute("responseBean", responseBean);
+//		
+//		System.out.println("1 :" + customerRegAdmin.getCustomerOrder().getOrder_total_price());
+//		
+//		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
+//		
+//		System.out.println("2 :" + customerRegAdmin.getCustomerOrder().getOrder_total_price());
+//		
+//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+//		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+//		MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail); // call mail at value retriever
+//		ApplicationEmail applicationEmail = new ApplicationEmail();
+//		applicationEmail.setAddressee(customerRegAdmin.getEmail());
+//		applicationEmail.setSubject(notification.getTitle());
+//		applicationEmail.setContent(notification.getContent());
+//		applicationEmail.setAttachName("ordering_form_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
+//		applicationEmail.setAttachPath(orderingPath);
+//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//		notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
+//		MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail);
+//		this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
+//		
+//		return "redirect:/broadband-user/crm/plans/order/result";
+//	}
 	
 	
-	@RequestMapping(value = "/broadband-user/crm/plans/order/dps")
-	public String planOrderDPS(Model model,
-			@RequestParam(value = "result", required = true) String result,
-			HttpSession session, RedirectAttributes attr) throws Exception {
-		
-		String url = "redirect:/broadband-user/crm/plans/order/result/error";
-
-		Response responseBean = null;
-		
-		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
-
-		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-
-		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-			
-			url = "redirect:/broadband-user/crm/plans/order/result/success";
-			
-			customerRegAdmin.setStatus("active");
-			customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
-			customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
-			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
-			
-			User user = (User) session.getAttribute("userSession");
-			customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
-			
-			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
-
-			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-			customerTransaction.setCard_name(responseBean.getCardName());
-			customerTransaction.setCard_number(responseBean.getCardNumber());
-			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-			customerTransaction.setResponse_text(responseBean.getResponseText());
-			customerTransaction.setSuccess(responseBean.getSuccess());
-			customerTransaction.setTxnMac(responseBean.getTxnMac());
-			customerTransaction.setTransaction_type(responseBean.getTxnType());
-			
-			cts.add(customerTransaction);
-			
-			for (Voucher vQuery: customerRegAdmin.getVouchers()) {
-				CustomerTransaction ctVoucher = new CustomerTransaction();
-				ctVoucher.setAmount(vQuery.getFace_value());
-				ctVoucher.setTransaction_type("purchare");
-				ctVoucher.setTransaction_sort("voucher");
-				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
-				cts.add(ctVoucher);
-			}
-			
-			customerRegAdmin.getCustomerOrder().setOrder_status("paid");
-			this.crmService.registerCustomer(customerRegAdmin, cts);
-			
-			String receiptPath = this.crmService.createReceiptPDFByDetails(customerRegAdmin);
-			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
-			
-			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
-			ApplicationEmail applicationEmail = new ApplicationEmail();
-			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerInvoice(), companyDetail);
-			applicationEmail.setAddressee(customerRegAdmin.getEmail());
-			applicationEmail.setSubject(notification.getTitle());
-			applicationEmail.setContent(notification.getContent());
-			// binding attachment name & path to email
-			applicationEmail.setAttachName("receipt_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
-			applicationEmail.setAttachPath(receiptPath);
-			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-			
-			// get sms register template from db
-			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, companyDetail);
-			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent());
-			//status.setComplete();
-		} else {
-
-		}
-
-		attr.addFlashAttribute("responseBean", responseBean);
-
-		return url; //"redirect:/order/result";
-	}
+//	@RequestMapping(value = "/broadband-user/crm/plans/order/dps", method = RequestMethod.POST)
+//	public String planOrderDPS(Model model, HttpServletRequest req, HttpSession session, RedirectAttributes attr) { 
+//		
+//		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+//		
+//		Double orderTotalPrice = customerRegAdmin.getCustomerOrder().getOrder_total_price();
+//		Double vprice = 0d;
+//		
+//		for (Voucher vQuery: customerRegAdmin.getVouchers()) {
+//			orderTotalPrice -= vQuery.getFace_value();
+//			vprice += vQuery.getFace_value();
+//		}
+//		
+//		String redirectUrl = "";
+//		
+//		if (orderTotalPrice > 0) {
+//			
+//			customerRegAdmin.setBalance(vprice + orderTotalPrice);
+//			
+//			GenerateRequest gr = new GenerateRequest();
+//
+//			gr.setAmountInput(new DecimalFormat("#.00").format(orderTotalPrice));
+//			//gr.setAmountInput("1.00");
+//			gr.setCurrencyInput("NZD");
+//			gr.setTxnType("Purchase");
+//			
+//			System.out.println(req.getRequestURL().toString());
+//			gr.setUrlFail(req.getRequestURL().toString());
+//			gr.setUrlSuccess(req.getRequestURL().toString());
+//
+//			redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+//			System.out.println(redirectUrl);
+//
+//		} else {
+//			redirectUrl = "/broadband-user/crm/plans/order/result/success";
+//			
+//			customerRegAdmin.setStatus("active");
+//			customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
+//			customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
+//			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
+//			customerRegAdmin.setBalance(Math.abs(vprice));
+//			
+//			User user = (User) session.getAttribute("userSession");
+//			customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
+//			
+//			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
+//			
+//			for (Voucher vQuery: customerRegAdmin.getVouchers()) {
+//				CustomerTransaction ctVoucher = new CustomerTransaction();
+//				ctVoucher.setAmount(vQuery.getFace_value());
+//				ctVoucher.setTransaction_type("purchare");
+//				ctVoucher.setTransaction_sort("voucher");
+//				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
+//				cts.add(ctVoucher);
+//			}
+//
+//			customerRegAdmin.getCustomerOrder().setOrder_status("paid");
+//			this.crmService.registerCustomer(customerRegAdmin, cts);
+//			
+//			String receiptPath = this.crmService.createReceiptPDFByDetails(customerRegAdmin);
+//			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
+//			
+//			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//			// call mail at value retriever
+//			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerInvoice(), companyDetail);
+//			applicationEmail.setAddressee(customerRegAdmin.getEmail());
+//			applicationEmail.setSubject(notification.getTitle());
+//			applicationEmail.setContent(notification.getContent());
+//			// binding attachment name & path to email
+//			applicationEmail.setAttachName("receipt_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
+//			applicationEmail.setAttachPath(receiptPath);
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//			
+//			// get sms register template from db
+//			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+//			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent());
+//
+//			Response responseBean = new Response();
+//			responseBean.setSuccess("1");
+//			attr.addFlashAttribute("responseBean", responseBean);
+//
+//		}
+//
+//		return "redirect:" + redirectUrl;
+//	}
+//	
+//	
+//	@RequestMapping(value = "/broadband-user/crm/plans/order/dps")
+//	public String planOrderDPS(Model model,
+//			@RequestParam(value = "result", required = true) String result,
+//			HttpSession session, RedirectAttributes attr) throws Exception {
+//		
+//		String url = "redirect:/broadband-user/crm/plans/order/result/error";
+//
+//		Response responseBean = null;
+//		
+//		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+//
+//		if (result != null)
+//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+//
+//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+//			
+//			url = "redirect:/broadband-user/crm/plans/order/result/success";
+//			
+//			customerRegAdmin.setStatus("active");
+//			customerRegAdmin.setUser_name(customerRegAdmin.getLogin_name());
+//			customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
+//			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
+//			
+//			User user = (User) session.getAttribute("userSession");
+//			customerRegAdmin.getCustomerOrder().setUser_id(user.getId());
+//			
+//			List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
+//
+//			CustomerTransaction customerTransaction = new CustomerTransaction();
+//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setAuth_code(responseBean.getAuthCode());
+//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+//			customerTransaction.setCard_name(responseBean.getCardName());
+//			customerTransaction.setCard_number(responseBean.getCardNumber());
+//			customerTransaction.setClient_info(responseBean.getClientInfo());
+//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+//			customerTransaction.setResponse_text(responseBean.getResponseText());
+//			customerTransaction.setSuccess(responseBean.getSuccess());
+//			customerTransaction.setTxnMac(responseBean.getTxnMac());
+//			customerTransaction.setTransaction_type(responseBean.getTxnType());
+//			
+//			cts.add(customerTransaction);
+//			
+//			for (Voucher vQuery: customerRegAdmin.getVouchers()) {
+//				CustomerTransaction ctVoucher = new CustomerTransaction();
+//				ctVoucher.setAmount(vQuery.getFace_value());
+//				ctVoucher.setTransaction_type("purchare");
+//				ctVoucher.setTransaction_sort("voucher");
+//				ctVoucher.setCard_name("voucher: " + vQuery.getSerial_number());
+//				cts.add(ctVoucher);
+//			}
+//			
+//			customerRegAdmin.getCustomerOrder().setOrder_status("paid");
+//			this.crmService.registerCustomer(customerRegAdmin, cts);
+//			
+//			String receiptPath = this.crmService.createReceiptPDFByDetails(customerRegAdmin);
+//			String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerRegAdmin);
+//			
+//			Notification notification = this.crmService.queryNotificationBySort("register-pre-pay", "email");
+//			ApplicationEmail applicationEmail = new ApplicationEmail();
+//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+//			// call mail at value retriever
+//			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerInvoice(), companyDetail);
+//			applicationEmail.setAddressee(customerRegAdmin.getEmail());
+//			applicationEmail.setSubject(notification.getTitle());
+//			applicationEmail.setContent(notification.getContent());
+//			// binding attachment name & path to email
+//			applicationEmail.setAttachName("receipt_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
+//			applicationEmail.setAttachPath(receiptPath);
+//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+//			
+//			// get sms register template from db
+//			notification = this.crmService.queryNotificationBySort("register-pre-pay", "sms");
+//			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, companyDetail);
+//			// send sms to customer's mobile phone
+//			this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent());
+//			//status.setComplete();
+//		} else {
+//
+//		}
+//
+//		attr.addFlashAttribute("responseBean", responseBean);
+//
+//		return url; //"redirect:/order/result";
+//	}
 	
 	@RequestMapping(value = "/broadband-user/crm/plans/order/result")
 	public String planOrderRtoOrderResult(HttpSession session) {

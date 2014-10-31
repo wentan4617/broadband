@@ -39,7 +39,6 @@
 		, c.`passport`			as c_passport
 		, c.`country`			as c_country
 		, c.`company_name`		as c_company_name
-		, c.`customer_type`		as c_customer_type
 		, c.`identity_type`		as c_identity_type
 		, c.`identity_number` 	as c_identity_number
 		, c.`result`			as c_result
@@ -67,7 +66,6 @@
 		<result property="passport" column="c_passport" />
 		<result property="country" column="c_country" />
 		<result property="company_name" column="c_company_name" />
-		<result property="customer_type" column="c_customer_type" />
 		<result property="identity_type" column="c_identity_type" />
 		<result property="identity_number" column="c_identity_number" />
 		<result property="result" column="c_result" />
@@ -120,8 +118,22 @@
 		, co.`invitee_rate`						as co_invitee_rate
 		, co.`address`							as co_address
 		, co.`mobile`							as co_mobile
+		, co.`phone`							as co_phone
 		, co.`email`							as co_email
 		, co.`customer_type`					as co_customer_type
+		, co.`title`							as co_title
+		, co.`first_name`						as co_first_name
+		, co.`last_name`						as co_last_name
+		, co.`org_name`							as co_org_name
+		, co.`org_type`							as co_org_type
+		, co.`org_trading_name`					as co_org_trading_name
+		, co.`org_register_no`					as co_org_register_no
+		, co.`org_incoporate_date`				as co_org_incoporate_date
+		, co.`org_trading_months`				as co_org_trading_months
+		, co.`holder_name`						as co_holder_name
+		, co.`holder_job_title`					as co_holder_job_title
+		, co.`holder_phone`						as co_holder_phone
+		, co.`holder_email`						as co_holder_email
 		, co.`xero_invoice_status` 				as co_xero_invoice_status
 		, co.`is_send_xero_invoice` 			as co_is_send_xero_invoice
 	</sql>
@@ -172,13 +184,26 @@
 		<result property="invitee_rate" column="co_invitee_rate" />
 		<result property="address" column="co_address" />
 		<result property="mobile" column="co_mobile" />
+		<result property="phone" column="co_phone" />
 		<result property="email" column="co_email" />
 		<result property="customer_type" column="co_customer_type" />
+		<result property="title" column="co_title" />
+		<result property="first_name" column="co_first_name" />
+		<result property="last_name" column="co_last_name" />
+		<result property="org_name" column="co_org_name" />
+		<result property="org_type" column="co_org_type" />
+		<result property="org_trading_name" column="co_org_trading_name" />
+		<result property="org_register_no" column="co_org_register_no" />
+		<result property="org_incoporate_date" column="co_org_incoporate_date" />
+		<result property="org_trading_months" column="co_org_trading_months" />
+		<result property="holder_name" column="co_holder_name" />
+		<result property="holder_job_title" column="co_holder_job_title" />
+		<result property="holder_phone" column="co_holder_phone" />
+		<result property="holder_email" column="co_holder_email" />
 		<result property="xero_invoice_status" column="co_xero_invoice_status" />
 		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
-		<association property="organization" resultMap="organizationResultMap"/>
 	</resultMap>
 	
 	<sql id="customerOrderDetailColumns">
@@ -240,38 +265,21 @@
 		<result property="voip_assign_date" column="cod_voip_assign_date" />
 	</resultMap>
 	
-	<sql id="organizationColumns">
-		o.`customer_id`				as o_customer_id
-		, o.`org_name`				as o_org_name
-		, o.`org_type`				as o_org_type
-		, o.`org_trading_name`		as o_org_trading_name
-		, o.`org_register_no`		as o_org_register_no
-		, o.`org_incoporate_date`	as o_incoporate_date
-		, o.`org_trading_months`	as o_trading_months
-		, o.`holder_name`			as o_holder_name
-		, o.`holder_job_title`		as o_holder_job_title
-		, o.`holder_phone`			as o_holder_phone
-		, o.`holder_email`			as o_holder_email
-		, o.`order_id`				as o_order_id
-	</sql>
-	<resultMap type="Organization" id="organizationResultMap">
-		<id property="order_id" column="o_order_id"/>
-		<result property="customer_id" column="o_customer_id"/>
-		<result property="org_name" column="o_org_name"/>
-		<result property="org_type" column="o_org_type"/>
-		<result property="org_trading_name" column="o_org_trading_name"/>
-		<result property="org_register_no" column="o_org_register_no"/>
-		<result property="org_incoporate_date" column="o_incoporate_date"/>
-		<result property="org_trading_months" column="o_trading_months"/>
-		<result property="holder_name" column="o_holder_name"/>
-		<result property="holder_job_title" column="o_holder_job_title"/>
-		<result property="holder_phone" column="o_holder_phone"/>
-		<result property="holder_email" column="o_holder_email"/>
-	</resultMap>
-	
 	<sql id="customerOrderWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_exist_customer_by_keyword'">
+					<if test="params.keyword != null">
+						co.id = #{params.keyword}
+						or co.customer_id = #{params.keyword}
+						or lower(co.email) = lower(#{params.keyword})
+						or co.phone = #{params.keyword}
+						or co.cellphone = #{params.keyword}
+						or lower(co.first_name) = lower(#{params.keyword})
+						or lower(co.last_name) = lower(#{params.keyword})
+						or lower(co.org_name) = lower(#{params.keyword})
+					</if>
+				</when>
 				<when test="params.where == 'query_order_status'">
 					<if test="params.order_status != null">co.order_status = #{params.order_status}</if>
 					<if test="params.order_status_1 != null">or co.order_status = #{params.order_status_1}</if>
@@ -294,10 +302,7 @@
 					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
 					<if test="params.order_create_date != null">and date(co.order_create_date) &lt;= date(#{params.order_create_date})</if>
 					<if test="params.customer_type != null">
-					and co.customer_id in(
-						select id from tm_customer
-						where customer_type = #{params.customer_type}
-					)
+					and co.customer_type = #{params.customer_type}
 					</if>
 				</when>
 				<when test="params.where == 'query_no_term'">
@@ -349,6 +354,7 @@
 					<if test="params.order_type != null">and co.order_type = #{params.order_type}</if>
 					<if test="params.sale_id != null">and co.sale_id = #{params.sale_id}</if>
 					<if test="params.signature != null">and co.signature = #{params.signature}</if>
+					<if test="params.customer_type != null">and co.customer_type = #{params.customer_type}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -368,10 +374,8 @@
 		select 
 			<include refid="customerOrderColumns"/>
 			, <include refid="customerColumns"/>
-			, <include refid="organizationColumns"/>
 		from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
-		left join tm_organization as o on o.order_id = co.id
 		<include refid="customerOrderWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
 		limit #{pageOffset}, #{pageSize}
@@ -380,7 +384,6 @@
 	<select id="selectCustomerOrdersSum" parameterType="Page" resultType="int">
 		select count(*) from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
-		left join tm_organization as o on o.order_id = co.id
 		<include refid="customerOrderWhere"/>
 	</select>
 		
@@ -397,7 +400,9 @@
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
 			`receipt_pdf_path`, `disconnected_date`, `connection_date`, `contract`, `inviter_customer_id`, `inviter_user_id`,
-			`inviter_rate`, `invitee_rate`, `address`, `mobile`, `email`, `customer_type`, `xero_invoice_status`, `is_send_xero_invoice`)
+			`inviter_rate`, `invitee_rate`, `address`, `mobile`, `phone`, `email`, `customer_type`, `title`, `first_name`, `last_name`, `org_name`, `org_type`,
+			`org_trading_name`, `org_register_no`, `org_incoporate_date`, `org_trading_months`, `holder_name`, `holder_job_title`,
+			`holder_phone`, `holder_email`, `xero_invoice_status`, `is_send_xero_invoice`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type}, #{transition_provider_name}, #{transition_account_holder_name},
@@ -406,7 +411,9 @@
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
 			#{receipt_pdf_path}, #{disconnected_date}, #{connection_date}, #{contract}, #{inviter_customer_id}, #{inviter_user_id},
-			#{inviter_rate}, #{invitee_rate}, #{address}, #{mobile}, #{email}, #{customer_type}, #{xero_invoice_status},#{is_send_xero_invoice})
+			#{inviter_rate}, #{invitee_rate}, #{address}, #{mobile}, #{phone}, #{email}, #{customer_type}, #{title}, #{first_name}, #{last_name}, #{org_name}, #{org_type},
+			#{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, #{org_trading_months}, #{holder_name}, #{holder_job_title},
+			#{holder_phone}, #{holder_email}, #{xero_invoice_status}, #{is_send_xero_invoice})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -461,8 +468,22 @@
 			<if test="invitee_rate != null">invitee_rate = #{invitee_rate},</if>
 			<if test="address != null">address = #{address},</if>
 			<if test="mobile != null">mobile = #{mobile},</if>
+			<if test="phone != null">phone = #{phone},</if>
 			<if test="email != null">email = #{email},</if>
 			<if test="customer_type != null">customer_type = #{customer_type},</if>
+			<if test="title != null">title = #{title},</if>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
+			<if test="org_name != null">org_name = #{org_name},</if>
+			<if test="org_type != null">org_type = #{org_type},</if>
+			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
+			<if test="org_register_no != null">org_register_no = #{org_register_no},</if>
+			<if test="org_incoporate_date != null">org_incoporate_date = #{org_incoporate_date},</if>
+			<if test="org_trading_months != null">org_trading_months = #{org_trading_months},</if>
+			<if test="holder_name != null">holder_name = #{holder_name},</if>
+			<if test="holder_job_title != null">holder_job_title = #{holder_job_title},</if>
+			<if test="holder_phone != null">holder_phone = #{holder_phone},</if>
+			<if test="holder_email != null">holder_email = #{holder_email},</if>
 			<if test="xero_invoice_status != null">xero_invoice_status = #{xero_invoice_status},</if>
 			<if test="is_send_xero_invoice != null">is_send_xero_invoice = #{is_send_xero_invoice}</if>
 		</set>

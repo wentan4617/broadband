@@ -41,7 +41,7 @@ hr {
 		                    <ul class="list-unstyled">
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-list" ></span> 
-		                    		<a href="${ctx }/broadband-user/crm/customer/view">View Customer</a>
+		                    		<a href="${ctx }/broadband-user/crm/customer/order/view">View Customer Order</a>
 		                    	</li>
 								<li>
 		                    		<span class="glyphicon glyphicon-plus" ></span> 

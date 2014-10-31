@@ -43,7 +43,6 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Notification;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
@@ -98,12 +97,14 @@ public class CRMRestController {
 		
 		JSONBean<Customer> json = new JSONBean<Customer>();
 		
-		Customer cQuery = this.crmService.queryCustomerById(customer_id);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer c = this.crmService.queryCustomer(cQuery);
 		
-		if((cQuery.getCellphone()!=null && !"".equals(cQuery.getCellphone().trim()))
+		if((c.getCellphone()!=null && !"".equals(c.getCellphone().trim()))
 		&& (content!=null && !"".equals(content.trim()))){
 			
-			this.crmService.sendCustomerSMSByCellphone(cQuery.getCellphone(), content);
+			this.crmService.sendCustomerSMSByCellphone(c.getCellphone(), content);
 			
 			json.getSuccessMap().put("alert-success", "Content has been successfully sent to specific cellphone number!");
 			
@@ -170,7 +171,7 @@ public class CRMRestController {
 		customer.setBalance(0d);
 
 		if ("save".equals(customer.getAction())) {
-			this.crmService.createCustomer(customer);
+//			this.crmService.createCustomer(customer);
 			json.setUrl("/broadband-user/crm/customer/query/redirect");
 		} else if ("next".equals(customer.getAction())) {
 			model.addAttribute("customer", customer);
@@ -454,7 +455,9 @@ public class CRMRestController {
 		}
 		customer_id = ci.getCustomer_id();
 		order_id = ci.getOrder_id();
-		Customer c = this.crmService.queryCustomerById(customer_id);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer c = this.crmService.queryCustomer(cQuery);
 		// If account credit greater equal invoice balance
 		if(c.getBalance()<=0){
 			json.getErrorMap().put("alert-error", "Insufficient Fund!");
@@ -1017,49 +1020,40 @@ public class CRMRestController {
 
 		if (anyLanEmpty) {
 			if ("".equals(svLan)) {
-				json.getErrorMap().put(customerOrder.getId() + "_svlan_input",
-						"Enter SVLan!");
+				json.getErrorMap().put(customerOrder.getId() + "_svlan_input", "Enter SVLan!");
 			}
 			if ("".equals(cvLan)) {
-				json.getErrorMap().put(customerOrder.getId() + "_cvlan_input",
-						"Enter CVLan!");
+				json.getErrorMap().put(customerOrder.getId() + "_cvlan_input", "Enter CVLan!");
 			}
 			return json;
 		}
 
 		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
-		CustomerOrder tempCO = new CustomerOrder();
-		tempCO.getParams().put("id", customerOrder.getId());
-		tempCO = this.crmService.queryCustomerOrder(tempCO);
-		for (CustomerOrderDetail cod : tempCO.getCustomerOrderDetails()) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", customerOrder.getId());
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		for (CustomerOrderDetail cod : coQuery.getCustomerOrderDetails()) {
 			cods.add(cod);
 		}
 
-		Customer customer = this.crmService.queryCustomerById(customerOrder
-				.getCustomer_id());
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customerOrder.getCustomer_id());
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Notification notification = this.systemService.queryNotificationBySort(
-				"service-installation", "email");
+		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		
-		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-		customer.setOrganization(org);
 		// call mail at value retriever
-		MailRetriever.mailAtValueRetriever(notification, customer,
-				customerOrder, cods, companyDetail);
-		applicationEmail.setAddressee(customer.getEmail());
+		MailRetriever.mailAtValueRetriever(notification, coQuery, cods, companyDetail);
+		applicationEmail.setAddressee(coQuery.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 		// get sms register template from db
-		notification = this.systemService.queryNotificationBySort(
-				"service-installation", "sms");
-		MailRetriever.mailAtValueRetriever(notification, customer,
-				customerOrder, cods, companyDetail);
+		notification = this.systemService.queryNotificationBySort("service-installation", "sms");
+		MailRetriever.mailAtValueRetriever(notification, coQuery, cods, companyDetail);
 		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(),
-				notification.getContent());
+		this.smserService.sendSMSByAsynchronousMode(coQuery.getMobile(), notification.getContent());
 		
 		// Provision record
 		ProvisionLog pl = new ProvisionLog();
@@ -1073,19 +1067,19 @@ public class CRMRestController {
 		CustomerOrder co = new CustomerOrder();
 		co.setSvlan(svLan);
 		co.setCvlan(cvLan);
-		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder
-				.getRfs_date_str()));
+		co.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder.getRfs_date_str()));
 		co.setOrder_status("rfs");
 		co.getParams().put("id", customerOrder.getId());
 
 		this.crmService.editCustomerOrder(co, pl);
 		json.setModel(co);
-		json.getSuccessMap().put("alert-success",
-				"svlan, cvlan and rfs_date had successfully been updated.");
+		json.getSuccessMap().put("alert-success", "svlan, cvlan and rfs_date had successfully been updated.");
 		
+		pl = null;
+		user = null;
+		cQuery = null;
 		cods = null;
-		tempCO = null;
-		customer = null;
+		coQuery = null;
 		companyDetail = null;
 		notification = null;
 		applicationEmail = null;
@@ -1115,16 +1109,17 @@ public class CRMRestController {
 		proLog.setOrder_sort("customer-order");
 
 		// CustomerOrder begin
-		CustomerOrder co = new CustomerOrder();
-		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD(customerOrder
-				.getOrder_using_start_str()));
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", customerOrder.getId());
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
+		co.setOrder_using_start(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 		co.getParams().put("id", customerOrder.getId());
 		co.setOrder_status("using");
 		
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-		Customer customer = this.crmService.queryCustomerById(customerOrder.getCustomer_id());
-		Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-		customer.setOrganization(org);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customerOrder.getCustomer_id());
+		Customer customer = this.crmService.queryCustomer(cQuery);
 		
 		if("save".equals(way)){
 
@@ -1137,7 +1132,7 @@ public class CRMRestController {
 				Date next_invoice_create_date = null;
 				Date next_invoice_create_date_flag = null;
 				
-				if("personal".equals(customer.getCustomer_type())){
+				if("personal".equals(co.getCustomer_type())){
 					Calendar calNextInvoiceDay = Calendar.getInstance();
 					calNextInvoiceDay.setTime(TMUtils.parseDateYYYYMMDD(customerOrder.getOrder_using_start_str()));
 					// Add plan unit months
@@ -1211,7 +1206,7 @@ public class CRMRestController {
 			
 			if("paid".equals(pay_status)){
 				User userSession = (User) req.getSession().getAttribute("userSession");
-				attachPath = this.crmService.serviceGivenPaid(customer, org, customerOrder, companyDetail, userSession);
+				attachPath = this.crmService.serviceGivenPaid(customer, customerOrder, companyDetail, userSession);
 				
 				// If customer account credit insufficient
 				if(attachPath==null){
@@ -1221,7 +1216,6 @@ public class CRMRestController {
 					co = null;
 					companyDetail = null;
 					customer = null;
-					org = null;
 					
 					json.getErrorMap().put("alert-error", "Insufficient Customer Account Credit, Service Given Date can not be settled!");
 					
@@ -1245,8 +1239,8 @@ public class CRMRestController {
 //			}
 //			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			notification = this.systemService.queryNotificationBySort(emailSort, "sms"); /* get sms register template from db */
-			MailRetriever.mailAtValueRetriever(notification, customer,customerOrder, companyDetail);
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); /* send sms to customer's mobile phone */
+			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
+			this.smserService.sendSMSByAsynchronousMode(co.getMobile(), notification.getContent()); /* send sms to customer's mobile phone */
 
 			/*else if ("ordering-pending".equals(customerOrder.getOrder_status())
 					&& !"order-term".equals(customerOrder.getOrder_type())) {
@@ -1265,17 +1259,17 @@ public class CRMRestController {
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
-			applicationEmail.setAddressee(customer.getEmail());
+			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
+			applicationEmail.setAddressee(co.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
 			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-			MailRetriever.mailAtValueRetriever(notification, customer, customerOrder, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+			this.smserService.sendSMSByAsynchronousMode(co.getMobile(), notification.getContent());
 			json.getSuccessMap().put("alert-success", "Service Given Date successfully settled!");
 			
 		}
@@ -1289,7 +1283,6 @@ public class CRMRestController {
 		co = null;
 		companyDetail = null;
 		customer = null;
-		org = null;
 		
 		return json;
 	}
@@ -2031,8 +2024,7 @@ public class CRMRestController {
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
 		try {
-			orderPDFPath = new ApplicationPDFCreator(co.getCustomer(), co, co
-					.getCustomer().getOrganization()).create();
+			orderPDFPath = new ApplicationPDFCreator(co).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -2418,8 +2410,8 @@ public class CRMRestController {
 	// Pay off order
 	@RequestMapping(value = "/broadband-user/crm/customer/order/pay-off/receipt", method = RequestMethod.POST)
 	public JSONBean<String> doPayOffOrder(Model model,
-			@RequestParam("id") Integer id,
-			@RequestParam("customerId") Integer customerId,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("customerId") Integer customer_id,
 			@RequestParam("paid_amount") Double paid_amount,
 			@RequestParam("order_pay_way") String order_pay_way,
 			@RequestParam("order_total_price") Double order_total_price,
@@ -2427,10 +2419,14 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 
-		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
-		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(customerId);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer c = this.crmService.queryCustomer(cQuery);
 		c.setCustomerOrder(c.getCustomerOrders().get(0));
-		c.setOrganization(org);
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
 		
 		Double cyberParkCredit = 0d;
 		
@@ -2453,7 +2449,7 @@ public class CRMRestController {
 		if(!"account-credit".equals(order_pay_way) || !"cyberpark-credit".equals(order_pay_way)){
 			Customer customer = new Customer();
 			customer.setBalance(TMUtils.bigAdd(c.getBalance()==null ? 0d : c.getBalance(), paid_amount));
-			customer.getParams().put("id", c.getId());
+			customer.getParams().put("id", customer_id);
 			this.crmService.editCustomer(customer);
 		}
 		
@@ -2467,45 +2463,44 @@ public class CRMRestController {
 			ct.setAmount_settlement(paid_amount);
 			ct.setCard_name("cash".equals(order_pay_way) ? "Cash" : "Account2Account");
 			ct.setTransaction_date(new Date());
-			ct.setCustomer_id(customerId);
-			ct.setOrder_id(c.getCustomerOrder().getId());
+			ct.setCustomer_id(customer_id);
+			ct.setOrder_id(order_id);
 			ct.setTransaction_type("Ordering Form Defrayment");
-			ct.setTransaction_sort(c.getCustomerOrder().getOrder_type());
+			ct.setTransaction_sort(co.getOrder_type());
 			ct.setExecutor(user.getId());
 			this.crmService.createCustomerTransaction(ct);
 		}
 		
 		if(cyberParkCredit > 0d){
 			CustomerOrderDetail cod = new CustomerOrderDetail();
-			cod.setOrder_id(id);
+			cod.setOrder_id(order_id);
 			cod.setDetail_name("CyberPark Credit");
 			cod.setDetail_price(cyberParkCredit);
 			cod.setDetail_type("discount");
 			cod.setDetail_unit(1);
 			cod.setUser_id(user.getId());
-			System.out.println("CyberPark Credit: "+cyberParkCredit);
 			this.crmService.createCustomerOrderDetail(cod);
 		}
 		
-		CustomerOrder co = new CustomerOrder();
-		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
-		co.setReceipt_pdf_path(receiptPath);
-		if("pending".equals(c.getCustomerOrder().getOrder_status())
-		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
-		  || "void".equals(c.getCustomerOrder().getOrder_status())){
-			co.setOrder_status("paid");
-		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
-			co.setOrder_status("ordering-paid");
+		CustomerOrder coUpdate = new CustomerOrder();
+		String receiptPath = this.crmService.createReceiptPDFByDetails(co);
+		coUpdate.setReceipt_pdf_path(receiptPath);
+		if("pending".equals(co.getOrder_status())
+		  || "pending-warning".equals(co.getOrder_status())
+		  || "void".equals(co.getOrder_status())){
+			coUpdate.setOrder_status("paid");
+		} else if("ordering-pending".equals(co.getOrder_status())) {
+			coUpdate.setOrder_status("ordering-paid");
 		}
 		
 		ProvisionLog pl = new ProvisionLog();
 		pl.setUser_id(user.getId());
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
-		pl.setOrder_id_customer(id);
-		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
-		co.getParams().put("id", id);
-		this.crmService.editCustomerOrder(co, pl);
+		pl.setOrder_id_customer(order_id);
+		pl.setProcess_way(co.getOrder_status()+" to "+coUpdate.getOrder_status()+" receipt");
+		coUpdate.getParams().put("id", order_id);
+		this.crmService.editCustomerOrder(coUpdate, pl);
 		
 		json.getSuccessMap().put("alert-success", "Order paid off succeccfully!");
 		return json;
@@ -2514,65 +2509,63 @@ public class CRMRestController {
 	// Generate order receipt
 	@RequestMapping(value = "/broadband-user/crm/customer/order/generate/receipt", method = RequestMethod.POST)
 	public JSONBean<String> doGenerateOrderReceipt(Model model,
-			@RequestParam("id") Integer id,
-			@RequestParam("customerId") Integer customerId,
+			@RequestParam("order_id") Integer order_id,
 			RedirectAttributes attr, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
-
-		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
-		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(customerId);
-		c.setCustomerOrder(c.getCustomerOrders().get(0));
-		c.setOrganization(org);
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
 		
 		User user = (User) req.getSession().getAttribute("userSession");
 		
-		CustomerOrder co = new CustomerOrder();
-		String receiptPath = this.crmService.createReceiptPDFByDetails(c);
-		co.setReceipt_pdf_path(receiptPath);
-		if("pending".equals(c.getCustomerOrder().getOrder_status())
-		  || "pending-warning".equals(c.getCustomerOrder().getOrder_status())
-		  || "void".equals(c.getCustomerOrder().getOrder_status())){
-			co.setOrder_status("paid");
-		} else if("ordering-pending".equals(c.getCustomerOrder().getOrder_status())) {
-			co.setOrder_status("ordering-paid");
+		CustomerOrder coUpdate = new CustomerOrder();
+		String receiptPath = this.crmService.createReceiptPDFByDetails(co);
+		coUpdate.setReceipt_pdf_path(receiptPath);
+		if("pending".equals(co.getOrder_status())
+		  || "pending-warning".equals(co.getOrder_status())
+		  || "void".equals(co.getOrder_status())){
+			coUpdate.setOrder_status("paid");
+		} else if("ordering-pending".equals(co.getOrder_status())) {
+			coUpdate.setOrder_status("ordering-paid");
 		}
 		
 		ProvisionLog pl = new ProvisionLog();
 		pl.setUser_id(user.getId());
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
-		pl.setOrder_id_customer(id);
-		pl.setProcess_way(c.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
-		co.getParams().put("id", id);
+		pl.setOrder_id_customer(order_id);
+		pl.setProcess_way(co.getOrder_status()+" to "+coUpdate.getOrder_status()+" receipt");
+		co.getParams().put("id", order_id);
 		this.crmService.editCustomerOrder(co, pl);
 		
 		json.getSuccessMap().put("alert-success", "Order status to paid and generate a receipt succeccfully!");
 		return json;
 	}
 	
-	@RequestMapping("/broadband-user/crm/customer/view/{pageNo}")
-	public Page<Customer> doCustomerView(@PathVariable("pageNo") int pageNo, Customer customerQuery, SessionStatus status) {
+	@RequestMapping("/broadband-user/crm/customer/order/view/{pageNo}")
+	public Page<CustomerOrder> doCustomerView(@PathVariable("pageNo") int pageNo, CustomerOrder coQuery, SessionStatus status) {
 		
-		Page<Customer> page = new Page<Customer>();
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("orderby", "order by register_date desc");
-		if (customerQuery != null) {
-			page.getParams().put("id", customerQuery.getId());
-			page.getParams().put("first_name", customerQuery.getFirst_name());
-			page.getParams().put("last_name", customerQuery.getLast_name());
-			page.getParams().put("cellphone", customerQuery.getCellphone());
-			page.getParams().put("email", customerQuery.getEmail());
-			page.getParams().put("address", customerQuery.getAddress());
-			page.getParams().put("pstn", customerQuery.getPstn());
-			page.getParams().put("voip", customerQuery.getVoip());
-			page.getParams().put("order_id", customerQuery.getOrder_id());
-			page.getParams().put("invoice_id", customerQuery.getInvoice_id());
-			page.getParams().put("customer_type", customerQuery.getCustomer_type());
-			page.getParams().put("broadband_asid", customerQuery.getBroadband_asid());
+		page.getParams().put("orderby", "order by order_create_date desc");
+		if (coQuery != null) {
+			page.getParams().put("id", coQuery.getId());
+			page.getParams().put("customer_id", coQuery.getCustomer_id());
+			page.getParams().put("first_name", coQuery.getFirst_name());
+			page.getParams().put("last_name", coQuery.getLast_name());
+			page.getParams().put("mobile", coQuery.getMobile());
+			page.getParams().put("email", coQuery.getEmail());
+			page.getParams().put("address", coQuery.getAddress());
+			page.getParams().put("pstn", coQuery.getPstn());
+			page.getParams().put("voip", coQuery.getVoip());
+			page.getParams().put("invoice_id", coQuery.getInvoice_id());
+			page.getParams().put("customer_type", coQuery.getCustomer_type());
+			page.getParams().put("broadband_asid", coQuery.getBroadband_asid());
 		}
-		this.crmService.queryCustomersByPage(page);
+		this.crmService.queryCustomerOrdersByPage(page);
 		status.setComplete();
 		return page;
 	}
@@ -2580,45 +2573,44 @@ public class CRMRestController {
 	// Ticket
 	// Check Customer Existence
 	@RequestMapping(value = "broadband-user/crm/ticket/check-customer-existence", method = RequestMethod.POST)
-	public JSONBean<Customer> doCheckCustomerExistence(Model model,
+	public JSONBean<CustomerOrder> doCheckCustomerExistence(Model model,
 			@RequestParam("keyword") String keyword,
 			HttpServletRequest req) {
 
-		JSONBean<Customer> json = new JSONBean<Customer>();
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
 		if("".equals(keyword.trim())){
 			json.getErrorMap().put("customerNull", "Please input something and check again!");
 			return json;
 		}
 		
-		Customer cQuery = new Customer();
-		cQuery.getParams().put("where", "query_exist_customer_by_keyword");
-		cQuery.getParams().put("keyword", keyword);
-		List<Customer> cs = this.crmService.queryCustomers(cQuery);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("where", "query_exist_customer_by_keyword");
+		coQuery.getParams().put("keyword", keyword);
+		List<CustomerOrder> cos = this.crmService.queryCustomerOrders(coQuery);
 		
-		if(cs==null || cs.size()<=0){
-			json.getErrorMap().put("customerNull", "Couldn't get customer's essential details by provided keyword!");
+		if(cos==null || cos.size()<=0){
+			json.getErrorMap().put("customerNull", "Couldn't get order's essential details by provided keyword!");
 		} else {
-			json.getSuccessMap().put("customerNotNull", "Got this customer's essential details!");
+			json.getSuccessMap().put("customerNotNull", "Got this order's essential details!");
 			
-			Customer c = cs.get(0);
+			CustomerOrder co = cos.get(0);
 			
 			// If Business Customer
-			if(!"personal".equals(c.getCustomer_type())){
-				Organization org = this.crmService.queryOrganizationByCustomerId(c.getId());
-				if(org.getHolder_name().contains(" ")){
-					c.setFirst_name(org.getHolder_name().split(" ")[0]);
-					c.setLast_name(org.getHolder_name().split(" ")[1]);
+			if(!"personal".equals(co.getCustomer_type())){
+				if(co.getHolder_name().contains(" ")){
+					co.setFirst_name(co.getHolder_name().split(" ")[0]);
+					co.setLast_name(co.getHolder_name().split(" ")[1]);
 				} else {
-					c.setLast_name(org.getHolder_name());
+					co.setLast_name(co.getHolder_name());
 				}
 				
-				if(!"".equals(org.getHolder_email().trim())){
-					c.setEmail(org.getHolder_email());
+				if(!"".equals(co.getHolder_email().trim())){
+					co.setEmail(co.getHolder_email());
 				}
 			}
 			
-			json.setModel(c);
+			json.setModel(co);
 		}
 		
 		return json;
@@ -2952,8 +2944,6 @@ public class CRMRestController {
 		
 		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(co.getCustomer_id());
 		
-		c.setOrganization(co.getCustomer().getOrganization());
-		
 		c.setCustomerOrder(co);
 		
 		this.crmService.createOrderingFormPDFByDetails(c);
@@ -2972,13 +2962,7 @@ public class CRMRestController {
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
 		
-		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(co.getCustomer_id());
-		
-		c.setOrganization(co.getCustomer().getOrganization());
-		
-		c.setCustomerOrder(co);
-		
-		this.crmService.createReceiptPDFByDetails(c);
+		this.crmService.createReceiptPDFByDetails(co);
 		json.getSuccessMap().put("alert-success", "Successfully Regenerate Receipt");
 
 		return json;
@@ -2999,8 +2983,10 @@ public class CRMRestController {
 			json.getErrorMap().put("alert-error", "Please input an amount to continue!");
 			return json;
 		}
-		
-		Customer c = this.crmService.queryCustomerById(customer_id);
+
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer c = this.crmService.queryCustomer(cQuery);
 		c.setBalance(TMUtils.bigAdd(c.getBalance()!=null ? c.getBalance() : 0d, defray_amount));
 		c.getParams().put("id", customer_id);
 		this.crmService.editCustomer(c);
@@ -3317,7 +3303,7 @@ public class CRMRestController {
 		customerRegAdmin.setLast_name(customer.getLast_name());
 		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
 		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
-		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
+//		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
 		
 		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
 		
@@ -3346,9 +3332,7 @@ public class CRMRestController {
 		customerRegAdmin.setLast_name(customer.getLast_name());
 		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
 		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
-		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
-		
-		customerRegAdmin.setOrganization(customer.getOrganization());
+//		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
 		
 		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
 		

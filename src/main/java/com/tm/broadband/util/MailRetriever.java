@@ -64,13 +64,8 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_md5_password>", preventNull(TMUtils.generateRandomString(3)+cus.getMd5_password()+TMUtils.generateRandomString(3))));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
-			if("business".equals(cus.getCustomer_type())){
-				noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));
-				noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", ""));
-			} else {
-				noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
-				noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
-			}
+			noti.setTitle(noti.getTitle().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
+			noti.setTitle(noti.getTitle().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_address>", preventNull(cus.getAddress())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_email>", preventNull(cus.getEmail())));
 			noti.setTitle(noti.getTitle().replaceAll("@<customer_phone>", preventNull(cus.getPhone())));
@@ -91,13 +86,8 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<customer_password>", preventNull(cus.getPassword())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_md5_password>", preventNull(TMUtils.generateRandomString(3)+cus.getMd5_password()+TMUtils.generateRandomString(3))));
 			noti.setContent(noti.getContent().replaceAll("@<customer_user_name>", preventNull(cus.getUser_name())));
-			if("business".equals(cus.getCustomer_type())){
-				noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getOrganization().getOrg_name())));
-				noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", ""));
-			} else {
-				noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
-				noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
-			}
+			noti.setContent(noti.getContent().replaceAll("@<customer_first_name>", preventNull(cus.getFirst_name())));
+			noti.setContent(noti.getContent().replaceAll("@<customer_last_name>", preventNull(cus.getLast_name())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_address>", preventNull(cus.getAddress())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_email>", preventNull(cus.getEmail())));
 			noti.setContent(noti.getContent().replaceAll("@<customer_phone>", preventNull(cus.getPhone())));
@@ -212,6 +202,13 @@ public class MailRetriever {
 			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
+			if(order.getCustomer_type().equals("personal")){
+				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getFirst_name())))));
+				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getLast_name())))));
+			} else {
+				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrg_name())))));
+				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf("")));
+			}
 		}
 		// retrieve order end
 		// title end
@@ -223,6 +220,13 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
+			if(order.getCustomer_type().equals("personal")){
+				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getFirst_name())))));
+				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getLast_name())))));
+			} else {
+				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrg_name())))));
+				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf("")));
+			}
 		}
 		// retrieve order end
 		// content end
@@ -305,16 +309,16 @@ public class MailRetriever {
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CompanyDetail company){
-		if(cus!=null){
-			mailAtValueRetriever(noti,cus);
+	public static void mailAtValueRetriever(Notification noti, CustomerOrder co, CompanyDetail company){
+		if(co!=null){
+			mailAtValueRetriever(noti,co);
 		}
 		if(company!=null){
 			mailAtValueRetriever(noti,company);
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, CompanyDetail company){
+	public static void mailAtValueRetriever(Notification noti, CustomerOrder cus, CustomerOrder order, CompanyDetail company){
 		if(cus!=null){
 			mailAtValueRetriever(noti,cus);
 		}
@@ -326,9 +330,9 @@ public class MailRetriever {
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerInvoice inv, CompanyDetail company){
-		if(cus!=null){
-			mailAtValueRetriever(noti,cus);
+	public static void mailAtValueRetriever(Notification noti, CustomerOrder co, CustomerInvoice inv, CompanyDetail company){
+		if(co!=null){
+			mailAtValueRetriever(noti,co);
 		}
 		if(inv!=null){
 			mailAtValueRetriever(noti,inv);
@@ -338,10 +342,8 @@ public class MailRetriever {
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, List<CustomerOrderDetail> cods, CompanyDetail company){
-		if(cus!=null){
-			mailAtValueRetriever(noti,cus);
-		}
+	public static void mailAtValueRetriever(Notification noti, CustomerOrder order, List<CustomerOrderDetail> cods, CompanyDetail company){
+
 		if(company!=null){
 			mailAtValueRetriever(noti,company);
 		}
