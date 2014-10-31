@@ -21,11 +21,10 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
-import com.tm.broadband.model.Organization;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -38,10 +37,9 @@ import com.tm.broadband.util.itext.ITextUtils;
 public class InvoicePDFCreator extends ITextUtils {
 
 	private CompanyDetail companyDetail;
+	private CustomerOrder co;
 	private CustomerInvoice currentCustomerInvoice;
     private CustomerInvoice lastCustomerInvoice;
-    private Customer customer;
-	private Organization org;
 
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
@@ -71,14 +69,11 @@ public class InvoicePDFCreator extends ITextUtils {
 	
 	public InvoicePDFCreator(CompanyDetail companyDetail
 			,CustomerInvoice currentCustomerInvoice
-			,Customer customer
-			,Organization org
+			,CustomerOrder co
 			,List<CustomerCallRecord> ccrs) {
 		this.companyDetail = companyDetail;
 		this.currentCustomerInvoice = currentCustomerInvoice;
 		this.lastCustomerInvoice = currentCustomerInvoice.getLastCustomerInvoice();
-		this.customer = customer;
-		this.org = org;
 	}
 
 	public Map<String, Object> create() throws DocumentException, MalformedURLException, IOException{
@@ -90,7 +85,7 @@ public class InvoicePDFCreator extends ITextUtils {
 		String outputFile = TMUtils.createPath(
 				"broadband" 
 				+ File.separator
-				+ "customers" + File.separator + this.customer.getId()
+				+ "customers" + File.separator + this.co.getId()
 				+ File.separator + "invoice_" + this.getCurrentCustomerInvoice().getId() + ".pdf");
 		
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
@@ -126,7 +121,7 @@ public class InvoicePDFCreator extends ITextUtils {
         // END CustomerInvoiceDetails
         
         // If is business customer
-        isBusiness = "business".toUpperCase().equals(customer.getCustomer_type().toUpperCase());
+        isBusiness = "business".toUpperCase().equals(this.getCo().getCustomer_type().toUpperCase());
         
         totalPayableAmount = isBusiness ? TMUtils.bigMultiply(totalPayableAmount, 1.15) : totalPayableAmount;
         
@@ -195,7 +190,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	        boolean isFirst = this.getLastCustomerInvoice()==null;
 	        
 	        // LIGHT GRAY VALUE
-	        addCol(paymentSlipTable, this.getCustomer().getId().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
+	        addCol(paymentSlipTable, this.getCo().getCustomer_id().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, this.getCurrentCustomerInvoice().getId().toString()).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, isFirst ? "" : this.getCurrentCustomerInvoice().getDue_date() != null ? TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date()) : " ").font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
@@ -325,17 +320,17 @@ public class InvoicePDFCreator extends ITextUtils {
         
         String customerName = null;
 //        String customerTitle = null;
-        if("business".toUpperCase().equals(customer.getCustomer_type().toUpperCase())){
-        	customerName = org.getOrg_name();
+        if("business".toUpperCase().equals(this.getCo().getCustomer_type().toUpperCase())){
+        	customerName = this.getCo().getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle().toUpperCase()+" " : "";
-        	customerName += this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
+        	customerName = this.getCo().getTitle() != null ? this.getCo().getTitle().toUpperCase()+" " : "";
+        	customerName += this.getCo().getFirst_name()+" "+this.getCo().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
 //        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
         addCol(headerTable, customerName.trim()).font(ITextFont.arial_bold_9).paddingTo("l", 30F).paddingTo("b", 10F).border(0).o();
-        String addressArr[] = this.getCustomer().getAddress().split(",");
+        String addressArr[] = this.getCo().getAddress().split(",");
         for (String address : addressArr) {
             addCol(headerTable, address.trim()).font(ITextFont.arial_bold_8).paddingTo("l", 30F).border(0).o();
 		}
@@ -480,7 +475,7 @@ public class InvoicePDFCreator extends ITextUtils {
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
         boolean isFirst = this.getLastCustomerInvoice()==null;
 		currentFinalPayable = totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance;
-    	if("business".equals(this.getCustomer().getCustomer_type())){
+    	if("business".equals(this.getCo().getCustomer_type())){
     		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
         	addCol(invoiceSummaryTable, isFirst ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(3).indent(10F).font(ITextFont.arial_normal_8).o();
         	addCol(invoiceSummaryTable, isFirst ? "" : "Previous: $"+TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))+"    +    Current: $"+TMUtils.fillDecimalPeriod(String.valueOf(currentFinalPayable))+"      =").colspan(4).font(ITextFont.arial_bold_10).alignH("r").o();
@@ -825,7 +820,7 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(headerTable, 14F, colspan);
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Customer Id: ").colspan(2).font(ITextFont.arial_bold_8).o();
-        addCol(headerTable, this.getCustomer().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(headerTable, this.getCo().getCustomer_id().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Invoice No: ").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(headerTable, this.getCurrentCustomerInvoice().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
@@ -852,14 +847,6 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.companyDetail = companyDetail;
 	}
 
-	public Customer getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
 	public CustomerInvoice getCurrentCustomerInvoice() {
 		return currentCustomerInvoice;
 	}
@@ -877,20 +864,20 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.lastCustomerInvoice = lastCustomerInvoice;
 	}
 
-	public Organization getOrg() {
-		return org;
-	}
-
-	public void setOrg(Organization org) {
-		this.org = org;
-	}
-
 	public Map<String, List<CustomerCallRecord>> getCrrsMap() {
 		return crrsMap;
 	}
 
 	public void setCrrsMap(Map<String, List<CustomerCallRecord>> crrsMap) {
 		this.crrsMap = crrsMap;
+	}
+
+	public CustomerOrder getCo() {
+		return co;
+	}
+
+	public void setCo(CustomerOrder co) {
+		this.co = co;
 	}
 
 	

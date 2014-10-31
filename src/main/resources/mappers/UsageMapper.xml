@@ -56,10 +56,6 @@
 			<result property="status" column="c_status"/>
 			<result property="customer_type" column="c_customer_type"/>
 			
-			<association property="organization" column="o_customer_id" javaType="Organization">
-				<result property="customer_id" column="o_customer_id"/>
-				<result property="org_name" column="o_org_name"/>
-			</association>
 		</association>
 		
 		<association property="cod" column="cod_id" javaType="CustomerOrderDetail">
@@ -105,7 +101,6 @@
 			<include refid="dataCustomerColumn"/>
 		from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
-		left join tm_organization as o on o.customer_id = c.id
 		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
 		<include refid="usageWhere"/>
 	</select>
@@ -115,7 +110,6 @@
 			<include refid="dataCustomerColumn"/>
 		from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
-		left join tm_organization as o on o.customer_id = c.id
 		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
 		<include refid="usageWhere"/>
 		<if test="params.orderby != null">${params.orderby}</if>
@@ -125,7 +119,6 @@
 	<select id="selectDataCustomersSum" parameterType="Page" resultType="int">
 		select count(*) from tm_customer_order as co
 		left join tm_customer as c on c.id = co.customer_id
-		left join tm_organization as o on o.customer_id = c.id
 		left join tm_customer_order_detail as cod on cod.order_id = co.id and cod.detail_type like 'plan-%' 
 		<include refid="usageWhere"/>
 	</select>

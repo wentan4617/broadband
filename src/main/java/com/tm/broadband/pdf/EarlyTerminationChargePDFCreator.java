@@ -17,9 +17,8 @@ import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.EarlyTerminationCharge;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.itext.ITextFont;
 import com.tm.broadband.util.itext.ITextUtils;
@@ -32,8 +31,7 @@ import com.tm.broadband.util.itext.ITextUtils;
 public class EarlyTerminationChargePDFCreator extends ITextUtils {
 
 	private CompanyDetail companyDetail;
-    private Customer customer;
-	private Organization org;
+	private CustomerOrder co;
 	private EarlyTerminationCharge etc;
 
 	private BaseColor titleBorderColor = new BaseColor(230,230,230);
@@ -45,12 +43,10 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 	public EarlyTerminationChargePDFCreator(){}
 	
 	public EarlyTerminationChargePDFCreator(CompanyDetail companyDetail
-			,Customer customer
-			,Organization org
+			,CustomerOrder co
 			,EarlyTerminationCharge etc) {
 		this.companyDetail = companyDetail;
-		this.customer = customer;
-		this.org = org;
+		this.co = co;
 		this.etc = etc;
 	}
 
@@ -61,7 +57,7 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 		String outputFile = TMUtils.createPath(
 				"broadband" 
 				+ File.separator
-				+ "customers" + File.separator + this.customer.getId()
+				+ "customers" + File.separator + this.co.getCustomer_id()
 				+ File.separator + "early_termination_charge_" + this.getEtc().getId() + ".pdf");
 		
         PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(outputFile));
@@ -113,7 +109,7 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 	        addCol(paymentSlipTable, "Due Date").font(ITextFont.arial_bold_8).bgColor(new BaseColor(234,234,234)).indent(14F).o();
 	
 	        // LIGHT GRAY VALUE
-	        addCol(paymentSlipTable, this.getCustomer().getId().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
+	        addCol(paymentSlipTable, this.getCo().getCustomer_id().toString()).font(ITextFont.arial_normal_6).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, this.etc.getId().toString()).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, TMUtils.retrieveMonthAbbrWithDate(this.etc.getDue_date())).font(ITextFont.arial_normal_7).bgColor(new BaseColor(234,234,234)).paddingTo("t", 6F).indent(14F).o();
 	        addCol(paymentSlipTable, " ").bgColor(new BaseColor(234,234,234)).borderColor(BaseColor.WHITE).border("r", 1F).o();
@@ -193,17 +189,17 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         
         String customerName = null;
 //        String customerTitle = null;
-        if("business".equals(customer.getCustomer_type())){
-        	customerName = org.getOrg_name();
+        if("business".equals(this.getCo().getCustomer_type())){
+        	customerName = this.getCo().getOrg_name();
 //        	customerTitle = "BUSINESS";
         } else {
-        	customerName = this.getCustomer().getTitle() != null ? this.getCustomer().getTitle().toUpperCase()+" " : "";
-        	customerName += this.getCustomer().getFirst_name()+" "+this.getCustomer().getLast_name();
+        	customerName = this.getCo().getTitle() != null ? this.getCo().getTitle().toUpperCase()+" " : "";
+        	customerName += this.getCo().getFirst_name()+" "+this.getCo().getLast_name();
 //        	customerTitle = "PERSONAL";
         }
 //        addCol(headerTable, customerTitle + " USER").font(ITextFont.arial_bold_12).border(0).paddingTo("l", 50F).paddingTo("b", 10F).o();
         addCol(headerTable, customerName.trim()).font(ITextFont.arial_bold_9).paddingTo("l", 30F).paddingTo("b", 10F).border(0).o();
-        String addressArr[] = this.getCustomer().getAddress().split(",");
+        String addressArr[] = this.getCo().getAddress().split(",");
         for (String address : addressArr) {
             addCol(headerTable, address.trim()).font(ITextFont.arial_bold_8).paddingTo("l", 30F).border(0).o();
 		}
@@ -292,7 +288,7 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
         addEmptyCol(headerTable, 14F, colspan);
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Customer Id: ").colspan(2).font(ITextFont.arial_bold_8).o();
-        addCol(headerTable, this.getCustomer().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
+        addCol(headerTable, this.getCo().getCustomer_id().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
         addEmptyCol(headerTable, 4F, colspan-4);
         addCol(headerTable, "Invoice No: ").colspan(2).font(ITextFont.arial_bold_8).o();
         addCol(headerTable, this.getEtc().getId().toString()).colspan(2).font(ITextFont.arial_bold_8).alignH("r").o();
@@ -320,20 +316,12 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 		this.companyDetail = companyDetail;
 	}
 
-	public Customer getCustomer() {
-		return customer;
+	public CustomerOrder getCo() {
+		return co;
 	}
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
-
-	public Organization getOrg() {
-		return org;
-	}
-
-	public void setOrg(Organization org) {
-		this.org = org;
+	public void setCo(CustomerOrder co) {
+		this.co = co;
 	}
 
 	public EarlyTerminationCharge getEtc() {

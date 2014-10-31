@@ -10,13 +10,11 @@ import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
-import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.ProvisionLogMapper;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Provision;
 import com.tm.broadband.model.ProvisionLog;
@@ -27,7 +25,6 @@ public class ProvisionService {
 	private CustomerMapper customerMapper;
 	private CustomerOrderMapper customerOrderMapper;
 	private CustomerOrderDetailMapper customerOrderDetailMapper;
-	private OrganizationMapper organzaitionMapper;
 	private ProvisionLogMapper provisionLogMapper;
 	private ContactUsMapper contactUsMapper;
 	
@@ -35,13 +32,11 @@ public class ProvisionService {
 	public ProvisionService(CustomerMapper customerMapper
 			, CustomerOrderMapper customerOrderMapper
 			, CustomerOrderDetailMapper customerOrderDetailMapper
-			, OrganizationMapper organzaitionMapper
 			, ProvisionLogMapper provisionLogMapper
 			, ContactUsMapper contactUsMapper ) {
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
-		this.organzaitionMapper = organzaitionMapper;
 		this.provisionLogMapper = provisionLogMapper;
 		this.contactUsMapper = contactUsMapper;
 	}
@@ -124,9 +119,9 @@ public class ProvisionService {
 		cQ.getParams().put("id", order.getCustomer_id());
 		order.setCustomer(this.customerMapper.selectCustomers(cQ).get(0));
 		if ("business".equals(order.getCustomer_type())) {
-			Organization oQ = new Organization();
+			//Organization oQ = new Organization();
 			cQ.getParams().put("order_id", order.getId());
-			order.setOrganization(this.organzaitionMapper.selectOrganizations(oQ).get(0));
+			//order.setOrganization(this.organzaitionMapper.selectOrganizations(oQ).get(0));
 		}
 		CustomerOrderDetail codQ = new CustomerOrderDetail();
 		codQ.getParams().put("order_id", order.getId());

@@ -271,7 +271,7 @@
 		<. 
 					}
 					var downloadUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/download/' + invoice.id;
-					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + customer_id;
+					var sendUrl = ctx+'/broadband-user/crm/customer/invoice/pdf/send/' + invoice.id + '/' + invoice.order_id;
 					if((invoice.status=='unpaid' || invoice.status=='not_pay_off' || invoice.status=='overdue')){
 						if(invoice.invoice_pdf_path != null){
 		.>

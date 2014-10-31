@@ -280,7 +280,7 @@
 					var order_total_price = $('#'+this.id+'_order_total_price').attr('data-val');
 
 					var data = {
-						'id':this.id
+						'order_id':this.id
 						,'customerId':customerId
 						,'paid_amount':paid_amount
 						,'order_pay_way':order_pay_way

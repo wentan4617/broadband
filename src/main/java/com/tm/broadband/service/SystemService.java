@@ -1,6 +1,5 @@
 package com.tm.broadband.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import com.tm.broadband.mapper.NotificationMapper;
 import com.tm.broadband.mapper.SEOMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
@@ -223,28 +221,13 @@ public class SystemService {
 	/*
 	 * Notification begin
 	 */
-	
 	public Notification queryNotificationBySort(String sort, String type) {
 		return this.notificationMapper.selectNotificationBySort(sort, type);
 	}
-	
 	/*
 	 * Notification end
 	 */
 	
-	/**
-	 * Chart Services BEGIN
-	 */
-	
-	@Transactional
-	public List<Customer> queryCustomersByRegisterDate(Date start, Date end){
-		return this.customerMapper.selectCustomersByRegisterDate(start, end);
-	}
-	
-	/**
-	 * Chart Services END
-	 */
-
 	// BEGIN ManualManipulationRecord
 	@Transactional
 	public Page<ManualManipulationRecord> queryManualManipulationRecordsByPage(Page<ManualManipulationRecord> page) {

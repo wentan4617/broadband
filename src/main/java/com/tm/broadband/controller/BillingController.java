@@ -30,13 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
-import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
 import com.tm.broadband.model.Notification;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.StatisticBilling;
 import com.tm.broadband.model.TerminationRefund;
@@ -714,29 +713,29 @@ public class BillingController {
 	}
     
 	// Send Early Termination Charge PDF directly
-	@RequestMapping(value = "/broadband-user/billing/early_termination_charge/pdf/send/{terminationChargeId}/{customerId}")
+	@RequestMapping(value = "/broadband-user/billing/early_termination_charge/pdf/send/{terminationChargeId}/{orderId}")
 	public String sendEarlyTerminationChargePDF(Model model,
 			@PathVariable(value = "terminationChargeId") int terminationChargeId,
-			@PathVariable(value = "customerId") int customerId) {
+			@PathVariable(value = "orderId") int orderId) {
 		String filePath = this.billingService.queryEarlyTerminationChargePDFPathById(terminationChargeId);
-		Customer customer = this.crmService.queryCustomerById(customerId);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", orderId);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
 		Notification notification = this.systemService.queryNotificationBySort("early-termination-charge", "email");
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
-		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
-		customer.setOrganization(org);
-		MailRetriever.mailAtValueRetriever(notification, customer, company);
+		MailRetriever.mailAtValueRetriever(notification, co, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setAddressee(co.getEmail());
 		// subject
 		applicationEmail.setSubject(notification.getTitle());
 		// content
 		applicationEmail.setContent(notification.getContent());
 		// attachment name
-		applicationEmail.setAttachName("early_termination_charge_" + ("personal".equals(customer.getType()) ? customer.getLast_name()+" "+ customer.getFirst_name() : org!=null ? org.getOrg_name() : "") + ".pdf");
+		applicationEmail.setAttachName("early_termination_charge_" + ("personal".equals(co.getCustomer_type()) ? co.getLast_name()+" "+ co.getFirst_name() : co.getOrg_name()!=null ? co.getOrg_name() : "") + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		
@@ -744,39 +743,39 @@ public class BillingController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		filePath = null;
-		customer = null;
 		notification = null;
 		company = null;
-		org = null;
+		coQuery = null;
+		co = null;
 		applicationEmail = null;
 		
 		return "broadband-user/progress-accomplished";
 	}
     
 	// Send Termination Refund PDF directly
-	@RequestMapping(value = "/broadband-user/billing/termination_refund/pdf/send/{terminationRefundId}/{customerId}")
+	@RequestMapping(value = "/broadband-user/billing/termination_refund/pdf/send/{terminationRefundId}/{orderId}")
 	public String sendTerminationRefundPDF(Model model,
 			@PathVariable(value = "terminationRefundId") int terminationRefundId,
-			@PathVariable(value = "customerId") int customerId) {
+			@PathVariable(value = "orderId") int orderId) {
 		String filePath = this.billingService.queryTerminationRefundPDFPathById(terminationRefundId);
-		Customer customer = this.crmService.queryCustomerById(customerId);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", orderId);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
 		Notification notification = this.systemService.queryNotificationBySort("termination-refund", "email");
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
-		Organization org = this.crmService.queryOrganizationByCustomerId(customerId);
-		customer.setOrganization(org);
-		MailRetriever.mailAtValueRetriever(notification, customer, company);
+		MailRetriever.mailAtValueRetriever(notification, co, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setAddressee(co.getEmail());
 		// subject
 		applicationEmail.setSubject(notification.getTitle());
 		// content
 		applicationEmail.setContent(notification.getContent());
 		// attachment name
-		applicationEmail.setAttachName("termination_refund_" + ("personal".equals(customer.getType()) ? customer.getLast_name()+" "+ customer.getFirst_name() : org!=null ? org.getOrg_name() : "") + ".pdf");
+		applicationEmail.setAttachName("termination_refund_" + ("personal".equals(co.getCustomer_type()) ? co.getLast_name()+" "+ co.getFirst_name() : co.getOrg_name()!=null ? co.getOrg_name() : "") + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		
@@ -784,10 +783,10 @@ public class BillingController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
 		filePath = null;
-		customer = null;
 		notification = null;
 		company = null;
-		org = null;
+		coQuery = null;
+		co = null;
 		applicationEmail = null;
 		
 		return "broadband-user/progress-accomplished";

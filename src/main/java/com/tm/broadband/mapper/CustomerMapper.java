@@ -18,15 +18,11 @@ public interface CustomerMapper {
 	
 	/* SELECT AREA */
 	
-	Customer selectCustomer(Customer customer);
 	List<Customer> selectCustomers(Customer customer);
 	List<Customer> selectCustomersByPage(Page<Customer> page);
 	int selectCustomersSum(Page<Customer> page);
 	
 	int selectExistCustomer(Customer customer);
-	Customer selectCustomerByIdWithCustomerOrder(int id);
-	Customer selectCustomerById(int id);
-	List<Customer> selectCustomersByRegisterDate(Date start, Date end);
 	
 	/* // END SELECT AREA */
 	

@@ -106,7 +106,7 @@ tbody td {text-align:center;}
 									</td>
 									<td>
 										<c:if test="${status == 'unpaid'}">
-											<a target="_blank" href="${ctx}/broadband-user/billing/early_termination_charge/pdf/send/${earlyTerminationCharge.id }/${earlyTerminationCharge.customer_id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Send Early Termination To Customer's Email" style="font-size:20px;">
+											<a target="_blank" href="${ctx}/broadband-user/billing/early_termination_charge/pdf/send/${earlyTerminationCharge.id }/${earlyTerminationCharge.order_id }" data-toggle="tooltip" data-placement="bottom" data-original-title="Send Early Termination To Customer's Email" style="font-size:20px;">
 												<span class="glyphicon glyphicon-send"></span>
 											</a>
 											&nbsp;

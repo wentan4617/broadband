@@ -9,11 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CustomerCreditMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
-import com.tm.broadband.mapper.OrganizationMapper;
 import com.tm.broadband.mapper.UserMapper;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.Organization;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 
@@ -22,17 +20,14 @@ public class SaleService {
 	
 	private CustomerOrderMapper customerOrderMapper;
 	private CustomerCreditMapper customerCreditMapper;
-	private OrganizationMapper organizationMapper;
 	private UserMapper userMapper;
 	
 	@Autowired
 	public SaleService(CustomerOrderMapper customerOrderMapper
 			, CustomerCreditMapper customerCreditMapper
-			, OrganizationMapper organizationMapper
 			, UserMapper userMapper) {
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerCreditMapper = customerCreditMapper;
-		this.organizationMapper = organizationMapper;
 		this.userMapper = userMapper;
 	}
 
@@ -63,11 +58,6 @@ public class SaleService {
 	@Transactional
 	public void createCustomerCredit(CustomerCredit customerCredit){
 		this.customerCreditMapper.insertCustomerCredit(customerCredit);
-	}
-	
-	public Organization queryOrganizationByCustomerId(int id){
-		return null;
-		//return this.organizationMapper.selectOrganizationByCustomerId(id);
 	}
 	
 	public List<User> queryUsersWhoseIdExistInOrder(){
