@@ -269,15 +269,32 @@
 		<where>
 			<choose>
 				<when test="params.where == 'query_exist_customer_by_keyword'">
-					<if test="params.keyword != null">
-						co.id = #{params.keyword}
-						or co.customer_id = #{params.keyword}
-						or lower(co.email) = lower(#{params.keyword})
-						or co.phone = #{params.keyword}
-						or co.cellphone = #{params.keyword}
-						or lower(co.first_name) = lower(#{params.keyword})
-						or lower(co.last_name) = lower(#{params.keyword})
-						or lower(co.org_name) = lower(#{params.keyword})
+					<if test="params.order_id != null">co.id  LIKE CONCAT('%', '${params.order_id}', '%')</if>
+					<if test="params.customer_id != null">or co.customer_id LIKE CONCAT('%', '${params.customer_id}', '%')</if>
+					<if test="params.first_name != null">or co.first_name LIKE CONCAT('%', '${params.first_name}', '%')</if>
+					<if test="params.last_name != null">or co.last_name LIKE CONCAT('%', '${params.last_name}', '%')</if>
+					<if test="params.phone != null">or co.phone LIKE CONCAT('%', '${params.phone}', '%')</if>
+					<if test="params.mobile != null">or co.mobile LIKE CONCAT('%', '${params.mobile}', '%')</if>
+					<if test="params.email != null">or co.email LIKE CONCAT('%', '${params.email}', '%')</if>
+					<if test="params.address != null">or co.address LIKE CONCAT('%', '${params.address}', '%')</if>
+					<if test="params.broadband_asid != null">or co.broadband_asid LIKE CONCAT('%', '${params.broadband_asid}', '%')</if>
+					<if test="params.customer_type != null">or co.customer_type LIKE CONCAT('%', '${params.customer_type}', '%')</if>
+					<if test="params.invoice_id != null">
+						or co.id in(
+							select order_id from tm_customer_invoice where id LIKE CONCAT('%', '${params.invoice_id}', '%')
+						)
+					</if>
+					<if test="params.pstn != null">
+						or co.id in(
+							select order_id  from tm_customer_order_detail where detail_type='pstn'
+							and pstn_number LIKE CONCAT('%', '${params.pstn}', '%')
+						)
+					</if>
+					<if test="params.voip != null">
+						or co.id in(
+							select order_id  from tm_customer_order_detail where detail_type='voip'
+							and pstn_number LIKE CONCAT('%', '${params.voip}', '%')
+						)
 					</if>
 				</when>
 				<when test="params.where == 'query_order_status'">

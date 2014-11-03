@@ -93,6 +93,7 @@
 				}
 			}
 		});
+		console.log(co);
 		doPage(1, co, $(this));
 	});
 
@@ -111,7 +112,6 @@
 		if($(this).attr('data-val')!='all'){
 			co[field] = $(this).attr('data-val');
 		}
-		console.log(co);
 		doPage(1, co, null);
 	});
 })(jQuery);

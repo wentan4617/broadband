@@ -625,7 +625,8 @@ public class CRMService {
 	
 	@Transactional
 	public CustomerOrder queryCustomerOrder(CustomerOrder customerOrder) {
-		return this.customerOrderMapper.selectCustomerOrder(customerOrder);
+		List<CustomerOrder> cos = this.queryCustomerOrders(customerOrder);
+		return cos!=null && cos.size()>0 ? cos.get(0) : null;
 	}
 	
 	@Transactional
@@ -698,11 +699,6 @@ public class CRMService {
 	@Transactional
 	public String queryCustomerOrderTypeById(int id) {
 		return this.customerOrderMapper.selectCustomerOrderTypeById(id);
-	}
-	
-	@Transactional
-	public CustomerOrder queryCustomerOrderById(int id) {
-		return this.customerOrderMapper.selectCustomerOrderById(id);
 	}
 
 	@Transactional
@@ -1158,8 +1154,10 @@ public class CRMService {
             ex.printStackTrace();
         }
 
-		customerOrder = this.customerOrderMapper.selectCustomerOrderById(customerOrder.getId());
-		createInvoicePDFBoth(customerOrder
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", customerOrder.getId());
+		coQuery = this.queryCustomerOrder(coQuery);
+		createInvoicePDFBoth(coQuery
 				,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 				,new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 				, false, false);	// false : first invoice
@@ -1271,18 +1269,21 @@ public class CRMService {
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", co.getCustomer_id());
+			cQuery = this.queryCustomer(cQuery);
 			
 			CustomerInvoice ci = new CustomerInvoice();
 			ci.getParams().put("where", "by_max_id_with_invoice_type");
-			ci.getParams().put("customer_id", co.getCustomer().getId());
+			ci.getParams().put("customer_id", cQuery.getId());
 			ci.getParams().put("order_id", co.getId());
 			ci.getParams().put("invoice_type", "general-invoice");
 			ci = this.ciMapper.selectCustomerInvoice(ci);
 
 
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, co.getCustomer(), co, ci, companyDetail);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, cQuery, co, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(co.getCustomer().getEmail());
+			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : cQuery.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
 			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
@@ -1292,9 +1293,9 @@ public class CRMService {
 			
 			if("personal".equals(co.getCustomer_type())){
 				// get sms register template from db
-				MailRetriever.mailAtValueRetriever(notificationSMSFinal, co.getCustomer(), co, ci, companyDetail);
+				MailRetriever.mailAtValueRetriever(notificationSMSFinal, cQuery, co, ci, companyDetail);
 				// send sms to customer's mobile phone
-				this.smserService.sendSMSByAsynchronousMode(co.getCustomer().getCellphone(), notificationSMSFinal.getContent());
+				this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : cQuery.getCellphone(), notificationSMSFinal.getContent());
 			}
 			
 			notificationEmailFinal = null;
@@ -1512,14 +1513,16 @@ public class CRMService {
 	public void createEarlyTerminationInvoice(Integer order_id
 			, Date terminatedDate
 			, Integer executor_id) throws ParseException{
-		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
-		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(co.getOrder_using_start(), terminatedDate);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(coQuery.getOrder_using_start(), terminatedDate);
 		
 		EarlyTerminationCharge etc = new EarlyTerminationCharge();
-		etc.setCustomer_id(co.getCustomer_id());
-		etc.setOrder_id(co.getId());
+		etc.setCustomer_id(coQuery.getCustomer_id());
+		etc.setOrder_id(order_id);
 		etc.setCreate_date(new Date());
-		etc.setService_given_date(co.getOrder_using_start());
+		etc.setService_given_date(coQuery.getOrder_using_start());
 		etc.setTermination_date(terminatedDate);
 		etc.setLegal_termination_date((Date) map.get("legal_termination_date"));
 		etc.setDue_date(TMUtils.getInvoiceDueDate(new Date(), 10));
@@ -1536,7 +1539,7 @@ public class CRMService {
 		String invoicePDFPath = "";
 		try {
 			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
-			invoicePDFPath = new EarlyTerminationChargePDFCreator(cd, co, etc).create();
+			invoicePDFPath = new EarlyTerminationChargePDFCreator(cd, coQuery, etc).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -1548,12 +1551,16 @@ public class CRMService {
 	@Transactional
 	public void createTerminationRefundInvoice(Integer order_id
 			, Date terminatedDate, User u, String accountNo, String accountName, Double monthlyCharge, String productName) throws ParseException{
-		CustomerOrder co = this.customerOrderMapper.selectCustomerOrderById(order_id);
+
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		
 		Map<String, Object> map = TMUtils.terminationRefundCalculations(terminatedDate, monthlyCharge);
 		
 		TerminationRefund tr = new TerminationRefund();
-		tr.setCustomer_id(co.getCustomer_id());
-		tr.setOrder_id(co.getId());
+		tr.setCustomer_id(coQuery.getCustomer_id());
+		tr.setOrder_id(order_id);
 		tr.setCreate_date(new Date());
 		tr.setTermination_date(terminatedDate);
 		tr.setProduct_name(productName);
@@ -1572,7 +1579,7 @@ public class CRMService {
 		String refundPDFPath = "";
 		try {
 			CompanyDetail cd = this.companyDetailMapper.selectCompanyDetail();
-			refundPDFPath = new TerminationRefundPDFCreator(cd, co, tr, u).create();
+			refundPDFPath = new TerminationRefundPDFCreator(cd, coQuery, tr, u).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
@@ -1709,7 +1716,14 @@ public class CRMService {
 			boolean isRegenerateInvoice,
 			boolean is_Next_Invoice) throws ParseException{
 		
-		Customer c = co.getCustomer();
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", co.getCustomer_id());
+		Customer c = this.queryCustomer(cQuery);
+		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", co.getId());
+		List<CustomerOrderDetail> cods = this.queryCustomerOrderDetails(codQuery);
+		co.setCustomerOrderDetails(cods);
 		
 		// Current invoice
 		CustomerInvoice ci = new CustomerInvoice();
@@ -2226,9 +2240,17 @@ public class CRMService {
 	public Map<String, Object> createTermPlanInvoiceByOrder(CustomerOrder co
 			,boolean isRegenerateInvoice, boolean is_Next_Invoice) throws ParseException{
 		
+		// BEGIN initial order details
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", co.getId());
+		List<CustomerOrderDetail> cods = this.queryCustomerOrderDetails(codQuery);
+		co.setCustomerOrderDetails(cods);
+		
 		// BEGIN get usable beans
 		// Customer
-		Customer c = co.getCustomer();
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", co.getCustomer_id());
+		Customer c = this.queryCustomer(cQuery);
 		boolean isBusiness = "business".toUpperCase().equals(co.getCustomer_type().toUpperCase());
 		
 		// Current invoice
@@ -3464,8 +3486,10 @@ public class CRMService {
 	public String serviceGivenPaid(Customer c, CustomerOrder co, CompanyDetail cd, User u){
 		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(co.getId());
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
-		
-		CustomerOrder coQuery = this.queryCustomerOrderById(co.getId());
+
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", co.getId());
+		coQuery = this.queryCustomerOrder(coQuery);
 		// If is customer invite customer
 		if(coQuery.getInviter_customer_id()!=null){
 			Double customer_inviter_gained_commission = TMUtils.bigMultiply(TMUtils.bigDivide(coQuery.getInviter_rate(), 100d), coQuery.getOrder_total_price());

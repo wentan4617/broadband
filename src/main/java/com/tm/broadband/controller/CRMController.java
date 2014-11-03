@@ -773,8 +773,10 @@ public class CRMController {
 			CustomerInvoice customerInvoice = this.crmService.queryCustomerInvoiceById(id);
 			gr.setAmountInput(new DecimalFormat("#.00").format(customerInvoice.getBalance()));
 		} else if("agent_ordering".equals(redirect_from)) {
-			CustomerOrder customerOrder = this.crmService.queryCustomerOrderById(id);
-			gr.setAmountInput(new DecimalFormat("#.00").format(customerOrder.getOrder_total_price()));
+			CustomerOrder coQuery = new CustomerOrder();
+			coQuery.getParams().put("id", id);
+			coQuery = this.crmService.queryCustomerOrder(coQuery);
+			gr.setAmountInput(new DecimalFormat("#.00").format(coQuery.getOrder_total_price()));
 		}
 		//gr.setAmountInput("1.00");
 		gr.setCurrencyInput("NZD");

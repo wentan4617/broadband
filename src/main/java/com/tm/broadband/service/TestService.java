@@ -8,8 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.Page;
+
+import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerOrder;
 
 @Service
 public class TestService {
@@ -26,6 +30,7 @@ public class TestService {
 	}
 	
 	@Transactional
+
 	public void moveCustomerToCustomerOrder() {
 		
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
@@ -43,4 +48,38 @@ public class TestService {
 			
 		}
 	}
+
+	public void copyContactDetailsFromCustomer2Order(){
+		
+		List<Customer> cs = this.customerMapper.selectCustomers(new Customer());
+		
+		for (Customer c : cs) {
+			
+			CustomerOrder coQuery = new CustomerOrder();
+			coQuery.getParams().put("customer_id", c.getId());
+			
+			List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coQuery);
+			for (CustomerOrder co : cos) {
+				
+				CustomerOrder coUpdate = new CustomerOrder();
+				coUpdate.setTitle(c.getTitle());
+				coUpdate.setFirst_name(c.getFirst_name());
+				coUpdate.setLast_name(c.getLast_name());
+				coUpdate.setAddress(c.getAddress());
+				coUpdate.setMobile(c.getCellphone());
+				coUpdate.setPhone(c.getPhone());
+				coUpdate.setEmail(c.getEmail());
+				coUpdate.setCustomer_type(c.getCustomer_type());
+				coUpdate.getParams().put("id", co.getId());
+				
+				this.customerOrderMapper.updateCustomerOrder(coUpdate);
+				
+			}
+			
+		}
+		
+		
+		
+	}
+
 }

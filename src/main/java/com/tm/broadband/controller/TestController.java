@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.paymentexpress.GenerateRequest;
 import com.tm.broadband.paymentexpress.PayConfig;
@@ -59,10 +60,20 @@ public class TestController {
 		return "redirect:/test/dps";
 	}
 	
+
 	@RequestMapping(value = "/test/customer/to/customerorder")
 	public String customertocustomerorder(){
 		
 		this.testService.moveCustomerToCustomerOrder();
 		return null;
 	}
+
+	@RequestMapping("/broadband-user/copy_customer_detail_2_order/redirect")
+	public String redirectIndex(RedirectAttributes attr) {
+		this.testService.copyContactDetailsFromCustomer2Order();
+		attr.addFlashAttribute("success", "Successfully copy all the customer detail to orders.");
+		return "redirect:/broadband-user/index";
+	}
+	
+	
 }
