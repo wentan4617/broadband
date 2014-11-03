@@ -119,7 +119,7 @@ public class DataRestController {
 	}
 	
 	
-	@RequestMapping("/broadband-user/data/customer/usage/view/{svlan}/{cvlan}/{type}/{calculator_date}")
+	@RequestMapping("/broadband-user/data/orders/usage/view/{svlan}/{cvlan}/{type}/{calculator_date}")
 	public List<DateUsage> doCustomerUsageView(
 			@PathVariable("svlan") String svlan,
 			@PathVariable("cvlan") String cvlan,

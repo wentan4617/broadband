@@ -2,6 +2,7 @@
 	
 	var _tmpl = $('#data_query_tmpl')
 		, ctx = _tmpl.attr('data-ctx')
+		, g_status = 'using'
 		
 	function dataQueryLoading() {
 		var o = {};
@@ -13,15 +14,20 @@
 		    autoclose: true
 		}).datepicker('setDate', new Date()).on('changeDate', function(e){ //console.log(e.format());
 			//doPage(1, e.format(), g_status);
+			dataOrdersLoading(1, e.format(), g_status, 0);
+		});
+		
+		$('#query').click(function(){
+			dataOrdersLoading(1, $('#calculator_date').val(), g_status, $('#orderid').val());
 		});
 		
 		$('a[data-name="queryBtn"]').click(function(){
-			var status = $(this).attr('data-status');
+			g_status = $(this).attr('data-status');
 			$('a[data-group]').removeClass('active');
 			var sub = $(this).attr('data-sub');
 			$('a[data-group="' + sub + '"]').addClass('active');
 			
-			dataOrdersLoading(1, $('#calculator_date').val(), status, 0);
+			dataOrdersLoading(1, $('#calculator_date').val(), g_status, 0);
 		});
 		
 		$('a[data-sub="in-service"]').trigger('click');

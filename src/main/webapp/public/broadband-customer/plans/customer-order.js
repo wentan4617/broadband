@@ -708,9 +708,14 @@
 			customer.customerOrder.transition_porting_number = $('#customerOrder\\.transition_porting_number').val();
 		}
 		
-		if (customer.customer_type == 'business') {
+		if (select_customer_type == 'personal') {
+			customer.customerOrder.title = customer.title;
+			customer.customerOrder.first_name = customer.first_name;
+			customer.customerOrder.last_name = customer.last_name;
+		} else if (select_customer_type == 'business') {
 			customer.customerOrder.org_type = $('#customerOrder\\.org_type').val();
 			customer.customerOrder.org_name = $('#customerOrder\\.org_name').val();
+			customer.company_name = customer.customerOrder.org_name;
 			customer.customerOrder.org_trading_name = $('#customerOrder\\.org_trading_name').val();
 			customer.customerOrder.org_register_no = $('#customerOrder\\.org_register_no').val();
 			customer.customerOrder.org_incoporate_date = $('#customerOrder\\.org_incoporate_date').val();

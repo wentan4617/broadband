@@ -26,7 +26,6 @@
 		<hr>
 	</div>
 	
-	
 	<form id="customerInfoFrom" class="form-horizontal">
 	
 		<div class="row">
@@ -115,5 +114,5 @@ data-holder_email="${customerReg.customerOrder.holder_email }">
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20141022719"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20141131315"></script>
 <jsp:include page="../footer-end.jsp" />

@@ -127,8 +127,6 @@
 
 		<.if (select_customer_type == 'personal') { .>
 		
-			<.if (!neworder) {.>
-		
 		<hr />
 		<h4 class="text-success">Personal Information</h4>
 		<hr />
@@ -165,8 +163,6 @@
 				<input type="text" id="last_name" value="<.=last_name.>" class="form-control" data-error-field />
 			</div>
 		</div>
-		
-			<.}.>
 		
 		<.} else if (select_customer_type == 'business') {.>
 		

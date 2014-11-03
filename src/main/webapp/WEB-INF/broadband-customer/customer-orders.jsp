@@ -19,12 +19,15 @@
 <script type="text/html" id="customer_orders_tmpl" data-ctx="${ctx }">
 <jsp:include page="customer-orders-tmpl.html" />
 </script>
+
 <script type="text/html" id="customer_orders_invoices_tmpl" data-ctx="${ctx }">
 <jsp:include page="customer-orders-invoices-tmpl.html" />
 </script>
+
 <script type="text/html" id="customer_orders_data_tmpl">
 <jsp:include page="customer-orders-data-tmpl.html" />
 </script>
+
 <script type="text/html" id="customer_usage_view_tmpl">
 <jsp:include page="customer-usage-view.html" />
 </script>

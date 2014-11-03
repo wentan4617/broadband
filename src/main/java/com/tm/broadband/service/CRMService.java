@@ -377,123 +377,7 @@ public class CRMService {
 		
 	}
 	
-	@Transactional
-	public void registerCustomer(Customer customer, List<CustomerTransaction> cts) {
-		
-		customer.setRegister_date(new Date());
-		customer.setActive_date(new Date());
-		
-		this.customerMapper.insertCustomer(customer);
-		//System.out.println("customer id: " + customer.getId());
-		
-		customer.getCustomerOrder().setCustomer_id(customer.getId());
-		
-		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
-		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
-		
-		/*CustomerInvoice ci = new CustomerInvoice();
-		ci.setCustomer_id(customer.getId());
-		ci.setOrder_id(customer.getCustomerOrder().getId());
-		ci.setCreate_date(new Date(System.currentTimeMillis()));
-		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
-		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());*/
-		
-		/*if (cts != null) {
-			Double amount = 0d;
-			for (CustomerTransaction ct: cts) {
-				amount += ct.getAmount();
-			}
-			
-			if (amount >= ci.getAmount_payable())
-				ci.setAmount_paid(ci.getAmount_payable());
-			else 
-				ci.setAmount_paid(amount);
-		}
-		
-		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
-		ci.setStatus("paid");
-		ci.setPaid_date(new Date(System.currentTimeMillis()));
-		ci.setPaid_type(cts.get(0).getCard_name());
-		
-		this.ciMapper.insertCustomerInvoice(ci);
-		customer.setCustomerInvoice(ci);*/
-		
-		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
-			cod.setOrder_id(customer.getCustomerOrder().getId());
-			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
-			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-			cid.setInvoice_id(ci.getId());
-			cid.setInvoice_detail_name(cod.getDetail_name());
-			cid.setInvoice_detail_desc(cod.getDetail_desc());
-			cid.setInvoice_detail_price(cod.getDetail_price());
-			cid.setInvoice_detail_unit(cod.getDetail_unit());
-			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
-		}
-		
-		if (cts != null) {
-			for (CustomerTransaction ct: cts) {
-				ct.setCustomer_id(customer.getId());
-				ct.setOrder_id(customer.getCustomerOrder().getId());
-				//ct.setInvoice_id(ci.getId());
-				ct.setTransaction_date(new Date(System.currentTimeMillis()));
-				this.customerTransactionMapper.insertCustomerTransaction(ct);
-			}
-		}
-		
-		for (Voucher vQuery: customer.getVouchers()) {
-			vQuery.setStatus("used");
-			vQuery.setCustomer_id(customer.getId());
-			vQuery.getParams().put("serial_number", vQuery.getSerial_number());
-			vQuery.getParams().put("card_number", vQuery.getCard_number());
-			this.voucherMapper.updateVoucher(vQuery);
-		}
-	}
-	
-//	public void registerCustomerCalling(Customer customer, CustomerOrder co) {
-//		
-//		customer.setRegister_date(new Date());
-//		customer.setActive_date(new Date());
-//		
-//		this.customerMapper.insertCustomer(customer);
-//		//System.out.println("customer id: " + customer.getId());
-//		
-//		if ("business".equals(co.getCustomer_type())) {
-//			customer.getCustomerOrder().setOrder_total_price(customer.getCustomerOrder().getOrder_total_price() * 1.15);
-//			customer.getCustomerOrder().setIs_ddpay(true);
-//		}
-//		
-//		customer.getCustomerOrder().setCustomer_id(customer.getId());
-//		
-//		this.customerOrderMapper.insertCustomerOrder(customer.getCustomerOrder());
-//		//System.out.println("customer order id: " + customer.getCustomerOrder().getId());
-//		
-//		/*CustomerInvoice ci = new CustomerInvoice();
-//		ci.setCustomer_id(customer.getId());
-//		ci.setOrder_id(customer.getCustomerOrder().getId());
-//		ci.setCreate_date(new Date(System.currentTimeMillis()));
-//		ci.setAmount_payable(customer.getCustomerOrder().getOrder_total_price());
-//		ci.setFinal_payable_amount(customer.getCustomerOrder().getOrder_total_price());
-//		ci.setAmount_paid(0d);
-//		
-//		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getAmount_payable(), ci.getAmount_paid(), "sub"));
-//		ci.setStatus("unpaid");
-//		
-//		this.ciMapper.insertCustomerInvoice(ci);
-//		customer.setCustomerInvoice(ci);*/
-//		
-//		for (CustomerOrderDetail cod : customer.getCustomerOrder().getCustomerOrderDetails()) {
-//			cod.setOrder_id(customer.getCustomerOrder().getId());
-//			this.customerOrderDetailMapper.insertCustomerOrderDetail(cod);
-//			/*CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-//			//cid.setInvoice_id(ci.getId());
-//			cid.setInvoice_detail_name(cod.getDetail_name());
-//			cid.setInvoice_detail_desc(cod.getDetail_desc());
-//			cid.setInvoice_detail_price(cod.getDetail_price());
-//			cid.setInvoice_detail_unit(cod.getDetail_unit());
-//			this.ciDetailMapper.insertCustomerInvoiceDetail(cid);*/
-//		}
-//		
-//	}
+
 	
 	@Transactional
 	public void saveCustomerOrder(Customer customer, CustomerOrder customerOrder, List<CustomerTransaction> cts) {
@@ -509,10 +393,6 @@ public class CRMService {
 		
 		System.out.println("customerOrder.getSale_id(): " + customerOrder.getSale_id());
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
-		
-		if ("business".equals(customerOrder.getCustomer_type())) {
-			customerOrder.setOrder_total_price(customerOrder.getOrder_total_price() * 1.15);
-		}
 		
 		for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
 			cod.setOrder_id(customerOrder.getId());

@@ -22,7 +22,15 @@
 				</div>
 				<div class="panel-body">
 					<div class="row">
-						<div class="col-md-6"><strong>Broadband User:</strong>&nbsp;${co.customer.first_name }&nbsp;${co.customer.last_name }</div>
+						<div class="col-md-6">
+							<strong>Broadband User:</strong> 
+							<c:if test="${co.customer_type == 'personal' }">
+								${co.first_name } ${co.last_name }
+							</c:if>
+							<c:if test="${co.customer_type == 'business' }">
+								${co.org_name }
+							</c:if>
+						</div>
 						<div class="col-md-3 col-md-offset-3">
 							<div class="btn-group">
 								<button type="button" class="btn btn-default active" data-btn="view-btn" data-type="table">
@@ -41,10 +49,11 @@
 					</div>
 					<hr />
 					<div class="row">
-						<div class="col-md-4"><strong>Plan:</strong>&nbsp;${co.cod.detail_name } </div>
 						<div class="col-md-4">
-							<strong>Data Quotation:</strong>
-							&nbsp;${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 'Unlimited'}
+							<strong>Plan:</strong> ${co.cod.detail_name }
+						</div>
+						<div class="col-md-4">
+							<strong>Data Quotation:</strong> ${co.cod.detail_data_flow > 0 ? co.cod.detail_data_flow : 'Unlimited'}
 						</div>
 					</div>
 					<hr />
@@ -62,9 +71,9 @@
 						</div>
 					</div>
 					<hr />
-					<div class="progress">
-						<div id="usageProgress" class="progress-bar" >
-							<span id="usedPart"></span>
+					<div class="progress" style="height: 40px;">
+						<div id="usageProgress" class="progress-bar" style="padding: 10px">
+							<span id="usedPart" style="font-size: 18px"></span>
 					  	</div>
 					  	<span id="unusedPart"></span>
 					</div>
@@ -72,9 +81,7 @@
 				</div>
 				<div class="panel-body">
 					<div id="usage_table"></div>
-					<div id="usage_line" style="display:none;">
-						<%-- <canvas id="canvas" height="450" width="1100"></canvas> --%>
-					</div>
+					<div id="usage_line" style="display:none;"></div>
 					<c:if test="${co.cod.detail_data_flow > 0}">
 						<div id="chart_pie" style="height:300px;" ></div>
 					</c:if>
@@ -91,10 +98,7 @@
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
 <script type="text/javascript" src="${ctx}/public/bootstrap3/js/Chart.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/chartkick.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script type="text/javascript">
 (function($){
 	
@@ -111,8 +115,8 @@
 	var type = '${co.cod.detail_plan_type}';
 	
 	function doUsage(date) {
-		var url = '${ctx}/broadband-user/data/customer/usage/view/' + svlan + '/' + cvlan + '/' + type + '/' + date;
-		$.get(url, function(list){ console.log(list);
+		var url = '${ctx}/broadband-user/data/orders/usage/view/' + svlan + '/' + cvlan + '/' + type + '/' + date;
+		$.get(url, function(list){ //console.log(list);
 			//dateUsages = list;
 			var obj = {
 				list: list
@@ -132,7 +136,7 @@
 				widthVal = usageWidth*100;
 			}
 			
-			$('#usageProgress').attr('style', 'width:' + widthVal + '%');
+			$('#usageProgress').attr('style', 'width:' + widthVal + '%; padding: 10px 0');
 			
 			//console.log('widthVal: ' + widthVal);
 			//console.log('usageWidth: ' + usageWidth);
@@ -188,13 +192,6 @@
 			var $canvas = $('<canvas id="canvas" height="450" width="1100"></canvas>');
 			$canvas.appendTo('#usage_line');
 			new Chart($canvas.get(0).getContext("2d")).Line(lineChartData, lineChartOptions);
-			
-			if (planUsage != 999) {
-				new Chartkick.PieChart("chart_pie"
-						, [	["Used", curMonthTotal.toFixed(3)]
-	                       	, ["Available", (planUsage - curMonthTotal).toFixed(3)]]
-						, {"colors": ["#d9534f", "#5cb85c"]});
-			}
 			
 			$('#chart_pie').hide();
 	   	});
