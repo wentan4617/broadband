@@ -221,11 +221,11 @@ public class MailRetriever {
 			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 			if(order.getCustomer_type().equals("personal")){
-				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getFirst_name())))));
-				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getLast_name())))));
+				noti.setContent(noti.getContent().replaceAll("@<order_first_name>", String.valueOf(preventNull(order.getFirst_name()))));
+				noti.setContent(noti.getContent().replaceAll("@<order_last_name>", String.valueOf(preventNull(order.getLast_name()))));
 			} else {
-				noti.setTitle(noti.getTitle().replaceAll("@<order_first_name>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrg_name())))));
-				noti.setTitle(noti.getTitle().replaceAll("@<order_last_name>", String.valueOf("")));
+				noti.setContent(noti.getContent().replaceAll("@<order_first_name>", String.valueOf(preventNull(order.getOrg_name()))));
+				noti.setContent(noti.getContent().replaceAll("@<order_last_name>", String.valueOf("")));
 			}
 		}
 		// retrieve order end
@@ -318,15 +318,15 @@ public class MailRetriever {
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, CustomerOrder cus, CustomerOrder order, CompanyDetail company){
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, CompanyDetail company){
 		if(cus!=null){
 			mailAtValueRetriever(noti,cus);
 		}
-		if(company!=null){
-			mailAtValueRetriever(noti,company);
-		}
 		if(order!=null){
 			mailAtValueRetriever(noti,order);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
 		}
 	}
 	
@@ -342,8 +342,10 @@ public class MailRetriever {
 		}
 	}
 	
-	public static void mailAtValueRetriever(Notification noti, CustomerOrder order, List<CustomerOrderDetail> cods, CompanyDetail company){
-
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, List<CustomerOrderDetail> cods, CompanyDetail company){
+		if(cus!=null){
+			mailAtValueRetriever(noti,cus);
+		}
 		if(company!=null){
 			mailAtValueRetriever(noti,company);
 		}

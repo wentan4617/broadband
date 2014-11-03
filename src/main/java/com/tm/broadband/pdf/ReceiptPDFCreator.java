@@ -629,7 +629,7 @@ public class ReceiptPDFCreator extends ITextUtils {
         for (CustomerOrderDetail disDetail : this.codDiscounts) {
         	Double subDiscountPrice = (double) (disDetail.getDetail_price().intValue()*disDetail.getDetail_unit());
         	totalDiscountPrice = TMUtils.bigAdd(totalDiscountPrice, subDiscountPrice);
-        	totalPrice = TMUtils.bigSub(totalPrice, totalDiscountPrice);
+        	totalPrice = TMUtils.bigSub(totalPrice, subDiscountPrice);
             // #####SEPARATOR BEGIN
             addCol(orderDetailTable, " ").colspan(10).fixedHeight(4F).o();
             // #####SEPARATOR END

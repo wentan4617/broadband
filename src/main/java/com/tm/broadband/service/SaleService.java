@@ -34,11 +34,17 @@ public class SaleService {
 	public SaleService() {}
 	
 	public String queryCustomerOrderFilePathById(int id){
-		return this.customerOrderMapper.selectCustomerOrderFilePathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.customerOrderMapper.selectCustomerOrders(coQuery).get(0);
+		return coQuery.getOrder_pdf_path();
 	}
 	
 	public String queryCustomerCreditFilePathById(int id){
-		return this.customerOrderMapper.selectCustomerCreditFilePathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.customerOrderMapper.selectCustomerOrders(coQuery).get(0);
+		return coQuery.getCredit_pdf_path();
 	}
 
 	@Transactional

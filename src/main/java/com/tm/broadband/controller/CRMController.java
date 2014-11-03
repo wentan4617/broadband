@@ -233,7 +233,11 @@ public class CRMController {
 		CustomerInvoice inv = this.crmService.queryCustomerInvoiceById(invoiceId);
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
-		MailRetriever.mailAtValueRetriever(notification, co, inv, company);
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", co.getCustomer_id());
+		cQuery = this.crmService.queryCustomer(cQuery);
+		
+		MailRetriever.mailAtValueRetriever(notification, cQuery, co, inv, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address

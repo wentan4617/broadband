@@ -27,13 +27,6 @@ public interface CustomerOrderMapper {
 	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
 	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
 	
-	String selectCustomerOrderFilePathById(int id);
-	String selectCustomerCreditFilePathById(int id);
-	String selectCustomerDDPayFormPathById(int id);
-	String selectCustomerPreviousProviderInvoiceFilePathById(int id);
-	String selectCustomerOrderingFormPathById(int id);
-	String selectCustomerReceiptPathById(int id);
-	
 	/* // END SELECT AREA */
 	
 	/* =================================================================================== */
