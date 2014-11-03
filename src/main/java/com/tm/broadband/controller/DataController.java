@@ -37,10 +37,10 @@ public class DataController {
 	public String toCustomerUsage(Model model,
 			@PathVariable("order_id") int order_id) {
 		
-		CustomerOrder co = new CustomerOrder();
-		co.getParams().put("id", order_id);
+		CustomerOrder coQ = new CustomerOrder();
+		coQ.getParams().put("id", order_id);
 		
-		co = this.dataService.queryDataCustomer(co);
+		CustomerOrder co = this.dataService.queryDataCustomer(coQ);
 		model.addAttribute("co", co);
 		model.addAttribute("current_date", TMUtils.dateFormatYYYYMMDD(new Date()).substring(0, 7));
 		

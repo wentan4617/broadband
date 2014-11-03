@@ -37,7 +37,7 @@
 					<h4 class="text-success">
 						<c:choose>
 							<c:when test="${customerReg.customerOrder.customer_type == 'personal' }">
-								${customerReg.title } ${customerReg.first_name } ${customerReg.last_name }
+								${customerReg.customerOrder.title } ${customerReg.customerOrder.first_name } ${customerReg.customerOrder.last_name }
 							</c:when>
 							<c:when test="${customerReg.customerOrder.customer_type == 'business' }">
 								${customerReg.customerOrder.org_name }

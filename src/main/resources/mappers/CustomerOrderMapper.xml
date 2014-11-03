@@ -116,14 +116,16 @@
 		, co.`inviter_user_id`					as co_inviter_user_id
 		, co.`inviter_rate`						as co_inviter_rate
 		, co.`invitee_rate`						as co_invitee_rate
+		
+		, co.`title`							as co_title
+		, co.`first_name`						as co_first_name
+		, co.`last_name`						as co_last_name
 		, co.`address`							as co_address
 		, co.`mobile`							as co_mobile
 		, co.`phone`							as co_phone
 		, co.`email`							as co_email
 		, co.`customer_type`					as co_customer_type
-		, co.`title`							as co_title
-		, co.`first_name`						as co_first_name
-		, co.`last_name`						as co_last_name
+		
 		, co.`org_name`							as co_org_name
 		, co.`org_type`							as co_org_type
 		, co.`org_trading_name`					as co_org_trading_name
@@ -134,6 +136,7 @@
 		, co.`holder_job_title`					as co_holder_job_title
 		, co.`holder_phone`						as co_holder_phone
 		, co.`holder_email`						as co_holder_email
+		
 		, co.`xero_invoice_status` 				as co_xero_invoice_status
 		, co.`is_send_xero_invoice` 			as co_is_send_xero_invoice
 	</sql>
@@ -182,14 +185,16 @@
 		<result property="inviter_user_id" column="co_inviter_user_id" />
 		<result property="inviter_rate" column="co_inviter_rate" />
 		<result property="invitee_rate" column="co_invitee_rate" />
+		
+		<result property="title" column="co_title" />
+		<result property="first_name" column="co_first_name" />
+		<result property="last_name" column="co_last_name" />
 		<result property="address" column="co_address" />
 		<result property="mobile" column="co_mobile" />
 		<result property="phone" column="co_phone" />
 		<result property="email" column="co_email" />
 		<result property="customer_type" column="co_customer_type" />
-		<result property="title" column="co_title" />
-		<result property="first_name" column="co_first_name" />
-		<result property="last_name" column="co_last_name" />
+		
 		<result property="org_name" column="co_org_name" />
 		<result property="org_type" column="co_org_type" />
 		<result property="org_trading_name" column="co_org_trading_name" />
@@ -200,6 +205,7 @@
 		<result property="holder_job_title" column="co_holder_job_title" />
 		<result property="holder_phone" column="co_holder_phone" />
 		<result property="holder_email" column="co_holder_email" />
+		
 		<result property="xero_invoice_status" column="co_xero_invoice_status" />
 		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
 		
@@ -417,7 +423,7 @@
 			`sale_id`, `order_pdf_path`, `credit_pdf_path`, `signature`, `optional_request`, `broadband_asid`,
 			`rfs_date`, `previous_provider_invoice`, `user_id`, `ddpay_pdf_path`, `is_ddpay`, `ordering_form_pdf_path`,
 			`receipt_pdf_path`, `disconnected_date`, `connection_date`, `contract`, `inviter_customer_id`, `inviter_user_id`,
-			`inviter_rate`, `invitee_rate`, `address`, `mobile`, `phone`, `email`, `customer_type`, `title`, `first_name`, `last_name`, `org_name`, `org_type`,
+			`inviter_rate`, `invitee_rate`, `title`, `first_name`, `last_name`, `address`, `mobile`, `phone`, `email`, `customer_type`, `org_name`, `org_type`,
 			`org_trading_name`, `org_register_no`, `org_incoporate_date`, `org_trading_months`, `holder_name`, `holder_job_title`,
 			`holder_phone`, `holder_email`, `xero_invoice_status`, `is_send_xero_invoice`)
 		VALUES (
@@ -428,7 +434,7 @@
 			#{sale_id}, #{order_pdf_path}, #{credit_pdf_path}, #{signature}, #{optional_request}, #{broadband_asid},
 			#{rfs_date}, #{previous_provider_invoice}, #{user_id}, #{ddpay_pdf_path}, #{is_ddpay}, #{ordering_form_pdf_path},
 			#{receipt_pdf_path}, #{disconnected_date}, #{connection_date}, #{contract}, #{inviter_customer_id}, #{inviter_user_id},
-			#{inviter_rate}, #{invitee_rate}, #{address}, #{mobile}, #{phone}, #{email}, #{customer_type}, #{title}, #{first_name}, #{last_name}, #{org_name}, #{org_type},
+			#{inviter_rate}, #{invitee_rate}, #{title}, #{first_name}, #{last_name}, #{address}, #{mobile}, #{phone}, #{email}, #{customer_type}, #{org_name}, #{org_type},
 			#{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, #{org_trading_months}, #{holder_name}, #{holder_job_title},
 			#{holder_phone}, #{holder_email}, #{xero_invoice_status}, #{is_send_xero_invoice})
 	</insert>
@@ -483,14 +489,16 @@
 			<if test="inviter_user_id != null">inviter_user_id = #{inviter_user_id},</if>
 			<if test="inviter_rate != null">inviter_rate = #{inviter_rate},</if>
 			<if test="invitee_rate != null">invitee_rate = #{invitee_rate},</if>
+			
+			<if test="title != null">title = #{title},</if>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
 			<if test="address != null">address = #{address},</if>
 			<if test="mobile != null">mobile = #{mobile},</if>
 			<if test="phone != null">phone = #{phone},</if>
 			<if test="email != null">email = #{email},</if>
 			<if test="customer_type != null">customer_type = #{customer_type},</if>
-			<if test="title != null">title = #{title},</if>
-			<if test="first_name != null">first_name = #{first_name},</if>
-			<if test="last_name != null">last_name = #{last_name},</if>
+			
 			<if test="org_name != null">org_name = #{org_name},</if>
 			<if test="org_type != null">org_type = #{org_type},</if>
 			<if test="org_trading_name != null">org_trading_name = #{org_trading_name},</if>
@@ -501,6 +509,7 @@
 			<if test="holder_job_title != null">holder_job_title = #{holder_job_title},</if>
 			<if test="holder_phone != null">holder_phone = #{holder_phone},</if>
 			<if test="holder_email != null">holder_email = #{holder_email},</if>
+			
 			<if test="xero_invoice_status != null">xero_invoice_status = #{xero_invoice_status},</if>
 			<if test="is_send_xero_invoice != null">is_send_xero_invoice = #{is_send_xero_invoice}</if>
 		</set>
