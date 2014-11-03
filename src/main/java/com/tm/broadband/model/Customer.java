@@ -20,12 +20,7 @@ import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
-/**
- * customer information, mapping tm_customer
- * 
- * @author Cook1fan
- * 
- */
+
 public class Customer implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -724,6 +719,8 @@ public class Customer implements Serializable {
 	public void setResult(String result) {
 		this.result = result;
 	}
+
+
 
 	
 	

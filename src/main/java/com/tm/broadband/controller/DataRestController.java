@@ -28,7 +28,6 @@ public class DataRestController {
 		this.dataService = dataService;
 	}
 	
-	
 	@RequestMapping("/broadband-user/data/calculator-usage/{calculator_date}")
 	public JSONBean<NetworkUsage> calculatorUsage(
 			@PathVariable("calculator_date") String calculator_date){
@@ -56,11 +55,12 @@ public class DataRestController {
 	}
 	
 	
-	@RequestMapping("/broadband-user/data/customer/view/{pageNo}/{calculator_date}/{status}")
-	public Page<CustomerOrder> doDataCustomerView(
-			@PathVariable("pageNo") int pageNo,
-			@PathVariable("calculator_date") String calculator_date,
-			@PathVariable("status") String status){
+	@RequestMapping("/broadband-user/data/orders/view/{pageNo}/{calculator_date}/{status}/{orderid}")
+	public Page<CustomerOrder> dataOrdersView(
+			@PathVariable("pageNo") int pageNo
+			, @PathVariable("calculator_date") String calculator_date
+			, @PathVariable("status") String status
+			, @PathVariable("orderid") int orderid){
 		
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
@@ -68,6 +68,10 @@ public class DataRestController {
 		
 		if (!"".equals(status) && !"all".equals(status))
 			page.getParams().put("order_status", status);
+		
+		if (orderid != 0) {
+			page.getParams().put("id", orderid);
+		}
 		//page.getParams().put("orderby", "order by plan_status desc, plan_type");
 		
 		this.dataService.queryDataCustomersByPage(page);

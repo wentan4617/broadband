@@ -1,0 +1,85 @@
+<.if (results.length > 0) { .>
+
+<table id="dataCustomer_table" class="table table-hover table-striped" >
+	<tr>
+		<th>Order ID</th>
+		<th>Status</th>
+		<th>vLan</th>
+		<th>Customer ID</th>
+		<th>Name</th>
+		<th>Plan Data</th>
+		<th>Plan Type</th>
+		<th>ASID</th>
+		<!-- <th>Upload</th>
+		<th>Download</th> -->
+		<th>Total</th>
+	</tr>
+	<tbody>
+	<.for (var i = 0; i < results.length; i++) { 
+		var co = results[i];
+		var mb_total_upload = Number(co.usage.total_upload/1024/1024).toFixed(2);
+		var mb_total_download = Number(co.usage.total_download/1024/1024).toFixed(2);
+		var mb_total_usage = Number((co.usage.total_upload + co.usage.total_download)/1024/1024).toFixed(2);
+		var gb_total_upload = Number(co.usage.total_upload/1024/1024/1024).toFixed(2);
+		var gb_total_download = Number(co.usage.total_download/1024/1024/1024).toFixed(2);
+		var gb_total_usage = Number((co.usage.total_upload + co.usage.total_download)/1024/1024/1024).toFixed(2);
+	.> 
+		<tr>
+			<td>
+				<a href="<.=ctx.>/broadband-user/data/orders/usage/view/<.=co.id.>" target="_blank"><.=co.id.></a>
+			</td>
+			<td>
+			<. if (co.order_status == 'using') { .>
+				In Service
+			<.} else {.>
+				<.=co.order_status.>
+			<.}.>
+			</td>
+			<td><.=((co.svlan || '') + '/' + (co.cvlan || '')).></td>
+			<td><.=co.customer.id.></td>
+			<td>
+				<. if (co.customer_type == 'personal') { .>
+				<.=co.customer.first_name.> <.=co.customer.last_name.>
+				<.} else if (co.customer_type == 'business') {.>
+				<.=co.org_name.>
+				<.} .>
+			</td>
+			<td>
+				<.=co.cod.detail_data_flow < 0 ? 'Unlimited': (co.cod.detail_data_flow || 0) + ' GB'.> 
+			</td>
+			<td><.=co.cod.detail_plan_type.></td>
+			<td><.=co.broadband_asid.></td>
+			<!-- <td>
+				<.=gb_total_upload < 1 ? mb_total_upload + ' MB' : gb_total_upload + ' GB'.>
+			</td>
+			<td>
+				<.=gb_total_download < 1 ? mb_total_download + ' MB' : gb_total_download + ' GB'.>
+			</td> -->
+			<td>
+				<.=gb_total_usage < 1 ? mb_total_usage + ' MB' : gb_total_usage + ' GB'.>
+			</td>
+		</tr>
+	<.}.>
+		
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+				<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0)" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+				<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+
+</table>
+
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

@@ -36,11 +36,11 @@
 				<div class="col-md-6 col-xs-12 col-sm-12">
 					<h4 class="text-success">
 						<c:choose>
-							<c:when test="${customerReg.customer_type == 'personal' }">
+							<c:when test="${customerReg.customerOrder.customer_type == 'personal' }">
 								${customerReg.title } ${customerReg.first_name } ${customerReg.last_name }
 							</c:when>
-							<c:when test="${customerReg.customer_type == 'business' }">
-								${customerReg.organization.org_name }
+							<c:when test="${customerReg.customerOrder.customer_type == 'business' }">
+								${customerReg.customerOrder.org_name }
 							</c:when>
 						</c:choose>
 					</h4>
@@ -68,7 +68,7 @@
 				</div>
 			</div>
 			
-			<c:if test="${customerReg.customer_type == 'business' }">
+			<c:if test="${customerReg.customerOrder.customer_type == 'business' }">
 			
 			<hr style="margin-top:0;"/>
 			<h2>Business Information</h2>
@@ -76,21 +76,21 @@
 			
 			<div class="row">
 				<div class="col-sm-4"><strong>Organization Type</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_type }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.org_type }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Trading Name</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_trading_name }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.org_trading_name }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Registration No.</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.org_register_no }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.org_register_no }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Date Incoporated</strong></div>
 				<div class="col-sm-6">
 					<strong class="text-info">
-						<fmt:formatDate  value="${customerReg.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
+						<fmt:formatDate  value="${customerReg.customerOrder.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
 					</strong>
 				</div>
 			</div>
@@ -99,19 +99,19 @@
 			<hr style="margin-top:0;"/>
 			<div class="row" >
 				<div class="col-sm-4"><strong>Full name</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_name }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.holder_name }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Job Title</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_job_title }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.holder_job_title }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Phone</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_phone }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.holder_phone }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Email</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerReg.organization.holder_email }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerReg.customerOrder.holder_email }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Type</strong></div>
@@ -128,7 +128,7 @@
 			
 			</c:if>
 			
-			<c:if test="${customerReg.customer_type == 'personal' }">
+			<c:if test="${customerReg.customerOrder.customer_type == 'personal' }">
 			
 			<hr /><!-- style="margin-top:0;" -->
 			<h2>Personal Information</h2>
@@ -275,7 +275,7 @@
 					<table class="table">
 						<tbody>
 						<c:choose>
-							<c:when test="${customerReg.customer_type == 'personal' }">
+							<c:when test="${customerReg.customerOrder.customer_type == 'personal' }">
 							
 							<tr>
 								<td>Total before GST</td>
@@ -316,7 +316,7 @@
 							
 							</c:when>
 							
-							<c:when test="${customerReg.customer_type == 'business' }">
+							<c:when test="${customerReg.customerOrder.customer_type == 'business' }">
 							
 							<tr>
 								<td>Order Price</td>
@@ -349,7 +349,7 @@
 				</div>
 			</div>
 			
-			<c:if test="${customerReg.customer_type == 'personal' }">
+			<c:if test="${customerReg.customerOrder.customer_type == 'personal' }">
 			
 			
 			<hr>

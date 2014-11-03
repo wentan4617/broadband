@@ -60,6 +60,14 @@ public class TestController {
 		return "redirect:/test/dps";
 	}
 	
+
+	@RequestMapping(value = "/test/customer/to/customerorder")
+	public String customertocustomerorder(){
+		
+		this.testService.moveCustomerToCustomerOrder();
+		return null;
+	}
+
 	@RequestMapping("/broadband-user/copy_customer_detail_2_order/redirect")
 	public String redirectIndex(RedirectAttributes attr) {
 		this.testService.copyContactDetailsFromCustomer2Order();

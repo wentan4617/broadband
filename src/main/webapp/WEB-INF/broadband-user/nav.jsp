@@ -200,9 +200,9 @@
 		                   		</a>
 		                   	</li>
 		                   	<li>
-		                   		<a href="${ctx }/broadband-user/data/customer/view">
+		                   		<a href="${ctx }/broadband-user/data/orders/view">
 		                   			<span class="glyphicon glyphicon-cloud" style="padding-right:10px;"></span>
-		                   			Data Customer View
+		                   			Data Orders View
 		                   		</a>
 		                   	</li>
 						</ul>

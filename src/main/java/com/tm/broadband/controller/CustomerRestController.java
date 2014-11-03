@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,8 +49,11 @@ import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.ContactUsValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
+import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.OnlinePayByVoucherValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
+import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
 public class CustomerRestController {
@@ -1019,62 +1023,57 @@ public class CustomerRestController {
 	}
 	
 	
-//	@RequestMapping(value = "/plans/order/confirm", method = RequestMethod.POST)
-//	public JSONBean<Customer> doPlanOrderConfirm(
-//			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
-//			@RequestBody Customer customer, BindingResult result, HttpSession session) {
-//		
-//		Customer customerReg = (Customer) session.getAttribute("customerReg");
-//		
-//		customerReg.setCellphone(customer.getCellphone());
-//		customerReg.setEmail(customer.getEmail());
-//		customerReg.setTitle(customer.getTitle());
-//		customerReg.setFirst_name(customer.getFirst_name());
-//		customerReg.setLast_name(customer.getLast_name());
-//		customerReg.setIdentity_type(customer.getIdentity_type());
-//		customerReg.setIdentity_number(customer.getIdentity_number());
-//		customerReg.setCustomer_type(customer.getCustomer_type());
-//		
-//		customerReg.setCustomerOrder(customer.getCustomerOrder());
-//		
-//		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
-//		
-//		this.crmService.doPlansOrderConfirm(customerReg);
-//		
-//		json.setUrl("/plans/order/summary");
-//		
-//		return json;
-//	}	
-//	
-//	@RequestMapping(value = "/plans/order/confirm/business", method = RequestMethod.POST)
-//	public JSONBean<Customer> doPlanOrderConfirmBusiness(
-//			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
-//			@RequestBody Customer customer, BindingResult result, HttpSession session) {
-//		
-//		Customer customerReg = (Customer) session.getAttribute("customerReg");
-//		
-//		customerReg.setCellphone(customer.getCellphone());
-//		customerReg.setEmail(customer.getEmail());
-//		customerReg.setTitle(customer.getTitle());
-//		customerReg.setFirst_name(customer.getFirst_name());
-//		customerReg.setLast_name(customer.getLast_name());
-//		customerReg.setIdentity_type(customer.getIdentity_type());
-//		customerReg.setIdentity_number(customer.getIdentity_number());
-//		customerReg.setCustomer_type(customer.getCustomer_type());
-//		
-//		customerReg.setCustomerOrder(customer.getCustomerOrder());
-//		
-//		customerReg.setOrganization(customer.getOrganization());
-//		customerReg.getCustomerOrder().setOrganization(customer.getOrganization());
-//		
-//		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
-//		
-//		this.crmService.doPlansOrderConfirm(customerReg);
-//		
-//		json.setUrl("/plans/order/summary");
-//		
-//		return json;
-//	}	
+	@RequestMapping(value = "/plans/order/confirm", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirm(
+			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		customerReg.setCellphone(customer.getCellphone());
+		customerReg.setEmail(customer.getEmail());
+		customerReg.setTitle(customer.getTitle());
+		customerReg.setFirst_name(customer.getFirst_name());
+		customerReg.setLast_name(customer.getLast_name());
+		customerReg.setIdentity_type(customer.getIdentity_type());
+		customerReg.setIdentity_number(customer.getIdentity_number());
+		
+		customerReg.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
+		
+		this.crmService.doPlansOrderConfirm(customerReg);
+		
+		json.setUrl("/plans/order/summary");
+		
+		return json;
+	}	
+	
+	@RequestMapping(value = "/plans/order/confirm/business", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmBusiness(
+			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		customerReg.setCellphone(customer.getCellphone());
+		customerReg.setEmail(customer.getEmail());
+		customerReg.setTitle(customer.getTitle());
+		customerReg.setFirst_name(customer.getFirst_name());
+		customerReg.setLast_name(customer.getLast_name());
+		customerReg.setIdentity_type(customer.getIdentity_type());
+		customerReg.setIdentity_number(customer.getIdentity_number());
+		
+		customerReg.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerReg, result);
+		
+		this.crmService.doPlansOrderConfirm(customerReg);
+		
+		json.setUrl("/plans/order/summary");
+		
+		return json;
+	}	
 	
 	
 	
