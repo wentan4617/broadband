@@ -677,7 +677,7 @@
 			var url = ctx + '/plans/order/confirm/business';
 		}
 		
-		var l = Ladda.create(this); l.start();
+		
 		var customer = {
 			address: customer_address
 			, cellphone: $('#cellphone').val()
@@ -687,7 +687,6 @@
 			, last_name: $('#last_name').val()
 			, identity_type: $('#identity_type').val()
 			, identity_number: $('#identity_number').val()
-			, customer_type: select_customer_type
 			, customerOrder: {
 				order_broadband_type: $('input[name="order_broadband_type"]:checked').val()
 				, prepay_months: prepay_months
@@ -698,9 +697,7 @@
 				, promotion: promotion
 				, hardwares: [modem_selected]
 				, hardware_id_selected: hardware_id_selected
-				, organization: {}
 			}
-			, organization: {}
 		};
 			
 		if (customer.customerOrder.order_broadband_type == 'transition') {
@@ -712,15 +709,15 @@
 		}
 		
 		if (customer.customer_type == 'business') {
-			customer.organization.org_type = $('#organization\\.org_type').val();
-			customer.organization.org_name = $('#organization\\.org_name').val();
-			customer.organization.org_trading_name = $('#organization\\.org_trading_name').val();
-			customer.organization.org_register_no = $('#organization\\.org_register_no').val();
-			customer.organization.org_incoporate_date = $('#organization\\.org_incoporate_date').val();
-			customer.organization.holder_name = $('#organization\\.holder_name').val();
-			customer.organization.holder_job_title = $('#organization\\.holder_job_title').val();
-			customer.organization.holder_phone = $('#organization\\.holder_phone').val();
-			customer.organization.holder_email = $('#organization\\.holder_email').val();
+			customer.customerOrder.org_type = $('#customerOrder\\.org_type').val();
+			customer.customerOrder.org_name = $('#customerOrder\\.org_name').val();
+			customer.customerOrder.org_trading_name = $('#customerOrder\\.org_trading_name').val();
+			customer.customerOrder.org_register_no = $('#customerOrder\\.org_register_no').val();
+			customer.customerOrder.org_incoporate_date = $('#customerOrder\\.org_incoporate_date').val();
+			customer.customerOrder.holder_name = $('#customerOrder\\.holder_name').val();
+			customer.customerOrder.holder_job_title = $('#customerOrder\\.holder_job_title').val();
+			customer.customerOrder.holder_phone = $('#customerOrder\\.holder_phone').val();
+			customer.customerOrder.holder_email = $('#customerOrder\\.holder_email').val();
 		}
 		
 		if (neworder) {
@@ -740,6 +737,7 @@
 		//console.log(customer);
 		//console.log(JSON.stringify(customer));
 		
+		var l = Ladda.create(this); l.start();
 	 	$.ajax({
 			type: 'post'
 			, contentType:'application/json;charset=UTF-8'         

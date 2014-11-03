@@ -38,6 +38,7 @@
 <script type="text/html" id="provision_query_tmpl" data-ctx="${ctx }" data-user_role="${userSession.user_role}">
 <jsp:include page="provision-query-tmpl.html" />
 </script>
+
 <script type="text/html" id="provision_orders_tmpl">
 <jsp:include page="provision-orders-tmpl.html" />
 </script>
@@ -45,9 +46,11 @@
 <script type="text/html" id="customer_information_tmpl">
 <jsp:include page="customer-information-tmpl.html" />
 </script>
+
 <script type="text/html" id="customer_order_tmpl">
 <jsp:include page="customer-order-tmpl.html" />
 </script>
+
 <script type="text/html" id="customer_order_detail_tmpl">
 <jsp:include page="customer-order-detail-tmpl.html" />
 </script>

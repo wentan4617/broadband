@@ -24,21 +24,16 @@ public class DataController {
 	
 	@RequestMapping("/broadband-user/data/operatre")
 	public String toDataOperatre(Model model){
-		
 		model.addAttribute("panelheading", "Calculator Data Flow");
 		return "broadband-user/data/data-operatre";
 	}
 	
-	@RequestMapping("/broadband-user/data/customer/view")
-	public String toDataCustomerView(Model model){
-		
-		model.addAttribute("panelheading", "Data Customer View");
-		model.addAttribute("current_date", TMUtils.dateFormatYYYYMMDD(new Date()));
-		return "broadband-user/data/customer-view";
-		
+	@RequestMapping("/broadband-user/data/orders/view")
+	public String dataOrdersView(){
+		return "broadband-user/data/data-orders-view";
 	} 
 	
-	@RequestMapping("/broadband-user/data/customer/usage/view/{order_id}")
+	@RequestMapping("/broadband-user/data/orders/usage/view/{order_id}")
 	public String toCustomerUsage(Model model,
 			@PathVariable("order_id") int order_id) {
 		

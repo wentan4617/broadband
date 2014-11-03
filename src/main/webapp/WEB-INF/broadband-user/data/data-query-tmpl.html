@@ -1,0 +1,73 @@
+<div class="panel-body">
+	<div class="row">
+		<div class="col-md-2">
+			<div class="input-group date">
+				<input type="text" id="calculator_date" name="calculator_date" class="form-control" data-error-field /> 
+				<span class="input-group-addon"> 
+					<i class="glyphicon glyphicon-calendar"></i>
+				</span>
+			</div>
+		</div>
+		<div class="col-md-2">
+			<input type="text" id="orderid" name="orderid" class="form-control" data-error-field />
+		</div>
+		<div class="col-md-1">
+			<button type="button" class="btn btn-success">Query</button>
+		</div>
+		<div class="col-md-7">
+		
+			<div class="btn-group">
+
+				<!-- In Service -->
+				<a href="javascript:void(0)" data-group="in-service" data-sub="in-service" data-name="queryBtn" data-status="using" class="btn btn-default active"> 
+					In Service <span class="badge"></span>
+				</a>
+
+				<!-- Suspension -->
+				<div class="btn-group">
+					<a href="javascript:void(0);" data-group="suspension" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						Suspension <span class="badge"></span> <span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="javascript:void(0)" data-name="queryBtn" data-sub="suspension" data-status="overflow"> 
+								Over Flow <span class="badge"></span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0)" data-name="queryBtn" data-sub="suspension" data-status="suspended"> 
+								Suspended <span class="badge"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- Disconnect -->
+				<div class="btn-group">
+					<a href="javascript:void(0);" data-group="disconnect" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+						Disconnect <span class="badge"></span> <span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li>
+							<a href="javascript:void(0);" data-name="queryBtn" data-sub="disconnect" data-status="waiting-for-disconnect">
+								Waiting For Disconnect <span class="badge"></span>
+							</a>
+						</li>
+						<li>
+							<a href="javascript:void(0);" data-name="queryBtn" data-sub="disconnect" data-status="disconnected">
+								Disconnected <span class="badge"></span>
+							</a>
+						</li>
+					</ul>
+				</div>
+
+				<!-- All -->
+				<a href="javascript:void(0)" data-name="queryBtn" data-group="all" data-sub="all" data-status="all" class="btn btn-default"> 
+					All <span class="badge"></span>
+				</a>
+
+			</div>
+			
+		</div>
+	</div>
+</div>

@@ -59,5 +59,10 @@ public class TestController {
 		return "redirect:/test/dps";
 	}
 	
-	
+	@RequestMapping(value = "/test/customer/to/customerorder")
+	public String customertocustomerorder(){
+		
+		this.testService.moveCustomerToCustomerOrder();
+		return null;
+	}
 }

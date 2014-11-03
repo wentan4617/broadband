@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CallInternationalRate;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
@@ -36,6 +38,7 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.VOSVoIPRate;
@@ -50,6 +53,7 @@ import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 
 @Controller
@@ -1127,50 +1131,50 @@ public class CustomerController {
 		return "broadband-customer/plans/order-summary";
 	}
 	
-//	@RequestMapping(value = "/plans/order/bankdeposit", method = RequestMethod.POST)
-//	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
-//		
-//		Customer customerReg = (Customer) session.getAttribute("customerReg");
-//		
-//		if (customerReg.getNewOrder()) {
-//			customerReg.setPassword("*********");
-//			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
-//			customerReg.setStatus("active");
-//			customerReg.getCustomerOrder().setOrder_status("pending");
-//			customerReg.setBalance(0d);
-//		} else {
-//			customerReg.setPassword(TMUtils.generateRandomString(6));
-//			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
-//			customerReg.setUser_name(customerReg.getLogin_name());
-//			customerReg.setStatus("active");
-//			customerReg.getCustomerOrder().setOrder_status("pending");
-//			customerReg.setBalance(0d);
-//		}
-//			
-//		this.crmService.saveCustomerOrder(customerReg, customerReg.getCustomerOrder(), null);
-//		
-//		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
-//		
-//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-//		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
-//		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
-//		ApplicationEmail applicationEmail = new ApplicationEmail();
-//		applicationEmail.setAddressee(customerReg.getEmail());
-//		applicationEmail.setSubject(notification.getTitle());
-//		applicationEmail.setContent(notification.getContent());
-//		applicationEmail.setAttachName("ordering_form_" + customerReg.getCustomerOrder().getId() + ".pdf");
-//		applicationEmail.setAttachPath(orderingPath);
-//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//		notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); 
-//		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
-//		this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent()); 
-//		
-//		Response responseBean = new Response();
-//		responseBean.setSuccess("1");
-//		attr.addFlashAttribute("responseBean", responseBean);
-//		
-//		return "redirect:/plans/order/result";
-//	}
+	@RequestMapping(value = "/plans/order/bankdeposit", method = RequestMethod.POST)
+	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
+		
+		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		
+		if (customerReg.getNewOrder()) {
+			customerReg.setPassword("*********");
+			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
+			customerReg.setStatus("active");
+			customerReg.getCustomerOrder().setOrder_status("pending");
+			customerReg.setBalance(0d);
+		} else {
+			customerReg.setPassword(TMUtils.generateRandomString(6));
+			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
+			customerReg.setUser_name(customerReg.getLogin_name());
+			customerReg.setStatus("active");
+			customerReg.getCustomerOrder().setOrder_status("pending");
+			customerReg.setBalance(0d);
+		}
+			
+		this.crmService.saveCustomerOrder(customerReg, customerReg.getCustomerOrder(), null);
+		
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+		//MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customerReg.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setAttachName("ordering_form_" + customerReg.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachPath(orderingPath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); 
+		//MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent()); 
+		
+		Response responseBean = new Response();
+		responseBean.setSuccess("1");
+		attr.addFlashAttribute("responseBean", responseBean);
+		
+		return "redirect:/plans/order/result";
+	}
 	
 	@RequestMapping(value = "/plans/order/result")
 	public String planOrderToOrderResult(HttpSession session) {

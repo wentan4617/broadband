@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrderValidatedMark;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 public class CustomerOrder implements Serializable {
@@ -82,6 +83,8 @@ public class CustomerOrder implements Serializable {
 	private String first_name;
 	private String last_name;
 
+	@NotEmpty(groups = { CustomerOrganizationValidatedMark.class })
+	@Length(min = 1, max = 49, groups = { CustomerOrganizationValidatedMark.class })
 	private String org_name;
 	private String org_type;
 	private String org_trading_name;
@@ -92,7 +95,6 @@ public class CustomerOrder implements Serializable {
 	private String holder_job_title;
 	private String holder_phone;
 	private String holder_email;
-
 	
 	private String xero_invoice_status;
 	private Boolean is_send_xero_invoice;

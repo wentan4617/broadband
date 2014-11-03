@@ -172,7 +172,7 @@ hr {
 		                    	</li>
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-cloud" ></span> 
-		                    		<a href="${ctx }/broadband-user/data/customer/view">Data Customer View</a>
+		                    		<a href="${ctx }/broadband-user/data/orders/view">Data Orders View</a>
 		                    	</li>
 		                    </ul>
 					  	</div>
