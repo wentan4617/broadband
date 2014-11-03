@@ -17,7 +17,6 @@ public interface CustomerOrderDetailMapper {
 	/* SELECT AREA */
 	
 	public List<CustomerOrderDetail> selectCustomerOrderDetails(CustomerOrderDetail cod);
-	public List<CustomerOrderDetail> selectCustomerOrderDetailsByOrderId(int order_id);
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */

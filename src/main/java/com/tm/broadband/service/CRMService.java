@@ -1210,7 +1210,9 @@ public class CRMService {
 
 				List<CustomerOrderDetail> pcmsPSTN = new ArrayList<CustomerOrderDetail>();
 				List<CustomerOrderDetail> pcmsVoIP = new ArrayList<CustomerOrderDetail>();
-				List<CustomerOrderDetail> cods = co.getCustomerOrderDetails();
+				CustomerOrderDetail codQuery = new CustomerOrderDetail();
+				codQuery.getParams().put("order_id", co.getId());
+				List<CustomerOrderDetail> cods = this.queryCustomerOrderDetails(codQuery);
 
 				List<String> pstn_numbers = new ArrayList<String>();
 				List<String> voip_numbers = new ArrayList<String>();
@@ -2744,8 +2746,15 @@ public class CRMService {
 		// store company detail begin
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		// store company detail end
-
-		Customer customer = customerOrder.getCustomer();
+		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", customerOrder.getId());
+		List<CustomerOrderDetail> cods = this.queryCustomerOrderDetails(codQuery);
+		customerOrder.setCustomerOrderDetails(cods);
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customerOrder.getCustomer_id());
+		Customer customer = this.queryCustomer(cQuery);
 
 		boolean isBusiness = "business".toUpperCase().equals(customerOrder.getCustomer_type().toUpperCase());
 		
@@ -3215,7 +3224,7 @@ public class CRMService {
 
 			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customer,  customerOrder, ci, companyDetail);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(customer.getEmail());
+			applicationEmail.setAddressee(customerOrder.getEmail()!=null && !"".equals(customerOrder.getEmail()) ? customerOrder.getEmail() : customer.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
 			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
@@ -3226,7 +3235,7 @@ public class CRMService {
 			// get sms register template from db
 			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customer, customerOrder, ci, companyDetail);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notificationSMSFinal.getContent());
+			this.smserService.sendSMSByAsynchronousMode(customerOrder.getMobile()!=null && !"".equals(customerOrder.getMobile()) ? customerOrder.getMobile() : customer.getCellphone(), notificationSMSFinal.getContent());
 		}
 		
 		Map<String, Object> resultMap = new HashMap<String, Object>();
@@ -3250,12 +3259,10 @@ public class CRMService {
 		return this.customerOrderDetailMapper.selectCustomerOrderDetails(cod);
 	}
 	
-	public List<CustomerOrderDetail> queryCustomerOrderDetailsByOrderId(int order_id){
-		return this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(order_id);
-	}
-	
 	public String queryCustomerOrderDetailGroupByOrderId(int order_id) {
-		List<CustomerOrderDetail> customerOrderDetails = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(order_id);
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", order_id);
+		List<CustomerOrderDetail> customerOrderDetails = this.queryCustomerOrderDetails(codQuery);
 		for (CustomerOrderDetail customerOrderDetail : customerOrderDetails) {
 			if(customerOrderDetail.getDetail_plan_group()!=null && customerOrderDetail.getDetail_plan_group().indexOf("plan-")>-1){
 				return customerOrderDetail.getDetail_plan_group();
@@ -3298,27 +3305,42 @@ public class CRMService {
 
 	@Transactional 
 	public String queryCustomerPreviousProviderInvoiceFilePathById(int id){
-		return this.customerOrderMapper.selectCustomerPreviousProviderInvoiceFilePathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		return coQuery.getPrevious_provider_invoice();
 	}
 
 	@Transactional 
 	public String queryCustomerCreditFilePathById(int id){
-		return this.customerOrderMapper.selectCustomerCreditFilePathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		return coQuery.getCredit_pdf_path();
 	}
 
 	@Transactional 
 	public String queryCustomerDDPayFormPathById(int id){
-		return this.customerOrderMapper.selectCustomerDDPayFormPathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		return coQuery.getDdpay_pdf_path();
 	}
 
 	@Transactional 
 	public String queryCustomerOrderingFormPathById(int id){
-		return this.customerOrderMapper.selectCustomerOrderingFormPathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		return coQuery.getOrdering_form_pdf_path();
 	}
 
 	@Transactional 
 	public String queryCustomerReceiptFormPathById(int id){
-		return this.customerOrderMapper.selectCustomerReceiptPathById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.queryCustomerOrder(coQuery);
+		return coQuery.getReceipt_pdf_path();
 	}
 	
 	/**
@@ -3364,7 +3386,9 @@ public class CRMService {
 	 */
 	@Transactional
 	public String serviceGivenPaid(Customer c, CustomerOrder co, CompanyDetail cd, User u){
-		List<CustomerOrderDetail> cods = this.customerOrderDetailMapper.selectCustomerOrderDetailsByOrderId(co.getId());
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", co.getId());
+		List<CustomerOrderDetail> cods = this.queryCustomerOrderDetails(codQuery);
 		List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 
 		CustomerOrder coQuery = new CustomerOrder();
@@ -3428,8 +3452,7 @@ public class CRMService {
 				cids.add(cid);
 				// else if detail type is discount then this discount is expired
 				// and will not be add to the invoice detail list
-			} else if ("debit".equals(cod.getDetail_type())
-					&& cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
+			} else if ("debit".equals(cod.getDetail_type()) && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
 				
 				cid.setInvoice_detail_price(cod.getDetail_price());
 				// decrease amountPayable
@@ -3580,15 +3603,17 @@ public class CRMService {
 			customerOrder.getParams().put("id", co.getId());
 			this.editCustomerOrder(customerOrder);
 			
-			Customer c = co.getCustomer();
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", co.getCustomer_id());
+			Customer c = this.queryCustomer(cQuery);
 
 			// Prevent template pollution
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
 			applicationEmail.setContent(notificationEmailFinal.getContent());
 			// binding attachment name & path to email
@@ -3605,9 +3630,9 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
+			this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : c.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
 	
@@ -3625,24 +3650,26 @@ public class CRMService {
 			customerOrder.setOrder_status("void");
 			customerOrder.getParams().put("id", co.getId());
 			this.editCustomerOrder(customerOrder);
-			
-			Customer c = co.getCustomer();
+
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", co.getCustomer_id());
+			Customer c = this.queryCustomer(cQuery);
 
 			// Prevent template pollution
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, customerOrder, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(c.getEmail());
+			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
 			applicationEmail.setContent(notificationEmailFinal.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
 			// send sms to customer's mobile phone
-			this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), notificationSMSFinal.getContent());
+			this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getCellphone(), notificationSMSFinal.getContent());
 		}
 	}
 	
@@ -3717,9 +3744,9 @@ public class CRMService {
 					Notification emailThirdFifthFinal = new Notification(emailThirdFifth.getTitle(), emailThirdFifth.getContent());
 					Notification smsThirdFifthFinal = new Notification(smsThirdFifth.getTitle(), smsThirdFifth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailThirdFifthFinal, c, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
-					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 					applicationEmail.setSubject(emailThirdFifthFinal.getTitle());
 					applicationEmail.setContent(emailThirdFifthFinal.getContent());
 					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
@@ -3727,9 +3754,9 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsThirdFifthFinal, c, co, ci, cd);
 					// send sms to customer's mobile phone
-					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsThirdFifthFinal.getContent());
+					this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : c.getCellphone(), smsThirdFifthFinal.getContent());
 					
 //					Console.log(ci);
 				}
@@ -3757,9 +3784,9 @@ public class CRMService {
 					Notification emailEighthNinthFinal = new Notification(emailEighthNinth.getTitle(), emailEighthNinth.getContent());
 					Notification smsEighthNinthFinal = new Notification(smsEighthNinth.getTitle(), smsEighthNinth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailEighthNinthFinal, c, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
-					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 					applicationEmail.setSubject(emailEighthNinthFinal.getTitle());
 					applicationEmail.setContent(emailEighthNinthFinal.getContent());
 					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
@@ -3767,9 +3794,9 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 	
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsEighthNinthFinal, c, co, ci, cd);
 					// send sms to customer's mobile phone
-					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsEighthNinthFinal.getContent());
+					this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : c.getCellphone(), smsEighthNinthFinal.getContent());
 					
 				}
 				
@@ -3799,9 +3826,9 @@ public class CRMService {
 					Notification emailTenthFinal = new Notification(emailTenth.getTitle(), emailTenth.getContent());
 					Notification smsTenthFinal = new Notification(smsTenth.getTitle(), smsTenth.getContent());
 					
-					MailRetriever.mailAtValueRetriever(emailTenthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(emailTenthFinal, c, co, ci, cd);
 					ApplicationEmail applicationEmail = new ApplicationEmail();
-					applicationEmail.setAddressee(c.getEmail());
+					applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 					applicationEmail.setSubject(emailTenthFinal.getTitle());
 					applicationEmail.setContent(emailTenthFinal.getContent());
 					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
@@ -3809,9 +3836,9 @@ public class CRMService {
 					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 	
 					// get sms register template from db
-					MailRetriever.mailAtValueRetriever(smsTenthFinal, co, ci, cd);
+					MailRetriever.mailAtValueRetriever(smsTenthFinal, c, co, ci, cd);
 					// send sms to customer's mobile phone
-					this.smserService.sendSMSByAsynchronousMode(c.getCellphone(), smsTenthFinal.getContent());
+					this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : c.getCellphone(), smsTenthFinal.getContent());
 					
 				}
 				

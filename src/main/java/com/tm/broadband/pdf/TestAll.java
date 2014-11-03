@@ -524,7 +524,7 @@ public class TestAll {
 		
 		// call OrderPDFCreator
 		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
-		oPDFCreator.setCo(co);
+//		oPDFCreator.setCo(co);
 		
 		// create order PDF
 		System.out.println(oPDFCreator.create());

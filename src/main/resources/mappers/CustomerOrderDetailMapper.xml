@@ -72,10 +72,6 @@
 		select * from `tm_customer_order_detail` as cod
 		<include refid="customerOrderDetailWhere"/>
 	</select>
-	
-	<select id="selectCustomerOrderDetailsByOrderId" parameterType="int" resultType="CustomerOrderDetail">
-		SELECT * FROM `tm_customer_order_detail` WHERE order_id = #{0}
-	</select>
 
 	<!-- // END SELECT AREA -->
 	<!-- =================================================================================== -->

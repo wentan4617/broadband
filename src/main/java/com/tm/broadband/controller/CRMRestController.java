@@ -60,6 +60,7 @@ import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
@@ -1035,25 +1036,28 @@ public class CRMRestController {
 		for (CustomerOrderDetail cod : coQuery.getCustomerOrderDetails()) {
 			cods.add(cod);
 		}
+		
+		Console.log(coQuery);
 
 		Customer cQuery = new Customer();
 		cQuery.getParams().put("id", customerOrder.getCustomer_id());
+		cQuery = this.crmService.queryCustomer(cQuery);
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		
 		// call mail at value retriever
-		MailRetriever.mailAtValueRetriever(notification, coQuery, cods, companyDetail);
-		applicationEmail.setAddressee(coQuery.getEmail());
+		MailRetriever.mailAtValueRetriever(notification, cQuery, coQuery, cods, companyDetail);
+		applicationEmail.setAddressee(coQuery.getEmail()!=null && !"".equals(coQuery.getEmail()) ? coQuery.getEmail() : cQuery.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 		// get sms register template from db
 		notification = this.systemService.queryNotificationBySort("service-installation", "sms");
-		MailRetriever.mailAtValueRetriever(notification, coQuery, cods, companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, cQuery, coQuery, cods, companyDetail);
 		// send sms to customer's mobile phone
-		this.smserService.sendSMSByAsynchronousMode(coQuery.getMobile(), notification.getContent());
+		this.smserService.sendSMSByAsynchronousMode(coQuery.getMobile()!=null && !"".equals(coQuery.getMobile()) ? coQuery.getMobile() : cQuery.getCellphone(), notification.getContent());
 		
 		// Provision record
 		ProvisionLog pl = new ProvisionLog();
@@ -1239,8 +1243,8 @@ public class CRMRestController {
 //			}
 //			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			notification = this.systemService.queryNotificationBySort(emailSort, "sms"); /* get sms register template from db */
-			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
-			this.smserService.sendSMSByAsynchronousMode(co.getMobile(), notification.getContent()); /* send sms to customer's mobile phone */
+			MailRetriever.mailAtValueRetriever(notification, customer, co, companyDetail);
+			this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : customer.getCellphone(), notification.getContent()); /* send sms to customer's mobile phone */
 
 			/*else if ("ordering-pending".equals(customerOrder.getOrder_status())
 					&& !"order-term".equals(customerOrder.getOrder_type())) {
@@ -1259,15 +1263,15 @@ public class CRMRestController {
 			Notification notification = this.systemService.queryNotificationBySort("service-giving", "email");
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			// call mail at value retriever
-			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
-			applicationEmail.setAddressee(co.getEmail());
+			MailRetriever.mailAtValueRetriever(notification, customer, co, companyDetail);
+			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : customer.getEmail());
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
 			notification = this.systemService.queryNotificationBySort("service-giving", "sms");
-			MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
+			MailRetriever.mailAtValueRetriever(notification, customer, co, companyDetail);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(co.getMobile(), notification.getContent());
 			json.getSuccessMap().put("alert-success", "Service Given Date successfully settled!");
@@ -2955,6 +2959,11 @@ public class CRMRestController {
 		coQuery.getParams().put("id", id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", id);
+		List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetails(codQuery);
+		coQuery.setCustomerOrderDetails(cods);
+		
 		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(coQuery.getCustomer_id());
 		
 		c.setCustomerOrder(coQuery);
@@ -2976,6 +2985,11 @@ public class CRMRestController {
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", id);
+		List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetails(codQuery);
+		coQuery.setCustomerOrderDetails(cods);
 		
 		this.crmService.createReceiptPDFByDetails(coQuery);
 		json.getSuccessMap().put("alert-success", "Successfully Regenerate Receipt");
