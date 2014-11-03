@@ -1062,7 +1062,7 @@ public class CRMRestController {
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
 		pl.setOrder_id_customer(customerOrder.getId());
-		pl.setProcess_way(this.crmService.queryCustomerOrderById(customerOrder.getId()).getOrder_status()+" to rfs");
+		pl.setProcess_way(coQuery.getOrder_status()+" to rfs");
 
 		CustomerOrder co = new CustomerOrder();
 		co.setSvlan(svLan);
@@ -2019,18 +2019,19 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 
-		CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 
 		// BEGIN SET NECESSARY AND GENERATE ORDER PDF
 		String orderPDFPath = null;
 		try {
-			orderPDFPath = new ApplicationPDFCreator(co).create();
+			orderPDFPath = new ApplicationPDFCreator(coQuery).create();
 		} catch (DocumentException | IOException e) {
 			e.printStackTrace();
 		}
-		co.getParams().put("id", co.getId());
-		co.setOrder_pdf_path(orderPDFPath);
-		this.crmService.editCustomerOrder(co);
+		coQuery.setOrder_pdf_path(orderPDFPath);
+		this.crmService.editCustomerOrder(coQuery);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		// Regenerate order application PDF is successful.
 		json.getSuccessMap().put("alert-success",
@@ -2048,11 +2049,13 @@ public class CRMRestController {
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 		
 		try {
-			Map<String, Object> resultMap = this.crmService.createTermPlanInvoiceByOrder(co
+			Map<String, Object> resultMap = this.crmService.createTermPlanInvoiceByOrder(coQuery
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
 			
@@ -2061,7 +2064,7 @@ public class CRMRestController {
 			
 			if(ci.getFinal_payable_amount()>0){
 				System.out.println("============================== TERMED INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
 			}
 			
@@ -2082,13 +2085,15 @@ public class CRMRestController {
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			Map<String, Object> resultMap = this.crmService.createInvoicePDFBoth(co, notificationEmail,
+			Map<String, Object> resultMap = this.crmService.createInvoicePDFBoth(coQuery, notificationEmail,
 					notificationSMS,
 					isRegenerateInvoice ? false : true,
 					isRegenerateInvoice);
@@ -2098,7 +2103,7 @@ public class CRMRestController {
 
 			if(ci.getFinal_payable_amount()>0){
 				System.out.println("============================== NON-TERMED INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
 			}
 			
@@ -2120,13 +2125,15 @@ public class CRMRestController {
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			Map<String, Object> resultMap = this.crmService.createTopupPlanInvoiceByOrder(co
+			Map<String, Object> resultMap = this.crmService.createTopupPlanInvoiceByOrder(coQuery
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
 					, isRegenerateInvoice
@@ -2137,7 +2144,7 @@ public class CRMRestController {
 
 			if(ci.getFinal_payable_amount()>0){
 				System.out.println("============================== TOPUP INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, co, ci, "Broadband Monthly Payment");
+				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
 			}
 			
@@ -2228,9 +2235,11 @@ public class CRMRestController {
 
 		if (TMUtils.isDateFormat(terminatedDate, "-")) {
 
-			CustomerOrder co = this.crmService.queryCustomerOrderById(order_id);
+			CustomerOrder coQuery = new CustomerOrder();
+			coQuery.getParams().put("id", order_id);
+			coQuery = this.crmService.queryCustomerOrder(coQuery);
 			Map<String, Object> map = TMUtils.earlyTerminationDatesCalculation(
-					co.getOrder_using_start(),
+					coQuery.getOrder_using_start(),
 					TMUtils.parseDateYYYYMMDD(terminatedDate));
 
 			CustomerOrderDetail cod = new CustomerOrderDetail();
@@ -2242,7 +2251,7 @@ public class CRMRestController {
 			cod.setDetail_plan_memo("Termination Charge: "
 					+ TMUtils.fillDecimalPeriod(String.valueOf(map
 							.get("charge_amount"))) + " Service Given: "
-					+ co.getOrder_using_start_str() + " Terminated Date: "
+					+ coQuery.getOrder_using_start_str() + " Terminated Date: "
 					+ terminatedDate + " Month Between: "
 					+ (Integer) map.get("months_between_begin_end")
 					+ " month(s)");
@@ -2550,9 +2559,10 @@ public class CRMRestController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
+		page.getParams().put("where", "query_exist_customer_by_keyword");
 		page.getParams().put("orderby", "order by order_create_date desc");
 		if (coQuery != null) {
-			page.getParams().put("id", coQuery.getId());
+			page.getParams().put("order_id", coQuery.getId());
 			page.getParams().put("customer_id", coQuery.getCustomer_id());
 			page.getParams().put("first_name", coQuery.getFirst_name());
 			page.getParams().put("last_name", coQuery.getLast_name());
@@ -2565,6 +2575,7 @@ public class CRMRestController {
 			page.getParams().put("customer_type", coQuery.getCustomer_type());
 			page.getParams().put("broadband_asid", coQuery.getBroadband_asid());
 		}
+		System.out.println("coQuery.getMobile(): "+coQuery.getMobile());
 		this.crmService.queryCustomerOrdersByPage(page);
 		status.setComplete();
 		return page;
@@ -2940,11 +2951,13 @@ public class CRMRestController {
 			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		
-		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(co.getCustomer_id());
+		Customer c = this.crmService.queryCustomerByIdWithCustomerOrder(coQuery.getCustomer_id());
 		
-		c.setCustomerOrder(co);
+		c.setCustomerOrder(coQuery);
 		
 		this.crmService.createOrderingFormPDFByDetails(c);
 		json.getSuccessMap().put("alert-success", "Successfully Regenerate Ordering Form");
@@ -2960,9 +2973,11 @@ public class CRMRestController {
 			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
-		CustomerOrder co = this.crmService.queryCustomerOrderById(id);
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		
-		this.crmService.createReceiptPDFByDetails(co);
+		this.crmService.createReceiptPDFByDetails(coQuery);
 		json.getSuccessMap().put("alert-success", "Successfully Regenerate Receipt");
 
 		return json;

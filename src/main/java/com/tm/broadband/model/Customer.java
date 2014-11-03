@@ -73,7 +73,7 @@ public class Customer implements Serializable {
 	
 	private String country;
 	private String company_name;
-//	private String customer_type;
+	private String customer_type;
 	
 	private String identity_type;
 	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
@@ -453,13 +453,13 @@ public class Customer implements Serializable {
 		this.company_name = company_name;
 	}
 
-//	public String getCustomer_type() {
-//		return customer_type;
-//	}
-//
-//	public void setCustomer_type(String customer_type) {
-//		this.customer_type = customer_type;
-//	}
+	public String getCustomer_type() {
+		return customer_type;
+	}
+
+	public void setCustomer_type(String customer_type) {
+		this.customer_type = customer_type;
+	}
 
 	public String getBirth_str() {
 		return birth_str;

@@ -18,7 +18,7 @@
 		<tr>
 			<td><.=co.id.></td>
 			<td>
-				<a href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.id .>">
+				<a href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.customer_id .>">
 				<. if (co.customer_type == 'personal') {.>
 					<.=co.first_name.> <.=co.last_name.>
 				<.} else if (co.customer_type == 'business'){.>
@@ -29,7 +29,7 @@
 			<td><.=co.customer_type .></td>
 			<td><.=co.address .></td>
 			<td><.=co.email .></td>
-			<td><.=co.cellphone .></td>
+			<td><.=co.mobile .></td>
 			<!-- <td><.=co.status .></td> -->
 			<td><.=co.order_create_date_str .></td>
 		</tr>

@@ -32,6 +32,12 @@ public class VOSVoIPCallRecordUtility {
 			boolean header = true;
 			while ((line = br.readLine()) != null) {
 				if(header){ header=false; continue; }
+				String arr[] = line.split(",");
+				if(arr.length > callCostIndex){
+					if(arr[callCostIndex] != null && !"".equals(arr[callCostIndex].trim()) && Integer.parseInt(arr[callCostIndex])<=0){
+						continue;
+					}
+				}
 				VOSVoIPCallRecord vosVoIPCallRecordHolder = getVOSVoIPCallRecords(line);
 				if(vosVoIPCallRecordHolder!=null){
 					vosVoIPCallRecords.add(vosVoIPCallRecordHolder);
