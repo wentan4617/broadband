@@ -9,12 +9,6 @@
 			<p class="form-control-static"><.=id.></p>
 		</div>
 	</div>
-	<div class="form-group">
-		<label class="control-label col-md-4">Customer Type</label>
-		<div class="col-md-4">
-			<p class="form-control-static"><.=customer_type.></p>
-		</div>
-	</div>
 	
 	<div class="form-group">
 		<label class="control-label col-md-4">Identity Type</label>
@@ -38,9 +32,6 @@
 			<input type="text" id="identity_number" name="identity_number" value="<.=identity_number.>" class="form-control" data-error-field data-placement="right"/>
 		</div>
 	</div>
-	
-	<!-- personal -->
-	<. if (customer_type == 'personal'){ .>
 		
 	<!-- customer address -->
 	<hr/>
@@ -111,128 +102,6 @@
 		</div>
 	</div>
 	
-	<.}.>
-	
-	<!-- business -->
-	<. if (customer_type == 'business'){ .>
-	
-	<!-- customer address -->
-	<hr/>
-	<h4 class="text-success">Group/Organization Address</h4>
-	<hr/>
-	
-	<div class="form-group">
-		<label for="address" class="control-label col-md-4">Business Address</label>
-		<div class="col-md-8">
-			<input type="text" id="address" name="address" value="<.=address.>" class="form-control" data-error-field data-placement="top"/>
-		</div>
-	</div>
-
-	<!-- customer account -->
-	<hr/>
-	<h4 class="text-success">Business Account</h4>
-	<hr/>
-	
-	<div class="form-group">
-		<label for="cellphone" class="control-label col-md-4">Business Mobile</label>
-		<div class="col-md-4">
-			<input type="text" id="cellphone" name="cellphone" value="<.=cellphone.>"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="email" class="control-label col-md-4">Business Email</label>
-		<div class="col-md-4">
-			<input type="text" id="email" name="email" value="<.=email.>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="password" class="control-label col-md-4">Business Password</label>
-		<div class="col-md-4">
-			<input type="text" id="password" name="password" value="<.=password.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-		
-	<!-- Group/Organization Information -->
-	<hr/>
-	<h4 class="text-success">Group/Organization Information</h4>
-	<hr/>
-	
-	<div class="form-group">
-		<label for="organization.org_type" class="control-label col-md-4">Group/Organization Type</label>
-		<div class="col-md-5">
-			<select name="org_type" id="organization.org_type" class="selectpicker show-tick form-control" data-error-field>
-			<. var orgTypes = [ 'NZ Incorporated Company','Limited Partnership','Sole Trader','Partnership', 'Trust','Overseas Company','Society'];
-				for(var i = 0; i < orgTypes.length; i++) {
-					if (organization.org_type == orgTypes[i])
-			.> 
-				<option value="<.=orgTypes[i].>" selected="selected"><.=orgTypes[i].></option>
-			<. 		else .>
-				<option value="<.=orgTypes[i].>"><.=orgTypes[i].></option>
-			<. }.>
-			</select>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.org_name" class="control-label col-md-4">Group/Organization Name</label>
-		<div class="col-md-5">
-			<input type="text" name="org_name" id="organization.org_name" value="<.=organization.org_name.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.org_trading_name" class="control-label col-md-4">Trading Name</label>
-		<div class="col-md-5">
-			<input type="text" name="org_trading_name" id="organization.org_trading_name" value="<.=organization.org_trading_name.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.org_register_no" class="control-label col-md-4">Registration No.</label>
-		<div class="col-md-5">
-			<input type="text" name="org_register_no" id="organization.org_register_no" value="<.=organization.org_register_no.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.org_incoporate_date" class="control-label col-md-4">Date Incorporated</label>
-		<div class="col-md-4">
-			<div class="input-group date">
-		  		<input type="text" id="organization.org_incoporate_date" name="org_incoporate_date" value="<.=organization.org_incoporate_date_str.>" class="form-control" class="form-control"  data-error-field />
-		  		<span class="input-group-addon">
-		  			<i class="glyphicon glyphicon-calendar"></i>
-		  		</span>
-			</div>
-		</div>
-	</div>
-
-	<!-- Contract Details -->
-	<hr/>
-	<h4 class="text-success">Contract Details / Holder Account</h4>
-	<hr/>
-	
-	<div class="form-group">
-		<label for="organization.holder_name" class="control-label col-md-4">Full name</label>
-		<div class="col-md-5">
-			<input type="text" name="holder_name" id="organization.holder_name" value="<.=organization.holder_name.>" class="form-control"  data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.holder_job_title" class="control-label col-md-4">Job title</label>
-		<div class="col-md-5">
-			<input type="text" name="holder_job_title" id="organization.holder_job_title" value="<.=organization.holder_job_title.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.holder_phone" class="control-label col-md-4">Phone Number</label>
-		<div class="col-md-5">
-			<input type="text" name="holder_phone" id="organization.holder_phone" value="<.=organization.holder_phone.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-	<div class="form-group">
-		<label for="organization.holder_email" class="control-label col-md-4">Email Address</label>
-		<div class="col-md-5">
-			<input type="text" name="holder_email" id="organization.holder_email" value="<.=organization.holder_email.>" class="form-control" data-error-field/>
-		</div>
-	</div>
-
-	<. } .>
 	
 	<!-- Other Information -->
 
@@ -283,13 +152,13 @@
 		<label for="status" class="control-label col-md-4">Status</label>
 		<div class="col-md-4">
 			<select id="status" name="status" class="selectpicker show-tick form-control">
-				<. if (status == 'active') .>
+				<. if (status == 'active') { .>
 					<option value="active" selected="selected">Active</option>
-				<. else .>
+				<. } .>
 					<option value="active">Active</option>
-				<. if (status == 'disabled') .>
+				<. if (status == 'disabled') { .>
 					<option value="disabled" selected="selected">Disabled</option>
-				<. else .>
+				<. } .>
 					<option value="disabled" >Disabled</option>
 			</select>
 		</div>
@@ -330,10 +199,9 @@
 					</p>
 					<p class="text-right">
 						<strong>
-							personal informations<br /> 
-							related organization details<br />
+							personal informations<br />
 							related orders with records<br />
-							related invoices with records<br /> 
+							related invoices with records<br />
 							related transaction records<br />
 						</strong>
 					</p>

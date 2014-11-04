@@ -155,7 +155,7 @@ public class CRMController {
 		this.crmService.removeCustomer(id);
 		attr.addFlashAttribute("success", "Remove customer is successful.");
 		status.setComplete();
-		return "redirect:/broadband-user/crm/customer/view";
+		return "redirect:/broadband-user/crm/customer/order/view";
 	}
 	
 	@RequestMapping(value = "/broadband-user/crm/transaction/view/{pageNo}/{customerId}")
@@ -293,7 +293,7 @@ public class CRMController {
 	public String redirectPlanView(RedirectAttributes attr, SessionStatus status) {
 		attr.addFlashAttribute("success", "Create Customer is successful.");
 		status.setComplete();
-		return "redirect:/broadband-user/crm/customer/view";
+		return "redirect:/broadband-user/crm/customer/order/view";
 	}
 	
 
@@ -627,7 +627,7 @@ public class CRMController {
 //		companyDetail = null;
 //		/*org = null;*/
 //		
-//		return "redirect:/broadband-user/crm/customer/view";
+//		return "redirect:/broadband-user/crm/customer/order/view";
 //	}
 	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/checkout", method = RequestMethod.POST)
@@ -681,7 +681,7 @@ public class CRMController {
 //
 //		if (responseBean != null && responseBean.getSuccess().equals("1")) {
 //			
-//			url = "redirect:/broadband-user/crm/customer/view";
+//			url = "redirect:/broadband-user/crm/customer/order/view";
 //			
 //			customer.setStatus("active");
 //			customer.setUser_name(customer.getLogin_name());

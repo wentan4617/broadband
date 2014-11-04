@@ -25,7 +25,6 @@ import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
-import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 
@@ -53,7 +52,7 @@ public class SaleRestController {
 	
 	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/business", method = RequestMethod.POST)
 	public JSONBean<Customer> doOrderBusiness(Model model,
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer, BindingResult result,  
+			@RequestBody Customer customer, BindingResult result,  
 			HttpServletRequest req) {
 
 		model.addAttribute("orderCustomer", customer);

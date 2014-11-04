@@ -49,7 +49,6 @@ import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.ContactUsValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
-import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.OnlinePayByVoucherValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
@@ -1051,7 +1050,7 @@ public class CustomerRestController {
 	
 	@RequestMapping(value = "/plans/order/confirm/business", method = RequestMethod.POST)
 	public JSONBean<Customer> doPlanOrderConfirmBusiness(
-			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@Validated(value = { TransitionCustomerOrderValidatedMark.class }) 
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerReg = (Customer) session.getAttribute("customerReg");

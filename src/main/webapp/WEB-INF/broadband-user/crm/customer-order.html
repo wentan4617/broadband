@@ -524,6 +524,214 @@
 		
 		
 		
+		<!-- Customer Basic & Contact Detail -->
+		<hr />
+		<h4 class="text-success">Customer Basic & Contact Detail</h4>
+		<hr />
+		<div class="form-group">
+			<label class="control-label col-md-2">Customer Type</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_customer_type" class="form-control-static"><.= customerOrder[i].customer_type .></p>
+			</div>
+			<div class="col-md-2">
+				<select id="<.= customerOrder[i].id .>" class="form-control input-xs" data-name="customer_type_<.= customerOrder[i].id .>">
+					<. var customerTypes = ['personal','business']; .>
+					<. for(var cTypes = 0; cTypes < customerTypes.length; cTypes++){ .>
+						<. if(customerTypes[cTypes]==customerOrder[i].customer_type){ .>
+						<option value="<.= customerTypes[cTypes] .>" selected="selected"><.= customerTypes[cTypes] .></option>
+						<. } else { .>
+						<option value="<.= customerTypes[cTypes] .>"><.= customerTypes[cTypes] .></option>
+						<. } .>
+					<. } .>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-type">Update Customer Type</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Title</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_title" class="form-control-static"><.= customerOrder[i].title .></p>
+			</div>
+			<div class="col-md-2">
+				<select id="<.= customerOrder[i].id .>" class="form-control input-xs" data-name="title_<.= customerOrder[i].id .>">
+					<. var customerTitles = ['Mr','Mrs','Ms']; .>
+					<. for(var cTitles = 0; cTitles < customerTitles.length; cTitles++){ .>
+						<. if(customerTitles[cTitles]==customerOrder[i].title){ .>
+						<option value="<.= customerTitles[cTitles] .>" selected="selected"><.= customerTitles[cTitles] .></option>
+						<. } else { .>
+						<option value="<.= customerTitles[cTitles] .>"><.= customerTitles[cTitles] .></option>
+						<. } .>
+					<. } .>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-title">Update Customer Title</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Address</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_address" class="form-control-static"><.= customerOrder[i].address .></p>
+			</div>
+			<div class="col-md-4">
+				<input id="address_<.= customerOrder[i].id .>" value="<.= customerOrder[i].address .>" class="form-control input-xs" data-placement="top" placeholder="Address" data-error-field/>
+			</div>
+			<div class="col-md-2">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-address">Update Customer Address</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Mobile</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_mobile" class="form-control-static"><.= customerOrder[i].mobile .></p>
+			</div>
+			<div class="col-md-2">
+				<input id="mobile_<.= customerOrder[i].id .>" value="<.= customerOrder[i].mobile .>" class="form-control input-xs" data-placement="top" placeholder="Cellphone"/>
+			</div>
+			<div class="col-md-4">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-mobile">Update Customer Mobile</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Phone</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_phone" class="form-control-static"><.= customerOrder[i].phone .></p>
+			</div>
+			<div class="col-md-2">
+				<input id="phone_<.= customerOrder[i].id .>" value="<.= customerOrder[i].phone .>" class="form-control input-xs" data-placement="top" placeholder="Landline"/>
+			</div>
+			<div class="col-md-4">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-phone">Update Customer Phone</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Email</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_email" class="form-control-static"><.= customerOrder[i].email .></p>
+			</div>
+			<div class="col-md-4">
+				<input id="email_<.= customerOrder[i].id .>" value="<.= customerOrder[i].email .>" class="form-control input-xs" data-placement="top" placeholder="Email Address"/>
+			</div>
+			<div class="col-md-2">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="customer-email">Update Customer Email</a>
+			</div>
+		</div>
+
+		<. if(customerOrder[i].customer_type=='personal'){ .>
+		<div class="form-group">
+			<label class="control-label col-md-2">First Name</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_first_name" class="form-control-static"><.= customerOrder[i].first_name .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="first_name_<.= customerOrder[i].id .>" value="<.= customerOrder[i].first_name .>" class="form-control input-sm" data-placement="top" placeholder="First Name" style="height:26px; padding:0 10px;" data-error-field/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="first-name">Update First Name</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Last Name</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_last_name" class="form-control-static"><.= customerOrder[i].last_name .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="last_name_<.= customerOrder[i].id .>" value="<.= customerOrder[i].last_name .>" class="form-control input-sm" data-placement="top" placeholder="Last Name" style="height:26px; padding:0 10px;" data-error-field/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="last-name">Update Last Name</a>
+			</div>
+		</div>
+		<. } .>
+			
+		<. if(customerOrder[i].customer_type=='business'){ .>
+		<div class="form-group">
+			<label class="control-label col-md-2">Org Name</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_name" class="form-control-static"><.= customerOrder[i].org_name .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_name_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_name .>" class="form-control input-xs" data-placement="top" placeholder="Organization Name"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-name">Update Org Name</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Org Type</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_type" class="form-control-static"><.= customerOrder[i].org_type .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_type_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_type .>" class="form-control input-xs" data-placement="top" placeholder="Organization Type"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-type">Update Org Type</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Trading Name</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_trading_name" class="form-control-static"><.= customerOrder[i].org_trading_name .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_trading_name_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_trading_name .>" class="form-control input-xs" data-placement="top" placeholder="Trading Name"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-trading-name">Update Trading Name</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Register No.</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_register_no" class="form-control-static"><.= customerOrder[i].org_register_no .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_register_no_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_register_no .>" class="form-control input-xs" data-placement="top" placeholder="Register No."/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-register-no">Update Register No.</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Incoporate Date</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_incoporate_date" class="form-control-static"><.= customerOrder[i].org_incoporate_date_str .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_incoporate_date_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_incoporate_date_str .>" class="form-control input-xs" data-placement="top" placeholder="Incoporate Date"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-incoporate-date">Update Incoporate Date</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Trading Months</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_org_trading_months" class="form-control-static"><.= customerOrder[i].org_trading_months .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="org_trading_months_<.= customerOrder[i].id .>" value="<.= customerOrder[i].org_trading_months .>" class="form-control input-xs" data-placement="top" placeholder="Trading Months"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="org-trading-months">Update Trading Months</a>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="control-label col-md-2">Holder Name</label>
+			<div class="col-md-4">
+				<p id="<.= customerOrder[i].id .>_holder_name" class="form-control-static"><.= customerOrder[i].holder_name .></p>
+			</div>
+			<div class="col-md-3">
+				<input id="holder_name_<.= customerOrder[i].id .>" value="<.= customerOrder[i].holder_name .>" class="form-control input-xs" data-placement="top" placeholder="Holder Name"/>
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-long pull-right" data-name="<.= customerOrder[i].id .>_customer_basic_contact_edit_btn" data-basic-type="holder-name">Update Holder Name</a>
+			</div>
+		</div>
+		<. } .>
 		
 		
 		
@@ -563,6 +771,9 @@
 				</div>
 			</div>
 		</div>
+		
+		
+		
 		
 		<!-- SV/CVLan Information -->
 		<hr />
@@ -1287,6 +1498,29 @@
 		</div>
 		<!-- /.modal -->
 	</form>
+
+	<!-- Edit Basic Contact Modal -->
+	<div class="modal fade" id="editCustomerBasicContactModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCustomerBasicContactModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="editCustomerBasicContactModalLabel">
+						<strong>Update Related Order's Customer Basic Detail</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p data-name="basic_contact_content_<.= customerOrder[i].id .>"></p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="customer_basic_contact_edit_modal_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<!-- Edit PPPoE Modal -->
 	<div class="modal fade" id="editPPPoEModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editPPPoEModalLabel" aria-hidden="true">

@@ -42,9 +42,8 @@
 			// BEGIN customer info modal area
 			$('#updateCustomer').click(function(){
 				var customer_id = customerId;
-				var customerType = customer_type;
 				var $btn = $(this);
-				var url = ctx+'/broadband-user/crm/customer/' + customerType + '/edit';
+				var url = ctx+'/broadband-user/crm/customer/edit';
 				var customer = {
 					address: $('#address').val()
 					, cellphone: $('#cellphone').val()
@@ -55,20 +54,7 @@
 					, last_name: $('#last_name').val()
 					, identity_type: $('#identity_type').val()
 					, identity_number: $('#identity_number').val()
-					, organization: {
-						org_name: $('#organization\\.org_name').val()
-						, org_type: $('#organization\\.org_type').val()
-						, org_trading_name: $('#organization\\.org_trading_name').val()
-						, org_register_no: $('#organization\\.org_register_no').val()
-						, org_incoporate_date: $('#organization\\.org_incoporate_date').val()
-						, org_trading_months: $('#organization\\.org_trading_months').val()
-						, holder_name: $('#organization\\.holder_name').val()
-						, holder_job_title: $('#organization\\.holder_job_title').val()
-						, holder_phone: $('#organization\\.holder_phone').val()
-						, holder_email: $('#organization\\.holder_email').val()
-					}
 					, id: customer_id
-					, customer_type: customerType
 					, balance: $('#balance').val()
 					, status: $('#status').val()
 				}; // console.log("customer request:"); console.log(customer);
@@ -761,7 +747,126 @@
 				/*
 				 *	END customer order area
 				 */
+
 				 
+				/*
+				 *	BEGIN customer basic & contact detail
+				 */
+				// Update order Customer Type
+				// Get order Customer Type Dialog
+				$('a[data-name="'+co[i].id+'_customer_basic_contact_edit_btn"]').click(function(){
+					var basic_type = $(this).attr('data-basic-type');
+					var basic_contact_content = '';
+					if(basic_type=='customer-type'){
+						basic_contact_content = 'Update Customer Type ?';
+					} else if(basic_type=='customer-title'){
+						basic_contact_content = 'Update Customer Title ?';
+					} else if(basic_type=='customer-address'){
+						basic_contact_content = 'Update Customer Address ?';
+					} else if(basic_type=='customer-mobile'){
+						basic_contact_content = 'Update Customer Mobile ?';
+					} else if(basic_type=='customer-phone'){
+						basic_contact_content = 'Update Customer Phone ?';
+					} else if(basic_type=='customer-email'){
+						basic_contact_content = 'Update Customer Email ?';
+					} else if(basic_type=='first-name'){
+						basic_contact_content = 'Update First Name ?';
+					} else if(basic_type=='last-name'){
+						basic_contact_content = 'Update Last Name ?';
+					} else if(basic_type=='org-name'){
+						basic_contact_content = 'Update Organization Name ?';
+					} else if(basic_type=='org-type'){
+						basic_contact_content = 'Update Organization Type ?';
+					} else if(basic_type=='org-trading-name'){
+						basic_contact_content = 'Update Trading Name ?';
+					} else if(basic_type=='org-register-no'){
+						basic_contact_content = 'Update Trading No. ?';
+					} else if(basic_type=='org-incoporate-date'){
+						basic_contact_content = 'Update Incoporate Date ?';
+					} else if(basic_type=='org-trading-months'){
+						basic_contact_content = 'Update Trading Months ?';
+					} else if(basic_type=='holder-name'){
+						basic_contact_content = 'Update Holder Name ?';
+					} else if(basic_type=='holder-job-title'){
+						basic_contact_content = 'Update Holder Job Title ?';
+					} else if(basic_type=='holder-phone'){
+						basic_contact_content = 'Update Holder Phone ?';
+					} else if(basic_type=='holder-email'){
+						basic_contact_content = 'Update Holder Email ?';
+					}
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="customer_basic_contact_edit_modal_btn_'+this.id+'"]').attr('data-basic-type', basic_type);
+					$('p[data-name="basic_contact_content_'+this.id+'"]').html(basic_contact_content);
+					$('#editCustomerBasicContactModal_'+this.id).modal('show');	// click Edit Customer Type then performing Ajax action
+
+				});
+				// Submit to rest controller
+				$('a[data-name="customer_basic_contact_edit_modal_btn_'+co[i].id+'"]').click(function(){
+					var basic_type = $(this).attr('data-basic-type');
+					var data = {
+						'id':this.id
+						, 'basic_type':basic_type
+					};
+					
+					if(basic_type=='customer-type'){
+						data.customer_type = $('select[data-name="customer_type_'+this.id+'"]').val();
+					} else if(basic_type=='customer-title'){
+						data.title = $('select[data-name="title_'+this.id+'"]').val();
+					} else if(basic_type=='customer-address'){
+						data.address = $('#address_'+this.id).val();
+					} else if(basic_type=='customer-mobile'){
+						data.mobile = $('#mobile_'+this.id).val();
+					} else if(basic_type=='customer-phone'){
+						data.phone = $('#phone_'+this.id).val();
+					} else if(basic_type=='customer-email'){
+						data.email = $('#email_'+this.id).val();
+					} else if(basic_type=='first-name'){
+						data.first_name = $('#first_name_'+this.id).val();
+					} else if(basic_type=='last-name'){
+						data.last_name = $('#last_name_'+this.id).val();
+					} else if(basic_type=='org-name'){
+						data.org_name = $('#org_name_'+this.id).val();
+					} else if(basic_type=='org-type'){
+						data.org_type = $('#org_type_'+this.id).val();
+					} else if(basic_type=='org-trading-name'){
+						data.org_trading_name = $('#org_trading_name_'+this.id).val();
+					} else if(basic_type=='org-register-no'){
+						data.org_register_no = $('#org_register_no_'+this.id).val();
+					} else if(basic_type=='org-incoporate-date'){
+						data.org_incoporate_date_str = $('#org_incoporate_date_'+this.id).val();
+					} else if(basic_type=='org-trading-months'){
+						var org_trading_months = $('#org_trading_months_'+this.id).val();
+						if(isNaN(org_trading_months)){
+							var json = Object();
+							json.errorMap = {'alert-error':'Trading Months Must be Number'};
+							$.jsonValidation(json, 'left');
+							return;
+						}
+						data.org_trading_months = org_trading_months;
+					} else if(basic_type=='holder-name'){
+						data.holder_name = $('#holder_name_'+this.id).val();
+					} else if(basic_type=='holder-job-title'){
+						data.holder_job_title = $('#holder_job_title_'+this.id).val();
+					} else if(basic_type=='holder-phone'){
+						data.holder_phone = $('#holder_phone_'+this.id).val();
+					} else if(basic_type=='holder-email'){
+						data.holder_email = $('#holder_email_'+this.id).val();
+					}
+					
+					$.post(ctx+'/broadband-user/crm/customer/order/basic_contact/edit', data, function(json){
+						console.log(json);
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden order Customer Type dialog
+				$('#editCustomerBasicContactModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder();
+				});
+				/*
+				 *	END customer basic & contact detail
+				 */
+				
+				
 				 
 				/*
 				 *	BEGIN customer order PPPoE area
