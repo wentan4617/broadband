@@ -36,11 +36,11 @@
 				<div class="col-md-6 col-xs-12 col-sm-12">
 					<h4 class="text-success">
 						<c:choose>
-							<c:when test="${customerRegAdmin.customer_type == 'personal' }">
-								${customerRegAdmin.title } ${customerRegAdmin.first_name } ${customerRegAdmin.last_name }
+							<c:when test="${customerRegAdmin.customerOrder.customer_type == 'personal' }">
+								${customerRegAdmin.customerOrder.title } ${customerRegAdmin.customerOrder.first_name } ${customerRegAdmin.customerOrder.last_name }
 							</c:when>
-							<c:when test="${customerRegAdmin.customer_type == 'business' }">
-								${customerRegAdmin.organization.org_name }
+							<c:when test="${customerRegAdmin.customerOrder.customer_type == 'business' }">
+								${customerRegAdmin.customerOrder.org_name }
 							</c:when>
 						</c:choose>
 					</h4>
@@ -70,7 +70,7 @@
 			
 			
 			
-			<c:if test="${customerRegAdmin.customer_type == 'business' }">
+			<c:if test="${customerRegAdmin.customerOrder.customer_type == 'business' }">
 			
 			<hr style="margin-top:0;"/>
 			<h2>Business Information</h2>
@@ -78,21 +78,21 @@
 			
 			<div class="row">
 				<div class="col-sm-4"><strong>Organization Type</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.org_type }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.org_type }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Trading Name</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.org_trading_name }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.org_trading_name }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Registration No.</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.org_register_no }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.org_register_no }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Date Incoporated</strong></div>
 				<div class="col-sm-6">
 					<strong class="text-info">
-						<fmt:formatDate  value="${customerRegAdmin.organization.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
+						<fmt:formatDate  value="${customerRegAdmin.customerOrder.org_incoporate_date }" type="both" pattern="yyyy-MM-dd" />
 					</strong>
 				</div>
 			</div>
@@ -101,19 +101,19 @@
 			<hr style="margin-top:0;"/>
 			<div class="row" >
 				<div class="col-sm-4"><strong>Full name</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.holder_name }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.holder_name }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Job Title</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.holder_job_title }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.holder_job_title }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Phone</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.holder_phone }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.holder_phone }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Email</strong></div>
-				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.organization.holder_email }</strong></div>
+				<div class="col-sm-6"><strong class="text-info">${customerRegAdmin.customerOrder.holder_email }</strong></div>
 			</div>
 			<div class="row" style="margin-top:5px;">
 				<div class="col-sm-4"><strong>Identity Type</strong></div>
@@ -130,7 +130,7 @@
 			
 			</c:if>
 			
-			<c:if test="${customerRegAdmin.customer_type == 'personal' }">
+			<c:if test="${customerRegAdmin.customerOrder.customer_type == 'personal' }">
 			
 			<hr /><!-- style="margin-top:0;" -->
 			<h2>Personal Information</h2>
@@ -275,7 +275,7 @@
 					<table class="table">
 						<tbody>
 						<c:choose>
-							<c:when test="${customerRegAdmin.customer_type == 'personal' }">
+							<c:when test="${customerRegAdmin.customerOrder.customer_type == 'personal' }">
 							
 							<tr>
 								<td>Total before GST</td>
@@ -316,7 +316,7 @@
 							
 							</c:when>
 							
-							<c:when test="${customerRegAdmin.customer_type == 'business' }">
+							<c:when test="${customerRegAdmin.customerOrder.customer_type == 'business' }">
 							
 							<tr>
 								<td>Order Price</td>
@@ -445,15 +445,10 @@
 
 <jsp:include page="../../footer.jsp" />
 <jsp:include page="script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
 <script type="text/javascript">
 var ctx = '${ctx}';
 var total_vprice = new Number('${total_vprice}');
 var order_price = new Number('${customerRegAdmin.customerOrder.order_total_price}');
 </script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/order-summary.js?ver=2014822747"></script>
-
+<script type="text/javascript" src="${ctx}/public/broadband-user/crm/plans/order-summary.js?ver=20141141002"></script>
 <jsp:include page="../../footer-end.jsp" />

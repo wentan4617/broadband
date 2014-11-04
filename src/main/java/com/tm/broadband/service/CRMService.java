@@ -4033,7 +4033,11 @@ public class CRMService {
 				
 				CustomerOrderDetail cod_voip = new CustomerOrderDetail();
 				cod_voip.setMonthly(false);
-				cod_voip.setDetail_name("VoIP Homeline");
+				if ("business".equals(customerOrder.getCustomer_type())) {
+					cod_voip.setDetail_name("VoIP Businessline");
+				} else {
+					cod_voip.setDetail_name("VoIP Homeline");
+				}
 				cod_voip.setDetail_type("voip");
 				cod_voip.setDetail_price(0d);
 				cod_voip.setDetail_unit(1);

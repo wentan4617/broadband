@@ -23,10 +23,13 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
+import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
 
 @RestController
 public class SaleRestController {
@@ -38,26 +41,6 @@ public class SaleRestController {
 	public SaleRestController(CRMService crmService, PlanService planService) {
 		this.crmService = crmService;
 		this.planService = planService;
-	}
-	
-	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/personal", method = RequestMethod.POST)
-	public JSONBean<Customer> doOrderPersonal(Model model,
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer, BindingResult result,  
-			HttpServletRequest req) {
-
-		model.addAttribute("orderCustomer", customer);
-		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
-		return json;
-	}
-	
-	@RequestMapping(value = "/broadband-user/sale/online/ordering/order/business", method = RequestMethod.POST)
-	public JSONBean<Customer> doOrderBusiness(Model model,
-			@RequestBody Customer customer, BindingResult result,  
-			HttpServletRequest req) {
-
-		model.addAttribute("orderCustomer", customer);
-		JSONBean<Customer> json = this.returnJsonCustomer(customer, result);
-		return json;
 	}
 	
 	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
@@ -96,8 +79,6 @@ public class SaleRestController {
 			return json;
 		}
 		json.setUrl("/broadband-user/sale/online/ordering/order/confirm");
-		// Recycle
-		cValid = null;
 		
 		return json;
 	}
@@ -271,64 +252,60 @@ public class SaleRestController {
 		customerRegSale.setIr(null);
 	}
 	
-//	@RequestMapping(value = "/broadband-user/sale/plans/order/confirm/personal", method = RequestMethod.POST)
-//	public JSONBean<Customer> doPlanOrderConfirmPersonal(
-//			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
-//			@RequestBody Customer customer, BindingResult result, HttpSession session) {
-//		
-//		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
-//		User userSession = (User) session.getAttribute("userSession");
-//		
-//		customerRegSale.setCurrentOperateUserid(userSession.getId());
-//		customerRegSale.setCellphone(customer.getCellphone());
-//		customerRegSale.setEmail(customer.getEmail());
-//		customerRegSale.setTitle(customer.getTitle());
-//		customerRegSale.setFirst_name(customer.getFirst_name());
-//		customerRegSale.setLast_name(customer.getLast_name());
-//		customerRegSale.setIdentity_type(customer.getIdentity_type());
-//		customerRegSale.setIdentity_number(customer.getIdentity_number());
-//		customerRegSale.setCustomer_type(customer.getCustomer_type());
-//		
-//		customerRegSale.setCustomerOrder(customer.getCustomerOrder());
-//		
-//		JSONBean<Customer> json = this.returnJsonCustomer(customerRegSale, result);
-//		
-//		this.crmService.doPlansOrderConfirm(customerRegSale);
-//		
-//		json.setUrl("/broadband-user/sale/plans/order/summary");
-//		
-//		return json;
-//	}	
-//	
-//	@RequestMapping(value = "/broadband-user/sale/plans/order/confirm/business", method = RequestMethod.POST)
-//	public JSONBean<Customer> doPlanOrderConfirmBusiness(
-//			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
-//			@RequestBody Customer customer, BindingResult result, HttpSession session) {
-//		
-//		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
-//		User userSession = (User) session.getAttribute("userSession");
-//		
-//		customerRegSale.setCurrentOperateUserid(userSession.getId());
-//		customerRegSale.setCellphone(customer.getCellphone());
-//		customerRegSale.setEmail(customer.getEmail());
-//		customerRegSale.setTitle(customer.getTitle());
-//		customerRegSale.setFirst_name(customer.getFirst_name());
-//		customerRegSale.setLast_name(customer.getLast_name());
-//		customerRegSale.setIdentity_type(customer.getIdentity_type());
-//		customerRegSale.setIdentity_number(customer.getIdentity_number());
-//		customerRegSale.setCustomer_type(customer.getCustomer_type());
-//		
-//		customerRegSale.setOrganization(customer.getOrganization());
-//		
-//		customerRegSale.setCustomerOrder(customer.getCustomerOrder());
-//		
-//		JSONBean<Customer> json = this.returnJsonCustomer(customerRegSale, result);
-//		
-//		this.crmService.doPlansOrderConfirm(customerRegSale);
-//		
-//		json.setUrl("/broadband-user/sale/plans/order/summary");
-//		
-//		return json;
-//	}	
+	@RequestMapping(value = "/broadband-user/sale/plans/order/confirm/personal", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmPersonal(
+			@Validated(value = { CustomerValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		User userSession = (User) session.getAttribute("userSession");
+		
+		customerRegSale.setCurrentOperateUserid(userSession.getId());
+		customerRegSale.setCellphone(customer.getCellphone());
+		customerRegSale.setEmail(customer.getEmail());
+		customerRegSale.setTitle(customer.getTitle());
+		customerRegSale.setFirst_name(customer.getFirst_name());
+		customerRegSale.setLast_name(customer.getLast_name());
+		customerRegSale.setIdentity_type(customer.getIdentity_type());
+		customerRegSale.setIdentity_number(customer.getIdentity_number());
+		
+		customerRegSale.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerRegSale, result);
+		
+		this.crmService.doPlansOrderConfirm(customerRegSale);
+		
+		json.setUrl("/broadband-user/sale/plans/order/summary");
+		
+		return json;
+	}	
+	
+	@RequestMapping(value = "/broadband-user/sale/plans/order/confirm/business", method = RequestMethod.POST)
+	public JSONBean<Customer> doPlanOrderConfirmBusiness(
+			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@RequestBody Customer customer, BindingResult result, HttpSession session) {
+		
+		Customer customerRegSale = (Customer) session.getAttribute("customerRegSale");
+		User userSession = (User) session.getAttribute("userSession");
+		
+		customerRegSale.setCurrentOperateUserid(userSession.getId());
+		customerRegSale.setCellphone(customer.getCellphone());
+		customerRegSale.setEmail(customer.getEmail());
+		customerRegSale.setTitle(customer.getTitle());
+		customerRegSale.setFirst_name(customer.getFirst_name());
+		customerRegSale.setLast_name(customer.getLast_name());
+		customerRegSale.setIdentity_type(customer.getIdentity_type());
+		customerRegSale.setIdentity_number(customer.getIdentity_number());
+		
+		customerRegSale.setCustomerOrder(customer.getCustomerOrder());
+		
+		JSONBean<Customer> json = this.returnJsonCustomer(customerRegSale, result);
+		
+		this.crmService.doPlansOrderConfirm(customerRegSale);
+		
+		json.setUrl("/broadband-user/sale/plans/order/summary");
+		
+		return json;
+	}	
 	
 }

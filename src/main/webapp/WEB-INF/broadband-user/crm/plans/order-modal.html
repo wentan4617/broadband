@@ -65,7 +65,11 @@
 				<span style="font-size: 36px;font-weight: bold;">
 					NZ$
 				</span>
+				<.if (select_customer_type == 'business') {.>
+				<span style="font-size: 52px;font-weight: bold;">
+				<.} else if (select_customer_type == 'personal') {.>
 				<span style="font-size: 54px;font-weight: bold;">
+				<.}.>
 					<.
 					var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price + price.addons_price;
 					var final_total = total - price.promotion_price;

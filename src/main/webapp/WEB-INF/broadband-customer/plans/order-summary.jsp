@@ -452,5 +452,5 @@ var ctx = '${ctx}';
 var total_vprice = Number('${total_vprice}');
 var order_price = Number('${customerReg.customerOrder.order_total_price}');
 </script>
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js?ver=20141029548"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/order-summary.js?ver=2014114741"></script>
 <jsp:include page="../footer-end.jsp" />

@@ -38,15 +38,8 @@
 									</strong>
 									<button id="asPromotion" type="button" class="btn btn-xs btn-warning" data-container="body" data-toggle="popover" data-placement="right" data-content="This is your promotion number, if your friend when applying cyberpark broadband services to fill it, you can get a discount every month a certain amount each other."><span class="glyphicon glyphicon-question-sign"></span></button>
 								</li>
-								<c:choose>
-									<c:when test="${customerSession.customer_type == 'personal' }">
-										<li><strong class="text-info">${customerSession.first_name } ${customerSession.last_name }</strong></li>
-									</c:when>
-									<c:when test="${customerSession.customer_type == 'business' }">
-										<li><strong class="text-info">${customerSession.organization.org_name }</strong></li>
-									</c:when>
-								</c:choose>
-								
+								<li><strong class="text-info">${customerSession.first_name } ${customerSession.last_name }</strong></li>
+								<li><strong class="text-info">${customerSession.company_name }</strong></li>
 								<li><strong class="text-info"><a href="mailto:#">${customerSession.email }</a></strong></li>
 								<li><strong class="text-info">${customerSession.cellphone }</strong></li>
 								<li><strong class="text-info">${customerSession.address }</strong></li>

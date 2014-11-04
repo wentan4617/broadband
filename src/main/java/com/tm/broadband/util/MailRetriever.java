@@ -318,6 +318,15 @@ public class MailRetriever {
 		}
 	}
 	
+	public static void mailAtValueRetriever(Notification noti, Customer cus, CompanyDetail company){
+		if(cus!=null){
+			mailAtValueRetriever(noti,cus);
+		}
+		if(company!=null){
+			mailAtValueRetriever(noti,company);
+		}
+	}
+	
 	public static void mailAtValueRetriever(Notification noti, Customer cus, CustomerOrder order, CompanyDetail company){
 		if(cus!=null){
 			mailAtValueRetriever(noti,cus);

@@ -5,7 +5,35 @@
 		var order = orders[i];
 		var details = order.customerOrderDetails;
 .>
+		<.if (order.order_status == 'pending') {.>
+	<div class="panel panel-warning">
+		<.} else if (order.order_status == 'pending-warning'){.>
+	<div class="panel panel-warning">
+		<.} else if (order.order_status == 'paid'){.>
 	<div class="panel panel-success ">
+		<.} else if (order.order_status == 'ordering-pending'){.>
+	<div class="panel panel-success ">
+		<.} else if (order.order_status == 'ordering-paid'){.>
+	<div class="panel panel-success ">
+		<.} else if (order.order_status == 'rfs'){.>
+	<div class="panel panel-success ">
+		<.} else if (order.order_status == 'using'){.>
+	<div class="panel panel-success ">
+		<.} else if (order.order_status == 'overflow'){.>
+	<div class="panel panel-danger ">
+		<.} else if (order.order_status == 'suspension'){.>
+	<div class="panel panel-danger ">
+		<.} else if (order.order_status == 'waiting-for-disconnect'){.>
+	<div class="panel panel-danger ">
+		<.} else if (order.order_status == 'disconnected'){.>
+	<div class="panel panel-danger ">
+		<.} else if (order.order_status == 'upgrade'){.>
+	<div class="panel panel-default ">
+		<.} else if (order.order_status == 'change'){.>
+	<div class="panel panel-default ">
+		<.} else if (order.order_status == 'void'){.>
+	<div class="panel panel-default ">
+		<.}.>
 		<div class="panel-heading">
 			<h4 class="panel-title">
 				<a data-toggle="collapse" data-parent="#orders_accordion" href="#order-collapse<.=order.id.>">
