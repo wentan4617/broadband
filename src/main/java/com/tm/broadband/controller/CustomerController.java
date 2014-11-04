@@ -1150,14 +1150,15 @@ public class CustomerController {
 			customerReg.getCustomerOrder().setOrder_status("pending");
 			customerReg.setBalance(0d);
 		}
-			
+		
+		customerReg.setCompany_name(customerReg.getCustomerOrder().getOrg_name());
 		this.crmService.saveCustomerOrder(customerReg, customerReg.getCustomerOrder(), null);
 		
 		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customerReg);
 		
 		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
 		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
-		//MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		applicationEmail.setAddressee(customerReg.getEmail());
 		applicationEmail.setSubject(notification.getTitle());
@@ -1166,7 +1167,7 @@ public class CustomerController {
 		applicationEmail.setAttachPath(orderingPath);
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); 
-		//MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
+		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
 		this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent()); 
 		
 		Response responseBean = new Response();

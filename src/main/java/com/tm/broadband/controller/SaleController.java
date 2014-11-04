@@ -1272,9 +1272,11 @@ public class SaleController {
 	public String salePlansTopup(HttpSession session){
 		System.out.println("this is new customerRegSale, Topup");
 		Customer customerRegSale = new Customer();
+		customerRegSale.setNewOrder(false);
 		customerRegSale.setSelect_plan_group("plan-topup");
 		customerRegSale.setSelect_customer_type("personal");
 		customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");
+		customerRegSale.getCustomerOrder().setPromotion(false);
 		session.setAttribute("customerRegSale", customerRegSale);
 		return "redirect:/broadband-user/sale/plans/address-check";
 	}
@@ -1284,9 +1286,11 @@ public class SaleController {
 	public String salePlansPersonal(HttpSession session){
 		System.out.println("this is new customerRegSale, Personal");
 		Customer customerRegSale = new Customer();
+		customerRegSale.setNewOrder(false);
 		customerRegSale.setSelect_plan_group("");
 		customerRegSale.setSelect_customer_type("personal");
 		customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");
+		customerRegSale.getCustomerOrder().setPromotion(false);
 		session.setAttribute("customerRegSale", customerRegSale);
 		return "redirect:/broadband-user/sale/plans/address-check";
 	}
@@ -1296,9 +1300,11 @@ public class SaleController {
 	public String salePlansBusiness(HttpSession session){
 		System.out.println("this is new customerRegSale, Business");
 		Customer customerRegSale = new Customer();
+		customerRegSale.setNewOrder(false);
 		customerRegSale.setSelect_plan_group("");
 		customerRegSale.setSelect_customer_type("business");
 		customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");
+		customerRegSale.getCustomerOrder().setPromotion(false);
 		session.setAttribute("customerRegSale", customerRegSale);
 		return "redirect:/broadband-user/sale/plans/address-check";
 	}
@@ -1308,6 +1314,7 @@ public class SaleController {
 	public String salePlansPromotioniPadMini(HttpSession session){
 		System.out.println("this is new customerRegSale, promotion ipadmini");
 		Customer customerRegSale = new Customer();
+		customerRegSale.setNewOrder(false);
 		customerRegSale.setSelect_plan_group("");
 		customerRegSale.setSelect_customer_type("personal");
 		customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");
@@ -1323,6 +1330,7 @@ public class SaleController {
 	public String salePlansPromotionHD(HttpSession session){
 		System.out.println("this is new customerRegSale, promotion hd");
 		Customer customerRegSale = new Customer();
+		customerRegSale.setNewOrder(false);
 		customerRegSale.setSelect_plan_group("");
 		customerRegSale.setSelect_customer_type("personal");
 		customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");
@@ -1350,7 +1358,6 @@ public class SaleController {
 	}
 	
 	// clear address
-	
 	@RequestMapping("/broadband-user/sale/plans/address/clear") 
 	public String addressClear(HttpSession session) {
 		session.removeAttribute("customerRegSale");
@@ -1358,7 +1365,6 @@ public class SaleController {
 	}	
 	
 	// order
-	
 	@RequestMapping("/broadband-user/sale/plans/order") 
 	public String toOrderPlan(Model model, HttpSession session) {
 		
@@ -1404,125 +1410,105 @@ public class SaleController {
 	
 	
 	
-//	@RequestMapping(value = "/broadband-user/sale/plans/confirm/save", method = RequestMethod.POST)
-//	public String sale(Model model, 
-//			@RequestParam("card_type") String card_type,
-//			@RequestParam("holder_name") String holder_name,
-//			@RequestParam("card_number") String card_number,
-//			@RequestParam("security_code") String security_code,
-//			@RequestParam("expiry_month") String expiry_month,
-//			@RequestParam("expiry_year") String expiry_year,
-//			@RequestParam("optional_request") String optional_request,
-//			RedirectAttributes attr, HttpSession session) {
-//		
-//		User user = (User) session.getAttribute("userSession");
-//		Integer sale_id = 0;
-//		if("sales".equals(user.getUser_role()) || "agent".equals(user.getUser_role())){
-//			sale_id = user.getId();
-//		}
-//		
-//		Customer customer = (Customer)session.getAttribute("customerRegSale");
-//		
-//		customer.setPassword(TMUtils.generateRandomString(6));
-//		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
-//		customer.setUser_name(customer.getLogin_name());
-//		customer.setStatus("active");
-//		customer.getCustomerOrder().setOrder_status("pending");
-//		customer.getCustomerOrder().setSignature("unsigned");
-//		customer.getCustomerOrder().setSale_id(customer.getId());
-//		customer.getCustomerOrder().setSale_id(user.getId());
-//		customer.getCustomerOrder().setOptional_request(optional_request);
-//		
-//		this.crmService.registerCustomerCalling(customer);
-//		
-//		ApplicationPDFCreator appPDFCreator = new ApplicationPDFCreator();
-//		appPDFCreator.setCustomer(customer);
-//		appPDFCreator.setOrg(customer.getOrganization());
-//		appPDFCreator.setCustomerOrder(customer.getCustomerOrder());
-//		
-//		String applicationPDFPath = null;
-//		try {
-//			applicationPDFPath = appPDFCreator.create();
-//		} catch (DocumentException | IOException e) {
-//			e.printStackTrace();
-//		}
-//		CustomerOrder co = new CustomerOrder();
-//		co.getParams().put("id", customer.getCustomerOrder().getId());
-//		co.setOrder_pdf_path(applicationPDFPath);
-//		this.crmService.editCustomerOrder(co);
-//		
-//		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
-//		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
-//		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
-//		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail); // call mail at value retriever
-//		ApplicationEmail applicationEmail = new ApplicationEmail();
-//		applicationEmail.setAddressee(customer.getEmail());
-//		applicationEmail.setSubject(notification.getTitle());
-//		applicationEmail.setContent(notification.getContent());
-//		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
-//		applicationEmail.setAttachPath(orderingPath);
-//		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); // get sms register template from db
-//		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
-//		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent()); // send sms to customer's mobile phone
-//
-//		user = null;
-//		notification = null;
-//		applicationEmail = null;
-//		orderingPath = null;
-//		companyDetail = null;
-//		/*org = null;
-//		co = null;*/
-//		
-//		
-//		// BEGIN Credit Card
-//		
-//		if(!"".equals(holder_name) && !"".equals(card_number) && !"".equals(security_code)){
-//			CustomerCredit cc = new CustomerCredit();
-//			cc.setCard_type(card_type);
-//			cc.setHolder_name(holder_name);
-//			cc.setCard_number(card_number);
-//			cc.setSecurity_code(security_code);
-//			cc.setExpiry_date(
-//					"20"+expiry_year
-//					+"-"+expiry_month);
-//			co = null;
-//			co = new CustomerOrder();
-//			co.setId(customer.getCustomerOrder().getId());
-//			this.saleService.createCustomerCredit(cc);
-//
-//			// BEGIN CREDIT PDF
-//			CreditPDFCreator cPDFCreator = new CreditPDFCreator();
-//			Customer cQuery = new Customer();
-//			cQuery.getParams().put("id", customer.getId());
-//			cc.setCustomer(this.crmService.queryCustomer(cQuery));
-//			cPDFCreator.setCc(cc);
-//			cPDFCreator.setCo(co);
-//			cPDFCreator.setOrg(this.saleService.queryOrganizationByCustomerId(customer.getId()));
-//			String creditPDFPath = null;
-//			try {
-//				creditPDFPath = cPDFCreator.create();
-//			} catch (DocumentException | IOException e) {
-//				e.printStackTrace();
-//			}
-//			co.getParams().put("id", co.getId());
-//			co.setCredit_pdf_path(creditPDFPath);
-//			this.crmService.editCustomerOrder(co);
-//			cPDFCreator = null;
-//			creditPDFPath = null;
-//			// END CREDIT PDF
-//			
-//			
-//			// Recycle
-//			co = null;
-//		}
-//
-//		// BEGIN Credit Card
-//		
-//		session.removeAttribute("customerRegSale");
-//		
-//		return "redirect:/broadband-user/sale/online/ordering/view/by/"+sale_id;
-//	}
+	@RequestMapping(value = "/broadband-user/sale/plans/confirm/save", method = RequestMethod.POST)
+	public String sale(Model model, 
+			@RequestParam("card_type") String card_type
+			, @RequestParam("holder_name") String holder_name
+			, @RequestParam("card_number") String card_number
+			, @RequestParam("security_code") String security_code
+			, @RequestParam("expiry_month") String expiry_month
+			, @RequestParam("expiry_year") String expiry_year
+			, @RequestParam("optional_request") String optional_request
+			, RedirectAttributes attr, HttpSession session) {
+		
+		User user = (User) session.getAttribute("userSession");
+		Integer sale_id = 0;
+		if ("sales".equals(user.getUser_role()) || "agent".equals(user.getUser_role())) {
+			sale_id = user.getId();
+		}
+
+		Customer customer = (Customer) session.getAttribute("customerRegSale");
+
+		customer.setPassword(TMUtils.generateRandomString(6));
+		customer.setMd5_password(DigestUtils.md5Hex(customer.getPassword()));
+		customer.setUser_name(customer.getLogin_name());
+		customer.setStatus("active");
+		customer.getCustomerOrder().setOrder_status("pending");
+		customer.getCustomerOrder().setSignature("unsigned");
+		customer.getCustomerOrder().setSale_id(customer.getId());
+		customer.getCustomerOrder().setSale_id(user.getId());
+		customer.getCustomerOrder().setOptional_request(optional_request);
+
+		this.crmService.saveCustomerOrder(customer, customer.getCustomerOrder(), null);
+
+		ApplicationPDFCreator appPDFCreator = new ApplicationPDFCreator();
+		appPDFCreator.setCo(customer.getCustomerOrder());
+
+		String applicationPDFPath = null;
+		try {
+			applicationPDFPath = appPDFCreator.create();
+		} catch (DocumentException | IOException e) {
+			e.printStackTrace();
+		}
+		CustomerOrder co = new CustomerOrder();
+		co.getParams().put("id", customer.getCustomerOrder().getId());
+		co.setOrder_pdf_path(applicationPDFPath);
+		this.crmService.editCustomerOrder(co);
+
+		String orderingPath = this.crmService.createOrderingFormPDFByDetails(customer);
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
+		
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		applicationEmail.setAddressee(customer.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		applicationEmail.setAttachName("ordering_form_" + customer.getCustomerOrder().getId() + ".pdf");
+		applicationEmail.setAttachPath(orderingPath);
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		notification = this.systemService.queryNotificationBySort("personal".equals(customer.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms");
+		MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
+		this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+
+		// BEGIN Credit Card
+
+		if (!"".equals(holder_name) && !"".equals(card_number) && !"".equals(security_code)) {
+			CustomerCredit cc = new CustomerCredit();
+			cc.setCard_type(card_type);
+			cc.setHolder_name(holder_name);
+			cc.setCard_number(card_number);
+			cc.setSecurity_code(security_code);
+			cc.setExpiry_date("20" + expiry_year + "-" + expiry_month);
+			co = new CustomerOrder();
+			co.setId(customer.getCustomerOrder().getId());
+			this.saleService.createCustomerCredit(cc);
+
+			// BEGIN CREDIT PDF
+			CreditPDFCreator cPDFCreator = new CreditPDFCreator();
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", customer.getId());
+			cc.setCustomer(customer);//this.crmService.queryCustomer(cQuery)
+			cPDFCreator.setCc(cc);
+			cPDFCreator.setCo(customer.getCustomerOrder());
+			String creditPDFPath = null;
+			try {
+				creditPDFPath = cPDFCreator.create();
+			} catch (DocumentException | IOException e) {
+				e.printStackTrace();
+			}
+			co.getParams().put("id", co.getId());
+			co.setCredit_pdf_path(creditPDFPath);
+			this.crmService.editCustomerOrder(co);
+			// END CREDIT PDF
+		}
+
+		// BEGIN Credit Card
+
+		session.removeAttribute("customerRegSale");
+
+		return "redirect:/broadband-user/sale/online/ordering/view/by/" + sale_id;
+	}
 	
 	
 }

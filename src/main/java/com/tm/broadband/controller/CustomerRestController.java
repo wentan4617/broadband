@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.code.kaptcha.Constants;
+import com.tm.broadband.email.ApplicationEmail;
+import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
@@ -32,6 +35,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
 import com.tm.broadband.model.NetworkUsage;
+import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.Voucher;
@@ -45,9 +49,11 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.CheckScriptInjection;
+import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.ContactUsValidatedMark;
+import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
@@ -117,89 +123,89 @@ public class CustomerRestController {
 		return json;
 	}
 	
-//	@RequestMapping(value = "/forgotten-password", method = RequestMethod.POST)
-//	public JSONBean<Customer> forgottenPassword(
-//			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer, BindingResult result
-//			, HttpSession session) {
-//
-//		JSONBean<Customer> json = new JSONBean<Customer>();
-//		json.setModel(customer);
-//
-//		// If contains script> value then this is a script injection
-//		if (CheckScriptInjection.isScriptInjection(customer)) {
-//			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
-//			return json;
-//		}
-//
-//		// if verification does not matched!
-//		if (!customer.getCode().equalsIgnoreCase(
-//				session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
-//			json.getErrorMap().put("code", "verification code does not matched!");
-//			return json;
-//		}
-//
-//		if (result.hasErrors()) {
-//			json.setJSONErrorMap(result);
-//			return json;
-//		}
-//
-//		if ("email".equals(customer.getType())) {
-//
-//			customer.getParams().put("where", "query_forgotten_password_email");
-//			customer.getParams().put("email", customer.getLogin_name());
-//			customer.getParams().put("status", "active");
-//
-//		} else if ("cellphone".equals(customer.getType())) {
-//
-//			customer.getParams().put("where", "query_forgotten_password_cellphone");
-//			customer.getParams().put("cellphone", customer.getLogin_name());
-//			customer.getParams().put("status", "active");
-//
-//		}
-//
-//		Customer customerResult = this.customerService.queryCustomer(customer);
-//
-//		if (customerResult == null) {
-//
-//			json.getErrorMap().put("alert-error", "email".equals(customer.getType()) ? "The email address you've just given isn't existed!"
-//									: "The mobile number you've just given isn't existed!");
-//
-//		} else {
-//
-//			Customer cUpdate = new Customer();
-//			cUpdate.setPassword(TMUtils.generateRandomString(6));
-//			cUpdate.setMd5_password(DigestUtils.md5Hex(cUpdate.getPassword()));
-//			cUpdate.getParams().put("id", customerResult.getId());
-//			this.customerService.editCustomer(cUpdate);
-//			
-//			customerResult.setPassword(cUpdate.getPassword());
-//
-//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-//
-//			String msg = "";
-//
-//			if ("email".equals(customer.getType())) {
-//				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
-//				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
-//				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail); // call mail at value retriever
-//				ApplicationEmail applicationEmail = new ApplicationEmail();
-//				applicationEmail.setAddressee(customerResult.getEmail());
-//				applicationEmail.setSubject(notification.getTitle());
-//				applicationEmail.setContent(notification.getContent());
-//				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//			} else if ("cellphone".equals(customer.getType())) {
-//				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
-//				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "sms");											
-//				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail);
-//				this.smserService.sendSMSByAsynchronousMode(customerResult.getCellphone(), notification.getContent());
-//			}
-//
-//			json.getSuccessMap().put("alert-success", msg);
-//
-//		}
-//
-//		return json;
-//	}
+	@RequestMapping(value = "/forgotten-password", method = RequestMethod.POST)
+	public JSONBean<Customer> forgottenPassword(
+			@Validated(CustomerForgottenPasswordValidatedMark.class) Customer customer, BindingResult result
+			, HttpSession session) {
+
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		json.setModel(customer);
+
+		// If contains script> value then this is a script injection
+		if (CheckScriptInjection.isScriptInjection(customer)) {
+			json.getErrorMap().put("alert-error", "Malicious actions are not allowed!");
+			return json;
+		}
+
+		// if verification does not matched!
+		if (!customer.getCode().equalsIgnoreCase(
+				session.getAttribute(Constants.KAPTCHA_SESSION_KEY).toString().trim())) {
+			json.getErrorMap().put("code", "verification code does not matched!");
+			return json;
+		}
+
+		if (result.hasErrors()) {
+			json.setJSONErrorMap(result);
+			return json;
+		}
+
+		if ("email".equals(customer.getType())) {
+
+			customer.getParams().put("where", "query_forgotten_password_email");
+			customer.getParams().put("email", customer.getLogin_name());
+			customer.getParams().put("status", "active");
+
+		} else if ("cellphone".equals(customer.getType())) {
+
+			customer.getParams().put("where", "query_forgotten_password_cellphone");
+			customer.getParams().put("cellphone", customer.getLogin_name());
+			customer.getParams().put("status", "active");
+
+		}
+
+		Customer customerResult = this.customerService.queryCustomer(customer);
+
+		if (customerResult == null) {
+
+			json.getErrorMap().put("alert-error", "email".equals(customer.getType()) ? "The email address you've just given isn't existed!"
+									: "The mobile number you've just given isn't existed!");
+
+		} else {
+
+			Customer cUpdate = new Customer();
+			cUpdate.setPassword(TMUtils.generateRandomString(6));
+			cUpdate.setMd5_password(DigestUtils.md5Hex(cUpdate.getPassword()));
+			cUpdate.getParams().put("id", customerResult.getId());
+			this.customerService.editCustomer(cUpdate);
+			
+			customerResult.setPassword(cUpdate.getPassword());
+
+			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+
+			String msg = "";
+
+			if ("email".equals(customer.getType())) {
+				msg = "We’ve sent an email to your email address containing a random login password. Please check your spam folder if the email doesn’t appear within a few minutes.";
+				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "email");
+				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail); // call mail at value retriever
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				applicationEmail.setAddressee(customerResult.getEmail());
+				applicationEmail.setSubject(notification.getTitle());
+				applicationEmail.setContent(notification.getContent());
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+			} else if ("cellphone".equals(customer.getType())) {
+				msg = "We’ve sent an message to your cellphone containing a random login password. Please check your spam folder if the message doesn’t appear within a few minutes.";
+				Notification notification = this.systemService.queryNotificationBySort("forgotten-password", "sms");											
+				MailRetriever.mailAtValueRetriever(notification, customerResult, companyDetail);
+				this.smserService.sendSMSByAsynchronousMode(customerResult.getCellphone(), notification.getContent());
+			}
+
+			json.getSuccessMap().put("alert-success", msg);
+
+		}
+
+		return json;
+	}
 	
 	@RequestMapping(value = "/contact-us", method = RequestMethod.POST)
 	public JSONBean<ContactUs> doContactUs(Model model,
@@ -836,44 +842,7 @@ public class CustomerRestController {
 	// END Account Credit
 
 	
-	
-	/**
-	 * CustomerBilling
-	 */
 
-//	@RequestMapping(value = "/customer/billing/{pageNo}")
-//	public JSONBean<CustomerBillingSet> customerBilling(
-//			@PathVariable(value = "pageNo") int pageNo,
-//			HttpServletRequest request) {
-//		
-//		JSONBean<CustomerBillingSet> json = new JSONBean<CustomerBillingSet>();
-//		
-//		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
-//		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
-//		invoicePage.setPageNo(pageNo);
-//		invoicePage.setPageSize(30);
-//		invoicePage.getParams().put("orderby", "order by create_date desc");
-//		invoicePage.getParams().put("customer_id", customer.getId());
-//		this.crmService.queryCustomerInvoicesByPage(invoicePage);
-//		
-//		if("business".equals(customer.getCustomer_type())){
-//			
-//		}
-//		
-////		Page<CustomerInvoice> ciUnpaidQuery = new Page<CustomerInvoice>();
-////		ciUnpaidQuery.getParams().put("customer_id", customer.getId());
-////		ciUnpaidQuery.getParams().put("where", "by_all_not_pay_off_invoice");
-//		
-//		CustomerBillingSet cbs = new CustomerBillingSet();
-//		cbs.setCos(customer.getCustomerOrders());
-//		cbs.setCts(this.crmService.queryCustomerTransactionsByCustomerId(customer.getId()));
-////		cbs.setNotPayOffInvoices(this.crmService.queryCustomerInvoicesSumByPage(ciUnpaidQuery));
-//		cbs.setPage(invoicePage);
-//		
-//		json.setModel(cbs);
-//		
-//		return json;
-//	}
 	
 
 	

@@ -7,13 +7,11 @@
 <jsp:include page="../header.jsp" />
 
 <style>
-.tab-content {
-	border-top-color:transparent;
-}
-</style>
-<style>
 #navhead {
 	margin-bottom:0;
+}
+.tab-content {
+	border-top-color:transparent;
 }
 </style>
 

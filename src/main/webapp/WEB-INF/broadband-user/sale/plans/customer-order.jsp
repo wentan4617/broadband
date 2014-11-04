@@ -55,28 +55,35 @@ data-select_plan_id="${customerRegSale.select_plan_id}"
 data-select_plan_type="${customerRegSale.select_plan_type }"
 data-select_customer_type="${customerRegSale.select_customer_type }"
 data-sale-id="${customerRegSale.customerOrder.sale_id }"
-data-promotion="${customerRegSale.customerOrder.promotion }">
+data-promotion="${customerRegSale.customerOrder.promotion }"
+data-neworder="${customerRegSale.newOrder }">
 <jsp:include page="select-plan.html" />
 </script>
+
 <script type="text/html" id="promotion_code_tmpl">
 <jsp:include page="promotion_code.html" />
 </script>
+
 <script type="text/html" id="open_term_tmpl"
 data-contract="${customerRegSale.customerOrder.contract }">
 <jsp:include page="open-term.html" />
 </script>
+
 <script type="text/html" id="prepay_month_tmpl"
 data-prepay_months="${customerRegSale.customerOrder.prepay_months }">
 <jsp:include page="prepay-month.html" />
 </script>
+
 <script type="text/html" id="select_modem_tmpl"
 data-hardware_id_selected="${customerRegSale.customerOrder.hardware_id_selected }">
 <jsp:include page="select-modem.html" />
 </script>
+
 <script type="text/html" id="broadband_options_tmpl"
 data-order_broadband_type="${customerRegSale.customerOrder.order_broadband_type }">
 <jsp:include page="broadband-options.html" />
 </script>
+
 <script type="text/html" id="application_tmpl" 
 data-cellphone="${customerRegSale.cellphone }"
 data-email="${customerRegSale.email }"
@@ -90,28 +97,23 @@ data-transition_provider_name="${customerRegSale.customerOrder.transition_provid
 data-transition_account_holder_name="${customerRegSale.customerOrder.transition_account_holder_name }"
 data-transition_account_number="${customerRegSale.customerOrder.transition_account_number }"
 data-transition_porting_number="${customerRegSale.customerOrder.transition_porting_number }"
-data-org_type="${customerRegSale.organization.org_type }"
-data-org_name="${customerRegSale.organization.org_name }"
-data-org_trading_name="${customerRegSale.organization.org_trading_name }"
-data-org_register_no="${customerRegSale.organization.org_register_no }"
-data-org_incoporate_date="${customerRegSale.organization.org_incoporate_date }"
-data-holder_name="${customerRegSale.organization.holder_name }"
-data-holder_job_title="${customerRegSale.organization.holder_job_title }"
-data-holder_phone="${customerRegSale.organization.holder_phone }"
-data-holder_email="${customerRegSale.organization.holder_email }">
+data-org_type="${customerRegSale.customerOrder.org_type }"
+data-org_name="${customerRegSale.customerOrder.org_name }"
+data-org_trading_name="${customerRegSale.customerOrder.org_trading_name }"
+data-org_register_no="${customerRegSale.customerOrder.org_register_no }"
+data-org_incoporate_date="${customerRegSale.customerOrder.org_incoporate_date_str }"
+data-holder_name="${customerRegSale.customerOrder.holder_name }"
+data-holder_job_title="${customerRegSale.customerOrder.holder_job_title }"
+data-holder_phone="${customerRegSale.customerOrder.holder_phone }"
+data-holder_email="${customerRegSale.customerOrder.holder_email }">
 <jsp:include page="application.html" />
 </script>
+
 <script type="text/html" id="order_modal_tmpl" data-customer-address="${customerRegSale.address }">
 <jsp:include page="order-modal.html" />
 </script>
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/spin.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/ladda.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/customer-order.js?ver=20141091156"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-user/sale/plans/customer-order.js?ver=2014114726"></script>
 <jsp:include page="../../footer-end.jsp" />

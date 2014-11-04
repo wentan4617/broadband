@@ -46,8 +46,10 @@ public class BroadbandRestController {
 		if (customerRegSale == null) {
 			System.out.println("this is new customerRegSale, 1");
 			customerRegSale = new Customer();
+			customerRegSale.setNewOrder(false);
 			customerRegSale.setSelect_customer_type("personal");
 			customerRegSale.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customerRegSale.getCustomerOrder().setPromotion(false);
 			session.setAttribute("customerRegSale", customerRegSale);
 			return returnBroadband(address, customerRegSale);
 		} else {
@@ -65,8 +67,10 @@ public class BroadbandRestController {
 		if (customerRegAdmin == null) {
 			System.out.println("this is new customerRegAdmin, 1");
 			customerRegAdmin = new Customer();
+			customerRegAdmin.setNewOrder(false);
 			customerRegAdmin.setSelect_customer_type("personal");
 			customerRegAdmin.getCustomerOrder().setOrder_broadband_type("transition");//new-connection
+			customerRegAdmin.getCustomerOrder().setPromotion(false);
 			session.setAttribute("customerRegAdmin", customerRegAdmin);
 			return returnBroadband(address, customerRegAdmin);
 		} else {
