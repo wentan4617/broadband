@@ -53,9 +53,9 @@
 						</a>
 						<ul class="dropdown-menu">
 							<li>
-								<a href="${ctx}/broadband-user/crm/customer/view">
+								<a href="${ctx}/broadband-user/crm/customer/order/view">
 									<span class="glyphicon glyphicon-list" style="padding-right:10px;"></span>
-									View Customer
+									View Customer Order
 								</a>
 							</li>
 							<li>

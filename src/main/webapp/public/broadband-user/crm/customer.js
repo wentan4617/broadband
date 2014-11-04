@@ -276,6 +276,7 @@
 						$.jsonValidation(json, 'right');
 					}, "json");
 				});
+				
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#payOffOrderModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
@@ -295,8 +296,7 @@
 				$('a[data-name="generateOrderReceiptModalBtn_'+co[i].id+'"]').click(function(){
 
 					var data = {
-						'id':this.id
-						,'customerId':customerId
+						'order_id':this.id
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/generate/receipt', data, function(json){
 						$.jsonValidation(json, 'right');
@@ -405,7 +405,7 @@
 					var generateType = $(this).attr('data-type');
 					var orderType = $(this).attr('data-order-type');
 					var data = {
-						'id':this.id
+						'order_id':this.id
 						,'generateType':generateType
 					};
 					
@@ -461,7 +461,7 @@
 				// Submit to rest controller
 				$('a[data-name="earlyTerminationChargeModalBtn_'+co[i].id+'"]').click(function(){
 					var data = {
-						'id':this.id,
+						'order_id':this.id,
 						'terminatedDate':$('input[data-name="early_terminated_charge_date_'+this.id+'"]').val()
 					};
 					
@@ -486,7 +486,7 @@
 				// Submit to rest controller
 				$('a[data-name="terminationRefundModalBtn_'+co[i].id+'"]').click(function(){
 					var data = {
-						'id':this.id,
+						'order_id':this.id,
 						'terminatedDate':$('input[data-name="terminated_refund_date_'+this.id+'"]').val(),
 						'monthlyCharge':$('input[data-name="terminated_refund_monthly_charge_'+this.id+'"]').val(),
 						'accountNo':$('input[data-name="terminated_refund_bank_account_no_'+this.id+'"]').val(),
@@ -526,7 +526,7 @@
 					var oldOrderStatus = $('#'+this.id+'_order_status');
 					var disconnected_input = $('input[data-name="'+this.id+'_order_disconnected_input_picker"]').val();
 					var data = {
-							'id':this.id
+							'order_id':this.id
 							,'order_status':orderStatus.val()
 							,'old_order_status':oldOrderStatus.val()
 							,'disconnected_date_str':disconnected_input
@@ -552,7 +552,7 @@
 				$('a[data-name="editOrderTypeModalBtn_'+co[i].id+'"]').click(function(){
 					var orderType = $('select[data-name="'+this.id+'_order_type_selector"]');
 					var data = {
-							'id':this.id
+							'order_id':this.id
 							,'order_type':orderType.val()
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/type/edit', data, function(json){
@@ -608,20 +608,20 @@
 					if(date_type=='service-giving' || date_type=='next-invoice-create'){
 						url = ctx+'/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty';
 						data = {
-								'id':this.id
+								'order_id':this.id
 								,'date_type':date_type
 						};
 					}
 					if(date_type=='svcvlan'){
 						url = ctx+'/broadband-user/crm/customer/order/svcvlan-rfsdate/empty';
 						data = {
-								'id':this.id
+								'order_id':this.id
 						};
 					}
 					if(date_type=='broadband_asid'){
 						url = ctx+'/broadband-user/crm/customer/order/broadband_asid/empty';
 						data = {
-								'id':this.id
+								'order_id':this.id
 						};
 					}
 					$.post(url, data, function(json){
@@ -2143,8 +2143,6 @@
 					$.post(ctx+'/broadband-user/crm/customer/invoice/paid_amount/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					});
-					
-					console.log(data);
 					
 				});
 				

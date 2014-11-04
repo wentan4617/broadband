@@ -58,9 +58,7 @@ import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
-import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
@@ -792,7 +790,7 @@ public class CRMRestController {
 	// Update order status
 	@RequestMapping(value = "/broadband-user/crm/customer/order/status/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerOrderStatusEdit(Model model,
-			@RequestParam("id") Integer id,
+			@RequestParam("order_id") Integer order_id,
 			@RequestParam("order_status") String order_status,
 			@RequestParam("old_order_status") String old_order_status,
 			@RequestParam("disconnected_date_str") String disconnected_date_str,
@@ -805,7 +803,7 @@ public class CRMRestController {
 		pl.setUser_id(user.getId());
 		pl.setProcess_datetime(new Date());
 		pl.setOrder_sort("customer-order");
-		pl.setOrder_id_customer(id);
+		pl.setOrder_id_customer(order_id);
 		pl.setProcess_way(old_order_status+" to "+order_status);
 		
 		CustomerOrder co = new CustomerOrder();
@@ -813,7 +811,7 @@ public class CRMRestController {
 		if(!"".equals(disconnected_date_str.trim())){
 			co.setDisconnected_date(TMUtils.parseDateYYYYMMDD(disconnected_date_str));
 		}
-		co.getParams().put("id", id);
+		co.getParams().put("id", order_id);
 		
 		this.crmService.editCustomerOrder(co, pl);
 		json.setModel(co);
@@ -826,19 +824,19 @@ public class CRMRestController {
 	// Update order type
 	@RequestMapping(value = "/broadband-user/crm/customer/order/type/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerOrderTypeEdit(Model model,
-			@RequestParam("id") Integer id,
+			@RequestParam("order_id") Integer order_id,
 			@RequestParam("order_type") String order_type,
 			HttpServletRequest req) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
-		CustomerOrder co = new CustomerOrder();
-		co.setOrder_type(order_type);
-		co.getParams().put("id", id);
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.setOrder_type(order_type);
+		coUpdate.getParams().put("id", order_id);
 		
-		this.crmService.editCustomerOrder(co);
+		this.crmService.editCustomerOrder(coUpdate);
 		
-		json.setModel(co);
+		json.setModel(coUpdate);
 
 		json.getSuccessMap().put("alert-success", "Order Type Changed!");
 
@@ -848,12 +846,12 @@ public class CRMRestController {
 	// Empty svcvlan, rfs date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/svcvlan-rfsdate/empty", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerSVCVLanRFSDateEmpty(Model model,
-			@RequestParam("id") Integer id) {
+			@RequestParam("order_id") Integer order_id) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
 		CustomerOrder coUpdate = new CustomerOrder();
-		coUpdate.getParams().put("id", id);
+		coUpdate.getParams().put("id", order_id);
 		
 		this.crmService.editCustomerOrderSVCVLanRFSDateEmpty(coUpdate);
 		
@@ -865,22 +863,22 @@ public class CRMRestController {
 	// Empty service giving or next invoice create date
 	@RequestMapping(value = "/broadband-user/crm/customer/order/service-giving-next-invoice-create/empty", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerServiceGivingNextInvoiceEmpty(Model model,
-			@RequestParam("id") Integer id,
+			@RequestParam("order_id") Integer order_id,
 			@RequestParam("date_type") String date_type) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
-		CustomerOrder co = new CustomerOrder();
+		CustomerOrder coUpdate = new CustomerOrder();
 		if("service-giving".equals(date_type)){
-			co.setOrder_using_start(new Date());
+			coUpdate.setOrder_using_start(new Date());
 		} else {
-			co.setNext_invoice_create_date(new Date());
+			coUpdate.setNext_invoice_create_date(new Date());
 		}
-		co.getParams().put("id", id);
+		coUpdate.getParams().put("id", order_id);
 		
-		this.crmService.editCustomerOrderServiceGivingNextInvoiceEmpty(co);
+		this.crmService.editCustomerOrderServiceGivingNextInvoiceEmpty(coUpdate);
 		
-		json.setModel(co);
+		json.setModel(coUpdate);
 
 		json.getSuccessMap().put("alert-success", "Empty Order "+date_type+" successfully!");
 
@@ -890,12 +888,12 @@ public class CRMRestController {
 	// Empty broadband asid
 	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/empty", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerBroadbandASIDEmpty(Model model,
-			@RequestParam("id") Integer id) {
+			@RequestParam("order_id") Integer order_id) {
 		
 		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
 		
 		CustomerOrder coUpdate = new CustomerOrder();
-		coUpdate.getParams().put("id", id);
+		coUpdate.getParams().put("id", order_id);
 		
 		this.crmService.editCustomerOrderBroadbandASIDEmpty(coUpdate);
 		
@@ -2103,30 +2101,31 @@ public class CRMRestController {
 	// termed manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/termed/manually-generate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateTermedOrderInvoice(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("id", id);
+		coQuery.getParams().put("id", order_id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 		
 		try {
-			Map<String, Object> resultMap = this.crmService.createTermPlanInvoiceByOrder(coQuery
+//			Map<String, Object> resultMap = 
+					this.crmService.createTermPlanInvoiceByOrder(coQuery
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
 			
-			Customer c = (Customer) resultMap.get("customer");
-			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+//			Customer c = (Customer) resultMap.get("customer");
+//			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
 			
-			if(ci.getFinal_payable_amount()>0){
-				System.out.println("============================== TERMED INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
-				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
-			}
+//			if(ci.getFinal_payable_amount()>0){
+//				System.out.println("============================== TERMED INVOICE ON THE WAY 2 XERO ==============================");
+//				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
+//				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
+//			}
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
@@ -2139,33 +2138,34 @@ public class CRMRestController {
 	// no term manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/no-term/manually-generate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateNoTermOrderInvoice(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("id", id);
+		coQuery.getParams().put("id", order_id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			Map<String, Object> resultMap = this.crmService.createInvoicePDFBoth(coQuery, notificationEmail,
+//			Map<String, Object> resultMap = 
+					this.crmService.createInvoicePDFBoth(coQuery, notificationEmail,
 					notificationSMS,
 					isRegenerateInvoice ? false : true,
 					isRegenerateInvoice);
 			
-			Customer c = (Customer) resultMap.get("customer");
-			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+//			Customer c = (Customer) resultMap.get("customer");
+//			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
 
-			if(ci.getFinal_payable_amount()>0){
-				System.out.println("============================== NON-TERMED INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
-				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
-			}
+//			if(ci.getFinal_payable_amount()>0){
+//				System.out.println("============================== NON-TERMED INVOICE ON THE WAY 2 XERO ==============================");
+//				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
+//				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
+//			}
 			
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
@@ -2179,34 +2179,35 @@ public class CRMRestController {
 	// termed manually-generate
 	@RequestMapping(value = "/broadband-user/crm/customer/order/invoice/topup/manually-generate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateTopupOrderInvoice(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
 			HttpServletRequest request) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("id", id);
+		coQuery.getParams().put("id", order_id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-			Map<String, Object> resultMap = this.crmService.createTopupPlanInvoiceByOrder(coQuery
+//			Map<String, Object> resultMap = 
+					this.crmService.createTopupPlanInvoiceByOrder(coQuery
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
 			
-			Customer c = (Customer) resultMap.get("customer");
-			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+//			Customer c = (Customer) resultMap.get("customer");
+//			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
 
-			if(ci.getFinal_payable_amount()>0){
-				System.out.println("============================== TOPUP INVOICE ON THE WAY 2 XERO ==============================");
-				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
-				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
-			}
+//			if(ci.getFinal_payable_amount()>0){
+//				System.out.println("============================== TOPUP INVOICE ON THE WAY 2 XERO ==============================");
+//				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
+//				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
+//			}
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {
@@ -2219,7 +2220,7 @@ public class CRMRestController {
 	// EarlyTerminationCharge Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/early-termination-charge/invoice/generate", method = RequestMethod.POST)
 	public JSONBean<String> doEarlyTerminationChargeInvoice(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("terminatedDate") String terminatedDate,
 			HttpServletRequest req) {
 
@@ -2229,16 +2230,10 @@ public class CRMRestController {
 
 		try {
 			if (TMUtils.isDateFormat(terminatedDate, "-")) {
-				this.crmService
-						.createEarlyTerminationInvoice(id,
-								TMUtils.parseDateYYYYMMDD(terminatedDate),
-								user.getId());
-				json.getSuccessMap()
-						.put("alert-success",
-								"Early termination charge invoice had just been generated!");
+				this.crmService.createEarlyTerminationInvoice(order_id, TMUtils.parseDateYYYYMMDD(terminatedDate), user.getId());
+				json.getSuccessMap().put("alert-success", "Early termination charge invoice had just been generated!");
 			} else {
-				json.getErrorMap().put("alert-error",
-						"Terminated Date Format Incorrect!");
+				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -2250,7 +2245,7 @@ public class CRMRestController {
 	// TerminationRefund Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/termination-credit/invoice/generate", method = RequestMethod.POST)
 	public JSONBean<String> doTerminationRefundInvoice(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("terminatedDate") String terminatedDate,
 			@RequestParam("productName") String productName,
 			@RequestParam("monthlyCharge") Double monthlyCharge,
@@ -2265,7 +2260,7 @@ public class CRMRestController {
 		try {
 
 			if (TMUtils.isDateFormat(terminatedDate, "-")) {
-				this.crmService.createTerminationRefundInvoice(id,
+				this.crmService.createTerminationRefundInvoice(order_id,
 						TMUtils.parseDateYYYYMMDD(terminatedDate), user,
 						accountNo, accountName, monthlyCharge, productName);
 				json.getSuccessMap().put("alert-success",
@@ -2491,7 +2486,6 @@ public class CRMRestController {
 		Customer cQuery = new Customer();
 		cQuery.getParams().put("id", customer_id);
 		Customer c = this.crmService.queryCustomer(cQuery);
-		c.setCustomerOrder(c.getCustomerOrders().get(0));
 		
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", order_id);
@@ -3006,17 +3000,17 @@ public class CRMRestController {
 	// Regenerate Ordering Form
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ordering-form/pdf/regenerate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateOrderingForm(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("id", id);
+		coQuery.getParams().put("id", order_id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		
 		CustomerOrderDetail codQuery = new CustomerOrderDetail();
-		codQuery.getParams().put("order_id", id);
+		codQuery.getParams().put("order_id", order_id);
 		List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetails(codQuery);
 		coQuery.setCustomerOrderDetails(cods);
 		
@@ -3033,17 +3027,17 @@ public class CRMRestController {
 	// Regenerate Receipt
 	@RequestMapping(value = "/broadband-user/crm/customer/order/receipt/pdf/regenerate", method = RequestMethod.POST)
 	public JSONBean<String> doManuallyGenerateReceipt(Model model,
-			@RequestParam("id") int id,
+			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("id", id);
+		coQuery.getParams().put("id", order_id);
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
 		
 		CustomerOrderDetail codQuery = new CustomerOrderDetail();
-		codQuery.getParams().put("order_id", id);
+		codQuery.getParams().put("order_id", order_id);
 		List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetails(codQuery);
 		coQuery.setCustomerOrderDetails(cods);
 		

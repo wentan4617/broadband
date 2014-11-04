@@ -109,10 +109,11 @@ public class InvoicePDFCreator extends ITextUtils {
         	// BEGIN TotalPayableAmount
         	Double detailPrice = cid.getInvoice_detail_price();
         	Integer detailUnit = cid.getInvoice_detail_unit();
+	
         	totalPayableAmount = detailPrice!=null && detailUnit!=null ? TMUtils.bigAdd(totalPayableAmount, TMUtils.bigMultiply(detailPrice, detailUnit)) :
-	        					  detailPrice!=null && detailUnit==null ? TMUtils.bigAdd(totalPayableAmount, detailPrice) : TMUtils.bigAdd(totalPayableAmount, 0d);
+			  detailPrice!=null && detailUnit==null ? TMUtils.bigAdd(totalPayableAmount, detailPrice) : TMUtils.bigAdd(totalPayableAmount, 0d);
+	
         	// END TotalPayableAmount
-
         	Double detailDiscount = cid.getInvoice_detail_discount();
         	// BEGIN TotalCreditBack
         	totalCreditBack = detailDiscount!=null ? TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(detailDiscount, detailUnit)) : TMUtils.bigAdd(totalCreditBack, 0d);
@@ -468,21 +469,32 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(invoiceSummaryTable, 30F, colspan);
         
         // INVOICE SUMMARY SEPARATOR ROW
-    	addEmptyCol(invoiceSummaryTable, 7);
+    	addCol(invoiceSummaryTable, "Previous").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "").o();
+    	addCol(invoiceSummaryTable, "Current").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "").o();
+    	addCol(invoiceSummaryTable, "Paid").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "").o();
+    	addCol(invoiceSummaryTable, "Credit    ↓").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, " ").border("b", 1F).o();
         addEmptyCol(invoiceSummaryTable, 2F, colspan);
 
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
         boolean isFirst = this.getLastCustomerInvoice()==null;
 		currentFinalPayable = totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance;
-    	if("business".equals(this.getCo().getCustomer_type())){
-    		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
-        	addCol(invoiceSummaryTable, isFirst ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(3).indent(10F).font(ITextFont.arial_normal_8).o();
-        	addCol(invoiceSummaryTable, isFirst ? "" : "Previous: $"+TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))+"    +    Current: $"+TMUtils.fillDecimalPeriod(String.valueOf(currentFinalPayable))+"      =").colspan(4).font(ITextFont.arial_bold_10).alignH("r").o();
-    	} else {
-        	addCol(invoiceSummaryTable, isFirst ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(7).indent(10F).font(ITextFont.arial_normal_8).o();
-    	}
+		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
+		
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "+").alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "-").alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "-").alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalCreditBack))+"  =").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigAdd(previousBalance, currentFinalPayable)))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+
+        addEmptyCol(invoiceSummaryTable, 4F, colspan);
+    	addCol(invoiceSummaryTable, isFirst || TMUtils.bigAdd(previousBalance, currentFinalPayable) <= 0 ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(8).indent(10F).font(ITextFont.arial_normal_8).alignH("r").o();
         
         return invoiceSummaryTable;
 	}
