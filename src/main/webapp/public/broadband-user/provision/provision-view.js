@@ -131,7 +131,7 @@
 		$.get(ctx + '/broadband-user/provision/order/' + order_id, function(order) {
 			
 			order.user_role = user_role;
-			$('#customer-information-tmpl').html(tmpl('customer_information_tmpl', order.customer));
+			$('#customer-information-tmpl').html(tmpl('customer_information_tmpl', order));
 			$('#customer-order-tmpl').html(tmpl('customer_order_tmpl', order));
 			$('#customer-order-detail-tmpl').html(tmpl('customer_order_detail_tmpl', order));
 
