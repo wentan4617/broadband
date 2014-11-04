@@ -3524,10 +3524,10 @@ public class CRMService {
 		
 		InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 		invoicePDF.setCompanyDetail(cd);
-		invoicePDF.setCo(co);
+		invoicePDF.setCo(coQuery);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 
-		ci.setAmount_payable("personal".toUpperCase().equals(co.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
+		ci.setAmount_payable("personal".toUpperCase().equals(coQuery.getCustomer_type().toUpperCase()) ? totalAmountPayable : TMUtils.bigMultiply(totalAmountPayable, 1.15));
 		ci.setFinal_payable_amount(TMUtils.bigSub(ci.getAmount_payable(), totalCreditBack));
 		Double amount_paid = c.getBalance()>=ci.getFinal_payable_amount() ? ci.getFinal_payable_amount() : ci.getAmount_paid() == null ? 0d : ci.getAmount_paid();
 		ci.setAmount_paid(amount_paid<=0 ? 0 : amount_paid);

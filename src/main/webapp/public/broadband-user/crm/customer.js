@@ -854,7 +854,6 @@
 					}
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/basic_contact/edit', data, function(json){
-						console.log(json);
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});
@@ -929,21 +928,14 @@
 							,'rfs_date_str':rfs_date_input
 							,'way':$(this).attr('data-way')
 					};
-					var cvlan = $('#'+this.id+'_cvlan');
-					var svlan = $('#'+this.id+'_svlan');
-					var rfs_date = $('#'+this.id+'_rfs_date');
 					$.post(ctx+'/broadband-user/crm/customer/order/save/svcvlanrfsdate', data, function(json){
-						if(!$.jsonValidation(json, 'left')){
-							cvlan.html(cvlan_input);
-							svlan.html(svlan_input);
-							rfs_date.html(rfs_date_input);
-							$.getCustomerOrder();
-						}
+						$.jsonValidation(json, 'left')
 					}, "json");
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveSVCVLanRFSDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_svcvlan_save"]').button('reset');
+					$.getCustomerOrder();
 				});
 				/*
 				 *	END customer order SV/CVLan & RFS Date area

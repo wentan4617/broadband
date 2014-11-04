@@ -200,6 +200,7 @@ public class MailRetriever {
 		if(noti.getTitle() != null){
 			noti.setTitle(noti.getTitle().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
+			noti.setTitle(noti.getTitle().replaceAll("@<order_in_service_date_str>", String.valueOf(preventNull(order.getOrder_using_start()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_using_start()) : order.getOrder_using_start_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setTitle(noti.getTitle().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 			if(order.getCustomer_type().equals("personal")){
@@ -218,6 +219,7 @@ public class MailRetriever {
 		if(noti.getContent() != null){
 			noti.setContent(noti.getContent().replaceAll("@<order_id>", String.valueOf(preventNull(order.getId()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_due_date_str>", String.valueOf(preventNull(order.getOrder_due()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_due()) : order.getOrder_due_str()))));
+			noti.setContent(noti.getContent().replaceAll("@<order_in_service_date_str>", String.valueOf(preventNull(order.getOrder_using_start()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getOrder_using_start()) : order.getOrder_using_start_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_rfs_date_str>", String.valueOf(preventNull(order.getRfs_date()!=null ? TMUtils.retrieveMonthAbbrWithDate(order.getRfs_date()) : order.getRfs_date_str()))));
 			noti.setContent(noti.getContent().replaceAll("@<order_total_price>", String.valueOf(TMUtils.fillDecimalPeriod(preventNull(order.getOrder_total_price())))));
 			if(order.getCustomer_type().equals("personal")){

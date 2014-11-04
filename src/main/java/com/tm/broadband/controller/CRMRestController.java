@@ -1009,7 +1009,7 @@ public class CRMRestController {
 			co.setHolder_job_title(customerOrder.getHolder_job_title());
 		} else if("holder-phone".equals(basic_type)){
 			co.setHolder_phone(customerOrder.getHolder_phone());
-		} else if("holder_email".equals(basic_type)){
+		} else if("holder-email".equals(basic_type)){
 			co.setHolder_email(customerOrder.getHolder_email());
 		}
 		co.getParams().put("id", customerOrder.getId());
@@ -1087,15 +1087,13 @@ public class CRMRestController {
 			return json;
 		}
 
-		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", customerOrder.getId());
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
-		for (CustomerOrderDetail cod : coQuery.getCustomerOrderDetails()) {
-			cods.add(cod);
-		}
 		
-		Console.log(coQuery);
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("order_id", customerOrder.getId());
+		List<CustomerOrderDetail> cods = this.crmService.queryCustomerOrderDetails(codQuery);
 
 		Customer cQuery = new Customer();
 		cQuery.getParams().put("id", customerOrder.getCustomer_id());
