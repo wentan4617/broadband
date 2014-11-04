@@ -30,7 +30,7 @@
 				<.if (order.customer_type == 'personal') {.>
 					<.=order.customer.first_name.> <.=order.customer.last_name.>
 				<.} else if (order.customer_type == 'business') {.>
-					<.=order.organization.org_name.>
+					<.=order.org_name.>
 				<.}.>
 				</a>
 			</td>
