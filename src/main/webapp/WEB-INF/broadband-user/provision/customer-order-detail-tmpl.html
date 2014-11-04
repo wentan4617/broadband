@@ -30,7 +30,7 @@
 			<. } .>
 				<td>
 				<.if (cod.detail_type.indexOf('hardware-') > -1) { .>
-					<.if ( user_role != 'sales' && user_role != 'agent') { .>
+					<.if (user_role != 'sales' && user_role != 'agent') { .>
 					<a href="javascript:void(0)">
 						<span class="glyphicon glyphicon-plus-sign" data-hardware data-id="<.=cod.id.>" data-status="close"></span>
 					</a>
@@ -41,13 +41,18 @@
 				<td><.=cod.detail_type.></td>
 				<td><.=cod.detail_plan_type.></td>
 				<td>
-					<.if (cod.detail_data_flow < 0) { .>
-						Unlimited
-					<. } else { .>
-						<.=cod.detail_data_flow .>
-					<. } .>
+				<.if (cod.detail_data_flow < 0) { .>
+					Unlimited
+				<. } else { .>
+					<.=cod.detail_data_flow .>
+				<. } .>
 				</td>
-				<td ><strong><.= cod.detail_type=='discount'||cod.detail_type=='termination-credit' ? '-' : '' .><.=Number(cod.detail_price).toFixed(2) .></strong></td>
+				<td>
+					<strong>
+						<.=cod.detail_type == 'discount' || cod.detail_type == 'termination-credit' ? '-' : ''.>
+						<.=Number(cod.detail_price).toFixed(2) .>
+					</strong>
+				</td>
 				<td><.=cod.detail_unit.></td>
 				<td><strong><.=cod.detail_expired_str.></strong></td>
 			</tr>

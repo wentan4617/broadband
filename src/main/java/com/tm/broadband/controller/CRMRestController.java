@@ -2493,7 +2493,7 @@ public class CRMRestController {
 		
 		Double cyberParkCredit = 0d;
 		
-		if("account-credit".equals(order_pay_way)){
+		if ("account-credit".equals(order_pay_way)){
 			cyberParkCredit = TMUtils.bigSub(order_total_price, c.getBalance()==null ? 0d : c.getBalance());
 			paid_amount = 0d;
 		}
