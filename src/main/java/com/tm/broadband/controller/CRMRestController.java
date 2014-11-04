@@ -61,7 +61,6 @@ import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.util.test.Console;
-import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
@@ -119,19 +118,9 @@ public class CRMRestController {
 		return json;
 	}
 
-	@RequestMapping(value = "/broadband-user/crm/customer/personal/create", method = RequestMethod.POST)
-	public JSONBean<Customer> customerPersonalCreate(
-			Model model,
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer,
-			BindingResult result) {
-
-		return this.returnJsonCustomer(model, customer, result);
-	}
-
-	@RequestMapping(value = "/broadband-user/crm/customer/business/create", method = RequestMethod.POST)
-	public JSONBean<Customer> customerBusinessCreate(
-			Model model,
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer,
+	@RequestMapping(value = "/broadband-user/crm/customer/create", method = RequestMethod.POST)
+	public JSONBean<Customer> customerCreate(
+			Model model, @RequestBody Customer customer,
 			BindingResult result) {
 
 		return this.returnJsonCustomer(model, customer, result);
@@ -182,19 +171,9 @@ public class CRMRestController {
 		return json;
 	}
 
-	@RequestMapping(value = "/broadband-user/crm/customer/personal/edit")
-	public JSONBean<Customer> customerPersonalEdit(
-			Model model,
-			@Validated(CustomerValidatedMark.class) @RequestBody Customer customer,
-			BindingResult result, SessionStatus status) {
-
-		return this.returnJsonCustomerEdit(customer, result, status);
-	}
-
-	@RequestMapping(value = "/broadband-user/crm/customer/business/edit")
-	public JSONBean<Customer> customerBusinessEdit(
-			Model model,
-			@Validated(CustomerOrganizationValidatedMark.class) @RequestBody Customer customer,
+	@RequestMapping(value = "/broadband-user/crm/customer/edit", method = RequestMethod.POST)
+	public JSONBean<Customer> customerEdit(
+			Model model, @RequestBody Customer customer,
 			BindingResult result, SessionStatus status) {
 
 		return this.returnJsonCustomerEdit(customer, result, status);
@@ -962,6 +941,85 @@ public class CRMRestController {
 		return json;
 	}
 
+	// Update Order Customer Basic Contact
+	@RequestMapping(value = "/broadband-user/crm/customer/order/basic_contact/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> doCustomerOrderCustomerTypeEdit(Model model,
+			CustomerOrder customerOrder,
+			@RequestParam("basic_type") String basic_type) {
+
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+
+		CustomerOrder co = new CustomerOrder();
+		if("customer-type".equals(basic_type)){
+			co.setCustomer_type(customerOrder.getCustomer_type());
+		} else if("customer-title".equals(basic_type)){
+			co.setTitle(customerOrder.getTitle());
+		} else if("customer-address".equals(basic_type)){
+			if(customerOrder.getAddress()==null || "".equals(customerOrder.getAddress())){
+				json.getErrorMap().put("address_"+customerOrder.getId(), "Couldn't be empty!");
+				return json;
+			}
+			co.setAddress(customerOrder.getAddress());
+		} else if("customer-mobile".equals(basic_type)){
+			co.setMobile(customerOrder.getMobile());
+		} else if("customer-phone".equals(basic_type)){
+			co.setPhone(customerOrder.getPhone());
+		} else if("customer-email".equals(basic_type)){
+			co.setEmail(customerOrder.getEmail());
+		} else if("first-name".equals(basic_type)){
+			if(customerOrder.getFirst_name()==null || "".equals(customerOrder.getFirst_name())){
+				json.getErrorMap().put("first_name_"+customerOrder.getId(), "Couldn't be empty!");
+				return json;
+			}
+			co.setFirst_name(customerOrder.getFirst_name());
+		} else if("last-name".equals(basic_type)){
+			if(customerOrder.getLast_name()==null || "".equals(customerOrder.getLast_name())){
+				json.getErrorMap().put("last_name_"+customerOrder.getId(), "Couldn't be empty!");
+				return json;
+			}
+			co.setLast_name(customerOrder.getLast_name());
+		} else if("org-name".equals(basic_type)){
+			if(customerOrder.getOrg_name()==null || "".equals(customerOrder.getOrg_name())){
+				json.getErrorMap().put("org_name_"+customerOrder.getId(), "Couldn't be empty!");
+				return json;
+			}
+			co.setOrg_name(customerOrder.getOrg_name());
+		} else if("org-type".equals(basic_type)){
+			co.setOrg_type(customerOrder.getOrg_type());
+		} else if("org-trading-name".equals(basic_type)){
+			co.setOrg_trading_name(customerOrder.getOrg_trading_name());
+		} else if("org-register-no".equals(basic_type)){
+			co.setOrg_register_no(customerOrder.getOrg_register_no());
+		} else if("org-incoporate-date".equals(basic_type)){
+			String rexp = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+			Pattern pat = Pattern.compile(rexp);
+			Matcher mat = pat.matcher(customerOrder.getOrg_incoporate_date_str());
+			boolean dateType = mat.matches();
+			if (dateType && TMUtils.isDateFormat(customerOrder.getOrg_incoporate_date_str(), "-")) {
+				co.setOrg_incoporate_date(TMUtils.parseDateYYYYMMDD(customerOrder.getOrg_incoporate_date_str()));
+			} else {
+				json.getErrorMap().put("org_incoporate_date_"+customerOrder.getId(), "Must be yyyy-mm-dd");
+				return json;
+			}
+		} else if("org-trading-months".equals(basic_type)){
+			co.setOrg_trading_months(customerOrder.getOrg_trading_months());
+		} else if("holder-name".equals(basic_type)){
+			co.setHolder_name(customerOrder.getHolder_name());
+		} else if("holder-job-title".equals(basic_type)){
+			co.setHolder_job_title(customerOrder.getHolder_job_title());
+		} else if("holder-phone".equals(basic_type)){
+			co.setHolder_phone(customerOrder.getHolder_phone());
+		} else if("holder_email".equals(basic_type)){
+			co.setHolder_email(customerOrder.getHolder_email());
+		}
+		co.getParams().put("id", customerOrder.getId());
+
+		this.crmService.editCustomerOrder(co);
+		json.getSuccessMap().put("alert-success", basic_type.replaceAll("-", " ")+" has successfully been updated!");
+
+		return json;
+	}
+
 	// Update order PPPoE
 	@RequestMapping(value = "/broadband-user/crm/customer/order/ppppoe/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerOrder> doCustomerPPPoEEdit(Model model,
@@ -1352,7 +1410,7 @@ public class CRMRestController {
 	}
 
 	// Update customer info
-	@RequestMapping(value = "/broadband-user/crm/customer/edit")
+	@RequestMapping(value = "/broadband-user/crm/customer/edit", method = RequestMethod.GET)
 	public Map<String, Object> toCustomerEdit(Model model,
 			@RequestParam("id") int id) {
 
@@ -1410,7 +1468,7 @@ public class CRMRestController {
 				if (dateType && TMUtils.isDateFormat(voip_assign_date, "-")) {
 					cod.setVoip_assign_date(TMUtils.parseDateYYYYMMDD(voip_assign_date));
 				} else {
-					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyy-mm-dd");
+					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyyy-mm-dd");
 					return json;
 				}
 			}
@@ -1562,7 +1620,7 @@ public class CRMRestController {
 			String detailType = detail_type.equals("discount") ? "credit" : "debit";
 			json.getSuccessMap().put("alert-success", "New " + detailType + " had been attached to related order! Order Id: " + order_id);
 		} else {
-			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyy-mm-dd");
+			json.getErrorMap().put("alert-error", "Expiry Date Format Incorrect! Must be yyyy-mm-dd");
 		}
 
 		return json;
@@ -1964,7 +2022,7 @@ public class CRMRestController {
 				if (dateType && TMUtils.isDateFormat(voip_assign_date, "-")) {
 					cod.setVoip_assign_date(TMUtils.parseDateYYYYMMDD(voip_assign_date));
 				} else {
-					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyy-mm-dd");
+					json.getErrorMap().put("alert-error", "VoIP Assign Date Format Incorrect! Must be yyyy-mm-dd");
 					return json;
 				}
 			}
@@ -3347,7 +3405,7 @@ public class CRMRestController {
 	
 	@RequestMapping(value = "/broadband-user/crm/plans/order/confirm/business", method = RequestMethod.POST)
 	public JSONBean<Customer> doPlanOrderConfirmBusiness(
-			@Validated(value = { CustomerOrganizationValidatedMark.class, TransitionCustomerOrderValidatedMark.class }) 
+			@Validated(value = { TransitionCustomerOrderValidatedMark.class }) 
 			@RequestBody Customer customer, BindingResult result, HttpSession session) {
 		
 		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");

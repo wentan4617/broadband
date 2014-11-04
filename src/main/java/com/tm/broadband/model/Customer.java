@@ -17,7 +17,6 @@ import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.ChangePasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerForgottenPasswordValidatedMark;
 import com.tm.broadband.validator.mark.CustomerLoginValidatedMark;
-import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 
 
@@ -44,17 +43,17 @@ public class Customer implements Serializable {
 	@NotEmpty(groups = { CustomerValidatedMark.class })
 	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String last_name;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 500, groups = { CustomerValidatedMark.class })
 	private String address;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Email(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Email(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 40, groups = { CustomerValidatedMark.class })
 	private String email;
 	// @Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String phone;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 9, max = 11, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 9, max = 11, groups = { CustomerValidatedMark.class })
 	private String cellphone;
 	private String status;
 	private String invoice_post;
@@ -71,8 +70,8 @@ public class Customer implements Serializable {
 	private String customer_type;
 	
 	private String identity_type;
-	@NotEmpty(groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class, CustomerOrganizationValidatedMark.class })
+	@NotEmpty(groups = { CustomerValidatedMark.class })
+	@Length(min = 1, max = 20, groups = { CustomerValidatedMark.class })
 	private String identity_number;
 	private String result;
 
