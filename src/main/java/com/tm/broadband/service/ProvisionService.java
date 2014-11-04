@@ -111,18 +111,13 @@ public class ProvisionService {
 	}
 	
 	@Transactional
-	public CustomerOrder queryCustomerOrderWithCustomerOrOrganizationWithDetails(int orderid) {
+	public CustomerOrder queryCustomerOrderWithCustomerWithDetails(int orderid) {
 		CustomerOrder coQ = new CustomerOrder();
 		coQ.getParams().put("id", orderid);
 		CustomerOrder order = this.customerOrderMapper.selectCustomerOrders(coQ).get(0);
 		Customer cQ = new Customer();
 		cQ.getParams().put("id", order.getCustomer_id());
 		order.setCustomer(this.customerMapper.selectCustomers(cQ).get(0));
-		if ("business".equals(order.getCustomer_type())) {
-			//Organization oQ = new Organization();
-			cQ.getParams().put("order_id", order.getId());
-			//order.setOrganization(this.organzaitionMapper.selectOrganizations(oQ).get(0));
-		}
 		CustomerOrderDetail codQ = new CustomerOrderDetail();
 		codQ.getParams().put("order_id", order.getId());
 		order.setCustomerOrderDetails(this.customerOrderDetailMapper.selectCustomerOrderDetails(codQ));
@@ -132,7 +127,6 @@ public class ProvisionService {
 
 	@Transactional
 	public void changeCustomerOrderStatus(List<CustomerOrder> list) {
-		
 		for (CustomerOrder customerOrder : list) {
 			this.customerOrderMapper.updateCustomerOrder(customerOrder);
 			this.provisionLogMapper.insertProvisionLog(customerOrder.getTempProvsionLog());

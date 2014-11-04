@@ -122,9 +122,8 @@
 		<url-pattern>/plans/order</url-pattern>
 		<url-pattern>/plans/address/clear</url-pattern>
 		<url-pattern>/plans/order/summary</url-pattern>
-		<!-- <url-pattern>/plans/order/bankdeposit</url-pattern>
-		<url-pattern>/plans/order/dps</url-pattern> 
-		<url-pattern>/plans/order/result/success</url-pattern>-->
+		<url-pattern>/plans/order/bankdeposit</url-pattern>
+		<url-pattern>/plans/order/dps</url-pattern>
 	</filter-mapping>
 
 	<!-- customer session filter -->
@@ -139,7 +138,7 @@
 		<url-pattern>/customer/new-order/*</url-pattern>
 		<url-pattern>/customer/change-password</url-pattern>
 		
-		<!-- <url-pattern>/customer/ordering-form/checkout</url-pattern> -->
+		<url-pattern>/customer/ordering-form/checkout</url-pattern>
 		<url-pattern>/customer/invoice/checkout</url-pattern>
 		<url-pattern>/customer/topup/checkout</url-pattern>
 	</filter-mapping>

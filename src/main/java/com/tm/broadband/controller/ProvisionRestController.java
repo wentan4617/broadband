@@ -37,7 +37,6 @@ public class ProvisionRestController {
 	
 	@RequestMapping(value = "/broadband-user/provision/query/loading")
 	public Provision provisionQueryLoading() {
-		
 		Provision provision = this.provisionService.queryOrdersSumAll();
 		return provision;
 	}
@@ -62,7 +61,7 @@ public class ProvisionRestController {
 	
 	@RequestMapping(value = "/broadband-user/provision/order/{orderid}")
 	public CustomerOrder queryCustomerOrderWithCustomer(@PathVariable(value = "orderid") int orderid) {
-		CustomerOrder customerOrder = this.provisionService.queryCustomerOrderWithCustomerOrOrganizationWithDetails(orderid);
+		CustomerOrder customerOrder = this.provisionService.queryCustomerOrderWithCustomerWithDetails(orderid);
 		return customerOrder;
 	}
 	

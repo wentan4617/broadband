@@ -448,11 +448,10 @@ public class CustomerController {
 
 	@RequestMapping(value = "/customer/home")
 	public String customerHome(Model model, HttpSession session) {
-		
 		model.addAttribute("home", "active");
-		
 		Customer customerSession = (Customer) session.getAttribute("customerSession");
-		
+		customerSession.getParams().put("id", customerSession.getId());
+		session.setAttribute("customerSession", this.customerService.queryCustomer(customerSession));
 		return "broadband-customer/customer-home";
 	}
 	
@@ -519,100 +518,100 @@ public class CustomerController {
 	@RequestMapping("/customer/topup")
 	public String customerTopup(Model model) {
 		model.addAttribute("home", "active");
-		return "broadband-customer/customer-payment-topup";
+		return "broadband-customer/customer-topup-for-account";
 	}
 	
-	@RequestMapping(value = "/customer/topup/checkout", method = RequestMethod.POST)
-	public String topupCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
-			@RequestParam("prepaymonths") Integer months) {
-		
-		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
-		CustomerOrderDetail cod = customer.getCustomerOrders().get(0).getCustomerOrderDetails().get(0);
-		Double price = cod.getDetail_price();
-		Double total = 0d;
-		
-		if (months == 1) {
-			total = price;
-		} else if (months == 3) {
-			Double temp = price * 3 * 0.03;
-			total = price * 3 - temp.intValue();
-		} else if (months == 6) {
-			Double temp = price * 6 * 0.07;
-			total = price * 6 - temp.intValue();
-		} else if (months == 12) {
-			Double temp = price * 12 * 0.15;
-			total = price * 12 - temp.intValue();
-		} else {
-			total = new Double(months);
-		}
-
-		GenerateRequest gr = new GenerateRequest();
-
-		gr.setAmountInput(new DecimalFormat("#.00").format(total));
-		//gr.setAmountInput("1.00");
-		gr.setCurrencyInput("NZD");
-		gr.setTxnType("Purchase");
-		
-		System.out.println(req.getRequestURL().toString());
-		gr.setUrlFail(req.getRequestURL().toString());
-		gr.setUrlSuccess(req.getRequestURL().toString());
-
-		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
-
-		return "redirect:" + redirectUrl;
-	}
-	
-	@RequestMapping(value = "/customer/topup/checkout")
-	public String toTopupSuccess(Model model,
-			@RequestParam(value = "result", required = true) String result,
-			RedirectAttributes attr, HttpServletRequest request
-			) throws Exception {
-		
-		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
-
-		Response responseBean = null;
-
-		if (result != null)
-			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-
-		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-			
-			Customer c = new Customer();
-			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
-			c.setBalance(customer.getBalance());
-			c.getParams().put("id", customer.getId());
-
-			CustomerTransaction customerTransaction = new CustomerTransaction();
-			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setAuth_code(responseBean.getAuthCode());
-			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-			customerTransaction.setCard_name(responseBean.getCardName());
-			customerTransaction.setCard_number(responseBean.getCardNumber());
-			customerTransaction.setClient_info(responseBean.getClientInfo());
-			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-			customerTransaction.setResponse_text(responseBean.getResponseText());
-			customerTransaction.setSuccess(responseBean.getSuccess());
-			customerTransaction.setTxnMac(responseBean.getTxnMac());
-			customerTransaction.setTransaction_type(responseBean.getTxnType());
-			customerTransaction.setTransaction_sort("");
-			
-			customerTransaction.setCustomer_id(customer.getId());
-			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
-			
-			this.crmService.customerTopup(c, customerTransaction);
-			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
-			
-		} else {
-			
-			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
-		}
-
-		return "redirect:/customer/topup";
-	}
+//	@RequestMapping(value = "/customer/topup/checkout", method = RequestMethod.POST)
+//	public String topupCheckout(Model model, HttpServletRequest req, RedirectAttributes attr,
+//			@RequestParam("prepaymonths") Integer months) {
+//		
+//		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
+//		CustomerOrderDetail cod = customer.getCustomerOrders().get(0).getCustomerOrderDetails().get(0);
+//		Double price = cod.getDetail_price();
+//		Double total = 0d;
+//		
+//		if (months == 1) {
+//			total = price;
+//		} else if (months == 3) {
+//			Double temp = price * 3 * 0.03;
+//			total = price * 3 - temp.intValue();
+//		} else if (months == 6) {
+//			Double temp = price * 6 * 0.07;
+//			total = price * 6 - temp.intValue();
+//		} else if (months == 12) {
+//			Double temp = price * 12 * 0.15;
+//			total = price * 12 - temp.intValue();
+//		} else {
+//			total = new Double(months);
+//		}
+//
+//		GenerateRequest gr = new GenerateRequest();
+//
+//		gr.setAmountInput(new DecimalFormat("#.00").format(total));
+//		//gr.setAmountInput("1.00");
+//		gr.setCurrencyInput("NZD");
+//		gr.setTxnType("Purchase");
+//		
+//		System.out.println(req.getRequestURL().toString());
+//		gr.setUrlFail(req.getRequestURL().toString());
+//		gr.setUrlSuccess(req.getRequestURL().toString());
+//
+//		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+//
+//		return "redirect:" + redirectUrl;
+//	}
+//	
+//	@RequestMapping(value = "/customer/topup/checkout")
+//	public String toTopupSuccess(Model model,
+//			@RequestParam(value = "result", required = true) String result,
+//			RedirectAttributes attr, HttpServletRequest request
+//			) throws Exception {
+//		
+//		Customer customer =  (Customer) request.getSession().getAttribute("customerSession");
+//
+//		Response responseBean = null;
+//
+//		if (result != null)
+//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+//
+//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+//			
+//			Customer c = new Customer();
+//			customer.setBalance((customer.getBalance() != null ? customer.getBalance() : 0) + Double.parseDouble(responseBean.getAmountSettlement()));
+//			c.setBalance(customer.getBalance());
+//			c.getParams().put("id", customer.getId());
+//
+//			CustomerTransaction customerTransaction = new CustomerTransaction();
+//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setAuth_code(responseBean.getAuthCode());
+//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+//			customerTransaction.setCard_name(responseBean.getCardName());
+//			customerTransaction.setCard_number(responseBean.getCardNumber());
+//			customerTransaction.setClient_info(responseBean.getClientInfo());
+//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+//			customerTransaction.setResponse_text(responseBean.getResponseText());
+//			customerTransaction.setSuccess(responseBean.getSuccess());
+//			customerTransaction.setTxnMac(responseBean.getTxnMac());
+//			customerTransaction.setTransaction_type(responseBean.getTxnType());
+//			customerTransaction.setTransaction_sort("");
+//			
+//			customerTransaction.setCustomer_id(customer.getId());
+//			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+//			
+//			this.crmService.customerTopup(c, customerTransaction);
+//			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
+//			
+//		} else {
+//			
+//			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
+//		}
+//
+//		return "redirect:/customer/topup";
+//	}
 	
 	@RequestMapping(value = "/customer/invoice/checkout", method = RequestMethod.POST)
 	public String balanceCheckout(Model model, 

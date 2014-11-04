@@ -54,13 +54,13 @@
 							<strong class="text-info">Current Credit:</strong> 
 							<span class="glyphicon glyphicon-star"></span> NZ$ 
 							<strong class="text-success">
-								<fmt:formatNumber value="${customerSession.balance==null?0:customerSession.balance }" type="number" pattern="#,##0.00" />										
+								<fmt:formatNumber value="${customerSession.balance == null ? 0 : customerSession.balance }" type="number" pattern="#,##0.00" />										
 							</strong>
 						</div>
 						<div class="col-md-3">
 							<div class="btn-group btn-block">
-								<button type="button" class="btn btn-success btn-block dropdown-toggle" data-toggle="dropdown">
-							   		Top Up <span class="caret"></span>
+								<button type="button" class="btn btn-success btn-xs btn-block dropdown-toggle" data-toggle="dropdown">
+							   		Top Up For Account <span class="caret"></span>
 							  	</button>
 							  	<ul class="dropdown-menu" data-role="menu">
 							    	<li><a href="${ctx }/customer/topup"><span class="glyphicon glyphicon-credit-card"></span> Credit Card</a></li>
@@ -69,17 +69,6 @@
 							</div>
 						</div>
 					</div>
-					<%-- <div class="row" style="margin-top:10px;">
-						<div class="col-md-4">
-							<strong class="text-info">Invoice Balance: </strong> NZ$ 
-							<strong class="text-success">
-								&nbsp;(&nbsp;<fmt:formatNumber value="${customerSession.customerInvoice.balance==null?0:customerSession.customerInvoice.balance }" type="number" pattern="#,##0.00" />&nbsp;)&nbsp;
-							</strong>
-						</div>
-						<div class="col-md-3">
-							<a href="${ctx }/customer/billing/view" class="btn btn-success btn-block" >View Invoice</a>
-						</div>
-					</div> --%>
 				</div>
 			</div>
 		</div>
