@@ -30,6 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
+import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerTransaction;
@@ -720,22 +721,27 @@ public class BillingController {
 		String filePath = this.billingService.queryEarlyTerminationChargePDFPathById(terminationChargeId);
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", orderId);
-		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", coQuery.getCustomer_id());
+		cQuery = this.crmService.queryCustomer(cQuery);
+		
 		Notification notification = this.systemService.queryNotificationBySort("early-termination-charge", "email");
 		CompanyDetail company = this.systemService.queryCompanyDetail();
 		
-		MailRetriever.mailAtValueRetriever(notification, co, company);
+		MailRetriever.mailAtValueRetriever(notification, cQuery, coQuery, company);
 		
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee(co.getEmail());
+		applicationEmail.setAddressee(coQuery.getEmail());
 		// subject
 		applicationEmail.setSubject(notification.getTitle());
 		// content
 		applicationEmail.setContent(notification.getContent());
 		// attachment name
-		applicationEmail.setAttachName("early_termination_charge_" + ("personal".equals(co.getCustomer_type()) ? co.getLast_name()+" "+ co.getFirst_name() : co.getOrg_name()!=null ? co.getOrg_name() : "") + ".pdf");
+		applicationEmail.setAttachName("early_termination_charge_" + ("personal".equals(coQuery.getCustomer_type()) ? coQuery.getLast_name()+" "+ coQuery.getFirst_name() : coQuery.getOrg_name()!=null ? coQuery.getOrg_name() : "") + ".pdf");
 		// attachment path
 		applicationEmail.setAttachPath(filePath);
 		
@@ -746,7 +752,6 @@ public class BillingController {
 		notification = null;
 		company = null;
 		coQuery = null;
-		co = null;
 		applicationEmail = null;
 		
 		return "broadband-user/progress-accomplished";
