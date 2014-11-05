@@ -63,7 +63,7 @@
 					</button>
 					<ul class="dropdown-menu" role="menu">
 						<li>
-							<a href="javascript:void(0)" data-id="<.=invoice.id.>" data-balance="${invoice.balance}">
+							<a href="javascript:void(0)" data-invoiceid="<.=invoice.id.>" data-invoice-credit>
 								<span class="glyphicon glyphicon-credit-card"></span> Credit Card
 							</a>
 						</li>
@@ -83,7 +83,7 @@
 			</td>
 			<td>
 		<.if (invoice.invoice_pdf_path != null) {.>
-				<a href="<.=ctx.>/broadband-customer/billing/invoice/pdf/download/<.=invoice.id.>" target="_blank" >
+				<a href="<.=ctx.>/customer/orders/invoice/pdf/download/<.=invoice.id.>" target="_blank" >
 					<span class="glyphicon glyphicon-cloud-download"></span>
 				</a>
 		<. }.>		
@@ -107,6 +107,9 @@
 	</tfoot>
 	
 </table>
+<form id="invoice-credit" method="post" action="<.=ctx.>/customer/invoice/checkout">
+	<input id="invoiceid" name="invoiceid" type="hidden"/>
+</form>
 <.} else {.>
 <div class="panel-body">
 	<div class="alert alert-warning">No records have been found.</div>

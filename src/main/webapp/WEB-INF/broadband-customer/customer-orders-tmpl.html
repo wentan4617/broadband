@@ -145,14 +145,14 @@
 							<.}.>
 							<.if (order.ordering_form_pdf_path != null && order.ordering_form_pdf_path != '') {.>
 							<div class="col-md-3">
-								<a target="_blank" href="<.=ctx.>/customer/orders/ordering-form/pdf/download/<.=order.id.>" class="btn btn-success btn-block">
+								<a target="_blank" href="<.=ctx.>/customer/orders/ordering-form/pdf/download/<.=order.id.>" class="btn btn-success btn-xs btn-block">
 									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Form
 								</a>
 							</div>
 							<.}.>
 							<.if (order.receipt_pdf_path != null && order.receipt_pdf_path != '') {.>
 							<div class="col-md-3">
-								<a target="_blank" href="<.=ctx.>/customer/orders/receipt/pdf/download/<.=order.id.>" class="btn btn-success btn-block">
+								<a target="_blank" href="<.=ctx.>/customer/orders/receipt/pdf/download/<.=order.id.>" class="btn btn-success btn-xs btn-block">
 									<span class="glyphicon glyphicon-floppy-save"></span> Ordering Receipt
 								</a>
 							</div>
@@ -160,46 +160,56 @@
 							<div class="col-md-3">
 								<form action="<.=ctx.>/customer/ordering-form/checkout" method="post" id="orderingForm">
 									<input type="hidden" name="orderid" value="<.=order.id.>"/>
-									<button type="submit" class="btn btn-success btn-block" >Online Payment</button>
+									<button type="submit" class="btn btn-success btn-xs btn-block" >Online Payment</button>
 								</form>
 							</div>
 							<.}.>
 						</div>
+						<hr/>
+						<div class="row">
+							<div class="col-md-3">
+								<a href="<.=ctx.>/customer/topup-plan/<.=order.id.>" class="btn btn-success btn-xs btn-block">Top Up For Plan</a>
+							</div>
+						</div>
 						<table class="table table-hover" style="margin-top:20px;">	
+							<thead>
 							<tr>
 								<th>Name</th>
 								<th>Unit Price</th>
 								<th>Unit</th>
 								<th>Expired</th>
 							</tr>
+							</thead>
+							<tbody>
 						<.for (var j = 0, jlen = details.length; j < jlen; j++) {
 							var detail = details[j];
 						.>
 							<.if (detail.detail_type == 'discount') {.>
-							<tr class="warning">
-								<td><.=detail.detail_name.></td>
-								<td>$ -<.=Number(detail.detail_price).toFixed(2).></td>
-								<td><.=detail.detail_unit.></td>
-								<td><.=detail.detail_expired_str.></td>
-							</tr>
+								<tr class="warning">
+									<td><.=detail.detail_name.></td>
+									<td>$ -<.=Number(detail.detail_price).toFixed(2).></td>
+									<td><.=detail.detail_unit.></td>
+									<td><.=detail.detail_expired_str.></td>
+								</tr>
 							<.} else {.>
-							<tr>
-								<td>
-									<.=detail.detail_name.>
-								<.if (detail.detail_plan_type == 'ADSL' || detail.detail_plan_type == 'VDSL' || detail.detail_plan_type == 'UFB') {.>
-									<input type="hidden" id="planname<.=order.id.>" value="<.=detail.detail_name.>"/>
-									<input type="hidden" id="plandataflow<.=order.id.>" value="<.=detail.detail_data_flow.>"/>
-									<input type="hidden" id="plantype<.=order.id.>" value="<.=detail.detail_plan_type.>"/>
-									<input type="hidden" id="plansvlan<.=order.id.>" value="<.=order.svlan.>"/>
-									<input type="hidden" id="plancvlan<.=order.id.>" value="<.=order.cvlan.>"/>
-								<.}.>
-								</td>
-								<td>$ <.=Number(detail.detail_price).toFixed(2).></td>
-								<td><.=detail.detail_unit.></td>
-								<td><.=detail.detail_expired_str.></td>
-							</tr>
+								<tr>
+									<td>
+										<.=detail.detail_name.>
+									<.if (detail.detail_plan_type == 'ADSL' || detail.detail_plan_type == 'VDSL' || detail.detail_plan_type == 'UFB') {.>
+										<input type="hidden" id="planname<.=order.id.>" value="<.=detail.detail_name.>"/>
+										<input type="hidden" id="plandataflow<.=order.id.>" value="<.=detail.detail_data_flow.>"/>
+										<input type="hidden" id="plantype<.=order.id.>" value="<.=detail.detail_plan_type.>"/>
+										<input type="hidden" id="plansvlan<.=order.id.>" value="<.=order.svlan.>"/>
+										<input type="hidden" id="plancvlan<.=order.id.>" value="<.=order.cvlan.>"/>
+									<.}.>
+									</td>
+									<td>$ <.=Number(detail.detail_price).toFixed(2).></td>
+									<td><.=detail.detail_unit.></td>
+									<td><.=detail.detail_expired_str.></td>
+								</tr>
 							<.}.>
 						<.}.>
+							</tbody>
 						</table>
 					
 					</div>

@@ -18,7 +18,7 @@
 				} else if (tab == 'datausage') {
 					tabCustomerOrderData(orderid);
 				}
-			})
+			});
 		});
 	}
 		
@@ -30,6 +30,10 @@
 			$('#invoices' + orderid).html(tmpl('customer_orders_invoices_tmpl', page));
 			$('#invoices' + orderid).find('tfoot a').click(function(){
 				doInvoicePage(orderid, $(this).attr('data-pageNo'));
+			});
+			$('a[data-invoice-credit]').click(function(){
+				$('#invoiceid').val($(this).attr('data-invoiceid'));
+				$('#invoice-credit').submit();
 			});
 		});
 	}

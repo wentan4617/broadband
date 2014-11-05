@@ -138,9 +138,13 @@
 		<url-pattern>/customer/new-order/*</url-pattern>
 		<url-pattern>/customer/change-password</url-pattern>
 		
-		<url-pattern>/customer/ordering-form/checkout</url-pattern>
-		<url-pattern>/customer/invoice/checkout</url-pattern>
+		<url-pattern>/customer/topup</url-pattern>
 		<url-pattern>/customer/topup/checkout</url-pattern>
+		<url-pattern>/customer/ordering-form/checkout</url-pattern>
+		<url-pattern>/customer/topup-plan</url-pattern>
+		<url-pattern>/customer/topup-plan/checkout</url-pattern>
+		<url-pattern>/customer/invoice/checkout</url-pattern>
+		
 	</filter-mapping>
 
 	<!-- user session filter -->

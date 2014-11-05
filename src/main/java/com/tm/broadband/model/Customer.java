@@ -98,6 +98,7 @@ public class Customer implements Serializable {
 	private CustomerOrder customerOrder = new CustomerOrder();
 	private CustomerInvoice customerInvoice = new CustomerInvoice();
 	private List<CustomerOrder> customerOrders;
+	private List<CustomerInvoice> customerInvoices;
 	private Voucher voucher = new Voucher();
 	private List<Voucher> vouchers = new ArrayList<Voucher>();
 	private Broadband broadband;
@@ -719,8 +720,12 @@ public class Customer implements Serializable {
 		this.result = result;
 	}
 
+	public List<CustomerInvoice> getCustomerInvoices() {
+		return customerInvoices;
+	}
 
-
-	
+	public void setCustomerInvoices(List<CustomerInvoice> customerInvoices) {
+		this.customerInvoices = customerInvoices;
+	}
 	
 }

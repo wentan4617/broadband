@@ -1117,10 +1117,11 @@ public class CustomerRestController {
 		Page<CustomerInvoice> page = new Page<CustomerInvoice>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("orderby", "order by create_date desc");
+		page.getParams().put("orderby", "order by id desc");
 		page.getParams().put("customer_id", customerSession.getId());
 		page.getParams().put("order_id", orderid);
 		this.customerService.queryCustomerInvoicesByPageWithTransaction(page);
+		customerSession.setCustomerInvoices(page.getResults());
 		return page;
 	}
 	
