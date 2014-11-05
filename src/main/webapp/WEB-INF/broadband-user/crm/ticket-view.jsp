@@ -228,7 +228,7 @@ tbody td {text-align:center;}
 								</div>
 								<div class="form-group col-md-12" data-name="keyword_area">
 									<div class="form-group col-md-12">
-										<span class="col-md-offset-2" style="color:green;">Keywords Includes: customer id, email, phone, cellphone, first name, last name </span>
+										<span class="col-md-offset-2" style="color:green;">Keywords Includes: First/Last Name, Customer/Order/Invoice Id, Email, Mobile, PSTN/VoIP/ASID No., Address</span>
 									</div>
 									<div class="form-group col-md-2">
 										<label for="keyword" class="control-label pull-right">Keyword&nbsp;&nbsp;</label>
@@ -539,10 +539,10 @@ tbody td {text-align:center;}
 				$('#cellphone').attr('disabled', 'disabled');
 				$('#email').attr('disabled', 'disabled');
 				$('#customer_id_area').css('display', '');
-				$('#customer_id').val(json.model.id);
+				$('#customer_id').val(json.model.customer_id);
 				$('#first_name').val(json.model.first_name);
 				$('#last_name').val(json.model.last_name);
-				$('#cellphone').val(json.model.cellphone);
+				$('#cellphone').val(json.model.mobile);
 				$('#email').val(json.model.email);
 
 				if(way=='keyup'){

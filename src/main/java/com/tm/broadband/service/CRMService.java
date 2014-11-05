@@ -499,11 +499,6 @@ public class CRMService {
 	}
 	
 	@Transactional
-	public List<CustomerOrder> queryCustomerOrdersByCustomerId(int customer_id) {
-		return this.customerOrderMapper.selectCustomerOrdersByCustomerId(customer_id);
-	}
-	
-	@Transactional
 	public CustomerOrder queryCustomerOrder(CustomerOrder customerOrder) {
 		List<CustomerOrder> cos = this.queryCustomerOrders(customerOrder);
 		return cos!=null && cos.size()>0 ? cos.get(0) : null;
@@ -574,11 +569,6 @@ public class CRMService {
 	@Transactional
 	public int queryCustomerTransactionsSumByPage(Page<CustomerTransaction> page) {
 		return this.customerTransactionMapper.selectCustomerTransactionsSum(page);
-	}
-	
-	@Transactional
-	public String queryCustomerOrderTypeById(int id) {
-		return this.customerOrderMapper.selectCustomerOrderTypeById(id);
 	}
 
 	@Transactional
@@ -1044,10 +1034,10 @@ public class CRMService {
 	}
 
 	@Transactional 
-	public List<Map<String, Object>> createNextInvoice(CustomerOrder customerOrderParam) throws ParseException{
+	public List<Map<String, Object>> createNextInvoice(CustomerOrder co) throws ParseException{
 		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("invoice", "email");
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
-		List<CustomerOrder> customerOrders = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
+		List<CustomerOrder> customerOrders = this.queryCustomerOrders(co);
 
         // Prepare the Xero Client
         XeroClient xeroClient = null;
@@ -1190,8 +1180,8 @@ public class CRMService {
 	@Transactional 
 	public void createNextCallingInvoicePDF() {
 		
-//		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("calling-invoice", "email");
-//		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("calling-invoice", "sms");
+		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("calling-invoice", "email");
+		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("calling-invoice", "sms");
 		
 		CompanyDetail companyDetail = this.companyDetailMapper.selectCompanyDetail();
 		
@@ -1205,6 +1195,9 @@ public class CRMService {
 			List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
 			
 			for (CustomerOrder co : cos) {
+				
+				Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
+				Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 				
 				List<CustomerInvoiceDetail> cids = new ArrayList<CustomerInvoiceDetail>();
 
@@ -1370,16 +1363,40 @@ public class CRMService {
 					ci.setInvoice_type("calling-invoice");
 					ci.getParams().put("id", ci.getId());
 					this.ciMapper.updateCustomerInvoice(ci);
+
+					
+					Customer cQuery = new Customer();
+					cQuery.getParams().put("id", co.getCustomer_id());
+					cQuery = this.queryCustomer(cQuery);
+					
+					
+					MailRetriever.mailAtValueRetriever(notificationEmailFinal, cQuery,  co, ci, companyDetail);
+					ApplicationEmail applicationEmail = new ApplicationEmail();
+					applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : cQuery.getEmail());
+					applicationEmail.setSubject(notificationEmailFinal.getTitle());
+					applicationEmail.setContent(notificationEmailFinal.getContent());
+					// binding attachment name & path to email
+					applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+					applicationEmail.setAttachPath(filePath);
+					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+
+					// get sms register template from db
+					MailRetriever.mailAtValueRetriever(notificationSMSFinal, cQuery,  co, ci, companyDetail);
+					// send sms to customer's mobile phone
+					this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : cQuery.getCellphone(), notificationSMSFinal.getContent());
+					
+					
+					
+					Map<String, Object> resultMap = new HashMap<String, Object>();
+					resultMap.put("customer", cQuery);
+					resultMap.put("customerInvoice", ci);
+					resultMap.put("customerOrder", co);
+					if(co.getIs_ddpay()==null || !co.getIs_ddpay()){
+						resultMaps.add(resultMap);
+					}
 					
 				}
 				
-				Map<String, Object> resultMap = new HashMap<String, Object>();
-				resultMap.put("customer", co.getCustomer());
-				resultMap.put("customerInvoice", ci);
-				resultMap.put("customerOrder", co);
-				if(co.getIs_ddpay()==null || !co.getIs_ddpay()){
-					resultMaps.add(resultMap);
-				}
 			}
 			
 			if(resultMaps.size()>0){
@@ -1556,7 +1573,7 @@ public class CRMService {
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("order_status", "using");
 		coQuery.getParams().put("order_type", "order-topup");
-		coQuery.getParams().put("next_invoice_create_date", new Date());
+		coQuery.getParams().put("next_invoice_create_date", TMUtils.parseDateYYYYMMDD("2014-10-13"));
 		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrders(coQuery);
 		
 		// If found any order(s)
@@ -1971,6 +1988,8 @@ public class CRMService {
 		ci.setCustomerInvoiceDetails(cids);
 
 		invoicePDF.setCurrentCustomerInvoice(ci);
+		invoicePDF.setCo(co);
+		invoicePDF.setLastCustomerInvoice(cpi);
 
 		// set file path
 		Map<String, Object> map = null;
@@ -3598,10 +3617,10 @@ public class CRMService {
 	
 	// Check Pending Order
 	@Transactional 
-	public void checkPendingOrder(CustomerOrder customerOrderParam) throws ParseException{
+	public void checkPendingOrder(CustomerOrder coQuery) throws ParseException{
 		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-warning-notice", "email");
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-warning-notice", "sms");
-		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
+		List<CustomerOrder> cos = this.queryCustomerOrders(coQuery);
 		
 		CompanyDetail cd = this.queryCompanyDetail();
 
@@ -3619,7 +3638,7 @@ public class CRMService {
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, co, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
@@ -3628,17 +3647,18 @@ public class CRMService {
 			if(co.getOrdering_form_pdf_path()!=null && !"".equals(co.getOrdering_form_pdf_path())){
 				applicationEmail.setAttachName("ordering_form_" + co.getId() + ".pdf");
 				applicationEmail.setAttachPath(co.getOrdering_form_pdf_path());
-			} else {
-				CustomerInvoice ciQuery = new CustomerInvoice();
-				ciQuery.getParams().put("order_id", co.getId());
-				CustomerInvoice ci = this.queryCustomerInvoice(ciQuery);
-				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
-				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
 			}
+//			else {
+//				CustomerInvoice ciQuery = new CustomerInvoice();
+//				ciQuery.getParams().put("order_id", co.getId());
+//				CustomerInvoice ci = this.queryCustomerInvoice(ciQuery);
+//				applicationEmail.setAttachName("invoice_" + ci.getId() + ".pdf");
+//				applicationEmail.setAttachPath(ci.getInvoice_pdf_path());
+//			}
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, co, cd);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getMobile()) ? co.getMobile() : c.getCellphone(), notificationSMSFinal.getContent());
 		}
@@ -3646,10 +3666,10 @@ public class CRMService {
 	
 	// Check Pending Warning Order
 	@Transactional 
-	public void checkPendingWarningOrder(CustomerOrder customerOrderParam) throws ParseException{
+	public void checkPendingWarningOrder(CustomerOrder coQuery) throws ParseException{
 		Notification notificationEmail = this.notificationMapper.selectNotificationBySort("order-void-notice", "email");
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("order-void-notice", "sms");
-		List<CustomerOrder> cos = this.customerOrderMapper.selectCustomerOrdersBySome(customerOrderParam);
+		List<CustomerOrder> cos = this.queryCustomerOrders(coQuery);
 		
 		CompanyDetail cd = this.queryCompanyDetail();
 
@@ -3667,7 +3687,7 @@ public class CRMService {
 			Notification notificationEmailFinal = new Notification(notificationEmail.getTitle(), notificationEmail.getContent());
 			Notification notificationSMSFinal = new Notification(notificationSMS.getTitle(), notificationSMS.getContent());
 			
-			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationEmailFinal, c, co, cd);
 			ApplicationEmail applicationEmail = new ApplicationEmail();
 			applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getEmail());
 			applicationEmail.setSubject(notificationEmailFinal.getTitle());
@@ -3675,7 +3695,7 @@ public class CRMService {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 
 			// get sms register template from db
-			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, customerOrder, cd);
+			MailRetriever.mailAtValueRetriever(notificationSMSFinal, c, co, cd);
 			// send sms to customer's mobile phone
 			this.smserService.sendSMSByAsynchronousMode(co.getMobile()!=null && !"".equals(co.getEmail()) ? co.getEmail() : c.getCellphone(), notificationSMSFinal.getContent());
 		}

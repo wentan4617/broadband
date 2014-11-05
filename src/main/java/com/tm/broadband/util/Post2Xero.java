@@ -143,6 +143,15 @@ public class Post2Xero {
 			
 			is_send_2_xero = true;
 			
+			System.out.println();
+			System.out.println("c: "+c);
+			System.out.println("c.getId(): "+c.getId());
+			System.out.println("ci: "+ci);
+			System.out.println("ci.getId(): "+ci.getId());
+			System.out.println("co: "+co);
+			System.out.println("co.getId(): "+co.getId());
+			System.out.println();
+			
 			if(ci.getFinal_payable_amount()<=0){
 				continue;
 			}

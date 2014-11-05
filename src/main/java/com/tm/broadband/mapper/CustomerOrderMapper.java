@@ -17,15 +17,10 @@ public interface CustomerOrderMapper {
 
 	/* SELECT AREA */
 	
-	String selectCustomerOrderTypeById(int id);
-	
 	List<CustomerOrder> selectCustomerOrders(CustomerOrder customerOrder);
 	
 	List<CustomerOrder> selectCustomerOrdersByPage(Page<CustomerOrder> page);
 	int selectCustomerOrdersSum(Page<CustomerOrder> page);
-	
-	List<CustomerOrder> selectCustomerOrdersByCustomerId(int customer_id); 
-	List<CustomerOrder> selectCustomerOrdersBySome(CustomerOrder customerOrder);
 	
 	/* // END SELECT AREA */
 	

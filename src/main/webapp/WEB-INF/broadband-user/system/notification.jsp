@@ -37,6 +37,7 @@
 									<form:option value="register-post-pay">Register Post Pay</form:option>
 									<form:option value="register-pre-pay">Register Pre Pay</form:option>
 									<form:option value="invoice">Invoice</form:option>
+									<form:option value="calling-invoice">Calling Invoice</form:option>
 									<form:option value="invoice-notice-third-fifth-day">Invoice Notice Third Fifth</form:option>
 									<form:option value="invoice-notice-eighth-ninth-day">Invoice Notice Eighth Ninth</form:option>
 									<form:option value="invoice-notice-tenth-day">Invoice Notice Tenth</form:option>

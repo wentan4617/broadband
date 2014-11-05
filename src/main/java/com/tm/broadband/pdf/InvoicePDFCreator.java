@@ -486,7 +486,7 @@ public class InvoicePDFCreator extends ITextUtils {
 		
     	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "+").alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_payable()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalPayableAmount))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "-").alignH("r").o();
     	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "-").alignH("r").o();
