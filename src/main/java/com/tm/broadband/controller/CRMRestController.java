@@ -46,6 +46,7 @@ import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.ProvisionLog;
+import com.tm.broadband.model.TerminationRefund;
 import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
@@ -361,7 +362,10 @@ public class CRMRestController {
 
 		// Get order_type
 		String process_sort = null;
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		switch (coQuery.getOrder_type()) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -466,7 +470,10 @@ public class CRMRestController {
 		// END INVOICE ASSIGNMENT
 
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		switch (coQuery.getOrder_type()) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -698,7 +705,10 @@ public class CRMRestController {
 		// END INVOICE ASSIGNMENT
 
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		switch (coQuery.getOrder_type()) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -1088,6 +1098,7 @@ public class CRMRestController {
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", customerOrder.getId());
 		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		coQuery.setRfs_date(TMUtils.parseDateYYYYMMDD(customerOrder.getRfs_date_str()));
 		
 		CustomerOrderDetail codQuery = new CustomerOrderDetail();
 		codQuery.getParams().put("order_id", customerOrder.getId());
@@ -2245,12 +2256,7 @@ public class CRMRestController {
 	// TerminationRefund Controller
 	@RequestMapping(value = "/broadband-user/crm/customer/order/termination-credit/invoice/generate", method = RequestMethod.POST)
 	public JSONBean<String> doTerminationRefundInvoice(Model model,
-			@RequestParam("order_id") int order_id,
-			@RequestParam("terminatedDate") String terminatedDate,
-			@RequestParam("productName") String productName,
-			@RequestParam("monthlyCharge") Double monthlyCharge,
-			@RequestParam("accountNo") String accountNo,
-			@RequestParam("accountName") String accountName,
+			TerminationRefund tr,
 			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
@@ -2259,15 +2265,24 @@ public class CRMRestController {
 
 		try {
 
-			if (TMUtils.isDateFormat(terminatedDate, "-")) {
-				this.crmService.createTerminationRefundInvoice(order_id,
-						TMUtils.parseDateYYYYMMDD(terminatedDate), user,
-						accountNo, accountName, monthlyCharge, productName);
-				json.getSuccessMap().put("alert-success",
-						"Termination refund invoice had just been generated!");
+			if (TMUtils.isDateFormat(tr.getTermination_date_str(), "-")) {
+				
+				if("".equals(tr.getRefund_bank_account_number().trim())){
+					json.getErrorMap().put("alert-error", "Account Number Couldn't Be Empty!");
+					return json;
+				} else if("".equals(tr.getRefund_bank_account_name().trim())){
+					json.getErrorMap().put("alert-error", "Account Name Couldn't Be Empty!");
+					return json;
+				}
+				
+				this.crmService.createTerminationRefundInvoice(tr.getOrder_id(),
+						TMUtils.parseDateYYYYMMDD(tr.getTermination_date_str()), user,
+						tr.getRefund_bank_account_number(),
+						tr.getRefund_bank_account_name(),
+						tr.getProduct_monthly_price(), tr.getProduct_name());
+				json.getSuccessMap().put("alert-success", "Termination refund invoice had just been generated!");
 			} else {
-				json.getErrorMap().put("alert-error",
-						"Terminated Date Format Incorrect!");
+				json.getErrorMap().put("alert-error", "Terminated Date Format Incorrect!");
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -2613,7 +2628,7 @@ public class CRMRestController {
 		Page<CustomerOrder> page = new Page<CustomerOrder>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
-		page.getParams().put("where", "query_exist_customer_by_keyword");
+		page.getParams().put("where", "query_customer_by_field");
 		page.getParams().put("orderby", "order by order_create_date desc");
 		if (coQuery != null) {
 			page.getParams().put("order_id", coQuery.getId());
@@ -2663,16 +2678,8 @@ public class CRMRestController {
 			
 			// If Business Customer
 			if(!"personal".equals(co.getCustomer_type())){
-				if(co.getHolder_name().contains(" ")){
-					co.setFirst_name(co.getHolder_name().split(" ")[0]);
-					co.setLast_name(co.getHolder_name().split(" ")[1]);
-				} else {
-					co.setLast_name(co.getHolder_name());
-				}
-				
-				if(!"".equals(co.getHolder_email().trim())){
-					co.setEmail(co.getHolder_email());
-				}
+				co.setFirst_name(co.getOrg_name());
+				co.setLast_name("");
 			}
 			
 			json.setModel(co);

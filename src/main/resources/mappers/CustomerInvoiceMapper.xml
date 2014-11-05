@@ -37,8 +37,8 @@
 						)
 					</if>
 					<if test="params.customer_type != null">
-						and customer_id in(
-							select id from tm_customer
+						and order_id in(
+							select id from tm_customer_order
 							where customer_type=#{params.customer_type}
 						)
 					</if>
@@ -65,8 +65,8 @@
 						)
 					</if>
 					<if test="params.customer_type != null">
-						and customer_id in(
-							select id from tm_customer
+						and order_id in(
+							select id from tm_customer_order
 							where customer_type=#{params.customer_type}
 						)
 					</if>
@@ -99,8 +99,8 @@
 						and balance=0
 					</if>
 					<if test="params.customer_type != null">
-						and customer_id in(
-							select id from tm_customer
+						and order_id in(
+							select id from tm_customer_order
 							where customer_type=#{params.customer_type}
 						)
 					</if>
@@ -153,8 +153,8 @@
 					<if test="params.status != null">status = #{params.status}</if>
 					<if test="params.begin_date != null and params.end_date != null">and due_date BETWEEN #{params.begin_date} AND #{params.end_date}</if>
 					<if test="params.customer_type != null">
-						and customer_id in(
-							select id from tm_customer
+						and order_id in(
+							select id from tm_customer_order
 							where customer_type=#{params.customer_type}
 						)
 					</if>
@@ -487,8 +487,8 @@
 				)
 			</if>
 			<if test="params.customer_type != null">
-				and customer_id in(
-					select id from tm_customer
+				and order_id in(
+					select id from tm_customer_order
 					where customer_type=#{params.customer_type}
 				)
 			</if>

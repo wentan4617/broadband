@@ -96,6 +96,7 @@ public class TerminationRefund implements Serializable {
 	}
 
 	public void setTermination_date(Date termination_date) {
+		this.setTermination_date_str(TMUtils.dateFormatYYYYMMDD(termination_date));
 		this.termination_date = termination_date;
 	}
 
@@ -161,7 +162,6 @@ public class TerminationRefund implements Serializable {
 	}
 
 	public String getTermination_date_str() {
-		this.setTermination_date_str(TMUtils.dateFormatYYYYMMDD(this.getTermination_date()));
 		return termination_date_str;
 	}
 

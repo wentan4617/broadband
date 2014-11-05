@@ -402,8 +402,12 @@ public class CustomerRestController {
 		Integer order_id = ci.getOrder_id();
 		String process_way = "Voucher";
 		String process_sort = null;
+		
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		switch (coQuery.getOrder_type()) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;
@@ -792,7 +796,10 @@ public class CustomerRestController {
 		// END INVOICE ASSIGNMENT
 
 		// Get order_type
-		switch (this.crmService.queryCustomerOrderTypeById(order_id)) {
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		switch (coQuery.getOrder_type()) {
 		case "order-term":
 			process_sort = "plan-term";
 			break;

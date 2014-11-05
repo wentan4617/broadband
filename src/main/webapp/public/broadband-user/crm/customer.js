@@ -487,11 +487,11 @@
 				$('a[data-name="terminationRefundModalBtn_'+co[i].id+'"]').click(function(){
 					var data = {
 						'order_id':this.id,
-						'terminatedDate':$('input[data-name="terminated_refund_date_'+this.id+'"]').val(),
-						'monthlyCharge':$('input[data-name="terminated_refund_monthly_charge_'+this.id+'"]').val(),
-						'accountNo':$('input[data-name="terminated_refund_bank_account_no_'+this.id+'"]').val(),
-						'accountName':$('input[data-name="terminated_refund_bank_account_name_'+this.id+'"]').val(),
-						'productName':$('td[data-name="plan-detail_'+this.id+'"]').attr('data-plan-name')
+						'termination_date_str':$('input[data-name="terminated_refund_date_'+this.id+'"]').val(),
+						'product_monthly_price':$('input[data-name="terminated_refund_monthly_charge_'+this.id+'"]').val(),
+						'refund_bank_account_number':$('input[data-name="terminated_refund_bank_account_no_'+this.id+'"]').val(),
+						'refund_bank_account_name':$('input[data-name="terminated_refund_bank_account_name_'+this.id+'"]').val(),
+						'product_name':$('td[data-name="plan-detail_'+this.id+'"]').attr('data-plan-name')
 					};
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/termination-credit/invoice/generate', data, function(json){

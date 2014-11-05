@@ -275,6 +275,28 @@
 		<where>
 			<choose>
 				<when test="params.where == 'query_exist_customer_by_keyword'">
+					co.id  LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.customer_id LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.first_name LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.last_name LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.phone LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.mobile LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.email LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.address LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.broadband_asid LIKE CONCAT('%', '${params.keyword}', '%')
+					or co.id in(
+						select order_id from tm_customer_invoice where id LIKE CONCAT('%', '${params.keyword}', '%')
+					)
+					or co.id in(
+						select order_id  from tm_customer_order_detail where detail_type='pstn'
+						and pstn_number LIKE CONCAT('%', '${params.keyword}', '%')
+					)
+					or co.id in(
+						select order_id  from tm_customer_order_detail where detail_type='voip'
+						and pstn_number LIKE CONCAT('%', '${params.keyword}', '%')
+					)
+				</when>
+				<when test="params.where == 'query_customer_by_field'">
 					<if test="params.order_id != null">co.id  LIKE CONCAT('%', '${params.order_id}', '%')</if>
 					<if test="params.customer_id != null">or co.customer_id LIKE CONCAT('%', '${params.customer_id}', '%')</if>
 					<if test="params.first_name != null">or co.first_name LIKE CONCAT('%', '${params.first_name}', '%')</if>
@@ -322,14 +344,14 @@
 					<if test="params.order_status != null and params.order_status_1 != null">and (co.order_status != #{params.order_status} or co.order_status != #{params.order_status_1})</if>
 				</when>
 				<when test="params.where == 'query_pending_notice'">
-					<if test="params.order_status != null">and co.order_status=#{params.order_status}</if>
+					<if test="params.order_status != null">co.order_status=#{params.order_status}</if>
 					<if test="params.order_create_date != null">and date(co.order_create_date) &lt;= date(#{params.order_create_date})</if>
 					<if test="params.customer_type != null">
 					and co.customer_type = #{params.customer_type}
 					</if>
 				</when>
 				<when test="params.where == 'query_no_term'">
-					<if test="params.order_status != null">and co.order_status =# {params.order_status}</if>
+					<if test="params.order_status != null">co.order_status = #{params.order_status}</if>
 					<if test="params.next_invoice_create_date != null">and date(co.next_invoice_create_date) = date(#{params.next_invoice_create_date})</if>
 					<if test="params.order_type != null">and co.order_type = #{params.order_type}</if>
 					<if test="params.is_ddpay != null and params.order_term_type == 'order-term'">
@@ -343,12 +365,12 @@
 				</when>
 				<when test="params.where == 'query_term'">
 					<!-- co.order_using_start IS NOT NULL and date(co.order_using_start)!=date(now()) -->
-					<if test="params.status != null">and co.order_status = #{params.status}</if>
+					<if test="params.status != null">co.order_status = #{params.status}</if>
 					<if test="params.order_type != null">and co.order_type = #{params.order_type}</if>
 					<if test="params.is_ddpay != null">and co.is_ddpay = #{params.is_ddpay}</if>
 				</when>
 				<when test="params.where == 'query_topup'">
-					<if test="params.order_status != null">and co.order_status = #{params.order_status}</if>
+					<if test="params.order_status != null">co.order_status = #{params.order_status}</if>
 					<if test="params.order_due_backward_one != null and params.order_due_backward_two != null">and (date(co.order_due) = date(#{params.order_due_backward_one}) or date(co.order_due) = date(#{params.order_due_backward_two}))</if>
 					<if test="params.order_type_topup != null">and co.order_type = #{params.order_type_topup}</if>
 				</when>
@@ -358,7 +380,7 @@
 					and DATE_FORMAT(co.next_invoice_create_date, '%Y-%m') &gt; DATE_FORMAT(now(), '%Y-%m')
 					and co.id in(
 						select order_id from tm_customer_order_detail
-						where pstn_number is not null and pstn_number != ''
+						where pstn_number IS NOT NULL and pstn_number != ''
 					)
 					and co.id in(
 						select order_id from tm_customer_invoice
