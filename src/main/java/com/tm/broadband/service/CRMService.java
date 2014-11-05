@@ -713,7 +713,7 @@ public class CRMService {
 	
 	public CustomerInvoice queryCustomerInvoice(CustomerInvoice ci) {
 		List<CustomerInvoice> cis = this.ciMapper.selectCustomerInvoices(ci);
-		return cis!=null && cis.size()>0 ? cis.get(0) : null;
+		return cis != null && cis.size() > 0 ? cis.get(0) : null;
 	}
 	
 	public List<CustomerInvoice> queryCustomerInvoices(CustomerInvoice ci) {

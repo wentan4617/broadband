@@ -63,6 +63,19 @@ public class CustomerService {
 	}
 	
 	@Transactional
+	public Customer queryCustomerWithOrderWithInvoice(Customer customer) {
+		List<Customer> customers = this.customerMapper.selectCustomers(customer);
+		Customer customerReturn = customers != null && customers.size() > 0 ? customers.get(0) : null;
+		List<CustomerOrder> orders = this.customerOrderMapper.selectCustomerOrders(customer.getCustomerOrder());
+		CustomerOrder customerOrderReturn = orders != null && orders.size() > 0 ? orders.get(0) : null;
+		customerReturn.setCustomerOrder(customerOrderReturn);
+		List<CustomerInvoice> invoices = this.customerInvoiceMapper.selectCustomerInvoices(customer.getCustomerInvoice());
+		CustomerInvoice CustomerInvoiceReturn = invoices != null && invoices.size() > 0 ? invoices.get(0) : null;
+		customerReturn.setCustomerInvoice(CustomerInvoiceReturn);
+		return customerReturn;
+	}
+	
+	@Transactional
 	public void editCustomer(Customer customer) {
 		this.customerMapper.updateCustomer(customer);
 	}

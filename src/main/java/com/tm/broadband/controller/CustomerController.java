@@ -4,11 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -382,16 +379,11 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/term-and-conditions")
 	public String toTermAndConditions(Model model) {
-		
 		CompanyDetail cd = this.systemService.queryCompanyDetail();
 		model.addAttribute("cyberpark", cd);
 		return "broadband-customer/term-and-conditions";
 	}
 	
-	
-
-	
-
 	@RequestMapping("/customer/home/redirect")
 	public String redirectCustomerHome(RedirectAttributes attr) {
 		attr.addFlashAttribute("success", "Welcome to CyberTech Customer Home.");
@@ -456,46 +448,11 @@ public class CustomerController {
 	}
 	
 	@RequestMapping(value = "/customer/orders")
-	public String customerOrders(Model model, HttpSession session) {
-		
+	public String customerOrders(Model model, HttpSession session) {	
 		model.addAttribute("orders", "active");
 		return "broadband-customer/customer-orders";
 	}
 
-	@RequestMapping(value = "/customer/data")
-	public String customerData(Model model, HttpServletRequest req) {
-		
-		model.addAttribute("data", "active");
-		model.addAttribute("current_date", TMUtils.dateFormatYYYYMMDD(new Date()).substring(0, 7));
-		
-		return "broadband-customer/customer-data";
-	}
-
-	@RequestMapping(value = "/customer/billing/view")
-	public String customerBilling(Model model, HttpServletRequest req) {
-		model.addAttribute("bills", "active");
-		return "broadband-customer/customer-billing";
-	}
-
-	@RequestMapping(value = "/customer/billing/discard/{pageNo}")
-	public String customerDiscardBilling(Model model,
-			@PathVariable(value = "pageNo") int pageNo,
-			HttpServletRequest request) {
-
-		model.addAttribute("discard_bills", "active");
-		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
-		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
-		invoicePage.setPageNo(pageNo);
-		invoicePage.setPageSize(12);
-		invoicePage.getParams().put("orderby", "order by create_date desc");
-		invoicePage.getParams().put("customer_id", customer.getId());
-		invoicePage.getParams().put("status", "discard");
-		this.crmService.queryCustomerInvoicesByPage(invoicePage);
-		
-		model.addAttribute("page", invoicePage);
-		return "broadband-customer/customer-discard-billing";
-	}
-	
 	@RequestMapping(value = "/customer/new-order")
 	public String newOrder(Model model, HttpSession session) {
 		model.addAttribute("neworder", "active");
@@ -504,7 +461,6 @@ public class CustomerController {
 	
 	@RequestMapping(value = "/customer/change-password")
 	public String changePassword(Model model, HttpServletRequest request) {
-		
 		model.addAttribute("change_password", "active");
 		return "broadband-customer/customer-change-password";
 	}
@@ -519,6 +475,24 @@ public class CustomerController {
 	public String customerTopup(Model model) {
 		model.addAttribute("home", "active");
 		return "broadband-customer/customer-topup-for-account";
+	}
+	
+	@RequestMapping("/customer/topup-plan/{orderid}")
+	public String customerTopupPlan(Model model
+			, HttpSession session
+			, @PathVariable("orderid") int orderid) {
+		model.addAttribute("orders", "active");
+		Customer customerSession = (Customer) session.getAttribute("customerSession");
+		List<CustomerOrder> orders = customerSession.getCustomerOrders();
+		if (orders != null && orders.size() > 0) {
+    		for (CustomerOrder order : orders) {
+    			if (order.getId() == orderid) {
+    				customerSession.setCustomerOrder(order);
+    				break;
+    			}
+    		}
+    	}
+		return "broadband-customer/customer-topup-for-plan";
 	}
 	
 //	@RequestMapping(value = "/customer/topup/checkout", method = RequestMethod.POST)
@@ -613,158 +587,46 @@ public class CustomerController {
 //		return "redirect:/customer/topup";
 //	}
 	
-	@RequestMapping(value = "/customer/invoice/checkout", method = RequestMethod.POST)
-	public String balanceCheckout(Model model, 
-			@RequestParam("invoice_id") int invoice_id,
-			HttpServletRequest req, RedirectAttributes attr) {
-		
-		Customer customer = (Customer) req.getSession().getAttribute("customerSession");
-		
-		CustomerInvoice ciQuery = new CustomerInvoice();
-		ciQuery.getParams().put("id", invoice_id);
-		ciQuery.getParams().put("customer_id", customer.getId());
-		
-		CustomerInvoice ci = this.crmService.queryCustomerInvoice(ciQuery);
-		customer.setCustomerInvoice(ci);
-		
-		System.out.println("customer_id: " + customer.getId() + ", invoice_id: " + invoice_id + ", balance: " + ci.getBalance());
-
-		GenerateRequest gr = new GenerateRequest();
-
-		gr.setAmountInput(new DecimalFormat("#.00").format(ci.getBalance()));
-		//gr.setAmountInput("1.00");
-		gr.setCurrencyInput("NZD");
-		gr.setTxnType("Purchase");
-		
-		System.out.println(req.getRequestURL().toString());
-		gr.setUrlFail(req.getRequestURL().toString());
-		gr.setUrlSuccess(req.getRequestURL().toString());
-
-		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
-
-		return "redirect:" + redirectUrl;
-	}
 	
-//	@RequestMapping(value = "/customer/invoice/checkout")
-//	public String toBalanceSuccess(Model model,
-//			@RequestParam(value = "result", required = true) String result,
-//			RedirectAttributes attr, HttpServletRequest request
-//			) throws Exception {
-//		
-//		Customer customer = (Customer) request.getSession().getAttribute("customerSession");
-//
-//		Response responseBean = null;
-//
-//		if (result != null)
-//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-//
-//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-//			
-//			CustomerTransaction customerTransaction = new CustomerTransaction();
-//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-//			customerTransaction.setAuth_code(responseBean.getAuthCode());
-//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-//			customerTransaction.setCard_name(responseBean.getCardName());
-//			customerTransaction.setCard_number(responseBean.getCardNumber());
-//			customerTransaction.setClient_info(responseBean.getClientInfo());
-//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-//			customerTransaction.setResponse_text(responseBean.getResponseText());
-//			customerTransaction.setSuccess(responseBean.getSuccess());
-//			customerTransaction.setTxnMac(responseBean.getTxnMac());
-//			customerTransaction.setTransaction_type(responseBean.getTxnType());
-//			customerTransaction.setTransaction_sort("");
-//			
-//			customerTransaction.setCustomer_id(customer.getId());
-//			customerTransaction.setOrder_id(customer.getCustomerInvoice().getOrder_id());
-//			customerTransaction.setInvoice_id(customer.getCustomerInvoice().getId());
-//			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
-//			
-//			CustomerInvoice customerInvoice = new CustomerInvoice();
-//			customerInvoice.setStatus("paid");
-//			customerInvoice.setAmount_paid(customerTransaction.getAmount());
-//			customerInvoice.setBalance(TMUtils.bigOperationTwoReminders(customer.getCustomerInvoice().getBalance(), customerInvoice.getAmount_paid(), "sub"));
-//			customerInvoice.getParams().put("id", customer.getCustomerInvoice().getId());
-//			
-//			this.crmService.customerBalance(customerInvoice, customerTransaction);
-//			
-//			Notification notification = this.crmService.queryNotificationBySort("payment", "email");
-//			ApplicationEmail applicationEmail = new ApplicationEmail();
-//			CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-//			// call mail at value retriever
-//			MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//			applicationEmail.setAddressee(customer.getEmail());
-//			applicationEmail.setSubject(notification.getTitle());
-//			applicationEmail.setContent(notification.getContent());
-//			// binding attachment name & path to email
-//			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//			
-//			// get sms register template from db
-//			notification = this.crmService.queryNotificationBySort("payment", "sms");
-//			MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//			// send sms to customer's mobile phone
-//			this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-//			
-//			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
-//			
-//		} else {
-//			
-//			attr.addFlashAttribute("error", "PAYMENT " + responseBean.getResponseText());
-//		}
-//
-//		return "redirect:/customer/billing/view";
-//	}
 
 	@RequestMapping(value = "/signout")
 	public String signout(HttpSession session) {
 		session.removeAttribute("customerSession");
 		return "redirect:/home";
 	}
-	
-	// download invoice PDF directly
-	@RequestMapping(value = "/customer/billing/invoice/pdf/download/{invoiceId}")
-    public ResponseEntity<byte[]> downloadInvoicePDF(Model model , @PathVariable(value = "invoiceId") int invoiceId) throws IOException {
-		String filePath = this.crmService.queryCustomerInvoiceFilePathById(invoiceId);
-		
-		// get file path
-        Path path = Paths.get(filePath);
-        byte[] contents = null;
-        // transfer file contents to bytes
-        contents = Files.readAllBytes( path );
-        
-        HttpHeaders headers = new HttpHeaders();
-        // set spring framework media type
-		headers.setContentType(MediaType.parseMediaType("application/pdf"));
-        // get file name with file's suffix
-        String filename = "Invoice_"+URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
-        headers.setContentDispositionFormData( filename, filename );
-        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
-        return response;
-    }
-    
-	@RequestMapping(value = "/customer/orders/{pdftype}/pdf/download/{orderid}")
-    public ResponseEntity<byte[]> downloadOrderingFormPDF(HttpSession session
+     
+	@RequestMapping(value = "/customer/orders/{pdftype}/pdf/download/{id}")
+    public ResponseEntity<byte[]> downloadOrderingFormReceiptInvoicePDF(HttpSession session
     		, @PathVariable("pdftype") String pdftype
-    		, @PathVariable("orderid") int orderid) throws IOException {
+    		, @PathVariable("id") int id) throws IOException {
     	
     	Customer customerSession =  (Customer) session.getAttribute("customerSession");
     	List<CustomerOrder> orders = customerSession.getCustomerOrders();
+    	List<CustomerInvoice> invoices = customerSession.getCustomerInvoices(); //System.out.println("invoices.size(): " + invoices.size());
     	String filePath = "";
     	
-    	if (orders != null && orders.size() > 0) {
-    		for (CustomerOrder order : orders) {
-    			if (order.getId() == orderid) {
-    				if ("ordering-form".equals(pdftype)) {
-    					filePath = order.getOrdering_form_pdf_path();
-    				} else if ("receipt".equals(pdftype)) {
-    					filePath = order.getReceipt_pdf_path();
-    				}
-    				break;
-    			}
-    		}
+    	if ("invoice".equals(pdftype)) {
+    		if (invoices != null && invoices.size() > 0) {
+        		for (CustomerInvoice invoice : invoices) {
+        			if (invoice.getId() == id) {
+        				filePath = invoice.getInvoice_pdf_path(); System.out.println(filePath);
+        				break;
+        			}
+        		}
+        	}
+    	} else {
+    		if (orders != null && orders.size() > 0) {
+        		for (CustomerOrder order : orders) {
+        			if (order.getId() == id) {
+        				if ("ordering-form".equals(pdftype)) {
+        					filePath = order.getOrdering_form_pdf_path();
+        				} else if ("receipt".equals(pdftype)) {
+        					filePath = order.getReceipt_pdf_path();
+        				}
+        				break;
+        			}
+        		}
+        	}
     	}
     	
     	ResponseEntity<byte[]> response = null;
@@ -1134,6 +996,9 @@ public class CustomerController {
 	public String plansOrderBankDeposit(RedirectAttributes attr, HttpSession session) {
 		
 		Customer customerReg = (Customer) session.getAttribute("customerReg");
+		Customer customerSession = (Customer) session.getAttribute("customerSession"); System.out.println("customerSession: " + customerSession);
+		
+		String send_email = "", send_mobile = "";
 		
 		if (customerReg.getNewOrder()) {
 			customerReg.setPassword("*********");
@@ -1141,6 +1006,12 @@ public class CustomerController {
 			customerReg.setStatus("active");
 			customerReg.getCustomerOrder().setOrder_status("pending");
 			customerReg.setBalance(0d);
+			if (customerSession != null) {
+				send_email = customerReg.getEmail();
+				send_mobile = customerReg.getCellphone();
+				customerReg.setEmail(customerSession.getEmail());
+				customerReg.setCellphone(customerSession.getCellphone());
+			}
 		} else {
 			customerReg.setPassword(TMUtils.generateRandomString(6));
 			customerReg.setMd5_password(DigestUtils.md5Hex(customerReg.getPassword()));
@@ -1148,6 +1019,8 @@ public class CustomerController {
 			customerReg.setStatus("active");
 			customerReg.getCustomerOrder().setOrder_status("pending");
 			customerReg.setBalance(0d);
+			send_email = customerReg.getEmail();
+			send_mobile = customerReg.getCellphone();
 		}
 		
 		customerReg.setCompany_name(customerReg.getCustomerOrder().getOrg_name());
@@ -1159,7 +1032,7 @@ public class CustomerController {
 		Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
 		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
 		ApplicationEmail applicationEmail = new ApplicationEmail();
-		applicationEmail.setAddressee(customerReg.getEmail());
+		applicationEmail.setAddressee(send_email);
 		applicationEmail.setSubject(notification.getTitle());
 		applicationEmail.setContent(notification.getContent());
 		applicationEmail.setAttachName("ordering_form_" + customerReg.getCustomerOrder().getId() + ".pdf");
@@ -1167,7 +1040,7 @@ public class CustomerController {
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		notification = this.systemService.queryNotificationBySort("personal".equals(customerReg.getCustomerOrder().getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms"); 
 		MailRetriever.mailAtValueRetriever(notification, customerReg, customerReg.getCustomerOrder(), companyDetail);
-		this.smserService.sendSMSByAsynchronousMode(customerReg.getCellphone(), notification.getContent()); 
+		this.smserService.sendSMSByAsynchronousMode(send_mobile, notification.getContent()); 
 		
 		Response responseBean = new Response();
 		responseBean.setSuccess("1");

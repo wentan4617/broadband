@@ -33,7 +33,7 @@
   						<div class="form-group">
   							<label for="topup" class="col-md-2 control-label text-success">Top Up:</label>
 						    <div class="col-md-6">
-								<select name="prepaymonths" class="selectpicker" data-width="100%">
+								<select name="topupAmount" class="selectpicker" data-width="100%">
 									<option value="1">Top Up $ 1</option>
 									<option value="30">Top Up $ 30</option>
 									<option value="50">Top Up $ 50</option>
