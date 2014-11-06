@@ -171,16 +171,4 @@
 		}, 'json');
 	}
 	
-	/*$('#pending_to_ordering').click(function(){
-		$('#process_way').val('pending to ordering-pending');
-		$('#change_order_status').val($(this).attr('data-val'));
-		$('#provisionForm').submit();
-	});
-
-	$('#paid_to_ordering').click(function() {
-		$('#process_way').val('paid to ordering-paid');
-		$('#change_order_status').val($(this).attr('data-val'));
-		$('#provisionForm').submit();
-	});*/
-	
 })(jQuery);

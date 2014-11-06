@@ -3377,30 +3377,38 @@ public class CRMRestController {
 				json.getErrorMap().remove("customerOrder.transition_account_holder_name");
 			}
 			
+			if (customer.getNewOrder()) {
+				System.out.println("new order, so remove some field");
+				json.getErrorMap().remove("cellphone");
+				json.getErrorMap().remove("email");
+				json.getErrorMap().remove("first_name");
+				json.getErrorMap().remove("last_name");
+				json.getErrorMap().remove("identity_number");
+			}
+			
 			if (json.isHasErrors()) return json;
 		}
 
-		Customer cValid = new Customer();
-		cValid.getParams().put("where", "query_exist_customer_by_mobile");
-		cValid.getParams().put("cellphone", customer.getCellphone());
-		int count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			json.getErrorMap().put("cellphone", "is already in use");
-			return json;
+		if (!customer.getNewOrder()) {
+			Customer cValid = new Customer();
+			cValid.getParams().put("where", "query_exist_customer_by_mobile");
+			cValid.getParams().put("cellphone", customer.getCellphone());
+			int count = this.crmService.queryExistCustomer(cValid);
+	
+			if (count > 0) {
+				json.getErrorMap().put("cellphone", "is already in use");
+				return json;
+			}
+			
+			cValid.getParams().put("where", "query_exist_customer_by_email");
+			cValid.getParams().put("email", customer.getEmail());
+			count = this.crmService.queryExistCustomer(cValid);
+	
+			if (count > 0) {
+				json.getErrorMap().put("email", "is already in use");
+				return json;
+			}
 		}
-		
-		cValid.getParams().put("where", "query_exist_customer_by_email");
-		cValid.getParams().put("email", customer.getEmail());
-		count = this.crmService.queryExistCustomer(cValid);
-
-		if (count > 0) {
-			json.getErrorMap().put("email", "is already in use");
-			return json;
-		}
-		json.setUrl("");
-		// Recycle
-		cValid = null;
 		
 		return json;
 	}
@@ -3456,7 +3464,6 @@ public class CRMRestController {
 		customerRegAdmin.setLast_name(customer.getLast_name());
 		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
 		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
-//		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
 		
 		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
 		
@@ -3485,7 +3492,6 @@ public class CRMRestController {
 		customerRegAdmin.setLast_name(customer.getLast_name());
 		customerRegAdmin.setIdentity_type(customer.getIdentity_type());
 		customerRegAdmin.setIdentity_number(customer.getIdentity_number());
-//		customerRegAdmin.setCustomer_type(customer.getCustomer_type());
 		
 		customerRegAdmin.setCustomerOrder(customer.getCustomerOrder());
 		
