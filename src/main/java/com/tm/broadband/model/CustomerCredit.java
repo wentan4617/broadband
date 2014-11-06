@@ -1,5 +1,8 @@
 package com.tm.broadband.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -35,6 +38,7 @@ public class CustomerCredit {
 	
 	
 	private Customer customer = new Customer();
+	private Map<String, Object> params = new HashMap<String, Object>();
 
 	/*
 	 * END RELATED PROPERTIES
@@ -122,6 +126,14 @@ public class CustomerCredit {
 
 	public void setExpiry_year(String expiry_year) {
 		this.expiry_year = expiry_year;
+	}
+
+	public Map<String, Object> getParams() {
+		return params;
+	}
+
+	public void setParams(Map<String, Object> params) {
+		this.params = params;
 	}
 
 }

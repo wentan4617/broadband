@@ -137,6 +137,13 @@
 							</li>
 							<li class="divider"></li>
 							<li>
+								<a href="${ctx }/broadband-user/billing/chart/calling-statistic/all/0">
+									<span class="glyphicon glyphicon-briefcase" style="padding-right:10px;"></span>
+									Chart(Calling Statistic)
+								</a>
+							</li>
+							<li class="divider"></li>
+							<li>
 								<a href="${ctx}/broadband-user/billing/early-termination-charge/view/1/unpaid">
 									<span class="glyphicon glyphicon-list-alt" style="padding-right:10px;"></span>
 									View Early Termination Charge
@@ -180,6 +187,13 @@
 								<a href="${ctx}/broadband-user/provision/sale/view/1">
 									<span class="glyphicon glyphicon-tasks" style="padding-right:10px;"></span>
 									View Sales
+								</a>
+	                    	</li>
+							<li class="divider"></li>
+	                    	<li>
+								<a href="${ctx }/broadband-user/provision/number-couldnot-find/chorus/unmatched">
+									<span class="glyphicon glyphicon-screenshot" style="padding-right:10px;"></span>
+									View Provision Exceptions
 								</a>
 	                    	</li>
 							<!-- <li class="divider"></li>
@@ -244,6 +258,12 @@
 									Edit Company Detail
 								</a>
 							</li>
+							<li>
+								<a href="${ctx }/broadband-user/system/seo/edit">
+									<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+									Edit SEO
+								</a>
+							</li>
 							<li class="divider"></li>
 	                    	<li>
 								<a href="${ctx}/broadband-user/system/chart/customer-register/0">
@@ -251,6 +271,12 @@
 									Chart(Register Customer)
 								</a>
 	                    	</li>
+							<li>
+								<a href="${ctx }/broadband-user/system/ir/edit">
+									<span class="glyphicon glyphicon-pencil" style="padding-right:10px;"></span>
+									Edit Invite Rates
+								</a>
+							</li>
 						</ul>
 					</li>
 					</c:if>
@@ -294,9 +320,15 @@
 								</a>
 							</li>
 							<li>
-								<a href="${ctx}/broadband-user/manual-manipulation/call-international-rate/view/1">
+								<a href="${ctx }/broadband-user/manual-manipulation/pstn-calling-rate/view/1">
 									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
-									Calling International Rate
+									PSTN Calling Rate
+								</a>
+							</li>
+							<li>
+								<a href="${ctx }/broadband-user/manual-manipulation/vos-voip-call-rate/view/1">
+									<span class="glyphicon glyphicon-registration-mark" style="padding-right:10px;"></span>
+									VoIP Calling Rate
 								</a>
 							</li>
 						</ul>

@@ -1,12 +1,11 @@
 <!-- Customer Basic Details -->
-
 <form id="customerEditForm" class="form-horizontal">
 	<h4 class="text-success">Customer Identity</h4>
 	<hr/>
 	<div class="form-group">
 		<label class="control-label col-md-4">Customer ID</label>
 		<div class="col-md-4">
-			<p class="form-control-static"><.=id.></p>
+			<p class="form-control-static"><.= customer.id .></p>
 		</div>
 	</div>
 	
@@ -16,7 +15,7 @@
 			<select name="identity_type" id="identity_type" class="selectpicker show-tick form-control">
 			<. var types = ['Driver Licence', 'Passport', '18+'];
 				for(var i = 0; i < types.length; i++) {
-					if (identity_type == types[i])
+					if (customer.identity_type == types[i])
 			.> 
 				<option value="<.=types[i].>" selected="selected"><.=types[i].></option>
 			<. 		else .>
@@ -29,7 +28,7 @@
 	<div class="form-group">
 		<label for="identity_number" class="control-label col-md-4">Identity Number</label>
 		<div class="col-md-4">
-			<input type="text" id="identity_number" name="identity_number" value="<.=identity_number.>" class="form-control" data-error-field data-placement="right"/>
+			<input type="text" id="identity_number" name="identity_number" value="<.= customer.identity_number .>" class="form-control" data-error-field data-placement="right"/>
 		</div>
 	</div>
 		
@@ -41,7 +40,7 @@
 	<div class="form-group">
 		<label for="address" class="control-label col-md-4">Customer Address</label>
 		<div class="col-md-8">
-			<input type="text" id="address" name="address" value="<.=address.>" class="form-control" data-error-field data-placement="top"/>
+			<input type="text" id="address" name="address" value="<.= customer.address .>" class="form-control" data-error-field data-placement="top"/>
 		</div>
 	</div>
 
@@ -53,19 +52,19 @@
 	<div class="form-group">
 		<label for="cellphone" class="control-label col-md-4">Customer Mobile</label>
 		<div class="col-md-4">
-			<input type="text" id="cellphone" name="cellphone" value="<.=cellphone.>"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
+			<input type="text" id="cellphone" name="cellphone" value="<.= customer.cellphone .>"class="form-control" placeholder="e.g.: 0210800123" data-error-field />
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="email" class="control-label col-md-4">Customer Email</label>
 		<div class="col-md-4">
-			<input type="text" id="email" name="email" value="<.=email.>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
+			<input type="text" id="email" name="email" value="<.= customer.email .>" class="form-control" placeholder="e.g.: welcome@cyberpark.co.nz" data-error-field/>
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="password" class="control-label col-md-4">Customer Password</label>
 		<div class="col-md-4">
-			<input type="text" id="password" name="password" value="<.=password.>" class="form-control" data-error-field/>
+			<input type="text" id="password" name="password" value="<.= customer.password .>" class="form-control" data-error-field/>
 		</div>
 	</div>
 
@@ -80,7 +79,7 @@
 			<select name="title" id="title" class="selectpicker show-tick form-control">
 			<. var types = ['Mr', 'Mrs', 'Ms'];
 				for(var i = 0; i < types.length; i++) {
-					if (title == types[i])
+					if (customer.title == types[i])
 			.> 
 				<option value="<.=types[i].>" selected="selected"><.=types[i].></option>
 			<. 		else .>
@@ -92,13 +91,13 @@
 	<div class="form-group">
 		<label for="first_name" class="control-label col-md-4">First name</label>
 		<div class="col-md-4">
-			<input type="text" id="first_name" name="first_name" value="<.=first_name.>" class="form-control" data-error-field />
+			<input type="text" id="first_name" name="first_name" value="<.= customer.first_name .>" class="form-control" data-error-field />
 		</div>
 	</div>
 	<div class="form-group">
 		<label for="last_name" class="control-label col-md-4">Last name</label>
 		<div class="col-md-4">
-			<input type="text" id="last_name" name="last_name" value="<.=last_name.>" class="form-control" data-error-field />
+			<input type="text" id="last_name" name="last_name" value="<.= customer.last_name .>" class="form-control" data-error-field />
 		</div>
 	</div>
 	
@@ -112,7 +111,7 @@
 	<div class="form-group">
 		<label for="balance" class="control-label col-md-4">Credit</label>
 		<div class="col-md-2">
-	      <p class="form-control-static"><.=Number(balance).toFixed(2).></p>
+	      <p class="form-control-static"><.=Number(customer.balance).toFixed(2).></p>
 		</div>
 		<div class="col-md-3">
 			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') { .>
@@ -139,7 +138,7 @@
 	<div class="form-group">
 		<label class="control-label col-md-4">Register Date</label>
 		<div class="col-md-4">
-			<p class="form-control-static"><strong><.=register_date_str.></strong></p>
+			<p class="form-control-static"><strong><.= customer.register_date_str .></strong></p>
 		</div>
 	</div>
 	
@@ -152,14 +151,14 @@
 		<label for="status" class="control-label col-md-4">Status</label>
 		<div class="col-md-4">
 			<select id="status" name="status" class="selectpicker show-tick form-control">
-				<. if (status == 'active') { .>
-					<option value="active" selected="selected">Active</option>
+				<. var statusArr = ['active','disabled']; .>
+				<. for(var s=0; s<statusArr.length; s++){ .>
+					<. if(statusArr[s]==customer.status){ .>
+				<option value="<.= statusArr[s] .>" selected="selected"><.= statusArr[s] .></option>
+					<. } else { .>
+				<option value="<.= statusArr[s] .>"><.= statusArr[s] .></option>
+					<. } .>
 				<. } .>
-					<option value="active">Active</option>
-				<. if (status == 'disabled') { .>
-					<option value="disabled" selected="selected">Disabled</option>
-				<. } .>
-					<option value="disabled" >Disabled</option>
 			</select>
 		</div>
 	</div>
@@ -177,7 +176,64 @@
 			<. } .>
 		</div>
 	</div>
+	
+	
+	<!-- Credit Card -->
+	<. if((user_role == 'accountant' || user_role == 'system-developer')){ .>
+	<hr/>
+	<h4 class="text-success">
+		Credit Card&nbsp;&nbsp;
+		<a href="javascript:void(0);" class="btn btn-success btn-xs" id="add_credit_card_btn" >Add Credit Card</a>
+	</h4>
+	<hr/>
+	
+		<. for(var cCards=0; cCards<customerCredits.length; cCards++){ .>
+			<. var cc = customerCredits[cCards]; .>
+	<div class="form-group">
+		<label for="card_number" class="control-label col-md-2">Card Number</label>
+		<div class="col-md-3">
+			<input type="text" id="card_number_<.= cc.id .>" value="<.= cc.card_number .>" class="form-control" data-error-field />
+		</div>
+		<label for="holder_name" class="control-label col-md-1">Name</label>
+		<div class="col-md-3">
+			<input type="text" id="holder_name_<.= cc.id .>" value="<.= cc.holder_name .>" class="form-control" data-error-field />
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="card_type" class="control-label col-md-2">Card Type</label>
+		<div class="col-md-2">
+			<select id="card_type_<.= cc.id .>" class="selectpicker show-tick form-control">
+				<. var cardTypes = ['VISA','MASTERCARD']; .>
+				<. for(var ct=0; ct<cardTypes.length; ct++){ .>
+					<. if(cardTypes[ct]==cc.card_type){ .>
+				<option value="<.= cardTypes[ct] .>" selected="selected"><.= cardTypes[ct] .></option>
+					<. } else { .>
+				<option value="<.= cardTypes[ct] .>" ><.= cardTypes[ct] .></option>
+					<. } .>
+				<. } .>
+			</select>
+		</div>
+		<label for="security_code" class="control-label col-md-2">Security Code</label>
+		<div class="col-md-2">
+			<input type="text" id="security_code_<.= cc.id .>" value="<.= cc.security_code .>" class="form-control" data-error-field />
+		</div>
+		<label for="expiry_date" class="control-label col-md-2">Expiry Date</label>
+		<div class="col-md-2">
+			<input type="text" id="expiry_date_<.= cc.id .>" value="<.= cc.expiry_date .>" class="form-control" data-error-field />
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="col-md-12">
+			<a href="javascript:void(0);" id="<.= cc.id .>" class="btn btn-danger btn-xs" data-name="delete_credit_card_btn" >Delete Credit Card</a>
+			<a href="javascript:void(0);" id="<.= cc.id .>" class="btn btn-success btn-xs pull-right" data-name="update_credit_card_btn" >Update Credit Card</a>
+		</div>
+	</div>
+	<hr/>
+		<. } .>
+	
+	<. } .>
 </form>
+	
 
 <!-- Delete Customer Modal -->
 <form class="form-horizontal">
@@ -207,7 +263,7 @@
 					</p>
 				</div>
 				<div class="modal-footer">
-					<a href="<.=ctx.>/broadband-user/crm/customer/remove/<.= id .>" class="btn btn-warning btn-lg">Delete</a>
+					<a href="<.=ctx.>/broadband-user/crm/customer/remove/<.= customer.id .>" class="btn btn-warning btn-lg">Delete</a>
 				</div>
 			</div>
 		</div>
@@ -257,7 +313,7 @@
 
 <!-- confirmTopupAccountCreditByDPSModal -->
 <form class="form-horizontal" action="<.= ctx .>/broadband-user/crm/customer/topup/account-credit">
-	<input type="hidden" name="customer_id" value="<.= id .>" /> 
+	<input type="hidden" name="customer_id" value="<.= customer.id .>" /> 
 	<div class="modal fade" id="confirmTopupAccountCreditByDPSModal" tabindex="-1" role="dialog" aria-labelledby="confirmTopupAccountCreditByDPSModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
@@ -277,6 +333,122 @@
 				</div>
 				<div class="modal-footer">
 					<button type="submit" class="btn btn-success col-md-12">Continue</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+</form>
+
+
+
+<!-- addCreditCardModal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="addCreditCardModal" tabindex="-1" role="dialog" aria-labelledby="addCreditCardModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">
+						<strong>Add Credit Card</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="card_type" class="control-label col-md-4">Card Type:</label>
+						<div class="col-md-4">
+							<select data-name="card_type" class="selectpicker show-tick form-control">
+								<option value="VISA">VISA</option>
+								<option value="MASTERCARD">MASTERCARD</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="card_number" class="control-label col-md-4">Card Number:</label>
+						<div class="col-md-4">
+							<input data-name="card_number" class="form-control input-sm" type="text" placeholder="Number On Card"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="holder_name" class="control-label col-md-4">Holder Name:</label>
+						<div class="col-md-4">
+							<input data-name="holder_name" class="form-control input-sm" type="text" placeholder="Name On Card"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="security_code" class="control-label col-md-4">Security Code:</label>
+						<div class="col-md-3">
+							<input data-name="security_code" class="form-control input-sm" type="text" placeholder="Behind The Card"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<label for="expiry_date" class="control-label col-md-4">Expiry Date:</label>
+						<div class="col-md-4">
+							<input data-name="expiry_date" class="form-control input-sm" type="text" placeholder="YYYY-MM on Card"/>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a data-name="add_credit_card_modal_btn" class="btn btn-success col-md-12" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+</form>
+
+
+<!-- editCreditCardModal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="editCreditCardModal" tabindex="-1" role="dialog" aria-labelledby="editCreditCardModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">
+						<strong>Edit Credit Card</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Update This Credit Card Information?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a data-name="edit_credit_card_modal_btn" class="btn btn-warning col-md-12" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+</form>
+
+
+
+<!-- deleteCreditCardModal -->
+<form class="form-horizontal">
+	<div class="modal fade" id="deleteCreditCardModal" tabindex="-1" role="dialog" aria-labelledby="deleteCreditCardModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">
+						<strong>Delete Credit Card</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Remove This Credit Card Information?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a data-name="delete_credit_card_modal_btn" class="btn btn-danger col-md-12" data-dismiss="modal">Confirm</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->

@@ -18,24 +18,18 @@
 	
 	<sql id="customerCreditWhere">
 		<where>
-			<if test="param.customer_id != null">customer_id=#{param.customer_id},</if>
-			<if test="param.card_type != null">card_type=#{param.card_type},</if>
-			<if test="param.holder_name != null">holder_name=#{param.holder_name},</if>
-			<if test="param.card_number != null">card_number=#{param.card_number},</if>
-			<if test="param.security_code != null">security_code=#{param.security_code},</if>
-			<if test="param.expiry_date != null">expiry_date=#{param.expiry_date}</if>
+			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+			<if test="params.card_type != null">and card_type=#{params.card_type}</if>
+			<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
+			<if test="params.card_number != null">and card_number=#{params.card_number}</if>
+			<if test="params.security_code != null">and security_code=#{params.security_code}</if>
+			<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
 		</where>
 	</sql>
 	
 	<!-- // DEFINITION AREA -->
 	<!-- =================================================================================== -->
 	<!-- SELECT AREA -->
-	
-	<!-- select customer credit -->
-	<select id="selectCustomerCredit" parameterType="CustomerCredit" resultType="CustomerCredit">
-		select * from tm_customer_credit
-		<include refid="customerCreditWhere"/>
-	</select>
 	
 	<!-- select customer credits -->
 	<select id="selectCustomerCredits" parameterType="CustomerCredit" resultType="CustomerCredit">
@@ -84,7 +78,13 @@
 	</update>
 	<!-- // END UPDATE AREA -->
 	<!-- =================================================================================== -->
-	<!-- DELETE AREA --><!-- // END DELETE AREA -->
+	<!-- DELETE AREA -->
+	
+	<delete id="deleteCustomerCreditCardById" parameterType="int">
+		DELETE FROM tm_customer_credit WHERE id = #{0}
+	</delete>
+	
+	<!-- // END DELETE AREA -->
 	
 	
 </mapper>

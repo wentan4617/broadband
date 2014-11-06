@@ -4,10 +4,11 @@
 		var data = { 'id' : customerId };
 		
 		$.get(ctx+'/broadband-user/crm/customer/edit', data, function(map){
-			map.customer.ctx = ctx+'';
-			map.customer.user_role = user_role;
+			var customerCredits = map.customerCredits;
+			map.ctx = ctx+'';
+			map.user_role = user_role;
 	   		var $table = $('#customer_edit');
-			$table.html(tmpl('customer_info_table_tmpl', map.customer));
+			$table.html(tmpl('customer_info_table_tmpl', map));
 			
 			$('.input-group.date').datepicker({
 			    format: "yyyy-mm-dd",
@@ -74,6 +75,7 @@
 			    });
 			});
 			// END customer info modal area
+			
 			
 			// BEGIN Topup Account Credit
 			$('a[data-name="topup_account_credit"]').click(function(){
@@ -175,6 +177,86 @@
 			$('button[data-name="topup_account_credit_by_dps"]').click(function(){
 				$('#confirmTopupAccountCreditByDPSModal').modal('show');
 			});
+			
+
+			// BEGIN Credit Card Area
+			
+			// CREATE
+			$('#add_credit_card_btn').click(function(){
+				$(this).button('loading');
+				$('#addCreditCardModal').modal('show');
+			});
+			$('a[data-name="add_credit_card_modal_btn"]').click(function(){
+				var card_type = $('select[data-name="card_type"]').val();
+				var holder_name = $('input[data-name="holder_name"]').val();
+				var card_number = $('input[data-name="card_number"]').val();
+				var security_code = $('input[data-name="security_code"]').val();
+				var expiry_date = $('input[data-name="expiry_date"]').val();
+				var data = {
+					'customer_id':customerId,
+					'card_type':card_type,
+					'holder_name':holder_name,
+					'card_number':card_number,
+					'security_code':security_code,
+					'expiry_date':expiry_date
+				};
+				$.post(ctx+'/broadband-user/crm/customer/credit-card/create', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#addCreditCardModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+			
+			// UPDATE
+			$('a[data-name="update_credit_card_btn"]').click(function(){
+				$('a[data-name="edit_credit_card_modal_btn"]').prop('id', this.id);
+				$('#editCreditCardModal').modal('show');
+			});
+			$('a[data-name="edit_credit_card_modal_btn"]').click(function(){
+				var card_type = $('#card_type_'+this.id).val();
+				var holder_name = $('#holder_name_'+this.id).val();
+				var card_number = $('#card_number_'+this.id).val();
+				var security_code = $('#security_code_'+this.id).val();
+				var expiry_date = $('#expiry_date_'+this.id).val();
+				var data = {
+					'id':this.id,
+					'customer_id':customerId,
+					'card_type':card_type,
+					'holder_name':holder_name,
+					'card_number':card_number,
+					'security_code':security_code,
+					'expiry_date':expiry_date
+				};
+				$.post(ctx+'/broadband-user/crm/customer/credit-card/edit', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#editCreditCardModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+
+			// DELETE
+			$('a[data-name="delete_credit_card_btn"]').click(function(){
+				$('a[data-name="delete_credit_card_modal_btn"]').prop('id', this.id);
+				$('#deleteCreditCardModal').modal('show');
+			});
+			$('a[data-name="delete_credit_card_modal_btn"]').click(function(){
+				var data = {
+					'id':this.id
+				};
+				$.post(ctx+'/broadband-user/crm/customer/credit-card/delete', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#deleteCreditCardModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+			
+			// END Credit Card Area
+			
+			
+			
 			
 		}, "json");
 	};
@@ -1311,7 +1393,7 @@
 				});
 				
 				$('select[data-name="'+co[i].id+'_phone_type"]').change(function(){
-					if($(this).val()=='pstn'){
+					if($(this).val()=='pstn' || $(this).val()=='fax'){
 						$('div[data-name="'+this.id+'_voip_password"]').css('display','none');
 						$('div[data-name="'+this.id+'_voip_assign_date"]').css('display','none');
 					} else {

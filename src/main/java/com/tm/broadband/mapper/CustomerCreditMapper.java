@@ -24,7 +24,6 @@ public interface CustomerCreditMapper {
 	
 	/* SELECT AREA */
 	
-	CustomerCredit selectCustomerCredit(CustomerCredit customerCredit);
 	List<CustomerCredit> selectCustomerCredits(CustomerCredit customerCredit);
 	List<CustomerCredit> selectCustomerCreditsByPage(Page<CustomerCredit> page);
 	int selectCustomerCreditsSum(Page<CustomerCredit> page);
@@ -39,6 +38,8 @@ public interface CustomerCreditMapper {
 	void updateCustomerCredit(CustomerCredit customerCredit);
 	/* // END UPDATE AREA */
 	/* =================================================================================== */
-	/* DELETE AREA *//* // END DELETE AREA */
+	/* DELETE AREA */
+	void deleteCustomerCreditCardById(int id);
+	/* // END DELETE AREA */
 
 }

@@ -28,6 +28,7 @@ import com.tm.broadband.mapper.CompanyDetailMapper;
 import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
+import com.tm.broadband.mapper.CustomerCreditMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -55,6 +56,7 @@ import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
@@ -128,6 +130,7 @@ public class CRMService {
 	private NZAreaCodeListMapper nzAreaCodeListMapper;
 	private CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper;
 	private CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper;
+	private CustomerCreditMapper customerCreditMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -166,7 +169,8 @@ public class CRMService {
 			UserMapper userMapper,
 			NZAreaCodeListMapper nzAreaCodeListMapper,
 			CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper,
-			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper){
+			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper,
+			CustomerCreditMapper customerCreditMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -198,6 +202,7 @@ public class CRMService {
 		this.nzAreaCodeListMapper = nzAreaCodeListMapper;
 		this.customerOrderDetailDeleteRecordMapper = customerOrderDetailDeleteRecordMapper;
 		this.customerOrderDetailRecoverableListMapper = customerOrderDetailRecoverableListMapper;
+		this.customerCreditMapper = customerCreditMapper;
 	}
 	
 	
@@ -1727,19 +1732,20 @@ public class CRMService {
 			}
 
 			if(!isFirst
-			&& (cod.getDetail_type()!=null && "pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type()))){
+			&& (cod.getDetail_type()!=null && ("pstn".equals(cod.getDetail_type()) || "voip".equals(cod.getDetail_type())))){
 				
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
-				
-				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
 			}
 			
-			if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
+			if(cod.getDetail_type()!=null
+			&& (("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type())))){
 				cid.setInvoice_detail_name(cod.getDetail_name());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_desc(cod.getDetail_calling_minute()+" Minutes");
@@ -1766,6 +1772,19 @@ public class CRMService {
 			if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
 				
 				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cids.add(cid);
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+			}
+			
+			// Fax
+			if(cod.getDetail_type()!=null && "fax".equals(cod.getDetail_type())){
+
+				cid.setInvoice_detail_name(cod.getDetail_name()+" ( "+cod.getPstn_number()+" )");
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_type(cod.getDetail_type());
@@ -2291,7 +2310,7 @@ public class CRMService {
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
 				
-				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
+				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d, cod.getDetail_unit()!=null ? cod.getDetail_unit() : 1));
 
 				continue;
 				
@@ -2302,8 +2321,8 @@ public class CRMService {
 				cid.setInvoice_detail_desc(cod.getDetail_desc());
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cids.add(cid);
-				
-				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 
 				continue;
 				
@@ -2334,6 +2353,17 @@ public class CRMService {
 			} else if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
 				
 				cid.setInvoice_detail_name(cod.getDetail_name());
+				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				cid.setInvoice_detail_unit(cod.getDetail_unit());
+				cid.setInvoice_detail_type(cod.getDetail_type());
+				cids.add(cid);
+				
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+
+			// Fax
+			} else if(cod.getDetail_type()!=null && "fax".equals(cod.getDetail_type())){
+
+				cid.setInvoice_detail_name(cod.getDetail_name()+" ( "+cod.getPstn_number()+" )");
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				cid.setInvoice_detail_type(cod.getDetail_type());
@@ -2897,8 +2927,8 @@ public class CRMService {
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				cids.add(cid);
-				
-				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price());
+
+				totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 				
 			}
 
@@ -2911,7 +2941,7 @@ public class CRMService {
 				cid.setInvoice_detail_type(cod.getDetail_type());
 				cid.setInvoice_detail_unit(cod.getDetail_unit());
 				// decrease amountPayable
-				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cid.getInvoice_detail_discount(), cid.getInvoice_detail_unit()));
+				totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cid.getInvoice_detail_discount()!=null ? cid.getInvoice_detail_discount() : 0d, cid.getInvoice_detail_unit()!=null ? cid.getInvoice_detail_unit() : 1));
 				// add invoice detail to list
 				cids.add(cid);
 				// else if detail type is discount then this discount is expired
@@ -2948,6 +2978,16 @@ public class CRMService {
 				// Static IP
 				} else if(cod.getDetail_type()!=null && "static-ip".equals(cod.getDetail_type())){
 					cid.setInvoice_detail_name(cod.getDetail_name());
+					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+					cid.setInvoice_detail_unit(cod.getDetail_unit());
+					cid.setInvoice_detail_type(cod.getDetail_type());
+					cids.add(cid);
+					
+					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
+				
+				// Fax
+				} else if(cod.getDetail_type()!=null && "fax".equals(cod.getDetail_type())){
+					cid.setInvoice_detail_name(cod.getDetail_name()+" ( "+cod.getPstn_number()+" )");
 					cid.setInvoice_detail_price(cod.getDetail_price()!=null ? cod.getDetail_price() : 0d);
 					cid.setInvoice_detail_unit(cod.getDetail_unit());
 					cid.setInvoice_detail_type(cod.getDetail_type());
@@ -4334,5 +4374,47 @@ public class CRMService {
 		
 		return ir;
 	}
+	
+	
+	
+	/**
+	 * BEGIN CustomerCredit
+	 */
+	
+	public List<CustomerCredit> queryCustomerCredits(CustomerCredit cc){
+		return this.customerCreditMapper.selectCustomerCredits(cc);
+	}
+	
+	public CustomerCredit queryCustomerCredit(CustomerCredit cc){
+		List<CustomerCredit> ccs = this.queryCustomerCredits(cc);
+		return ccs!=null && ccs.size()>0 ? ccs.get(0) : null;
+	}
+	
+	public Page<CustomerCredit> queryCustomerCreditsByPage(Page<CustomerCredit> page){
+		page.setTotalRecord(this.customerCreditMapper.selectCustomerCreditsSum(page));
+		page.setResults(this.customerCreditMapper.selectCustomerCreditsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerCredit(CustomerCredit cc){
+		this.customerCreditMapper.updateCustomerCredit(cc);
+	}
+
+	@Transactional
+	public void removeCustomerCreditCardById(int id){
+		this.customerCreditMapper.deleteCustomerCreditCardById(id);
+	}
+
+	@Transactional
+	public void createCustomerCredit(CustomerCredit cc){
+		this.customerCreditMapper.insertCustomerCredit(cc);
+	}
+	
+	/**
+	 * END CustomerCredit
+	 */
+	
+	
 	
 }
