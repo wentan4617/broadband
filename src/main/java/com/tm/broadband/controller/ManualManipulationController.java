@@ -133,7 +133,7 @@ public class ManualManipulationController {
 		
 		model.addAttribute("page", page);		
 		
-		return "broadband-user/manual-manipulation/call-international-rate-view";
+		return "broadband-user/manual-manipulation/pstn-calling-rate-view";
 	}
 	
 	@RequestMapping("/broadband-user/manual-manipulation/call-billing-record/view/{pageNo}/{status}/{billing_type}")
@@ -329,7 +329,7 @@ public class ManualManipulationController {
 		
 		model.addAttribute("page", page);		
 		
-		return "broadband-user/manual-manipulation/vos-voip-call-rate-view";
+		return "broadband-user/manual-manipulation/voip-calling-rate-view";
 	}
 	
 	// Insert VOSVoIPRate CSV into database

@@ -32,6 +32,7 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
@@ -176,6 +177,60 @@ public class CRMRestController {
 			BindingResult result, SessionStatus status) {
 
 		return this.returnJsonCustomerEdit(customer, result, status);
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/create", method = RequestMethod.POST)
+	public JSONBean<CustomerCredit> customerCreditCardCreate(Model model,
+			CustomerCredit cc) {
+
+		JSONBean<CustomerCredit> json = new JSONBean<CustomerCredit>();
+		
+		String errorMsg = "";
+		
+		if("".equals(cc.getCard_number().trim())){
+			errorMsg = "Card Number Couldn't be Empty";
+		} else if("".equals(cc.getHolder_name().trim())){
+			errorMsg = "Holder Name Couldn't be Empty";
+		} else if("".equals(cc.getSecurity_code().trim())){
+			errorMsg = "Security Code Couldn't be Empty";
+		} else if("".equals(cc.getExpiry_date().trim())){
+			errorMsg = "Expiry Date Couldn't be Empty";
+		}
+		if(!"".equals(errorMsg)){
+			json.getErrorMap().put("alert-error", errorMsg);
+		} else {
+			this.crmService.createCustomerCredit(cc);
+		}
+		
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerCredit> editCreditCardCreate(Model model,
+			CustomerCredit cc) {
+
+		JSONBean<CustomerCredit> json = new JSONBean<CustomerCredit>();
+		
+		cc.getParams().put("id", cc.getId());
+		this.crmService.editCustomerCredit(cc);
+		
+		json.getSuccessMap().put("alert-success", "Successfully Updated Specific Credit Card Details!");
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/delete", method = RequestMethod.POST)
+	public JSONBean<CustomerCredit> deleteCreditCardCreate(Model model,
+			CustomerCredit cc) {
+
+		JSONBean<CustomerCredit> json = new JSONBean<CustomerCredit>();
+		
+		this.crmService.removeCustomerCreditCardById(cc.getId());
+		
+		json.getSuccessMap().put("alert-success", "Successfully Remove Specific Credit Card Details!");
+		
+		return json;
 	}
 
 	private JSONBean<Customer> returnJsonCustomerEdit(Customer customer,
@@ -1419,7 +1474,8 @@ public class CRMRestController {
 	// Update customer info
 	@RequestMapping(value = "/broadband-user/crm/customer/edit", method = RequestMethod.GET)
 	public Map<String, Object> toCustomerEdit(Model model,
-			@RequestParam("id") int id) {
+			@RequestParam("id") int id,
+			HttpServletRequest req) {
 
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
 		User user = new User();
@@ -1427,8 +1483,19 @@ public class CRMRestController {
 		user.getParams().put("user_role", "sales");
 		user.getParams().put("user_role2", "agent");
 		List<User> sales = this.systemService.queryUser(user);
+		CustomerCredit ccQuery = new CustomerCredit();
+		ccQuery.getParams().put("customer_id", customer.getId());
+		List<CustomerCredit> ccs = this.crmService.queryCustomerCredits(ccQuery);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
 
 		Map<String, Object> map = new HashMap<String, Object>();
+		if("system-developer".equals(userSession.getUser_role())
+		|| "accountant".equals(userSession.getUser_role())){
+			map.put("customerCredits", ccs);
+		} else {
+			map.put("customerCredits", new ArrayList<CustomerCredit>());
+		}
 		map.put("customer", customer);
 		map.put("users", users);
 		map.put("sales", sales);

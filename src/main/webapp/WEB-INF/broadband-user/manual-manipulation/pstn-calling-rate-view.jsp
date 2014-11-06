@@ -15,7 +15,7 @@
 			<div class="panel panel-success">
 				<div class="panel-heading">
 					<h4 class="panel-title">
-						Call International Rate View
+						PSTN Rate View
 						<div class="pull-right">
 							<button class="btn btn-success btn-xs" data-name="upload_pstn_calling_rate_csv_file_btn" data-toggle="tooltip" data-placement="bottom" data-original-title="Upload PSTN Calling Rate CSV">
 								<strong>&nbsp;UPLOAD CALL INTERNATIONAL RATE CSV FILE&nbsp;<span class="glyphicon glyphicon-arrow-up"></span></strong>

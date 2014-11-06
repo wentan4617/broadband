@@ -1026,7 +1026,7 @@
 											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
 								<td data-name="<.= customerOrderDetail[d].id .>_detail_name" data-val="<.= customerOrderDetail[d].detail_name .>" >
 									<.= customerOrderDetail[d].detail_name .>
-				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip'){		.>
+				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip' || customerOrderDetail[d].detail_type == 'fax'){		.>
 							<br/>
 					(			
 				<.			if(customerOrderDetail[d].pstn_number == ''){		.>
@@ -1106,6 +1106,7 @@
 									}
 									if(customerOrderDetail[d].detail_type!='voip'
 									&& customerOrderDetail[d].detail_type!='pstn'
+									&& customerOrderDetail[d].detail_type!='fax'
 									&& customerOrderDetail[d].detail_type.indexOf('plan-') == -1){
 								.>
 									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_common_detail" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <.= customerOrderDetail[d].detail_type .>">
@@ -1127,7 +1128,7 @@
 									</a>
 								<.
 									}
-									if(customerOrderDetail[d].detail_type=='pstn'){
+									if(customerOrderDetail[d].detail_type=='pstn' || customerOrderDetail[d].detail_type=='fax'){
 								.>
 									<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_update_phone" data-val="<.= customerOrderDetail[d].pstn_number .>" data-id="<.= customerOrderDetail[d].id .>" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>">
 									  	<span class="glyphicon glyphicon-edit"></span>
@@ -1160,7 +1161,7 @@
 					<td colspan="12"><br/>
 						<!-- Button trigger modal -->
 						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs xs-btn-width" data-name="<.= customerOrder[i].id .>_add_phone">
-						  <span class="glyphicon glyphicon-plus"></span> Add PSTN OR VoIP
+						  <span class="glyphicon glyphicon-plus"></span> Add PSTN / VoIP / Fax
 						</a>
 				<.
 					/*if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant')){*/
@@ -1921,6 +1922,7 @@
 								<select id="<.= customerOrder[i].id .>" data-name="<.= customerOrder[i].id .>_phone_type" class="form-control input-sm" style="height:26px; padding:0 10px;">
 										<option value="pstn">PSTN</option>
 										<option value="voip">VoIP</option>
+										<option value="fax">Fax</option>
 								</select>
 							</div>
 						</div>

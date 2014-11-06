@@ -20,6 +20,18 @@ Total Mobile Solution Internet Service Web Project
 没有录入order到CyberPark的pstn_number号码：73455586，96235066
 
 
+demand version 1.4.4 2014-11-06
+
+* [在customer-info界面显示所有该customer关联的credit card信息，可以添加新的，更新/删除已有的.](steven)
+* [加一条类似pstn的detail，type为fax.](steven)
+
+
+
+demand version 1.4.4 2014-11-01
+
+* [大改一对多逻辑，预计一周完成，提前一半时间完成.](steven)
+
+
 demand version 1.4.4 2014-10-28
 
 * [分别列出CHORUS，NCA，VOS三种拨打账单的买入，卖出价格差值.](steven)
