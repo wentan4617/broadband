@@ -21,6 +21,8 @@
 		, co.cvlan 			as co_cvlan
 		, co.order_status	as co_order_status
 		, co.broadband_asid as co_broadband_asid
+		, co.first_name		as co_first_name
+		, co.last_name		as co_lastname
 		, co.org_name		as co_org_name
 		, co.customer_type	as co_customer_type
 		
@@ -44,6 +46,8 @@
 		<result property="cvlan" column="co_cvlan"/>
 		<result property="order_status" column="co_order_status"/>
 		<result property="broadband_asid" column="co_broadband_asid"/>
+		<result property="first_name" column="co_first_name"/>
+		<result property="last_name" column="co_last_name"/>
 		<result property="org_name" column="co_org_name"/>
 		<result property="customer_type" column="co_customer_type"/>
 		

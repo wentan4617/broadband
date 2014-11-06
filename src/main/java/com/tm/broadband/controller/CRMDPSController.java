@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -65,6 +66,7 @@ public class CRMDPSController {
 			, RedirectAttributes attr) throws Exception { 
 		
 		Customer customerRegAdmin = (Customer) session.getAttribute("customerRegAdmin");
+		Customer customerBackSession = (Customer) session.getAttribute("customerBackSession"); System.out.println("customerBackSession: " + customerBackSession);
 		List<CustomerTransaction> cts = new ArrayList<CustomerTransaction>();
 		
 		Double order_total_price = customerRegAdmin.getCustomerOrder().getOrder_total_price();
@@ -83,17 +85,26 @@ public class CRMDPSController {
 		}
 		
 		String redirectUrl = "";
+		String send_email = "", send_mobile = "";
 		
 		if (customerRegAdmin.getNewOrder()) {
 			customerRegAdmin.setStatus("active");
 			customerRegAdmin.setPassword("*********");
 			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
 			customerRegAdmin.getCustomerOrder().setOrder_status("pending");
+			if (customerBackSession != null) {
+				send_email = customerRegAdmin.getEmail();
+				send_mobile = customerRegAdmin.getCellphone();
+				customerRegAdmin.setEmail(customerBackSession.getEmail());
+				customerRegAdmin.setCellphone(customerBackSession.getCellphone());
+			}
 		} else {
 			customerRegAdmin.setStatus("active");
 			customerRegAdmin.setPassword(TMUtils.generateRandomString(6));
 			customerRegAdmin.setMd5_password(DigestUtils.md5Hex(customerRegAdmin.getPassword()));
 			customerRegAdmin.getCustomerOrder().setOrder_status("pending");
+			send_email = customerRegAdmin.getEmail();
+			send_mobile = customerRegAdmin.getCellphone();
 		}
 		
 		if (order_total_price > 0) {
@@ -108,7 +119,7 @@ public class CRMDPSController {
 			Notification notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "email");
 			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail); 
 			ApplicationEmail applicationEmail = new ApplicationEmail();
-			applicationEmail.setAddressee(customerRegAdmin.getEmail());
+			applicationEmail.setAddressee(send_email);
 			applicationEmail.setSubject(notification.getTitle());
 			applicationEmail.setContent(notification.getContent());
 			applicationEmail.setAttachName("ordering_form_" + customerRegAdmin.getCustomerOrder().getId() + ".pdf");
@@ -116,7 +127,7 @@ public class CRMDPSController {
 			this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 			notification = this.systemService.queryNotificationBySort("personal".equals(customerRegAdmin.getCustomer_type()) ? "online-ordering" : "online-ordering-business", "sms");
 			MailRetriever.mailAtValueRetriever(notification, customerRegAdmin, customerRegAdmin.getCustomerOrder(), companyDetail);
-			this.smserService.sendSMSByAsynchronousMode(customerRegAdmin.getCellphone(), notification.getContent()); 
+			this.smserService.sendSMSByAsynchronousMode(send_mobile, notification.getContent()); 
 			
 			GenerateRequest gr = new GenerateRequest();
 			gr.setMerchantReference(customerRegAdmin.getId() + "," + customerRegAdmin.getCustomerOrder().getId());
@@ -260,5 +271,88 @@ public class CRMDPSController {
 		return url;
 	}
 	
+	@RequestMapping(value = "/broadband-user/crm/customer/topup/account-credit")
+	public String toTopupAccountCredit(HttpServletRequest req
+			, RedirectAttributes attr
+			, @RequestParam("customer_id") int customer_id
+			, @RequestParam("topup_amount") Double topup_amount) {
+		
+		if (topup_amount == null || topup_amount <= 0) {
+			attr.addFlashAttribute("error", "Please input an amount to continue!");
+			return "redirect:/broadband-user/crm/customer/edit/" + customer_id;
+		}
+
+		GenerateRequest gr = new GenerateRequest();
+		gr.setMerchantReference(String.valueOf(customer_id));
+		gr.setAmountInput(new DecimalFormat("#.00").format(topup_amount));
+		gr.setCurrencyInput("NZD");
+		gr.setTxnType("Purchase");
+		System.out.println("/broadband-user/crm/customer/topup/account-credit: " + req.getRequestURL().toString());
+		gr.setUrlFail(req.getRequestURL().toString().replace("broadband-user", "dps"));
+		gr.setUrlSuccess(req.getRequestURL().toString().replace("broadband-user", "dps"));
+
+		String redirectUrl = PxPay.GenerateRequest(PayConfig.PxPayUserId, PayConfig.PxPayKey, gr, PayConfig.PxPayUrl);
+		System.out.println("redirectUrl: "+redirectUrl);
+
+		return "redirect:" + redirectUrl;
+	}
+	
+	@RequestMapping(value = "/dps/crm/customer/topup/account-credit")
+	public String toSignupTopupAccountCredit(RedirectAttributes attr
+			, @RequestParam(value = "result", required = true) String result) throws Exception {
+		
+		Response responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+		
+		int customer_id = Integer.parseInt(responseBean.getMerchantReference().split(",")[0]);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+			
+			Customer cQuery = new Customer();
+			cQuery.getParams().put("id", customer_id);
+			
+			Customer customer = this.crmService.queryCustomer(cQuery);
+			
+			if (!result.equals(customer.getResult())) {
+				
+				Customer cUpdate = new Customer();
+				cUpdate.setBalance(TMUtils.bigAdd(customer.getBalance() != null ? customer.getBalance() : 0d, Double.parseDouble(responseBean.getAmountSettlement())));
+				cUpdate.setResult(result);
+				cUpdate.getParams().put("id", customer_id);
+				
+				this.crmService.editCustomer(cUpdate);
+
+				CustomerTransaction customerTransaction = new CustomerTransaction();
+				customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+				customerTransaction.setAuth_code(responseBean.getAuthCode());
+				customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+				customerTransaction.setCard_name(responseBean.getCardName());
+				customerTransaction.setCard_number(responseBean.getCardNumber());
+				customerTransaction.setClient_info(responseBean.getClientInfo());
+				customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+				customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+				customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+				customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+				customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+				customerTransaction.setResponse_text(responseBean.getResponseText());
+				customerTransaction.setSuccess(responseBean.getSuccess());
+				customerTransaction.setTxnMac(responseBean.getTxnMac());
+				customerTransaction.setTransaction_type(responseBean.getTxnType());
+				customerTransaction.setCustomer_id(customer.getId());
+				customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+				
+				this.crmService.createCustomerTransaction(customerTransaction);
+				
+			}
+					
+			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());
+			
+		} else {
+			
+			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+			
+		}
+		
+		return "redirect:/broadband-user/crm/customer/edit/" + customer_id;
+	}
 	
 }

@@ -21,7 +21,7 @@
 	<div class="panel panel-success ">
 		<.} else if (order.order_status == 'overflow'){.>
 	<div class="panel panel-danger ">
-		<.} else if (order.order_status == 'suspension'){.>
+		<.} else if (order.order_status == 'suspended'){.>
 	<div class="panel panel-danger ">
 		<.} else if (order.order_status == 'waiting-for-disconnect'){.>
 	<div class="panel panel-danger ">
@@ -54,7 +54,7 @@
 						In Service
 					<.} else if (order.order_status == 'overflow'){.>
 						Suspension - Overflow
-					<.} else if (order.order_status == 'suspension'){.>
+					<.} else if (order.order_status == 'suspended'){.>
 						Suspension
 					<.} else if (order.order_status == 'waiting-for-disconnect'){.>
 						Disconnect - Waiting for disconnect 

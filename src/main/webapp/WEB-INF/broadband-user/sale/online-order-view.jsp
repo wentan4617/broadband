@@ -1,7 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix='fmt' uri="http://java.sun.com/jsp/jstl/fmt" %> 
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"></c:set>
 
@@ -9,9 +7,6 @@
 <jsp:include page="../alert.jsp" />
 
 <style>
-th, td{
-	text-align:center;
-}
 </style>
 
 <div class="container">
@@ -333,9 +328,36 @@ th, td{
 	</div><!-- /.modal -->
 </form>
 
+<div class="modal fade" id="provision-customer-order-info-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog" style="width:1200px">
+		<div class="modal-content">
+			<div class="modal-body">
+				<div class="row">
+					<div class="col-md-5" id="customer-information-tmpl"></div>
+					<div class="col-md-7" id="customer-order-tmpl"></div>
+				</div>
+				<div class="row">
+					<div class="col-md-12" id="customer-order-detail-tmpl"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/html" id="customer_information_tmpl">
+<jsp:include page="../provision/customer-information-tmpl.html" />
+</script>
+
+<script type="text/html" id="customer_order_tmpl">
+<jsp:include page="../provision/customer-order-tmpl.html" />
+</script>
+
+<script type="text/html" id="customer_order_detail_tmpl">
+<jsp:include page="../provision/customer-order-detail-tmpl.html" />
+</script>
+
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
 (function($){
 	$('a[data-toggle="tooltip"]').tooltip();
@@ -378,9 +400,47 @@ th, td{
 		$('#orderStatusModel_'+$(this).attr('data-order-id')).modal('show');
 	});
 	
+	$('a[data-name="show_customer_order_info"]').click(function(){
+		order_id = $(this).attr('data-id');
+		$('#provision-customer-order-info-modal').modal("show");
+	});
+	
+	$('#provision-customer-order-info-modal').on('show.bs.modal', function (e) {		
+		loadInfo();
+	});
+	
+	function loadInfo() {
+		
+		$('#customer-information-tmpl').empty();
+		$('#customer-order-tmpl').empty();
+		$('#customer-order-detail-tmpl').empty();
+		
+		$.get('${ctx}/broadband-user/provision/order/' + order_id, function(order) {
+			
+			order.user_role = '${userSession.user_role}';
+			$('#customer-information-tmpl').html(tmpl('customer_information_tmpl', order));
+			$('#customer-order-tmpl').html(tmpl('customer_order_tmpl', order));
+			$('#customer-order-detail-tmpl').html(tmpl('customer_order_detail_tmpl', order));
+			
+			$('span[data-hardware]').on('click', function(){
+				var $span = $(this);
+				var id = $span.attr('data-id');
+				var status = $span.attr('data-status');
+				if (status == 'close') {
+					$('#tr' + id).show(function(){
+						$span.attr('data-status', 'open');
+						$span.attr('class', 'glyphicon glyphicon-minus-sign');
+					});
+				} else if (status == 'open') {
+					$('#tr' + id).hide(function(){
+						$span.attr('data-status', 'close');
+						$span.attr('class', 'glyphicon glyphicon-plus-sign');
+					});
+				}
+			});
+		}, 'json');
+	}
+	
 })(jQuery);
 </script>
-
-<!-- provision customer order information model -->
-<jsp:include page="../provision/provision-customer-order-info.jsp" />
 <jsp:include page="../footer-end.jsp" />

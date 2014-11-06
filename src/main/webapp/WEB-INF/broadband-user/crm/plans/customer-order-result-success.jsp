@@ -19,7 +19,7 @@
 			</p>
 			<p>&nbsp;</p>
 			<p>
-				<a href="${ctx }/broadband-user/crm/customer/view" class="btn btn-success">Go to CRM</a>
+				<a href="${ctx }/broadband-user/crm/customer/order/view" class="btn btn-success">Go to CRM</a>
 			</p>
 		</div>
 	</c:if>
