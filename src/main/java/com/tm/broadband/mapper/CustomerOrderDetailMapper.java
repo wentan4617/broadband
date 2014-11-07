@@ -3,6 +3,7 @@ package com.tm.broadband.mapper;
 import java.util.List;
 
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.Page;
 
 /* SELECT AREA *//* // END SELECT AREA */
 /* =================================================================================== */
@@ -17,6 +18,8 @@ public interface CustomerOrderDetailMapper {
 	/* SELECT AREA */
 	
 	public List<CustomerOrderDetail> selectCustomerOrderDetails(CustomerOrderDetail cod);
+	List<CustomerOrderDetail> selectCustomerOrderDetailsByPage(Page<CustomerOrderDetail> page);
+	int selectCustomerOrderDetailsSum(Page<CustomerOrderDetail> page);
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */

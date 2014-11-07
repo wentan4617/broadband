@@ -3326,6 +3326,18 @@ public class CRMService {
 		return this.customerOrderDetailMapper.selectCustomerOrderDetails(cod);
 	}
 	
+	@Transactional
+	public Page<CustomerOrderDetail> queryCustomerOrderDetailsByPage(Page<CustomerOrderDetail> page) {
+		page.setTotalRecord(this.customerOrderDetailMapper.selectCustomerOrderDetailsSum(page));
+		page.setResults(this.customerOrderDetailMapper.selectCustomerOrderDetailsByPage(page));
+		return page;
+	}
+	
+	@Transactional
+	public int queryCustomerOrderDetailsBySum(Page<CustomerOrderDetail> page) {
+		return this.customerOrderDetailMapper.selectCustomerOrderDetailsSum(page);
+	}
+	
 	public String queryCustomerOrderDetailGroupByOrderId(int order_id) {
 		CustomerOrderDetail codQuery = new CustomerOrderDetail();
 		codQuery.getParams().put("order_id", order_id);

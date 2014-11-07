@@ -44,6 +44,9 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer user_id;
 	private String voip_password;
 	private Date voip_assign_date;
+	private Boolean is_nca;
+	private Integer to_nca_by_who;
+
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -336,6 +339,22 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setMonthly(Boolean monthly) {
 		this.monthly = monthly;
+	}
+
+	public Boolean getIs_nca() {
+		return is_nca;
+	}
+
+	public void setIs_nca(Boolean is_nca) {
+		this.is_nca = is_nca;
+	}
+
+	public Integer getTo_nca_by_who() {
+		return to_nca_by_who;
+	}
+
+	public void setTo_nca_by_who(Integer to_nca_by_who) {
+		this.to_nca_by_who = to_nca_by_who;
 	}
 	
 	
