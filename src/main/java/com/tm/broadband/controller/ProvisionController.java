@@ -1,6 +1,5 @@
 package com.tm.broadband.controller;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -304,6 +303,76 @@ public class ProvisionController {
 		model.addAttribute(statusType+"Active", "active");
 		
 		return "broadband-user/provision/number-couldnot-find";
+	}
+
+	@RequestMapping(value = "/broadband-user/provision/pstn-position-view/{pageNo}/{pstn_position}")
+	public String toPSTNPosition(Model model,
+			@PathVariable(value = "pageNo") Integer pageNo,
+			@PathVariable(value = "pstn_position") String pstn_position) {
+
+		Page<CustomerOrderDetail> page = new Page<CustomerOrderDetail>();
+		page.setPageNo(pageNo);
+		page.getParams().put("where", "query_by_pstn_position");
+		page.getParams().put("orderby", "order by id desc");
+		switch (pstn_position) {
+		case "chorus":
+			page.getParams().put("is_nca", false);
+			break;
+		case "nca":
+			page.getParams().put("is_nca", true);
+			break;
+		}
+		this.crmService.queryCustomerOrderDetailsByPage(page);
+		model.addAttribute("page", page);
+		
+		model.addAttribute(pstn_position+"Active", "active");
+		
+		Page<CustomerOrderDetail> codChorusSum = new Page<CustomerOrderDetail>();
+		codChorusSum.getParams().put("where", "query_by_pstn_position");
+		codChorusSum.getParams().put("is_nca", false);
+		model.addAttribute("chorusSum", this.crmService.queryCustomerOrderDetailsBySum(codChorusSum));
+		
+		Page<CustomerOrderDetail> codNCASum = new Page<CustomerOrderDetail>();
+		codNCASum.getParams().put("where", "query_by_pstn_position");
+		codNCASum.getParams().put("is_nca", true);
+		model.addAttribute("ncaSum", this.crmService.queryCustomerOrderDetailsBySum(codNCASum));
+		
+		if("nca".equals(pstn_position)){
+			model.addAttribute("users", this.systemService.queryUser(new User()));
+		}
+		
+		return "broadband-user/provision/pstn-position-view";
+	}
+
+	@RequestMapping(value = "/broadband-user/provision/pstn-position-view/customer/view/{order_id}")
+	public String toPSTNPositionCustomerView(Model model,
+			@PathVariable(value = "order_id") Integer order_id) {
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		
+		return "redirect:/broadband-user/crm/customer/edit/"+coQuery.getCustomer_id();
+	}
+
+	@RequestMapping(value = "/broadband-user/provision/pstn-position-view/switch-between-chorus-nca", method = RequestMethod.POST)
+	public String doPSTNPositionSwitchIntoNCA(Model model,
+			@RequestParam("id") Integer id,
+			@RequestParam("pageNo") Integer pageNo,
+			@RequestParam("pstn_position") String pstn_position,
+			RedirectAttributes attr,
+			HttpServletRequest req) {
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.getParams().put("id", id);
+		codUpdate.setIs_nca("chorus".equals(pstn_position) ? true : false);
+		codUpdate.setTo_nca_by_who(userSession.getId());
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		attr.addFlashAttribute("success", "Successfully switch PSTN from "+("chorus".equals(pstn_position) ? "Chorus into NCA" : "NCA to Chorus"));
+		
+		return "redirect:/broadband-user/provision/pstn-position-view/"+pageNo+"/"+pstn_position;
 	}
 
 }

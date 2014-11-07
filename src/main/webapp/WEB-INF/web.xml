@@ -214,6 +214,7 @@
 		<url-pattern>/broadband-user/provision/contact-us/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/sale/view/*</url-pattern>
 		<url-pattern>/broadband-user/provision/number-couldnot-find/*</url-pattern>
+		<url-pattern>/broadband-user/provision/pstn-position-view/*</url-pattern>
 		<!-- Provision Module END -->
 
 		<!-- Data Module BEGIN -->

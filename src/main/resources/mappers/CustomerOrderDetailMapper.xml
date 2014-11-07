@@ -15,7 +15,6 @@
 <mapper namespace="com.tm.broadband.mapper.CustomerOrderDetailMapper">
 	
 	<!-- DEFINITION AREA -->
-	
 	<sql id="customerOrderDetailColumns">
 		cod.`id` 								as cod_id
 		, cod.`order_id` 						as cod_order_id
@@ -44,21 +43,70 @@
 		, cod.`user_id` 						as cod_user_id
 		, cod.`voip_password` 					as cod_voip_password
 		, cod.`voip_assign_date` 				as cod_voip_assign_date
+		, cod.`is_nca` 							as cod_is_nca
+		, cod.`to_nca_by_who` 					as cod_to_nca_by_who
 	</sql>
+	<resultMap type="CustomerOrderDetail" id="customerOrderDetailResultMap">
+		<id property="id" column="cod_id" />
+		<result property="order_id" column="cod_order_id" />
+		<result property="detail_name" column="cod_detail_name" />
+		<result property="detail_desc" column="cod_detail_desc" />
+		<result property="detail_price" column="cod_detail_price" />
+		<result property="detail_data_flow" column="cod_detail_data_flow" />
+		<result property="detail_plan_status" column="cod_detail_plan_status" />
+		<result property="detail_plan_type" column="cod_detail_plan_type" />
+		<result property="detail_plan_sort" column="cod_detail_plan_sort" />
+		<result property="detail_plan_group" column="cod_detail_plan_group" />
+		<result property="detail_plan_new_connection_fee" column="cod_detail_plan_new_connection_fee" />
+		<result property="detail_term_period" column="cod_detail_term_period" />
+		<result property="detail_topup_data_flow" column="cod_detail_topup_data_flow" />
+		<result property="detail_topup_fee" column="cod_detail_topup_fee" />
+		<result property="detail_plan_memo" column="cod_detail_plan_memo" />
+		<result property="detail_unit" column="cod_detail_unit" />
+		<result property="detail_calling_minute" column="cod_detail_calling_minute" />
+		<result property="detail_type" column="cod_detail_type" />
+		<result property="detail_is_next_pay" column="cod_detail_is_next_pay" />
+		<result property="detail_expired" column="cod_detail_expired" />
+		<result property="is_post" column="cod_is_post" />
+		<result property="hardware_comment" column="cod_hardware_comment" />
+		<result property="track_code" column="cod_track_code" />
+		<result property="pstn_number" column="cod_pstn_number" />
+		<result property="user_id" column="cod_user_id" />
+		<result property="voip_password" column="cod_voip_password" />
+		<result property="voip_assign_date" column="cod_voip_assign_date" />
+		<result property="is_nca" column="cod_is_nca" />
+		<result property="to_nca_by_who" column="cod_to_nca_by_who" />
+	</resultMap>
+	
 	
 	<sql id="customerOrderDetailWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_by_pstn_position'">
+					cod.order_id in(
+						select id from tm_customer_order
+						where order_status='using'
+					)
+					and cod.detail_type='pstn'
+					<if test="params.is_nca == false">
+					and (cod.is_nca=false or cod.is_nca IS NULL)
+					</if>
+					<if test="params.is_nca == true">
+					and cod.is_nca=true
+					</if>
+				</when>
 				<otherwise>
 					<if test="params.id != null">cod.id = #{params.id}</if>
-					<if test="params.order_id != null">cod.order_id = #{params.order_id}</if>
-					<if test="params.detail_name != null">cod.detail_name = #{params.detail_name}</if>
-					<if test="params.detail_desc != null">cod.detail_desc = #{params.detail_desc}</if>
-					<if test="params.detail_price != null">cod.detail_price = #{params.detail_price}</if>
-					<if test="params.detail_unit != null">cod.detail_unit = #{params.detail_unit}</if>
-					<if test="params.pstn_number != null">cod.pstn_number = #{params.pstn_number}</if>
-					<if test="params.detail_type != null">cod.detail_type = #{params.detail_type}</if>
-					<if test="params.user_id != null">cod.user_id = #{params.user_id}</if>
+					<if test="params.order_id != null">and cod.order_id = #{params.order_id}</if>
+					<if test="params.detail_name != null">and cod.detail_name = #{params.detail_name}</if>
+					<if test="params.detail_desc != null">and cod.detail_desc = #{params.detail_desc}</if>
+					<if test="params.detail_price != null">and cod.detail_price = #{params.detail_price}</if>
+					<if test="params.detail_unit != null">and cod.detail_unit = #{params.detail_unit}</if>
+					<if test="params.pstn_number != null">and cod.pstn_number = #{params.pstn_number}</if>
+					<if test="params.detail_type != null">and cod.detail_type = #{params.detail_type}</if>
+					<if test="params.is_nca != null">and cod.is_nca = #{params.is_nca}</if>
+					<if test="params.to_nca_by_who != null">and cod.to_nca_by_who = #{params.to_nca_by_who}</if>
+					<if test="params.user_id != null">and cod.user_id = #{params.user_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -70,6 +118,20 @@
 	
 	<select id="selectCustomerOrderDetails" parameterType="CustomerOrderDetail" resultType="CustomerOrderDetail">
 		select * from `tm_customer_order_detail` as cod
+		<include refid="customerOrderDetailWhere"/>
+	</select>
+	
+	<select id="selectCustomerOrderDetailsByPage" parameterType="Page" resultMap="customerOrderDetailResultMap"  >
+		select 
+			<include refid="customerOrderDetailColumns"/>
+		from tm_customer_order_detail as cod
+		<include refid="customerOrderDetailWhere"/>
+		<if test="params.orderby != null">${params.orderby}</if>
+		limit #{pageOffset}, #{pageSize}
+	</select>
+	
+	<select id="selectCustomerOrderDetailsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_detail as cod
 		<include refid="customerOrderDetailWhere"/>
 	</select>
 
@@ -84,14 +146,14 @@
 			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
 			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_calling_minute`, `detail_type`, `detail_expired`,
 			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`, `user_id`, `voip_password`,
-			`voip_assign_date`) 
+			`voip_assign_date`, `is_nca`, `to_nca_by_who`) 
 		VALUES (
 			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
 			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow},
 			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_calling_minute}, #{detail_type}, #{detail_expired},
 			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number}, #{user_id}, #{voip_password},
-			#{voip_assign_date})
+			#{voip_assign_date}, #{is_nca}, #{to_nca_by_who})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -126,7 +188,9 @@
 			<if test="pstn_number != null">pstn_number=#{pstn_number},</if>
 			<if test="user_id != null">user_id=#{user_id},</if>
 			<if test="voip_password != null">voip_password=#{voip_password},</if>
-			<if test="voip_assign_date != null">voip_assign_date=#{voip_assign_date}</if>
+			<if test="voip_assign_date != null">voip_assign_date=#{voip_assign_date},</if>
+			<if test="is_nca != null">is_nca=#{is_nca},</if>
+			<if test="to_nca_by_who != null">to_nca_by_who=#{to_nca_by_who}</if>
 		</set>
 		<where>
 			<if test="params.id !=null">id=#{params.id}</if>

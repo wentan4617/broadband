@@ -109,6 +109,10 @@ hr {
 		                    		<span class="glyphicon glyphicon-screenshot" ></span> 
 		                    		<a href="${ctx }/broadband-user/provision/number-couldnot-find/chorus/unmatched">View Provision Exceptions</a>
 		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-screenshot" ></span> 
+		                    		<a href="${ctx }/broadband-user/provision/pstn-position-view/1/chorus">View PSTN Position</a>
+		                    	</li>
 		                    </ul>
 					  	</div>
 					</div>

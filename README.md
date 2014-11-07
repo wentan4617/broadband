@@ -22,6 +22,13 @@ Total Mobile Solution Internet Service Web Project
 
 demand version 1.4.4 2014-11-06
 
+* [添加一个界面，列出所有类型为pstn的order_detail，并且分类为：Disconnected以及In Service，在order_detail上加四个字段：is_nca, to_nca_by_who, is_out_nca, out_nca_by_who.](steven)
+* [添加一个界面，列出所有In Service以及Disconnected的pstn类型的pstn_number，以供Provision去NCA查看是否存在相应的号码.](steven)
+
+
+
+demand version 1.4.4 2014-11-06
+
 * [在customer-info界面显示所有该customer关联的credit card信息，可以添加新的，更新/删除已有的.](steven)
 * [加一条类似pstn的detail，type为fax.](steven)
 
