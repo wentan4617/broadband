@@ -25,6 +25,7 @@ import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerCreditMapper;
+import com.tm.broadband.mapper.CustomerDDPayMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
@@ -53,6 +54,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerCredit;
+import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
@@ -127,6 +129,7 @@ public class CRMService {
 	private CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper;
 	private CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper;
 	private CustomerCreditMapper customerCreditMapper;
+	private CustomerDDPayMapper customerDDPayMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -166,7 +169,8 @@ public class CRMService {
 			NZAreaCodeListMapper nzAreaCodeListMapper,
 			CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper,
 			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper,
-			CustomerCreditMapper customerCreditMapper){
+			CustomerCreditMapper customerCreditMapper,
+			CustomerDDPayMapper customerDDPayMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -199,6 +203,7 @@ public class CRMService {
 		this.customerOrderDetailDeleteRecordMapper = customerOrderDetailDeleteRecordMapper;
 		this.customerOrderDetailRecoverableListMapper = customerOrderDetailRecoverableListMapper;
 		this.customerCreditMapper = customerCreditMapper;
+		this.customerDDPayMapper = customerDDPayMapper;
 	}
 	
 	
@@ -4400,6 +4405,45 @@ public class CRMService {
 	
 	/**
 	 * END CustomerCredit
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerDDPay
+	 */
+	
+	public List<CustomerDDPay> queryCustomerDDPays(CustomerDDPay cddpay){
+		return this.customerDDPayMapper.selectCustomerDDPay(cddpay);
+	}
+	
+	public CustomerDDPay queryCustomerDDPay(CustomerDDPay cddpay){
+		List<CustomerDDPay> cddpays = this.queryCustomerDDPays(cddpay);
+		return cddpays!=null && cddpays.size()>0 ? cddpays.get(0) : null;
+	}
+	
+	public Page<CustomerDDPay> queryCustomerDDPaysByPage(Page<CustomerDDPay> page){
+		page.setTotalRecord(this.customerDDPayMapper.selectCustomerDDPaysSum(page));
+		page.setResults(this.customerDDPayMapper.selectCustomerDDPaysByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerDDPay(CustomerDDPay cddpay){
+		this.customerDDPayMapper.updateCustomerDDPay(cddpay);
+	}
+
+	@Transactional
+	public void removeCustomerDDPayById(int id){
+		this.customerDDPayMapper.deleteCustomerDDPayById(id);
+	}
+
+	@Transactional
+	public void createCustomerDDPay(CustomerDDPay cddpay){
+		this.customerDDPayMapper.insertCustomerDDPay(cddpay);
+	}
+	
+	/**
+	 * END CustomerDDPay
 	 */
 	
 	

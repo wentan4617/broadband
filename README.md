@@ -27,30 +27,30 @@ demand version 1.5.0 2014-11-13
 
 demand version 1.5.0 2014-11-13
 
-* 新建一张表tm_website_editable_details
+* [新建一张表tm_website_editable_details](steven)
     字段：company_name, company_name_ltd, company_hot_line_no, company_hot_line_no_alphabet, company_address, company_email, website_year
     值：
     
-* 新建一张表tm_plan_introductions
+* [新建一张表tm_plan_introductions](steven)
     字段：adsl_title, vdsl_title, ufb_title, adsl_content, vdsl_content, ufb_content,
     
-* 新建一张表tm_website_static_resources
+* [新建一张表tm_website_static_resources](steven)
     字段：logo_path, facebook_lg_path, googleplus_lg_path, twitter_lg_path, youtube_lg_path
 
-* 新建一张表tm_terms_conditions
+* [新建一张表tm_terms_conditions](steven)
     字段：term_contracts, terms_conditions_business_retails, terms_conditions_business_wifi, terms_conditions_personal, terms_conditions_ufb
 
-* 将CompanyDetail的Terms & Conditions移到tm_terms_conditions表上
+* [将CompanyDetail的Terms & Conditions移到tm_terms_conditions表上](steven)
 
-* 新建一张表tm_pdf_resources
+* [新建一张表tm_pdf_resources](steven)
     字段：common_company_lg_path, invoice_company_lg_path, company_lg_customer_service_bar_path, two_dimensional_code_path
 
-* 将客户登录后的提示改成：Welcome to ${tm_website_editable_details.company_name}
+* [将客户登录后的提示改成：Welcome to ${tm_website_editable_details.company_name}](steven)
 
 
 demand version 1.5.0 2014-11-12
 
-* 将CyberPark系统的Logo等信息变成灵活可更改的：
+* [将CyberPark系统的Logo等信息变成灵活可更改的：](steven)
 
     前端要去掉的东西：
     Voucher Checking界面

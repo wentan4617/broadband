@@ -35,13 +35,13 @@
 			<td><.= tx.transaction_sort .></td>
 			<td style="text-align:center;">
 				<.= txAmount.toFixed(2) .>
-				<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+				<. if(user_role=='system-developer' || user_role=='accountant'){ .>
 				<a id="<.= tx.id .>" class="btn btn-warning btn-xs" data-val="<.= txAmount.toFixed(2) .>" data-name="edit_transaction_amount">
 				  	<span class="glyphicon glyphicon-pencil"></span>
 				</a>
 				<. } .>
 			</td>
-			<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+			<. if(user_role=='system-developer' || user_role=='accountant'){ .>
 				<td style="text-align:center;">
 					<a id="<.= tx.id .>" data-name="remove_transaction_btn" class="btn btn-danger btn-xs" href="javascript:void(0);">
 						<span class="glyphicon glyphicon-trash"></span>

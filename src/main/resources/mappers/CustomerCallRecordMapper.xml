@@ -88,6 +88,7 @@
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
 					and (ccr.record_type='T1' or ccr.record_type='T3')
+					and ccr.billing_description != 'Calling Numbers Presented - Minimum Charge'
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
 					</if>
@@ -101,7 +102,8 @@
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
 					  	'Faxability Monthly Rental Res',
-						'Smart Bundle package'
+						'Smart Bundle package',
+						'Calling Numbers Presented - Minimum Charge'
 					)
 					AND ccr.clear_service_id = #{params.clear_service_id}
 					<if test="params.invoice_id != null">
@@ -118,7 +120,8 @@
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
 					  	'Faxability Monthly Rental Res',
-						'Smart Bundle package'
+						'Smart Bundle package',
+						'Calling Numbers Presented - Minimum Charge'
 					)
 					AND ccr.clear_service_id = #{params.clear_service_id}
 					<if test="params.invoice_id != null">
@@ -251,6 +254,7 @@
 				<when test="params.where == 'last_call_records'">
 					(record_type='T1' or record_type='T3')
 					and clear_service_id = #{params.clear_service_id}
+					and billing_description != 'Calling Numbers Presented - Minimum Charge'
 					<if test="params.invoice_id != null">
 						AND invoice_id = #{params.invoice_id}
 					</if>
@@ -264,7 +268,8 @@
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
 					  	'Faxability Monthly Rental Res',
-						'Smart Bundle package'
+						'Smart Bundle package',
+						'Calling Numbers Presented - Minimum Charge'
 					)
 					AND clear_service_id = #{params.clear_service_id}
 					<if test="params.invoice_id != null">

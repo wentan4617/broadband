@@ -54,7 +54,12 @@ public class CallingAndRentalFeeCalucation {
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 				cid.setInvoice_detail_name(ccr.getBilling_description());
 				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
-				cid.setInvoice_detail_price(TMUtils.getRentalChargeFee(ccr.getDate_from(), "Smart Bundle package".equals(ccr.getBilling_description()) ? 18d : 6d));
+				Double price = "Smart Bundle package".equals(ccr.getBilling_description()) ? 18d : "Calling Numbers Presented - Minimum Charge".equals(ccr.getBilling_description()) ? 12d : 6d;
+				if("Calling Numbers Presented - Minimum Charge".equals(ccr.getBilling_description())){
+					cid.setInvoice_detail_price(price);
+				} else {
+					cid.setInvoice_detail_price(TMUtils.getRentalChargeFee(ccr.getDate_from(), price));
+				}
 				cid.setInvoice_detail_unit(1);
 				
 				cids.add(cid);

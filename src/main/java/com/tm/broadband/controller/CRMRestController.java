@@ -34,6 +34,7 @@ import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCredit;
+import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
@@ -207,6 +208,29 @@ public class CRMRestController {
 		return json;
 	}
 
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/create", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> customerDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		String errorMsg = "";
+		
+		if("".equals(cddpay.getAccount_number().trim())){
+			errorMsg = "Account Number Couldn't be Empty";
+		} else if("".equals(cddpay.getAccount_name().trim())){
+			errorMsg = "Account Name Couldn't be Empty";
+		}
+		if(!"".equals(errorMsg)){
+			json.getErrorMap().put("alert-error", errorMsg);
+		} else {
+			this.crmService.createCustomerDDPay(cddpay);
+		}
+		
+		
+		return json;
+	}
+
 	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerCredit> editCreditCardCreate(Model model,
 			CustomerCredit cc) {
@@ -221,6 +245,20 @@ public class CRMRestController {
 		return json;
 	}
 
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> editDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		cddpay.getParams().put("id", cddpay.getId());
+		this.crmService.editCustomerDDPay(cddpay);
+		
+		json.getSuccessMap().put("alert-success", "Successfully Updated Specific DDPay Details!");
+		
+		return json;
+	}
+
 	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/delete", method = RequestMethod.POST)
 	public JSONBean<CustomerCredit> deleteCreditCardCreate(Model model,
 			CustomerCredit cc) {
@@ -230,6 +268,19 @@ public class CRMRestController {
 		this.crmService.removeCustomerCreditCardById(cc.getId());
 		
 		json.getSuccessMap().put("alert-success", "Successfully Remove Specific Credit Card Details!");
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/delete", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> deleteDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		this.crmService.removeCustomerDDPayById(cddpay.getId());
+		
+		json.getSuccessMap().put("alert-success", "Successfully Remove Specific DDPay Details!");
 		
 		return json;
 	}
@@ -1487,6 +1538,9 @@ public class CRMRestController {
 		CustomerCredit ccQuery = new CustomerCredit();
 		ccQuery.getParams().put("customer_id", customer.getId());
 		List<CustomerCredit> ccs = this.crmService.queryCustomerCredits(ccQuery);
+		CustomerDDPay cddpayQuery = new CustomerDDPay();
+		cddpayQuery.getParams().put("customer_id", customer.getId());
+		List<CustomerDDPay> cddpays = this.crmService.queryCustomerDDPays(cddpayQuery);
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");
 
@@ -1494,8 +1548,10 @@ public class CRMRestController {
 		if("system-developer".equals(userSession.getUser_role())
 		|| "accountant".equals(userSession.getUser_role())){
 			map.put("customerCredits", ccs);
+			map.put("customerDDPays", cddpays);
 		} else {
 			map.put("customerCredits", new ArrayList<CustomerCredit>());
+			map.put("customerDDPays", new ArrayList<CustomerDDPay>());
 		}
 		map.put("customer", customer);
 		map.put("users", users);

@@ -4,7 +4,6 @@
 		var data = { 'id' : customerId };
 		
 		$.get(ctx+'/broadband-user/crm/customer/edit', data, function(map){
-			var customerCredits = map.customerCredits;
 			map.ctx = ctx+'';
 			map.user_role = user_role;
 	   		var $table = $('#customer_edit');
@@ -254,6 +253,70 @@
 			});
 			
 			// END Credit Card Area
+
+			// BEGIN DDPay Area
+			
+			// CREATE
+			$('#add_ddpay_btn').click(function(){
+				$(this).button('loading');
+				$('#addDDPayModal').modal('show');
+			});
+			$('a[data-name="add_ddpay_modal_btn"]').click(function(){
+				var account_number = $('input[data-name="account_number"]').val();
+				var account_name = $('input[data-name="account_name"]').val();
+				var data = {
+					'customer_id':customerId,
+					'account_number':account_number,
+					'account_name':account_name
+				};
+				$.post(ctx+'/broadband-user/crm/customer/ddpay/create', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#addDDPayModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+			
+			// UPDATE
+			$('a[data-name="update_ddpay_btn"]').click(function(){
+				$('a[data-name="edit_ddpay_modal_btn"]').prop('id', this.id);
+				$('#editDDPayModal').modal('show');
+			});
+			$('a[data-name="edit_ddpay_modal_btn"]').click(function(){
+				var account_name = $('#account_name_'+this.id).val();
+				var account_number = $('#account_number_'+this.id).val();
+				var data = {
+					'id':this.id,
+					'customer_id':customerId,
+					'account_name':account_name,
+					'account_number':account_number
+				};
+				$.post(ctx+'/broadband-user/crm/customer/ddpay/edit', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#editDDPayModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+
+			// DELETE
+			$('a[data-name="delete_ddpay_btn"]').click(function(){
+				$('a[data-name="delete_ddpay_modal_btn"]').prop('id', this.id);
+				$('#deleteDDPayModal').modal('show');
+			});
+			$('a[data-name="delete_ddpay_modal_btn"]').click(function(){
+				var data = {
+					'id':this.id
+				};
+				$.post(ctx+'/broadband-user/crm/customer/ddpay/delete', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#deleteDDPayModal').on('hidden.bs.modal', function(){
+				$.getCustomerInfo();
+			});
+			
+			// END DDPay Area
 			
 			
 			
