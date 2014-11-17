@@ -233,6 +233,11 @@
 		<url-pattern>/broadband-user/system/seo/edit</url-pattern>
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
 		<url-pattern>/broadband-user/system/ir/edit</url-pattern>
+		<url-pattern>/broadband-user/system/website_editable_details</url-pattern>
+		<url-pattern>/broadband-user/system/plan_introductions</url-pattern>
+		<url-pattern>/broadband-user/system/website_static_resources</url-pattern>
+		<url-pattern>/broadband-user/system/terms_conditions</url-pattern>
+		<url-pattern>/broadband-user/system/pdf_resources</url-pattern>
 		<!-- System Module END -->
 
 		<!-- Sales Module BEGIN -->

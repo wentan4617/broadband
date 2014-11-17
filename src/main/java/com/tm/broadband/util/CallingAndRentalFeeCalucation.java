@@ -155,7 +155,7 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("rate_type", "Local");
 				break;
 			case "N":	/* National */
-				callType = "Domestic";
+				callType = "National";
 				cir.getParams().put("area_prefix", "3");
 				cir.getParams().put("rate_type", "Domestic");
 				break;
@@ -258,8 +258,8 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("area_prefix", "0");
 				cir.getParams().put("rate_type", "Local");
 				break;
-			case "S":	/* Domestic */
-				callType = "Domestic";
+			case "S":	/* National */
+				callType = "National";
 				cir.getParams().put("area_prefix", "3");
 				cir.getParams().put("rate_type", "Domestic");
 				break;
@@ -366,55 +366,6 @@ public class CallingAndRentalFeeCalucation {
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
 	// END Chorus, Callplus OPERATION
-	
-	
-	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
-			,List<CallInternationalRate> cirs
-			,Double duration
-			,Double totalCreditBack
-			,Double costPerMinute
-			,String callType){
-
-		// BEGIN PresentCallingMinutes
-		if(pcms!=null && pcms.size()>0){
-			int index = 0;
-			for (CustomerOrderDetail pcm : pcms) {
-				String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
-				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
-				
-				// Specific callType
-				if(pcmDetailDesc.equals(callType.toUpperCase())){
-					
-					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-					index++;
-					
-				// Specific countries
-				} else {
-					
-					String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
-					
-					for (String country : fix_mobile_country) {
-						if(cirAreaName.contains(country)){
-							
-							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-							index++;
-							
-						} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
-								&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
-								&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
-							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-							index++;
-						}
-					}
-//					fix_mobile_country.contains(cirAreaName.split(" MOBILE")[0])
-//					 ||fix_mobile_country.contains(cirAreaName.split(" MOBILE")
-				}
-				
-			}
-		}
-		// END PresentCallingMinutes
-		return totalCreditBack;
-	}
 	
 
 	// BEGIN VOS VoIP OPERATION
@@ -599,6 +550,57 @@ public class CallingAndRentalFeeCalucation {
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
 	// END VOS VoIP OPERATION
+	
+	
+	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
+			,List<CallInternationalRate> cirs
+			,Double duration
+			,Double totalCreditBack
+			,Double costPerMinute
+			,String callType){
+
+		// BEGIN PresentCallingMinutes
+		if(pcms!=null && pcms.size()>0){
+			
+			int index = 0;
+			
+			for (CustomerOrderDetail pcm : pcms) {
+				String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
+				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
+				
+				// Specific callType
+				if(pcmDetailDesc.equals(callType.toUpperCase())){
+					
+					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+					index++;
+					
+				// Specific countries
+				} else {
+					
+					String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
+					
+					for (String country : fix_mobile_country) {
+						if(cirAreaName.contains(country)){
+							
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+							index++;
+							
+						} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
+								&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
+								&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+							index++;
+						}
+					}
+//					fix_mobile_country.contains(cirAreaName.split(" MOBILE")[0])
+//					 ||fix_mobile_country.contains(cirAreaName.split(" MOBILE")
+				}
+				
+			}
+		}
+		// END PresentCallingMinutes
+		return totalCreditBack;
+	}
 	
 	public static Double processPresentCallingMinutesVoIP(List<CustomerOrderDetail> pcms
 			,List<VOSVoIPRate> vosVoIPRates

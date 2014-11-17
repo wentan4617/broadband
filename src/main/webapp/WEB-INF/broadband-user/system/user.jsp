@@ -334,8 +334,13 @@
 									<hr/>
 									<ul class="list-unstyled">
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="provision/number-couldnot-find" data-type="checkbox_provision" /> View Provision Exceptions
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="provision/pstn-position-view" data-type="checkbox_provision" /> View PSTN Position
 											</label>
 										</li>
 									</ul>
@@ -349,17 +354,17 @@
 												<h3>Data</h3>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="data/operatre" data-type="checkbox_data" /> Data Operatre
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="data/customer/view" data-type="checkbox_data" /> Data Customer View
 											</label>
 										</li>
@@ -371,12 +376,12 @@
 												<h3>System</h3>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
 											</label>
 										</li>
@@ -406,6 +411,34 @@
 										<li>
 											<label> 
 												<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/website_editable_details" data-type="checkbox_system" /> Edit Website Editable Details
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/plan_introductions" data-type="checkbox_system" /> Edit Plan Introductions
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/website_static_resources" data-type="checkbox_system" /> Edit Website Static Resources
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/terms_conditions" data-type="checkbox_system" /> Edit Terms Conditions
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/pdf_resources" data-type="checkbox_system" /> Edit PDF Resources
 											</label>
 										</li>
 									</ul>

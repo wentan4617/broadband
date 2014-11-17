@@ -452,11 +452,11 @@
 			</div>
 			<div class="col-md-3">
 				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
-				<. for(var s=0; s<sales.length; s++){
-						if(sales[s].id == customerOrder[i].sale_id){ .>
-					<option value="<.= sales[s].id .>" selected="selected"><.= sales[s].user_name .></option>
+				<. for(var u=0; u<users.length; u++){
+						if(users[u].id == customerOrder[i].sale_id){ .>
+					<option value="<.= users[u].id .>" selected="selected"><.= users[u].user_name .></option>
 				<. 		} else { .>
-					<option value="<.= sales[s].id .>"><.= sales[s].user_name .></option>
+					<option value="<.= users[u].id .>"><.= users[u].user_name .></option>
 				<. 		}
 					} .>
 				</select>

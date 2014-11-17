@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.TermsConditionsMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="termsConditionsColumns">
+		tc.`term_contracts_title`						as tc_term_contracts_title,
+		tc.`terms_conditions_business_retails_title`	as tc_terms_conditions_business_retails_title,
+		tc.`terms_conditions_business_wifi_title`		as tc_terms_conditions_business_wifi_title,
+		tc.`terms_conditions_personal_title`			as tc_terms_conditions_personal_title,
+		tc.`terms_conditions_ufb_title`					as tc_terms_conditions_ufb_title,
+		tc.`term_contracts`								as tc_term_contracts,
+		tc.`terms_conditions_business_retails`			as tc_terms_conditions_business_retails,
+		tc.`terms_conditions_business_wifi`				as tc_terms_conditions_business_wifi,
+		tc.`terms_conditions_personal`					as tc_terms_conditions_personal,
+		tc.`terms_conditions_ufb`						as tc_terms_conditions_ufb
+	</sql>
+
+	<resultMap type="TermsConditions" id="termsConditionsResultMap">
+		<result property="term_contracts_title" column="tc_term_contracts_title" />
+		<result property="terms_conditions_business_retails_title" column="tc_terms_conditions_business_retails_title" />
+		<result property="terms_conditions_business_wifi_title" column="tc_terms_conditions_business_wifi_title" />
+		<result property="terms_conditions_personal_title" column="tc_terms_conditions_personal_title" />
+		<result property="terms_conditions_ufb_title" column="tc_terms_conditions_ufb_title" />
+		<result property="term_contracts" column="tc_term_contracts_title" />
+		<result property="terms_conditions_business_retails" column="tc_terms_conditions_business_retails" />
+		<result property="terms_conditions_business_wifi" column="tc_terms_conditions_business_wifi" />
+		<result property="terms_conditions_personal" column="tc_terms_conditions_personal" />
+		<result property="terms_conditions_ufb" column="tc_terms_conditions_ufb" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectTermsConditions" parameterType="TermsConditions" resultType="TermsConditions">
+		select * from tm_terms_conditions as tc
+	</select>
+
+	<!-- select termsConditions page -->
+	<select id="selectTermsConditionssByPage" parameterType="Page" resultMap="termsConditionsResultMap">
+		select 
+			<include refid="termsConditionsColumns"/>
+			from tm_terms_conditions as tc
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select termsConditions amount -->
+	<select id="selectTermsConditionssSum" parameterType="Page" resultType="int">
+		select count(*) from tm_terms_conditions as tc
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertTermsConditions" parameterType="TermsConditions">
+		INSERT INTO `tm_terms_conditions`(
+			`term_contracts_title`, `terms_conditions_business_retails_title`, `terms_conditions_business_wifi_title`, `terms_conditions_personal_title`, `terms_conditions_ufb_title`,
+			`term_contracts`, `terms_conditions_business_retails`, `terms_conditions_business_wifi`, `terms_conditions_personal`, `terms_conditions_ufb`
+		) VALUES (
+			#{term_contracts_title}, #{terms_conditions_business_retails_title}, #{terms_conditions_business_wifi_title}, #{terms_conditions_personal_title}, #{terms_conditions_ufb_title},
+			#{term_contracts}, #{terms_conditions_business_retails}, #{terms_conditions_business_wifi}, #{terms_conditions_personal}, #{terms_conditions_ufb}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update termsConditions -->
+	<update id="updateTermsConditions" parameterType="TermsConditions">
+		update tm_terms_conditions
+		<set>
+			<if test="term_contracts_title != null">term_contracts_title = #{term_contracts_title},</if>
+			<if test="terms_conditions_business_retails_title != null">terms_conditions_business_retails_title = #{terms_conditions_business_retails_title},</if>
+			<if test="terms_conditions_business_wifi_title != null">terms_conditions_business_wifi_title = #{terms_conditions_business_wifi_title},</if>
+			<if test="terms_conditions_personal_title != null">terms_conditions_personal_title = #{terms_conditions_personal_title},</if>
+			<if test="terms_conditions_ufb_title != null">terms_conditions_ufb_title = #{terms_conditions_ufb_title},</if>
+			<if test="term_contracts != null">term_contracts = #{term_contracts},</if>
+			<if test="terms_conditions_business_retails != null">terms_conditions_business_retails = #{terms_conditions_business_retails},</if>
+			<if test="terms_conditions_business_wifi != null">terms_conditions_business_wifi = #{terms_conditions_business_wifi},</if>
+			<if test="terms_conditions_personal != null">terms_conditions_personal = #{terms_conditions_personal},</if>
+			<if test="terms_conditions_ufb != null">terms_conditions_ufb = #{terms_conditions_ufb}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

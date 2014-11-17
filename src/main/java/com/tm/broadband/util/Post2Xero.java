@@ -32,8 +32,8 @@ public class Post2Xero {
 	
 	public static void postSingleInvoice(HttpServletRequest request
 			, Customer c, CustomerOrder co, CustomerInvoice ci, String description){
-		
-		String name = c.getFirst_name()+" "+c.getLast_name()+"-"+ci.getOrder_id();
+
+		String name = ("personal".equals(co.getCustomer_type()) ? co.getFirst_name() + " " + co.getLast_name() : co.getOrg_name())+"-"+co.getId();
 
         // Prepare the Xero Client
         XeroClient xeroClient = null;
@@ -156,7 +156,7 @@ public class Post2Xero {
 				continue;
 			}
 
-			String name = c.getFirst_name()+" "+c.getLast_name()+"-"+ci.getOrder_id();
+			String name = ("personal".equals(co.getCustomer_type()) ? co.getFirst_name() + " " + co.getLast_name() : co.getOrg_name())+"-"+co.getId();
 	        Invoice invoice = new Invoice();
 			
 			ArrayOfPhone arrayOfPhone = new ArrayOfPhone();

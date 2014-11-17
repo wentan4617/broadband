@@ -38,6 +38,8 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
+
 	private Integer globalBorderWidth = 0;
 	
 	public EarlyTerminationChargePDFCreator(){}
@@ -259,7 +261,13 @@ public class EarlyTerminationChargePDFCreator extends ITextUtils {
 		PdfPTable headerTable = newTable().columns(colspan).totalWidth(510F).o();
 		
         // logo & start
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+		Image logo = null;
+        File invoiceLogoFile = new File(pdf_resources_path + "invoice_company_logo.png");
+		if(invoiceLogoFile.exists()){
+			logo = Image.getInstance(pdf_resources_path + "invoice_company_logo.png");
+        } else {
+    		logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+        }
 		logo.scaleAbsolute(171f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);

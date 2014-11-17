@@ -32,6 +32,7 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
@@ -2182,7 +2183,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2191,7 +2192,7 @@ public class CRMRestController {
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 		
 		try {
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createTermPlanInvoiceByOrder(coQuery
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
@@ -2204,6 +2205,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
 //			}
+			
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-term-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
@@ -2219,7 +2233,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2230,7 +2244,7 @@ public class CRMRestController {
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createInvoicePDFBoth(coQuery, notificationEmail,
 					notificationSMS,
 					isRegenerateInvoice ? false : true,
@@ -2244,6 +2258,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
 //			}
+					
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-no-term-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
@@ -2260,7 +2287,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2271,7 +2298,7 @@ public class CRMRestController {
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createTopupPlanInvoiceByOrder(coQuery
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
@@ -2286,6 +2313,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
 //			}
+					
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-topup-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {
@@ -3503,4 +3543,41 @@ public class CRMRestController {
 		
 		return json;
 	}	
+	
+	@RequestMapping(value = "/broadband-user/crm/invoice/view/{pageNo}/{cblPageNo}/{customerId}")
+	public Map<String, Object> InvoicePage(Model model,
+			@PathVariable(value = "pageNo") int pageNo,
+			@PathVariable(value = "cblPageNo") int cblPageNo,
+			@PathVariable(value = "customerId") int customerId) {
+		
+		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
+		invoicePage.setPageNo(pageNo);
+		invoicePage.setPageSize(12);
+		invoicePage.getParams().put("orderby", "order by create_date desc");
+		invoicePage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
+		
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("customer_id", customerId);
+		List<CustomerInvoice> cis = this.crmService.queryCustomerInvoices(ciQuery);
+		Double totalBalance = 0d;
+		for (CustomerInvoice ci : cis) {
+			totalBalance = TMUtils.bigAdd(totalBalance, ci.getBalance());
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("invoicePage", invoicePage);
+		map.put("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customerId));
+		map.put("users", this.systemService.queryUser(new User()));
+		map.put("totalBalance", totalBalance);
+		
+		Page<CustomerBillingLog> cblPage = new Page<CustomerBillingLog>();
+		cblPage.setPageNo(cblPageNo);
+		cblPage.setPageSize(12);
+		cblPage.getParams().put("orderby", "order by oper_date desc");
+		cblPage.getParams().put("customer_id", customerId);
+		this.billingService.queryCustomerBillingLogsByPage(cblPage);
+		map.put("cblPage", cblPage);
+		return map;
+	}
 }

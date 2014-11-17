@@ -176,26 +176,6 @@ public class CRMController {
 		return transactionPage;
 	}
 	
-	@RequestMapping(value = "/broadband-user/crm/invoice/view/{pageNo}/{customerId}")
-	@ResponseBody
-	public Map<String, Object> InvoicePage(Model model,
-			@PathVariable(value = "pageNo") int pageNo,
-			@PathVariable(value = "customerId") int customerId) {
-		
-		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
-		invoicePage.setPageNo(pageNo);
-		invoicePage.setPageSize(12);
-		invoicePage.getParams().put("orderby", "order by create_date desc");
-		invoicePage.getParams().put("customer_id", customerId);
-		this.crmService.queryCustomerInvoicesByPage(invoicePage);
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("invoicePage", invoicePage);
-		map.put("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customerId));
-		map.put("users", this.systemService.queryUser(new User()));
-		return map;
-	}
-	
 	// download invoice PDF directly
 	@RequestMapping(value = "/broadband-user/crm/customer/invoice/pdf/download/{invoiceId}")
     public ResponseEntity<byte[]> downloadInvoicePDF(Model model
@@ -244,7 +224,7 @@ public class CRMController {
 		ApplicationEmail applicationEmail = new ApplicationEmail();
 		// setting properties and sending mail to customer email address
 		// recipient
-		applicationEmail.setAddressee(co.getEmail());
+		applicationEmail.setAddressee(co.getEmail()!=null && !"".equals(co.getEmail()) ? co.getEmail() : cQuery.getEmail());
 		// subject
 		applicationEmail.setSubject(notification.getTitle());
 		// content
@@ -257,6 +237,7 @@ public class CRMController {
 		// send mail
 		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
 		
+		cQuery = null;
 		coQuery = null;
 		co = null;
 		filePath = null;

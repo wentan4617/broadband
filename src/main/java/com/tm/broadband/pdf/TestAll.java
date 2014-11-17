@@ -2,18 +2,11 @@ package com.tm.broadband.pdf;
 
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.DocumentException;
-import com.tm.broadband.model.Customer;
-import com.tm.broadband.model.CustomerOrder;
-import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.service.SmserService;
-import com.tm.broadband.util.TMUtils;
 
 public class TestAll {
 	
@@ -100,10 +93,8 @@ public class TestAll {
 		 */
 		
 //		CompanyDetail cd = new CompanyDetail();
-//		Organization org = new Organization();
-//		Customer c = new Customer();
+//		CustomerOrder co = new CustomerOrder();
 //		CustomerInvoice ci = new CustomerInvoice();
-//		CustomerInvoice lci = new CustomerInvoice();
 //		CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
 //		
 //		cd.setName("CyberPark");
@@ -117,21 +108,21 @@ public class TestAll {
 //		cd.setBank_account_number("3908 8987 6776 5654");
 //
 ////		// set org
-//		org.setOrg_name("CyberPark");
-//		org.setOrg_type("NZ Incoporated Company");
-//		org.setOrg_trading_name("NZ Limited");
-//		org.setOrg_register_no("NZ19876542");
-//		org.setOrg_incoporate_date(new Date());
-//		org.setHolder_name("Steve");
-//		org.setHolder_job_title("Manager");
-//		org.setHolder_phone("0210210213");
-//		org.setHolder_email("Steve@gmail.com");
-//		
-//		c.setId(600098);
-//		c.setFirst_name("DONG");
-//		c.setLast_name("CHEN");
-//		c.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
-//		c.setCustomer_type("business");
+//		co.setCustomer_id(600098);
+//		co.setId(700098);
+//		co.setFirst_name("DONG");
+//		co.setLast_name("CHEN");
+//		co.setAddress("7 Skeates Ave, Mt Roskill, Auckland 1041");
+//		co.setCustomer_type("business");
+//		co.setOrg_name("CyberPark");
+//		co.setOrg_type("NZ Incoporated Company");
+//		co.setOrg_trading_name("NZ Limited");
+//		co.setOrg_register_no("NZ19876542");
+//		co.setOrg_incoporate_date(new Date());
+//		co.setHolder_name("Steve");
+//		co.setHolder_job_title("Manager");
+//		co.setHolder_phone("0210210213");
+//		co.setHolder_email("Steve@gmail.com");
 //		
 ////		lci.setAmount_paid(0d);
 ////		lci.setAmount_payable(89d);
@@ -187,9 +178,7 @@ public class TestAll {
 //		
 //		ipdfc.setCompanyDetail(cd);
 //		ipdfc.setCurrentCustomerInvoice(ci);
-//		ipdfc.setCustomer(c);
-//		ipdfc.setOrg(org);
-//		ipdfc.setCcrs(ccrs);
+//		ipdfc.setCo(co);
 //		System.out.println(ipdfc.create().get("filePath"));
 		
 		/**
@@ -200,47 +189,36 @@ public class TestAll {
 		/**
 		 * BEGIN TEST OrderPDFCreator
 		 */
-//		Customer c = new Customer();
-//		Organization org = new Organization();
 //		CustomerOrder co = new CustomerOrder();
 //		CustomerOrderDetail cod = new CustomerOrderDetail();
 //		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
 //		
-//		// CUSTOMER type
-//		c.setCustomer_type("business");
-//		// ORDER Broadband Type
-//		// Necessary if broadband type is transition
+//		// set order
+//		co.setId(700005);
+//		co.setCustomer_id(600089);
+//		co.setFirst_name("Dong");
+//		co.setLast_name("Chen");
+//		co.setEmail("davidli@gmail.com");
+//		co.setMobile("021 1234567");
+//		co.setPhone("021 1234567");
+//		co.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+//		co.setCustomer_type("business");
+//		co.setOrder_create_date(new Date());
+//		co.setCustomerOrderDetails(cods);
 //		co.setOrder_broadband_type("transition");
 //		co.setTransition_provider_name("Telecom");
 //		co.setTransition_account_holder_name("David Li");
 //		co.setTransition_account_number("1234 4321 1234 4321");
 //		co.setTransition_porting_number("9876 6789 9876 6789");
-//		
-//		// set customer
-//		c.setId(60089);
-//		c.setTitle("Mr");
-//		c.setLogin_name("steven1989930");
-//		c.setFirst_name("Dong");
-//		c.setLast_name("Chen");
-//		c.setEmail("davidli@gmail.com");
-//		c.setCellphone("021 1234567");
-//		c.setPhone("021 1234567");
-//		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
-//		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
-//		c.setDriver_licence("5a. DM670646     5b. 241");
-//		c.setPassport("G4041765");
-//		c.setCountry("New Zealand");
-//		
-//		// set org
-//		org.setOrg_name("CyberPark");
-//		org.setOrg_type("NZ Incoporated Company");
-//		org.setOrg_trading_name("NZ Limited");
-//		org.setOrg_register_no("NZ19876542");
-//		org.setOrg_incoporate_date(new Date());
-//		org.setHolder_name("Steve");
-//		org.setHolder_job_title("Manager");
-//		org.setHolder_phone("0210210213");
-//		org.setHolder_email("Steve@gmail.com");
+//		co.setOrg_name("CyberPark");
+//		co.setOrg_type("NZ Incoporated Company");
+//		co.setOrg_trading_name("NZ Limited");
+//		co.setOrg_register_no("NZ19876542");
+//		co.setOrg_incoporate_date(new Date());
+//		co.setHolder_name("Steve");
+//		co.setHolder_job_title("Manager");
+//		co.setHolder_phone("0210210213");
+//		co.setHolder_email("Steve@gmail.com");
 //
 //		// set order detail
 //		// SET PLAN DETAIL
@@ -273,19 +251,17 @@ public class TestAll {
 //		cod.setDetail_unit(1);
 //		cods.add(cod);
 //		
-//		// set order
-//		co.setId(60005);
-//		co.setOrder_create_date(new Date());
-//		co.setCustomerOrderDetails(cods);
+////		// call OrderPDFCreator
+////		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
+////		oPDFCreator.setCo(co);
+////		
+////		// create order PDF
+////		System.out.println(oPDFCreator.create());
 //		
-//		// call OrderPDFCreator
-//		OrderingPDFCreator oPDFCreator = new OrderingPDFCreator();
-//		oPDFCreator.setCustomer(c);
-//		oPDFCreator.setOrg(org);
-//		oPDFCreator.setCustomerOrder(co);
+//		ApplicationPDFCreator aPDFCreator = new ApplicationPDFCreator();
+//		aPDFCreator.setCo(co);
 //		
-//		// create order PDF
-//		System.out.println(oPDFCreator.create());
+//		System.out.println(aPDFCreator.create());
 		/**
 		 * END TEST OrderPDFCreator
 		 */
@@ -293,26 +269,23 @@ public class TestAll {
 		/**
 		 * BEGIN TEST CreditPDFCreator
 		 */
-//		Customer c = new Customer();
-//		c.setCustomer_type("personal");
 //		CustomerCredit cc = new CustomerCredit();
-//		cc.setCard_type("MASTERCARD");
 //		CustomerOrder co = new CustomerOrder();
-//		Organization org = new Organization();
-//		org.setOrg_name("CyberPark");
 //		
-//		// set customer
-//		c.setId(60089);
-//		c.setFirst_name("Dong");
-//		c.setLast_name("Chen");
-//		c.setAddress("7 Skeates Ave, Mt roskill, Auckland 1041");
-//		c.setCellphone("021 1234567");
-//		c.setPhone("021 1234567");
-//		c.setEmail("davidli@gmail.com");
-//		
-//		co.setId(60005);
+//		// set customer order
+//		co.setId(700089);
+//		co.setCustomer_id(600005);
+//		co.setOrg_name("CyberPark");
+//		co.setCustomer_type("personal");
+//		co.setFirst_name("Dong");
+//		co.setLast_name("Chen");
+//		co.setAddress("7 Skeates Ave, Mt roskill, Auckland 1041");
+//		co.setMobile("021 1234567");
+//		co.setPhone("021 1234567");
+//		co.setEmail("davidli@gmail.com");
 //		
 //		// set customer credit
+//		cc.setCard_type("MASTERCARD");
 //		cc.setHolder_name("COOK");
 //		cc.setCard_number("9999 8888 7777 6666");
 //		cc.setSecurity_code("214");
@@ -320,13 +293,11 @@ public class TestAll {
 //		
 //		// call OrderPDFCreator
 //		CreditPDFCreator cPDFCreator = new CreditPDFCreator();
-//		cc.setCustomer(c);
 //		cPDFCreator.setCc(cc);
 //		cPDFCreator.setCo(co);
-//		cPDFCreator.setOrg(org);
 //		
 //		// create order PDF
-//		cPDFCreator.create();
+//		System.out.println(cPDFCreator.create());
 		/**
 		 * END TEST CreditPDFCreator
 		 */
@@ -445,89 +416,75 @@ public class TestAll {
 		/**
 		 * BEGIN TEST ReceiptPDFCreator
 		 */
-		Customer c = new Customer();
-		CustomerOrder co = new CustomerOrder();
-		CustomerOrderDetail cod = new CustomerOrderDetail();
-		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
-		
-		// CUSTOMER type
-		co.setCustomer_type("business");
-		// ORDER Broadband Type
-		// Necessary if broadband type is transition
-		co.setOrder_broadband_type("transition");
-		co.setTransition_provider_name("Telecom");
-		co.setTransition_account_holder_name("David Li");
-		co.setTransition_account_number("1234 4321 1234 4321");
-		co.setTransition_porting_number("9876 6789 9876 6789");
-		
-		// set customer
-		c.setId(600089);
-		c.setTitle("Mr");
-		c.setLogin_name("steven1989930");
-		c.setFirst_name("Dong");
-		c.setLast_name("Chen");
-		c.setEmail("davidli@gmail.com");
-		c.setCellphone("021 1234567");
-		c.setPhone("021 1234567");
-		c.setAddress("7 Skeates Ave, Mt roskill, Auckland");
-		c.setBirth(TMUtils.parseDateYYYYMMDD("1970-04-01"));
-		c.setDriver_licence("5a. DM670646     5b. 241");
-		c.setPassport("G4041765");
-		c.setCountry("New Zealand");
-		
-		// set org
-		co.setOrg_name("CyberPark");
-		co.setOrg_type("NZ Incoporated Company");
-		co.setOrg_trading_name("NZ Limited");
-		co.setOrg_register_no("NZ19876542");
-		co.setOrg_incoporate_date(new Date());
-		co.setHolder_name("Steve");
-		co.setHolder_job_title("Manager");
-		co.setHolder_phone("0210210213");
-		co.setHolder_email("Steve@gmail.com");
-
-		// set order detail
-		// SET PLAN DETAIL
-		cod.setDetail_name("ADSL Naked 150 GB Plan");
-		cod.setDetail_type("plan-term");
-		cod.setDetail_price(89.0d);
-		cod.setDetail_data_flow(100L);
-		cod.setDetail_term_period(24);
-		cod.setDetail_unit(3);
-		cods.add(cod);
-		// SET ADD ON DETAIL
+//		CustomerOrder co = new CustomerOrder();
+//		CustomerOrderDetail cod = new CustomerOrderDetail();
+//		List<CustomerOrderDetail> cods = new ArrayList<CustomerOrderDetail>();
+//		
+//		// CUSTOMER type
+//		co.setId(600089);
+//		co.setCustomer_id(600005);
+//		co.setOrder_create_date(new Date());
+//		co.setCustomerOrderDetails(cods);
+//		co.setCustomer_type("business");
+//		co.setOrder_broadband_type("transition");
+//		co.setTransition_provider_name("Telecom");
+//		co.setTransition_account_holder_name("David Li");
+//		co.setTransition_account_number("1234 4321 1234 4321");
+//		co.setTransition_porting_number("9876 6789 9876 6789");
+//		co.setTitle("Mr");
+//		co.setFirst_name("Dong");
+//		co.setLast_name("Chen");
+//		co.setEmail("davidli@gmail.com");
+//		co.setMobile("021 1234567");
+//		co.setPhone("021 1234567");
+//		co.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+//		co.setOrg_name("CyberPark");
+//		co.setOrg_type("NZ Incoporated Company");
+//		co.setOrg_trading_name("NZ Limited");
+//		co.setOrg_register_no("NZ19876542");
+//		co.setOrg_incoporate_date(new Date());
+//		co.setHolder_name("Steve");
+//		co.setHolder_job_title("Manager");
+//		co.setHolder_phone("0210210213");
+//		co.setHolder_email("Steve@gmail.com");
+//
+//		// set order detail
+//		// SET PLAN DETAIL
+//		cod.setDetail_name("ADSL Naked 150 GB Plan");
+//		cod.setDetail_type("plan-term");
+//		cod.setDetail_price(89.0d);
+//		cod.setDetail_data_flow(100L);
+//		cod.setDetail_term_period(24);
+//		cod.setDetail_unit(3);
+//		cods.add(cod);
+//		// SET ADD ON DETAIL
+////		cod = new CustomerOrderDetail();
+////		cod.setDetail_name("Broadband New Connection");
+////		cod.setDetail_type("new-connection");
+////		cod.setDetail_price(99.0d);
+////		cod.setDetail_unit(1);
+////		cods.add(cod);
 //		cod = new CustomerOrderDetail();
-//		cod.setDetail_name("Broadband New Connection");
-//		cod.setDetail_type("new-connection");
-//		cod.setDetail_price(99.0d);
+//		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+//		cod.setDetail_type("hardware-router");
+//		cod.setDetail_price(49.0d);
+//		cod.setDetail_unit(2);
+//		cods.add(cod);
+//		// SET DISCOUNT ON DETAIL
+//		cod = new CustomerOrderDetail();
+//		cod.setDetail_name("Plan Discount");
+//		cod.setDetail_desc("3% off the total price of plan");
+//		cod.setDetail_type("discount");
+//		cod.setDetail_price(16.008d);
 //		cod.setDetail_unit(1);
 //		cods.add(cod);
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
-		cod.setDetail_type("hardware-router");
-		cod.setDetail_price(49.0d);
-		cod.setDetail_unit(2);
-		cods.add(cod);
-		// SET DISCOUNT ON DETAIL
-		cod = new CustomerOrderDetail();
-		cod.setDetail_name("Plan Discount");
-		cod.setDetail_desc("3% off the total price of plan");
-		cod.setDetail_type("discount");
-		cod.setDetail_price(16.008d);
-		cod.setDetail_unit(1);
-		cods.add(cod);
-		
-		// set order
-		co.setId(60005);
-		co.setOrder_create_date(new Date());
-		co.setCustomerOrderDetails(cods);
-		
-		// call OrderPDFCreator
-		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
+//		
+//		// call OrderPDFCreator
+//		ReceiptPDFCreator oPDFCreator = new ReceiptPDFCreator();
 //		oPDFCreator.setCo(co);
-		
-		// create order PDF
-		System.out.println(oPDFCreator.create());
+//		
+//		// create order PDF
+//		System.out.println(oPDFCreator.create());
 		/**
 		 * END TEST ReceiptPDFCreator
 		 */

@@ -1,8 +1,6 @@
 package com.tm.broadband.service;
 
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
-import com.rossjourdain.util.xero.XeroClient;
-import com.rossjourdain.util.xero.XeroClientProperties;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CompanyDetailMapper;
@@ -1019,16 +1015,6 @@ public class CRMService {
 			,Notification notificationEmail
 			,Notification notificationSMS) {
 
-        // Prepare the Xero Client
-        XeroClient xeroClient = null;
-        try {
-            XeroClientProperties clientProperties = new XeroClientProperties();
-            clientProperties.load(new FileInputStream("xeroApi.properties"));
-            xeroClient = new XeroClient(clientProperties);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", customerOrder.getId());
 		coQuery = this.queryCustomerOrder(coQuery);
@@ -1044,17 +1030,6 @@ public class CRMService {
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 		List<CustomerOrder> customerOrders = this.queryCustomerOrders(co);
 
-        // Prepare the Xero Client
-        XeroClient xeroClient = null;
-        try {
-            XeroClientProperties clientProperties = new XeroClientProperties();
-    		String propertyFile = TMUtils.createPath("broadband" + File.separator + "properties" + File.separator + "xeroApi.properties");
-            clientProperties.load(new FileInputStream(propertyFile));
-            xeroClient = new XeroClient(clientProperties);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        
         List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
 
 		for (CustomerOrder customerOrder : customerOrders) {

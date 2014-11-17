@@ -45,6 +45,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
 	private Integer globalBorderWidth = 0;
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
 	
 	// BALANCE
 	private Double totalBalance = 0d;
@@ -161,7 +162,13 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // CARTOON
-		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"company_logo.png");
+		Image cartoon = null;
+        File companyLogoFile = new File(pdf_resources_path + "common_company_logo.png");
+		if(companyLogoFile.exists()){
+			cartoon = Image.getInstance(pdf_resources_path + "common_company_logo.png");
+        } else {
+    		cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"company_logo.png");
+        }
 		cartoon.scaleAbsolute(100f, 46f);
 		cartoon.setAbsolutePosition(30, 170);
 		writer.getDirectContent().addImage(cartoon);
@@ -172,7 +179,6 @@ public class InvoicePDFCreator extends ITextUtils {
 	        img.setWidthPercentage(100);
 	        addCol(paymentSlipTable, " ").colspan(5).image(img).o();
 	        
-	
 	        // WHITE TITLE
 	        addEmptyRow(paymentSlipTable, 4);
 	        
@@ -803,7 +809,13 @@ public class InvoicePDFCreator extends ITextUtils {
 		PdfPTable headerTable = newTable().columns(colspan).totalWidth(510F).o();
 		
         // logo & start
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+		Image logo = null;
+        File invoiceLogoFile = new File(pdf_resources_path + "invoice_company_logo.png");
+		if(invoiceLogoFile.exists()){
+			logo = Image.getInstance(pdf_resources_path + "invoice_company_logo.png");
+        } else {
+    		logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+        }
 		logo.scaleAbsolute(146f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);

@@ -35,6 +35,8 @@ public class ApplicationPDFCreator extends ITextUtils {
 	private BaseColor titleBorderColor = new BaseColor(159,159,159);
 	private BaseColor tableBorderColor = new BaseColor(188,189,192);
 	private Float tableBorderWidth = 4F;
+	
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
 
 	// BEGIN Temporary Variables
 	// BEGIN Currency Related Variables
@@ -113,7 +115,12 @@ public class ApplicationPDFCreator extends ITextUtils {
         document.open();
         
     	// company_logo
-    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 108.75F, 51.00000000000001F, 32F, 762F);
+        File companyLogoFile = new File(pdf_resources_path + "common_company_logo.png");
+		if(companyLogoFile.exists()){
+	    	addImage(writer, pdf_resources_path + "common_company_logo.png", 108.75F, 51.00000000000001F, 32F, 762F);
+        } else {
+        	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 108.75F, 51.00000000000001F, 32F, 762F);
+        }
     	
         // set order PDF title table
 		document.add(createOrderPDFTitleTable());
@@ -139,17 +146,30 @@ public class ApplicationPDFCreator extends ITextUtils {
 		addText(writer, "Print from www.cyberpark.co.nz", ITextFont.arial_normal_10, 190F, 26F);
 		addText(writer, "0800 2 CYBER (29237)", ITextFont.arial_normal_10, 360F, 26F);
     	// two-dimensional_code
-    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"two-dimensional_code.png", 82.50000000000001F, 82.50000000000001F, 486F, 24F);
-
+        File twoDimensionalCodeFile = new File(pdf_resources_path + "two_dimensional_code.png");
+		if(twoDimensionalCodeFile.exists()){
+	    	addImage(writer, pdf_resources_path + "two_dimensional_code.png", 82.50000000000001F, 82.50000000000001F, 486F, 24F);
+        } else {
+        	addImage(writer, "pdf"+File.separator+"img"+File.separator+"two-dimensional_code.png", 82.50000000000001F, 82.50000000000001F, 486F, 24F);
+        }
 		
 		// second page
         document.newPage();
         
     	// company_logo_empty_bar
-    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo_empty_bar.png", 266.2500000000001F, 40.50000000000001F, 18F, 774F);
+        File companyLogoEmptyBarFile = new File(pdf_resources_path + "company_lg_customer_service_bar.png");
+		if(companyLogoEmptyBarFile.exists()){
+	    	addImage(writer, pdf_resources_path + "company_lg_customer_service_bar.png", 266.2500000000001F, 40.50000000000001F, 18F, 774F);
+        } else {
+        	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo_empty_bar.png", 266.2500000000001F, 40.50000000000001F, 18F, 774F);
+        }
     	
     	// company_logo SMALLER
-    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 51.75000000000001F, 23.25000000000001F, 490F, 46F);
+		if(companyLogoFile.exists()){
+	    	addImage(writer, pdf_resources_path + "common_company_logo.png", 51.75000000000001F, 23.25000000000001F, 490F, 46F);
+        } else {
+        	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 51.75000000000001F, 23.25000000000001F, 490F, 46F);
+        }
         
         // set term and authorization table
 		document.add(createTermAndAuthorisationTable(writer));

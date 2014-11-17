@@ -484,8 +484,23 @@ public class TMUtils {
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
 		String day = dateArr[2];
 		StringBuffer finalDateStrBuff = new StringBuffer();
-		if(Integer.parseInt(day) < 10){
-			finalDateStrBuff.append(day.charAt(1)+(day.charAt(1)=='1' ? "st " : "th "));
+		String specialDays = "11,12,13";
+		if(!specialDays.contains(day)){
+			int specialDay = Integer.parseInt(day);
+			switch (specialDay%10) {
+			case 1:
+				finalDateStrBuff.append(day+"st ");
+				break;
+			case 2:
+				finalDateStrBuff.append(day+"nd ");
+				break;
+			case 3:
+				finalDateStrBuff.append(day+"rd ");
+				break;
+			default:
+				finalDateStrBuff.append(day+"th ");
+				break;
+			}
 		} else {
 			finalDateStrBuff.append(day+"th ");
 		}

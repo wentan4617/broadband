@@ -198,6 +198,12 @@
 					<if test="params.original_order_id != null">and original_order_id = #{params.original_order_id}</if>
 					<if test="params.original_customer_id != null">and original_customer_id = #{params.original_customer_id}</if>
 					<if test="params.invoice_type != null">and invoice_type = #{params.invoice_type}</if>
+					<if test="params.chorus_calling_credit != null">and chorus_calling_credit = #{params.chorus_calling_credit}</if>
+					<if test="params.chorus_calling_charge != null">and chorus_calling_charge = #{params.chorus_calling_charge}</if>
+					<if test="params.nca_calling_credit != null">and nca_calling_credit = #{params.nca_calling_credit}</if>
+					<if test="params.nca_calling_charge != null">and nca_calling_charge = #{params.nca_calling_charge}</if>
+					<if test="params.vos_calling_credit != null">and vos_calling_credit = #{params.vos_calling_credit}</if>
+					<if test="params.vos_calling_charge != null">and vos_calling_charge = #{params.vos_calling_charge}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -221,7 +227,13 @@
 		i.`payment_status`			as i_payment_status,
 		i.`original_order_id`		as i_original_order_id,
 		i.`original_customer_id`	as i_original_customer_id,
-		i.`invoice_type`			as i_invoice_type
+		i.`invoice_type`			as i_invoice_type,
+		i.`chorus_calling_credit`	as i_chorus_calling_credit,
+		i.`chorus_calling_charge`	as i_chorus_calling_charge,
+		i.`nca_calling_credit`		as i_nca_calling_credit,
+		i.`nca_calling_charge`		as i_nca_calling_charge,
+		i.`vos_calling_credit`		as i_vos_calling_credit,
+		i.`vos_calling_charge`		as i_vos_calling_charge
 	</sql>
 	<sql id="customerLastInvoiceColumns">
 		li.`id`							as li_id,
@@ -241,7 +253,13 @@
 		li.`payment_status`				as li_payment_status,
 		li.`original_order_id`			as li_original_order_id,
 		li.`original_customer_id`		as li_original_customer_id,
-		li.`invoice_type`				as li_invoice_type
+		li.`invoice_type`				as li_invoice_type,
+		li.`chorus_calling_credit`		as li_chorus_calling_credit,
+		li.`chorus_calling_charge`		as li_chorus_calling_charge,
+		li.`nca_calling_credit`			as li_nca_calling_credit,
+		li.`nca_calling_charge`			as li_nca_calling_charge,
+		li.`vos_calling_credit`			as li_vos_calling_credit,
+		li.`vos_calling_charge`			as li_vos_calling_charge
 	</sql>
 	<sql id="customerColumns">
 		c.`id` 				as c_id, 
@@ -379,6 +397,12 @@
 		<result property="original_order_id" column="i_original_order_id" />
 		<result property="original_customer_id" column="i_original_customer_id" />
 		<result property="invoice_type" column="i_invoice_type" />
+		<result property="chorus_calling_credit" column="i_chorus_calling_credit" />
+		<result property="chorus_calling_charge" column="i_chorus_calling_charge" />
+		<result property="nca_calling_credit" column="i_nca_calling_credit" />
+		<result property="nca_calling_charge" column="i_nca_calling_charge" />
+		<result property="vos_calling_credit" column="i_vos_calling_credit" />
+		<result property="vos_calling_charge" column="i_vos_calling_charge" />
 		
 		<association property="customer" javaType="Customer">
 			<id property="id" column="c_id" />
@@ -460,6 +484,12 @@
 			<result property="original_customer_id" column="li_original_customer_id" />
 			<result property="original_order_id" column="li_original_order_id" />
 			<result property="invoice_type" column="li_invoice_type" />
+			<result property="chorus_calling_credit" column="li_chorus_calling_credit" />
+			<result property="chorus_calling_charge" column="li_chorus_calling_charge" />
+			<result property="nca_calling_credit" column="li_nca_calling_credit" />
+			<result property="nca_calling_charge" column="li_nca_calling_charge" />
+			<result property="vos_calling_credit" column="li_vos_calling_credit" />
+			<result property="vos_calling_charge" column="li_vos_calling_charge" />
 		</association>
 	</resultMap>
 	
@@ -519,12 +549,16 @@
 			`invoice_serial`, `customer_id`, `order_id`, `create_date`,`due_date`, 
 			`final_payable_amount`, `amount_payable`, `amount_paid`, `balance`, `status`, `memo`, `invoice_pdf_path`, 
 			`paid_date`, `paid_type`, `last_invoice_id`, `payment_status`, `original_order_id`,
-			`original_customer_id`, `invoice_type`) 
+			`original_customer_id`, `invoice_type`, `chorus_calling_credit`, `chorus_calling_charge`, `nca_calling_credit`,
+			`nca_calling_charge`, `vos_calling_credit`, `vos_calling_charge`
+			) 
 		VALUES (
 			#{invoice_serial}, #{customer_id}, #{order_id}, #{create_date}, #{due_date},
 			#{final_payable_amount}, #{amount_payable}, #{amount_paid}, #{balance}, #{status}, #{memo}, #{invoice_pdf_path}, 
 			#{paid_date}, #{paid_type}, #{last_invoice_id}, #{payment_status}, #{original_order_id},
-			#{original_customer_id}, #{invoice_type})
+			#{original_customer_id}, #{invoice_type}, #{chorus_calling_credit}, #{chorus_calling_charge}, #{nca_calling_credit},
+			#{nca_calling_charge}, #{vos_calling_credit}, #{vos_calling_charge}
+			)
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -553,6 +587,12 @@
 			<if test="original_order_id != null">`original_order_id`=#{original_order_id},</if>
 			<if test="original_customer_id != null">`original_customer_id`=#{original_customer_id},</if>
 			<if test="invoice_type != null">`invoice_type`=#{invoice_type},</if>
+			<if test="chorus_calling_credit != null">`chorus_calling_credit`=#{chorus_calling_credit},</if>
+			<if test="chorus_calling_charge != null">`chorus_calling_charge`=#{chorus_calling_charge},</if>
+			<if test="nca_calling_credit != null">`nca_calling_credit`=#{nca_calling_credit},</if>
+			<if test="nca_calling_charge != null">`nca_calling_charge`=#{nca_calling_charge},</if>
+			<if test="vos_calling_credit != null">`vos_calling_credit`=#{vos_calling_credit},</if>
+			<if test="vos_calling_charge != null">`vos_calling_charge`=#{vos_calling_charge},</if>
 			<if test="params.customer_id_null == 'true'">`customer_id`=null,</if>
 			<if test="params.order_id_null == 'true'">`order_id`=null,</if>
 			<if test="params.original_customer_id_null == 'true'">`original_customer_id`=null,</if>

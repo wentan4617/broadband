@@ -408,7 +408,7 @@ public class CustomerController {
 
 		if (customerSession == null) {
 			System.out.println("SESSION IS NULL");
-			return "redirect:/login";
+			return "redirect:/sign-in";
 		} else {
 			System.out.println("SESSION IS NOT NULL");
 			req.getSession().setAttribute("customerSession", customerSession);

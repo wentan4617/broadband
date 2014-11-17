@@ -15,16 +15,106 @@ Total Mobile Solution Internet Service Web Project
  * planCreate (/plan/create)(post)
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
- * planRemove (/plan/remove/{id})(get)            
+ * planRemove (/plan/remove/{id})(get)
 
-没有录入order到CyberPark的pstn_number号码：73455586，96235066
+
+
+demand version 1.5.0 2014-11-13
+
+* 将订单相关账单的balance累加并存至当前账单的PDF中.
+
+
+
+demand version 1.5.0 2014-11-13
+
+* 新建一张表tm_website_editable_details
+    字段：company_name, company_name_ltd, company_hot_line_no, company_hot_line_no_alphabet, company_address, company_email, website_year
+    值：
+    
+* 新建一张表tm_plan_introductions
+    字段：adsl_title, vdsl_title, ufb_title, adsl_content, vdsl_content, ufb_content,
+    
+* 新建一张表tm_website_static_resources
+    字段：logo_path, facebook_lg_path, googleplus_lg_path, twitter_lg_path, youtube_lg_path
+
+* 新建一张表tm_terms_conditions
+    字段：term_contracts, terms_conditions_business_retails, terms_conditions_business_wifi, terms_conditions_personal, terms_conditions_ufb
+
+* 将CompanyDetail的Terms & Conditions移到tm_terms_conditions表上
+
+* 新建一张表tm_pdf_resources
+    字段：common_company_lg_path, invoice_company_lg_path, company_lg_customer_service_bar_path, two_dimensional_code_path
+
+* 将客户登录后的提示改成：Welcome to ${tm_website_editable_details.company_name}
+
+
+demand version 1.5.0 2014-11-12
+
+* 将CyberPark系统的Logo等信息变成灵活可更改的：
+
+    前端要去掉的东西：
+    Voucher Checking界面
+    About界面的Company Overview、Telecommunication services and WiFi coverage start from US!
+    Wi-Fi Solution界面
+    E-Commerce界面
+    
+
+    网站：-
+    1. 前端(客户)：
+        头部Logo（approximately H:46px、W:111px）
+        首页大图片（approximately H:322px、W:1001px）
+        
+        Header:
+        Information：About ${company_name}
+        0800 229 237替换成${company_hot_line_no}
+        0800 229 237：
+        Contact Us下方：
+        ${company_name_ltd}
+        ${company_address}
+        Give us a call ${company_hot_line_no_alphabet}
+        send email to ${company_email}
+        
+        Footer：
+        左下角：About ${company_name}
+        右下角：${company_name_ltd}
+        右下角：${website_year}
+        
+        
+    2. 后端(管理)：
+        
+        
+    
+    PDF：-
+        
+
+
+
+demand version 1.4.6 2014-11-11
+
+* [tm_customer_invoice添加6个字段：chorus_calling_credit, chorus_calling_charge, nca_calling_credit, nca_calling_charge, vos_calling_credit, vos_calling_charge.](steven)
+* [在customer-info界面添加一个New Order按钮，将Kanny给的链接放进去.](steven)
+
+
+demand version 1.4.5 2014-11-10
+
+* [创建一张tm_customer_billing_log表，记录所有跟Billing有关的操作，字段有customer_id, order_id, invoice_id, user_id, oper_type, oper_name, oper_date.](steven)
+* [当点击Next Invoice Create或Regenerate Invoice时，记录操作者ID，操作时间，操作类型，操作名称.](steven)
+* 创建一张tm_customer_order_log表，记录所有跟Order有关的操作，字段有customer_id, order_id, user_id, oper_type, oper_name, oper_date.(steven)
+
+
+
+
+
+demand version 1.4.5 2014-11-09
+
+* [将显示日期缩写的日重新替换一下，除了11、12、13号加th外，其余的以1、2、3结尾的分别加上st、nd、rd.](steven)
+
 
 
 demand version 1.4.4 2014-11-06
 
 * [添加一个界面，列出所有类型为pstn的order_detail，并且分类为：Disconnected以及In Service，在order_detail上加四个字段：is_nca, to_nca_by_who, is_out_nca, out_nca_by_who.](steven)
 * [添加一个界面，列出所有In Service以及Disconnected的pstn类型的pstn_number，以供Provision去NCA查看是否存在相应的号码.](steven)
-
 
 
 demand version 1.4.4 2014-11-06

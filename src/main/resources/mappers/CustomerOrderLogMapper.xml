@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderLogMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderLogColumns">
+		col.`id`					as col_id,
+		col.`customer_id`			as col_customer_id,
+		col.`order_id`				as col_order_id,
+		col.`user_id`				as col_user_id,
+		col.`oper_type`				as col_oper_type,
+		col.`oper_name`				as col_oper_name,
+		col.`oper_date`				as col_oper_date
+	</sql>
+
+	<resultMap type="CustomerOrderLog" id="customerOrderLogResultMap">
+		<id property="id" column="col_id" />
+		<result property="customer_id" column="col_customer_id" />
+		<result property="order_id" column="col_order_id" />
+		<result property="user_id" column="col_user_id" />
+		<result property="oper_type" column="col_oper_type" />
+		<result property="oper_name" column="col_oper_name" />
+		<result property="oper_date" column="col_oper_date" />
+	</resultMap>
+
+	<sql id="customerOrderLogWhere">
+		<where>
+			<if test="params.id != null">col.id = #{params.id}</if>
+			<if test="params.customer_id != null">and col.customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and col.order_id = #{params.order_id}</if>
+			<if test="params.user_id != null">and col.user_id = #{params.user_id}</if>
+			<if test="params.oper_type != null">and col.oper_type = #{params.oper_type}</if>
+			<if test="params.oper_name != null">and col.oper_name = #{params.oper_name}</if>
+			<if test="params.oper_date != null">and col.oper_date = #{params.oper_date}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderLog" parameterType="CustomerOrderLog" resultType="CustomerOrderLog">
+		select * from tm_customer_order_log as col
+		<include refid="customerOrderLogWhere"/>
+	</select>
+
+	<!-- select customerOrderLog page -->
+	<select id="selectCustomerOrderLogsByPage" parameterType="Page" resultMap="customerOrderLogResultMap">
+		select 
+			<include refid="customerOrderLogColumns"/>
+			from tm_customer_order_log as col
+			<include refid="customerOrderLogWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderLog amount -->
+	<select id="selectCustomerOrderLogsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_log as col
+		<include refid="customerOrderLogWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderLog" parameterType="CustomerOrderLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_log`(
+			`id`, `customer_id`, `order_id`, `user_id`, `oper_type`, 
+			`oper_name`, `oper_date`
+		) VALUES (
+			#{id}, #{customer_id}, #{order_id}, #{user_id}, #{oper_type}, 
+			#{oper_name}, #{oper_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderLog -->
+	<update id="updateCustomerOrderLog" parameterType="CustomerOrderLog">
+		update tm_customer_order_log
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="oper_type != null">oper_type = #{oper_type},</if>
+			<if test="oper_name != null">oper_name = #{oper_name},</if>
+			<if test="oper_date != null">oper_date = #{oper_date}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderLogById" parameterType="int">
+		DELETE FROM tm_customer_order_log WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

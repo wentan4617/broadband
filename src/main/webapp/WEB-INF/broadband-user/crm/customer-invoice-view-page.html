@@ -60,14 +60,13 @@
 }
 
 </style>
-<div>
+
 <table class="table">
 	<thead>
 		<tr>
 			<th colspan="12">
 				<!-- In the external page, assign orderIds as obj's attribute -->
 				<h3 class="text-success" style="margin: 2px;">
-					<strong>Order Serial:&nbsp;<small><.=orderIds[o].></small></strong>
 					<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 					<select class="selectpicker" data-name="unbind_invoice_selecter">
 					    <option value="0">------------Operation------------</option>
@@ -501,7 +500,7 @@
 					for (var i = 1, len = invoicePage.totalPage; i <= len; i++) {
 	.>
 						<li class="<.= invoicePage.pageNo == i ? 'active' : '' .>">
-							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" data-cblPageNo="<.=cblPage.pageNo.>" style="cursor:pointer;"><.=i.></a>
 						</li>
 	<.
 					}
@@ -514,6 +513,72 @@
 	<div class="alert alert-warning">No records have been found.</div>
 <. } .>
 
+<div>
+<table class="table">
+	<thead>
+		<tr>
+			<th colspan="12">
+				<h3 class="text-success" style="margin: 2px;">
+					<strong>Operation Records:&nbsp;</strong>
+				</h3>
+				<br/>
+			</th>
+		</tr>
+		<tr>
+			<th><input type="checkbox" id="checkbox_cbls_top" /></th>
+			<th>Invoice #</th>
+			<th>Operate Type</th>
+			<th>Operate Name</th>
+			<th>Operate Date</th>
+			<th>Executor</th>
+		</tr>
+	</thead>
+<. if (cblPage.results != null && cblPage.results.length > 0) { .>
+	<tbody>
+		<.
+			for (var i = 0, cblLen = cblPage.results.length; i < cblLen; i++) {
+				var cbl = cblPage.results[i];
+		.>
+		<tr>
+			<td><input type="checkbox" id="checkbox_cbl_top" /></td>
+			<td><.= cbl.invoice_id .></td>
+			<td><.= cbl.oper_type .></td>
+			<td><.= cbl.oper_name .></td>
+			<td><.= cbl.oper_date_str .></td>
+			<td>
+				<.
+					for(var u=0; u<users.length; u++){
+				   		if(users[u].id == cbl.user_id){
+				.>
+					<.= users[u].user_name .> -<br/><.= users[u].user_role .>
+				<.
+				   		}
+					}
+				.>
+			</td>
+		</tr>
+		<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = cblPage.totalPage; i <= len; i++) {
+	.>
+						<li class="<.= cblPage.pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=invoicePage.pageNo.>" data-cblPageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+<. } .>
+</table>
+</div>
 		<!-- Unbind invoice Modal -->
 		<div class="modal fade" id="unbindInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="unbindInvoiceModalLabel" aria-hidden="true">
 			<div class="modal-dialog">

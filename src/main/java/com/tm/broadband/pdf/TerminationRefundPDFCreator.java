@@ -36,6 +36,8 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 	private CustomerOrder co;
 	private TerminationRefund etr;
 	private User u;
+	
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
 
 	private BaseColor titleBorderColor = new BaseColor(230,230,230);
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
@@ -183,7 +185,13 @@ public class TerminationRefundPDFCreator extends ITextUtils {
 		PdfPTable headerTable = newTable().columns(colspan).totalWidth(510F).o();
 		
         // logo & start
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+        File invoiceLogoFile = new File(pdf_resources_path + "invoice_company_logo.png");
+        Image logo = null;
+		if(invoiceLogoFile.exists()){
+			logo = Image.getInstance(pdf_resources_path + "invoice_company_logo.png");
+        } else {
+    		logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+        }
 		logo.scaleAbsolute(171f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);

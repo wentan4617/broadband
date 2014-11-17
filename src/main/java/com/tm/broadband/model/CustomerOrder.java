@@ -40,16 +40,16 @@ public class CustomerOrder implements Serializable {
 	private String svlan;
 	private String cvlan;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_provider_name;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_holder_name;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_number;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_porting_number;
 	private Integer hardware_post;
 	private Date order_due;

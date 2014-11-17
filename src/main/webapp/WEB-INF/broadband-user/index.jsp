@@ -13,6 +13,9 @@
 .first-row-panel-success {
 	min-height: 300px;
 }
+.third-row-panel-success {
+	min-height: 400px;
+}
 hr {
 	margin:0 0 5px 0;
 }
@@ -23,9 +26,15 @@ hr {
 	<c:if test="${userSession.user_role != 'sales' && userSession.user_role != 'agent'}">
 	
 	<div class="row">
+	
+	
+	
+		<!-- BEGIN LEFT COLUMN -->
 		
 		<!-- left column  -->
 		<div class="col-md-6">
+		
+		<!-- BEGIN LEFT FIRST COLUMN -->
 			
 			<div class="row">
 				
@@ -121,6 +130,11 @@ hr {
 				</div>
 				
 			</div>
+		
+		<!-- END LEFT FIRST COLUMN -->
+			
+			
+		<!-- BEGIN LEFT SECOND COLUMN -->
 			
 			<div class="row">
 				
@@ -186,13 +200,18 @@ hr {
 				</div>
 				
 			</div>
+		
+		<!-- END LEFT SECOND COLUMN -->
+		
+		
+		<!-- BEGIN LEFT THIRD COLUMN -->
 			
 			<div class="row">
 			
 				<div class="col-md-6">
 				
 					<!-- Manual Module -->
-					<div class="panel panel-success">
+					<div class="panel panel-success third-row-panel-success">
 				  		<div class="panel-heading">
 				  			<h3 class="panel-title"><strong class="text-success">Manual Manipulation</strong></h3>
 				  		</div>
@@ -228,7 +247,7 @@ hr {
 				<div class="col-md-6">
 				
 					<!-- Voucher Module -->
-					<div class="panel panel-success">
+					<div class="panel panel-success third-row-panel-success">
 				  		<div class="panel-heading">
 				  			<h3 class="panel-title"><strong class="text-success">Voucher</strong></h3>
 				  		</div>
@@ -251,12 +270,21 @@ hr {
 				</div>
 				
 			</div>
+		
+		<!-- END LEFT THIRD COLUMN -->
 			
 		</div>
 		<!-- // left column  -->
 		
+		<!-- END LEFT COLUMN -->
+		
+		
+		<!-- BEGIN RIGHT COLUMN -->
+		
 		<!-- right column -->
 		<div class="col-md-6">
+		
+		<!-- BEGIN RIGHT FIRST COLUMN -->
 		
 			<!-- Billing Module -->
 			<div class="panel panel-success first-row-panel-success">
@@ -328,7 +356,12 @@ hr {
 			  	</div>
 			</div>
 			<!-- // Billing Module -->
-			
+		
+		<!-- END RIGHT FIRST COLUMN -->
+		
+		
+		<!-- BEGIN RIGHT SECOND COLUMN -->
+		
 			<!-- Sales Module -->
 			<div class="panel panel-success">
 		  		<div class="panel-heading">
@@ -351,9 +384,14 @@ hr {
 			  	</div>
 			</div>
 			<!-- // Sales Module -->
-			
+		
+		<!-- END RIGHT SECOND COLUMN -->
+		
+		
+		<!-- BEGIN RIGHT SECOND COLUMN -->
+		
 			<!-- System Module -->
-			<div class="panel panel-success">
+			<div class="panel panel-success third-row-panel-success">
 		  		<div class="panel-heading">
 		  			<h3 class="panel-title"><strong class="text-success">System</strong></h3>
 		  		</div>
@@ -380,6 +418,29 @@ hr {
 		                    	<li>
 		                    		<span class="glyphicon glyphicon-plus" ></span> 
 		                    		<a href="${ctx }/broadband-user/system/notification/create">Create Notification</a>
+		                    	</li>
+		                    </ul>
+		                    <hr/>
+		                    <ul class="list-unstyled">
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" ></span> 
+		                    		<a href="${ctx }/broadband-user/system/website_editable_details">Edit Website Editable Details</a>
+		                    	</li>
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" ></span> 
+		                    		<a href="${ctx }/broadband-user/system/plan_introductions">Edit Plan Introductions</a>
+		                    	</li>
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" ></span> 
+		                    		<a href="${ctx }/broadband-user/system/website_static_resources">Edit Website Static Resources</a>
+		                    	</li>
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" ></span> 
+		                    		<a href="${ctx }/broadband-user/system/terms_conditions">Edit Terms Conditions</a>
+		                    	</li>
+		                    	<li>
+		                    		<span class="glyphicon glyphicon-pencil" ></span> 
+		                    		<a href="${ctx }/broadband-user/system/pdf_resources">Edit PDF Resources</a>
 		                    	</li>
 		                    </ul>
 		  				</div>
@@ -411,10 +472,18 @@ hr {
 			</div>
 			<!-- // System Module -->
 		
+			<!-- END RIGHT SECOND COLUMN -->
+		
 		</div>
 		<!-- // right column -->
 		
+		<!-- BEGIN RIGHT COLUMN -->
+		
+		
 	</div>
+			
+			
+			
 	
 	</c:if>
 	

@@ -506,7 +506,7 @@
 					
 					$.post(url, data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getInvoicePage(1);
+						$.getInvoicePage(1, 1);
 						$.getCustomerInfo();
 					}, "json");
 				});
@@ -1074,7 +1074,7 @@
 						}
 						$.getCustomerInfo();
 						$.getTxPage(1);
-						$.getInvoicePage(1);
+						$.getInvoicePage(1, 1);
 						
 					}, "json");
 				});
@@ -1937,7 +1937,7 @@
 			
 			$('#removeTransactionModal').on('hidden.bs.modal', function(){
 				$.getTxPage(pageNo);
-				$.getInvoicePage(1);
+				$.getInvoicePage(1, 1);
 			});
 			
 
@@ -2019,21 +2019,16 @@
 	};
 	
 	
-	$.getInvoicePage = function(pageNo) {
-		$.get(ctx+'/broadband-user/crm/invoice/view/' + pageNo +'/'+ customerId, function(map){
+	$.getInvoicePage = function(pageNo, cblPageNo) {
+		$.get(ctx+'/broadband-user/crm/invoice/view/' + pageNo +'/' + cblPageNo +'/'+ customerId, function(map){
 			map.ctx = ctx;
 			map.customer_id = customerId;
 			map.orderIds = orderIds;
 			map.user_role = user_role;
-			var totalBalance = 0;
-			for(var i=0; i<map.invoicePage.results.length; i++){
-				totalBalance += map.invoicePage.results[i].balance;
-			}
-			map.totalBalance = totalBalance;
 	   		var $table = $('#invoice_detail');
 			$table.html(tmpl('invoice_table_tmpl', map));
 			$table.find('tfoot a').click(function(){
-				$.getInvoicePage($(this).attr('data-pageNo'));
+				$.getInvoicePage($(this).attr('data-pageNo'), $(this).attr('data-cblPageNo'));
 			});
 			
 			$('#checkbox_invoices_top').click(function(){
@@ -2153,7 +2148,7 @@
 			});
 			
 			$('#invoiceNeedToBeBindModal').on('hidden.bs.modal',function(){
-				$.getInvoicePage(pageNo);
+				$.getInvoicePage(pageNo, cblPageNo);
 			});
 			
 			// BEGIN unbind invoice
@@ -2199,7 +2194,7 @@
 			});
 			
 			$('#unbindInvoiceModal').on('hidden.bs.modal',function(){
-				$.getInvoicePage(pageNo);
+				$.getInvoicePage(pageNo, cblPageNo);
 			});
 			
 			
@@ -2229,7 +2224,7 @@
 				});
 				
 				$('#editInvoicePaidAmountModal_'+invoice.id).on('hidden.bs.modal',function(){
-					$.getInvoicePage(pageNo);
+					$.getInvoicePage(pageNo, cblPageNo);
 				});
 				
 				
@@ -2258,7 +2253,7 @@
 					}
 				});
 				$('#regenerateInvoiceModal_'+invoice.id).on('hidden.bs.modal', function (e) {
-					$.getInvoicePage(pageNo);
+					$.getInvoicePage(pageNo, cblPageNo);
 				});
 				// END generate invoice
 				
@@ -2396,7 +2391,7 @@
 				});
 				$('#confirmPayWayModal_'+invoice.id).on('hidden.bs.modal', function(){
 					$('button[data-name="make_payment_'+$(this).attr('data-id')+'"]').button('reset');
-					$.getInvoicePage(pageNo);
+					$.getInvoicePage(pageNo, cblPageNo);
 					$.getTxPage(1);
 					$.getCustomerInfo();
 				});
@@ -2419,7 +2414,7 @@
 				});
 				
 				$('#removeInvoiceModal_'+invoice.id+'').on('hidden.bs.modal', function(){
-					$.getInvoicePage(pageNo);
+					$.getInvoicePage(pageNo, cblPageNo);
 				});
 
 				
@@ -2446,7 +2441,7 @@
 					
 				});
 				$('#changeInvoiceStatusModal_'+invoice.id).on('hidden.bs.modal', function(){
-					$.getInvoicePage(pageNo);
+					$.getInvoicePage(pageNo, cblPageNo);
 				});				
 				
 			}
@@ -2456,7 +2451,7 @@
 	
 	$.getCustomerInfo();
 	$.getCustomerOrder();
-	$.getInvoicePage(1);
+	$.getInvoicePage(1, 1);
 	$.getTxPage(1);
 	$.getCcrPage(1);
 	$.getTicketPage(1);

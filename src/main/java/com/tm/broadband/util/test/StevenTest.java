@@ -1,14 +1,16 @@
 package com.tm.broadband.util.test;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.List;
 
-import com.tm.broadband.model.CustomerCallRecord;
-import com.tm.broadband.model.CustomerChorusBroadbandASIDRecord;
-import com.tm.broadband.util.CallingRecordUtility;
-import com.tm.broadband.util.SimpleMapperCreator;
-import com.tm.broadband.util.TMUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.WorkbookUtil;
 
 
 public class StevenTest {
@@ -168,12 +170,6 @@ public class StevenTest {
 //		System.out.println("asdasdsd$".contains("$"));
 		
 		
-
-//		SimpleMapperCreator smc = new SimpleMapperCreator();
-//		smc.setAuthor("CyberPark");
-//		smc.setModel("CustomerChorusBroadbandASIDRecord");
-//		smc.setTable("tm_customer_chorus_broadband_asid_record");
-//		smc.initial();
 		
 		
 		
@@ -230,6 +226,43 @@ public class StevenTest {
 //				
 //			}
 //		}
+		
+//		Calendar cal = Calendar.getInstance();
+//		cal.set(Calendar.DATE, 1);
+//		int count = 10;
+//		System.out.println();
+//		for (int i=0; i<cal.getMaximum(Calendar.DATE)-1; i++) {
+//			
+//			if(count==0){
+//				System.out.println();
+//				System.out.println();
+//				count = 10;
+//			}
+//			
+//			System.out.print(TMUtils.retrieveMonthAbbrWithDate(cal.getTime())+"\t");
+//			cal.add(Calendar.DATE, 1);
+//			
+//			count--;
+//		}
+		
+		Workbook wb = new HSSFWorkbook();
+		
+		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("&*(^^%&$#@#@!$@%@%$"));
+		
+		Cell cell = sheet.createRow(0).createCell(3);
+		cell.setCellValue("Hi there");
+		
+		try {
+			FileOutputStream output = new FileOutputStream("Test.xls");
+			wb.write(output);
+			output.close();
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 		
 		
 		

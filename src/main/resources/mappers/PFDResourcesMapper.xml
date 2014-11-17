@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.PDFResourcesMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="pDFResourcesColumns">
+		pdfr.`common_company_lg_path`					as pdfr_common_company_lg_path,
+		pdfr.`invoice_company_lg_path`					as pdfr_invoice_company_lg_path,
+		pdfr.`company_lg_customer_service_bar_path`		as pdfr_company_lg_customer_service_bar_path,
+		pdfr.`two_dimensional_code_path`				as pdfr_two_dimensional_code_path
+	</sql>
+
+	<resultMap type="PDFResources" id="pDFResourcesResultMap">
+		<result property="common_company_lg_path" column="pdfr_common_company_lg_path" />
+		<result property="invoice_company_lg_path" column="pdfr_invoice_company_lg_path" />
+		<result property="company_lg_customer_service_bar_path" column="pdfr_company_lg_customer_service_bar_path" />
+		<result property="two_dimensional_code_path" column="pdfr_two_dimensional_code_path" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectPDFResources" parameterType="PDFResources" resultType="PDFResources">
+		select * from tm_pdf_resources as pdfr
+	</select>
+
+	<!-- select pDFResources page -->
+	<select id="selectPDFResourcessByPage" parameterType="Page" resultMap="pDFResourcesResultMap">
+		select 
+			<include refid="pDFResourcesColumns"/>
+			from tm_pdf_resources as pdfr
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select pFDResources amount -->
+	<select id="selectPDFResourcessSum" parameterType="Page" resultType="int">
+		select count(*) from tm_pdf_resources as pdfr
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertPDFResources" parameterType="PDFResources">
+		INSERT INTO `tm_pdf_resources`(
+			`common_company_lg_path`, `invoice_company_lg_path`, `company_lg_customer_service_bar_path`, `two_dimensional_code_path`
+		) VALUES (
+			#{common_company_lg_path}, #{invoice_company_lg_path}, #{company_lg_customer_service_bar_path}, #{two_dimensional_code_path}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update pDFResources -->
+	<update id="updatePDFResources" parameterType="PDFResources">
+		update tm_pdf_resources
+		<set>
+			<if test="common_company_lg_path != null">common_company_lg_path = #{common_company_lg_path},</if>
+			<if test="invoice_company_lg_path != null">invoice_company_lg_path = #{invoice_company_lg_path},</if>
+			<if test="company_lg_customer_service_bar_path != null">company_lg_customer_service_bar_path = #{company_lg_customer_service_bar_path},</if>
+			<if test="two_dimensional_code_path != null">two_dimensional_code_path = #{two_dimensional_code_path}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<!-- // END DELETE AREA -->
+
+</mapper>
