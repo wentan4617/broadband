@@ -76,16 +76,16 @@
 				</div>
 				<address>
 					<p>
-						<strong>CyberPark Limited.</strong> 
+						<strong>${wedSession.company_name_ltd!=null && wedSession.company_name_ltd!='' ? wedSession.company_name_ltd : 'CyberPark Limited.'}</strong> 
 					</p>
 					<p>
-						P.O.Box 41547 St Lukes, Auckland
+						${wedSession.company_address!=null && wedSession.company_address!='' ? wedSession.company_address : 'P.O.Box 41547 St Lukes, Auckland'}
 					</p>
 					<p>
-						Give us a call <a href="javascript:void(0);">${cyberpark.telephone}</a>
+						Give us a call <a href="javascript:void(0);">${wedSession.company_hot_line_no_alphabet!=null && wedSession.company_hot_line_no_alphabet!='' ? wedSession.company_hot_line_no_alphabet : '0800 2 CYBER (29237)'}</a>
 					</p>
 					<p>
-						send email to <a href="mailto:#">${cyberpark.company_email }</a>
+						send email to <a href="mailto:${wedSession.company_email!=null && wedSession.company_email!='' ? wedSession.company_email : 'info@cyberpark.co.nz'}">${wedSession.company_email!=null && wedSession.company_email!='' ? wedSession.company_email : 'info@cyberpark.co.nz'}</a>
 					</p>
 				</address>
 				
@@ -123,19 +123,19 @@
 							<div class="form-group">
 								<label for="email" class="control-label col-md-2">Email <span class="text-danger">(*)</span></label>
 								<div class="col-md-6">
-									<input id="email" class="form-control" placeholder="e.g. cyebrpark@gmail.com" data-error-field/>
+									<input id="email" class="form-control" placeholder="e.g. youremail@gmail.com" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="cellphone" class="control-label col-md-2">Mobile</label>
 								<div class="col-md-6">
-									<input id="cellphone" class="form-control" placeholder="e.g. 0211405369" data-error-field/>
+									<input id="cellphone" class="form-control" placeholder="e.g. 021111111" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
 								<label for="phone" class="control-label col-md-2">Phone</label>
 								<div class="col-md-6">
-									<input id="phone" class="form-control" placeholder="e.g. 095701596" data-error-field/>
+									<input id="phone" class="form-control" placeholder="e.g. 093111111" data-error-field/>
 								</div>
 							</div>
 							<div class="form-group">
@@ -184,7 +184,7 @@
 			 <div class="navbar-example panel panel-default" style="margin-top:40px" data-spy="affix" data-offset-top="150">
 				<ul class="nav nav-pills nav-stacked">
 					<li class="active">
-						<a href="#overview">CyberPark Overview</a>
+						<a href="#overview">Overview</a>
 					</li>
 					<li>
 						<a href="#service">WIFI Services</a>

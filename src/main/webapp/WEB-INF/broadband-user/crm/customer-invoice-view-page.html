@@ -67,7 +67,7 @@
 			<th colspan="12">
 				<!-- In the external page, assign orderIds as obj's attribute -->
 				<h3 class="text-success" style="margin: 2px;">
-					<. if(user_role=='system-developer' || user_role=='accountant'){ .>
+					<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 					<select class="selectpicker" data-name="unbind_invoice_selecter">
 					    <option value="0">------------Operation------------</option>
 					    <option value="unbind-invoice">Unbind Invoice</option>
@@ -180,7 +180,7 @@
 					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
 					<td>
 						<strong>-<.= invoiceAmount_paid.toFixed(2) .></strong>
-						<. if(user_role=='system-developer' || user_role=='accountant'){ .>
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= invoiceAmount_paid.toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
 						  	<span class="glyphicon glyphicon-pencil"></span> 
 						</a>
@@ -188,7 +188,7 @@
 					</td>
 					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
 					<td>
-						<. if(user_role=='system-developer' || user_role=='accountant'){ .>
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 						<. var invoice_status_arr = ['unpaid','not_pay_off','paid','overdue','void','bad-debit']; .>
 						<. var invoice_status_arr2 = ['Unpaid','Not Pay Off','Paid','Overdue','Void','Bad Debit']; .>
 						<select data-name="invoice_status_selecter_<.= invoice.id .>" data-id="<.= invoice.id .>" class="form-control input-sm">
@@ -206,7 +206,7 @@
 					</td>
 		<. 
 					if((invoice.status=='unpaid' || invoice.status=='not_pay_off' || invoice.status=='overdue')
-					&& (user_role=='system-developer' || user_role=='accountant')){
+					&& (user_role=='administrator' || user_role=='system-developer' || user_role=='accountant')){
 		.>
 					<td>
 						<div class="btn-group" style="height:44px; width:118px;">
@@ -296,7 +296,7 @@
 						<. }.> -->
 							<!-- download icon -->
 							<a target="_blank" href="<.= downloadUrl .>" id="<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="download invoice PDF" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-floppy-disk"></span></a>&nbsp;&nbsp;&nbsp;
-						<. if(user_role=='system-developer' || user_role=='accountant'){ .>
+						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 							<!-- send icon -->
 							<a target="_blank" href="<.= sendUrl .>" id="<.= invoice.id .>" data-name="send_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="send invoice details to customer's email" style="display:none;font-size:22px;"><span class="glyphicon glyphicon-send"></span></a>
 							<a target="_blank" href="javascript:void(0);" id="<.= invoice.id .>" data-name="firstGenerate_<.= invoice.id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="generate invoice PDF" style="font-size:22px;"><span class="glyphicon glyphicon-hdd"></span></a>

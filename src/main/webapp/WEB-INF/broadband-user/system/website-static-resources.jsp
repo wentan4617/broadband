@@ -27,10 +27,10 @@
 									<div class="col-md-4" style="background-color:#f5f5f5;">
 										<c:choose>
 											<c:when test="${wsr.logo_path==null || wsr.logo_path==''}">
-												<img style="border:2px solid black;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" style="width:111px; height:46px;" alt="Company Logo" title="Company Logo">
+												<img style="border:2px solid black; width:111px; height:46px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="Company Logo" title="Company Logo">
 											</c:when>
 											<c:otherwise>
-												<img style="border:2px solid black;" src="${ctx}/upload/front-end/logo.png" style="width:111px; height:46px;" alt="Company Logo" title="Company Logo">
+												<img style="border:2px solid black; width:111px; height:46px;" src="${ctx}/upload/front-end/logo.png" alt="Company Logo" title="Company Logo">
 											</c:otherwise>
 										</c:choose>
 									</div>
@@ -41,14 +41,14 @@
 							
 							
 								<div class="form-group">
-									<label for="facebook_lg_path" class="control-label col-md-4">Facebook Logo Preview</label>
+									<label for="facebook_lg_path" class="control-label col-md-4">Facebook Logo</label>
 									<div class="col-md-4" style="background-color:#f5f5f5;">
 										<c:choose>
 											<c:when test="${wsr.facebook_lg_path==null || wsr.facebook_lg_path==''}">
-												<img style="border:2px solid black;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" style="width:64px; height:64px;" alt="Facebook Logo" title="Facebook Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="Facebook Logo" title="Facebook Logo">
 											</c:when>
 											<c:otherwise>
-												<img style="border:2px solid black;" src="${ctx}/upload/front-end/facebook_lg.png" style="width:64px; height:64px;" alt="Facebook Logo" title="Facebook Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="${ctx}/upload/front-end/facebook_lg.png" alt="Facebook Logo" title="Facebook Logo">
 											</c:otherwise>
 										</c:choose>
 									</div>
@@ -56,16 +56,22 @@
 										<input type="file" class="form-control" name="facebook_lg_path" />
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="facebook_url" class="control-label col-md-4">Facebook URL</label>
+									<div class="col-md-6">
+										<input type="text" class="form-control" name="facebook_url" value="${wsr.facebook_url}" />
+									</div>
+								</div>
 							
 								<div class="form-group">
-									<label for="facebook_lg_path" class="control-label col-md-4">GooglePlus Logo Preview</label>
+									<label for="facebook_lg_path" class="control-label col-md-4">GooglePlus Logo</label>
 									<div class="col-md-4" style="background-color:#f5f5f5;">
 										<c:choose>
 											<c:when test="${wsr.googleplus_lg_path==null || wsr.googleplus_lg_path==''}">
-												<img style="border:2px solid black;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" style="width:64px; height:64px;" alt="GooglePlus Logo" title="GooglePlus Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="GooglePlus Logo" title="GooglePlus Logo">
 											</c:when>
 											<c:otherwise>
-												<img style="border:2px solid black;" src="${ctx}/upload/front-end/googleplus_lg.png" style="width:64px; height:64px;" alt="GooglePlus Logo" title="GooglePlus Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="${ctx}/upload/front-end/googleplus_lg.png" alt="GooglePlus Logo" title="GooglePlus Logo">
 											</c:otherwise>
 										</c:choose>
 									</div>
@@ -73,16 +79,22 @@
 										<input type="file" class="form-control" name="googleplus_lg_path" />
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="googleplus_url" class="control-label col-md-4">GooglePlus URL</label>
+									<div class="col-md-6">
+										<input type="text" class="form-control" name="googleplus_url" value="${wsr.googleplus_url}" />
+									</div>
+								</div>
 							
 								<div class="form-group">
-									<label for="twitter_lg_path" class="control-label col-md-4">Twitter Logo Preview</label>
+									<label for="twitter_lg_path" class="control-label col-md-4">Twitter Logo</label>
 									<div class="col-md-4" style="background-color:#f5f5f5;">
 										<c:choose>
 											<c:when test="${wsr.twitter_lg_path==null || wsr.twitter_lg_path==''}">
-												<img style="border:2px solid black;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" style="width:64px; height:64px;" alt="Twitter Logo" title="Twitter Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="Twitter Logo" title="Twitter Logo">
 											</c:when>
 											<c:otherwise>
-												<img style="border:2px solid black;" src="${ctx}/upload/front-end/twitter_lg.png" style="width:64px; height:64px;" alt="Twitter Logo" title="Twitter Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="${ctx}/upload/front-end/twitter_lg.png" alt="Twitter Logo" title="Twitter Logo">
 											</c:otherwise>
 										</c:choose>
 									</div>
@@ -90,21 +102,50 @@
 										<input type="file" class="form-control" name="twitter_lg_path" />
 									</div>
 								</div>
+								<div class="form-group">
+									<label for="twitter_url" class="control-label col-md-4">Twitter URL</label>
+									<div class="col-md-6">
+										<input type="text" class="form-control" name="twitter_url" value="${wsr.twitter_url}" />
+									</div>
+								</div>
 							
 								<div class="form-group">
-									<label for="youtube_lg_path" class="control-label col-md-4">YouTube Logo Preview</label>
+									<label for="youtube_lg_path" class="control-label col-md-4">YouTube Logo</label>
 									<div class="col-md-4" style="background-color:#f5f5f5;">
 										<c:choose>
 											<c:when test="${wsr.youtube_lg_path==null || wsr.youtube_lg_path==''}">
-												<img style="border:2px solid black;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" style="width:64px; height:64px;" alt="YouTube Logo" title="YouTube Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="YouTube Logo" title="YouTube Logo">
 											</c:when>
 											<c:otherwise>
-												<img style="border:2px solid black;" src="${ctx}/upload/front-end/youtube_lg.png" style="width:64px; height:64px;" alt="YouTube Logo" title="YouTube Logo">
+												<img style="border:2px solid black; width:64px; height:64px;" src="${ctx}/upload/front-end/youtube_lg.png" alt="YouTube Logo" title="YouTube Logo">
 											</c:otherwise>
 										</c:choose>
 									</div>
 									<div class="col-md-4">
 										<input type="file" class="form-control" name="youtube_lg_path" />
+									</div>
+								</div>
+								<div class="form-group">
+									<label for="youtube_url" class="control-label col-md-4">YouTube URL</label>
+									<div class="col-md-6">
+										<input type="text" class="form-control" name="youtube_url" value="${wsr.youtube_url}" />
+									</div>
+								</div>
+							
+								<div class="form-group">
+									<label for="two_dimensional_code_path" class="control-label col-md-4">Two Dimensional Code</label>
+									<div class="col-md-4" style="background-color:#f5f5f5;">
+										<c:choose>
+											<c:when test="${wsr.two_dimensional_code_path==null || wsr.two_dimensional_code_path==''}">
+												<img style="border:2px solid black; width:160px; height:160px;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9InllcyI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgdmlld0JveD0iMCAwIDE0MCAxNDAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiPjxkZWZzLz48cmVjdCB3aWR0aD0iMTQwIiBoZWlnaHQ9IjE0MCIgZmlsbD0iI0VFRUVFRSIvPjxnPjx0ZXh0IHg9IjQ1LjUiIHk9IjcwIiBzdHlsZT0iZmlsbDojQUFBQUFBO2ZvbnQtd2VpZ2h0OmJvbGQ7Zm9udC1mYW1pbHk6QXJpYWwsIEhlbHZldGljYSwgT3BlbiBTYW5zLCBzYW5zLXNlcmlmLCBtb25vc3BhY2U7Zm9udC1zaXplOjEwcHQ7ZG9taW5hbnQtYmFzZWxpbmU6Y2VudHJhbCI+MTQweDE0MDwvdGV4dD48L2c+PC9zdmc+" alt="Two Dimensional Code" title="Two Dimensional Code">
+											</c:when>
+											<c:otherwise>
+												<img style="border:2px solid black; width:160px; height:160px;" src="${ctx}/upload/front-end/two_dimensional_code.png" alt="Two Dimensional Code" title="Two Dimensional Code">
+											</c:otherwise>
+										</c:choose>
+									</div>
+									<div class="col-md-4">
+										<input type="file" class="form-control" name="two_dimensional_code_path" />
 									</div>
 								</div>
 								

@@ -16,8 +16,13 @@ Total Mobile Solution Internet Service Web Project
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
  * planRemove (/plan/remove/{id})(get)
+ 
+ 
+ 
+demand version 1.5.2 2014-11-17
 
-
+* [添加Add DDPay，类似Add Credit，列出有Credit Card或DDPay的客户，方便财务扣款. id, customer_id, account name, account number](steven)
+* [在出rental时加入：Calling Numbers Presented - Minimum Charge，在出chorus calling时将其去掉.](steven)
 
 demand version 1.5.0 2014-11-13
 

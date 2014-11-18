@@ -84,6 +84,10 @@ public class CustomerController {
 	@RequestMapping(value = { "", "/home" })
 	public String home(Model model, HttpSession session) {
 		session.setAttribute("seoSession", this.systemService.querySEO());
+		session.setAttribute("wedSession", this.systemService.queryWebsiteEditableDetail(null));
+		session.setAttribute("wsrSession", this.systemService.queryWebsiteStaticResource(null));
+		session.setAttribute("piSession", this.systemService.queryPlanIntroduction(null));
+		session.setAttribute("tcSession", this.systemService.queryTermsCondition(null));
 		model.addAttribute("nofollow", "nofollow");
 		session.removeAttribute("customerReg");
 		return "broadband-customer/home";

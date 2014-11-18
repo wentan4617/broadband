@@ -18,6 +18,12 @@ public class WebsiteStaticResources implements Serializable {
 	private String googleplus_lg_path;
 	private String twitter_lg_path;
 	private String youtube_lg_path;
+	private String two_dimensional_code_path;
+	private String facebook_url;
+	private String googleplus_url;
+	private String twitter_url;
+	private String youtube_url;
+
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -63,6 +69,36 @@ public class WebsiteStaticResources implements Serializable {
 	}
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+	public String getFacebook_url() {
+		return facebook_url;
+	}
+	public void setFacebook_url(String facebook_url) {
+		this.facebook_url = facebook_url;
+	}
+	public String getGoogleplus_url() {
+		return googleplus_url;
+	}
+	public void setGoogleplus_url(String googleplus_url) {
+		this.googleplus_url = googleplus_url;
+	}
+	public String getTwitter_url() {
+		return twitter_url;
+	}
+	public void setTwitter_url(String twitter_url) {
+		this.twitter_url = twitter_url;
+	}
+	public String getYoutube_url() {
+		return youtube_url;
+	}
+	public void setYoutube_url(String youtube_url) {
+		this.youtube_url = youtube_url;
+	}
+	public String getTwo_dimensional_code_path() {
+		return two_dimensional_code_path;
+	}
+	public void setTwo_dimensional_code_path(String two_dimensional_code_path) {
+		this.two_dimensional_code_path = two_dimensional_code_path;
 	}
 
 

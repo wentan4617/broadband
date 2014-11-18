@@ -575,15 +575,30 @@ public class SystemController {
 	
 	@RequestMapping(value = "/broadband-user/system/website_static_resources/upload")
 	public String doWebsiteStaticResourcesUpload(Model model,
+			@RequestParam("facebook_url") String facebook_url,
+			@RequestParam("googleplus_url") String googleplus_url,
+			@RequestParam("twitter_url") String twitter_url,
+			@RequestParam("youtube_url") String youtube_url,
 			@RequestParam("logo_path") MultipartFile logo_file,
 			@RequestParam("facebook_lg_path") MultipartFile facebook_lg_file,
 			@RequestParam("googleplus_lg_path") MultipartFile googleplus_lg_file,
 			@RequestParam("twitter_lg_path") MultipartFile twitter_lg_file,
 			@RequestParam("youtube_lg_path") MultipartFile youtube_lg_file,
+			@RequestParam("two_dimensional_code_path") MultipartFile two_dimensional_code_file,
 			RedirectAttributes attr,
 			HttpServletRequest req) throws IllegalStateException, IOException{
 		
 		WebsiteStaticResources wsr = new WebsiteStaticResources();
+		wsr.setFacebook_url(facebook_url);
+		wsr.setGoogleplus_url(googleplus_url);
+		wsr.setTwitter_url(twitter_url);
+		wsr.setYoutube_url(youtube_url);
+		
+		Boolean isFile = false;
+		
+		if(!"".equals(facebook_url) || !"".equals(googleplus_url) || !"".equals(twitter_url) || !"".equals(youtube_url)){
+			isFile = true;
+		}
 		
 		String order_path = req.getSession().getServletContext().getRealPath("/") + File.separator + "upload" + File.separator + "front-end" + File.separator;
 		
@@ -592,8 +607,6 @@ public class SystemController {
 		if(!directory.exists()){
 			directory.mkdirs();
 		}
-		
-		Boolean isFile = false;
 		
 		if(!logo_file.isEmpty()){
 			wsr.setLogo_path("upload/front-end/logo.png");
@@ -620,6 +633,12 @@ public class SystemController {
 			youtube_lg_file.transferTo(new File(order_path + "youtube_lg.png"));
 			isFile = true;
 		}
+		if(!two_dimensional_code_file.isEmpty()){
+			wsr.setTwo_dimensional_code_path("upload/front-end/two_dimensional_code.png");
+			two_dimensional_code_file.transferTo(new File(order_path + "two_dimensional_code.png"));
+			isFile = true;
+		}
+		
 		
 		if(isFile){
 			
