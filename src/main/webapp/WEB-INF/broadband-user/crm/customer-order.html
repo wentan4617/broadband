@@ -39,15 +39,15 @@
 	for(var i=0; i < customerOrder.length; i++){
 	var order_total_price = new Number(customerOrder[i].order_total_price); .>
 	
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="heading<.= customerOrder[i].id .>">
+  <div class="panel panel-success">
+    <div class="panel-heading" role="tab" id="heading_<.= customerOrder[i].id .>">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse<.= customerOrder[i].id .>" aria-controls="collapse<.= customerOrder[i].id .>">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<.= customerOrder[i].id .>" aria-controls="collapse_<.= customerOrder[i].id .>">
           Order Information: <.= customerOrder[i].id .> - <.= customerOrder[i].customer_type .> - <.= customerOrder[i].order_status .>
         </a>
       </h4>
     </div>
-    <div id="collapse<.= customerOrder[i].id .>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading<.= customerOrder[i].id .>">
+    <div id="collapse_<.= customerOrder[i].id .>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_<.= customerOrder[i].id .>">
       <div class="panel-body">
 	<form class="form-horizontal" action="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload" enctype="multipart/form-data" method="post">
 		<input type="hidden" name="order_id" value="<.= customerOrder[i].id .>"/>
