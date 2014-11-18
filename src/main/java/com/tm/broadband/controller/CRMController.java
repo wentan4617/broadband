@@ -1,6 +1,8 @@
 package com.tm.broadband.controller;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -17,6 +19,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -1269,6 +1278,68 @@ public class CRMController {
 		attr.addFlashAttribute("success", "Successfully removed specific ticket!");
 		
 		return "redirect:/broadband-user/crm/ticket/view";
+	}
+
+	@RequestMapping(value="/broadband-user/crm/order/pstn/excel")
+	public ResponseEntity<byte[]> downloadPSTNOrdersExcel(Model model) throws IOException{
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("orderby", "order by id desc");
+		coQuery.getParams().put("where", "query_pstn_number_orders");
+		List<CustomerOrder> cos = this.crmService.queryCustomerOrders(coQuery);
+		List<CustomerOrderDetail> codFinals = new ArrayList<CustomerOrderDetail>();
+		for (CustomerOrder co : cos) {
+			CustomerOrderDetail codQuery = new CustomerOrderDetail();
+			codQuery.getParams().put("orderby", "order by order_id desc");
+			codQuery.getParams().put("where", "query_pstn_number_plan_type_order_details");
+			codQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderDetail> codPlans = this.crmService.queryCustomerOrderDetails(codQuery);
+			String detail_plan_type = "";
+			for (CustomerOrderDetail cod : codPlans) {
+				detail_plan_type = cod.getDetail_plan_type();
+			}
+			codQuery.getParams().put("where", "query_pstn_number_order_details");
+			List<CustomerOrderDetail> codPSTNs = this.crmService.queryCustomerOrderDetails(codQuery);
+			for (CustomerOrderDetail cod : codPSTNs) {
+				cod.setDetail_plan_type(detail_plan_type);
+				cod.setAddress(co.getAddress());
+				codFinals.add(cod);
+			}
+		}
+		
+		Workbook wb = new HSSFWorkbook();
+		
+		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("PSTN Orders"));
+		
+		int count = 0;
+		for (CustomerOrderDetail cod : codFinals) {
+			Row row = sheet.createRow(count);
+			row.createCell(0).setCellValue(cod.getAddress());
+			row.createCell(1).setCellValue(cod.getDetail_plan_type());
+			row.createCell(2).setCellValue(cod.getPstn_number());
+			count++;
+		}
+		FileOutputStream output;
+		String output_path = TMUtils.createPath("broadband" + File.separator + "pstn_orders" + File.separator + "pstn_orders.xls");
+		output = new FileOutputStream(output_path);
+		wb.write(output);
+		output.close();
+		
+		// get file path
+        Path path = Paths.get(output_path);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/vnd.ms-excel"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode("pstn_orders.xls", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+		
 	}
 	
 	

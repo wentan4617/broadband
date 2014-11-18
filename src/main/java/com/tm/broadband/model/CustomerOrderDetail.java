@@ -61,6 +61,7 @@ public class CustomerOrderDetail implements Serializable {
 	private String detail_expired_str;
 	private String voip_assign_date_str;
 	private Boolean monthly; 
+	private String address;
 	
 	
 	/*
@@ -355,6 +356,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setTo_nca_by_who(Integer to_nca_by_who) {
 		this.to_nca_by_who = to_nca_by_who;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 	
 	

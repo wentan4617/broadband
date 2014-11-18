@@ -391,6 +391,32 @@
 						)
 					)
 				</when>
+				<when test="params.where == 'query_pstn_number_orders'">
+					co.id in (
+						select order_id from tm_customer_order_detail
+						where detail_type='pstn'
+						and pstn_number IS NOT NULL
+						and pstn_number!=''
+					)
+					and
+					(
+						(
+							co.customer_type='personal'
+							and
+							co.order_status in (
+								'using', 'rfs', 'paid', 'ordering-paid'
+							)
+						)
+						or
+						(
+							co.customer_type='business'
+							and
+							co.order_status in (
+								'using', 'rfs', 'paid', 'ordering-paid', 'pending', 'ordering-pending'
+							)
+						)
+					)
+				</when>
 				<otherwise>
 					<if test="params.id != null">co.id = #{params.id}</if>
 					<if test="params.customer_id != null">and co.customer_id = #{params.customer_id}</if>

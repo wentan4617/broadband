@@ -18,6 +18,16 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.5.6 2014-11-19
+ 
+* [在customer order界面添加一个按钮，Get PSTN Order's in Excel，所需字段：address, broadband_type, pstn_number，逻辑是迭代pstn_number时输出到Excel里.](steven)
+ 
+ 
+demand version 1.5.5 2014-11-18
+
+* [将order的period做成可以修改的.](steven)
+* [将customer order信息界面的所有order包含在可伸展层内，默认伸展状态为false](steven)
+ 
  
 demand version 1.5.2 2014-11-17
 
