@@ -1260,6 +1260,7 @@
 					$('input[data-name="detail_plan_sort_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_plan_sort"]').attr('data-val'));
 					$('input[data-name="detail_price_'+this.id+'"]').val(Number($('td[data-name="'+$(this).attr('data-id')+'_detail_price"]').attr('data-val')).toFixed(2));
 					$('input[data-name="detail_plan_unit_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_order_detail_unit"]').attr('data-val'));
+					$('input[data-name="detail_term_period_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_order_detail_unit"]').attr('data-term-period'));
 					$('input[data-name="data_flow_'+this.id+'"]').val($('span[data-name="'+$(this).attr('data-id')+'_data_flow"]').attr('data-val'));
 					$('#editDetailModal_'+this.id).modal('show');
 				});
@@ -1275,7 +1276,8 @@
 						'detail_plan_sort':$('input[data-name="detail_plan_sort_'+this.id+'"]').val(),
 						'detail_price':$('input[data-name="detail_price_'+this.id+'"]').val(),
 						'detail_data_flow':$('input[data-name="data_flow_'+this.id+'"]').val(),
-						'detail_unit':$('input[data-name="detail_plan_unit_'+this.id+'"]').val()
+						'detail_unit':$('input[data-name="detail_plan_unit_'+this.id+'"]').val(),
+						'detail_term_period':$('input[data-name="detail_term_period_'+this.id+'"]').val()
 					};
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/plan/edit', data, function(json){
