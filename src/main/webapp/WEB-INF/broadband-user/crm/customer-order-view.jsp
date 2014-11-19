@@ -16,7 +16,7 @@
 					<h4 class="panel-title">
 						Customer View
 						<c:if test="${userSession.user_role=='system-developer' || userSession.user_role=='administrator' }">
-							<a target="_blank" href="${ctx}/broadband-user/crm/order/pstn/excel" class="btn btn-success" style="color:white;">Get PSTN Orders in Excel</a>
+							<a target="_blank" href="${ctx}/broadband-user/crm/order/pstn/excel" class="btn btn-success btn-xs" style="color:white;">Get PSTN Orders in Excel</a>
 						</c:if>
 					</h4>
 				</div>
