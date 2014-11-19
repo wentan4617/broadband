@@ -1,7 +1,6 @@
 package com.tm.broadband.controller;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -19,9 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -1283,15 +1284,15 @@ public class CRMController {
 	@RequestMapping(value="/broadband-user/crm/order/pstn/excel")
 	public ResponseEntity<byte[]> downloadPSTNOrdersExcel(Model model) throws IOException{
 		
-		CustomerOrder coQuery = new CustomerOrder();
-		coQuery.getParams().put("orderby", "order by id desc");
-		coQuery.getParams().put("where", "query_pstn_number_orders");
-		List<CustomerOrder> cos = this.crmService.queryCustomerOrders(coQuery);
-		List<CustomerOrderDetail> codFinals = new ArrayList<CustomerOrderDetail>();
-		for (CustomerOrder co : cos) {
+		CustomerOrder coPSTNPlanQuery = new CustomerOrder();
+		coPSTNPlanQuery.getParams().put("orderby", "order by id desc");
+		coPSTNPlanQuery.getParams().put("where", "query_pstn_number_orders");
+		List<CustomerOrder> coPlans = this.crmService.queryCustomerOrders(coPSTNPlanQuery);
+		List<CustomerOrderDetail> codPSTNFinals = new ArrayList<CustomerOrderDetail>();
+		for (CustomerOrder co : coPlans) {
 			CustomerOrderDetail codQuery = new CustomerOrderDetail();
 			codQuery.getParams().put("orderby", "order by order_id desc");
-			codQuery.getParams().put("where", "query_pstn_number_plan_type_order_details");
+			codQuery.getParams().put("where", "query_plan_type_order_details_by_order_id");
 			codQuery.getParams().put("order_id", co.getId());
 			List<CustomerOrderDetail> codPlans = this.crmService.queryCustomerOrderDetails(codQuery);
 			String detail_plan_type = "";
@@ -1303,22 +1304,93 @@ public class CRMController {
 			for (CustomerOrderDetail cod : codPSTNs) {
 				cod.setDetail_plan_type(detail_plan_type);
 				cod.setAddress(co.getAddress());
-				codFinals.add(cod);
+				codPSTNFinals.add(cod);
 			}
 		}
 		
 		Workbook wb = new HSSFWorkbook();
 		
-		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("PSTN Orders"));
+		Font font = wb.createFont();
+		font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+		CellStyle cellStyle = wb.createCellStyle();
+		cellStyle.setFont(font);
 		
-		int count = 0;
-		for (CustomerOrderDetail cod : codFinals) {
-			Row row = sheet.createRow(count);
+		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("All In Service Orders"));
+
+		Row row = sheet.createRow(0);
+		row.createCell(0).setCellValue("CLOTHED BROADBAND");
+		for(int i = 0; i < row.getLastCellNum(); i++){
+	        row.getCell(i).setCellStyle(cellStyle);
+	    }
+		row = sheet.createRow(1);
+		row.createCell(0).setCellValue("Address");
+		row.createCell(1).setCellValue("Broadband Type");
+		row.createCell(2).setCellValue("PSTN Number");
+		row.createCell(3).setCellValue("Total Orders");
+		for(int i = 0; i < row.getLastCellNum(); i++){
+	        row.getCell(i).setCellStyle(cellStyle);
+	    }
+
+		int count = 2;
+		for (CustomerOrderDetail cod : codPSTNFinals) {
+			row = sheet.createRow(count);
 			row.createCell(0).setCellValue(cod.getAddress());
 			row.createCell(1).setCellValue(cod.getDetail_plan_type());
 			row.createCell(2).setCellValue(cod.getPstn_number());
+			if(count==2){
+				row.createCell(3).setCellValue(codPSTNFinals.size());
+			}
 			count++;
 		}
+
+		CustomerOrder coNoPSTNPlanQuery = new CustomerOrder();
+		coNoPSTNPlanQuery.getParams().put("orderby", "order by id desc");
+		coNoPSTNPlanQuery.getParams().put("where", "query_not_pstn_number_orders");
+		List<CustomerOrder> coNoPSTNPlans = this.crmService.queryCustomerOrders(coNoPSTNPlanQuery);
+		List<CustomerOrderDetail> codNoPSTNFinals = new ArrayList<CustomerOrderDetail>();
+		for (CustomerOrder co : coNoPSTNPlans) {
+			CustomerOrderDetail codQuery = new CustomerOrderDetail();
+			codQuery.getParams().put("orderby", "order by order_id desc");
+			codQuery.getParams().put("where", "query_plan_type_order_details_by_order_id");
+			codQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderDetail> codPlans = this.crmService.queryCustomerOrderDetails(codQuery);
+			for (CustomerOrderDetail cod : codPlans) {
+				CustomerOrderDetail codCreate = new CustomerOrderDetail();
+				codCreate.setAddress(co.getAddress());
+				codCreate.setDetail_plan_type(cod.getDetail_plan_type());
+				codNoPSTNFinals.add(codCreate);
+			}
+		}
+		count++;
+		row = sheet.createRow(count);
+		row.createCell(0).setCellValue("NAKED BROADBAND");
+		for(int i = 0; i < row.getLastCellNum(); i++){
+	        row.getCell(i).setCellStyle(cellStyle);
+	    }
+		count++;
+		row = sheet.createRow(count);
+		row.createCell(0).setCellValue("Address");
+		row.createCell(1).setCellValue("Broadband Type");
+		row.createCell(2).setCellValue("PSTN Number");
+		row.createCell(3).setCellValue("Total Orders");
+		for(int i = 0; i < row.getLastCellNum(); i++){
+	        row.getCell(i).setCellStyle(cellStyle);
+	    }
+		count++;
+		
+		boolean isFirstRow = true;
+		for (CustomerOrderDetail cod : codNoPSTNFinals) {
+			row = sheet.createRow(count);
+			row.createCell(0).setCellValue(cod.getAddress());
+			row.createCell(1).setCellValue(cod.getDetail_plan_type());
+			row.createCell(2).setCellValue(cod.getPstn_number());
+			if(isFirstRow){
+				row.createCell(3).setCellValue(codNoPSTNFinals.size());
+				isFirstRow = false;
+			}
+			count++;
+		}
+		
 		FileOutputStream output;
 		String output_path = TMUtils.createPath("broadband" + File.separator + "pstn_orders" + File.separator + "pstn_orders.xls");
 		output = new FileOutputStream(output_path);

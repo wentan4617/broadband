@@ -99,7 +99,7 @@
 					cod.order_id = #{params.order_id}
 					and cod.pstn_number IS NOT NULL and cod.pstn_number!='' and cod.detail_type='pstn'
 				</when>
-				<when test="params.where == 'query_pstn_number_plan_type_order_details'">
+				<when test="params.where == 'query_plan_type_order_details_by_order_id'">
 					cod.order_id = #{params.order_id}
 					and cod.detail_type like 'plan-%'
 				</when>
