@@ -381,9 +381,7 @@
 				<p class="navbar-text pull-right">
 					<span class="glyphicon glyphicon-user" style="margin-right:10px;"></span>
 					<a href="javascript:void(0);" class="navbar-link" style="margin-right:10px;">${userSession.user_name}&nbsp;
-						<c:if test="${userSession.user_role == 'agent' || userSession.user_role == 'sales'}">
-							|&nbsp;&nbsp;My ID: ${userSession.id}
-						</c:if>
+						|&nbsp;&nbsp;My ID: ${userSession.id}
 					</a>
 					<a href="${ctx}/broadband-user/signout" data-toggle="tooltip" data-placement="bottom" data-original-title="Sign out">
 						<span class="glyphicon glyphicon-log-out" style="margin-right:10px;"></span>

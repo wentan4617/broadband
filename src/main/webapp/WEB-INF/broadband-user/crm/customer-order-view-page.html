@@ -18,7 +18,7 @@
 		<tr>
 			<td><.=co.id.></td>
 			<td>
-				<a href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.customer_id .>">
+				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.customer_id .>">
 				<. if (co.customer_type == 'personal') {.>
 					<.=co.first_name.> <.=co.last_name.>
 				<.} else if (co.customer_type == 'business'){.>

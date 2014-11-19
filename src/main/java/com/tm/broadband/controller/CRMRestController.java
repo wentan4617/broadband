@@ -2798,6 +2798,7 @@ public class CRMRestController {
 			page.getParams().put("customer_id", coQuery.getCustomer_id());
 			page.getParams().put("first_name", coQuery.getFirst_name());
 			page.getParams().put("last_name", coQuery.getLast_name());
+			page.getParams().put("org_name", coQuery.getOrg_name());
 			page.getParams().put("mobile", coQuery.getMobile());
 			page.getParams().put("email", coQuery.getEmail());
 			page.getParams().put("address", coQuery.getAddress());
@@ -2806,8 +2807,8 @@ public class CRMRestController {
 			page.getParams().put("invoice_id", coQuery.getInvoice_id());
 			page.getParams().put("customer_type", coQuery.getCustomer_type());
 			page.getParams().put("broadband_asid", coQuery.getBroadband_asid());
+			page.getParams().put("user_id", coQuery.getUser_id());
 		}
-		System.out.println("coQuery.getMobile(): "+coQuery.getMobile());
 		this.crmService.queryCustomerOrdersByPage(page);
 		status.setComplete();
 		return page;
