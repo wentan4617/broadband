@@ -139,6 +139,7 @@
 		
 		, co.`xero_invoice_status` 				as co_xero_invoice_status
 		, co.`is_send_xero_invoice` 			as co_is_send_xero_invoice
+		, co.`checklist_progress` 				as co_checklist_progress
 	</sql>
 	<resultMap type="CustomerOrder" id="customerOrderResultMap">
 		<id property="id" column="co_id" />
@@ -208,6 +209,7 @@
 		
 		<result property="xero_invoice_status" column="co_xero_invoice_status" />
 		<result property="is_send_xero_invoice" column="co_is_send_xero_invoice" />
+		<result property="checklist_progress" column="co_checklist_progress" />
 		
 		<association property="customer" resultMap="customerResultMap"/>
 	</resultMap>
@@ -460,6 +462,7 @@
 					<if test="params.sale_id != null">and co.sale_id = #{params.sale_id}</if>
 					<if test="params.signature != null">and co.signature = #{params.signature}</if>
 					<if test="params.customer_type != null">and co.customer_type = #{params.customer_type}</if>
+					<if test="params.checklist_progress != null">and co.checklist_progress = #{params.checklist_progress}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -507,7 +510,7 @@
 			`receipt_pdf_path`, `disconnected_date`, `connection_date`, `contract`, `inviter_customer_id`, `inviter_user_id`,
 			`inviter_rate`, `invitee_rate`, `title`, `first_name`, `last_name`, `address`, `mobile`, `phone`, `email`, `customer_type`, `org_name`, `org_type`,
 			`org_trading_name`, `org_register_no`, `org_incoporate_date`, `org_trading_months`, `holder_name`, `holder_job_title`,
-			`holder_phone`, `holder_email`, `xero_invoice_status`, `is_send_xero_invoice`)
+			`holder_phone`, `holder_email`, `xero_invoice_status`, `is_send_xero_invoice`, `checklist_progress`)
 		VALUES (
 			#{order_serial}, #{customer_id}, #{order_total_price}, now(), #{order_status},
 			#{order_type}, #{order_broadband_type}, #{transition_provider_name}, #{transition_account_holder_name},
@@ -518,7 +521,7 @@
 			#{receipt_pdf_path}, #{disconnected_date}, #{connection_date}, #{contract}, #{inviter_customer_id}, #{inviter_user_id},
 			#{inviter_rate}, #{invitee_rate}, #{title}, #{first_name}, #{last_name}, #{address}, #{mobile}, #{phone}, #{email}, #{customer_type}, #{org_name}, #{org_type},
 			#{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, #{org_trading_months}, #{holder_name}, #{holder_job_title},
-			#{holder_phone}, #{holder_email}, #{xero_invoice_status}, #{is_send_xero_invoice})
+			#{holder_phone}, #{holder_email}, #{xero_invoice_status, #{is_send_xero_invoice}, #{checklist_progress})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -593,7 +596,8 @@
 			<if test="holder_email != null">holder_email = #{holder_email},</if>
 			
 			<if test="xero_invoice_status != null">xero_invoice_status = #{xero_invoice_status},</if>
-			<if test="is_send_xero_invoice != null">is_send_xero_invoice = #{is_send_xero_invoice}</if>
+			<if test="is_send_xero_invoice != null">is_send_xero_invoice = #{is_send_xero_invoice},</if>
+			<if test="checklist_progress != null">checklist_progress = #{checklist_progress}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>

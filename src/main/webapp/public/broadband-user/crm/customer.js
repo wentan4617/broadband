@@ -337,6 +337,26 @@
 
 			var co = map.customer.customerOrders;
 			for(var i=0; i<co.length; i++){
+				
+				/**
+				 * BEGIN customer order provision checklist area
+				 */
+				
+				$('#edit_order_provision_checklist_'+co[i].id).click(function(){
+					var id = $(this).attr('data-order-id');
+					console.log(id);
+					$('select[data-name="payment_form_'+id+'"]')
+					$('#editOrderProvisionChecklistModal_'+id).modal('show');
+				});
+				
+				// editOrderProvisionChecklistModal_
+				// editOrderProvisionChecklistModalBtn_
+				
+				/**
+				 * END customer order provision checklist area
+				 */
+				
+				
 				/*
 				 *	BEGIN customer order area
 				 */

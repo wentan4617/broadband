@@ -23,6 +23,7 @@ demand version 1.5.6 2014-11-19
 * [在customer order界面添加一个按钮，Get PSTN Order's in Excel，所需字段：address, broadband_type, pstn_number，逻辑是迭代有pstn以及无pstn的order信息输出到Excel里.](steven)
 * [customer order列表界面优化查询条件，并新增org_name以及user_id查询.](steven)
 * [后台登陆后将用户ID显示到用户名右侧，方便根据自身user_id查询order.](steven)
+* [customer query界面添加org_name查询.](steven)
  
 demand version 1.5.5 2014-11-18
 

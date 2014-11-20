@@ -33,6 +33,7 @@ import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.CustomerOrderProvisionChecklistMapper;
 import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
@@ -61,6 +62,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
@@ -130,6 +132,7 @@ public class CRMService {
 	private CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper;
 	private CustomerCreditMapper customerCreditMapper;
 	private CustomerDDPayMapper customerDDPayMapper;
+	private CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -170,7 +173,8 @@ public class CRMService {
 			CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper,
 			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper,
 			CustomerCreditMapper customerCreditMapper,
-			CustomerDDPayMapper customerDDPayMapper){
+			CustomerDDPayMapper customerDDPayMapper,
+			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -204,6 +208,7 @@ public class CRMService {
 		this.customerOrderDetailRecoverableListMapper = customerOrderDetailRecoverableListMapper;
 		this.customerCreditMapper = customerCreditMapper;
 		this.customerDDPayMapper = customerDDPayMapper;
+		this.customerOrderProvisionChecklistMapper = customerOrderProvisionChecklistMapper;
 	}
 	
 	
@@ -4444,6 +4449,45 @@ public class CRMService {
 	
 	/**
 	 * END CustomerDDPay
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderProvisionChecklist
+	 */
+	
+	public List<CustomerOrderProvisionChecklist> queryCustomerOrderProvisionChecklists(CustomerOrderProvisionChecklist copc){
+		return this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklist(copc);
+	}
+	
+	public CustomerOrderProvisionChecklist queryCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		List<CustomerOrderProvisionChecklist> copcs = this.queryCustomerOrderProvisionChecklists(copc);
+		return copcs!=null && copcs.size()>0 ? copcs.get(0) : null;
+	}
+	
+	public Page<CustomerOrderProvisionChecklist> queryCustomerOrderProvisionChecklistsByPage(Page<CustomerOrderProvisionChecklist> page){
+		page.setTotalRecord(this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklistsSum(page));
+		page.setResults(this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklistsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		this.customerOrderProvisionChecklistMapper.updateCustomerOrderProvisionChecklist(copc);
+	}
+
+	@Transactional
+	public void removeCustomerOrderProvisionChecklistById(int id){
+		this.customerOrderProvisionChecklistMapper.deleteCustomerOrderProvisionChecklistById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		this.customerOrderProvisionChecklistMapper.insertCustomerOrderProvisionChecklist(copc);
+	}
+	
+	/**
+	 * END CustomerOrderProvisionChecklist
 	 */
 	
 	

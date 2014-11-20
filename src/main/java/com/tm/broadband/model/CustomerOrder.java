@@ -104,6 +104,7 @@ public class CustomerOrder implements Serializable {
 	private String phone;
 	private String email;
 	private String customer_type;
+	private Double checklist_progress;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -911,6 +912,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setInvoice_id(Integer invoice_id) {
 		this.invoice_id = invoice_id;
+	}
+
+	public Double getChecklist_progress() {
+		return checklist_progress;
+	}
+
+	public void setChecklist_progress(Double checklist_progress) {
+		this.checklist_progress = checklist_progress;
 	}
 
 }
