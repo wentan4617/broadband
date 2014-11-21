@@ -2585,18 +2585,390 @@
 						</h4>
 					</div>
 					<div class="modal-body">
+					
 						<div class="form-group">
-							<label class="control-label col-md-3">Payment Form</label>
-							<div class="col-md-3">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Payment Form</h3></div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4" style="padding-top:0;">Payment Form</label>
+							<div class="col-md-4">
 								<select class="form-control input-sm" data-name="payment_form_<.= customerOrder[i].id .>">
+									<option value="none">None</option>
 									<option value="ddpay">DDPay</option>
 									<option value="ccpay">CCPay</option>
 									<option value="cash">Cash</option>
 									<option value="bank-deposit">Bank Deposit</option>
 									<option value="a2a">A2A</option>
+									<option value="other">Other</option>
 								</select>
 							</div>
 						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Phone Line</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_phone_line" data-type="phone-line-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_phone_line" data-type="phone-line-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_pstn_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has PSTN</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="pstn_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="pstn_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_fax_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Fax</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_fax_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_fax_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="fax_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="fax_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_voip_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has VoIP</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_voip_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_voip_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="voip_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="voip_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Existed Service</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_existed_services" data-type="existed-service-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_existed_services" data-type="existed-service-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_alarm_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Alarm</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_alarm_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_alarm_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_emergency_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Emergency</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_emergency_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_emergency_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_cctv_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has CCTV</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_cctv_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_cctv_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_eftpos_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has EFTPOS</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_eftpos_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_eftpos_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Line Functions</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_line_function" data-type="line-functions-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_line_function" data-type="line-functions-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_smart_bundle_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Smart Bundle</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_smart_bundle_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_smart_bundle_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="smart_bundle_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="smart_bundle_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_restrict_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Restrict</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_restrict_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_restrict_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_restrict_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_restrict_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_waiting_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Waiting</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_waiting_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_waiting_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_waiting_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_waiting_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_faxability_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Faxability</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_faxability_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_faxability_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="faxability_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="faxability_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_display_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Display</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_display_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_display_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_display_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_display_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_wire_maintenance_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Wire Maintenance</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_wire_maintenance_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_wire_maintenance_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="wire_maintenance_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="wire_maintenance_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_static_ip_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Static IP</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_static_ip_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_static_ip_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="static_ip_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="static_ip_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_dial_wrap_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Dial Wrap</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_dial_wrap_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_dial_wrap_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="dial_wrap_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="dial_wrap_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Post Hardware</h3></div>
+						</div>
+						<div class="form-group" data-name="has_router_post_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Router Post</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_router_post_<.= customerOrder[i].id .>" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_router_post_<.= customerOrder[i].id .>" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="router_post_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="router_post_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4">
+								<h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Order Status</h3>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_order_status" data-type="order-status-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_order_status" data-type="order-status-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_svcv_lan_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has SV/CVLan</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_svcv_lan_<.= customerOrder[i].id .>" data-type="order-status-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_svcv_lan_<.= customerOrder[i].id .>" data-type="order-status-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_service_given_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Service Given</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_service_given_<.= customerOrder[i].id .>" data-type="order-status-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_service_given_<.= customerOrder[i].id .>" data-type="order-status-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">PSTN To NCA</h3></div>
+						</div>
+						<div class="form-group" data-name="has_pstn_nca_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has PSTN NCA</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_nca_<.= customerOrder[i].id .>" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_nca_<.= customerOrder[i].id .>" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="pstn_nca_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="pstn_nca_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="editOrderProvisionChecklistModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>

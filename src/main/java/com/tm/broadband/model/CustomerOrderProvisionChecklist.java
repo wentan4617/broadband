@@ -42,6 +42,7 @@ public class CustomerOrderProvisionChecklist implements Serializable {
 	private Integer faxability_count;
 	private Integer call_display_count;
 	private Integer wire_maintenance_count;
+	private Integer static_ip_count;
 	private Integer dial_wrap_count;
 	private Boolean has_router_post;
 	private Integer router_post_count;
@@ -226,6 +227,12 @@ public class CustomerOrderProvisionChecklist implements Serializable {
 	}
 	public void setWire_maintenance_count(Integer wire_maintenance_count) {
 		this.wire_maintenance_count = wire_maintenance_count;
+	}
+	public Integer getStatic_ip_count() {
+		return static_ip_count;
+	}
+	public void setStatic_ip_count(Integer static_ip_count) {
+		this.static_ip_count = static_ip_count;
 	}
 	public Integer getDial_wrap_count() {
 		return dial_wrap_count;

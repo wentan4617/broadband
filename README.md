@@ -18,6 +18,20 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.6.0 2014-11-21
+
+* [customer order列表界面点击标题后可以根据相关字段升降序排列.](steven)
+* [新建一张表，tm_customer_order_provision_checklist，字段有：payment_form, has_pstn, has_fax, has_voip, pstn_count, fax_count, voip_count, has_alarm, has_emergency, has_cctv, has_eftpos, has_smart_bundle, has_call_restrict, has_call_waiting, has_faxability, has_call_display, has_wire_maintenance, has_static_ip, has_dial_wrap, smart_bundle_count, call_restrict_count, call_waiting_count, faxability_count, call_display_count, wire_maintenance_count, static_ip_count, dial_wrap_count, has_router_post, router_post_count, has_svcv_lan, has_service_given, has_pstn_nca, pstn_nca_count](steven)
+ 
+ 
+demand version 1.5.8 2014-11-20
+
+* [在创建user里，非system-developer权限的限制其开放system-developer权限，因为系统部署前准备工作都放在system-developer能看到的界面当中，运行后就无需再去操作部署前准备工作.](steven)
+* [出下一张DD或CCPay账单时调整continue关键词位置以解决next_invoice_create_date的准确值，并将该段代码放到detail_type为plan-term的逻辑里.](steven)
+* [自动出ddpay order的账单，加多一个判断，最大一个账单不是当月.](steven)
+
+
+ 
 demand version 1.5.6 2014-11-19
  
 * [在customer order界面添加一个按钮，Get PSTN Order's in Excel，所需字段：address, broadband_type, pstn_number，逻辑是迭代有pstn以及无pstn的order信息输出到Excel里.](steven)

@@ -44,6 +44,7 @@
 		copc.`faxability_count`			as copc_faxability_count,
 		copc.`call_display_count`		as copc_call_display_count,
 		copc.`wire_maintenance_count`	as copc_wire_maintenance_count,
+		copc.`static_ip_count`			as copc_static_ip_count,
 		copc.`dial_wrap_count`			as copc_dial_wrap_count,
 		copc.`has_router_post`			as copc_has_router_post,
 		copc.`router_post_count`		as copc_router_post_count,
@@ -81,6 +82,7 @@
 		<result property="faxability_count" column="copc_faxability_count" />
 		<result property="call_display_count" column="copc_call_display_count" />
 		<result property="wire_maintenance_count" column="copc_wire_maintenance_count" />
+		<result property="static_ip_count" column="copc_static_ip_count" />
 		<result property="dial_wrap_count" column="copc_dial_wrap_count" />
 		<result property="has_router_post" column="copc_has_router_post" />
 		<result property="router_post_count" column="copc_router_post_count" />
@@ -119,6 +121,7 @@
 			<if test="params.faxability_count != null">and copc.faxability_count = #{params.faxability_count}</if>
 			<if test="params.call_display_count != null">and copc.call_display_count = #{params.call_display_count}</if>
 			<if test="params.wire_maintenance_count != null">and copc.wire_maintenance_count = #{params.wire_maintenance_count}</if>
+			<if test="params.static_ip_count != null">and copc.static_ip_count = #{params.static_ip_count}</if>
 			<if test="params.dial_wrap_count != null">and copc.dial_wrap_count = #{params.dial_wrap_count}</if>
 			<if test="params.has_router_post != null">and copc.has_router_post = #{params.has_router_post}</if>
 			<if test="params.router_post_count != null">and copc.router_post_count = #{params.router_post_count}</if>
@@ -169,7 +172,7 @@
 			`has_emergency`, `has_cctv`, `has_eftpos`, `has_smart_bundle`, `has_call_restrict`, 
 			`has_call_waiting`, `has_faxability`, `has_call_display`, `has_wire_maintenance`, `has_static_ip`, 
 			`has_dial_wrap`, `smart_bundle_count`, `call_restrict_count`, `call_waiting_count`, `faxability_count`, 
-			`call_display_count`, `wire_maintenance_count`, `dial_wrap_count`, `has_router_post`, `router_post_count`, 
+			`call_display_count`, `wire_maintenance_count`, `static_ip_count`, `dial_wrap_count`, `has_router_post`, `router_post_count`, 
 			`has_svcv_lan`, `has_service_given`, `has_pstn_nca`, `pstn_nca_count`
 		) VALUES (
 			#{order_id}, #{payment_form}, #{has_pstn}, #{has_fax}, 
@@ -177,7 +180,7 @@
 			#{has_emergency}, #{has_cctv}, #{has_eftpos}, #{has_smart_bundle}, #{has_call_restrict}, 
 			#{has_call_waiting}, #{has_faxability}, #{has_call_display}, #{has_wire_maintenance}, #{has_static_ip}, 
 			#{has_dial_wrap}, #{smart_bundle_count}, #{call_restrict_count}, #{call_waiting_count}, #{faxability_count}, 
-			#{call_display_count}, #{wire_maintenance_count}, #{dial_wrap_count}, #{has_router_post}, #{router_post_count}, 
+			#{call_display_count}, #{wire_maintenance_count}, #{static_ip_count}, #{dial_wrap_count}, #{has_router_post}, #{router_post_count}, 
 			#{has_svcv_lan}, #{has_service_given}, #{has_pstn_nca}, #{pstn_nca_count}
 		)
 	</insert>
@@ -218,6 +221,7 @@
 			<if test="faxability_count != null">faxability_count = #{faxability_count},</if>
 			<if test="call_display_count != null">call_display_count = #{call_display_count},</if>
 			<if test="wire_maintenance_count != null">wire_maintenance_count = #{wire_maintenance_count},</if>
+			<if test="static_ip_count != null">static_ip_count = #{static_ip_count},</if>
 			<if test="dial_wrap_count != null">dial_wrap_count = #{dial_wrap_count},</if>
 			<if test="has_router_post != null">has_router_post = #{has_router_post},</if>
 			<if test="router_post_count != null">router_post_count = #{router_post_count},</if>

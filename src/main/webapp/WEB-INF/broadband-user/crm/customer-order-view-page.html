@@ -2,20 +2,26 @@
 <table class="table" style="font-size: 12px;">
 	<thead>
 		<tr>
-			<th>ID</th>
-			<th>Name</th>
-			<th>Type</th>
-			<th>Address</th>
-			<th>Email</th>
-			<th>Mobile</th>
-			<th>Ordered Date</th>
+			<th>ID&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="DESC">¡ý¡ý</a></th>
+			<th>Name&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="DESC">¡ý¡ý</a></th>
+			<th>Type&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="DESC">¡ý¡ý</a></th>
+			<th>Address&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="DESC">¡ý¡ý</a></th>
+			<th>Email&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="DESC">¡ý¡ý</a></th>
+			<th>Mobile&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="DESC">¡ý¡ý</a></th>
+			<th>Date&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="DESC">¡ý¡ý</a></th>
+			<th>Progress&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="DESC">¡ý¡ý</a></th>
 		</tr>
 	</thead>
 	<tbody>
 	<. for(var i = 0; i < results.length; i++) {
 		var co = results[i];
+		var checklist_progress = co.checklist_progress;
 	.>
-		<tr>
+		<tr class="<.= checklist_progress<20 ? 'progress-lower' : 
+					   checklist_progress<40 ? 'progress-low' : 
+					   checklist_progress<60 ? 'progress-mid' :
+					   checklist_progress<80 ? 'progress-high' :
+					   checklist_progress<100 ? 'progress-higher' : '' .>">
 			<td><.=co.id.></td>
 			<td>
 				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.customer_id .>">
@@ -32,6 +38,7 @@
 			<td><.=co.mobile .></td>
 			<!-- <td><.=co.status .></td> -->
 			<td><.=co.order_create_date_str .></td>
+			<td><.=Number(co.checklist_progress) .>%</td>
 		</tr>
 	<.}.>
 	</tbody>

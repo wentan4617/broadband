@@ -662,6 +662,12 @@ public class TMUtils {
 		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
 		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
 	}
+	// DIVISION: Integer / Integer
+	public static Double bigDivide(Integer divisor1, Integer divisor2){
+		BigDecimal bigDivisor1 = new BigDecimal(divisor1);
+		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
+		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
+	}
 	
 	// FOUR OPERATIONS, BUT ONLY LEFT TWO REMINDERS
 	public static Double bigOperationTwoReminders(Double operator1, Double operator2, String type){

@@ -66,7 +66,9 @@
 									<form:option value="provision-team">Provision Team</form:option>
 									<form:option value="chief-operator">Chief Operator</form:option>
 									<form:option value="administrator">Administrator</form:option>
-									<form:option value="system-developer">System Developer</form:option>
+									<c:if test="${userSession.user_role=='system-developer'}">
+										<form:option value="system-developer">System Developer</form:option>
+									</c:if>
 								</form:select>
 							</div>
 						</div>

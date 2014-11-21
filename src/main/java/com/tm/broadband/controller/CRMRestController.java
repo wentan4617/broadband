@@ -40,6 +40,7 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
@@ -2792,7 +2793,11 @@ public class CRMRestController {
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
 		page.getParams().put("where", "query_customer_by_field");
-		page.getParams().put("orderby", "order by order_create_date desc");
+		if(coQuery != null && coQuery.getOrderby()!=null && !"".equals(coQuery.getOrderby())){
+			page.getParams().put("orderby", "order by "+coQuery.getOrderby());
+		} else {
+			page.getParams().put("orderby", "order by order_create_date desc");
+		}
 		if (coQuery != null) {
 			page.getParams().put("order_id", coQuery.getId());
 			page.getParams().put("customer_id", coQuery.getCustomer_id());
@@ -3272,6 +3277,86 @@ public class CRMRestController {
 		
 	}
 	// END Topup Account Credit By Voucher
+
+
+	// BEGIN CustomerOrderProvisionChecklist
+	@RequestMapping(value = "/broadband-user/crm/customer/order/provision-checklist/get")
+	public JSONBean<CustomerOrderProvisionChecklist> toOrderProvisionChecklistGet(Model model,
+			CustomerOrderProvisionChecklist copc,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderProvisionChecklist> json = new JSONBean<CustomerOrderProvisionChecklist>();
+		
+		CustomerOrderProvisionChecklist copcQuery = new CustomerOrderProvisionChecklist();
+		copcQuery.getParams().put("order_id", copc.getOrder_id());
+		copcQuery = this.crmService.queryCustomerOrderProvisionChecklist(copcQuery);
+		
+		json.setModel(copcQuery);
+		
+		return json;
+		
+	}
+	@RequestMapping(value = "/broadband-user/crm/customer/order/provision-checklist/update", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderProvisionChecklist> doOrderProvisionChecklistUpdate(Model model,
+			CustomerOrderProvisionChecklist copc,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderProvisionChecklist> json = new JSONBean<CustomerOrderProvisionChecklist>();
+		String msg = "";
+		
+		int totalCount = 20;
+		int finalCount = 1; /* Default selected Payment Form */
+		double finalPercentage = 0d;
+		/* Phone Line */
+		if(copc.getHas_pstn()!=null){ finalCount++; }
+		if(copc.getHas_fax()!=null){ finalCount++; }
+		if(copc.getHas_voip()!=null){ finalCount++; }
+		/* Existed Service */
+		if(copc.getHas_alarm()!=null){ finalCount++; }
+		if(copc.getHas_emergency()!=null){ finalCount++; }
+		if(copc.getHas_cctv()!=null){ finalCount++; }
+		if(copc.getHas_eftpos()!=null){ finalCount++; }
+		/* Line Functions */
+		if(copc.getHas_smart_bundle()!=null){ finalCount++; }
+		if(copc.getHas_call_restrict()!=null){ finalCount++; }
+		if(copc.getHas_call_waiting()!=null){ finalCount++; }
+		if(copc.getHas_faxability()!=null){ finalCount++; }
+		if(copc.getHas_call_display()!=null){ finalCount++; }
+		if(copc.getHas_wire_maintenance()!=null){ finalCount++; }
+		if(copc.getHas_static_ip()!=null){ finalCount++; }
+		if(copc.getHas_dial_wrap()!=null){ finalCount++; }
+		/* Post Hardware */
+		if(copc.getHas_router_post()!=null){ finalCount++; }
+		/* Order Status */
+		if(copc.getHas_svcv_lan()!=null){ finalCount++; }
+		if(copc.getHas_service_given()!=null){ finalCount++; }
+		/* PSTN To NCA */
+		if(copc.getHas_pstn_nca()!=null){ finalCount++; }
+		
+		finalPercentage = TMUtils.bigMultiply(TMUtils.bigDivide(finalCount, totalCount), 100);
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.setChecklist_progress(finalPercentage);
+		coUpdate.getParams().put("id", copc.getOrder_id());
+		this.crmService.editCustomerOrder(coUpdate);
+		
+		CustomerOrderProvisionChecklist copcQuery = new CustomerOrderProvisionChecklist();
+		copcQuery.getParams().put("order_id", copc.getOrder_id());
+		copcQuery = this.crmService.queryCustomerOrderProvisionChecklist(copcQuery);
+		if(copcQuery!=null){
+			msg = "Successfully update order's provision checklist";
+			copc.getParams().put("id", copcQuery.getId());
+			this.crmService.editCustomerOrderProvisionChecklist(copc);
+		} else {
+			msg = "Successfully insert order's provision checklist";
+			this.crmService.createCustomerOrderProvisionChecklist(copc);
+		}
+		
+		json.getSuccessMap().put("alert-success", msg);
+		
+		return json;
+		
+	}
+	// END CustomerOrderProvisionChecklist
 	
 	
 	

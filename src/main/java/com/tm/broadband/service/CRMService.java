@@ -2537,7 +2537,32 @@ public class CRMService {
 						cids.add(cid);
 					}
 					
-					continue;
+					// If is not regenerate invoice then update next invoice create data & flag
+					if (!isRegenerateInvoice) {
+						
+						// if is next invoice then plus one month else plus unit month(s)
+						int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
+						int nextInvoiceDay = -7;
+						Calendar calNextInvoiceDay = Calendar.getInstance();
+						calNextInvoiceDay.setTime(isFirst 
+									? (co.getOrder_using_start() != null 
+										? co.getOrder_using_start() 
+										: new Date()) 
+									: co.getNext_invoice_create_date_flag());
+						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+						// update customer order's next invoice create day flag begin
+						co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+						// update customer order's next invoice create day flag end
+
+						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+						// update customer order's next invoice create day begin
+						co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+						// update customer order's next invoice create day end
+						
+						co.getParams().put("id", co.getId());
+						
+						this.customerOrderMapper.updateCustomerOrder(co);
+					}
 
 				// Else if discount and unexpired then do add discount
 				} else if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
@@ -2550,8 +2575,6 @@ public class CRMService {
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
-					
-					continue;
 
 				// Else if unexpired then add order detail(s) into invoice detail(s)
 				} else if(cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
@@ -2564,36 +2587,8 @@ public class CRMService {
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
-					
-					continue;
 				}
 				
-			}
-			
-			if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice) {
-				
-				// if is next invoice then plus one month else plus unit month(s)
-				int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
-				int nextInvoiceDay = -7;
-				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(isFirst 
-							? (co.getOrder_using_start() != null 
-							? co.getOrder_using_start() 
-							: new Date()) 
-					: co.getNext_invoice_create_date_flag());
-				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-				// update customer order's next invoice create day flag begin
-				co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
-				// update customer order's next invoice create day flag end
-
-				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-				// update customer order's next invoice create day begin
-				co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-				// update customer order's next invoice create day end
-				
-				co.getParams().put("id", co.getId());
-				
-				this.customerOrderMapper.updateCustomerOrder(co);
 			}
 		}
 

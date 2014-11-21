@@ -343,14 +343,264 @@
 				 */
 				
 				$('#edit_order_provision_checklist_'+co[i].id).click(function(){
+					
 					var id = $(this).attr('data-order-id');
-					console.log(id);
-					$('select[data-name="payment_form_'+id+'"]')
+					
+					var data = {
+						'order_id':id
+					};
+
+					$.get(ctx+'/broadband-user/crm/customer/order/provision-checklist/get', data, function(json){
+						
+						if(json.model!=null){
+							var copc = json.model;
+							
+							/* Payment Form */
+							$('select[data-name="payment_form_'+id+'"] option[value='+copc.payment_form+']').attr("selected", true);
+							
+							/* Phone Line */
+							$('input[name="has_pstn_'+id+'"][value="'+copc.has_pstn+'"]').iCheck("check");
+							$('input[name="has_fax_'+id+'"][value="'+copc.has_fax+'"]').iCheck("check");
+							$('input[name="has_voip_'+id+'"][value="'+copc.has_voip+'"]').iCheck("check");
+							$('input[name="pstn_count_'+id+'"]').val(copc.pstn_count);
+							$('input[name="fax_count_'+id+'"]').val(copc.fax_count);
+							$('input[name="voip_count_'+id+'"]').val(copc.voip_count);
+							
+							/* Existed Service */
+							$('input[name="has_alarm_'+id+'"][value="'+copc.has_alarm+'"]').iCheck("check");
+							$('input[name="has_emergency_'+id+'"][value="'+copc.has_emergency+'"]').iCheck("check");
+							$('input[name="has_cctv_'+id+'"][value="'+copc.has_cctv+'"]').iCheck("check");
+							$('input[name="has_eftpos_'+id+'"][value="'+copc.has_eftpos+'"]').iCheck("check");
+							
+							/* Line Functions */
+							$('input[name="has_smart_bundle_'+id+'"][value="'+copc.has_smart_bundle+'"]').iCheck("check");
+							$('input[name="has_call_restrict_'+id+'"][value="'+copc.has_call_restrict+'"]').iCheck("check");
+							$('input[name="has_call_waiting_'+id+'"][value="'+copc.has_call_waiting+'"]').iCheck("check");
+							$('input[name="has_faxability_'+id+'"][value="'+copc.has_faxability+'"]').iCheck("check");
+							$('input[name="has_call_display_'+id+'"][value="'+copc.has_call_display+'"]').iCheck("check");
+							$('input[name="has_wire_maintenance_'+id+'"][value="'+copc.has_wire_maintenance+'"]').iCheck("check");
+							$('input[name="has_static_ip_'+id+'"][value="'+copc.has_static_ip+'"]').iCheck("check");
+							$('input[name="has_dial_wrap_'+id+'"][value="'+copc.has_dial_wrap+'"]').iCheck("check");
+							$('input[name="smart_bundle_count_'+id+'"]').val(copc.smart_bundle_count);
+							$('input[name="call_restrict_count_'+id+'"]').val(copc.call_restrict_count);
+							$('input[name="call_waiting_count_'+id+'"]').val(copc.call_waiting_count);
+							$('input[name="faxability_count_'+id+'"]').val(copc.faxability_count);
+							$('input[name="call_display_count_'+id+'"]').val(copc.call_display_count);
+							$('input[name="wire_maintenance_count_'+id+'"]').val(copc.wire_maintenance_count);
+							$('input[name="static_ip_count_'+id+'"]').val(copc.static_ip_count);
+							$('input[name="dial_wrap_count_'+id+'"]').val(copc.dial_wrap_count);
+							
+							/* Post Hardware */
+							$('input[name="has_router_post_'+id+'"][value="'+copc.has_router_post+'"]').iCheck("check");
+							$('input[name="router_post_count_'+id+'"]').val(copc.router_post_count);
+							
+							/* Order Status */
+							$('input[name="has_svcv_lan_'+id+'"][value="'+copc.has_svcv_lan+'"]').iCheck("check");
+							$('input[name="has_service_given_'+id+'"][value="'+copc.has_service_given+'"]').iCheck("check");
+							
+							/* PSTN To NCA */
+							$('input[name="has_pstn_nca_'+id+'"][value="'+copc.has_pstn_nca+'"]').iCheck("check");
+							$('input[name="pstn_nca_count_'+id+'"]').val(copc.pstn_nca_count);
+
+							if(copc.has_pstn==null){
+								$('div[data-name="has_pstn_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_fax==null){
+								$('div[data-name="has_fax_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_voip==null){
+								$('div[data-name="has_voip_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_alarm==null){
+								$('div[data-name="has_alarm_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_emergency==null){
+								$('div[data-name="has_emergency_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_cctv==null){
+								$('div[data-name="has_cctv_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_eftpos==null){
+								$('div[data-name="has_eftpos_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_smart_bundle==null){
+								$('div[data-name="has_smart_bundle_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_call_restrict==null){
+								$('div[data-name="has_call_restrict_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_call_waiting==null){
+								$('div[data-name="has_call_waiting_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_faxability==null){
+								$('div[data-name="has_faxability_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_call_display==null){
+								$('div[data-name="has_call_display_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_wire_maintenance==null){
+								$('div[data-name="has_wire_maintenance_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_static_ip==null){
+								$('div[data-name="has_static_ip_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_dial_wrap==null){
+								$('div[data-name="has_dial_wrap_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_router_post==null){
+								$('div[data-name="has_router_post_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_svcv_lan==null){
+								$('div[data-name="has_svcv_lan_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_service_given==null){
+								$('div[data-name="has_service_given_'+id+'"]').css('background-color', 'red');
+							}
+							if(copc.has_pstn_nca==null){
+								$('div[data-name="has_pstn_nca_'+id+'"]').css('background-color', 'red');
+							}
+							
+						} else {
+							
+							$('div[data-name="has_pstn_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_fax_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_voip_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_alarm_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_emergency_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_cctv_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_eftpos_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_smart_bundle_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_call_restrict_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_call_waiting_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_faxability_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_call_display_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_wire_maintenance_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_static_ip_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_dial_wrap_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_router_post_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_svcv_lan_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_service_given_'+id+'"]').css('background-color', 'red');
+							$('div[data-name="has_pstn_nca_'+id+'"]').css('background-color', 'red');
+							
+						}
+						
+					}, "json");
+					
+					var checkall_box_arr = ['checkall_box_phone_line', 'checkall_box_existed_services', 'checkall_box_line_function', 'checkall_box_order_status'];
+					
+					for (var cab = 0; cab < checkall_box_arr.length; cab++) {
+						$('input[name="'+checkall_box_arr[cab]+'"]').on('ifChecked', function(){
+							var type = $(this).attr("data-type");
+							$('input[data-type='+type+']').iCheck("check");
+						});
+						
+						$('input[name="'+checkall_box_arr[cab]+'"]').on('ifUnchecked', function(){
+							var type = $(this).attr("data-type");
+							$('input[data-type='+type+']').iCheck("uncheck");
+						});
+					}
+					
 					$('#editOrderProvisionChecklistModal_'+id).modal('show');
 				});
 				
-				// editOrderProvisionChecklistModal_
-				// editOrderProvisionChecklistModalBtn_
+				$('a[data-name="editOrderProvisionChecklistModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = this.id;
+					/* Payment Form */
+					var payment_form = $('select[data-name="payment_form_'+id+'"]').val();
+					
+					/* Phone Line */
+					var has_pstn = $('input[name="has_pstn_'+id+'"]:checked').val();
+					var pstn_count = $('input[name="pstn_count_'+id+'"]').val();
+					var has_fax = $('input[name="has_fax_'+id+'"]:checked').val();
+					var fax_count = $('input[name="fax_count_'+id+'"]').val();
+					var has_voip = $('input[name="has_voip_'+id+'"]:checked').val();
+					var voip_count = $('input[name="voip_count_'+id+'"]').val();
+
+					/* Existed Service */
+					var has_alarm = $('input[name="has_alarm_'+id+'"]:checked').val();
+					var has_emergency = $('input[name="has_emergency_'+id+'"]:checked').val();
+					var has_cctv = $('input[name="has_cctv_'+id+'"]:checked').val();
+					var has_eftpos = $('input[name="has_eftpos_'+id+'"]:checked').val();
+
+					/* Line Functions */
+					var has_smart_bundle = $('input[name="has_smart_bundle_'+id+'"]:checked').val();
+					var smart_bundle_count = $('input[name="smart_bundle_count_'+id+'"]').val();
+					var has_call_restrict = $('input[name="has_call_restrict_'+id+'"]:checked').val();
+					var call_restrict_count = $('input[name="call_restrict_count_'+id+'"]').val();
+					var has_call_waiting = $('input[name="has_call_waiting_'+id+'"]:checked').val();
+					var call_waiting_count = $('input[name="call_waiting_count_'+id+'"]').val();
+					var has_faxability = $('input[name="has_faxability_'+id+'"]:checked').val();
+					var faxability_count = $('input[name="faxability_count_'+id+'"]').val();
+					var has_call_display = $('input[name="has_call_display_'+id+'"]:checked').val();
+					var call_display_count = $('input[name="call_display_count_'+id+'"]').val();
+					var has_wire_maintenance = $('input[name="has_wire_maintenance_'+id+'"]:checked').val();
+					var wire_maintenance_count = $('input[name="wire_maintenance_count_'+id+'"]').val();
+					var has_static_ip = $('input[name="has_static_ip_'+id+'"]:checked').val();
+					var static_ip_count = $('input[name="static_ip_count_'+id+'"]').val();
+					var has_dial_wrap = $('input[name="has_dial_wrap_'+id+'"]:checked').val();
+					var dial_wrap_count = $('input[name="dial_wrap_count_'+id+'"]').val();
+					
+					/* Post Hardware */
+					var has_router_post = $('input[name="has_router_post_'+id+'"]:checked').val();
+					var router_post_count = $('input[name="router_post_count_'+id+'"]').val();
+					
+					/* Order Status */
+					var has_svcv_lan = $('input[name="has_svcv_lan_'+id+'"]:checked').val();
+					var has_service_given = $('input[name="has_service_given_'+id+'"]:checked').val();
+					
+					/* PSTN To NCA */
+					var has_pstn_nca = $('input[name="has_pstn_nca_'+id+'"]:checked').val();
+					var pstn_nca_count = $('input[name="pstn_nca_count_'+id+'"]').val();
+					
+					var data = {
+						'order_id':id,
+						'payment_form':payment_form,
+						'has_pstn':has_pstn,
+						'pstn_count':pstn_count,
+						'has_fax':has_fax,
+						'fax_count':fax_count,
+						'has_voip':has_voip,
+						'voip_count':voip_count,
+
+						'has_alarm':has_alarm,
+						'has_emergency':has_emergency,
+						'has_cctv':has_cctv,
+						'has_eftpos':has_eftpos,
+						
+						'has_smart_bundle':has_smart_bundle,
+						'smart_bundle_count':smart_bundle_count,
+						'has_call_restrict':has_call_restrict,
+						'call_restrict_count':call_restrict_count,
+						'has_call_waiting':has_call_waiting,
+						'call_waiting_count':call_waiting_count,
+						'has_faxability':has_faxability,
+						'faxability_count':faxability_count,
+						'has_call_display':has_call_display,
+						'call_display_count':call_display_count,
+						'has_wire_maintenance':has_wire_maintenance,
+						'wire_maintenance_count':wire_maintenance_count,
+						'has_static_ip':has_static_ip,
+						'static_ip_count':static_ip_count,
+						'has_dial_wrap':has_dial_wrap,
+						'dial_wrap_count':dial_wrap_count,
+						
+						'has_router_post':has_router_post,
+						'router_post_count':router_post_count,
+						
+						'has_svcv_lan':has_svcv_lan,
+						'has_service_given':has_service_given,
+						
+						'has_pstn_nca':has_pstn_nca,
+						'pstn_nca_count':pstn_nca_count
+					};
+
+					$.post(ctx+'/broadband-user/crm/customer/order/provision-checklist/update', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					}, "json");
+					
+				});
 				
 				/**
 				 * END customer order provision checklist area
@@ -1990,6 +2240,11 @@
 				
 			}
 			$('a[data-toggle="tooltip"]').tooltip();
+			
+			$(':radio').iCheck({
+				checkboxClass : 'icheckbox_square-green',
+				radioClass : 'iradio_square-green'
+			});
 			
 		}, "json");
 	};

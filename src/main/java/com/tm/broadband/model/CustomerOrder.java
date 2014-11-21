@@ -113,6 +113,7 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	private String orderby;
 	
 	private String pstn;
 	private String voip;
@@ -920,6 +921,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setChecklist_progress(Double checklist_progress) {
 		this.checklist_progress = checklist_progress;
+	}
+
+	public String getOrderby() {
+		return orderby;
+	}
+
+	public void setOrderby(String orderby) {
+		this.orderby = orderby;
 	}
 
 }
