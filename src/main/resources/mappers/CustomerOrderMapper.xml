@@ -521,7 +521,7 @@
 			#{receipt_pdf_path}, #{disconnected_date}, #{connection_date}, #{contract}, #{inviter_customer_id}, #{inviter_user_id},
 			#{inviter_rate}, #{invitee_rate}, #{title}, #{first_name}, #{last_name}, #{address}, #{mobile}, #{phone}, #{email}, #{customer_type}, #{org_name}, #{org_type},
 			#{org_trading_name}, #{org_register_no}, #{org_incoporate_date}, #{org_trading_months}, #{holder_name}, #{holder_job_title},
-			#{holder_phone}, #{holder_email}, #{xero_invoice_status, #{is_send_xero_invoice}, #{checklist_progress})
+			#{holder_phone}, #{holder_email}, #{xero_invoice_status}, #{is_send_xero_invoice}, #{checklist_progress})
 	</insert>
 	
 	<!-- // END INSERT AREA -->

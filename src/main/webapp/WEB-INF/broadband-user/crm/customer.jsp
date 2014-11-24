@@ -10,6 +10,38 @@
 .panel-default {
 	border-top-color:transparent;
 }
+#order_detail .form-group {
+	margin-bottom:4px;
+}
+
+.align-right {
+	text-align:right;
+}
+
+.xs-btn-width-small {
+	width:120px;
+}
+
+.xs-btn-width {
+	width:150px;
+}
+
+.xs-btn-width-long {
+	width:180px;
+}
+
+.xs-btn-width-longer {
+	width:220px;
+}
+
+.strong {
+	font-weight:bold;
+}
+
+.input-xs{
+	height:33px;
+}
+
 </style>
 
 
@@ -36,6 +68,7 @@
 				<div class="panel-body tab-pane fade" id="customer_service_record_detail"></div>
 				<div class="panel-body tab-pane fade" id="customer_ticket_record_detail"></div>
 			</div>
+			
 		</div>
 	</div>
 </div>

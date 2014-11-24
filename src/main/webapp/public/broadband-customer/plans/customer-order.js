@@ -62,6 +62,8 @@
 			isContract = (select_plan_type == 'VDSL' && sale_id == '20023' ? true : false);
 			if (contract == '12 months contract') {
 				isContract = true;
+			} else if (contract == '24 months contract') {
+				isContract = true;
 			} else if (contract == 'open term') {
 				isContract = false;
 			}
@@ -288,11 +290,23 @@
 				//flushModems();
 				//flushBroadbandOptions();
 				flushPrepayMonth();
+			} else if (value == '24months') {
+				isContract = true;
+				contract_name = '24 months contract';
+				discount_desc = '';
+				//select_modem_container.show('fast');
+				//prepay_months_container.hide('fast');
+				//prepay_months = 1;
+				//price.discount_price = 0;
+				//modem_selected = null;
+				//flushModems();
+				//flushBroadbandOptions();
+				flushPrepayMonth();
 			}
 			
 		});
 		
-		var contract_oo = $('input[name="contract"][value="' + (isContract ? '12months' : 'open-term') + '"]');
+		var contract_oo = $('input[name="contract"][value="' + (isContract ? '12months' : isContract ? '24months' : 'open-term') + '"]');
 		contract_oo.iCheck('check');
 	}
 	
@@ -409,6 +423,7 @@
 			, prepay_months: prepay_months
 			, isContract: isContract
 			, hardwares: modems
+			, contract_name: contract_name
 		};
 		if (prepay_months == 12) {
 			o.hardwares = [modem_selected];
@@ -443,6 +458,9 @@
 								} else {
 									if (this.id == 3 || this.id == 1) {
 										price.modem_price = parseInt(0);
+										price.save_modem_price = parseInt(this.hardware_price);
+									} else if(contract_name=='24 months contract') {
+										price.modem_price = 0;
 										price.save_modem_price = parseInt(this.hardware_price);
 									} else {
 										price.modem_price = this.hardware_price - parseInt(this.hardware_price/2);

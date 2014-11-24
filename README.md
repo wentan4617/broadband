@@ -18,6 +18,13 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+demand version 1.6.5 2014-11-24
+ 
+* [customer order界面，完善term perid修改功能.](steven)
+* customer order界面的所有modal提交后都不刷新模版，只回填最新值到显示区域.(steven)
+ 
+ 
+ 
 demand version 1.6.0 2014-11-21
 
 * [customer order列表界面点击标题后可以根据相关字段升降序排列.](steven)

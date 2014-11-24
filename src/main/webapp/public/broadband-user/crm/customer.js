@@ -171,6 +171,28 @@
 				$.getTxPage(1);
 			});
 			// END Topup Account Credit
+
+			
+			// BEGIN Eliminate Account Credit
+			$('a[data-name="eliminate_credit_btn"]').click(function(){
+				$('#eliminateAccountCreditModal').modal('show');
+			});
+			$('a[data-name="eliminate_amount_btn"]').click(function(){
+				
+				var eliminate_amount = $('input[name="eliminate_amount"]').val();
+				var data = {
+					'customer_id':customerId,
+					'eliminate_amount':eliminate_amount
+				};
+				
+				$.post(ctx+'/broadband-user/crm/customer/account-credit/eliminate', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#eliminateAccountCreditModal').on('hidden.bs.modal',function(){
+				$.getCustomerInfo();
+			});
+			
 			
 			// BEGIN Topup Account Credit By DPS
 			$('button[data-name="topup_account_credit_by_dps"]').click(function(){
@@ -2021,6 +2043,36 @@
 				 */
 				/*
 				 *	END customer order detail(s) area
+				 */
+				
+				
+				/*
+// 				 *	BEGIN Edit Term Period
+				 */
+				$('a[data-name="'+co[i].id+'_edit_term_period_btn"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="editOrderTermPeriodModalBtn_'+this.id+'"]').attr('data-term-period', $('input[data-name="term_period_'+this.id+'"]').val());
+					$('#editOrderTermPeriodModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="editOrderTermPeriodModalBtn_'+co[i].id+'"]').on('click', function (e) {
+					var order_id = this.id;
+					var term_period = $(this).attr('data-term-period');
+					var data = {
+						'order_id':order_id,
+						'term_period':term_period
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/term-period/edit', data, function(json){
+						$.jsonValidation(json, 'left');
+						$('#'+order_id+'_term_period').html(term_period);
+					}, "json");
+				});
+				// Reset button when hidden order remove discount dialog
+				$('#editOrderTermPeriodModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$('a[data-name="'+$(this).attr('data-id')+'_edit_term_period_btn"]').button('reset');
+				});
+				/*
+// 				 *	END Edit Term Period
 				 */
 				
 				

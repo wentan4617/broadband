@@ -29,6 +29,9 @@
 									<.if (hardware.id == 3 || hardware.id == 1) {.>
 							<span class="text-danger">$<.=parseInt(0).></span>, 
 							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>
+									<.} else if(contract_name=='24 months contract') {.>
+							<span class="text-danger">$<.=parseInt(0).></span>, 
+							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>
 									<.} else {.>
 							<span class="text-danger">$<.=hardware.hardware_price - parseInt(hardware.hardware_price/2).></span>, 
 							<span class="text-success">save $<.=parseInt(hardware.hardware_price/2).></span>

@@ -5,7 +5,7 @@
 			Open Term
 		<.} else {.>
 			<.if (select_customer_type == 'personal') {.>
-			Open Term Or Contract 12 Months
+			Open Term Or Contract 12/24 Months
 			<.} else if (select_customer_type == 'business') {.>
 			Contract 12 Months
 			<.}.>
@@ -63,6 +63,12 @@
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
 				</label>
 			</li>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="24months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 24 Months </span>
+				</label>
+			</li>
 			
 				<.}.>
 			<.}.>
@@ -72,6 +78,12 @@
 				<label>
 					<input type="radio" name="contract" value="12months" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
+				</label>
+			</li>
+			<li style="padding: 10px 20px;">
+				<label>
+					<input type="radio" name="contract" value="24months" />&nbsp; 
+					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 24 Months </span>
 				</label>
 			</li>
 		<.}.>

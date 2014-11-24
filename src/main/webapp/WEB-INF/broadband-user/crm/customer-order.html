@@ -1,37 +1,3 @@
-<style>
-#order_detail .form-group {
-	margin-bottom:4px;
-}
-
-.align-right {
-	text-align:right;
-}
-
-.xs-btn-width-small {
-	width:120px;
-}
-
-.xs-btn-width {
-	width:150px;
-}
-
-.xs-btn-width-long {
-	width:180px;
-}
-
-.xs-btn-width-longer {
-	width:220px;
-}
-
-.strong {
-	font-weight:bold;
-}
-
-.input-xs{
-	height:33px;
-}
-
-</style>
 
 <div class="panel-group" role="tablist" aria-multiselectable="false">
 <!-- orders -->
@@ -306,10 +272,10 @@
 				</p>
 			</div>
 			<div class="col-md-3">
-				<input type="text" name="term_period" value="<.= customerOrder[i].term_period .>" class="form-control input-xs" placeholder="Term Period" />
+				<input type="text" data-name="term_period_<.= customerOrder[i].id .>" value="<.= customerOrder[i].term_period .>" class="form-control input-xs" placeholder="Term Period" />
 			</div>
 			<div class="col-md-3">
-				<button type="submit" class="btn btn-xs btn-success pull-right xs-btn-width-long" >Upload Term Period</button>
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_edit_term_period_btn" >Upload Term Period</a>
 			</div>
 		</div>
 		<!-- END Term Period -->
@@ -2491,6 +2457,33 @@
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" data-name="editIsDDPayModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm to edit is ddpay</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Edit Order Term Period Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editOrderTermPeriodModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderTermPeriodModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editOrderTermPeriodModalLabel">
+							<strong>Edit Order Term Period</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Sure to save the changes?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editOrderTermPeriodModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

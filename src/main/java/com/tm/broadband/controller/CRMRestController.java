@@ -3357,6 +3357,55 @@ public class CRMRestController {
 		
 	}
 	// END CustomerOrderProvisionChecklist
+
+	@RequestMapping(value = "/broadband-user/crm/customer/account-credit/eliminate", method = RequestMethod.POST)
+	public JSONBean<Customer> customerCreate(Model model,
+			@RequestParam("customer_id") Integer customer_id,
+			@RequestParam("eliminate_amount") Double eliminate_amount) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		cQuery = this.crmService.queryCustomer(cQuery);
+		if(cQuery==null || cQuery.getBalance()==null || cQuery.getBalance()<=0 || cQuery.getBalance()<eliminate_amount){
+			json.getErrorMap().put("alert-error", "Account Credit is not enough for eliminate!");
+		} else {
+			Customer cUpdate = new Customer();
+			cUpdate.setBalance(TMUtils.bigSub(cQuery.getBalance(), eliminate_amount));
+			cUpdate.getParams().put("id", customer_id);
+			this.crmService.editCustomer(cUpdate);
+			json.getSuccessMap().put("alert-success", "Successfully eliminate specific amounts of account credit!");
+		}
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/term-period/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> orderTermPeriodEdit(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("term_period") String term_period) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		if(term_period!=null && !"".equals(term_period.trim())){
+			Pattern pattern = Pattern.compile("[0-9]*");   
+			Matcher isNum = pattern.matcher(term_period);   
+			if(!isNum.matches()) {
+				json.getErrorMap().put("alert-error", "The Term Period You Have Entry Is Not A Number!");
+			} else {
+				CustomerOrder coUpdate = new CustomerOrder();
+				coUpdate.getParams().put("id", order_id);
+				coUpdate.setTerm_period(Integer.parseInt(term_period));
+				this.crmService.editCustomerOrder(coUpdate);
+				json.getSuccessMap().put("alert-success", "Successfully save the changes you've made for the Specific Order's Term Period");
+			}
+		} else {
+			json.getErrorMap().put("alert-error", "The Term Period You Have Entry Is Not A Number!");
+		}
+		
+		return json;
+	}
 	
 	
 	

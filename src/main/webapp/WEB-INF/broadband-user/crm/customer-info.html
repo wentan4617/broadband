@@ -112,6 +112,11 @@
 	<hr/>
 	
 	<div class="form-group">
+		<div class="col-md-2 col-md-offset-4">
+			<a class="btn btn-info btn-xs" data-name="eliminate_credit_btn">Eliminate Credit</a>
+		</div>
+	</div>
+	<div class="form-group">
 		<label for="balance" class="control-label col-md-4">Credit</label>
 		<div class="col-md-2">
 	      <p class="form-control-static"><.=Number(customer.balance).toFixed(2).></p>
@@ -588,3 +593,33 @@
 	</div>
 	<!-- /.modal -->
 </form>
+
+
+<!-- EliminateAccountCreditModal -->
+<div class="modal fade" id="eliminateAccountCreditModal" tabindex="-1" role="dialog" aria-labelledby="eliminateAccountCreditModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">
+					<strong>Eliminate Account Credit</strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="eliminate_amount" class="control-label col-md-6">Eliminate Amount:</label>
+					<div class="col-md-6">
+						<input name="eliminate_amount" class="form-control input-sm" type="text" placeholder="Eliminate Amount"/>
+					</div>
+				</div>
+				<br/>
+			</div>
+			<div class="modal-footer">
+				<a data-name="eliminate_amount_btn" class="btn btn-success btn-xs col-md-12" data-dismiss="modal">Confirm</a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
