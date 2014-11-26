@@ -1305,11 +1305,13 @@ public class CRMController {
 				cod.setDetail_plan_type(detail_plan_type);
 				cod.setAddress(co.getAddress());
 				cod.setCustomer_id(co.getCustomer_id());
+				cod.setCustomer_name("personal".equals(co.getCustomer_type()) ? (co.getFirst_name()+" "+co.getLast_name()) : co.getOrg_name());
 				cod.setOrder_date_str(co.getOrder_create_date_str());
 				cod.setService_date_str(co.getOrder_using_start_str());
 				cod.setSvlan(co.getSvlan());
 				cod.setCvlan(co.getCvlan());
 				cod.setCustomer_type(co.getCustomer_type());
+				cod.setAsid(co.getBroadband_asid());
 				codPSTNFinals.add(cod);
 			}
 		}
@@ -1333,12 +1335,14 @@ public class CRMController {
 		row.createCell(1).setCellValue("Broadband Type");
 		row.createCell(2).setCellValue("PSTN Number");
 		row.createCell(3).setCellValue("Customer Id");
-		row.createCell(4).setCellValue("Order Date");
-		row.createCell(5).setCellValue("Service Date");
-		row.createCell(6).setCellValue("SVLan");
-		row.createCell(7).setCellValue("CVLan");
-		row.createCell(8).setCellValue("Customer Type");
-		row.createCell(9).setCellValue("Total Orders");
+		row.createCell(4).setCellValue("Customer Name");
+		row.createCell(5).setCellValue("Order Date");
+		row.createCell(6).setCellValue("Service Date");
+		row.createCell(7).setCellValue("SVLan");
+		row.createCell(8).setCellValue("CVLan");
+		row.createCell(9).setCellValue("Customer Type");
+		row.createCell(10).setCellValue("ASID");
+		row.createCell(11).setCellValue("Total Orders");
 		for(int i = 0; i < row.getLastCellNum(); i++){
 	        row.getCell(i).setCellStyle(cellStyle);
 	    }
@@ -1350,13 +1354,15 @@ public class CRMController {
 			row.createCell(1).setCellValue(cod.getDetail_plan_type());
 			row.createCell(2).setCellValue(cod.getPstn_number());
 			row.createCell(3).setCellValue(cod.getCustomer_id());
-			row.createCell(4).setCellValue(cod.getOrder_date_str());
-			row.createCell(5).setCellValue(cod.getService_date_str());
-			row.createCell(6).setCellValue(cod.getSvlan());
-			row.createCell(7).setCellValue(cod.getCvlan());
-			row.createCell(8).setCellValue(cod.getCustomer_type());
+			row.createCell(4).setCellValue(cod.getCustomer_name());
+			row.createCell(5).setCellValue(cod.getOrder_date_str());
+			row.createCell(6).setCellValue(cod.getService_date_str());
+			row.createCell(7).setCellValue(cod.getSvlan());
+			row.createCell(8).setCellValue(cod.getCvlan());
+			row.createCell(9).setCellValue(cod.getCustomer_type());
+			row.createCell(10).setCellValue(cod.getAsid());
 			if(count==2){
-				row.createCell(9).setCellValue(codPSTNFinals.size());
+				row.createCell(11).setCellValue(codPSTNFinals.size());
 			}
 			count++;
 		}
@@ -1375,11 +1381,13 @@ public class CRMController {
 			for (CustomerOrderDetail cod : codPlans) {
 				cod.setAddress(co.getAddress());
 				cod.setCustomer_id(co.getCustomer_id());
+				cod.setCustomer_name("personal".equals(co.getCustomer_type()) ? (co.getFirst_name()+" "+co.getLast_name()) : co.getOrg_name());
 				cod.setOrder_date_str(co.getOrder_create_date_str());
 				cod.setService_date_str(co.getOrder_using_start_str());
 				cod.setSvlan(co.getSvlan());
 				cod.setCvlan(co.getCvlan());
 				cod.setCustomer_type(co.getCustomer_type());
+				cod.setAsid(co.getBroadband_asid());
 				codNoPSTNFinals.add(cod);
 			}
 		}
@@ -1395,12 +1403,14 @@ public class CRMController {
 		row.createCell(1).setCellValue("Broadband Type");
 		row.createCell(2).setCellValue("PSTN Number");
 		row.createCell(3).setCellValue("Customer Id");
-		row.createCell(4).setCellValue("Order Date");
-		row.createCell(5).setCellValue("Service Date");
-		row.createCell(6).setCellValue("SVLan");
-		row.createCell(7).setCellValue("CVLan");
-		row.createCell(8).setCellValue("Customer Type");
-		row.createCell(9).setCellValue("Total Orders");
+		row.createCell(4).setCellValue("Customer Name");
+		row.createCell(5).setCellValue("Order Date");
+		row.createCell(6).setCellValue("Service Date");
+		row.createCell(7).setCellValue("SVLan");
+		row.createCell(8).setCellValue("CVLan");
+		row.createCell(9).setCellValue("Customer Type");
+		row.createCell(10).setCellValue("ASID");
+		row.createCell(11).setCellValue("Total Orders");
 		for(int i = 0; i < row.getLastCellNum(); i++){
 	        row.getCell(i).setCellStyle(cellStyle);
 	    }
@@ -1413,13 +1423,15 @@ public class CRMController {
 			row.createCell(1).setCellValue(cod.getDetail_plan_type());
 			row.createCell(2).setCellValue(cod.getPstn_number());
 			row.createCell(3).setCellValue(cod.getCustomer_id());
-			row.createCell(4).setCellValue(cod.getOrder_date_str());
-			row.createCell(5).setCellValue(cod.getService_date_str());
-			row.createCell(6).setCellValue(cod.getSvlan());
-			row.createCell(7).setCellValue(cod.getCvlan());
-			row.createCell(8).setCellValue(cod.getCustomer_type());
+			row.createCell(4).setCellValue(cod.getCustomer_name());
+			row.createCell(5).setCellValue(cod.getOrder_date_str());
+			row.createCell(6).setCellValue(cod.getService_date_str());
+			row.createCell(7).setCellValue(cod.getSvlan());
+			row.createCell(8).setCellValue(cod.getCvlan());
+			row.createCell(9).setCellValue(cod.getCustomer_type());
+			row.createCell(10).setCellValue(cod.getAsid());
 			if(isFirstRow){
-				row.createCell(9).setCellValue(codNoPSTNFinals.size());
+				row.createCell(11).setCellValue(codNoPSTNFinals.size());
 				isFirstRow = false;
 			}
 			count++;

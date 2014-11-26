@@ -63,11 +63,13 @@ public class CustomerOrderDetail implements Serializable {
 	private Boolean monthly; 
 	private String address;
 	private Integer customer_id;
+	private String customer_name;
 	private String order_date_str;
 	private String service_date_str;
 	private String svlan;
 	private String cvlan;
 	private String customer_type;
+	private String asid;
 	
 	
 	/*
@@ -380,6 +382,14 @@ public class CustomerOrderDetail implements Serializable {
 		this.customer_id = customer_id;
 	}
 
+	public String getCustomer_name() {
+		return customer_name;
+	}
+
+	public void setCustomer_name(String customer_name) {
+		this.customer_name = customer_name;
+	}
+
 	public String getOrder_date_str() {
 		return order_date_str;
 	}
@@ -419,7 +429,13 @@ public class CustomerOrderDetail implements Serializable {
 	public void setCustomer_type(String customer_type) {
 		this.customer_type = customer_type;
 	}
-	
-	
+
+	public String getAsid() {
+		return asid;
+	}
+
+	public void setAsid(String asid) {
+		this.asid = asid;
+	}
 	
 }
