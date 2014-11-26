@@ -61,7 +61,7 @@
 					The best Telecommunication results come from our solutions. We can provide more than what you want. 
 				</p>
 				<p>
-					Our Telecommunication services give you more methods to improve your productivities, cost saving and easy using. For our professional WiFi coverage services, we focus on café shops, bars, restaurants, food court, supermarkets, normal retailers, and office users. Powerful devises can cover almost 95% of your work place.  
+					Our Telecommunication services give you more methods to improve your productivities, cost saving and easy using. For our professional WiFi coverage services, we focus on café shops, bars, restaurants, food court, supermarkets, normal retailers, and office users. Powerful devices can cover almost 95% of your work place.  
 				</p>
 				<p>
 					Telecommunication package plans achieve all your specific Telecommunication requirements base on a lowest cost. Qualified and professional services let you feel we are standing beside with you and your business.

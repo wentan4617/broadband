@@ -355,7 +355,7 @@
 			map.user_id = user_id;
 			map.user_role = user_role;
 	   		var $table = $('#order_detail');
-			$table.html(tmpl('customer_order_table_tmpl', map));
+//			$table.html(tmpl('customer_order_table_tmpl', map));
 
 			var co = map.customer.customerOrders;
 			for(var i=0; i<co.length; i++){
