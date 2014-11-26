@@ -1241,7 +1241,7 @@
 								<td colspan="2"><.= coods[coodIndex].name .></td>
 								<td><.= coods[coodIndex].type .></td>
 								<td><.= coods[coodIndex].unit .></td>
-								<td><.= Number(coods[coodIndex].price) .></td>
+								<td><.= Number(coods[coodIndex].price).toFixed(2) .></td>
 								<td>
 									<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-detail-id="<.= coods[coodIndex].id .>" data-name="remove_detail_from_dispatch_list_<.= customerOrder[i].id .>" data-ststus="processing" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove this detail from Dispatch List"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
 								</td>

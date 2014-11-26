@@ -1304,6 +1304,12 @@ public class CRMController {
 			for (CustomerOrderDetail cod : codPSTNs) {
 				cod.setDetail_plan_type(detail_plan_type);
 				cod.setAddress(co.getAddress());
+				cod.setCustomer_id(co.getCustomer_id());
+				cod.setOrder_date_str(co.getOrder_create_date_str());
+				cod.setService_date_str(co.getOrder_using_start_str());
+				cod.setSvlan(co.getSvlan());
+				cod.setCvlan(co.getCvlan());
+				cod.setCustomer_type(co.getCustomer_type());
 				codPSTNFinals.add(cod);
 			}
 		}
@@ -1326,7 +1332,13 @@ public class CRMController {
 		row.createCell(0).setCellValue("Address");
 		row.createCell(1).setCellValue("Broadband Type");
 		row.createCell(2).setCellValue("PSTN Number");
-		row.createCell(3).setCellValue("Total Orders");
+		row.createCell(3).setCellValue("Customer Id");
+		row.createCell(4).setCellValue("Order Date");
+		row.createCell(5).setCellValue("Service Date");
+		row.createCell(6).setCellValue("SVLan");
+		row.createCell(7).setCellValue("CVLan");
+		row.createCell(8).setCellValue("Customer Type");
+		row.createCell(9).setCellValue("Total Orders");
 		for(int i = 0; i < row.getLastCellNum(); i++){
 	        row.getCell(i).setCellStyle(cellStyle);
 	    }
@@ -1337,8 +1349,14 @@ public class CRMController {
 			row.createCell(0).setCellValue(cod.getAddress());
 			row.createCell(1).setCellValue(cod.getDetail_plan_type());
 			row.createCell(2).setCellValue(cod.getPstn_number());
+			row.createCell(3).setCellValue(cod.getCustomer_id());
+			row.createCell(4).setCellValue(cod.getOrder_date_str());
+			row.createCell(5).setCellValue(cod.getService_date_str());
+			row.createCell(6).setCellValue(cod.getSvlan());
+			row.createCell(7).setCellValue(cod.getCvlan());
+			row.createCell(8).setCellValue(cod.getCustomer_type());
 			if(count==2){
-				row.createCell(3).setCellValue(codPSTNFinals.size());
+				row.createCell(9).setCellValue(codPSTNFinals.size());
 			}
 			count++;
 		}
@@ -1355,10 +1373,14 @@ public class CRMController {
 			codQuery.getParams().put("order_id", co.getId());
 			List<CustomerOrderDetail> codPlans = this.crmService.queryCustomerOrderDetails(codQuery);
 			for (CustomerOrderDetail cod : codPlans) {
-				CustomerOrderDetail codCreate = new CustomerOrderDetail();
-				codCreate.setAddress(co.getAddress());
-				codCreate.setDetail_plan_type(cod.getDetail_plan_type());
-				codNoPSTNFinals.add(codCreate);
+				cod.setAddress(co.getAddress());
+				cod.setCustomer_id(co.getCustomer_id());
+				cod.setOrder_date_str(co.getOrder_create_date_str());
+				cod.setService_date_str(co.getOrder_using_start_str());
+				cod.setSvlan(co.getSvlan());
+				cod.setCvlan(co.getCvlan());
+				cod.setCustomer_type(co.getCustomer_type());
+				codNoPSTNFinals.add(cod);
 			}
 		}
 		count++;
@@ -1372,7 +1394,13 @@ public class CRMController {
 		row.createCell(0).setCellValue("Address");
 		row.createCell(1).setCellValue("Broadband Type");
 		row.createCell(2).setCellValue("PSTN Number");
-		row.createCell(3).setCellValue("Total Orders");
+		row.createCell(3).setCellValue("Customer Id");
+		row.createCell(4).setCellValue("Order Date");
+		row.createCell(5).setCellValue("Service Date");
+		row.createCell(6).setCellValue("SVLan");
+		row.createCell(7).setCellValue("CVLan");
+		row.createCell(8).setCellValue("Customer Type");
+		row.createCell(9).setCellValue("Total Orders");
 		for(int i = 0; i < row.getLastCellNum(); i++){
 	        row.getCell(i).setCellStyle(cellStyle);
 	    }
@@ -1384,8 +1412,14 @@ public class CRMController {
 			row.createCell(0).setCellValue(cod.getAddress());
 			row.createCell(1).setCellValue(cod.getDetail_plan_type());
 			row.createCell(2).setCellValue(cod.getPstn_number());
+			row.createCell(3).setCellValue(cod.getCustomer_id());
+			row.createCell(4).setCellValue(cod.getOrder_date_str());
+			row.createCell(5).setCellValue(cod.getService_date_str());
+			row.createCell(6).setCellValue(cod.getSvlan());
+			row.createCell(7).setCellValue(cod.getCvlan());
+			row.createCell(8).setCellValue(cod.getCustomer_type());
 			if(isFirstRow){
-				row.createCell(3).setCellValue(codNoPSTNFinals.size());
+				row.createCell(9).setCellValue(codNoPSTNFinals.size());
 				isFirstRow = false;
 			}
 			count++;

@@ -62,6 +62,12 @@ public class CustomerOrderDetail implements Serializable {
 	private String voip_assign_date_str;
 	private Boolean monthly; 
 	private String address;
+	private Integer customer_id;
+	private String order_date_str;
+	private String service_date_str;
+	private String svlan;
+	private String cvlan;
+	private String customer_type;
 	
 	
 	/*
@@ -364,6 +370,54 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setAddress(String address) {
 		this.address = address;
+	}
+
+	public Integer getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
+	}
+
+	public String getOrder_date_str() {
+		return order_date_str;
+	}
+
+	public void setOrder_date_str(String order_date_str) {
+		this.order_date_str = order_date_str;
+	}
+
+	public String getService_date_str() {
+		return service_date_str;
+	}
+
+	public void setService_date_str(String service_date_str) {
+		this.service_date_str = service_date_str;
+	}
+
+	public String getSvlan() {
+		return svlan;
+	}
+
+	public void setSvlan(String svlan) {
+		this.svlan = svlan;
+	}
+
+	public String getCvlan() {
+		return cvlan;
+	}
+
+	public void setCvlan(String cvlan) {
+		this.cvlan = cvlan;
+	}
+
+	public String getCustomer_type() {
+		return customer_type;
+	}
+
+	public void setCustomer_type(String customer_type) {
+		this.customer_type = customer_type;
 	}
 	
 	
