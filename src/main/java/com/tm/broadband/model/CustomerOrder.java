@@ -133,6 +133,8 @@ public class CustomerOrder implements Serializable {
 	private Plan plan;
 	
 	private String org_incoporate_date_str;
+	
+	private List<CustomerOrderOnsite> coos;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
@@ -929,6 +931,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrderby(String orderby) {
 		this.orderby = orderby;
+	}
+
+	public List<CustomerOrderOnsite> getCoos() {
+		return coos;
+	}
+
+	public void setCoos(List<CustomerOrderOnsite> coos) {
+		this.coos = coos;
 	}
 
 }

@@ -18,6 +18,14 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+ 
+demand version 1.7.0 2014-11-26
+ 
+* [创建一张工单表tm_customer_order_onsite字段有：id, customer_id, order_id, customer_type, first_name, last_name, mobile, address, plan_name, data_flow, terms, onsite_type, onsite_date, onsite_type: delivery, faulty, installation, other](steven)
+* [创建一张工单细目表tm_customer_order_onsite_detail字段有：id, onsite_id, detail_name, detail_type, detail_unit](steven)
+* [invoice列表显示其对应order的状态.](steven)
+ 
+ 
 demand version 1.6.5 2014-11-24
  
 * [customer order界面，完善term perid修改功能.](steven)

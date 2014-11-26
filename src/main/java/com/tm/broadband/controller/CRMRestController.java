@@ -40,6 +40,8 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderOnsite;
+import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
@@ -56,6 +58,7 @@ import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.ApplicationPDFCreator;
+import com.tm.broadband.pdf.OnsitePDFCreator;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.MailerService;
@@ -1531,6 +1534,22 @@ public class CRMRestController {
 			HttpServletRequest req) {
 
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		
+		//		Retrieving Order Onsite Details
+		
+		for (CustomerOrder co : customer.getCustomerOrders()) {
+			CustomerOrderOnsite cooQuery = new CustomerOrderOnsite();
+			cooQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderOnsite> coos = this.crmService.queryCustomerOrderOnsites(cooQuery);
+			co.setCoos(coos);
+			for (CustomerOrderOnsite coo : coos) {
+				CustomerOrderOnsiteDetail coodQuery = new CustomerOrderOnsiteDetail();
+				coodQuery.getParams().put("onsite_id", coo.getId());
+				List<CustomerOrderOnsiteDetail> coods = this.crmService.queryCustomerOrderOnsiteDetails(coodQuery);
+				coo.setCoods(coods);
+			}
+		}
+		
 		User user = new User();
 		List<User> users = this.systemService.queryUser(user);
 		user.getParams().put("user_role", "sales");
@@ -3406,8 +3425,131 @@ public class CRMRestController {
 		
 		return json;
 	}
+
+	/**
+	 * 
+	 * BEGIN CustomerOrderOnsite
+	 * 
+	 */
 	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsiteCreate(Model model,
+			CustomerOrderOnsite coo) {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
 	
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", coo.getOrder_id());
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		CustomerOrderOnsite cooCreate = new CustomerOrderOnsite();
+		cooCreate.setOrder_id(coo.getOrder_id());
+		cooCreate.setCustomer_id(coQuery.getCustomer_id());
+		cooCreate.setOnsite_date(new Date());
+		cooCreate.setCustomer_type(coQuery.getCustomer_type());
+		cooCreate.setTitle(coQuery.getTitle());
+		cooCreate.setMobile(coQuery.getMobile());
+		cooCreate.setEmail(coQuery.getEmail());
+		cooCreate.setAddress(coQuery.getAddress());
+		cooCreate.setOnsite_type(coo.getOnsite_type());
+		cooCreate.setOnsite_status("processing");
+		cooCreate.setOnsite_description(coo.getOnsite_description());
+
+		if("personal".equals(coQuery.getCustomer_type())){
+			cooCreate.setFirst_name(coQuery.getFirst_name());
+			cooCreate.setLast_name(coQuery.getLast_name());
+		} else {
+			cooCreate.setOrg_name(coQuery.getOrg_name());
+			cooCreate.setOrg_trading_name(coQuery.getOrg_trading_name());
+			cooCreate.setOrg_type(coQuery.getOrg_type());
+			cooCreate.setOrg_register_no(coQuery.getOrg_register_no());
+			cooCreate.setHolder_job_title(coQuery.getHolder_job_title());
+			cooCreate.setHolder_name(coQuery.getHolder_name());
+			cooCreate.setHolder_email(coQuery.getEmail());
+			cooCreate.setHolder_phone(coQuery.getHolder_phone());
+		}
+		
+		this.crmService.createCustomerOrderOnsite(cooCreate);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List Has Been Updated!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/update", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsiteUpdate(Model model,
+			CustomerOrderOnsite coo) {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
+	
+		coo.getParams().put("id", coo.getId());
+		this.crmService.editCustomerOrderOnsite(coo);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List Has Been Updated!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/pdf/generate", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsitePDFGenerate(Model model,
+			CustomerOrderOnsite coo) throws DocumentException, IOException {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
+	
+		CustomerOrderOnsite cooQuery = new CustomerOrderOnsite();
+		cooQuery.getParams().put("id", coo.getId());
+		cooQuery = this.crmService.queryCustomerOrderOnsite(cooQuery);
+		CustomerOrderOnsiteDetail coodQuery = new CustomerOrderOnsiteDetail();
+		coodQuery.getParams().put("onsite_id", coo.getId());
+		List<CustomerOrderOnsiteDetail> coodsQuery = this.crmService.queryCustomerOrderOnsiteDetails(coodQuery);
+		cooQuery.setCoods(coodsQuery);
+		OnsitePDFCreator oPDFCreate = new OnsitePDFCreator();
+		oPDFCreate.setCoo(cooQuery);
+		Map<String, Object> resultMap = oPDFCreate.create();
+		cooQuery.getParams().put("id", coo.getId());
+		cooQuery.setPdf_path( (String) resultMap.get("path"));
+		this.crmService.editCustomerOrderOnsite(cooQuery);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's PDF Has Been Generated/Regenerated!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite-detail/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsiteDetail> orderOnsiteDetailCreate(Model model,
+			CustomerOrderOnsiteDetail cood) {
+		
+		JSONBean<CustomerOrderOnsiteDetail> json = new JSONBean<CustomerOrderOnsiteDetail>();
+	
+		this.crmService.createCustomerOrderOnsiteDetail(cood);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's Detail Has Been Added!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite-detail/remove", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsiteDetail> orderOnsiteDetailRemove(Model model,
+			CustomerOrderOnsiteDetail cood) {
+		
+		JSONBean<CustomerOrderOnsiteDetail> json = new JSONBean<CustomerOrderOnsiteDetail>();
+	
+		this.crmService.removeCustomerOrderOnsiteDetailById(cood.getId());
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's Detail Has Been Removed!");
+		
+		return json;
+		
+	}
+
+	/**
+	 * 
+	 * END CustomerOrderOnsite
+	 * 
+	 */
 	
 	
 	

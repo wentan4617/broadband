@@ -98,7 +98,7 @@
 						</a>
 					</c:when>
 					<c:otherwise>
-						<a target="_blank" href="https://twitter.com/CyberparkNZ">
+						<a target="_blank" href="https://twitter.com/nzcyberpark">
 							<c:choose>
 								<c:when test="${wsrSession.twitter_lg_path!=null && wsrSession.twitter_lg_path!=''}">
 									<img src="${ctx }/${wsrSession.twitter_lg_path}" alt="Join Us To Have An Unforgetable Internet Surfing Experience" title="Join Us To Have An Unforgetable Internet Surfing Experience"/>

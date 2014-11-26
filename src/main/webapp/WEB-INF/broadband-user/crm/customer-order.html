@@ -434,6 +434,9 @@
 			</div>
 			<div class="col-md-3">
 				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
+				<. if(customerOrder[i].sale_id==null || customerOrder[i].sale_id==''){ .>
+				<option value=""></option>
+				<. } .>
 				<. for(var u=0; u<users.length; u++){
 						if(users[u].id == customerOrder[i].sale_id){ .>
 					<option value="<.= users[u].id .>" selected="selected"><.= users[u].user_name .></option>
@@ -1165,7 +1168,323 @@
 			</tfoot>
 		</table>
 		
+		<!-- BEGIN DISPATCH LIST -->
+		<hr />
+		<h4 class="text-success">Dispatch List (Onsite)
+		<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="add_dispatch_list_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-long"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;New Dispatch List</a>&nbsp;&nbsp;
+		</h4>
+		<hr />
+		<table class="table" style="font-size:12px;">
+			<thead>
+				
+				<tr>
+					<th>Create Date</th>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Charge</th>
+					<th colspan="2">Operations</th>
+				</tr>
+				<. var coos = customerOrder[i].coos; .>
+				
+				<. for(var cooIndex = 0; cooIndex < coos.length; cooIndex++){ .>
+				<. var onsite_status = coos[cooIndex].onsite_status; .>
+				<tr class="<.= onsite_status=='processing' ? 'danger' : 'success' .>">
+					<td><.= coos[cooIndex].onsite_date_str .></td>
+					<td>
+						<select id="<.= customerOrder[i].id .>" data-name="onsite_type_selector" data-onsite-id="<.= coos[cooIndex].id .>" class="form-control input-xs">
+							<. var types = ['delivery','faulty','installation','other']; .>
+							<. if(coos[cooIndex].onsite_type==null || coos[cooIndex].onsite_type==''){ .>
+							<option value=""></option>
+							<. } .>
+							<. for(var typesIndex=0; typesIndex<types.length; typesIndex++){ .>
+								<. if(coos[cooIndex].onsite_type==types[typesIndex]){ .>
+							<option value="<.= types[typesIndex] .>" selected="selected"><.= types[typesIndex] .></option>
+								<. } else { .>
+							<option value="<.= types[typesIndex] .>"><.= types[typesIndex] .></option>
+								<. } .>
+							<. } .>
+						</select>
+					</td>
+					<td><.= coos[cooIndex].onsite_status .></td>
+					<td><.= Number(coos[cooIndex].onsite_charge).toFixed(2) .></td>
+					<td colspan="2">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="add_onsite_detail_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="New Onsite Detail"><span class="glyphicon glyphicon-th-large"></span></a>&nbsp;&nbsp;
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="edit_dispatch_list_<.= customerOrder[i].id .>" data-description="<.= coos[cooIndex].onsite_description .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="View Description"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="generate_dispatch_list_pdf_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Generate/Regenerate PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;
+						<. var pdf_path = coos[cooIndex].pdf_path; .>
+						<. if(pdf_path!=null && pdf_path!='' ){ .>
+						<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/onsite/pdf/download/<.= coos[cooIndex].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Download PDF Format"><span class="glyphicon glyphicon-save"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. var onsite_status = coos[cooIndex].onsite_status; .>
+						<. if(onsite_status=='processing' ){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>" data-ststus="close" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="bottom" data-original-title="Close Dispatch List"><span class="glyphicon glyphicon-off"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. if(onsite_status=='close' && user_role=='system-developer' ){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>" data-ststus="processing" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Processing Dispatch List"><span class="glyphicon glyphicon-retweet"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. if(coos[cooIndex].coods.length>0){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="expand_onsite_detail_tr" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="<.= coos[cooIndex].coods.length .> Onsite Detail(s)"><span class="glyphicon glyphicon-th-list"></span>&nbsp;<span class="badge primary"><.= coos[cooIndex].coods.length .></span></a>&nbsp;&nbsp;
+						<. } .>
+					</td>
+				</tr>
+				<. var coods = coos[cooIndex].coods; .>
+					<. if(coods.length>0){ .>
+						<tr data-tr="onsite_detail_tr" data-tr-id="onsite_detail_tr_<.= coos[cooIndex].id .>" style="display:none;">
+							<th colspan="2">Name</th>
+							<th>Type</th>
+							<th>Unit</th>
+							<th>Price</th>
+							<th>Operations</th>
+						</tr>
+						<. for(var coodIndex=0; coodIndex<coods.length; coodIndex++){ .>
+							<tr data-tr="onsite_detail_tr" data-tr-id="onsite_detail_tr_<.= coos[cooIndex].id .>" style="display:none;">
+								<td colspan="2"><.= coods[coodIndex].name .></td>
+								<td><.= coods[coodIndex].type .></td>
+								<td><.= coods[coodIndex].unit .></td>
+								<td><.= Number(coods[coodIndex].price) .></td>
+								<td>
+									<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-detail-id="<.= coods[coodIndex].id .>" data-name="remove_detail_from_dispatch_list_<.= customerOrder[i].id .>" data-ststus="processing" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove this detail from Dispatch List"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
+								</td>
+							</tr>
+						<. } .>
+					<. } .>
+				<. } .>
+			</thead>
+		</table>
+		
 	</form>
+
+	<!-- Add Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="addDispatchListModalLabel">
+							<strong>New Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Type</label>
+							<div class="col-md-8">
+								<select class="form-control input-xs" data-name="onsite_type_<.= customerOrder[i].id .>">
+									<option value="delivery">Delivery</option>
+									<option value="faulty">Faulty</option>
+									<option value="installation">Installation</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Description</label>
+							<div class="col-md-8">
+								<textarea class="form-control" data-name="onsite_description_<.= customerOrder[i].id .>" rows="6"></textarea>
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="addDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Edit Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editDispatchListModalLabel">
+							<strong>Edit Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Description</label>
+							<div class="col-md-8">
+								<textarea class="form-control" data-name="edit_onsite_description_<.= customerOrder[i].id .>" rows="6"></textarea>
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-primary" data-name="editDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Close/Processing Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="closeDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="closeDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="closeDispatchListModalLabel">
+							<strong>Close Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>"></p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="closeDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Close</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Generate/Regenerate Dispatch List PDF Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="generateDispatchListPDFModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="generateDispatchListPDFModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="generateDispatchListPDFModalLabel">
+							<strong>Generate/Regenerate Dispatch List PDF</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Generate/Regenerate this Dispatch List's PDF?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="generateDispatchListPDFModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Generate</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Edit Dispatch List Type Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editDispatchListTypeModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDispatchListTypeModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editDispatchListTypeModalLabel">
+							<strong>Edit Dispatch List Type</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Edit Dispatch List Type?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="editDispatchListTypeModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Add Onsite Detail Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addOnsiteDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addOnsiteDetailModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="addOnsiteDetailModalLabel">
+							<strong>Add Onsite Detail</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Name</label>
+							<div class="col-md-6">
+								<input class="form-control" data-name="onsite_detail_name_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Type</label>
+							<div class="col-md-3">
+								<select class="form-control" data-name="onsite_detail_type_<.= customerOrder[i].id .>">
+									<option value="faulty">faulty</option>
+									<option value="delivery">delivery</option>
+									<option value="hardware">hardware</option>
+									<option value="installation">installation</option>
+									<option value="other">other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Unit</label>
+							<div class="col-md-2">
+								<input class="form-control" data-name="onsite_detail_unit_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Price</label>
+							<div class="col-md-3">
+								<input class="form-control" data-name="onsite_detail_price_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="addOnsiteDetailModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Add</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Remove Detail From Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="removeDetailFromDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDetailFromDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="removeDetailFromDispatchListModalLabel">
+							<strong>Remove Detail From Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Remove Detail From Dispatch List?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="removeDetailFromDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
 
 	<!-- Pay Off Order Modal -->
 	<form class="form-horizontal">

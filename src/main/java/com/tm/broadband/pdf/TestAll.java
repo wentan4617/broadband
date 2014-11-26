@@ -2,10 +2,15 @@ package com.tm.broadband.pdf;
 
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.DocumentException;
+import com.tm.broadband.model.CustomerOrderOnsite;
+import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.service.SmserService;
 
 public class TestAll {
@@ -485,6 +490,52 @@ public class TestAll {
 //		
 //		// create order PDF
 //		System.out.println(oPDFCreator.create());
+		/**
+		 * END TEST ReceiptPDFCreator
+		 */
+
+		
+		/**
+		 * BEGIN TEST ReceiptPDFCreator
+		 */
+		CustomerOrderOnsite coo = new CustomerOrderOnsite();
+		List<CustomerOrderOnsiteDetail> coods = new ArrayList<CustomerOrderOnsiteDetail>();
+		CustomerOrderOnsiteDetail cood = new CustomerOrderOnsiteDetail();
+		
+		// CUSTOMER type
+		coo.setId(1);
+		coo.setCustomer_id(600005);
+		coo.setOrder_id(600005);
+		coo.setOnsite_date(new Date());
+		coo.setCoods(coods);
+		coo.setCustomer_type("business");
+		coo.setTitle("Mr");
+		coo.setFirst_name("Dong");
+		coo.setLast_name("Chen");
+		coo.setEmail("davidli@gmail.com");
+		coo.setMobile("021 1234567");
+		coo.setAddress("7 Skeates Ave, Mt roskill, Auckland");
+		coo.setOrg_name("CyberPark");
+		coo.setHolder_name("Steve");
+		coo.setHolder_job_title("Manager");
+		coo.setHolder_phone("0210210213");
+		coo.setHolder_email("Steve@gmail.com");
+
+		// set order detail
+		// SET DISCOUNT ON DETAIL
+		cood = new CustomerOrderOnsiteDetail();
+		cood.setName("TP - LINK 150Mbps Wireless N ADSL2+ Modem Router");
+		cood.setType("hardware-router");
+		cood.setPrice(0d);
+		cood.setUnit(1);
+		coods.add(cood);
+		
+		// call OrderPDFCreator
+		OnsitePDFCreator oPDFCreator = new OnsitePDFCreator();
+		oPDFCreator.setCoo(coo);
+		
+		// create order PDF
+		System.out.println(oPDFCreator.create());
 		/**
 		 * END TEST ReceiptPDFCreator
 		 */

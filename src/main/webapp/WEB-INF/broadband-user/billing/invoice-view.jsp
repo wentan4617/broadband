@@ -144,6 +144,7 @@ tbody td {text-align:center;}
 								<th>Invoice Id</th>
 								<th>Create Date</th>
 								<th>Due Date</th>
+								<th>Order Status</th>
 								<th style="text-align:right;">Amount Payable</th>
 								<th style="text-align:right;">Total Credit</th>
 								<th style="text-align:right;">Amount Paid</th>
@@ -179,6 +180,9 @@ tbody td {text-align:center;}
 									</td>
 									<td>
 										${ci.due_date_str }
+									</td>
+									<td>
+										${ci.order_status }
 									</td>
 									<td style="text-align:right;">
 										<fmt:formatNumber value="${ci.amount_payable }" type="number" pattern="###,##0.00"/>

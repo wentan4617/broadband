@@ -8,8 +8,8 @@ public class StevenModelTest {
 
 		SimpleMapperCreator smc = new SimpleMapperCreator();
 		smc.setAuthor("CyberPark");
-		smc.setModel("CustomerOrderProvisionChecklist");
-		smc.setTable("tm_customer_order_provision_checklist");
+		smc.setModel("CustomerOrderOnsite");
+		smc.setTable("tm_customer_order_onsite");
 		smc.initial();
 		
 	}

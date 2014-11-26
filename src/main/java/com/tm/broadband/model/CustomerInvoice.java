@@ -59,6 +59,8 @@ public class CustomerInvoice implements Serializable {
 	 * RELATED PROPERTIES
 	 */
 	
+	private String order_status;
+	
 	private String suspend_date_str;
 	private String disconnected_date_str;
 
@@ -406,6 +408,14 @@ public class CustomerInvoice implements Serializable {
 
 	public void setVos_calling_charge(Double vos_calling_charge) {
 		this.vos_calling_charge = vos_calling_charge;
+	}
+
+	public String getOrder_status() {
+		return order_status;
+	}
+
+	public void setOrder_status(String order_status) {
+		this.order_status = order_status;
 	}
 
 }

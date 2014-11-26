@@ -33,6 +33,8 @@ import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.CustomerOrderOnsiteDetailMapper;
+import com.tm.broadband.mapper.CustomerOrderOnsiteMapper;
 import com.tm.broadband.mapper.CustomerOrderProvisionChecklistMapper;
 import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
@@ -62,6 +64,8 @@ import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderOnsite;
+import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
@@ -133,6 +137,8 @@ public class CRMService {
 	private CustomerCreditMapper customerCreditMapper;
 	private CustomerDDPayMapper customerDDPayMapper;
 	private CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper;
+	private CustomerOrderOnsiteMapper customerOrderOnsiteMapper;
+	private CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -174,7 +180,9 @@ public class CRMService {
 			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper,
 			CustomerCreditMapper customerCreditMapper,
 			CustomerDDPayMapper customerDDPayMapper,
-			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper){
+			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper,
+			CustomerOrderOnsiteMapper customerOrderOnsiteMapper,
+			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -209,6 +217,8 @@ public class CRMService {
 		this.customerCreditMapper = customerCreditMapper;
 		this.customerDDPayMapper = customerDDPayMapper;
 		this.customerOrderProvisionChecklistMapper = customerOrderProvisionChecklistMapper;
+		this.customerOrderOnsiteMapper = customerOrderOnsiteMapper;
+		this.customerOrderOnsiteDetailMapper = customerOrderOnsiteDetailMapper;
 	}
 	
 	
@@ -4483,6 +4493,84 @@ public class CRMService {
 	
 	/**
 	 * END CustomerOrderProvisionChecklist
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderOnsite
+	 */
+	
+	public List<CustomerOrderOnsite> queryCustomerOrderOnsites(CustomerOrderOnsite coo){
+		return this.customerOrderOnsiteMapper.selectCustomerOrderOnsite(coo);
+	}
+	
+	public CustomerOrderOnsite queryCustomerOrderOnsite(CustomerOrderOnsite coo){
+		List<CustomerOrderOnsite> coos = this.queryCustomerOrderOnsites(coo);
+		return coos!=null && coos.size()>0 ? coos.get(0) : null;
+	}
+	
+	public Page<CustomerOrderOnsite> queryCustomerOrderOnsitesByPage(Page<CustomerOrderOnsite> page){
+		page.setTotalRecord(this.customerOrderOnsiteMapper.selectCustomerOrderOnsitesSum(page));
+		page.setResults(this.customerOrderOnsiteMapper.selectCustomerOrderOnsitesByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderOnsite(CustomerOrderOnsite coo){
+		this.customerOrderOnsiteMapper.updateCustomerOrderOnsite(coo);
+	}
+
+	@Transactional
+	public void removeCustomerOrderOnsiteById(int id){
+		this.customerOrderOnsiteMapper.deleteCustomerOrderOnsiteById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderOnsite(CustomerOrderOnsite coo){
+		this.customerOrderOnsiteMapper.insertCustomerOrderOnsite(coo);
+	}
+	
+	/**
+	 * END CustomerOrderOnsite
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderOnsiteDetail
+	 */
+	
+	public List<CustomerOrderOnsiteDetail> queryCustomerOrderOnsiteDetails(CustomerOrderOnsiteDetail cood){
+		return this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetail(cood);
+	}
+	
+	public CustomerOrderOnsiteDetail queryCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		List<CustomerOrderOnsiteDetail> coods = this.queryCustomerOrderOnsiteDetails(cood);
+		return coods!=null && coods.size()>0 ? coods.get(0) : null;
+	}
+	
+	public Page<CustomerOrderOnsiteDetail> queryCustomerOrderOnsiteDetailsByPage(Page<CustomerOrderOnsiteDetail> page){
+		page.setTotalRecord(this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetailsSum(page));
+		page.setResults(this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetailsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		this.customerOrderOnsiteDetailMapper.updateCustomerOrderOnsiteDetail(cood);
+	}
+
+	@Transactional
+	public void removeCustomerOrderOnsiteDetailById(int id){
+		this.customerOrderOnsiteDetailMapper.deleteCustomerOrderOnsiteDetailById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		this.customerOrderOnsiteDetailMapper.insertCustomerOrderOnsiteDetail(cood);
+	}
+	
+	/**
+	 * END CustomerOrderOnsiteDetail
 	 */
 	
 	

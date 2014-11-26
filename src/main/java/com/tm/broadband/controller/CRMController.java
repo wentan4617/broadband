@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -52,6 +51,7 @@ import com.tm.broadband.model.Customer;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerOrderOnsite;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.Hardware;
@@ -1413,6 +1413,31 @@ public class CRMController {
         return response;
 		
 	}
+	
+	// download onsite PDF directly
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/pdf/download/{onsite_id}")
+    public ResponseEntity<byte[]> downloadOnsitePDF(Model model
+    		,@PathVariable(value = "onsite_id") int onsite_id) throws IOException {
+    	CustomerOrderOnsite cooQuery = new CustomerOrderOnsite();
+    	cooQuery.getParams().put("id", onsite_id);
+    	cooQuery = this.crmService.queryCustomerOrderOnsite(cooQuery);
+		String filePath = cooQuery.getPdf_path();
+		
+		// get file path
+        Path path = Paths.get(filePath);
+        byte[] contents = null;
+        // transfer file contents to bytes
+        contents = Files.readAllBytes( path );
+        
+        HttpHeaders headers = new HttpHeaders();
+        // set spring framework media type
+        headers.setContentType(MediaType.parseMediaType("application/pdf"));
+        // get file name with file's suffix
+        String filename = URLEncoder.encode(filePath.substring(filePath.lastIndexOf(File.separator)+1, filePath.indexOf("."))+".pdf", "UTF-8");
+        headers.setContentDispositionFormData( filename, filename );
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>( contents, headers, HttpStatus.OK );
+        return response;
+    }
 	
 	
 	

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderOnsiteDetailMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderOnsiteDetailColumns">
+		cood.`id`				as cood_id,
+		cood.`onsite_id`		as cood_onsite_id,
+		cood.`name`				as cood_name,
+		cood.`type`				as cood_type,
+		cood.`unit`				as cood_unit,
+		cood.`price`			as cood_price
+	</sql>
+
+	<resultMap type="CustomerOrderOnsiteDetail" id="customerOrderOnsiteDetailResultMap">
+		<id property="id" column="cood_id" />
+		<result property="onsite_id" column="cood_onsite_id" />
+		<result property="name" column="cood_name" />
+		<result property="type" column="cood_type" />
+		<result property="unit" column="cood_unit" />
+		<result property="price" column="cood_price" />
+	</resultMap>
+
+	<sql id="customerOrderOnsiteDetailWhere">
+		<where>
+			<if test="params.id != null">cood.id = #{params.id}</if>
+			<if test="params.onsite_id != null">and cood.onsite_id = #{params.onsite_id}</if>
+			<if test="params.name != null">and cood.name = #{params.name}</if>
+			<if test="params.type != null">and cood.type = #{params.type}</if>
+			<if test="params.unit != null">and cood.unit = #{params.unit}</if>
+			<if test="params.price != null">and cood.price = #{params.price}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderOnsiteDetail" parameterType="CustomerOrderOnsiteDetail" resultType="CustomerOrderOnsiteDetail">
+		select * from tm_customer_order_onsite_detail as cood
+		<include refid="customerOrderOnsiteDetailWhere"/>
+	</select>
+
+	<!-- select customerOrderOnsiteDetail page -->
+	<select id="selectCustomerOrderOnsiteDetailsByPage" parameterType="Page" resultMap="customerOrderOnsiteDetailResultMap">
+		select 
+			<include refid="customerOrderOnsiteDetailColumns"/>
+			from tm_customer_order_onsite_detail as cood
+			<include refid="customerOrderOnsiteDetailWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderOnsiteDetail amount -->
+	<select id="selectCustomerOrderOnsiteDetailsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_onsite_detail as cood
+		<include refid="customerOrderOnsiteDetailWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderOnsiteDetail" parameterType="CustomerOrderOnsiteDetail" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_onsite_detail`(
+			`id`, `onsite_id`, `name`, `type`, `unit`, `price`
+		) VALUES (
+			#{id}, #{onsite_id}, #{name}, #{type}, #{unit}, #{price}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderOnsiteDetail -->
+	<update id="updateCustomerOrderOnsiteDetail" parameterType="CustomerOrderOnsiteDetail">
+		update tm_customer_order_onsite_detail
+		<set>
+			<if test="onsite_id != null">onsite_id = #{onsite_id},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="type != null">type = #{type},</if>
+			<if test="unit != null">unit = #{unit},</if>
+			<if test="price != null">price = #{price}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderOnsiteDetailById" parameterType="int">
+		DELETE FROM tm_customer_order_onsite_detail WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

@@ -361,6 +361,167 @@
 			for(var i=0; i<co.length; i++){
 				
 				/**
+				 * BEGIN dispatch list area
+				 */
+				
+				$('a[data-name="add_dispatch_list_'+co[i].id+'"]').click(function(){
+					$('#addDispatchListModal_'+this.id).modal('show');
+				});
+				$('a[data-name="addDispatchListModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var order_id = this.id;
+					var onsite_type = $('select[data-name="onsite_type_'+this.id+'"]').val();
+					var onsite_description = $('textarea[data-name="onsite_description_'+this.id+'"]').val();
+					var data = {
+						'order_id':order_id,
+						'onsite_type':onsite_type,
+						'onsite_description':onsite_description
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite/create', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				
+				$('a[data-name="edit_dispatch_list_'+co[i].id+'"]').click(function(){
+					$('a[data-name="editDispatchListModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('textarea[data-name="edit_onsite_description_'+this.id+'"]').val($(this).attr('data-description'));
+					$('#editDispatchListModal_'+this.id).modal('show');
+				});
+				$('a[data-name="editDispatchListModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = $(this).attr('data-onsite-id');
+					var onsite_description = $('textarea[data-name="edit_onsite_description_'+this.id+'"]').val();
+					var data = {
+						'id':id,
+						'onsite_description':onsite_description
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				
+				$('a[data-name="close_processing_dispatch_list_'+co[i].id+'"]').click(function(){
+					$('a[data-name="closeDispatchListModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					var status = $(this).attr('data-ststus');
+					var notice = 'Sure to '+status+' this Dispatch List?';
+					$('p[data-name="close_processing_dispatch_list_'+this.id+'"]').html(notice);
+					$('a[data-name="closeDispatchListModalBtn_'+this.id+'"]').attr('data-ststus', status);
+					$('#closeDispatchListModal_'+this.id).modal('show');
+				});
+				$('a[data-name="closeDispatchListModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = $(this).attr('data-onsite-id');
+					var status = $(this).attr('data-ststus');
+					var data = {
+						'id':id,
+						'onsite_status':status
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				
+				$('a[data-name="generate_dispatch_list_pdf_'+co[i].id+'"]').click(function(){
+					$('a[data-name="generateDispatchListPDFModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('#generateDispatchListPDFModal_'+this.id).modal('show');
+				});
+				$('a[data-name="generateDispatchListPDFModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = $(this).attr('data-onsite-id');
+					var data = {
+						'id':id
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite/pdf/generate', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				
+				$('select[data-name="onsite_type_selector"]').change(function(){
+					$('a[data-name="editDispatchListTypeModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('a[data-name="editDispatchListTypeModalBtn_'+this.id+'"]').attr('data-onsite-type',$(this).val());
+					$('#editDispatchListTypeModal_'+this.id).modal('show');
+				});
+				$('a[data-name="editDispatchListTypeModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = $(this).attr('data-onsite-id');
+					var onsite_type = $(this).attr('data-onsite-type');
+					var data = {
+						'id':id,
+						'onsite_type':onsite_type
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				
+				$('a[data-name="add_onsite_detail_'+co[i].id+'"]').click(function(){
+					$('a[data-name="addOnsiteDetailModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('#addOnsiteDetailModal_'+this.id).modal('show');
+				});
+				$('a[data-name="addOnsiteDetailModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var onsite_id = $(this).attr('data-onsite-id');
+					var name = $('input[data-name="onsite_detail_name_'+this.id+'"]').val();
+					var type = $('select[data-name="onsite_detail_type_'+this.id+'"]').val();
+					var unit = $('input[data-name="onsite_detail_unit_'+this.id+'"]').val();
+					var price = $('input[data-name="onsite_detail_price_'+this.id+'"]').val();
+					var data = {
+						'onsite_id':onsite_id,
+						'name':name,
+						'type':type,
+						'unit':unit,
+						'price':price
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite-detail/create', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				$('a[data-name="expand_onsite_detail_tr"]').click(function(){
+					var onsite_id = $(this).attr('data-onsite-id');
+					var subTr = $('tr[data-tr-id="onsite_detail_tr_'+onsite_id+'"]');
+					var subTrDisplay = subTr.css('display');
+					if(subTrDisplay=='none'){
+						subTr.css('display','table-row');
+					} else {
+						subTr.css('display','none');
+					}
+				});
+				
+				
+				$('a[data-name="remove_detail_from_dispatch_list_'+co[i].id+'"]').click(function(){
+					$('a[data-name="removeDetailFromDispatchListModalBtn_'+this.id+'"]').attr('data-onsite-detail-id',$(this).attr('data-onsite-detail-id'));
+					$('#removeDetailFromDispatchListModal_'+this.id).modal('show');
+				});
+				$('a[data-name="removeDetailFromDispatchListModalBtn_'+co[i].id+'"]').click(function(){
+					
+					var id = $(this).attr('data-onsite-detail-id');
+					var data = {
+						'id':id
+					};
+					console.log(data);
+					$.post(ctx+'/broadband-user/crm/customer/order/onsite-detail/remove', data, function(json){
+						$.jsonValidation(json, 'right');
+						$.getCustomerOrder();
+					});
+				});
+				
+				/**
+				 * END dispatch list area
+				 */
+				
+				/**
 				 * BEGIN customer order provision checklist area
 				 */
 				
