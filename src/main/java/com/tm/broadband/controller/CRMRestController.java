@@ -1580,6 +1580,22 @@ public class CRMRestController {
 		return map;
 	}
 
+	// Get Deleted Detail Record Counts
+	@RequestMapping(value = "/broadband-user/crm/customer/order/deleted_detail_record_count", method = RequestMethod.POST)
+	public Map<String, Object> getDeletedDetailRecordCounts(Model model,
+			@RequestParam("order_id") Integer order_id) {
+		
+		Page<CustomerOrderDetailDeleteRecord> page = new Page<CustomerOrderDetailDeleteRecord>();
+		page.getParams().put("order_id", order_id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("order_id", order_id);
+		map.put("sum", this.crmService.queryCustomerOrderDetailDeleteRecordsSumByPage(page));
+		
+		return map;
+		
+	}
+
 	// Update Phone
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/phone/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPSTNEdit(Model model,
@@ -2244,11 +2260,11 @@ public class CRMRestController {
 			e.printStackTrace();
 		}
 		coQuery.setOrder_pdf_path(orderPDFPath);
+		coQuery.getParams().put("id", order_id);
 		this.crmService.editCustomerOrder(coQuery);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		// Regenerate order application PDF is successful.
-		json.getSuccessMap().put("alert-success",
-				"Generate New Order Application Successfully!");
+		json.getSuccessMap().put("alert-success", "Generate New Order Application Successfully!");
 
 		return json;
 	}
@@ -2587,22 +2603,6 @@ public class CRMRestController {
 		}
 		
 		return json;
-	}
-
-	// Get Deleted Detail Record Counts
-	@RequestMapping(value = "/broadband-user/crm/customer/order/deleted_detail_record_count", method = RequestMethod.POST)
-	public Map<String, Object> getDeletedDetailRecordCounts(Model model,
-			@RequestParam("order_id") Integer order_id) {
-		
-		Page<CustomerOrderDetailDeleteRecord> page = new Page<CustomerOrderDetailDeleteRecord>();
-		page.getParams().put("order_id", order_id);
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("order_id", order_id);
-		map.put("sum", this.crmService.queryCustomerOrderDetailDeleteRecordsSumByPage(page));
-		
-		return map;
-		
 	}
 
 	// Edit detail plan

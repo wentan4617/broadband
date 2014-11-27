@@ -340,22 +340,23 @@
 			
 			// END DDPay Area
 			
-			
-			
-			
 		}, "json");
 	};
 
 
 	$.getCustomerOrder = function() {
+		var order_id_arg0 = arguments[0];
+		var onsite_id_arg1 = arguments[1];
 		var data = { 'id' : customerId };
 		
 		$.get(ctx+'/broadband-user/crm/customer/edit', data, function(map){
+			map.order_id_arg0 = order_id_arg0;
+			map.onsite_id_arg1 = onsite_id_arg1;
 			map.ctx = ctx;
 			map.user_id = user_id;
 			map.user_role = user_role;
 	   		var $table = $('#order_detail');
-//			$table.html(tmpl('customer_order_table_tmpl', map));
+			$table.html(tmpl('customer_order_table_tmpl', map));
 
 			var co = map.customer.customerOrders;
 			for(var i=0; i<co.length; i++){
@@ -379,14 +380,17 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite/create', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
+				});
+				$('#addDispatchListModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				
 				$('a[data-name="edit_dispatch_list_'+co[i].id+'"]').click(function(){
 					$('a[data-name="editDispatchListModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('textarea[data-name="edit_onsite_description_'+this.id+'"]').val($(this).attr('data-description'));
+					$('#editDispatchListModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#editDispatchListModal_'+this.id).modal('show');
 				});
 				$('a[data-name="editDispatchListModalBtn_'+co[i].id+'"]').click(function(){
@@ -399,8 +403,10 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
+				});
+				$('#editDispatchListModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
 				});
 				
 				
@@ -410,6 +416,7 @@
 					var notice = 'Sure to '+status+' this Dispatch List?';
 					$('p[data-name="close_processing_dispatch_list_'+this.id+'"]').html(notice);
 					$('a[data-name="closeDispatchListModalBtn_'+this.id+'"]').attr('data-ststus', status);
+					$('#closeDispatchListModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#closeDispatchListModal_'+this.id).modal('show');
 				});
 				$('a[data-name="closeDispatchListModalBtn_'+co[i].id+'"]').click(function(){
@@ -422,13 +429,16 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
+				});
+				$('#closeDispatchListModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
 				});
 				
 				
 				$('a[data-name="generate_dispatch_list_pdf_'+co[i].id+'"]').click(function(){
 					$('a[data-name="generateDispatchListPDFModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('#generateDispatchListPDFModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#generateDispatchListPDFModal_'+this.id).modal('show');
 				});
 				$('a[data-name="generateDispatchListPDFModalBtn_'+co[i].id+'"]').click(function(){
@@ -442,11 +452,15 @@
 						$.getCustomerOrder();
 					});
 				});
+				$('#generateDispatchListPDFModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
+				});
 				
 				
 				$('select[data-name="onsite_type_selector"]').change(function(){
 					$('a[data-name="editDispatchListTypeModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('a[data-name="editDispatchListTypeModalBtn_'+this.id+'"]').attr('data-onsite-type',$(this).val());
+					$('#editDispatchListTypeModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#editDispatchListTypeModal_'+this.id).modal('show');
 				});
 				$('a[data-name="editDispatchListTypeModalBtn_'+co[i].id+'"]').click(function(){
@@ -462,10 +476,14 @@
 						$.getCustomerOrder();
 					});
 				});
+				$('#editDispatchListTypeModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
+				});
 				
 				
 				$('a[data-name="add_onsite_detail_'+co[i].id+'"]').click(function(){
 					$('a[data-name="addOnsiteDetailModalBtn_'+this.id+'"]').attr('data-onsite-id',$(this).attr('data-onsite-id'));
+					$('#addOnsiteDetailModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#addOnsiteDetailModal_'+this.id).modal('show');
 				});
 				$('a[data-name="addOnsiteDetailModalBtn_'+co[i].id+'"]').click(function(){
@@ -484,11 +502,13 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite-detail/create', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
 				});
+				$('#addOnsiteDetailModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
+				});
 				
-				$('a[data-name="expand_onsite_detail_tr"]').click(function(){
+				$('a[data-name="expand_onsite_detail_tr_'+co[i].id+'"]').click(function(){
 					var onsite_id = $(this).attr('data-onsite-id');
 					var subTr = $('tr[data-tr-id="onsite_detail_tr_'+onsite_id+'"]');
 					var subTrDisplay = subTr.css('display');
@@ -502,6 +522,7 @@
 				
 				$('a[data-name="remove_detail_from_dispatch_list_'+co[i].id+'"]').click(function(){
 					$('a[data-name="removeDetailFromDispatchListModalBtn_'+this.id+'"]').attr('data-onsite-detail-id',$(this).attr('data-onsite-detail-id'));
+					$('#removeDetailFromDispatchListModal_'+this.id).attr('data-onsite-id',$(this).attr('data-onsite-id'));
 					$('#removeDetailFromDispatchListModal_'+this.id).modal('show');
 				});
 				$('a[data-name="removeDetailFromDispatchListModalBtn_'+co[i].id+'"]').click(function(){
@@ -510,11 +531,12 @@
 					var data = {
 						'id':id
 					};
-					console.log(data);
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite-detail/remove', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
+				});
+				$('#removeDetailFromDispatchListModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'), $(this).attr('data-onsite-id'));
 				});
 				
 				/**
@@ -526,21 +548,15 @@
 				 */
 				
 				$('#edit_order_provision_checklist_'+co[i].id).click(function(){
-					
 					var id = $(this).attr('data-order-id');
-					
 					var data = {
 						'order_id':id
 					};
-
 					$.get(ctx+'/broadband-user/crm/customer/order/provision-checklist/get', data, function(json){
-						
 						if(json.model!=null){
 							var copc = json.model;
-							
 							/* Payment Form */
 							$('select[data-name="payment_form_'+id+'"] option[value='+copc.payment_form+']').attr("selected", true);
-							
 							/* Phone Line */
 							$('input[name="has_pstn_'+id+'"][value="'+copc.has_pstn+'"]').iCheck("check");
 							$('input[name="has_fax_'+id+'"][value="'+copc.has_fax+'"]').iCheck("check");
@@ -548,13 +564,11 @@
 							$('input[name="pstn_count_'+id+'"]').val(copc.pstn_count);
 							$('input[name="fax_count_'+id+'"]').val(copc.fax_count);
 							$('input[name="voip_count_'+id+'"]').val(copc.voip_count);
-							
 							/* Existed Service */
 							$('input[name="has_alarm_'+id+'"][value="'+copc.has_alarm+'"]').iCheck("check");
 							$('input[name="has_emergency_'+id+'"][value="'+copc.has_emergency+'"]').iCheck("check");
 							$('input[name="has_cctv_'+id+'"][value="'+copc.has_cctv+'"]').iCheck("check");
 							$('input[name="has_eftpos_'+id+'"][value="'+copc.has_eftpos+'"]').iCheck("check");
-							
 							/* Line Functions */
 							$('input[name="has_smart_bundle_'+id+'"][value="'+copc.has_smart_bundle+'"]').iCheck("check");
 							$('input[name="has_call_restrict_'+id+'"][value="'+copc.has_call_restrict+'"]').iCheck("check");
@@ -572,19 +586,15 @@
 							$('input[name="wire_maintenance_count_'+id+'"]').val(copc.wire_maintenance_count);
 							$('input[name="static_ip_count_'+id+'"]').val(copc.static_ip_count);
 							$('input[name="dial_wrap_count_'+id+'"]').val(copc.dial_wrap_count);
-							
 							/* Post Hardware */
 							$('input[name="has_router_post_'+id+'"][value="'+copc.has_router_post+'"]').iCheck("check");
 							$('input[name="router_post_count_'+id+'"]').val(copc.router_post_count);
-							
 							/* Order Status */
 							$('input[name="has_svcv_lan_'+id+'"][value="'+copc.has_svcv_lan+'"]').iCheck("check");
 							$('input[name="has_service_given_'+id+'"][value="'+copc.has_service_given+'"]').iCheck("check");
-							
 							/* PSTN To NCA */
 							$('input[name="has_pstn_nca_'+id+'"][value="'+copc.has_pstn_nca+'"]').iCheck("check");
 							$('input[name="pstn_nca_count_'+id+'"]').val(copc.pstn_nca_count);
-
 							if(copc.has_pstn==null){
 								$('div[data-name="has_pstn_'+id+'"]').css('background-color', 'red');
 							}
@@ -642,9 +652,7 @@
 							if(copc.has_pstn_nca==null){
 								$('div[data-name="has_pstn_nca_'+id+'"]').css('background-color', 'red');
 							}
-							
 						} else {
-							
 							$('div[data-name="has_pstn_'+id+'"]').css('background-color', 'red');
 							$('div[data-name="has_fax_'+id+'"]').css('background-color', 'red');
 							$('div[data-name="has_voip_'+id+'"]').css('background-color', 'red');
@@ -664,34 +672,25 @@
 							$('div[data-name="has_svcv_lan_'+id+'"]').css('background-color', 'red');
 							$('div[data-name="has_service_given_'+id+'"]').css('background-color', 'red');
 							$('div[data-name="has_pstn_nca_'+id+'"]').css('background-color', 'red');
-							
 						}
-						
 					}, "json");
-					
 					var checkall_box_arr = ['checkall_box_phone_line', 'checkall_box_existed_services', 'checkall_box_line_function', 'checkall_box_order_status'];
-					
 					for (var cab = 0; cab < checkall_box_arr.length; cab++) {
 						$('input[name="'+checkall_box_arr[cab]+'"]').on('ifChecked', function(){
 							var type = $(this).attr("data-type");
 							$('input[data-type='+type+']').iCheck("check");
 						});
-						
 						$('input[name="'+checkall_box_arr[cab]+'"]').on('ifUnchecked', function(){
 							var type = $(this).attr("data-type");
 							$('input[data-type='+type+']').iCheck("uncheck");
 						});
 					}
-					
 					$('#editOrderProvisionChecklistModal_'+id).modal('show');
 				});
-				
 				$('a[data-name="editOrderProvisionChecklistModalBtn_'+co[i].id+'"]').click(function(){
-					
 					var id = this.id;
 					/* Payment Form */
 					var payment_form = $('select[data-name="payment_form_'+id+'"]').val();
-					
 					/* Phone Line */
 					var has_pstn = $('input[name="has_pstn_'+id+'"]:checked').val();
 					var pstn_count = $('input[name="pstn_count_'+id+'"]').val();
@@ -699,13 +698,11 @@
 					var fax_count = $('input[name="fax_count_'+id+'"]').val();
 					var has_voip = $('input[name="has_voip_'+id+'"]:checked').val();
 					var voip_count = $('input[name="voip_count_'+id+'"]').val();
-
 					/* Existed Service */
 					var has_alarm = $('input[name="has_alarm_'+id+'"]:checked').val();
 					var has_emergency = $('input[name="has_emergency_'+id+'"]:checked').val();
 					var has_cctv = $('input[name="has_cctv_'+id+'"]:checked').val();
 					var has_eftpos = $('input[name="has_eftpos_'+id+'"]:checked').val();
-
 					/* Line Functions */
 					var has_smart_bundle = $('input[name="has_smart_bundle_'+id+'"]:checked').val();
 					var smart_bundle_count = $('input[name="smart_bundle_count_'+id+'"]').val();
@@ -723,19 +720,15 @@
 					var static_ip_count = $('input[name="static_ip_count_'+id+'"]').val();
 					var has_dial_wrap = $('input[name="has_dial_wrap_'+id+'"]:checked').val();
 					var dial_wrap_count = $('input[name="dial_wrap_count_'+id+'"]').val();
-					
 					/* Post Hardware */
 					var has_router_post = $('input[name="has_router_post_'+id+'"]:checked').val();
 					var router_post_count = $('input[name="router_post_count_'+id+'"]').val();
-					
 					/* Order Status */
 					var has_svcv_lan = $('input[name="has_svcv_lan_'+id+'"]:checked').val();
 					var has_service_given = $('input[name="has_service_given_'+id+'"]:checked').val();
-					
 					/* PSTN To NCA */
 					var has_pstn_nca = $('input[name="has_pstn_nca_'+id+'"]:checked').val();
 					var pstn_nca_count = $('input[name="pstn_nca_count_'+id+'"]').val();
-					
 					var data = {
 						'order_id':id,
 						'payment_form':payment_form,
@@ -745,12 +738,10 @@
 						'fax_count':fax_count,
 						'has_voip':has_voip,
 						'voip_count':voip_count,
-
 						'has_alarm':has_alarm,
 						'has_emergency':has_emergency,
 						'has_cctv':has_cctv,
 						'has_eftpos':has_eftpos,
-						
 						'has_smart_bundle':has_smart_bundle,
 						'smart_bundle_count':smart_bundle_count,
 						'has_call_restrict':has_call_restrict,
@@ -767,38 +758,30 @@
 						'static_ip_count':static_ip_count,
 						'has_dial_wrap':has_dial_wrap,
 						'dial_wrap_count':dial_wrap_count,
-						
 						'has_router_post':has_router_post,
 						'router_post_count':router_post_count,
-						
 						'has_svcv_lan':has_svcv_lan,
 						'has_service_given':has_service_given,
-						
 						'has_pstn_nca':has_pstn_nca,
 						'pstn_nca_count':pstn_nca_count
 					};
-
 					$.post(ctx+'/broadband-user/crm/customer/order/provision-checklist/update', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					}, "json");
-					
 				});
-				
+				$('#editOrderProvisionChecklistModal_'+co[i].id).on('hidden.bs.modal',function(){
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
 				/**
 				 * END customer order provision checklist area
 				 */
 				
-				
 				/*
 				 *	BEGIN customer order area
 				 */
-				
-				
 				var data = {
 					'order_id':co[i].id
 				};
-				
 				var is_send_xero_invoice = co[i].is_send_xero_invoice;
 				$("input[name='"+co[i].id+"_switch-is-send-xero-invoice']").bootstrapSwitch({
 					onText:'<span class="glyphicon glyphicon-ok"></span>',
@@ -806,18 +789,14 @@
 					state:is_send_xero_invoice==null||is_send_xero_invoice ? true : false
 				});
 				$('input[name="'+co[i].id+'_switch-is-send-xero-invoice"]').on('switchChange.bootstrapSwitch', function(event, state) {
-					
 					var data = {
 						'order_id':this.id,
 						'is_send_xero_invoice':state ? true : false
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/is_send_invoice_2_xero/edit', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json");
-					
 				});
-				
 				var xero_invoice_status = co[i].xero_invoice_status;
 				$("input[name='"+co[i].id+"_switch-xero-invoice-status']").bootstrapSwitch({
 					onText:'<span class="glyphicon glyphicon-certificate"></span>',
@@ -825,23 +804,17 @@
 					state:xero_invoice_status==null||xero_invoice_status=='AUTHORISED' ? true : false
 				});
 				$('input[name="'+co[i].id+'_switch-xero-invoice-status"]').on('switchChange.bootstrapSwitch', function(event, state) {
-					
 					var data = {
 						'order_id':this.id,
 						'xero_invoice_status':state ? true : false
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/xero_invoice_status/edit', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json");
-					
 				});
-
 				$.post(ctx+'/broadband-user/crm/customer/order/deleted_detail_record_count', data, function(map){
 					$('strong[data-name="'+map.order_id+'_deleted_detail_record_count"]').html(map.sum);
 				}, "json");
-				
-
 				// Pay off this order
 				// Get Pay off this order Dialog
 				$('a[data-name="'+co[i].id+'_pay_off_order"]').click(function(){
@@ -862,7 +835,6 @@
 					var paid_amount = $('input[data-name="paid_amount_'+this.id+'"]').val();
 					var order_pay_way = $('select[data-name="order_pay_way_'+this.id+'"]').val();
 					var order_total_price = $('#'+this.id+'_order_total_price').attr('data-val');
-
 					var data = {
 						'order_id':this.id
 						,'customerId':customerId
@@ -874,7 +846,6 @@
 						$.jsonValidation(json, 'right');
 					}, "json");
 				});
-				
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#payOffOrderModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
@@ -882,7 +853,6 @@
 					$.getCustomerInfo();
 					$.getTxPage(1);
 				});
-
 				// Generate order receipt
 				// Get generate order receipt Dialog
 				$('a[data-name="'+co[i].id+'_generate_order_receipt"]').click(function(){
@@ -892,7 +862,6 @@
 				});
 				// Submit to rest controller
 				$('a[data-name="generateOrderReceiptModalBtn_'+co[i].id+'"]').click(function(){
-
 					var data = {
 						'order_id':this.id
 					};
@@ -905,7 +874,6 @@
 					$('a[data-name="'+$(this).attr('data-id')+'_generate_order_receipt"]').button('reset');
 					$.getCustomerOrder();
 				});
-				
 				// Regenerate most recent invoice
 				// Get regenerate most recent invoice Dialog
 				var orderStatusCheck = $('#'+co[i].id+'_order_status');
@@ -1028,15 +996,8 @@
 				});
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#generateOrderInvoiceModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_invoice"]').button('reset');
-					$('a[data-name="'+$(this).attr('data-id')+'_manually_generate_invoice"]').button('reset');
-					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_no_term_invoice"]').button('reset');
-					$('a[data-name="'+$(this).attr('data-id')+'_generate_no_term_invoice"]').button('reset');
-					$('a[data-name="'+$(this).attr('data-id')+'_generate_topup_invoice"]').button('reset');
-					$('a[data-name="'+$(this).attr('data-id')+'_regenerate_ordering_form"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
-				
 
 				// Early Termination Charge modal
 				// Get Early Termination Charge Dialog
@@ -1071,7 +1032,7 @@
 				});
 				// Reset button when hidden Early Termination Charge dialog
 				$('#earlyTerminationChargeModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_early_termination_charge"]').button('reset');
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				// Termination Refund modal
@@ -1094,13 +1055,11 @@
 					
 					$.post(ctx+'/broadband-user/crm/customer/order/termination-credit/invoice/generate', data, function(json){
 						$.jsonValidation(json, 'right');
-					}, "json").always(function () {
-						
-				    });
+					}, "json");
 				});
 				// Reset button when hidden Termination Refund dialog
 				$('#terminationRefundModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_termination_refund"]').button('reset');
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				$('select[data-name="'+co[i].id+'_order_status_selector"]').change(function(){
@@ -1135,8 +1094,7 @@
 				});
 				// Reset button when hidden order status dialog
 				$('#editOrderStatusModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_order_status_edit"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				// Update order type
@@ -1159,8 +1117,7 @@
 				});
 				// Reset button when hidden order type dialog
 				$('#editOrderTypeModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_order_type_edit"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				// Empty order service giving or next invoice create date
@@ -1228,9 +1185,7 @@
 				});
 				// Reset button when hidden order service giving or next invoice create date dialog
 				$('#emptyServiceGivingNextInvoiceCreateDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="empty_service_giving_date_btn_'+$(this).attr('data-id')+'"]').button('reset');
-					$('a[data-name="empty_next_invoice_create_date_btn_'+$(this).attr('data-id')+'"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				// Update order due date
@@ -1253,15 +1208,15 @@
 				});
 				// Reset button when hidden order due date dialog
 				$('#editOrderDueDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_order_due_input_btn"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				$('a[data-name="generateApplicationUrl_'+co[i].id+'"]').click(function(){
 					var url = $(this).attr('data-url');
+					var data_id = $(this).attr('data-id');
 					$.post(url, function(json){
 						$.jsonValidation(json, 'left');
-						$.getCustomerOrder();
+						$.getCustomerOrder(data_id);
 					});
 				});
 
@@ -1286,8 +1241,7 @@
 				});
 				// Reset button when hidden belongs to dialog
 				$('#editOrderBelongsToModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_order_belongs_to_edit"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 
 				//
@@ -1295,7 +1249,6 @@
 				$('a[data-name="'+co[i].id+'_order_optional_request"]').click(function(){
 					$('#viewOrderOptionalRequestModal_'+this.id).modal('show');
 				});
-				
 				// Update order optional request
 				// Get order optional request Dialog
 				$('a[data-name="'+co[i].id+'_optional_request_edit"]').click(function(){
@@ -1316,8 +1269,7 @@
 				});
 				// Reset button when hidden optional request dialog
 				$('#editOrderOptionalRequestModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_optional_request_edit"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				// Get order edit is ddpay Dialog
@@ -1339,8 +1291,7 @@
 				});
 				// Reset button when hidden edit is ddpay dialog
 				$('#editIsDDPayModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_is_ddpay_edit"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer order area
@@ -1457,7 +1408,7 @@
 				});
 				// Reset button when hidden order Customer Type dialog
 				$('#editCustomerBasicContactModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer basic & contact detail
@@ -1495,7 +1446,7 @@
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#editPPPoEModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_pppoe_edit_btn"]').button('reset');
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer order PPPoE area
@@ -1532,8 +1483,7 @@
 				});
 				// Reset button when hidden order PPPoE dialog
 				$('#saveSVCVLanRFSDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_svcvlan_save"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer order SV/CVLan & RFS Date area
@@ -1578,31 +1528,20 @@
 							,'way':$(this).attr('data-way')
 							,'pay_status':$(this).attr('data-pay-status')+''
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/service_giving_date', data, function(json){
 						$.jsonValidation(json, 'left');
-						
-						if(json.model){
-							$('#'+json.model.id+'_order_using_start').html(json.model.order_using_start_str);
-							$('#'+json.model.id+'_next_invoice_create_date').html(json.model.next_invoice_create_date_str);
-							$('#'+json.model.id+'_service_giving_save').css('display', '');
-							$('#'+json.model.id+'_service_giving_save_btn_group').css('display', 'none');
-						}
 						$.getCustomerInfo();
 						$.getTxPage(1);
 						$.getInvoicePage(1, 1);
-						
 					}, "json");
 				});
 				// Reset button when hidden order Service Giving dialog
 				$('#saveServiceGivingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
-
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				// Reset button when hidden order Service Giving dialog
 				$('#saveServiceGivingDeniedModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_service_giving_save"]').button('reset');
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer order Service Giving Date area
@@ -1631,8 +1570,7 @@
 				});
 				// Reset button when hidden Broadband ASID dialog
 				$('#saveBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_brodband_asid_btn"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END customer order Broadband ASID area
@@ -1692,8 +1630,7 @@
 				});
 				// Reset button when hidden order phone dialog
 				$('#updatePhoneModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_update_phone"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 
 				/*
@@ -1704,8 +1641,6 @@
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="editDetailModalBtn_'+this.id+'"]').prop('id', this.id);
 					$('a[data-name="editDetailModalBtn_'+this.id+'"]').prop('data-id', $(this).attr('data-id'));
-					$('#editDetailModal_'+this.id).prop('data-id', $(this).attr('data-id'));
-					
 					// Original Values
 					$('input[data-name="detail_name_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_name"]').attr('data-val'));
 					$('input[data-name="detail_type_'+this.id+'"]').val($('td[data-name="'+$(this).attr('data-id')+'_detail_type"]').attr('data-val'));
@@ -1732,15 +1667,13 @@
 						'detail_unit':$('input[data-name="detail_plan_unit_'+this.id+'"]').val(),
 						'detail_term_period':$('input[data-name="detail_term_period_'+this.id+'"]').val()
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/plan/edit', data, function(json){
 						$.jsonValidation(json, 'right');
 					}, "json");
 				});
 				// Reset button when hidden Edit Detail dialog
 				$('#editDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-id="'+$(this).prop('data-id')+'"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 * END Edit detail
@@ -1756,27 +1689,22 @@
 					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').attr('data-id',$(this).attr('data-id'));
 					$('#editCommonDetailModal_'+this.id).modal('show');
 				});
-				
 				$('a[data-name="editCommonDetailModalBtn_'+co[i].id+'"]').click(function(){
-					
 					var detail_id = $(this).attr('data-id');
 					var detail_name = $('input[data-name="update_detail_name_'+this.id+'"]').val();
 					var detail_price = $('input[data-name="update_detail_price_'+this.id+'"]').val();
-					
 					var data = {
 						'id':detail_id,
 						'detail_name':detail_name,
 						'detail_price':detail_price
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
-					
 				});
 				// Reset button when hidden Edit Detail dialog
 				$('#editCommonDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 * END Edit common detail
@@ -1789,22 +1717,16 @@
 				$('a[data-name="'+co[i].id+'_recombine_super_calling_minutes"]').click(function(){
 					var allSuperFreeCallingsArr = 'super-local,voip=super-national,voip=super-mobile,voip=super-40-countries,voip=super-international,voip=super-Bangladesh-both,voip=super-Malaysia-both,voip=super-Cambodia-both,voip=super-Singapore-both,voip=super-Canada-both,voip=super-Korea-both,voip=super-China-both,voip=super-USA-both,voip=super-Hong-Kong-both,voip=super-Vietnam-both,voip=super-India-both,voip=super-Argentina-fixedline,54,voip=super-Germany-fixedline,49,voip=super-Laos-fixedline,856,voip=super-South-Africa-fixedline,27,voip=super-Australia-fixedline,61,voip=super-Greece-fixedline,30,voip=super-Netherlands-fixedline,31,voip=super-Spain-fixedline,34,voip=super-Belgium-fixedline,32,voip=super-Indonesia-fixedline,62,voip=super-Norway-fixedline,47,voip=super-Sweden-fixedline,46,voip=super-Brazil-fixedline,55,voip=super-Ireland-fixedline,353,voip=super-Pakistan-fixedline,92,voip=super-Switzerland-fixedline,41,voip=super-Cyprus-fixedline,357,voip=super-Israel-fixedline,972,voip=super-Poland-fixedline,48,voip=super-Taiwan-fixedline,886,voip=super-Czech-fixedline,420,voip=super-Italy-fixedline,39,voip=super-Portugal-fixedline,351,voip=super-Thailand-fixedline,66,voip=super-Denmark-fixedline,45,voip=super-Japan-fixedline,81,voip=super-Russia-fixedline,7,voip=super-United Kingdom-fixedline,44,voip=super-France-fixedline,33,voip'.split('=');
 					var allBindedSuperFreeCallingsStr = $(this).attr('data-desc');
-					
 					var allSuperFreeCallingsHTML = '';
-
 					allSuperFreeCallingsHTML+=
 					'<div class="col-md-12">'+
 						'<input type="checkbox" id="super_free_calling_regions_checkbox_top" />&nbsp;All'+
 					'</div><br/>';
-					
 					// Get Unbind Super Free Callings
 					for (var s = 0; s < allSuperFreeCallingsArr.length; s++) {
-						
 						allSuperFreeCallingsHTML+='<br/>';
-						
 						var allSuperFreeCallingsFinal = allSuperFreeCallingsArr[s].substr(allSuperFreeCallingsArr[s].indexOf('-')+1, allSuperFreeCallingsArr[s].length);
 						allSuperFreeCallingsFinal = allSuperFreeCallingsFinal.substr(0, allSuperFreeCallingsFinal.indexOf(','));
-						
 						if(allBindedSuperFreeCallingsStr.indexOf(allSuperFreeCallingsArr[s])!=-1){
 							allSuperFreeCallingsHTML+=
 							'<div class="col-md-6">'+
@@ -1816,52 +1738,41 @@
 								'<input type="checkbox" name="super_free_calling_regions_checkbox" value="'+allSuperFreeCallingsArr[s]+'" />&nbsp;'+allSuperFreeCallingsFinal+
 							'</div>';
 						}
-						
 					}
 					
 					$('#super_free_calling_regions_'+this.id).html(allSuperFreeCallingsHTML);
-					
 					$(':radio,:checkbox').iCheck({
 						checkboxClass : 'icheckbox_square-green',
 						radioClass : 'iradio_square-green'
 					});
-					
 					$('#super_free_calling_regions_checkbox_top').on("ifChecked", function(){
 						$('input[name="super_free_calling_regions_checkbox"]').iCheck("check");
 					});
-					
 					$('#super_free_calling_regions_checkbox_top').on("ifUnchecked", function(){
 						$('input[name="super_free_calling_regions_checkbox"]').iCheck("uncheck");
 					});
-					
-					
 					$('a[data-name="recombineSuperCallingMinutesModalBtn_'+this.id+'"]').prop('id',this.id);
 					$('a[data-name="recombineSuperCallingMinutesModalBtn_'+this.id+'"]').attr('data-id',$(this).attr('data-id'));
 					$('#recombineSuperCallingMinutesModal_'+this.id).modal('show');
 				});
-				
 				$('a[data-name="recombineSuperCallingMinutesModalBtn_'+co[i].id+'"]').click(function(){
-					
 					var detail_id = $(this).attr('data-id');
 					var detail_desc = '';
 					$('input[name="super_free_calling_regions_checkbox"]:checked').each(function(){
 						detail_desc+=$(this).val()+'=';
 					});
 					detail_desc = detail_desc.substr(0, detail_desc.length-1);
-					
 					var data = {
 						'id':detail_id,
 						'detail_desc':detail_desc
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
-					
 				});
 				// Reset button when hidden Edit Detail dialog
 				$('#recombineSuperCallingMinutesModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 * END Recombine Super Calling Minutes
@@ -1893,8 +1804,7 @@
 				});
 				// Reset button when hidden order remove detail dialog
 				$('#removeDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_remove_detail"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END Remove detail
@@ -1909,7 +1819,6 @@
 					$('a[data-name="addPhoneModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#addPhoneModal_'+this.id).modal('show');
 				});
-				
 				$('select[data-name="'+co[i].id+'_phone_type"]').change(function(){
 					if($(this).val()=='pstn' || $(this).val()=='fax'){
 						$('div[data-name="'+this.id+'_voip_password"]').css('display','none');
@@ -1937,22 +1846,13 @@
 						,'voip_assign_date':voip_assign_date+''
 						,'phone_monthly_price':phone_monthly_price+''
 					};
-					
-					console.log(data);
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/phone_number/save', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});
-				/*
-				 *	END Add phone
-				 */
-				
-				 
 				// Reset button when hidden order add detail dialog
 				$('#addPhoneModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_add_phone"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				 
 				/*
@@ -1968,19 +1868,16 @@
 					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#addDetailModal_'+this.id).modal('show');
 				});
-				
 				$('select[data-name="'+co[i].id+'_detail_type"]').change(function(){
 					$('div[data-name="'+this.id+'_detail_modal_body"]').css('display','none');
 					$('div[data-type="'+this.id+'_'+$(this).val()+'_modal_body"]').css('display','');
 					$('a[data-name="addDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).val());
 				});
-				
 				// Submit to rest controller
 				$('a[data-name="addDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					this.id = $(this).attr('data-id');
 					var detail_type = $(this).attr('data-type');
 					var data = {};
-					
 					var url = ctx+'/broadband-user/crm/customer/order/detail/save';
 					if(detail_type == 'early-termination-debit'){
 						data = {
@@ -2011,51 +1908,44 @@
 								,'detail_expired':detail_expired+''
 								,'detail_type':detail_type+''
 						};
-						
 						if(detail_type == 'discount'){
 							data.detail_desc = $('select[data-name="'+this.id+'_'+detail_type+'_desc"]').val();
 						} else {
 							data.detail_desc = null;
 						}
 					}
-					
 					if(detail_type != 'none'){
 						$.post(url, data, function(json){
 							$.jsonValidation(json, 'left');
 						}, "json");
 					}
-					
 				});
 				// Reset button when hidden order add detail dialog
 				$('#addDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_add_detail"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END Add detail
 				 */
 				
 				/*
-				 *	BEGIN Add detail
+				 *	BEGIN Add provision detail
 				 */
 				$('a[data-name="'+co[i].id+'_add_provision_detail"]').click(function(){
 					$btn = $(this); $btn.button('loading');
 					$('a[data-name="addProvisionDetailModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#addProvisionDetailModal_'+this.id).modal('show');
 				});
-				
 				$('select[data-name="'+co[i].id+'_detail_type"]').change(function(){
 					$('div[data-name="'+this.id+'_detail_modal_body"]').css('display','none');
 					$('div[data-type="'+this.id+'_'+$(this).val()+'_modal_body"]').css('display','');
 					$('a[data-name="addProvisionDetailModalBtn_'+this.id+'"]').attr('data-type', $(this).val());
 				});
-				
 				// Submit to rest controller
 				$('a[data-name="addProvisionDetailModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					this.id = $(this).attr('data-id');
 					var detail_type = $(this).attr('data-type');
 					var data = {};
-					
 					var url = '';
 					if(detail_type == 'present-calling-minutes'){
 						data = {
@@ -2075,22 +1965,19 @@
 						};
 						url = ctx+'/broadband-user/crm/customer/order/static-ip/save';
 					}
-					
 					if(detail_type != 'none'){
 						$.post(url, data, function(json){
 							$.jsonValidation(json, 'left');
 						}, "json");
 					}
-					
 				});
 				// Reset button when hidden order add detail dialog
 				$('#addProvisionDetailModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_add_provision_detail"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				/*
-				 *	END Add detail
+				 *	END Add provision detail
 				 */
 				
 				 
@@ -2108,7 +1995,6 @@
 					$('div[data-name="product_unit_div"]').css('display', '');
 					$('div[data-name="product_period_term_div"]').css('display', '');
 					var product_type = $(this).val();
-					
 					// List Plans
 					$('a[data-name="addProductModalBtn_'+this.id+'"]').css('display','');
 					$('a[data-name="addProductModalBtn_'+this.id+'"]').attr('data-product-type', product_type);
@@ -2127,7 +2013,6 @@
 							}
 						});
 						$('a[data-name="addProductModalBtn_'+this.id+'"]').html('Add Plan');
-						
 					// List Hardwares
 					} else if(product_type.indexOf('hardware')>=0){
 						$('label[data-name="product_type_name"]').html('Hardware Product');
@@ -2145,13 +2030,11 @@
 						$('a[data-name="addProductModalBtn_'+this.id+'"]').html('Add Hardware');
 					}
 				});
-				
 				// Submit to rest controller
 				$('a[data-name="addProductModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					var product_id = $('select[data-name="'+this.id+'_product_type_select"]').val();
 					var product_unit = $('input[data-name="'+this.id+'_product_unit"]').val();
 					var product_period_term = $('input[data-name="'+this.id+'_product_period_term"]').val();
-					
 					var data = {
 						'order_id':this.id,
 						'product_id':product_id,
@@ -2159,24 +2042,20 @@
 						'product_period_term':product_period_term,
 						'product_type':$(this).attr('data-product-type')
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/product/create', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
-					
 				});
 				// Reset button when hidden order add product dialog
 				$('#addProductModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_add_product"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END Add product
 				 */
 
-					
 				/*
-// 				 *	BEGIN Remove calling minutes
+ 				 *	BEGIN Remove calling minutes
 				 */
 				$('a[data-name="'+co[i].id+'_remove_present-calling-minutes"]').click(function(){
 					$btn = $(this); $btn.button('loading');
@@ -2196,8 +2075,7 @@
 				});
 				// Reset button when hidden order remove discount dialog
 				$('#removeCallingMinutesModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_remove_present-calling-minutes"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 				 *	END Remove calling minutes
@@ -2230,7 +2108,7 @@
 				});
 				// Reset button when hidden order remove discount dialog
 				$('#editOrderTermPeriodModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_edit_term_period_btn"]').button('reset');
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				/*
 // 				 *	END Edit Term Period
@@ -2241,18 +2119,13 @@
 // 				 *	BEGIN Deleted Order Details List
 				 */
 				$('a[data-name="'+co[i].id+'_view_delete_detail"]').click(function(){
-					
 					var order_id = this.id
-					
 					var data = {
 						'order_id':order_id
 					};
-					
 					$.get(ctx+'/broadband-user/crm/customer/order/detail/delete_record', data, function(json){
-						
 						var coddrs = json.model.coddrs;
 						var users = json.model.users;
-						
 						var coddrHTML = '<div class="form-group col-md-12">'+
 											'<div class="col-md-2"><p class="form-control-static"><strong>Detail Name</strong></p></div>'+
 											'<div class="col-md-2"><p class="form-control-static"><strong>Detail Type</strong></p></div>'+
@@ -2261,9 +2134,7 @@
 											'<div class="col-md-2"><p class="form-control-static"><strong>Deleted Reason</strong></p></div>'+
 											'<div class="col-md-2"><p class="form-control-static" style="text-align:right;"><strong>Recoverable</strong></p></div>'+
 										'</div>';
-						
 						for (var i=0; i<coddrs.length; i++) {
-							
 							var coddr = coddrs[i];
 							var is_recoverable = coddrs[i].is_recoverable;
 							var detail_id = coddrs[i].detail_id;
@@ -2276,15 +2147,11 @@
 									executor = users[u].user_name;
 								}
 							}
-							
 							var is_recoverable_col_btn = '<a class="btn btn-danger btn-xs pull-right" data-name="'+i+'_recover_detail" data-detail-id="'+detail_id+'" data-dismiss="modal">'+
 														 	'<span class="glyphicon glyphicon-refresh"></span>'+
 														 '</a>';
-							
 							var is_authorized = user_role=='system-developer' || user_role=='administrator' || user_role=='accountant' || user_id==executor_id;
-							
 							var is_recoverable_col = is_recoverable&&is_authorized ? is_recoverable_col_btn : '';
-							
 							var executed_date_str = coddrs[i].executed_date_str;
 							var delete_reason = coddrs[i].delete_reason;
 							coddrHTML += '<div class="form-group col-md-12">'+
@@ -2295,40 +2162,24 @@
 											 '<div class="col-md-2"><textarea class="form-control" rows="4" disabled="disabled" style="resize:none;">'+delete_reason+'</textarea></div>'+
 											 '<div class="col-md-2">'+is_recoverable_col+'</div>'+
 										 '</div>';
-							
 						}
-						
-						
 						$('form[data-name="deleted_order_details_form"]').html(coddrHTML);
-						
-						
 						for (var i=0; i<coddrs.length; i++) {
-
 							$('a[data-name="'+i+'_recover_detail"]').click(function(){
-								
 								var detail_id = $(this).attr('data-detail-id');
-								
 								var data = {
 									'detail_id':detail_id
 								};
-								
 								$.post(ctx+'/broadband-user/crm/customer/order/detail/recover', data, function(json){
 									$.jsonValidation(json, 'left');
 								}, "json");
-								
 							});
-							
 						}
-						
-						
 						$('#viewDeletedOrderDetailsModal_'+order_id).modal('show');
-						
 					}, "json");
-					
 				});
-				
 				$('#viewDeletedOrderDetailsModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				 
 				 
@@ -2368,7 +2219,6 @@
 				    format: "yyyy-mm-dd",
 				    autoclose: true,
 				    todayHighlight: true
-				    
 				    // if service giving date is null then assign new Date(), else assign service giving date 
 				}).datepicker('setDate', order_using_start_input || new Date());
 				
@@ -2378,73 +2228,59 @@
 				    format: "yyyy-mm-dd",
 				    autoclose: true,
 				    todayHighlight: true
-				    
 				    // if order next invoice create date is null then assign new Date(), else assign order next invoice create date
 				}).datepicker('setDate', order_next_invoice_create_input || new Date());
-				
 				$('div[data-name="'+co[i].id+'_order_next_invoice_create_date_datepicker"]').datepicker().on('changeDate', function(ev){
 					$('a[data-name="changeNextInvoiceCreateDateModalBtn_'+this.id+'"]').attr('data-id', this.id);
 					$('#changeNextInvoiceCreateDateModal_'+this.id).modal('show');
 				});
-				
 				$('a[data-name="changeNextInvoiceCreateDateModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					var order_id = $(this).attr('data-id');
 					var next_invoice_create_date_str = $('input[data-name="'+order_id+'_order_next_invoice_create_date_input_picker"]').val();
-					
 					var data = {
 							'order_id': order_id
 							,'next_invoice_create_date_str': next_invoice_create_date_str
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/next_invoice_create_date/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
-					
 				});
-				
 				// Reset button when hidden order remove discount dialog
 				$('#changeNextInvoiceCreateDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$.getCustomerOrder();
 				});
 				
-				
 				for(var iCod=0; iCod<co[i].customerOrderDetails.length; iCod++){
 					var cod = co[i].customerOrderDetails[iCod];
-					
 					// Order detail expired Datepicker
 					var order_detail_expired_date_input = $('input[data-name="'+cod.id+'_order_detail_expired_date_input_picker"]').attr('data-val');
 					$('div[data-name="'+cod.id+'_order_detail_expired_date_datepicker"]').datepicker({
 					    format: "yyyy-mm-dd",
 					    autoclose: true,
 					    todayHighlight: true
-					    
 					    // if detail expired date is null then assign new Date(), else assign service giving date 
 					}).datepicker('setDate', order_detail_expired_date_input || new Date());
-					
 					$('div[data-name="'+cod.id+'_order_detail_expired_date_datepicker"]').datepicker().on('changeDate', function(ev){
 						$('a[data-name="changeDetailExpiredDateModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-detail-id'));
 						$('#changeDetailExpiredDateModal_'+this.id).modal('show');
 					});
-					
 				}
 				
 				// Submit to rest controller
 				$('a[data-name="changeDetailExpiredDateModalBtn_'+co[i].id+'"]').on('click', function (e) {
 					var detail_id = $(this).attr('data-detail-id');
 					var expired_date = $('input[data-name="'+detail_id+'_order_detail_expired_date_input_picker"]').val();
-					
 					var data = {
-							'detail_id': detail_id
-							,'expired_date': expired_date
+						'detail_id': detail_id,
+						'expired_date': expired_date
 					};
-					
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/expired_date/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden order remove discount dialog
 				$('#changeDetailExpiredDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				/*

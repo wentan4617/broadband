@@ -583,6 +583,17 @@ public class CRMService {
 	}
 	
 	@Transactional
+	public CustomerTransaction queryCustomerTransaction(CustomerTransaction ct) {
+		List<CustomerTransaction> cts = queryCustomerTransactions(ct);
+		return cts!=null && cts.size()>0 ? cts.get(0) : null;
+	}
+	
+	@Transactional
+	public List<CustomerTransaction> queryCustomerTransactions(CustomerTransaction ct) {
+		return this.customerTransactionMapper.selectCustomerTransactions(ct);
+	}
+	
+	@Transactional
 	public List<CustomerTransaction> queryCustomerTransactionsByCustomerId(int id) {
 		return this.customerTransactionMapper.selectCustomerTransactionsByCustomerId(id);
 	}

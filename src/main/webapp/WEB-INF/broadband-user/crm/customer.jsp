@@ -34,6 +34,10 @@
 	width:220px;
 }
 
+.xs-btn-width-longest {
+	width:250px;
+}
+
 .strong {
 	font-weight:bold;
 }
@@ -62,25 +66,7 @@
 			<!-- Tab panes -->
 			<div class="tab-content panel panel-default">
 				<div class="panel-body tab-pane fade in active" id="customer_edit" ></div>
-				<div class="panel-body tab-pane fade" id="order_detail" >
-				
-					<div class="panel-group" role="tablist" aria-multiselectable="false">
-						<c:forEach var="co" items="${customer.customerOrders }">
-						<div class="panel panel-success">
-							<div class="panel-heading" role="tab" id="heading_${co.id}">
-								<h4 class="panel-title">
-									<a data-toggle="collapse" data-parent="#accordion" href="#collapse_${co.id}" aria-controls="collapse_${co.id}">
-								      Order Information: ${co.id} - ${co.customer_type} - ${co.order_status}
-								    </a>
-								</h4>
-							</div>
-							<div id="collapse_${co.id}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_${co.id}">asdsads
-							</div>
-						</div>
-						</c:forEach>
-					</div>
-					
-				</div>
+				<div class="panel-body tab-pane fade" id="order_detail" ></div>
 				<div class="panel-body tab-pane fade" id="invoice_detail"></div>
 				<div class="panel-body tab-pane fade" id="transaction_detail"></div>
 				<div class="panel-body tab-pane fade" id="customer_service_record_detail"></div>
@@ -118,10 +104,6 @@
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script>
 
 	// BEGIN PROPERTY
