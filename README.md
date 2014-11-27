@@ -19,6 +19,16 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.7.2 2014-11-28
+ 
+* [将各个order分隔开，每一个order就是一个模版.](steven)
+
+ 
+demand version 1.7.1 2014-11-27
+ 
+* [invoice列表添加一列order_status，将order状态移植到invoice上.](steven)
+
+ 
 demand version 1.7.0 2014-11-26
  
 * [创建一张工单表tm_customer_order_onsite字段有：id, customer_id, order_id, customer_type, first_name, last_name, mobile, address, plan_name, data_flow, terms, onsite_type, onsite_date, onsite_type: delivery, faulty, installation, other](steven)
@@ -29,7 +39,7 @@ demand version 1.7.0 2014-11-26
 demand version 1.6.5 2014-11-24
  
 * [customer order界面，完善term perid修改功能.](steven)
-* customer order界面的所有modal提交后都不刷新模版，只回填最新值到显示区域.(steven)
+* [customer order界面的所有modal提交后刷新模版回传当前操作order的id，以确保该order的相关选项卡不恢复默认状态，防止其隐藏.](steven)
  
  
  
@@ -139,6 +149,7 @@ demand version 1.4.6 2014-11-11
 
 * [tm_customer_invoice添加6个字段：chorus_calling_credit, chorus_calling_charge, nca_calling_credit, nca_calling_charge, vos_calling_credit, vos_calling_charge.](steven)
 * [在customer-info界面添加一个New Order按钮，将Kanny给的链接放进去.](steven)
+* [customer界面添加一个按钮，Eliminate Account Credit，点击后输入要减去的金额，提交后判断输入金额不能小于账户余额，最后保存最终金额.](steven)
 
 
 demand version 1.4.5 2014-11-10

@@ -449,7 +449,6 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite/pdf/generate', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
 				});
 				$('#generateDispatchListPDFModal_'+co[i].id).on('hidden.bs.modal',function(){
@@ -473,7 +472,6 @@
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/onsite/update', data, function(json){
 						$.jsonValidation(json, 'right');
-						$.getCustomerOrder();
 					});
 				});
 				$('#editDispatchListTypeModal_'+co[i].id).on('hidden.bs.modal',function(){
@@ -848,11 +846,11 @@
 				});
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#payOffOrderModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_pay_off_order"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 					$.getCustomerInfo();
 					$.getTxPage(1);
 				});
+				
 				// Generate order receipt
 				// Get generate order receipt Dialog
 				$('a[data-name="'+co[i].id+'_generate_order_receipt"]').click(function(){
@@ -871,9 +869,10 @@
 				});
 				// Reset button when hidden regenerate most recent invoice dialog
 				$('#generateOrderReceiptModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$('a[data-name="'+$(this).attr('data-id')+'_generate_order_receipt"]').button('reset');
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
+				
+				
 				// Regenerate most recent invoice
 				// Get regenerate most recent invoice Dialog
 				var orderStatusCheck = $('#'+co[i].id+'_order_status');
@@ -2247,7 +2246,7 @@
 				});
 				// Reset button when hidden order remove discount dialog
 				$('#changeNextInvoiceCreateDateModal_'+co[i].id).on('hidden.bs.modal', function (e) {
-					$.getCustomerOrder();
+					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
 				for(var iCod=0; iCod<co[i].customerOrderDetails.length; iCod++){
