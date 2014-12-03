@@ -85,11 +85,23 @@ public class InventoryRestController {
 			Equip equip){
 		
 		JSONBean<Equip> json = new JSONBean<Equip>();
-		equip.setEquip_status("inactive");
-		equip.setWarehousing_date(new Date());
-		this.inventoryService.createEquip(equip);
 		
-		json.getSuccessMap().put("alert-success", "New Equipment Created!");
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("equip_sn", equip.getEquip_sn());
+		equipQuery = this.inventoryService.queryEquip(equipQuery);
+		if(equipQuery!=null){
+			
+			json.getErrorMap().put("alert-error", "Equip SN Duplicate!");
+			
+		} else {
+			
+			equip.setEquip_status("inactive");
+			equip.setWarehousing_date(new Date());
+			this.inventoryService.createEquip(equip);
+			
+			json.getSuccessMap().put("alert-success", "New Equipment Created!");
+			
+		}
 		
 		return json;
 	}
