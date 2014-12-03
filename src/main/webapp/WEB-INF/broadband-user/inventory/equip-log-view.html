@@ -1,0 +1,47 @@
+<. if (page.results.length > 0) {.>
+<table class="table" style="font-size: 12px;">
+	<thead>
+		<tr>
+			<th>Oper Type</th>
+			<th>Log Date</th>
+			<th>Log Description</th>
+			<th>Operator</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for(var i = 0; i < page.results.length; i++) {
+		var equipLog = page.results[i];
+	.>
+		<tr>
+			<td><.= equipLog.oper_type .></td>
+			<td><.= equipLog.log_date_str .></td>
+			<td><.= equipLog.log_desc .></td>
+			<td>
+				<. for(var us=0; us<users.length; us++){ .>
+					<. if(equipLog.user_id==users[us].id){ .>
+						<.= users[us].user_name .>
+					<. } .>
+				<. } .>
+			</td>
+		</tr>
+	<.}.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+					<. for (var i = 1; i <= page.totalPage; i++) { .>
+					<li class="<.=page.pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

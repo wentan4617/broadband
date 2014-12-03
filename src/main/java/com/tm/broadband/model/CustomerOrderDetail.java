@@ -46,6 +46,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Date voip_assign_date;
 	private Boolean is_nca;
 	private Integer to_nca_by_who;
+	private Integer equip_id;
 
 
 	/*
@@ -55,6 +56,8 @@ public class CustomerOrderDetail implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String equip_status;
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private CustomerOrder customerOrder;
@@ -436,6 +439,22 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setAsid(String asid) {
 		this.asid = asid;
+	}
+
+	public Integer getEquip_id() {
+		return equip_id;
+	}
+
+	public void setEquip_id(Integer equip_id) {
+		this.equip_id = equip_id;
+	}
+
+	public String getEquip_status() {
+		return equip_status;
+	}
+
+	public void setEquip_status(String equip_status) {
+		this.equip_status = equip_status;
 	}
 	
 }

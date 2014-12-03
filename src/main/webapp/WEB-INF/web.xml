@@ -163,6 +163,7 @@
 		<url-pattern>/broadband-user/system/*</url-pattern>
 		<url-pattern>/broadband-user/sale/*</url-pattern>
 		<url-pattern>/broadband-user/manual-manipulation/*</url-pattern>
+		<url-pattern>/broadband-user/inventory/*</url-pattern>
 	</filter-mapping>
 
 	<!-- user auth filter -->
@@ -256,6 +257,11 @@
 		<url-pattern>/broadband-user/agent/billing/invoice/view/*</url-pattern>
 		<url-pattern>/broadband-user/agent/billing/chart/commission-statistic/*</url-pattern>
 		<!-- Agent Module END -->
+
+		<!-- Inventory Module BEGIN -->
+		<url-pattern>/broadband-user/inventory/equip/view</url-pattern>
+		<url-pattern>/broadband-user/inventory/equip/log/view</url-pattern>
+		<!-- Inventory Module END -->
 
 	</filter-mapping>
 	

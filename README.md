@@ -19,6 +19,17 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.7.6 2014-12-02
+ 
+* [由于服务器迁移，需要出order_id为700327的账单.](steven)
+
+ 
+demand version 1.7.5 2014-12-01
+ 
+* [新建tm_equip表，字段：id, equip_name, equip_type, equip_purpose, equip_sn, equip_status, order_detail_id.](steven)
+* [新建tm_equip_log表，字段：equip_id, oper_type, log_desc.](steven)
+
+ 
 demand version 1.7.2 2014-11-28
  
 * [将各个order分隔开，每一个order就是一个模版.](steven)

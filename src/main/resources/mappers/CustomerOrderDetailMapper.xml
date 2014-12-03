@@ -45,6 +45,7 @@
 		, cod.`voip_assign_date` 				as cod_voip_assign_date
 		, cod.`is_nca` 							as cod_is_nca
 		, cod.`to_nca_by_who` 					as cod_to_nca_by_who
+		, cod.`to_equip_id` 					as cod_to_equip_id
 	</sql>
 	<resultMap type="CustomerOrderDetail" id="customerOrderDetailResultMap">
 		<id property="id" column="cod_id" />
@@ -76,6 +77,7 @@
 		<result property="voip_assign_date" column="cod_voip_assign_date" />
 		<result property="is_nca" column="cod_is_nca" />
 		<result property="to_nca_by_who" column="cod_to_nca_by_who" />
+		<result property="equip_id" column="cod_equip_id" />
 	</resultMap>
 	
 	
@@ -154,14 +156,14 @@
 			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
 			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_calling_minute`, `detail_type`, `detail_expired`,
 			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`, `user_id`, `voip_password`,
-			`voip_assign_date`, `is_nca`, `to_nca_by_who`) 
+			`voip_assign_date`, `is_nca`, `to_nca_by_who`, `equip_id`) 
 		VALUES (
 			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
 			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow},
 			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_calling_minute}, #{detail_type}, #{detail_expired},
 			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number}, #{user_id}, #{voip_password},
-			#{voip_assign_date}, #{is_nca}, #{to_nca_by_who})
+			#{voip_assign_date}, #{is_nca}, #{to_nca_by_who}, #{equip_id})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -198,7 +200,9 @@
 			<if test="voip_password != null">voip_password=#{voip_password},</if>
 			<if test="voip_assign_date != null">voip_assign_date=#{voip_assign_date},</if>
 			<if test="is_nca != null">is_nca=#{is_nca},</if>
-			<if test="to_nca_by_who != null">to_nca_by_who=#{to_nca_by_who}</if>
+			<if test="to_nca_by_who != null">to_nca_by_who=#{to_nca_by_who},</if>
+			<if test="equip_id != null">equip_id=#{equip_id},</if>
+			<if test="params.equip_id_null == true">equip_id=NULL</if>
 		</set>
 		<where>
 			<if test="params.id !=null">id=#{params.id}</if>

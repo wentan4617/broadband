@@ -272,6 +272,43 @@ hr {
 			</div>
 		
 		<!-- END LEFT THIRD COLUMN -->
+		
+			<div class="row">
+			
+				<div class="col-md-12">
+					
+					<!-- Inventory Module -->
+					<div class="panel panel-success">
+				  		<div class="panel-heading">
+				  			<h3 class="panel-title">
+				  				<strong class="text-success">Inventory</strong>
+				  			</h3>
+				  		</div>
+					  	<div class="panel-body">
+					  		<p>All CyberPark's related equipments and stocks.</p>
+					  		<div class="row">
+						  		<div class="col-md-6">
+				                    <ul class="list-unstyled">
+				                    	<li>
+				                    		<span class="glyphicon glyphicon-list" ></span> 
+				                    		<a href='${ctx }/broadband-user/inventory/equip/view'>View Equipments</a>
+				                    	</li>
+				                    	<li>
+				                    		<span class="glyphicon glyphicon-list" ></span> 
+				                    		<a href="${ctx}/broadband-user/inventory/equip/log/view">View Equipment Logs</a>
+				                    	</li>
+				                    </ul>
+						  		</div>
+						  		<div class="col-md-6">
+						  		</div>
+					  		</div>
+					  	</div>
+					</div>
+					<!-- // Inventory Module -->
+					
+				</div>
+				
+			</div>
 			
 		</div>
 		<!-- // left column  -->
@@ -579,7 +616,7 @@ hr {
 		
 	</div>	
 		
-	</c:if>
+	</c:if>	
 	
 </div>
 

@@ -60,6 +60,7 @@
 									<form:option value="none">Clean</form:option>
 									<form:option value="sales">Sales</form:option>
 									<form:option value="agent">Agent</form:option>
+									<form:option value="warehouse-keeper">Warehouse Keeper</form:option>
 									<form:option value="plan-designer">Plan Designer</form:option>
 									<form:option value="crm-operator">CRM Operator</form:option>
 									<form:option value="accountant">Accountant</form:option>
@@ -574,6 +575,28 @@
 										</li>
 									</ul>
 								</div>
+								<div class="col-md-3" data-module="inventory">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Inventory</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_inventory" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="inventory/equip/view" data-type="checkbox_inventory" /> View Equipment
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="inventory/equip/log/view" data-type="checkbox_inventory" /> View Equipment Log
+											</label>
+										</li>
+									</ul>
+								</div>
 							</div>
 						</div>
 						<hr/>
@@ -634,6 +657,10 @@
 			
 			$('div[data-module="sales"]').find('input').iCheck("check");
 			$('div[data-module="agent"]').find('input').iCheck("check");
+			
+		} else if("warehouse-keeper"==permission){	// Warehouse Keeper
+			
+			$('div[data-module="inventory"]').find('input').iCheck("check");
 			
 		} else if("plan-designer"==permission){	// Plan Designer
 			

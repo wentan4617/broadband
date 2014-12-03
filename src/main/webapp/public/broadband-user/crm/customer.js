@@ -362,6 +362,100 @@
 			for(var i=0; i<co.length; i++){
 				
 				/**
+				 * BEGIN equipment hardware area
+				 */
+				
+				// ATTACH EQUIPMENT
+				$('a[data-name="attach_equip_2_hardware_'+co[i].id+'"]').click(function(){
+					var This = this;
+					$('a[data-name="attachEquip2HardwareModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-detail-id'));
+					$.get(ctx+'/broadband-user/inventory/equip/get', data, function(equips){
+						var equipOptions = '';
+						for(var es=0; es<equips.length; es++){
+							equipOptions+='<option value="'+equips[es].id+'">name:'+equips[es].equip_name+' - type:'+equips[es].equip_type+' - purpose:'+equips[es].equip_purpose+' - status:'+equips[es].equip_status+' - sn:'+equips[es].equip_sn+'</option>';
+						}
+						$('select[data-name="equip_details_'+This.id+'"]').html(equipOptions);
+					});
+					$('#attachEquip2HardwareModal_'+this.id).modal('show');
+				});
+				
+				$('input[data-name="equip_name_sn_'+co[i].id+'"]').keydown('',function(){
+					if(event.keyCode == 13){
+						$('a[data-name="get_attachable_equips_'+this.id+'"]').click('asdasdasd');
+			            return false;
+			        }
+				});
+				
+				$('a[data-name="get_attachable_equips_'+co[i].id+'"]').click(function(){
+					var This = this;
+					var equip_type = $('select[data-name="equip_type_'+this.id+'"]').val();
+					var equip_purpose = $('select[data-name="equip_purpose_'+this.id+'"]').val();
+					var equip_status = $('select[data-name="equip_status_'+this.id+'"]').val();
+					var equip_name_sn = $('input[data-name="equip_name_sn_'+this.id+'"]').val();
+					var data = {
+						'equip_type':equip_type,
+						'equip_purpose':equip_purpose,
+						'equip_status':equip_status,
+						'equip_name_sn':equip_name_sn!=null && equip_name_sn!='' ? equip_name_sn : 'all'
+					};
+					$.get(ctx+'/broadband-user/inventory/equip/get', data, function(equips){
+						var equipOptions = '';
+						for(var es=0; es<equips.length; es++){
+							equipOptions+='<option value="'+equips[es].id+'">name:'+equips[es].equip_name+' - type:'+equips[es].equip_type+' - purpose:'+equips[es].equip_purpose+' - status:'+equips[es].equip_status+' - sn:'+equips[es].equip_sn+'</option>';
+						}
+						$('select[data-name="equip_details_'+This.id+'"]').html(equipOptions);
+					});
+				});
+				
+				$('a[data-name="attachEquip2HardwareModalBtn_'+co[i].id+'"]').click(function(){
+					var detail_id = $(this).attr('data-detail-id');
+					var equip_id = $('select[data-name="equip_details_'+this.id+'"]').val();
+					var data = {
+						'id':detail_id,
+						'equip_id':equip_id
+					};
+					$.post(ctx+'/broadband-user/inventory/equip/bind', data, function(json){
+						$.jsonValidation(json, 'right');
+					});
+				});
+				
+				$('#attachEquip2HardwareModal_'+co[i].id).on('hidden.bs.modal', function(){
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
+				
+				// DETACH EQUIPMENT
+				$('a[data-name="detach_equip_from_hardware_'+co[i].id+'"]').click(function(){
+					$('a[data-name="detachEquipFromHardwareModalBtn_'+this.id+'"]').attr('data-detail-id', $(this).attr('data-detail-id'));
+					$('a[data-name="detachEquipFromHardwareModalBtn_'+this.id+'"]').attr('data-equip-id', $(this).attr('data-equip-id'));
+					$('#detachEquipFromHardwareModal_'+this.id).modal('show');
+				});
+				
+				$('a[data-name="detachEquipFromHardwareModalBtn_'+co[i].id+'"]').click(function(){
+					var detail_id = $(this).attr('data-detail-id');
+					var equip_id = $(this).attr('data-equip-id');
+					var equip_status = $(this).attr('data-status');
+					var data = {
+						'id':detail_id,
+						'order_id':this.id,
+						'equip_id':equip_id,
+						'equip_status':equip_status
+					};
+					$.post(ctx+'/broadband-user/inventory/equip/unbind', data, function(json){
+						$.jsonValidation(json, 'right');
+					});
+				});
+				
+				$('#detachEquipFromHardwareModal_'+co[i].id).on('hidden.bs.modal', function(){
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
+				/**
+				 * END equipment hardware area
+				 */
+				
+				
+				/**
 				 * BEGIN dispatch list area
 				 */
 				
@@ -1156,7 +1250,6 @@
 				// Submit to rest controller
 				$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+co[i].id+'"]').click(function(){
 					var date_type = $(this).attr('data-type');
-					console.log(date_type);
 					var url = '';
 					var data = {};
 					if(date_type=='service-giving' || date_type=='next-invoice-create'){
@@ -1653,7 +1746,6 @@
 				});
 				// Submit to rest controller
 				$('a[data-name="editDetailModalBtn_'+co[i].id+'"]').click(function(){
-					console.log($('input[data-name="detail_name_'+this.id+'"]').val());
 					var data = {
 						'id':$(this).prop('data-id'),
 						'order_id':this.id,
@@ -2526,8 +2618,6 @@
 					'operation_type': operation_type,
 					'checked_invoice_ids_str': checked_invoice_ids_str
 				};
-				
-				console.log(data);
 				
 				$.post(ctx+'/broadband-user/crm/customer/invoice/operation-type/edit', data, function(json){
 					$.jsonValidation(json, 'left');

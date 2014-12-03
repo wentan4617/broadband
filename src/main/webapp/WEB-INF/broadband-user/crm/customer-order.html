@@ -7,7 +7,6 @@
   <div class="panel panel-success">
     <div class="panel-heading" role="tab" id="heading_<.= customerOrder[i].id .>">
       <h4 class="panel-title">
-      <. console.log(order_id_arg0==customerOrder[i].id); .>
         <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<.= customerOrder[i].id .>" aria-controls="collapse_<.= customerOrder[i].id .>" aria-expanded="<.= order_id_arg0==customerOrder[i].id ? 'true' : 'false' .>" class="<.= order_id_arg0==customerOrder[i].id ? '' : 'collapsed' .>">
           Order Information: <.= customerOrder[i].id .> - <.= customerOrder[i].customer_type .> - <.= customerOrder[i].order_status .>
         </a>
@@ -1008,9 +1007,16 @@
 											 customerOrderDetail[d].detail_type=='present-calling-minutes' ? 'alert alert-info' :
 											  customerOrderDetail[d].detail_type=='static-ip' ? 'alert alert-info' :
 											   customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
-											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
+											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' :
+											    customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!='' ? 'alert alert-success' : '' .>">
 								<td data-name="<.= customerOrderDetail[d].id .>_detail_name" data-val="<.= customerOrderDetail[d].detail_name .>" >
+				<. if(customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!=''){ .>
+					<a target="_blank" href="<.= ctx .>/broadband-user/inventory/equip/edit/<.= customerOrderDetail[d].equip_id .>" style="text-decoration:underline;">
 									<.= customerOrderDetail[d].detail_name .>
+					</a>
+				<. } else { .>
+									<.= customerOrderDetail[d].detail_name .>
+				<. } .>
 				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip' || customerOrderDetail[d].detail_type == 'fax'){		.>
 							<br/>
 					(			
@@ -1126,6 +1132,20 @@
 									  	<span class="glyphicon glyphicon-edit"></span>
 									</a>
 								<.
+									}
+									if(customerOrderDetail[d].detail_type=='hardware' || customerOrderDetail[d].detail_type=='hardware-router'){
+								.>
+									<a id="<.= customerOrder[i].id .>" data-detail-id="<.= customerOrderDetail[d].id .>" data-name="attach_equip_2_hardware_<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Attach Equipment to Hardware">
+									  	<span class="glyphicon glyphicon-th-large"></span>
+									</a>
+								<.
+										if(customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!=''){
+								.>
+										<a id="<.= customerOrder[i].id .>" data-detail-id="<.= customerOrderDetail[d].id .>" data-equip-id="<.= customerOrderDetail[d].equip_id .>" data-name="detach_equip_from_hardware_<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Detach Equipment from Hardware">
+										  	<span class="glyphicon glyphicon-fullscreen"></span>
+										</a>
+								<.
+										}
 									}
 									/*if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){*/
 								.>
@@ -2811,6 +2831,114 @@
 		</div>
 		<!-- /.modal -->
 	</form>
+
+	<!-- Attach Equip 2 Hardware Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="attachEquip2HardwareModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="attachEquip2HardwareModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="attachEquip2HardwareModalLabel">
+							<strong>Attach Equip to Hardware</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Detail</label>
+							<div class="col-md-10">
+								<select class="form-control" data-name="equip_details_<.= customerOrder[i].id .>">
+								</select>
+							</div>
+						</div>
+						<h3 class="text-success">Get Equipment(s) By:</h3>
+						<hr/>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Type</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_type_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="router">Router</option>
+									<option value="modem">Modem</option>
+									<option value="touch-pad">Touch Pad</option>
+									<option value="phone">Phone</option>
+									<option value="accessory">Accessory</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Purpose</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_purpose_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="sale-item">Sale Item</option>
+									<option value="gift">Gift</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Status</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_status_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="inactive">Inactive</option>
+									<option value="retrieved">Retrieved</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Name/SN</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" id="<.= customerOrder[i].id .>" data-name="equip_name_sn_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-2 col-md-offset-2">
+								<a id="<.= customerOrder[i].id .>" data-name="get_attachable_equips_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success">Get From Inventory</a>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="attachEquip2HardwareModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Detach Equip from Hardware Modal -->
+	<div class="modal fade" id="detachEquipFromHardwareModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="detachEquipFromHardwareModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="detachEquipFromHardwareModalLabel">
+						<strong>Detach Equip from Hardware</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<h3>Click Retrieved for</h3>
+					<p>
+						If the equipment was retrieved from the customer.
+					</p>
+					<h3>Click Inactive for</h3>
+					<p>
+						If the equipment was miss attached, this is likewise an undo button.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" data-name="detachEquipFromHardwareModalBtn_<.= customerOrder[i].id .>" data-status="retrieved" href="javascript:void(0);" class="btn btn-xs btn-success col-md-offset-2" data-dismiss="modal">Retrieved</a>
+					<a id="<.= customerOrder[i].id .>" data-name="detachEquipFromHardwareModalBtn_<.= customerOrder[i].id .>" data-status="inactive" href="javascript:void(0);" class="btn btn-xs btn-success col-md-offset-4" data-dismiss="modal">Inactive</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
 
 	<!-- Edit detail Modal -->
 	<form class="form-horizontal">

@@ -1,0 +1,88 @@
+<. if (results.length > 0) {.>
+<table class="table" style="font-size: 12px;">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Purpose</th>
+			<th>S/N</th>
+			<th>Status</th>
+			<th>Order Detail Id</th>
+			<th>Warehousing Date</th>
+			<th>Operation</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for(var i = 0; i < results.length; i++) {
+		var equip = results[i];
+	.>
+		<tr class="<.= equip.equip_status=='retrieved' ? 'warning' : 
+						equip.equip_status=='dispatched' ? 'info' : '' .>">
+			<td>
+				<a href="<.= ctx .>/broadband-user/inventory/equip/edit/<.= equip.id .>">
+				<.= equip.equip_name .>
+				</a>
+			</td>
+			<td><.= equip.equip_type .></td>
+			<td><.= equip.equip_purpose .></td>
+			<td><.= equip.equip_sn .></td>
+			<td><.= equip.equip_status .></td>
+			<td>
+				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.= equip.customer_id .>">
+					<.= equip.order_id .>
+				</a>
+			</td>
+			<td><.= equip.warehousing_date_str .></td>
+			<td>
+				<. if(user_role=='system-developer' || user_role=='administrator' || user_role=='accountant'){ .>
+				<a href="javascript:void(0);" id="<.= equip.id .>" data-name="remove_equip_btn" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+				<. } .>
+			</td>
+		</tr>
+	<.}.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+					<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<!-- Remove Equip Modal -->
+<form class="form-horizontal">
+<div class="modal fade" id="removeEquipmentModal" tabindex="-1" role="dialog" aria-labelledby="removeEquipmentModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="removeEquipmentModalLabel">
+					<strong>Remove Specific Equipment Detail</strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<p>Sure To Remove This Equipment Detail?</p>
+			</div>
+			<div class="modal-footer">
+				<a data-name="removeEquipmentModalBtn" class="btn btn-success" data-dismiss="modal">Confirm</a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+</form>
+<!-- /.modal -->
+
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

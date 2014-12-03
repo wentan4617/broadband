@@ -45,6 +45,8 @@ import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Equip;
+import com.tm.broadband.model.EquipLog;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
@@ -61,6 +63,7 @@ import com.tm.broadband.pdf.ApplicationPDFCreator;
 import com.tm.broadband.pdf.OnsitePDFCreator;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.InventoryService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
@@ -80,19 +83,22 @@ public class CRMRestController {
 	private SmserService smserService;
 	private BillingService billingService;
 	private PlanService planService;
+	private InventoryService inventoryService;
 
 	@Autowired
 	public CRMRestController(CRMService crmService,
 			MailerService mailerService, SystemService systemService,
 			SmserService smserService
 			,BillingService billingService
-			,PlanService planService) {
+			,PlanService planService
+			,InventoryService inventoryService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
 		this.billingService = billingService;
 		this.planService =planService;
+		this.inventoryService = inventoryService;
 	}
 
 	@RequestMapping(value = "/broadband-user/crm/customer/sms/send")
@@ -3913,4 +3919,110 @@ public class CRMRestController {
 		map.put("cblPage", cblPage);
 		return map;
 	}
+	
+	
+	/**
+	 * BEGIN Equip
+	 */
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/get", method=RequestMethod.GET)
+	public List<Equip> equipGet(Equip equip){
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("where", "query_without_dispatched");
+		equipQuery.getParams().put("equip_type", !"all".equals(equip.getEquip_type()) ? equip.getEquip_type() : null);
+		equipQuery.getParams().put("equip_purpose", !"all".equals(equip.getEquip_purpose()) ? equip.getEquip_purpose() : null);
+		equipQuery.getParams().put("equip_name_sn", !"all".equals(equip.getEquip_name_sn()) ? equip.getEquip_name_sn() : null);
+		equipQuery.getParams().put("equip_status", !"all".equals(equip.getEquip_status()) ? equip.getEquip_status() : null);
+		List<Equip> equips = this.inventoryService.queryEquips(equipQuery);
+		
+		return equips;
+	}
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/bind", method=RequestMethod.POST)
+	public JSONBean<CustomerOrderDetail> equipBind(CustomerOrderDetail cod,
+			HttpServletRequest req){
+		
+		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
+		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("id", cod.getId());
+		codQuery = this.crmService.queryCustomerOrderDetail(codQuery);
+		if(codQuery.getEquip_id()!=null){
+			json.getErrorMap().put("alert-error", "Please Unbind Order Detail's Binded Equipment First!");
+			return json;
+		}
+		
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.getParams().put("id", cod.getId());
+		codUpdate.setEquip_id(cod.getEquip_id());
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		Equip equipUpdate = new Equip();
+		equipUpdate.getParams().put("id", cod.getEquip_id());
+		equipUpdate.setEquip_status("dispatched");
+		equipUpdate.setOrder_detail_id(cod.getId());
+		this.inventoryService.editEquip(equipUpdate);
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("id", cod.getEquip_id());
+		equipQuery = this.inventoryService.queryEquip(equipQuery);
+		
+		EquipLog equipLogCreate = new EquipLog();
+		equipLogCreate.setEquip_id(cod.getEquip_id());
+		equipLogCreate.setLog_date(new Date());
+		equipLogCreate.setOper_type("DISPATCHED");
+		String preDispatch = "<strong>DISPATCHED=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Equipment Detail:</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"].";
+		equipLogCreate.setLog_desc(preDispatch);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		equipLogCreate.setUser_id(userSession.getId());
+		this.inventoryService.createEquipLog(equipLogCreate);
+		
+		json.getSuccessMap().put("alert-success", "Equipment Binded To Specified Order Detail!");
+		
+		return json;
+	}
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/unbind", method=RequestMethod.POST)
+	public JSONBean<CustomerOrderDetail> equipUnbind(CustomerOrderDetail cod,
+			HttpServletRequest req){
+		
+		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
+		
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.getParams().put("id", cod.getId());
+		codUpdate.getParams().put("equip_id_null", true);
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("id", cod.getEquip_id());
+		equipQuery = this.inventoryService.queryEquip(equipQuery);
+		
+		EquipLog equipLogCreate = new EquipLog();
+		equipLogCreate.setEquip_id(cod.getEquip_id());
+		equipLogCreate.setLog_date(new Date());
+		equipLogCreate.setOper_type("retrieved".equals(cod.getEquip_status()) ? "RETRIEVED" : "INACTIVE");
+		String preDispatch = "<strong>"+("retrieved".equals(cod.getEquip_status()) ? "RETRIEVED" : "INACTIVE")+"=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Pre "+("retrieved".equals(cod.getEquip_status()) ? "Retrieved" : "Inactive")+":</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"] - [order_id="+cod.getOrder_id()+"].";
+		equipLogCreate.setLog_desc(preDispatch);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		equipLogCreate.setUser_id(userSession.getId());
+		this.inventoryService.createEquipLog(equipLogCreate);
+		
+		Equip equipUpdate = new Equip();
+		equipUpdate.setEquip_status(cod.getEquip_status());
+		equipUpdate.getParams().put("id", cod.getEquip_id());
+		equipUpdate.getParams().put("order_detail_id", cod.getId());
+		equipUpdate.getParams().put("order_detail_id_null", true);
+		this.inventoryService.editEquip(equipUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Equipment Unbinded From Specified Order Detail!");
+		
+		return json;
+	}
+	
+	/**
+	 * END Equip
+	 */
 }
