@@ -379,9 +379,27 @@
 					$('#attachEquip2HardwareModal_'+this.id).modal('show');
 				});
 				
-				$('input[data-name="equip_name_sn_'+co[i].id+'"]').keydown('',function(){
+				$('input[data-name="equip_name_sn_'+co[i].id+'"]').keydown(function(event){
 					if(event.keyCode == 13){
-						$('a[data-name="get_attachable_equips_'+this.id+'"]').click('asdasdasd');
+						var This = this;
+						var equip_type = $('select[data-name="equip_type_'+this.id+'"]').val();
+						var equip_purpose = $('select[data-name="equip_purpose_'+this.id+'"]').val();
+						var equip_status = $('select[data-name="equip_status_'+this.id+'"]').val();
+						var equip_name_sn = $('input[data-name="equip_name_sn_'+this.id+'"]').val();
+						var data = {
+							'equip_type':equip_type,
+							'equip_purpose':equip_purpose,
+							'equip_status':equip_status,
+							'equip_name_sn':equip_name_sn!=null && equip_name_sn!='' ? equip_name_sn : 'all'
+						};
+						$.get(ctx+'/broadband-user/inventory/equip/get', data, function(equips){
+							var equipOptions = '';
+							for(var es=0; es<equips.length; es++){
+								equipOptions+='<option value="'+equips[es].id+'">name:'+equips[es].equip_name+' - type:'+equips[es].equip_type+' - purpose:'+equips[es].equip_purpose+' - status:'+equips[es].equip_status+' - sn:'+equips[es].equip_sn+'</option>';
+							}
+							$('select[data-name="equip_details_'+This.id+'"]').html(equipOptions);
+							$('a[data-name="attachEquip2HardwareModalBtn_'+This.id+'"]').click();
+						})
 			            return false;
 			        }
 				});
