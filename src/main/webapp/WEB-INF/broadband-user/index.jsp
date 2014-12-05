@@ -273,6 +273,9 @@ hr {
 		
 		<!-- END LEFT THIRD COLUMN -->
 		
+		
+		<!-- BEGIN LEFT FOURTH COLUMN -->
+		
 			<div class="row">
 			
 				<div class="col-md-12">
@@ -299,8 +302,6 @@ hr {
 				                    	</li>
 				                    </ul>
 						  		</div>
-						  		<div class="col-md-6">
-						  		</div>
 					  		</div>
 					  	</div>
 					</div>
@@ -309,6 +310,9 @@ hr {
 				</div>
 				
 			</div>
+		
+		
+		<!-- END LEFT FOURTH COLUMN -->
 			
 		</div>
 		<!-- // left column  -->
@@ -425,7 +429,7 @@ hr {
 		<!-- END RIGHT SECOND COLUMN -->
 		
 		
-		<!-- BEGIN RIGHT SECOND COLUMN -->
+		<!-- BEGIN RIGHT THIRD COLUMN -->
 		
 			<!-- System Module -->
 			<div class="panel panel-success third-row-panel-success">
@@ -509,7 +513,48 @@ hr {
 			</div>
 			<!-- // System Module -->
 		
-			<!-- END RIGHT SECOND COLUMN -->
+			<!-- END RIGHT THIRD COLUMN -->
+		
+		
+			<!-- BEGIN LEFT FOURTH COLUMN -->
+		
+			<div class="row">
+			
+				<div class="col-md-12">
+					
+					<!-- Tutorial Module -->
+					<div class="panel panel-success">
+				  		<div class="panel-heading">
+				  			<h3 class="panel-title">
+				  				<strong class="text-success">Tutorial</strong>
+				  			</h3>
+				  		</div>
+					  	<div class="panel-body">
+					  		<p>CyberPark's Management System's User Manual.</p>
+					  		<div class="row">
+						  		<div class="col-md-6">
+				                    <ul class="list-unstyled">
+				                    	<li>
+				                    		<span class="glyphicon glyphicon-facetime-video" ></span>
+				                    		<a href='${ctx }/broadband-user/tutorial/video/view'>View Videos</a>
+				                    	</li>
+				                    	<li>
+				                    		<span class="glyphicon glyphicon-facetime-video" ></span>
+				                    		<a href='${ctx }/broadband-user/tutorial/manual/view'>View Manuals</a>
+				                    	</li>
+				                    </ul>
+						  		</div>
+					  		</div>
+					  	</div>
+					</div>
+					<!-- // Tutorial Module -->
+					
+				</div>
+				
+			</div>
+		
+		
+		<!-- END LEFT FOURTH COLUMN -->
 		
 		</div>
 		<!-- // right column -->

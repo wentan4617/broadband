@@ -3972,7 +3972,7 @@ public class CRMRestController {
 		equipLogCreate.setEquip_id(cod.getEquip_id());
 		equipLogCreate.setLog_date(new Date());
 		equipLogCreate.setOper_type("DISPATCHED");
-		String preDispatch = "<strong>DISPATCHED=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Equipment Detail:</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"].";
+		String preDispatch = "<strong>DISPATCHED=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Equipment Detail:</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"] - [order_id="+codQuery.getOrder_id()+"].";
 		equipLogCreate.setLog_desc(preDispatch);
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");

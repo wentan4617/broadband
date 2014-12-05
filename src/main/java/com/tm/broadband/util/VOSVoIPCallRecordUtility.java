@@ -34,7 +34,7 @@ public class VOSVoIPCallRecordUtility {
 				if(header){ header=false; continue; }
 				String arr[] = line.split(",");
 				if(arr.length > callCostIndex){
-					if(arr[callCostIndex] != null && !"".equals(arr[callCostIndex].trim()) && Integer.parseInt(arr[callCostIndex])<=0){
+					if(arr[callCostIndex] != null && !"".equals(arr[callCostIndex].trim()) && Double.parseDouble(arr[callCostIndex])<=0){
 						continue;
 					}
 				}

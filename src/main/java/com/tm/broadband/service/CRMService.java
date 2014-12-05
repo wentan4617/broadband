@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -4259,6 +4260,12 @@ public class CRMService {
 				customerOrder.setInviter_rate(customer.getIr().getInviter_customer_rate());
 				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());
 			} else if (customer.getIr().isIs_user()) {
+				User userQuery = this.userMapper.selectUserById(Integer.parseInt(customer.getIr().getPromotion_code()));
+				if("sales".equals(userQuery.getUser_role()) && "agent".equals(userQuery.getUser_role())){
+					customerOrder.setSale_id(userQuery.getId());
+				} else {
+					customerOrder.setUser_id(userQuery.getId());
+				}
 				customerOrder.setInviter_user_id(Integer.parseInt(customer.getIr().getPromotion_code()));
 				customerOrder.setInviter_rate(customer.getIr().getInviter_user_rate());
 				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());

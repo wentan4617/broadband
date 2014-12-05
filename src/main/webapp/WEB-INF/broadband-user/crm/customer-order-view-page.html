@@ -22,15 +22,17 @@
 					   checklist_progress<60 ? 'progress-mid' :
 					   checklist_progress<80 ? 'progress-high' :
 					   checklist_progress<100 ? 'progress-higher' : '' .>">
-			<td><.=co.id.></td>
 			<td>
 				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.=co.customer_id .>">
+				<.=co.id.>
+				</a>
+			</td>
+			<td>
 				<. if (co.customer_type == 'personal') {.>
 					<.=co.first_name.> <.=co.last_name.>
 				<.} else if (co.customer_type == 'business'){.>
 					<.=co.org_name == null ? co.id : co.org_name .>
 				<.}.>
-				</a>
 			</td>
 			<td><.=co.customer_type .></td>
 			<td><.=co.address .></td>

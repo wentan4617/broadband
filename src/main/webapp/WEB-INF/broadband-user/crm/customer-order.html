@@ -432,6 +432,7 @@
 				</p>
 			</div>
 			<div class="col-md-3">
+				<. if(user_role == 'system-developer'){ .>
 				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
 				<. if(customerOrder[i].sale_id==null || customerOrder[i].sale_id==''){ .>
 				<option value=""></option>
@@ -444,9 +445,12 @@
 				<. 		}
 					} .>
 				</select>
+				<. } .>
 			</div>
 			<div class="col-md-3">
+				<. if(user_role == 'system-developer'){ .>
 				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_belongs_to_edit" >Update Submitted By</a>
+				<. } .>
 			</div>
 		</div>
 		<!-- END This Order Belongs To -->
@@ -1081,7 +1085,7 @@
 										|| customerOrderDetail[d].detail_type=='plan-topup'
 									){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-id="<.= customerOrderDetail[d].id .>" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
 									  	<span class="glyphicon glyphicon-edit"></span> 
 									</a>
 								<.
