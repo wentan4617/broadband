@@ -48,13 +48,17 @@ public class InventoryRestController {
 	 * BEGIN Equip
 	 */
 	
-	@RequestMapping("/broadband-user/inventory/equip/view/{pageNo}")
+	@RequestMapping("/broadband-user/inventory/equip/view/{pageNo}/{equip_status}")
 	public Page<Equip> equipView(Model model,
-			@PathVariable("pageNo") int pageNo){
+			@PathVariable("pageNo") int pageNo,
+			@PathVariable("equip_status") String equip_status){
 		
 		Page<Equip> page = new Page<Equip>();
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
+		if(!"all".equals(equip_status)){
+			page.getParams().put("equip_status", equip_status);
+		}
 		page.getParams().put("orderby", "order by warehousing_date desc");
 		this.inventoryService.queryEquipsByPage(page);
 		

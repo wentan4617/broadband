@@ -11,12 +11,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Equip;
 import com.tm.broadband.model.EquipLog;
 import com.tm.broadband.model.EquipPattern;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.InventoryService;
@@ -46,6 +48,21 @@ public class InventoryController {
 	@RequestMapping("/broadband-user/inventory/equip/view")
 	public String toEquipView(Model model){
 		model.addAttribute("equipActive", "active");
+		
+		Page<Equip> page = new Page<Equip>();
+		int allSum = this.inventoryService.queryEquipsSumByPage(page);
+		page.getParams().put("equip_status", "inactive");
+		int inactiveSum = this.inventoryService.queryEquipsSumByPage(page);
+		page.getParams().put("equip_status", "dispatched");
+		int dispatchedSum = this.inventoryService.queryEquipsSumByPage(page);
+		page.getParams().put("equip_status", "retrieved");
+		int retrievedSum = this.inventoryService.queryEquipsSumByPage(page);
+		
+		model.addAttribute("allSum", allSum);
+		model.addAttribute("inactiveSum", inactiveSum);
+		model.addAttribute("dispatchedSum", dispatchedSum);
+		model.addAttribute("retrievedSum", retrievedSum);
+		
 		return "broadband-user/inventory/equip-view";
 	}
 	
@@ -89,7 +106,8 @@ public class InventoryController {
 	@RequestMapping("/broadband-user/inventory/equip/update")
 	public String equipUpdate(Model model,
 			@ModelAttribute("equip") Equip equip,
-			HttpServletRequest req){
+			HttpServletRequest req,
+			RedirectAttributes attr){
 		
 		Equip equipQuery = new Equip();
 		equipQuery.getParams().put("id", equip.getId());
@@ -112,16 +130,17 @@ public class InventoryController {
 		this.inventoryService.createEquipLog(equipLog);
 		
 
-		model.addAttribute("equipActive", "active");
-		model.addAttribute("success", "Specific Equipment Updated!");
+		attr.addFlashAttribute("equipActive", "active");
+		attr.addFlashAttribute("success", "Specific Equipment Updated!");
 
-		return "broadband-user/inventory/equip-view";
+		return "redirect:/broadband-user/inventory/equip/view";
 	}
 	
 	@RequestMapping("/broadband-user/inventory/equip/delete/{equip_id}")
 	public String equipUpdate(Model model,
 			@PathVariable("equip_id") Integer equip_id,
-			HttpServletRequest req){
+			HttpServletRequest req,
+			RedirectAttributes attr){
 		
 
 		Equip equipQuery = new Equip();
@@ -150,10 +169,10 @@ public class InventoryController {
 			
 		}
 
-		model.addAttribute("equipActive", "active");
-		model.addAttribute("success", "Specific Equipment Removed!");
+		attr.addFlashAttribute("equipActive", "active");
+		attr.addFlashAttribute("success", "Specific Equipment Removed!");
 
-		return "broadband-user/inventory/equip-view";
+		return "redirect:/broadband-user/inventory/equip/view";
 	}
 	
 	/**
@@ -195,28 +214,30 @@ public class InventoryController {
 	@RequestMapping("/broadband-user/inventory/equip/pattern/update")
 	public String equipPatternUpdate(Model model,
 			@ModelAttribute("equipPattern") EquipPattern equipPattern,
-			HttpServletRequest req){
+			HttpServletRequest req,
+			RedirectAttributes attr){
 		
 		equipPattern.getParams().put("id", equipPattern.getId());
 		this.inventoryService.editEquipPattern(equipPattern);
 
-		model.addAttribute("equipPatternActive", "active");
-		model.addAttribute("success", "Specific Equipment Pattern Updated!");
+		attr.addFlashAttribute("equipPatternActive", "active");
+		attr.addFlashAttribute("success", "Specific Equipment Pattern Updated!");
 
-		return "broadband-user/inventory/equip-view";
+		return "redirect:/broadband-user/inventory/equip/view";
 	}
 	
 	@RequestMapping("/broadband-user/inventory/equip/pattern/delete/{equip_id}")
 	public String equipPatternUpdate(Model model,
-			@PathVariable("equip_pattern_id") Integer equip_pattern_id){
+			@PathVariable("equip_pattern_id") Integer equip_pattern_id,
+			RedirectAttributes attr){
 		
 		
 		this.inventoryService.removeEquipPatternById(equip_pattern_id);
 
-		model.addAttribute("equipPatternActive", "active");
-		model.addAttribute("success", "Specific Equipment Pattern Removed!");
+		attr.addFlashAttribute("equipPatternActive", "active");
+		attr.addFlashAttribute("success", "Specific Equipment Pattern Removed!");
 
-		return "broadband-user/inventory/equip-view";
+		return "redirect:/broadband-user/inventory/equip/view";
 	}
 	
 	/**

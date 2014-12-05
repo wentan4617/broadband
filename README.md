@@ -19,6 +19,12 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.7.6 2014-12-05
+ 
+* 在Equipment列表界面添加一个按钮组，点击以列出指定状态的设备.(steven)
+* tm_customer_order_detail表增加detail_cost字段，记录detail成本.(steven)
+ 
+ 
 demand version 1.7.6 2014-12-02
  
 * [由于服务器迁移，需要出order_id为700327的账单.](steven)
@@ -403,8 +409,8 @@ demand version 2.5.5 2014-09-12
 
 demand version 2.5.2 2014-09-11
 
-* 在Chorus账单里查找出不再服务内的pstn及asid.
-* customer 列表界面添加通过ASID查询的功能.
+* [在Chorus账单里查找出不再服务内的pstn及asid.](steven)
+* [customer 列表界面添加通过ASID查询的功能.](steven)
 
 
 demand version 2.5.2 2014-09-10

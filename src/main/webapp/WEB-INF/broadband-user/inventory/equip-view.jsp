@@ -29,7 +29,24 @@
 					</h4>
 				</div>
 				<div class="panel-body">
-				
+			
+					<div class="btn-group btn-group-sm">
+						<button data-name="query_equip_by_status_btn" data-status="all" class="btn btn-default active">
+							<strong>All</strong>&nbsp;<span class="badge">${allSum}</span>
+						</button>
+						<button data-name="query_equip_by_status_btn" data-status="inactive" class="btn btn-default">
+							<strong>Inactive</strong>&nbsp;<span class="badge">${inactiveSum}</span>
+						</button>
+						<button data-name="query_equip_by_status_btn" data-status="dispatched" class="btn btn-default">
+							<strong>Dispatched</strong>&nbsp;<span class="badge">${dispatchedSum}</span>
+						</button>
+						<button data-name="query_equip_by_status_btn" data-status="retrieved" class="btn btn-default">
+							<strong>Retrieved</strong>&nbsp;<span class="badge">${retrievedSum}</span>
+						</button>
+					</div>
+					
+					<br/><br/>
+					
 					<!-- Nav tabs -->
 					<ul class="nav nav-tabs">
 						<li class="${equipActive}"><a href="#equip_view" data-toggle="tab"><strong>Equipment</strong></a></li>

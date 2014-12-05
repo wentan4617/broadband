@@ -57,6 +57,10 @@ public class InventoryService {
 		page.setResults(this.equipMapper.selectEquipsByPage(page));
 		return page;
 	}
+	
+	public int queryEquipsSumByPage(Page<Equip> page){
+		return this.equipMapper.selectEquipsSum(page);
+	}
 
 	@Transactional
 	public void editEquip(Equip e){

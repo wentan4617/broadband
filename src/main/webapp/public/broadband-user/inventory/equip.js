@@ -1,4 +1,14 @@
 (function($){
+	
+	// SWITCH QUERY BY STATUS GROUP BUTTONS
+	$('button[data-name="query_equip_by_status_btn"]').click(function(){
+		$('button[data-name="query_equip_by_status_btn"]').removeClass('active');
+		$(this).addClass('active');
+		$.getEquipPage(1, $(this).attr('data-status'));
+	});
+	
+	
+	
 		
 	// ADD/EDIT EQUIPMENT
 	$('a[data-name="add_equip_btn"]').click(function(){
@@ -32,7 +42,13 @@
 		}, 'json');
 	});
 	$('#addEquipmentModal').on('hidden.bs.modal', function(){
-		$.getEquipPage(1);
+		var equip_status;
+		$('button[data-name="query_equip_by_status_btn"]').each(function(){
+			if($(this).hasClass('active')){
+				equip_status = $(this).attr('data-status');
+			}
+		});
+		$.getEquipPage(1, equip_status);
 		$.getEquipPatternPage(1);
 	});
 
@@ -55,19 +71,25 @@
 		}, 'json');
 	});
 	$('#addEquipPatternModal').on('hidden.bs.modal', function(){
-		$.getEquipPage(1);
+		var equip_status;
+		$('button[data-name="query_equip_by_status_btn"]').each(function(){
+			if($(this).hasClass('active')){
+				equip_status = $(this).attr('data-status');
+			}
+		});
+		$.getEquipPage(1, equip_status);
 		$.getEquipPatternPage(1);
 	});
 	
 	// EQUIP PAGE
-	$.getEquipPage = function(pageNo) {
-		$.get(ctx+'/broadband-user/inventory/equip/view/' + pageNo, function(page){
+	$.getEquipPage = function(pageNo, equip_status) {
+		$.get(ctx+'/broadband-user/inventory/equip/view/' + pageNo + '/' + equip_status, function(page){
 			page.ctx = ctx;
 			page.user_role = user_role;
 	   		var $div = $('#equip_view');
 	   		$div.html(tmpl('equip_tmpl', page));
 	   		$div.find('tfoot a').click(function(){
-	   			$.getEquipPage($(this).attr('data-pageNo'));
+	   			$.getEquipPage($(this).attr('data-pageNo'), equip_status);
 			});
 	   		
 	   		$('a[data-name="remove_equip_btn"]').click(function(){
@@ -83,12 +105,12 @@
 	   			}, 'json');
 	   		});
 	   		$('#removeEquipmentModal').on('hidden.bs.modal', function(){
-	   			$.getEquipPage(1);
+	   			$.getEquipPage(1, equip_status);
 	   		});
 	   		
 	   	}, 'json');
 	}
-	$.getEquipPage(1);
+	$.getEquipPage(1, 'all');
 	
 	// EQUIP PATTERN PAGE
 	$.getEquipPatternPage = function(pageNo) {
