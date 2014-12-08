@@ -2471,17 +2471,13 @@ public class CRMService {
 					continue;
 				}
 				
-				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && co.getCustomer_type().equals("business")) {
+				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && (co.getIs_ddpay()!=null && co.getIs_ddpay()==true)) {
 					
 					// if is next invoice then plus one month else plus unit month(s)
-					int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
+					int nextInvoiceMonth = 1;
 					int nextInvoiceDay = -7;
 					Calendar calNextInvoiceDay = Calendar.getInstance();
-					calNextInvoiceDay.setTime(isFirst 
-								? (co.getOrder_using_start() != null 
-								? co.getOrder_using_start() 
-								: new Date()) 
-						: co.getNext_invoice_create_date_flag());
+					calNextInvoiceDay.set(Calendar.DAY_OF_MONTH, 14);
 					calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
 					// update customer order's next invoice create day flag begin
 					co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());

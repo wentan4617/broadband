@@ -19,6 +19,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer order_id;
 	private String detail_name;
 	private String detail_desc;
+	private Double detail_cost;
 	private Double detail_price;
 	private Long detail_data_flow;
 	private String detail_plan_status;
@@ -222,6 +223,14 @@ public class CustomerOrderDetail implements Serializable {
 
 	public void setDetail_desc(String detail_desc) {
 		this.detail_desc = detail_desc;
+	}
+
+	public Double getDetail_cost() {
+		return detail_cost;
+	}
+
+	public void setDetail_cost(Double detail_cost) {
+		this.detail_cost = detail_cost;
 	}
 
 	public Double getDetail_price() {

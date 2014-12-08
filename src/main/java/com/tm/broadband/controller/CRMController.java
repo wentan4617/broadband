@@ -58,6 +58,7 @@ import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.Notification;
 import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
+import com.tm.broadband.model.ProvisionLog;
 import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.User;
 import com.tm.broadband.paymentexpress.GenerateRequest;
@@ -798,161 +799,158 @@ public class CRMController {
 		return "redirect:" + redirectUrl;
 	}
 	
-//	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/result/{id}/{redirect_from}/{invoice_status}")
-//	public String toSignupPayment(Model model
-//			,@PathVariable("id") Integer id
-//			,@PathVariable("redirect_from") String redirect_from
-//			,@PathVariable("invoice_status") String invoice_status
-//			, RedirectAttributes attr
-//			,@RequestParam(value = "result", required = true) String result
-//			,SessionStatus status
-//			,HttpServletRequest req
-//			) throws Exception {
-//		
-//		Response responseBean = null;
-//		CustomerInvoice customerInvoice = null;
-//		CustomerOrder customerOrder = null;
-//		Integer customer_id = 0;
-//		Integer order_id = 0;
-//		String txSort = "";
-//		
-//		if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
-//			customerInvoice = this.crmService.queryCustomerInvoiceById(id);
-//			customer_id = customerInvoice.getCustomer_id();
-//			order_id = customerInvoice.getOrder_id();
-//			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerInvoice.getOrder_id());
-//		} else if("agent_ordering".equals(redirect_from)) {
-//			customerOrder = this.crmService.queryCustomerOrderById(id);
-//			customer_id = customerOrder.getCustomer_id();
-//			order_id = customerOrder.getId();
-//			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerOrder.getId());
-//		}
-//		
-//		Customer cQuery = new Customer();
-//		cQuery.getParams().put("id", customer_id);
-//		Customer customer = this.crmService.queryCustomer(cQuery);
-//
-//		if (result != null)
-//			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
-//
-//		if (responseBean != null && responseBean.getSuccess().equals("1")) {
-//
-//			CustomerTransaction customerTransaction = new CustomerTransaction();
-//			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-//			customerTransaction.setAuth_code(responseBean.getAuthCode());
-//			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-//			customerTransaction.setCard_name(responseBean.getCardName());
-//			customerTransaction.setCard_number(responseBean.getCardNumber());
-//			customerTransaction.setClient_info(responseBean.getClientInfo());
-//			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-//			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-//			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-//			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-//			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-//			customerTransaction.setResponse_text(responseBean.getResponseText());
-//			customerTransaction.setSuccess(responseBean.getSuccess());
-//			customerTransaction.setTxnMac(responseBean.getTxnMac());
-//			customerTransaction.setTransaction_type(responseBean.getTxnType());
-//			customerTransaction.setCustomer_id(customer.getId());
-//			customerTransaction.setTransaction_sort(txSort);
-//			customerTransaction.setOrder_id(order_id);
-//			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
-//			
-//			if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
-//				
-//				customerTransaction.setInvoice_id(customerInvoice.getId());
-//				
-//				customerInvoice.setStatus("paid");
-//				customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
-//				customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
-//				customerInvoice.getParams().put("id", id);
-//				this.crmService.editCustomerInvoice(customerInvoice);
-//				
-//				this.crmService.createInvoicePDFByInvoiceID(id, false);
-//				
-//				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
-//				ApplicationEmail applicationEmail = new ApplicationEmail();
-//				CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-//				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-//				customer.setOrganization(org);
-//				
-//				// call mail at value retriever
-//				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//				applicationEmail.setAddressee(customer.getEmail());
-//				applicationEmail.setSubject(notification.getTitle());
-//				applicationEmail.setContent(notification.getContent());
-//				// binding attachment name & path to email
-//				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-//				
-//				// get sms register template from db
-//				notification = this.crmService.queryNotificationBySort("payment", "sms");
-//				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
-//				// send sms to customer's mobile phone
-//				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
-//				
-//				notification = null;
-//				applicationEmail = null;
-//				companyDetail = null;
-//				org = null;
-//				
-//			} else if("agent_ordering".equals(redirect_from)) {
-//				
-//				customer.setBalance(TMUtils.bigAdd(customer.getBalance()==null ? 0d : customer.getBalance(), customerTransaction.getAmount()));
-//				customer.getParams().put("id", customer.getId());
-//				this.crmService.editCustomer(customer);
-//				
-//				customer.setCustomerOrder(customerOrder);
-//				
-//				CustomerOrder co = new CustomerOrder();
-//				Organization org = this.crmService.queryOrganizationByCustomerId(customer.getId());
-//				customer.setOrganization(org);
-//				String receiptPath = this.crmService.createReceiptPDFByDetails(customer);
-//				co.setReceipt_pdf_path(receiptPath);
-//				if("pending".equals(customer.getCustomerOrder().getOrder_status())
-//				  || "pending-warning".equals(customer.getCustomerOrder().getOrder_status())
-//				  || "void".equals(customer.getCustomerOrder().getOrder_status())){
-//					co.setOrder_status("paid");
-//				} else if("ordering-pending".equals(customer.getCustomerOrder().getOrder_status())) {
-//					co.setOrder_status("ordering-paid");
-//				}
-//				
-//				User user = (User) req.getSession().getAttribute("userSession");
-//				
-//				ProvisionLog pl = new ProvisionLog();
-//				pl.setUser_id(user.getId());
-//				pl.setProcess_datetime(new Date());
-//				pl.setOrder_sort("customer-order");
-//				pl.setOrder_id_customer(id);
-//				pl.setProcess_way(customer.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
-//				co.getParams().put("id", id);
-//				this.crmService.editCustomerOrder(co, pl);
-//				
-//			}
-//			
-//			this.crmService.createCustomerTransaction(customerTransaction);
-//			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
-//			
-//		} else {
-//			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
-//		}
-//		
-//		responseBean = null;
-//		customerInvoice = null;
-//		Integer customerId = customer.getId();
-//		customer = null;
-//		
-//		String url = "";
-//		
-//		if("crm_invoice".equals(redirect_from)){
-//			url = "redirect:/broadband-user/crm/customer/edit/"+customerId;
-//		} else if("agent_invoice".equals(redirect_from)){
-//			url = "redirect:/broadband-user/agent/billing/invoice/view/1/"+invoice_status;
-//		} else if("agent_ordering".equals(redirect_from)){
-//			url = "redirect:/broadband-user/sale/online/ordering/view/1/0";
-//		}
-//		
-//		return url;
-//	}
+	@RequestMapping(value = "/broadband-user/crm/customer/invoice/payment/credit-card/result/{id}/{redirect_from}/{invoice_status}")
+	public String toSignupPayment(Model model
+			,@PathVariable("id") Integer id
+			,@PathVariable("redirect_from") String redirect_from
+			,@PathVariable("invoice_status") String invoice_status
+			, RedirectAttributes attr
+			,@RequestParam(value = "result", required = true) String result
+			,SessionStatus status
+			,HttpServletRequest req
+			) throws Exception {
+		
+		Response responseBean = null;
+		CustomerInvoice customerInvoice = null;
+		CustomerOrder customerOrder = null;
+		Integer customer_id = 0;
+		Integer order_id = 0;
+		String txSort = "";
+		
+		if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
+			customerInvoice = this.crmService.queryCustomerInvoiceById(id);
+			customer_id = customerInvoice.getCustomer_id();
+			order_id = customerInvoice.getOrder_id();
+			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerInvoice.getOrder_id());
+		} else if("agent_ordering".equals(redirect_from)) {
+			CustomerOrder coQuery = new CustomerOrder();
+			coQuery.getParams().put("id", id);
+			customerOrder = this.crmService.queryCustomerOrder(coQuery);
+			customer_id = customerOrder.getCustomer_id();
+			order_id = customerOrder.getId();
+			txSort = this.crmService.queryCustomerOrderDetailGroupByOrderId(customerOrder.getId());
+		}
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		Customer customer = this.crmService.queryCustomer(cQuery);
+
+		if (result != null)
+			responseBean = PxPay.ProcessResponse(PayConfig.PxPayUserId, PayConfig.PxPayKey, result, PayConfig.PxPayUrl);
+
+		if (responseBean != null && responseBean.getSuccess().equals("1")) {
+
+			CustomerTransaction customerTransaction = new CustomerTransaction();
+			customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setAuth_code(responseBean.getAuthCode());
+			customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+			customerTransaction.setCard_name(responseBean.getCardName());
+			customerTransaction.setCard_number(responseBean.getCardNumber());
+			customerTransaction.setClient_info(responseBean.getClientInfo());
+			customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+			customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+			customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+			customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+			customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+			customerTransaction.setResponse_text(responseBean.getResponseText());
+			customerTransaction.setSuccess(responseBean.getSuccess());
+			customerTransaction.setTxnMac(responseBean.getTxnMac());
+			customerTransaction.setTransaction_type(responseBean.getTxnType());
+			customerTransaction.setCustomer_id(customer.getId());
+			customerTransaction.setTransaction_sort(txSort);
+			customerTransaction.setOrder_id(order_id);
+			customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+			
+			if("crm_invoice".equals(redirect_from) || "agent_invoice".equals(redirect_from)){
+				
+				customerTransaction.setInvoice_id(customerInvoice.getId());
+				
+				customerInvoice.setStatus("paid");
+				customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
+				customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+				customerInvoice.getParams().put("id", id);
+				this.crmService.editCustomerInvoice(customerInvoice);
+				
+				this.crmService.createInvoicePDFByInvoiceID(id, false);
+				
+				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+				ApplicationEmail applicationEmail = new ApplicationEmail();
+				CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+				
+				// call mail at value retriever
+				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+				applicationEmail.setAddressee(customer.getEmail());
+				applicationEmail.setSubject(notification.getTitle());
+				applicationEmail.setContent(notification.getContent());
+				// binding attachment name & path to email
+				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+				
+				// get sms register template from db
+				notification = this.crmService.queryNotificationBySort("payment", "sms");
+				MailRetriever.mailAtValueRetriever(notification, customer, customerInvoice, companyDetail);
+				// send sms to customer's mobile phone
+				this.smserService.sendSMSByAsynchronousMode(customer.getCellphone(), notification.getContent());
+				
+				notification = null;
+				applicationEmail = null;
+				companyDetail = null;
+				
+			} else if("agent_ordering".equals(redirect_from)) {
+				
+				customer.setBalance(TMUtils.bigAdd(customer.getBalance()==null ? 0d : customer.getBalance(), customerTransaction.getAmount()));
+				customer.getParams().put("id", customer.getId());
+				this.crmService.editCustomer(customer);
+				
+				customer.setCustomerOrder(customerOrder);
+				
+				CustomerOrder co = new CustomerOrder();
+				String receiptPath = this.crmService.createReceiptPDFByDetails(customerOrder);
+				co.setReceipt_pdf_path(receiptPath);
+				if("pending".equals(customer.getCustomerOrder().getOrder_status())
+				  || "pending-warning".equals(customer.getCustomerOrder().getOrder_status())
+				  || "void".equals(customer.getCustomerOrder().getOrder_status())){
+					co.setOrder_status("paid");
+				} else if("ordering-pending".equals(customer.getCustomerOrder().getOrder_status())) {
+					co.setOrder_status("ordering-paid");
+				}
+				
+				User user = (User) req.getSession().getAttribute("userSession");
+				
+				ProvisionLog pl = new ProvisionLog();
+				pl.setUser_id(user.getId());
+				pl.setProcess_datetime(new Date());
+				pl.setOrder_sort("customer-order");
+				pl.setOrder_id_customer(id);
+				pl.setProcess_way(customer.getCustomerOrder().getOrder_status()+" to "+co.getOrder_status()+" receipt");
+				co.getParams().put("id", id);
+				this.crmService.editCustomerOrder(co, pl);
+				
+			}
+			
+			this.crmService.createCustomerTransaction(customerTransaction);
+			attr.addFlashAttribute("success", "PAYMENT "+responseBean.getResponseText());
+			
+		} else {
+			attr.addFlashAttribute("error", "PAYMENT "+responseBean.getResponseText());
+		}
+		
+		responseBean = null;
+		customerInvoice = null;
+		Integer customerId = customer.getId();
+		customer = null;
+		
+		String url = "";
+		
+		if("crm_invoice".equals(redirect_from)){
+			url = "redirect:/broadband-user/crm/customer/edit/"+customerId;
+		} else if("agent_invoice".equals(redirect_from)){
+			url = "redirect:/broadband-user/agent/billing/invoice/view/1/"+invoice_status;
+		} else if("agent_ordering".equals(redirect_from)){
+			url = "redirect:/broadband-user/sale/online/ordering/view/1/0";
+		}
+		
+		return url;
+	}
 	
 	
 	

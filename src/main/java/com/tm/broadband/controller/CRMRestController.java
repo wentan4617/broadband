@@ -679,6 +679,26 @@ public class CRMRestController {
 	}
 	// END Product Hardwares
 
+	// BEGIN Product Hardware Type
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/hardware_type")
+	public JSONBean<Hardware> doProductAccessory(Model model,
+			@RequestParam("hardware_type") String hardware_type,
+			HttpServletRequest req) {
+
+		JSONBean<Hardware> json = new JSONBean<Hardware>();
+		
+		Hardware hardwareQuery = new Hardware();
+		hardwareQuery.getParams().put("hardware_type", hardware_type);
+		
+		List<Hardware> hardwares = this.planService.queryHardwares(hardwareQuery);
+		
+		json.setModels(hardwares);		
+		
+		return json;
+		
+	}
+	// END Product Hardware Type
+
 	// BEGIN Add Product
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/create", method = RequestMethod.POST)
 	public JSONBean<String> doProductCreate(Model model,
@@ -731,9 +751,31 @@ public class CRMRestController {
 			codCreate.setOrder_id(order_id);
 			codCreate.setDetail_unit(product_unit);
 			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_cost(hardware.getHardware_cost()!=null ? hardware.getHardware_cost() : 0d);
 			codCreate.setDetail_price(hardware.getHardware_price());
 			codCreate.setDetail_desc(hardware.getHardware_desc());
 			codCreate.setDetail_type("hardware-router");
+			codCreate.setIs_post(0);
+			codCreate.setUser_id(user.getId());
+			
+			this.crmService.createCustomerOrderDetail(codCreate);
+			
+			msg = "New Hardware has added to related Order. Order#"+order_id;
+			
+		} else if("accessory|touch-pad".contains(product_type)){
+			
+			Hardware hardwareQuery = new Hardware();
+			hardwareQuery.getParams().put("id", product_id);
+			Hardware hardware = this.planService.queryHardwareById(product_id);
+			
+			CustomerOrderDetail codCreate = new CustomerOrderDetail();
+			codCreate.setOrder_id(order_id);
+			codCreate.setDetail_unit(product_unit);
+			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_cost(hardware.getHardware_cost()!=null ? hardware.getHardware_cost() : 0d);
+			codCreate.setDetail_price(hardware.getHardware_price());
+			codCreate.setDetail_desc(hardware.getHardware_desc());
+			codCreate.setDetail_type("hardware");
 			codCreate.setIs_post(0);
 			codCreate.setUser_id(user.getId());
 			

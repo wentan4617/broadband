@@ -115,7 +115,6 @@
 						var tx = transactionsList[t];
 						
 						if(tx.invoice_id==invoice.id){
-							var txAmount_paid = new Number(tx.amount);
 		.>
 							<tr>
 								<td>&nbsp;</td>
@@ -124,7 +123,7 @@
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
-								<td><strong>-<.= txAmount_paid.toFixed(2) .></strong></td>
+								<td><strong>-<.= Number(tx.amount).toFixed(2) .></strong></td>
 								<td>&nbsp;</td>
 								<td style="text-align:center;"><strong><.= tx.card_name .></strong></td>
 								<. if(tx.executor == null){ .>
@@ -171,22 +170,18 @@
 						<td><strong style="color:red;"><.= invoice.due_date_str .></strong></td>
 		<.
 					}
-					var invoiceAmount_payable = new Number(invoice.amount_payable);
-					var invoiceCredit_back = new Number(invoice.amount_payable - invoice.final_payable_amount);
-					var invoiceAmount_paid = new Number(invoice.amount_paid);
-					var invoiceBalance = new Number(invoice.balance);
 		.>
-					<td><strong><.= invoiceAmount_payable.toFixed(2) .></strong></td>
-					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
+					<td><strong><.= Number(invoice.amount_payable|0).toFixed(2) .></strong></td>
+					<td><strong>-<.= Number(invoice.amount_payable - invoice.final_payable_amount).toFixed(2) .></strong></td>
 					<td>
-						<strong>-<.= invoiceAmount_paid.toFixed(2) .></strong>
+						<strong>-<.= Number(invoice.amount_paid).toFixed(2) .></strong>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
-						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= invoiceAmount_paid.toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
+						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= Number(invoice.amount_paid).toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
 						  	<span class="glyphicon glyphicon-pencil"></span> 
 						</a>
 						<. } .>
 					</td>
-					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
+					<td><strong><.= Number(invoice.balance).toFixed(2) .></strong></td>
 					<td>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 						<. var invoice_status_arr = ['unpaid','not_pay_off','paid','overdue','void','bad-debit']; .>
@@ -375,7 +370,7 @@
 						<div class="form-group" style="display:none;" data-name="cash_defray_amount_input_<.= invoice.id .>">
 							<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
 							<div class="col-md-6">
-								<input name="defray_amount_<.= invoice.id .>" value="<.= invoiceBalance.toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
+								<input name="defray_amount_<.= invoice.id .>" value="<.= Number(invoice.balance).toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
 							</div>
 						</div>
 						<div class="form-group" style="display:none;" data-name="vouchar_pin_number_input_<.= invoice.id .>">
@@ -469,7 +464,7 @@
 									<div class="form-group">
 										<label class="control-label col-md-6" style="text-align:right;">Paid Amount</label>
 										<div class="col-md-4">
-											<input class="form-control" data-name="invoice_paid_amount_input_<.= invoice.id .>" value="<.= invoiceAmount_paid.toFixed(2) .>"/>
+											<input class="form-control" data-name="invoice_paid_amount_input_<.= invoice.id .>" value="<.= Number(invoice.amount_paid).toFixed(2) .>"/>
 										</div>
 									</div>
 								</div>

@@ -2137,6 +2137,21 @@
 							}
 						});
 						$('a[data-name="addProductModalBtn_'+this.id+'"]').html('Add Hardware');
+					// List Accessory
+					} else if(product_type=='accessory' || product_type=='touch-pad'){
+						$('label[data-name="product_type_name"]').html($(this).find('option:selected').text()+' Product');
+						$('label[data-name="product_unit_label"]').html($(this).find('option:selected').text()+' Unit');
+						var data = {
+							'hardware_type':product_type
+						};
+						$.get(ctx+'/broadband-user/crm/customer/order/detail/product/hardware_type', data, function(json){
+							var oSelectPlan = $('select[data-name="'+This.id+'_product_type_select"]');
+							oSelectPlan.empty();
+							for(var i=0; i<json.models.length; i++){
+								oSelectPlan.append('<option value="'+json.models[i].id+'">'+json.models[i].hardware_name+'</option>');
+							}
+						});
+						$('a[data-name="addProductModalBtn_'+this.id+'"]').html('Add '+$(this).find('option:selected').text());
 					}
 				});
 				// Submit to rest controller

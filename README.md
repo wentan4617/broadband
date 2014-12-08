@@ -19,10 +19,18 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.7.8 2014-12-08
+ 
+* 加一套邮件&短信模版，标题：ReceivePaymentNotice，内容：Dear ___, We have already received your payment, which is NZ$____. Thank you for the payment. Have a nice day!(steven)
+
+ 
+ 
 demand version 1.7.6 2014-12-05
  
-* 在Equipment列表界面添加一个按钮组，点击以列出指定状态的设备.(steven)
-* tm_customer_order_detail表增加detail_cost字段，记录detail成本.(steven)
+* [hardware添加界面加多一个hardware类型，以便添加硬件其附属品.](steven)
+* [在Equipment列表界面添加一个按钮组，点击以列出指定状态的设备.](steven)
+* [tm_customer_order_detail表增加detail_cost字段，记录detail成本.](steven)
+* [将Equipment列表的Order Detail Id列标题改成Order Id.](steven)
  
  
 demand version 1.7.6 2014-12-02
@@ -417,7 +425,7 @@ demand version 2.5.2 2014-09-10
 
 * [customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.](steven)
 * [重新生成ordering form时将计算出的订单应付金额更新到order里.](steven)
-* 后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.(steven)
+* [后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.](steven)
 * [Edit Company Detail界面查看为什么不能更新公司信息.](steven)
 
 

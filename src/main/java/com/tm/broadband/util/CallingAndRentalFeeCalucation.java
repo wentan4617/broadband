@@ -21,6 +21,7 @@ import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -482,6 +483,8 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setClear_service_id(vosVoIPCallRecord.getOri_number());
 			ccr.setCharge_date_time(vosVoIPCallRecord.getCall_start());
 			ccr.setPhone_called(vosVoIPCallRecord.getDest_number());
+			
+			Console.log(vosVoIPCallRecord);
 			
 			callType = isLocal ? "Local" : vosVoIPCallRecord.getCall_type();
 			ccr.setBilling_description(vosVoIPRates.get(0).getArea_name());

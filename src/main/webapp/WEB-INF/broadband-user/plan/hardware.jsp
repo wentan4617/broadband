@@ -25,6 +25,8 @@
 							<div class="col-md-3">
 								<select id="hardware_type" class="form-control">
 									<option value="router" ${hardware.hardware_type == 'router' ? 'selected="selected"' : ''}>Router</option>
+									<option value="accessory" ${hardware.hardware_type == 'accessory' ? 'selected="selected"' : ''}>Accessory</option>
+									<option value="touch-pad" ${hardware.hardware_type == 'touch-pad' ? 'selected="selected"' : ''}>Touch Pad</option>
 								</select>
 							</div>
 						</div>
@@ -126,17 +128,19 @@
 		var hardware = {
 			id: '${hardware.id}'
 			, hardware_name: $('#hardware_name').val()
-			, router_adsl: $('#router_adsl').prop('checked')
-			, router_vdsl: $('#router_vdsl').prop('checked')
-			, router_ufb: $('#router_ufb').prop('checked')
-			, support_pstn: $('#support_pstn').prop('checked')
-			, support_voip: $('#support_voip').prop('checked')
 			, hardware_type: $('#hardware_type option:selected').val()
 			, hardware_status: $('#hardware_status option:selected').val()
 			, hardware_price: $('#hardware_price').val()
 			, hardware_cost: $('#hardware_cost').val()
 			, hardware_desc: $('#hardware_desc').val()
 		}; console.log(hardware);
+		if(hardware.hardware_type=='router'){
+			hardware.router_adsl = $('#router_adsl').prop('checked');
+			hardware.router_vdsl = $('#router_vdsl').prop('checked');
+			hardware.router_ufb = $('#router_ufb').prop('checked');
+			hardware.support_pstn = $('#support_pstn').prop('checked');
+			hardware.support_voip = $('#support_voip').prop('checked');
+		}
 		$.post('${ctx}${action}', hardware, function(json){
 			if (!$.jsonValidation(json, 'right')) {
 				window.location.href='${ctx}' + json.url;
