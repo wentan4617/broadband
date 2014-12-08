@@ -19,6 +19,12 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.8.0 2014-12-08
+
+* 修复This Order Belongs To提交时的user_id以及sale_id同时存在的问题.(steven)
+
+ 
+ 
 demand version 1.7.8 2014-12-08
  
 * 加一套邮件&短信模版，标题：ReceivePaymentNotice，内容：Dear ___, We have already received your payment, which is NZ$____. Thank you for the payment. Have a nice day!(steven)

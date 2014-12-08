@@ -1098,6 +1098,8 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = customerOrder;
+		co.getParams().put("user_id_null", true);
+		co.getParams().put("sale_id_null", true);
 		co.getParams().put("id", co.getId());
 
 		this.crmService.editCustomerOrder(co);

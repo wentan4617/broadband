@@ -531,6 +531,11 @@
 	<update id="updateCustomerOrder" parameterType="CustomerOrder">
 		update tm_customer_order 
 		<set>
+			<!-- SET NULL -->
+			<if test="params.user_id_null == true">user_id = NULL,</if>
+			<if test="params.sale_id_null == true">sale_id = NULL,</if>
+			
+			<!-- SET NOT NULL -->
 			<if test="order_serial != null">order_serial = #{order_serial},</if>
 			<if test="customer_id != null">customer_id = #{customer_id},</if>
 			<if test="order_total_price != null">order_total_price = #{order_total_price},</if>

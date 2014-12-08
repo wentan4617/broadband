@@ -4291,7 +4291,7 @@ public class CRMService {
 		// monthly or one-off detail
 		
 		for (CustomerOrderDetail cod: customerOrder.getCustomerOrderDetails()) {
-			if (cod.getMonthly()) {
+			if (cod.getMonthly()!=null && cod.getMonthly()) {
 				customerOrder.getMonthly_cods().add(cod);
 			} else {
 				customerOrder.getOneoff_cods().add(cod);
