@@ -1794,19 +1794,31 @@
 				$('a[data-name="'+co[i].id+'_edit_common_detail"]').click(function(){
 					$('input[data-name="update_detail_name_'+this.id+'"]').val($(this).attr('data-detail-name'));
 					$('input[data-name="update_detail_price_'+this.id+'"]').val($(this).attr('data-detail-price'));
+					if($(this).attr('data-type')=='present-calling-minutes'){
+						$('div[data-name="calling_minutes_div_'+this.id+'"]').css('display','');
+						$('input[data-name="update_calling_minute_'+this.id+'"]').val($(this).attr('data-detail-calling-minute'));
+					} else {
+						$('div[data-name="calling_minutes_div_'+this.id+'"]').css('display','none');
+					}
 					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').prop('id',this.id);
 					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').attr('data-id',$(this).attr('data-id'));
+					$('a[data-name="editCommonDetailModalBtn_'+this.id+'"]').attr('data-type',$(this).attr('data-type'));
 					$('#editCommonDetailModal_'+this.id).modal('show');
 				});
 				$('a[data-name="editCommonDetailModalBtn_'+co[i].id+'"]').click(function(){
+					var detail_type = $(this).attr('data-type');
 					var detail_id = $(this).attr('data-id');
 					var detail_name = $('input[data-name="update_detail_name_'+this.id+'"]').val();
 					var detail_price = $('input[data-name="update_detail_price_'+this.id+'"]').val();
 					var data = {
 						'id':detail_id,
 						'detail_name':detail_name,
-						'detail_price':detail_price
+						'detail_price':detail_price,
+						'detail_type':detail_type
 					};
+					if(detail_type=='present-calling-minutes'){
+						data.detail_calling_minute = $('input[data-name="update_calling_minute_'+this.id+'"]').val();
+					}
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");

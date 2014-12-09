@@ -19,10 +19,14 @@ Total Mobile Solution Internet Service Web Project
  
  
  
-demand version 1.8.0 2014-12-08
+demand version 1.8.0 2014-12-09
 
-* 修复This Order Belongs To提交时的user_id以及sale_id同时存在的问题.(steven)
-
+* [将TMUtil里日期缩写函数的日前面的0去掉.](steven)
+* [修复This Order Belongs To提交时的user_id以及sale_id同时存在的问题.](steven)
+* [修正700018,700255,700330,700331,700334，这几个订单的next_invoice_create_date.](steven)
+* [出第一个账单的is_ddpay订单日期是当月07号，排查问题并解决.](steven)
+* [增强SimpleMapperCreator类，在update里添加是否设置指定属性为NULL.](steven)
+* [将onsite_id变成200000开头.](steven)
  
  
 demand version 1.7.8 2014-12-08

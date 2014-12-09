@@ -245,24 +245,25 @@ public class StevenTest {
 //			count--;
 //		}
 		
-		Workbook wb = new HSSFWorkbook();
+//		Workbook wb = new HSSFWorkbook();
+//		
+//		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("&*(^^%&$#@#@!$@%@%$"));
+//		
+//		Cell cell = sheet.createRow(0).createCell(3);
+//		cell.setCellValue("Hi there");
+//		
+//		try {
+//			FileOutputStream output = new FileOutputStream("Test.xls");
+//			wb.write(output);
+//			output.close();
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
 		
-		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("&*(^^%&$#@#@!$@%@%$"));
-		
-		Cell cell = sheet.createRow(0).createCell(3);
-		cell.setCellValue("Hi there");
-		
-		try {
-			FileOutputStream output = new FileOutputStream("Test.xls");
-			wb.write(output);
-			output.close();
-			
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
+//		System.out.println("0000013012312312378".replaceFirst("^0*", ""));
 		
 		
 		

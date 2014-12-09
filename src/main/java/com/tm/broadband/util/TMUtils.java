@@ -482,7 +482,7 @@ public class TMUtils {
 			return "";
 		}
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
-		String day = dateArr[2];
+		String day = dateArr[2].replaceFirst("^0*", "");
 		StringBuffer finalDateStrBuff = new StringBuffer();
 		String specialDays = "11,12,13";
 		if(!specialDays.contains(day)){

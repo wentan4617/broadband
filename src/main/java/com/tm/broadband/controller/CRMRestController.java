@@ -2678,6 +2678,10 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 		
+		if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+			cod.setDetail_name(cod.getDetail_calling_minute()+" minutes to national");
+		}
+		
 		cod.getParams().put("id", cod.getId());
 		this.crmService.editCustomerOrderDetail(cod);
 		
