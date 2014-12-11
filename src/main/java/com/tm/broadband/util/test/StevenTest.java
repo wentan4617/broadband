@@ -1,16 +1,6 @@
 package com.tm.broadband.util.test;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.ParseException;
-
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.WorkbookUtil;
 
 
 public class StevenTest {
@@ -265,6 +255,12 @@ public class StevenTest {
 		
 //		System.out.println("0000013012312312378".replaceFirst("^0*", ""));
 		
+		
+//		// Determine Whether Array Contains Specified Value
+//		String[] stringArray = { "a$^cf", "b", "c", "d", "e" };
+//		boolean b = Arrays.asList(stringArray).contains("a$^cf");
+//		System.out.println(b);
+//		// true
 		
 		
 	}

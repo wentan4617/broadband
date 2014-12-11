@@ -23,7 +23,7 @@
 			<. var regenerateOrderingStatus = 'pending,pending-warning,paid,ordering-pending,ordering-paid';
 				/*if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) {*/
 			.>
-			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-cycle"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
 			<.
 				/*}*/
 			.>

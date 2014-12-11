@@ -1794,7 +1794,7 @@
 				$('a[data-name="'+co[i].id+'_edit_common_detail"]').click(function(){
 					$('input[data-name="update_detail_name_'+this.id+'"]').val($(this).attr('data-detail-name'));
 					$('input[data-name="update_detail_price_'+this.id+'"]').val($(this).attr('data-detail-price'));
-					if($(this).attr('data-type')=='present-calling-minutes'){
+					if($(this).attr('data-type')=='present-calling-minutes' || $(this).attr('data-type')=='super-free-calling'){
 						$('div[data-name="calling_minutes_div_'+this.id+'"]').css('display','');
 						$('input[data-name="update_calling_minute_'+this.id+'"]').val($(this).attr('data-detail-calling-minute'));
 					} else {
@@ -1816,7 +1816,7 @@
 						'detail_price':detail_price,
 						'detail_type':detail_type
 					};
-					if(detail_type=='present-calling-minutes'){
+					if(detail_type=='present-calling-minutes' || detail_type=='super-free-calling'){
 						data.detail_calling_minute = $('input[data-name="update_calling_minute_'+this.id+'"]').val();
 					}
 					$.post(ctx+'/broadband-user/crm/customer/order/detail/edit', data, function(json){

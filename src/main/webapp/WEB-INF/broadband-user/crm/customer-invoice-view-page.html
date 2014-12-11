@@ -106,10 +106,26 @@
 <. for (var o = 0, len = orderIds.length; o < len; o++){ .>
 	<tbody>
 		<.
+				
+			var is_duplicated_order_id = false;
+			var recorded_order_id;
+			
 			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
 				var invoice = invoicePage.results[i];
 				
 				if(orderIds[o]==invoice.order_id){
+				
+					if(!is_duplicated_order_id && recorded_order_id!=invoice.order_id){
+						is_duplicated_order_id = true;
+						recorded_order_id = invoice.order_id;
+						.>
+						<tr class="bg-warning">
+							<td colspan="12">
+								<h3 class="text-danger" style="text-align:center;"><strong>Order#:&nbsp;<.= recorded_order_id .></strong></h3>
+							</td>
+						</tr>
+						<.
+					}
 				
 					for (var t = transactionsList.length-1; t >= 0; t--) {
 						var tx = transactionsList[t];
@@ -171,7 +187,7 @@
 		<.
 					}
 		.>
-					<td><strong><.= Number(invoice.amount_payable|0).toFixed(2) .></strong></td>
+					<td><strong><.= Number(invoice.amount_payable).toFixed(2) .></strong></td>
 					<td><strong>-<.= Number(invoice.amount_payable - invoice.final_payable_amount).toFixed(2) .></strong></td>
 					<td>
 						<strong>-<.= Number(invoice.amount_paid).toFixed(2) .></strong>
@@ -489,7 +505,7 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="11">
+			<td colspan="12">
 				<ul class="pagination">
 	<.
 					for (var i = 1, len = invoicePage.totalPage; i <= len; i++) {

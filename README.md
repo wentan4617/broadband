@@ -18,7 +18,14 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+
+demand version 1.8.2 2014-12-10
  
+* [新增修改super-free-calling以及其他free-calling拨打分钟数的输入框.](steven)
+* 
+
+
+
 demand version 1.8.0 2014-12-09
 
 * [将TMUtil里日期缩写函数的日前面的0去掉.](steven)

@@ -2678,7 +2678,7 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 		
-		if(cod.getDetail_type()!=null && "present-calling-minutes".equals(cod.getDetail_type())){
+		if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
 			cod.setDetail_name(cod.getDetail_calling_minute()+" minutes to national");
 		}
 		
@@ -3939,8 +3939,8 @@ public class CRMRestController {
 		
 		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
 		invoicePage.setPageNo(pageNo);
-		invoicePage.setPageSize(12);
-		invoicePage.getParams().put("orderby", "order by create_date desc");
+		invoicePage.setPageSize(20);
+		invoicePage.getParams().put("orderby", "order by order_id desc, create_date desc");
 		invoicePage.getParams().put("customer_id", customerId);
 		this.crmService.queryCustomerInvoicesByPage(invoicePage);
 		

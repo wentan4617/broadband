@@ -3588,7 +3588,7 @@ public class CRMService {
 		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
 		
 		// IF customer's account credit is less than final payable amount
-		if(c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
+		if(c.getBalance()==null || c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
 			return null;
 		}
 		

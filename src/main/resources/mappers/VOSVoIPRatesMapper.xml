@@ -36,7 +36,7 @@
 
 	<sql id="vOSVoIPRateWhere">
 		<where>
-			<if test="params.area_prefix != null">vosvipr.area_prefix LIKE CONCAT('%', '${params.area_prefix}')</if>
+			<if test="params.area_prefix != null">vosvipr.area_prefix = #{params.area_prefix}</if>
 			<if test="params.rate_type != null">and vosvipr.rate_type = #{params.rate_type}</if>
 			<if test="params.area_name != null">and vosvipr.area_name = #{params.area_name}</if>
 			<if test="params.billed_rate != null">and vosvipr.billed_rate = #{params.billed_rate}</if>

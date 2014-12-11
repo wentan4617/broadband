@@ -278,7 +278,10 @@ public class CallingAndRentalFeeCalucation {
 						fixMobileCountry = country;
 					}
 				}
-				cir.getParams().put("area_name", "".equals(fixMobileCountry) ? ccrc.getDescription() : fixMobileCountry);
+				cir.getParams().put(
+						"area_name", "".equals(fixMobileCountry) ?
+						ccrc.getDescription().contains(".") ? ccrc.getDescription().split("\\.")[0] : ccrc.getDescription()
+						: fixMobileCountry);
 				break;
 			}
 			
