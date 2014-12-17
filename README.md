@@ -18,12 +18,20 @@ Total Mobile Solution Internet Service Web Project
  * planRemove (/plan/remove/{id})(get)
  
  
+ 
+demand version 1.8.5 2014-12-15
+
+* [invoice列表添加一列customer name，去掉一列invoice status.](steven)
+* [有order_id的地方都要加上customer_id.](steven)
+* [DD/CC 表加多一个order_id字段.](steven)
+* [将equipment里的order加上order的链接，需要customer_id.](steven)
+
+
+
 
 demand version 1.8.2 2014-12-10
  
 * [新增修改super-free-calling以及其他free-calling拨打分钟数的输入框.](steven)
-* 
-
 
 
 demand version 1.8.0 2014-12-09

@@ -73,7 +73,7 @@ public class VOSVoIPCallRecordUtility {
 					// Integer: Call Length
 					if(arr.length > callLengthIndex){
 						if(arr[callLengthIndex]!=null && !"".equals(arr[callLengthIndex].trim())){
-							vosVoIPCallRecord.setCall_length(Integer.parseInt(arr[callLengthIndex]));
+							vosVoIPCallRecord.setCall_length(Double.parseDouble(arr[callLengthIndex]));
 						}
 						
 						

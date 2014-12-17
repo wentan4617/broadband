@@ -18,6 +18,7 @@ public class CustomerDDPay implements Serializable {
 	private Integer customer_id;
 	private String account_name;
 	private String account_number;
+	private String order_ids;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -65,6 +66,12 @@ public class CustomerDDPay implements Serializable {
 	}
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+	public String getOrder_ids() {
+		return order_ids;
+	}
+	public void setOrder_ids(String order_ids) {
+		this.order_ids = order_ids;
 	}
 
 

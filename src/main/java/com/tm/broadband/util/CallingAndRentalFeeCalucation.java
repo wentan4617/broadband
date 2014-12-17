@@ -21,7 +21,6 @@ import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.pdf.InvoicePDFCreator;
-import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -304,6 +303,8 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setBilling_description(ccrc.getDescription());
 			ccr.setCallType(TMUtils.strCapital(callType));
 			ccr.setAmount_incl(ccrc.getCharged_fee());
+			ccr.setDuration(duration);
+			ccr.setOot_id("pstn");
 
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate){
@@ -460,14 +461,14 @@ public class CallingAndRentalFeeCalucation {
 			List<VOSVoIPRate> vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
 			
 			// If Area Code Doesn't Matched, Maybe The Code Isn't Existed On The Rates Table, So Left 3 Digit And Search Again
-			if(vosVoIPRates==null || vosVoIPRates.size()<=0){
+			if((vosVoIPRates==null || vosVoIPRates.size()<=0) && area_prefix.length()>=3){
 
 				vosVoIPRateQuery.getParams().put("area_prefix", area_prefix.substring(0, 3));
 				vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
 				
 			}
 			// If Area Code Doesn't Matched, Maybe The Code Isn't Existed On The Rates Table, So Left 2 Digit And Search Again
-			if(vosVoIPRates==null || vosVoIPRates.size()<=0){
+			if((vosVoIPRates==null || vosVoIPRates.size()<=0) && area_prefix.length()>=2){
 
 				vosVoIPRateQuery.getParams().put("area_prefix", area_prefix.substring(0, 2));
 				vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
@@ -486,14 +487,14 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setClear_service_id(vosVoIPCallRecord.getOri_number());
 			ccr.setCharge_date_time(vosVoIPCallRecord.getCall_start());
 			ccr.setPhone_called(vosVoIPCallRecord.getDest_number());
+			ccr.setDuration(duration);
 			
-			Console.log(vosVoIPCallRecord);
-			
-			callType = isLocal ? "Local" : vosVoIPCallRecord.getCall_type();
-			ccr.setBilling_description(vosVoIPRates.get(0).getArea_name());
+			callType = isLocal ? "Local" : vosVoIPRates.get(0).getRate_type();
+ 			ccr.setBilling_description(vosVoIPRates.get(0).getArea_name());
 			ccr.setCallType(TMUtils.strCapital(callType));
 			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost());
 			ccr.setCallType(TMUtils.strCapital(callType));
+			ccr.setOot_id("voip");
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate && duration>0){
@@ -531,12 +532,17 @@ public class CallingAndRentalFeeCalucation {
 		if(!isRegenerate){
 			if(ccrs!=null && ccrs.size()>0){
 				VOSVoIPCallRecord vosVoIPCallRecordUpdate = new VOSVoIPCallRecord();
+//				System.out.println("------------------------------------------------------------------------------");
+//				Console.log(ci);
+//				System.out.println("------------------------------------------------------------------------------");
 				if(ci.getId()==null){
 					ciMapper.insertCustomerInvoice(ci);
 				}
 				vosVoIPCallRecordUpdate.setInvoice_id(ci.getId());
 				vosVoIPCallRecordUpdate.getParams().put("where", "last_call_records");
 				vosVoIPCallRecordUpdate.getParams().put("ori_number", TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
+//				System.out.println("TMUtils.retrieveAreaCodeVoIPNumber(voip_number): "+TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
+//				System.out.println();
 				vosVoIPCallRecordUpdate.getParams().put("invoice_id", null);
 				vosVoIPCallRecordMapper.updateVOSVoIPCallRecord(vosVoIPCallRecordUpdate);
 				vosVoIPCallRecordUpdate = null;

@@ -262,6 +262,8 @@ public class StevenTest {
 //		System.out.println(b);
 //		// true
 		
+		System.out.println("994".length());
+		
 		
 	}
 	

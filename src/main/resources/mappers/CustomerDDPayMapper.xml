@@ -20,7 +20,8 @@
 		cddp.`id`					as cddp_id,
 		cddp.`customer_id`			as cddp_customer_id,
 		cddp.`account_name`			as cddp_account_name,
-		cddp.`account_number`		as cddp_account_number
+		cddp.`account_number`		as cddp_account_number,
+		cddp.`order_ids`			as cddp_order_ids
 	</sql>
 
 	<resultMap type="CustomerDDPay" id="customerDDPayResultMap">
@@ -28,6 +29,7 @@
 		<result property="customer_id" column="cddp_customer_id" />
 		<result property="account_name" column="cddp_account_name" />
 		<result property="account_number" column="cddp_account_number" />
+		<result property="order_ids" column="cddp_order_ids" />
 	</resultMap>
 
 	<sql id="customerDDPayWhere">
@@ -36,6 +38,7 @@
 			<if test="params.customer_id != null">and cddp.customer_id = #{params.customer_id}</if>
 			<if test="params.account_name != null">and cddp.account_name = #{params.account_name}</if>
 			<if test="params.account_number != null">and cddp.account_number = #{params.account_number}</if>
+			<if test="params.order_ids != null">and cddp.order_ids = #{params.order_ids}</if>
 		</where>
 	</sql>
 
@@ -74,9 +77,9 @@
 
 	<insert id="insertCustomerDDPay" parameterType="CustomerDDPay" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_customer_ddpay`(
-			`customer_id`, `account_name`, `account_number`
+			`customer_id`, `account_name`, `account_number`, `order_ids`
 		) VALUES (
-			#{customer_id}, #{account_name}, #{account_number}
+			#{customer_id}, #{account_name}, #{account_number}, #{order_ids}
 		)
 	</insert>
 
@@ -92,7 +95,8 @@
 		<set>
 			<if test="customer_id != null">customer_id = #{customer_id},</if>
 			<if test="account_name != null">account_name = #{account_name},</if>
-			<if test="account_number != null">account_number = #{account_number}</if>
+			<if test="account_number != null">account_number = #{account_number},</if>
+			<if test="order_ids != null">order_ids = #{order_ids}</if>
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>

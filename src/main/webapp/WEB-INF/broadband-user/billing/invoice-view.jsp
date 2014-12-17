@@ -145,6 +145,7 @@ tbody td {text-align:center;}
 								<th>Create Date</th>
 								<th>Due Date</th>
 								<th>Order Status</th>
+								<th>Customer Name</th>
 								<th style="text-align:right;">Amount Payable</th>
 								<th style="text-align:right;">Total Credit</th>
 								<th style="text-align:right;">Amount Paid</th>
@@ -152,7 +153,6 @@ tbody td {text-align:center;}
 								<c:if test="${status=='prepayment'}">
 									<th style="text-align:right;">Prepaid</th>
 								</c:if>
-								<th>Invoice Status</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -184,6 +184,9 @@ tbody td {text-align:center;}
 									<td>
 										${ci.order_status }
 									</td>
+									<td>
+										${ci.customer_name}
+									</td>
 									<td style="text-align:right;">
 										<fmt:formatNumber value="${ci.amount_payable }" type="number" pattern="###,##0.00"/>
 									</td>
@@ -201,18 +204,12 @@ tbody td {text-align:center;}
 											<fmt:formatNumber value="${ci.amount_paid-ci.final_payable_amount }" type="number" pattern="###,##0.00"/>
 										</td>
 									</c:if>
-									<td>
-										<c:choose>
-											<c:when test="${status=='pending' }">${ci.payment_status }</c:when>
-											<c:otherwise>${ci.status }</c:otherwise>
-										</c:choose>
-									</td>
 								</tr>
 							</c:forEach>
 						</tbody>
 						<tfoot>
 							<tr>
-								<td colspan="11">
+								<td colspan="${status!='prepayment' ? '12' : '13'}">
 									<ul class="pagination">
 										<c:forEach var="num" begin="1" end="${pageCis.totalPage }" step="1">
 											<li class="${pageCis.pageNo == num ? 'active' : ''}">

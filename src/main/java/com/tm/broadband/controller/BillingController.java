@@ -291,6 +291,13 @@ public class BillingController {
 			coQuery.getParams().put("id", ci.getOrder_id());
 			coQuery = this.crmService.queryCustomerOrder(coQuery);
 			ci.setOrder_status(coQuery.getOrder_status());
+			
+			if("personal".equals(coQuery.getCustomer_type())){
+				ci.setCustomer_name(coQuery.getFirst_name()+" "+coQuery.getLast_name());
+			} else {
+				ci.setCustomer_name(coQuery.getOrg_name());
+			}
+			
 		}
 		model.addAttribute("pageCis", pageCis);
 		pageCis = null;

@@ -116,7 +116,7 @@ public class CallingRecordUtility {
 								// Integer
 								if(arr.length > durationIndex){
 									if(arr[durationIndex] != null && !"".equals(arr[durationIndex].trim())){
-										ccr.setDuration(Integer.parseInt(arr[durationIndex]));
+										ccr.setDuration(Double.parseDouble(arr[durationIndex]));
 									}
 									
 									// String

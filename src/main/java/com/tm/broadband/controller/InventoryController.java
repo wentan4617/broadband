@@ -84,7 +84,7 @@ public class InventoryController {
 			coQuery = this.crmService.queryCustomerOrder(coQuery);
 			if(coQuery!=null){
 				equipQuery.setOrder_id(coQuery.getId());
-				equipQuery.setCustomer_id(codQuery.getCustomer_id());
+				equipQuery.setCustomer_id(coQuery.getCustomer_id());
 			}
 			
 		}

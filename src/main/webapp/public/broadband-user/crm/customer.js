@@ -240,6 +240,7 @@
 				var card_number = $('#card_number_'+this.id).val();
 				var security_code = $('#security_code_'+this.id).val();
 				var expiry_date = $('#expiry_date_'+this.id).val();
+				var order_ids = $('#cc_order_ids_'+this.id).val();
 				var data = {
 					'id':this.id,
 					'customer_id':customerId,
@@ -247,7 +248,8 @@
 					'holder_name':holder_name,
 					'card_number':card_number,
 					'security_code':security_code,
-					'expiry_date':expiry_date
+					'expiry_date':expiry_date,
+					'order_ids':order_ids
 				};
 				$.post(ctx+'/broadband-user/crm/customer/credit-card/edit', data, function(json){
 					$.jsonValidation(json, 'right');
@@ -307,11 +309,13 @@
 			$('a[data-name="edit_ddpay_modal_btn"]').click(function(){
 				var account_name = $('#account_name_'+this.id).val();
 				var account_number = $('#account_number_'+this.id).val();
+				var order_ids = $('#dd_order_ids_'+this.id).val();
 				var data = {
 					'id':this.id,
 					'customer_id':customerId,
 					'account_name':account_name,
-					'account_number':account_number
+					'account_number':account_number,
+					'order_ids':order_ids
 				};
 				$.post(ctx+'/broadband-user/crm/customer/ddpay/edit', data, function(json){
 					$.jsonValidation(json, 'right');

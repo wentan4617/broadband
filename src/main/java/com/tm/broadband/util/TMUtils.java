@@ -431,14 +431,18 @@ public class TMUtils {
 
 		phone_number = TMUtils.formatPhoneNumber(phone_number);
 		
+		System.out.println();
+		System.out.println("phone_number: "+phone_number);
+		System.out.println();
+		
 		return phone_number;
 		
 	}
 
 	// Retrieve After Calculated VoIP charge minute(s)
-	public static int retrieveVoIPChargePerThreeMinutes(int duration){
+	public static double retrieveVoIPChargePerThreeMinutes(double duration){
 		
-		int durationFinal = 0;
+		double durationFinal = 0d;
 		
 		if(duration <= 60){
 			

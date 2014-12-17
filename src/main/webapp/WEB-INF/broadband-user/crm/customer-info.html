@@ -198,17 +198,17 @@
 		<. for(var cCards=0; cCards<customerCredits.length; cCards++){ .>
 			<. var cc = customerCredits[cCards]; .>
 	<div class="form-group">
-		<label for="card_number" class="control-label col-md-2">Card Number</label>
+		<label for="card_number_<.= cc.id .>" class="control-label col-md-2">Card Number</label>
 		<div class="col-md-3">
 			<input type="text" id="card_number_<.= cc.id .>" value="<.= cc.card_number .>" class="form-control" data-error-field />
 		</div>
-		<label for="holder_name" class="control-label col-md-1">Name</label>
+		<label for="holder_name_<.= cc.id .>" class="control-label col-md-1">Name</label>
 		<div class="col-md-3">
 			<input type="text" id="holder_name_<.= cc.id .>" value="<.= cc.holder_name .>" class="form-control" data-error-field />
 		</div>
 	</div>
 	<div class="form-group">
-		<label for="card_type" class="control-label col-md-2">Card Type</label>
+		<label for="card_type_<.= cc.id .>" class="control-label col-md-2">Card Type</label>
 		<div class="col-md-2">
 			<select id="card_type_<.= cc.id .>" class="selectpicker show-tick form-control">
 				<. var cardTypes = ['VISA','MASTERCARD']; .>
@@ -221,13 +221,19 @@
 				<. } .>
 			</select>
 		</div>
-		<label for="security_code" class="control-label col-md-2">Security Code</label>
+		<label for="security_code_<.= cc.id .>" class="control-label col-md-2">Security Code</label>
 		<div class="col-md-2">
 			<input type="text" id="security_code_<.= cc.id .>" value="<.= cc.security_code .>" class="form-control" data-error-field />
 		</div>
-		<label for="expiry_date" class="control-label col-md-2">Expiry Date</label>
+		<label for="expiry_date_<.= cc.id .>" class="control-label col-md-2">Expiry Date</label>
 		<div class="col-md-2">
 			<input type="text" id="expiry_date_<.= cc.id .>" value="<.= cc.expiry_date .>" class="form-control" data-error-field />
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="cc_order_ids_<.= cc.id .>" class="control-label col-md-2">Order Ids</label>
+		<div class="col-md-10">
+			<textarea id="cc_order_ids_<.= cc.id .>" rows="5" class="form-control" data-error-field ><.= cc.order_ids .></textarea>
 		</div>
 	</div>
 	<div class="form-group">
@@ -261,6 +267,12 @@
 		<label for="account_name" class="control-label col-md-2">Account Name</label>
 		<div class="col-md-3">
 			<input type="text" id="account_name_<.= cddpay.id .>" value="<.= cddpay.account_name .>" class="form-control" data-error-field />
+		</div>
+	</div>
+	<div class="form-group">
+		<label for="dd_order_ids_<.= cddpay.id .>" class="control-label col-md-2">Order Ids</label>
+		<div class="col-md-10">
+			<textarea id="dd_order_ids_<.= cddpay.id .>" rows="5" class="form-control" data-error-field ><.= cddpay.order_ids .></textarea>
 		</div>
 	</div>
 	<div class="form-group">

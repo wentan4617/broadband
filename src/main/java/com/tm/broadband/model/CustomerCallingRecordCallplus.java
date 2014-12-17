@@ -20,7 +20,7 @@ public class CustomerCallingRecordCallplus implements Serializable {
 	
 	private Integer id;
 	private Date date;
-	private Integer length;
+	private Double length;
 	private String description;
 	private Double charged_fee;
 	private String original_number;
@@ -63,11 +63,11 @@ public class CustomerCallingRecordCallplus implements Serializable {
 		this.date = date;
 	}
 
-	public Integer getLength() {
+	public Double getLength() {
 		return length;
 	}
 
-	public void setLength(Integer length) {
+	public void setLength(Double length) {
 		this.length = length;
 	}
 

@@ -25,6 +25,7 @@ public class CustomerCredit {
 	@NotEmpty(groups = { CustomerCreditValidatedMark.class})
 	private String security_code;
 	private String expiry_date;
+	private String order_ids;
 	/*
 	 * END TABLE MAPPING PROPERTIES
 	 */
@@ -134,6 +135,14 @@ public class CustomerCredit {
 
 	public void setParams(Map<String, Object> params) {
 		this.params = params;
+	}
+
+	public String getOrder_ids() {
+		return order_ids;
+	}
+
+	public void setOrder_ids(String order_ids) {
+		this.order_ids = order_ids;
 	}
 
 }
