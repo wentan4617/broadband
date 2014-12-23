@@ -14,7 +14,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.UserCredentialsDataSourceAdapter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +56,7 @@ import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
@@ -86,6 +86,7 @@ import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
+import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.pdf.OrderingPDFCreator;
@@ -4585,6 +4586,133 @@ public class CRMService {
 	
 	/**
 	 * END CustomerOrderOnsiteDetail
+	 */
+	
+	
+	/**
+	 * BEGIN Customer
+	 */
+	
+	@Transactional
+	public boolean customerMigrate(Integer customer_id,
+			Integer migrate_customer_id,
+			BillingService billingService){
+		
+		boolean isMigrate = false;
+		
+		CustomerBillingLog cblUpdate =new CustomerBillingLog();
+		CustomerCredit ccUpdate = new CustomerCredit();
+		CustomerDDPay cddpayUpdate = new CustomerDDPay();
+		CustomerInvoice ciUpdate = new CustomerInvoice();
+		CustomerOrder coUpdate = new CustomerOrder();
+		CustomerOrderOnsite cooUpdate = new CustomerOrderOnsite();
+		CustomerServiceRecord csrUpdate = new CustomerServiceRecord();
+		CustomerTransaction ctUpdate = new CustomerTransaction();
+		EarlyTerminationCharge etcUpdate = new EarlyTerminationCharge();
+		Ticket tUpdate = new Ticket();
+		Voucher vUpdate = new Voucher();
+		VoucherBannedList vblUpdate = new VoucherBannedList();
+		TerminationRefund trUpdate = new TerminationRefund();
+
+		
+		cblUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerBillingLog> cbls = billingService.queryCustomerBillingLogs(cblUpdate);
+		if(cbls!=null && cbls.size()>0){
+			cblUpdate.setCustomer_id(customer_id);
+			billingService.editCustomerBillingLog(cblUpdate);
+			isMigrate = true;
+		}
+		ccUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerCredit> ccs = this.queryCustomerCredits(ccUpdate);
+		if(ccs!=null && ccs.size()>0){
+			ccUpdate.setCustomer_id(customer_id);
+			this.editCustomerCredit(ccUpdate);
+			isMigrate = true;
+		}
+		cddpayUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerDDPay> cddpays = this.queryCustomerDDPays(cddpayUpdate);
+		if(cddpays!=null && cddpays.size()>0){
+			cddpayUpdate.setCustomer_id(customer_id);
+			this.editCustomerDDPay(cddpayUpdate);
+			isMigrate = true;
+		}
+		ciUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerInvoice> cis = this.queryCustomerInvoices(ciUpdate);
+		if(cis!=null && cis.size()>0){
+			ciUpdate.setCustomer_id(customer_id);
+			this.editCustomerInvoice(ciUpdate);
+			isMigrate = true;
+		}
+		coUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerOrder> cos = this.queryCustomerOrders(coUpdate);
+		if(cos!=null && cos.size()>0){
+			coUpdate.setCustomer_id(customer_id);
+			this.editCustomerOrder(coUpdate);
+			isMigrate = true;
+		}
+		cooUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerOrderOnsite> coos = this.queryCustomerOrderOnsites(cooUpdate);
+		if(coos!=null && coos.size()>0){
+			cooUpdate.setCustomer_id(customer_id);
+			this.editCustomerOrderOnsite(cooUpdate);
+			isMigrate = true;
+		}
+		csrUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerServiceRecord> csrs = this.queryCustomerServiceRecord(csrUpdate);
+		if(csrs!=null && csrs.size()>0){
+			csrUpdate.setCustomer_id(customer_id);
+			this.editCustomerServiceRecord(csrUpdate);
+			isMigrate = true;
+		}
+		ctUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerTransaction> cts = this.queryCustomerTransactions(ctUpdate);
+		if(cts!=null && cts.size()>0){
+			ctUpdate.setCustomer_id(customer_id);
+			this.editCustomerTransaction(ctUpdate);
+			isMigrate = true;
+		}
+		etcUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<EarlyTerminationCharge> etcs = billingService.queryEarlyTerminationCharge(etcUpdate);
+		if(etcs!=null && etcs.size()>0){
+			etcUpdate.setCustomer_id(customer_id);
+			billingService.editEarlyTerminationCharge(etcUpdate);
+			isMigrate = true;
+		}
+		tUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<Ticket> ts = this.queryTicket(tUpdate);
+		if(ts!=null && ts.size()>0){
+			tUpdate.setCustomer_id(customer_id);
+			this.editTicket(tUpdate);
+			isMigrate = true;
+		}
+		vUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<Voucher> vs = billingService.queryVouchers(vUpdate);
+		if(vs!=null && vs.size()>0){
+			vUpdate.setCustomer_id(customer_id);
+			billingService.editVoucher(vUpdate);
+			isMigrate = true;
+		}
+		vblUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<VoucherBannedList> vbls = billingService.queryVoucherBannedList(vblUpdate);
+		if(vbls!=null && vbls.size()>0){
+			vblUpdate.setCustomer_id(customer_id);
+			billingService.editVoucherBannedList(vblUpdate);
+			isMigrate = true;
+		}
+		trUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<TerminationRefund> trs = billingService.queryTerminationRefund(trUpdate);
+		if(trs!=null && trs.size()>0){
+			trUpdate.setCustomer_id(customer_id);
+			billingService.editTerminationRefund(trUpdate);
+			isMigrate = true;
+		}
+		
+		return isMigrate;
+		
+	}
+	
+	/**
+	 * END Customer
 	 */
 	
 	

@@ -3,6 +3,8 @@
 	<h4 class="text-success">
 		Customer Identity&nbsp;
 		<a href="<.= ctx .>/broadband-user/crm/plans/new-order/<.= customer.id .>" class="btn btn-success btn-xs" target="_blank" >Order New</a>
+		&nbsp;&nbsp;
+		<a href="javascript:void(0);" data-name="migrate_customer_btn" class="btn btn-success btn-xs" target="_blank" >Migrate Order</a>
 	</h4>
 	<hr/>
 	<div class="form-group">
@@ -628,6 +630,36 @@
 			</div>
 			<div class="modal-footer">
 				<a data-name="eliminate_amount_btn" class="btn btn-success btn-xs col-md-12" data-dismiss="modal">Confirm</a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+<!-- MigrateCustomerModal -->
+<div class="modal fade" id="migrateCustomerModal" tabindex="-1" role="dialog" aria-labelledby="migrateCustomerModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title">
+					<strong>Migrate Customer</strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label for="customer_id" class="control-label col-md-6" style="text-align:right;">Customer Id</label>
+					<div class="col-md-6">
+						<input id="customer_id" name="migrate_customer_id" class="form-control input-sm" type="text" placeholder="Customer Id" style="height:26px; padding:0 10px;"/>
+					</div>
+				</div>
+				<br/>
+			</div>
+			<div class="modal-footer">
+				<a data-name="migrate_customer_modal_btn" class="btn btn-success btn-xs col-md-12" data-dismiss="modal">Confirm</a>
 			</div>
 		</div>
 		<!-- /.modal-content -->

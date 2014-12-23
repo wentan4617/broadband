@@ -3605,7 +3605,40 @@ public class CRMRestController {
 	 * 
 	 */
 	
-	
+
+	/**
+	 * 
+	 * BEGIN Customer
+	 * 
+	 */
+	@RequestMapping(value = "/broadband-user/crm/customer/migrate-customer/migrate", method = RequestMethod.POST)
+	public JSONBean<Customer> customerMigrate(Model model,
+			@RequestParam("customer_id") Integer customer_id,
+			@RequestParam("migrate_customer_id") Integer migrate_customer_id) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+
+		if(migrate_customer_id==null || "".equals(migrate_customer_id)){
+
+			json.getErrorMap().put("alert-error", "Please Specify One Customer Id To Continue Migration!");
+			return json;
+		}
+		
+		boolean isMigrate = this.crmService.customerMigrate(customer_id, migrate_customer_id, this.billingService);
+		
+		if(isMigrate){
+			
+			json.getSuccessMap().put("alert-success", "Specific Customer Has Been Migrate To Current One!");
+			
+		} else {
+			
+			json.getErrorMap().put("alert-error", "Customer Not Found or Nothing Can Be Migrate!");
+			
+		}
+		
+		return json;
+		
+	}
 	
 	
 	

@@ -19,6 +19,20 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+ 
+demand version 1.8.5 2014-12-15
+
+* [customer edit选项卡里添加一个Migrate Customer按钮，弹出层根据order id模糊匹配，匹配到则点亮隔壁Confirm, Migrate按钮，点击后将order的所有相关信息都关联至该customer下.](steven)
+
+ 
+ 
+demand version 1.8.5 2014-12-15
+ 
+* [在invoice的calling列表下添加一个Calling Area Statistic，列出各个calling的描述，分钟数，费用总和.](steven)
+* [无法查看流量，确认服务器是否被迁移，导致地址指向不正确，无法获取数据.](steven)
+
+
+ 
 demand version 1.8.5 2014-12-15
 
 * [invoice列表添加一列customer name，去掉一列invoice status.](steven)

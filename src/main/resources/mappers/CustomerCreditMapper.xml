@@ -78,6 +78,13 @@
 			</set>
 			<where>
 				<if test="params.id != null">id=#{params.id}</if>
+				<if test="params.customer_id != null">and customer_id=#{params.customer_id}</if>
+				<if test="params.card_type != null">and card_type=#{params.card_type}</if>
+				<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
+				<if test="params.card_number != null">and card_number=#{params.card_number}</if>
+				<if test="params.security_code != null">and security_code=#{params.security_code}</if>
+				<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
+				<if test="params.order_ids != null">and order_ids=#{params.order_ids}</if>
 			</where>
 	</update>
 	<!-- // END UPDATE AREA -->

@@ -100,6 +100,10 @@
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
+			<if test="params.account_name != null">and account_name = #{params.account_name}</if>
+			<if test="params.account_number != null">and account_number = #{params.account_number}</if>
+			<if test="params.order_ids != null">and order_ids = #{params.order_ids}</if>
 		</where>
 	</update>
 

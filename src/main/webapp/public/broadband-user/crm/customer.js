@@ -192,6 +192,28 @@
 			$('#eliminateAccountCreditModal').on('hidden.bs.modal',function(){
 				$.getCustomerInfo();
 			});
+
+			
+			// BEGIN Migrate Customer
+			$('a[data-name="migrate_customer_btn"]').click(function(){
+				$('#migrateCustomerModal').modal('show');
+			});
+			$('a[data-name="migrate_customer_modal_btn"]').click(function(){
+				
+				var migrate_customer_id = $('input[name="migrate_customer_id"]').val();
+				var data = {
+					'customer_id':customerId,
+					'migrate_customer_id':migrate_customer_id
+				};
+				console.log(data);
+				
+				$.post(ctx+'/broadband-user/crm/customer/migrate-customer/migrate', data, function(json){
+					$.jsonValidation(json, 'right');
+				}, 'json');
+			});
+			$('#migrateCustomerModal').on('hidden.bs.modal',function(){
+				$.getCustomerInfo();
+			});
 			
 			
 			// BEGIN Topup Account Credit By DPS
