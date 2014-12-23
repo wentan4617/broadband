@@ -4,7 +4,9 @@
 		Customer Identity&nbsp;
 		<a href="<.= ctx .>/broadband-user/crm/plans/new-order/<.= customer.id .>" class="btn btn-success btn-xs" target="_blank" >Order New</a>
 		&nbsp;&nbsp;
-		<a href="javascript:void(0);" data-name="migrate_customer_btn" class="btn btn-success btn-xs" target="_blank" >Migrate Order</a>
+		<. if(user_role == 'system-developer') { .>
+		<a href="javascript:void(0);" data-name="migrate_customer_btn" class="btn btn-success btn-xs" target="_blank" >Migrate Another Customer's Details</a>
+		<. } .>
 	</h4>
 	<hr/>
 	<div class="form-group">
