@@ -64,7 +64,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	
     boolean isBusiness = false;
     
-    private Map<String, List<CustomerCallRecord>> crrsMap = new LinkedHashMap<String, List<CustomerCallRecord>>();
+    private Map<String, List<CustomerCallRecord>> ccrsMap = new LinkedHashMap<String, List<CustomerCallRecord>>();
     private List<CustomerCallRecord> ccrPSTNStatistics = new ArrayList<CustomerCallRecord>();
     private List<CustomerCallRecord> ccrVoIPStatistics = new ArrayList<CustomerCallRecord>();
     private boolean isFirstPstn = true;
@@ -292,14 +292,14 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // BEGIN CALLING RECORD
-        if(crrsMap.size() > 0){
+        if(ccrsMap.size() > 0){
      		// start new page
             document.newPage();
             // SECOND PAGE'S HEADER
     		pageHeader(writer);
             // ADD TABLE 2 DOCUMENT
-    		for (String k : crrsMap.keySet()) {
-              document.add(createCallRecordDetails(k, crrsMap.get(k)));
+    		for (String k : ccrsMap.keySet()) {
+              document.add(createCallRecordDetails(k, ccrsMap.get(k)));
 			}
         }
         // END CALLING RECORD
@@ -1067,12 +1067,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.lastCustomerInvoice = lastCustomerInvoice;
 	}
 
-	public Map<String, List<CustomerCallRecord>> getCrrsMap() {
-		return crrsMap;
+	public Map<String, List<CustomerCallRecord>> getCcrsMap() {
+		return ccrsMap;
 	}
 
-	public void setCrrsMap(Map<String, List<CustomerCallRecord>> crrsMap) {
-		this.crrsMap = crrsMap;
+	public void setCcrsMap(Map<String, List<CustomerCallRecord>> ccrsMap) {
+		this.ccrsMap = ccrsMap;
 	}
 
 	public CustomerOrder getCo() {

@@ -4600,6 +4600,9 @@ public class CRMService {
 		
 		boolean isMigrate = false;
 		
+		Customer cMigrateQuery = new Customer();
+		Customer cTargetQuery = new Customer();
+		Customer cUpdate = new Customer();
 		CustomerBillingLog cblUpdate =new CustomerBillingLog();
 		CustomerCredit ccUpdate = new CustomerCredit();
 		CustomerDDPay cddpayUpdate = new CustomerDDPay();
@@ -4613,7 +4616,6 @@ public class CRMService {
 		Voucher vUpdate = new Voucher();
 		VoucherBannedList vblUpdate = new VoucherBannedList();
 		TerminationRefund trUpdate = new TerminationRefund();
-
 		
 		cblUpdate.getParams().put("customer_id", migrate_customer_id);
 		List<CustomerBillingLog> cbls = billingService.queryCustomerBillingLogs(cblUpdate);
@@ -4705,6 +4707,23 @@ public class CRMService {
 			trUpdate.setCustomer_id(customer_id);
 			billingService.editTerminationRefund(trUpdate);
 			isMigrate = true;
+		}
+		
+		if(isMigrate){
+
+			cMigrateQuery.getParams().put("id", migrate_customer_id);
+			cMigrateQuery = this.queryCustomer(cMigrateQuery);
+			cTargetQuery.getParams().put("id", customer_id);
+			cTargetQuery = this.queryCustomer(cTargetQuery);
+			
+			cUpdate.getParams().put("id", customer_id);
+			cUpdate.setBalance(TMUtils.bigAdd(cTargetQuery.getBalance()==null ? 0d : cTargetQuery.getBalance(), cMigrateQuery.getBalance()==null ? 0d : cMigrateQuery.getBalance()));
+			this.editCustomer(cUpdate);
+			
+			cMigrateQuery.getParams().put("id", migrate_customer_id);
+			cMigrateQuery.setBalance(0d);
+			this.editCustomer(cMigrateQuery);
+			
 		}
 		
 		return isMigrate;

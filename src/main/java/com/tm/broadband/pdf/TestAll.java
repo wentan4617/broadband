@@ -245,7 +245,6 @@ public class TestAll {
 		ipdfc.setCompanyDetail(cd);
 		ipdfc.setCurrentCustomerInvoice(ci);
 		ipdfc.setCo(co);
-		ipdfc.setCrrsMap(crrsMap);
 		System.out.println(ipdfc.create().get("filePath"));
 		
 		/**

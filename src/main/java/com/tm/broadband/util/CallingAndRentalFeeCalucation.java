@@ -179,6 +179,8 @@ public class CallingAndRentalFeeCalucation {
 			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
 			
 			ccr.setCallType(TMUtils.strCapital(callType));
+			ccr.setOot_id("pstn");
+			ccr.setDuration(duration);
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate && duration>0){
@@ -365,7 +367,7 @@ public class CallingAndRentalFeeCalucation {
 		
 		cids.add(cid);
 		
-		invoicePDF.getCrrsMap().put(pstn_number, ccrs);
+		invoicePDF.getCcrsMap().put(pstn_number, ccrs);
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		
@@ -558,7 +560,7 @@ public class CallingAndRentalFeeCalucation {
 		
 		cids.add(cid);
 		
-		invoicePDF.getCrrsMap().put(voip_number, ccrs);
+		invoicePDF.getCcrsMap().put(voip_number, ccrs);
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		

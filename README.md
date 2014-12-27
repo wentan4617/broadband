@@ -20,9 +20,12 @@ Total Mobile Solution Internet Service Web Project
  
  
  
-demand version 1.8.5 2014-12-15
+demand version 1.9.0 2014-12-23
 
 * [customer edit选项卡里添加一个Migrate Customer按钮，弹出层根据order id模糊匹配，匹配到则点亮隔壁Confirm, Migrate按钮，点击后将order的所有相关信息都关联至该customer下.](steven)
+* [将600313和600087并到有DDPay的customer下面，之后操作同上.](steven)
+* [检查Chart(Calling Statistic)界面，为何出现500.](steven)
+* [将600282和600283并到有account credit的customer下面，确保要丢弃的customer的有用信息都叠加至保留的customer信息里.](steven)
 
  
  
