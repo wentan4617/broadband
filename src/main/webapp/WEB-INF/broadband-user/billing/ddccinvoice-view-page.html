@@ -1,0 +1,91 @@
+<. if (results.length > 0) {.>
+<table class="table" style="font-size: 12px;">
+	<thead>
+		<tr>
+			<th>Customer ID</th>
+			<th>Order ID</th>
+			<th>Invoice ID</th>
+			<th>Create Date</th>
+			<th style="text-align:right;">Balance</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for(var i = 0; i < results.length; i++) {
+		var ci = results[i];
+	.>
+		<tr class="danger">
+			<td>
+				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.= ci.customer_id .>">
+				<.= ci.customer_id .>
+				</a>
+			</td>
+			<td><.= ci.order_id .></td>
+			<td><.= ci.id .></td>
+			<td><.= ci.create_date_str .></td>
+			<td style="text-align:right;"><.= Number(ci.balance).toFixed(2) .></td>
+			<td></td>
+		</tr>
+		<. if(ci.ccs!=null && ci.ccs.length>0){ .>
+			<. var ccs = ci.ccs; .>
+			<. for(var ccsIndex=0; ccsIndex<ccs.length; ccsIndex++){ .>
+				<tr>
+					<th>Card Type</th>
+					<th>Holder Name</th>
+					<th>Card Number</th>
+					<th>Security Code</th>
+					<th>Expiry Date</th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><.= ccs[ccsIndex].card_type .></td>
+					<td><.= ccs[ccsIndex].holder_name .></td>
+					<td><.= ccs[ccsIndex].card_number .></td>
+					<td><.= ccs[ccsIndex].security_code .></td>
+					<td><.= ccs[ccsIndex].expiry_date .></td>
+					<td></td>
+				</tr>
+			<. } .>
+		<. } .>
+		<. if(ci.dds!=null && ci.dds.length>0){ .>
+			<. var dds = ci.dds; .>
+			<. for(var ddsIndex=0; ddsIndex<dds.length; ddsIndex++){ .>
+				<tr>
+					<th>Account Name</th>
+					<th>Account Number</th>
+					<th></th>
+					<th></th>
+					<th></th>
+					<th></th>
+				</tr>
+				<tr>
+					<td><.= dds[ddsIndex].account_name .></td>
+					<td><.= dds[ddsIndex].account_number .></td>
+					<td></td>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+			<. } .>
+		<. } .>
+	<.}.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+					<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

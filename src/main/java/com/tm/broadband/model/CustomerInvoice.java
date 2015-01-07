@@ -59,6 +59,9 @@ public class CustomerInvoice implements Serializable {
 	 * RELATED PROPERTIES
 	 */
 	
+	private List<CustomerCredit> ccs;
+	private List<CustomerDDPay> dds;
+	
 	private String customer_name;
 	
 	private String order_status;
@@ -426,6 +429,22 @@ public class CustomerInvoice implements Serializable {
 
 	public void setCustomer_name(String customer_name) {
 		this.customer_name = customer_name;
+	}
+
+	public List<CustomerCredit> getCcs() {
+		return ccs;
+	}
+
+	public void setCcs(List<CustomerCredit> ccs) {
+		this.ccs = ccs;
+	}
+
+	public List<CustomerDDPay> getDds() {
+		return dds;
+	}
+
+	public void setDds(List<CustomerDDPay> dds) {
+		this.dds = dds;
 	}
 
 }

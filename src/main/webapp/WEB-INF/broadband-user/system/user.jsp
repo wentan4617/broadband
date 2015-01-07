@@ -239,6 +239,11 @@
 										</li>
 										<li>
 											<label>
+												<form:checkbox path="authArray" value="billing/ddccinvoice/view" data-type="checkbox_billing" /> View DD/CC Invoice
+											</label>
+										</li>
+										<li>
+											<label>
 												<form:checkbox path="authArray" value="billing/transaction/view" data-type="checkbox_billing" /> View Transaction
 											</label>
 										</li>

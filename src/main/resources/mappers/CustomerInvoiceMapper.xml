@@ -19,6 +19,29 @@
 	<sql id="pageWhere">
 		<where>
 			<choose>
+				<when test="params.where == 'query_non_paid_status'">
+					<if test="params.customer_type != null">
+						order_id in(
+							select id from tm_customer_order
+							where customer_type=#{params.customer_type}
+						)
+					</if>
+					<if test="params.create_date_month != null">
+						and DATE_FORMAT(create_date,'%Y-%m')=#{params.create_date_month}
+					</if>
+					<if test="params.non_paid_status == 'true'">
+						and status!='paid'
+					</if>
+					and (
+						customer_id in( select customer_id from tm_customer_credit )
+						or
+						customer_id in( select customer_id from tm_customer_ddpay )
+					)
+					and order_id in(
+						select id from tm_customer_order
+						where is_ddpay = true
+					)
+				</when>
 				<when test="params.where == 'non_pending'">
 					payment_status IS NULL
 					<if test="params.id != null">and id = #{params.id}</if>

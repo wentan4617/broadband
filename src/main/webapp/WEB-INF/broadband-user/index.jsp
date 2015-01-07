@@ -347,6 +347,10 @@ hr {
 		                    	</li>
 								<li>
 		                    		<span class="glyphicon glyphicon-list-alt" ></span> 
+		                    		<a href="${ctx }/broadband-user/billing/ddccinvoice/view">View DD/CC Invoice</a>
+		                    	</li>
+								<li>
+		                    		<span class="glyphicon glyphicon-list-alt" ></span> 
 		                    		<a href="${ctx }/broadband-user/billing/transaction/view/1/visa/all">View Transaction</a>
 		                    	</li>
 							</ul>
@@ -518,7 +522,7 @@ hr {
 		
 			<!-- BEGIN LEFT FOURTH COLUMN -->
 		
-			<div class="row">
+			<%-- <div class="row">
 			
 				<div class="col-md-12">
 					
@@ -551,7 +555,7 @@ hr {
 					
 				</div>
 				
-			</div>
+			</div> --%>
 		
 		
 		<!-- END LEFT FOURTH COLUMN -->

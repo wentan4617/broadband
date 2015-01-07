@@ -34,11 +34,21 @@
 
 	<sql id="customerDDPayWhere">
 		<where>
-			<if test="params.id != null">cddp.id = #{params.id}</if>
-			<if test="params.customer_id != null">and cddp.customer_id = #{params.customer_id}</if>
-			<if test="params.account_name != null">and cddp.account_name = #{params.account_name}</if>
-			<if test="params.account_number != null">and cddp.account_number = #{params.account_number}</if>
-			<if test="params.order_ids != null">and cddp.order_ids = #{params.order_ids}</if>
+			<choose>
+				<when test="params.where == 'query_by_invoice_id'">
+					customer_id = (
+						select customer_id from tm_customer_invoice
+						where id=#{params.invoice_id}
+					)
+				</when>
+				<otherwise>
+					<if test="params.id != null">cddp.id = #{params.id}</if>
+					<if test="params.customer_id != null">and cddp.customer_id = #{params.customer_id}</if>
+					<if test="params.account_name != null">and cddp.account_name = #{params.account_name}</if>
+					<if test="params.account_number != null">and cddp.account_number = #{params.account_number}</if>
+					<if test="params.order_ids != null">and cddp.order_ids = #{params.order_ids}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 

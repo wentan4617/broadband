@@ -1480,4 +1480,17 @@ public class BillingController {
 		return "broadband-user/billing/calling-chart";
 	}
 	
+	
+	/**
+	 * BEGIN DD/CC Invoice View
+	 */
+
+	@RequestMapping("/broadband-user/billing/ddccinvoice/view")
+	public String toCustomerInvoiceView(Model model) {
+		
+		return "broadband-user/billing/ddccinvoice-view-page";
+		
+	}
+	
+	
 }

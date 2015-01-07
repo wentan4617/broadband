@@ -18,13 +18,23 @@
 	
 	<sql id="customerCreditWhere">
 		<where>
-			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
-			<if test="params.card_type != null">and card_type=#{params.card_type}</if>
-			<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
-			<if test="params.card_number != null">and card_number=#{params.card_number}</if>
-			<if test="params.security_code != null">and security_code=#{params.security_code}</if>
-			<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
-			<if test="params.order_ids != null">and order_ids=#{params.order_ids}</if>
+			<choose>
+				<when test="params.where == 'query_by_invoice_id'">
+					customer_id = (
+						select customer_id from tm_customer_invoice
+						where id=#{params.invoice_id}
+					)
+				</when>
+				<otherwise>
+					<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+					<if test="params.card_type != null">and card_type=#{params.card_type}</if>
+					<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
+					<if test="params.card_number != null">and card_number=#{params.card_number}</if>
+					<if test="params.security_code != null">and security_code=#{params.security_code}</if>
+					<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
+					<if test="params.order_ids != null">and order_ids=#{params.order_ids}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	
