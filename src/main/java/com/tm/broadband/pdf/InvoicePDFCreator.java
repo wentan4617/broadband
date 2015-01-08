@@ -41,6 +41,7 @@ public class InvoicePDFCreator extends ITextUtils {
 	private CustomerOrder co;
 	private CustomerInvoice currentCustomerInvoice;
     private CustomerInvoice lastCustomerInvoice;
+    private CustomerInvoice lastCustomerInvoiceStatistic;
 
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
@@ -136,6 +137,7 @@ public class InvoicePDFCreator extends ITextUtils {
         
 
         totalBalance = TMUtils.bigSub(totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid());
+        totalBalance = TMUtils.bigAdd(totalBalance, this.getLastCustomerInvoiceStatistic()!=null && this.getLastCustomerInvoiceStatistic().getBalance()!=null ? this.getLastCustomerInvoiceStatistic().getBalance() : 0d);
 
         if(totalBalance > 0){
         	// personal plan include GST
@@ -464,7 +466,7 @@ public class InvoicePDFCreator extends ITextUtils {
 		
         PdfPTable invoiceSummaryTable = newTable().columns(colspan).widthPercentage(98F).o();
         
-        addTitleBar(invoiceSummaryTable, "This Invoice Summary", ITextFont.arial_bold_white_10, titleBGColor, titleBGColor, colspan, 4F);
+        addTitleBar(invoiceSummaryTable, "Total Invoice Summary", ITextFont.arial_bold_white_10, titleBGColor, titleBGColor, colspan, 4F);
 
         // INVOICE SUMMARY FIRST ROW
         addCol(invoiceSummaryTable, "Net charges").colspan(6).font(ITextFont.arial_normal_8).paddingTo("t", 10F).indent(10F).o();
@@ -483,29 +485,27 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(invoiceSummaryTable, 30F, colspan);
         
         // INVOICE SUMMARY SEPARATOR ROW
-    	addCol(invoiceSummaryTable, "Previous").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Previous Balance").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Current").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Current Balance").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Paid").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Credit    ↓").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Current\n Paid").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, " ").colspan(2).o();
     	addCol(invoiceSummaryTable, " ").border("b", 1F).o();
         addEmptyCol(invoiceSummaryTable, 2F, colspan);
 
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
         boolean isFirst = this.getLastCustomerInvoice()==null;
 		currentFinalPayable = totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance;
-		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
 		
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getLastCustomerInvoiceStatistic()!=null && this.getLastCustomerInvoiceStatistic().getBalance()!=null ? this.getLastCustomerInvoiceStatistic().getBalance() : 0d))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "+").alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalPayableAmount))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalPayableAmount, this.totalCreditBack)))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "-").alignH("r").o();
     	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "-").alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalCreditBack))+"  =").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigAdd(previousBalance, currentFinalPayable)))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "=").alignH("r").o();
+    	addCol(invoiceSummaryTable, " ").o();
+    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(currentFinalPayable)).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
 
         addEmptyCol(invoiceSummaryTable, 4F, colspan);
     	addCol(invoiceSummaryTable, isFirst || TMUtils.bigAdd(previousBalance, currentFinalPayable) <= 0 ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(8).indent(10F).font(ITextFont.arial_normal_8).alignH("r").o();
@@ -1097,6 +1097,15 @@ public class InvoicePDFCreator extends ITextUtils {
 
 	public void setCcrVoIPStatistics(List<CustomerCallRecord> ccrVoIPStatistics) {
 		this.ccrVoIPStatistics = ccrVoIPStatistics;
+	}
+
+	public CustomerInvoice getLastCustomerInvoiceStatistic() {
+		return lastCustomerInvoiceStatistic;
+	}
+
+	public void setLastCustomerInvoiceStatistic(
+			CustomerInvoice lastCustomerInvoiceStatistic) {
+		this.lastCustomerInvoiceStatistic = lastCustomerInvoiceStatistic;
 	}
 
 	

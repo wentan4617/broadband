@@ -227,6 +227,12 @@
 					<if test="params.nca_calling_charge != null">and nca_calling_charge = #{params.nca_calling_charge}</if>
 					<if test="params.vos_calling_credit != null">and vos_calling_credit = #{params.vos_calling_credit}</if>
 					<if test="params.vos_calling_charge != null">and vos_calling_charge = #{params.vos_calling_charge}</if>
+					<if test="params.status_in_unpaid_overdue_not_pay_off == 'true'">
+						and status in( 'unpaid','overdue','not_pay_off' )
+					</if>
+					<if test="params.id_not_in != null">
+						and id not in( #{params.id_not_in} )
+					</if>
 				</otherwise>
 			</choose>
 		</where>

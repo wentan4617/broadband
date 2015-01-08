@@ -28,6 +28,8 @@ demand version 1.9.3 2015-01-07
  
 demand version 1.9.2 2015-01-06
 
+* *****Chorus add-on存入时加多几个description，将rental的费用改成总费用*1.15 = 最终应付金额.(steven)
+* [business上一个帐单的balance会累加至下一个帐单payable amount上.](steven)
 * 筛选列出的chorus addon，与之前的addon存在同一张表里.(steven)
 * 列出所有非monthly paid的order，及其plan单价，列出合同时间以及剩余服务月份.(steven)
 * 统计每个月所产生成本，根据statement date统计chorus成本，根据calling date统计callplus及vos成本.(steven)

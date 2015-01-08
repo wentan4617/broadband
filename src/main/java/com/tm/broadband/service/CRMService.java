@@ -2501,6 +2501,31 @@ public class CRMService {
 				// Add previous invoice's details into
 				ci.setLast_invoice_id(cpi.getId());
 				ci.setLastCustomerInvoice(cpi);
+				
+				Double pciPayable = 0d;
+				Double pciFinalPayable = 0d;
+				Double pciPaid = 0d;
+				Double pciBalance = 0d;
+				
+				CustomerInvoice pciQuery = new CustomerInvoice();
+				pciQuery.getParams().put("order_id", co.getId());
+				pciQuery.getParams().put("status_in_unpaid_overdue_not_pay_off", "true");
+				pciQuery.getParams().put("id_not_in", ci.getId());
+				List<CustomerInvoice> pcisQuery = this.queryCustomerInvoices(pciQuery);
+				for (CustomerInvoice pci : pcisQuery) {
+					System.out.println("Payable: "+pci.getAmount_payable()+", Final Payable: "+pci.getFinal_payable_amount()+", Paid: "+pci.getAmount_paid()+", Balance: "+pci.getBalance());
+					pciPayable = TMUtils.bigAdd(pciPayable, pci.getAmount_payable()!=null ? pci.getAmount_payable() : 0d);
+					pciFinalPayable = TMUtils.bigAdd(pciFinalPayable, pci.getFinal_payable_amount()!=null ? pci.getFinal_payable_amount() : 0d);
+					pciPaid = TMUtils.bigAdd(pciPaid, pci.getAmount_paid()!=null ? pci.getAmount_paid() : 0d);
+					pciBalance = TMUtils.bigAdd(pciBalance, pci.getBalance()!=null ? pci.getBalance() : 0d);
+				}
+				CustomerInvoice cpiStatistic = new CustomerInvoice();
+				invoicePDF.setLastCustomerInvoiceStatistic(cpiStatistic);
+				cpiStatistic.setAmount_payable(pciPayable);
+				cpiStatistic.setFinal_payable_amount(pciFinalPayable);
+				cpiStatistic.setAmount_paid(pciPaid);
+				cpiStatistic.setBalance(pciBalance);
+				
 
 				// If plan-term type, then add detail into invoice detail
 				if("plan-term".equals(cod.getDetail_type())){
@@ -2690,15 +2715,22 @@ public class CRMService {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if((cpi!=null && cpi.getBalance()>0) && "business".equals(co.getCustomer_type())){
-			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
-		}
+//		if((cpi!=null && cpi.getBalance()>0) && "business".equals(co.getCustomer_type())){
+//			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
+//		}
+		
+//		System.out.println("Pre ci: ");
+//		System.out.println("payable: "+ci.getAmount_payable()+", balance: "+ci.getBalance());
+//		System.out.println();
 		
 		// Set current invoice's payable amount
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		
+//		System.out.println("Post ci: ");
+//		System.out.println("payable: "+ci.getAmount_payable()+", balance: "+ci.getBalance());
 		
 		// If balance greater than 0
 		if(ci.getBalance()>0){
