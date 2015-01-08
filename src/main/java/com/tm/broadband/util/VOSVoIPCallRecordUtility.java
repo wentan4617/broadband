@@ -53,6 +53,7 @@ public class VOSVoIPCallRecordUtility {
 	private static VOSVoIPCallRecord getVOSVoIPCallRecords(String line){
 		VOSVoIPCallRecord vosVoIPCallRecord = new VOSVoIPCallRecord();
 		String arr[] = line.split(",");
+		System.out.println("line: "+line);
 
 		
 		// String: Original Number
@@ -67,7 +68,7 @@ public class VOSVoIPCallRecordUtility {
 				if(arr.length > callStartIndex){
 					String callStartStr = arr[callStartIndex];
 					if(!"".equals(callStartStr.trim())){
-						vosVoIPCallRecord.setCall_start(TMUtils.parseDate2YYYYMMDD(callStartStr));
+						vosVoIPCallRecord.setCall_start(TMUtils.parseDate4YYYYMMDDHHMM(callStartStr));
 					}
 					
 					// Integer: Call Length

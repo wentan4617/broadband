@@ -687,10 +687,24 @@ public class BillingService {
 					isUsefull = true;
 					switch (ccr.getBilling_description()) {
 						case "Call restrict with no Directory Access nat Res": break;
+						case "Call restrict with directory access nat Res": break;
 						case "Caller Display Monthly Charge per line Res": break;
 						case "Call waiting nat Res": break;
 						case "Faxability Monthly Rental Res": break;
 						case "Smart Bundle package": break;
+						case "3 Way Calls Service Res": break;
+						case "Call Minder with Call Forward Res": break;
+						case "Call Minder-Charges-Standard SME 2 (with TPS)": break;
+						case "Calling Numbers Presented - Minimum Charge": break;
+						case "directory assistance": break;
+						case "FaxAbility-Charges SME1": break;
+						case "FaxAbility-Charges SME2": break;
+						case "Smartphone Services-Call waiting SME2": break;
+						case "S-Phone Call divert (call fwd No ans) SME2": break;
+						case "S-Phone Call divert (call fwd Immed) SME2": break;
+						case "S-Phone Call Restrict with Directory Access SM": break;
+						case "Wire Maintenance": break;
+						case "wire maintenance contract": break;
 						default: isUsefull = false;
 					}
 				}

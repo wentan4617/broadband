@@ -2,6 +2,8 @@ package com.tm.broadband.util.test;
 
 import java.text.ParseException;
 
+import com.tm.broadband.util.TMUtils;
+
 
 public class StevenTest {
 	
@@ -262,7 +264,7 @@ public class StevenTest {
 //		System.out.println(b);
 //		// true
 		
-		System.out.println("994".length());
+		System.out.println(TMUtils.parseDate4YYYYMMDDHHMM("2014/12/2 23:34"));
 		
 		
 	}
