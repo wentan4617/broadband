@@ -53,8 +53,6 @@ public class VOSVoIPCallRecordUtility {
 	private static VOSVoIPCallRecord getVOSVoIPCallRecords(String line){
 		VOSVoIPCallRecord vosVoIPCallRecord = new VOSVoIPCallRecord();
 		String arr[] = line.split(",");
-		System.out.println("line: "+line);
-
 		
 		// String: Original Number
 		if(arr.length > oriNumberIndex){

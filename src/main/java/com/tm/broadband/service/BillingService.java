@@ -680,6 +680,8 @@ public class BillingService {
 			// Get All data from the CSV file
 			List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
 			
+			StringBuffer recordedRentalPSTN = new StringBuffer();
+			
 			// Iteratively insert into database
 			for (CustomerCallRecord ccr : ccrs) {
 				boolean isUsefull = false;
@@ -716,11 +718,25 @@ public class BillingService {
 						default: isUsefull = false;
 					}
 				}
+				if((ccr.getRecord_type()!=null && "AC".equals(ccr.getRecord_type()))
+				&& (ccr.getClear_service_id()!=null && !ccr.getClear_service_id().trim().startsWith("1"))
+				&& (ccr.getAmount_incl()!=null && ccr.getAmount_incl()>0)
+				&& !isUsefull){
+					if(!recordedRentalPSTN.toString().contains(ccr.getClear_service_id())){
+						isUsefull = true;
+						if("".equals(recordedRentalPSTN.toString().trim())){
+							recordedRentalPSTN.append(ccr.getClear_service_id());
+						} else {
+							recordedRentalPSTN.append(", "+ccr.getClear_service_id());
+						}
+					}
+				}
 				if(isUsefull){
 					ccr.setUpload_date(new Date());
 					this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
 				}
 			}
+			System.out.println("recordedRentalPSTN: "+recordedRentalPSTN);
 			
 		} else if("callplus".equals(billing_type)){
 			

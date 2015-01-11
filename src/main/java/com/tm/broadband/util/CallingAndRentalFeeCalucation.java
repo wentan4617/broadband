@@ -52,14 +52,10 @@ public class CallingAndRentalFeeCalucation {
 				}
 				
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-				cid.setInvoice_detail_name(ccr.getBilling_description());
-				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
-				Double price = "Smart Bundle package".equals(ccr.getBilling_description()) ? 18d : "Calling Numbers Presented - Minimum Charge".equals(ccr.getBilling_description()) ? 12d : 6d;
-				if("Calling Numbers Presented - Minimum Charge".equals(ccr.getBilling_description())){
-					cid.setInvoice_detail_price(price);
-				} else {
-					cid.setInvoice_detail_price(TMUtils.getRentalChargeFee(ccr.getDate_from(), price));
-				}
+				cid.setInvoice_detail_name(ccr.getBilling_description()+(ccr.getLine_description()!=null && ccr.getLine_description().equals("PAYPHONE") ? " PAYPHONE" : ""));
+				String date_time = ccr.getDate_from()!=null ? (TMUtils.dateFormatYYYYMMDD(ccr.getDate_from()) + " - " + TMUtils.dateFormatYYYYMMDD(ccr.getDate_to())) : TMUtils.dateFormatYYYYMMDD(ccr.getCharge_date_time());
+				cid.setInvoice_detail_desc(date_time);
+				cid.setInvoice_detail_price(TMUtils.bigMultiply(ccr.getAmount_incl(), 1.15d));
 				cid.setInvoice_detail_unit(1);
 				
 				cids.add(cid);
@@ -117,6 +113,8 @@ public class CallingAndRentalFeeCalucation {
 		Double totalCreditBack = 0d;
 		
 		String callType = "";
+		
+		System.out.println("---------------");
 		
 		// BEGIN Chorus Style Calling Record
 		CustomerCallRecord ccrTemp = new CustomerCallRecord();

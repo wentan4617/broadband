@@ -264,7 +264,9 @@ public class StevenTest {
 //		System.out.println(b);
 //		// true
 		
-		System.out.println(TMUtils.parseDate4YYYYMMDDHHMM("2014/12/2 23:34"));
+//		System.out.println(TMUtils.parseDate4YYYYMMDDHHMM("2014/12/2 23:34"));
+		
+		System.out.println(!"161165771".startsWith("1"));
 		
 		
 	}

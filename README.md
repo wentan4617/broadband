@@ -28,15 +28,18 @@ demand version 1.9.3 2015-01-07
  
 demand version 1.9.2 2015-01-06
 
-* *****Chorus add-on存入时加多几个description，将rental的费用改成总费用*1.15 = 最终应付金额.(steven)
+* [Chorus add-on存入时加多几个description，将rental的费用改成总费用*1.15 = 最终应付金额.](steven)
 * [business上一个帐单的balance会累加至下一个帐单payable amount上.](steven)
-* 筛选列出的chorus addon，与之前的addon存在同一张表里.(steven)
+* [筛选列出的chorus addon，与之前的addon存在同一张表里.](steven)
 * 列出所有非monthly paid的order，及其plan单价，列出合同时间以及剩余服务月份.(steven)
 * 统计每个月所产生成本，根据statement date统计chorus成本，根据calling date统计callplus及vos成本.(steven)
 * [列出所有is_ddpay=true的所有order，In Service的，所有非paid的帐单，导出成Excel表，所需列:Customer Id, Order Id, Create Date, DD/CC detail, Balance.](steven)
 * 列出所有用来算Commission的order，order的sales_id或user_id必须有一个非空，所需列: Customer Id, Order Id, Plan Price, Plan Type, Order Type, Order Term, Service Date, Receivables, Invoice Payable, Order Status, Hardware.(steven)
     过滤选项：Sales, Begin Date - End Date, Personal/Business, On Going/One Off
     可以导出成Excel并下载
+* *****根据Chorus Calling的PSTN匹配改成根据Chorus Rental的PSTN匹配.(steven)
+* equipment状态加一个exchanged，在equipment列表界面可以勾选某个equipment点击change status to exchanged/faulty.(steven)
+ 
  
  
 demand version 1.9.0 2014-12-23

@@ -24,6 +24,7 @@
 		ccr.`statement_date` 		as ccr_statement_date,
 		ccr.`record_type` 			as ccr_record_type,
 		ccr.`clear_service_id` 		as ccr_clear_service_id,
+		ccr.`line_description` 		as ccr_line_description,
 		ccr.`date_from` 			as ccr_date_from,
 		ccr.`date_to` 				as ccr_date_to,
 		ccr.`charge_date_time` 		as ccr_charge_date_time,
@@ -43,6 +44,7 @@
 		<result property="statement_date" column="ccr_statement_date" />
 		<result property="record_type" column="ccr_record_type" />
 		<result property="clear_service_id" column="ccr_clear_service_id" />
+		<result property="line_description" column="ccr_line_description" />
 		<result property="date_from" column="ccr_date_from" />
 		<result property="date_to" column="ccr_date_to" />
 		<result property="charge_date_time" column="ccr_charge_date_time" />
@@ -88,7 +90,32 @@
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
 					<if test="params.clear_service_id != null">and ccr.clear_service_id = #{params.clear_service_id}</if>
 					and (ccr.record_type='T1' or ccr.record_type='T3')
-					and ccr.billing_description != 'Calling Numbers Presented - Minimum Charge'
+					and ccr.billing_description NOT IN(
+						'Calling Numbers Presented - Minimum Charge',
+						'Call restrict with no Directory Access nat Res',
+						'Call restrict with directory access nat Res',
+						'Caller Display Monthly Charge per line Res',
+						'Call waiting nat Res',
+					  	'Faxability Monthly Rental Res',
+						'Smart Bundle package',
+						'3 Way Calls Service Res',
+						'Call Minder with Call Forward Res',
+						'Call Minder-Charges-Standard SME 2 (with TPS)',
+						'Calling Numbers Presented - Minimum Charge',
+						'directory assistance',
+						'FaxAbility-Charges SME1',
+						'FaxAbility-Charges SME2',
+						'Smartphone Services-Call waiting SME2',
+						'S-Phone Call divert (call fwd No ans) SME2',
+						'S-Phone Call divert (call fwd Immed) SME2',
+						'S-Phone Call Restrict with Directory Access SM',
+						'Wire Maintenance',
+						'wire maintenance contract'
+					)
+					and (
+						ccr.line_description IS NULL
+						OR ccr.line_description NOT IN( 'PAYPHONE' )
+					)
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
 					</if>
@@ -97,14 +124,30 @@
 					</if>
 				</when>
 				<when test="params.where == 'query_unused_rental_records'">
-					AND ccr.billing_description IN(
+					AND (ccr.billing_description IN(
+						'Calling Numbers Presented - Minimum Charge',
 						'Call restrict with no Directory Access nat Res',
+						'Call restrict with directory access nat Res',
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
 					  	'Faxability Monthly Rental Res',
 						'Smart Bundle package',
-						'Calling Numbers Presented - Minimum Charge'
-					)
+						'3 Way Calls Service Res',
+						'Call Minder with Call Forward Res',
+						'Call Minder-Charges-Standard SME 2 (with TPS)',
+						'Calling Numbers Presented - Minimum Charge',
+						'directory assistance',
+						'FaxAbility-Charges SME1',
+						'FaxAbility-Charges SME2',
+						'Smartphone Services-Call waiting SME2',
+						'S-Phone Call divert (call fwd No ans) SME2',
+						'S-Phone Call divert (call fwd Immed) SME2',
+						'S-Phone Call Restrict with Directory Access SM',
+						'Wire Maintenance',
+						'wire maintenance contract'
+					) OR ccr.line_description IN(
+						'PAYPHONE'
+					))
 					AND ccr.clear_service_id = #{params.clear_service_id}
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
@@ -115,14 +158,30 @@
 				</when>
 				<when test="params.where == 'query_last_month_rental_records'">
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>
-					AND ccr.billing_description IN(
+					AND (ccr.billing_description IN(
+						'Calling Numbers Presented - Minimum Charge',
 						'Call restrict with no Directory Access nat Res',
+						'Call restrict with directory access nat Res',
 						'Caller Display Monthly Charge per line Res',
 						'Call waiting nat Res',
 					  	'Faxability Monthly Rental Res',
 						'Smart Bundle package',
-						'Calling Numbers Presented - Minimum Charge'
-					)
+						'3 Way Calls Service Res',
+						'Call Minder with Call Forward Res',
+						'Call Minder-Charges-Standard SME 2 (with TPS)',
+						'Calling Numbers Presented - Minimum Charge',
+						'directory assistance',
+						'FaxAbility-Charges SME1',
+						'FaxAbility-Charges SME2',
+						'Smartphone Services-Call waiting SME2',
+						'S-Phone Call divert (call fwd No ans) SME2',
+						'S-Phone Call divert (call fwd Immed) SME2',
+						'S-Phone Call Restrict with Directory Access SM',
+						'Wire Maintenance',
+						'wire maintenance contract'
+					) OR ccr.line_description IN(
+						'PAYPHONE'
+					))
 					AND ccr.clear_service_id = #{params.clear_service_id}
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
