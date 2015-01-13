@@ -6,6 +6,7 @@
 		$.get(ctx+'/broadband-user/crm/customer/edit', data, function(map){
 			map.ctx = ctx+'';
 			map.user_role = user_role;
+			map.user_name = user_name;
 	   		var $table = $('#customer_edit');
 			$table.html(tmpl('customer_info_table_tmpl', map));
 			
@@ -1711,7 +1712,85 @@
 				/*
 				 *	END customer order Broadband ASID area
 				 */
-				 
+				
+				/**
+				 * 
+				 * BEGIN CustomerChorusAddonPrice
+				 * 
+				 */
+
+				// Update CustomerChorusAddonPrice
+				// Get CustomerChorusAddonPrice Dialog
+				$('a[data-name="customize_chorus_addon_price_btn_'+co[i].id+'"]').click(function(){
+					$(':radio,:checkbox').iCheck({
+						checkboxClass : 'icheckbox_square-green',
+						radioClass : 'iradio_square-green'
+					});
+					$btn = $(this); $btn.button('loading');
+					var id = this.id;
+					var data = {
+						'order_id':id
+					};
+					$.get(ctx+'/broadband-user/crm/customer/order/chorus-addon/get', data, function(json){
+						if(json.model!=null){
+							var copc = json.model;
+						}
+						$('input[data-val="Call restrict with no Directory Access nat Res"]').iCheck("check");
+						$('input[data-val="Call restrict with directory access nat Res"]').iCheck("check");
+						$('input[data-val="Caller Display Monthly Charge per line Res"]').iCheck("check");
+						$('input[data-val="Call waiting nat Res"]').iCheck("check");
+						$('input[data-val="Faxability Monthly Rental Res"]').iCheck("check");
+						$('input[data-val="Smart Bundle package"]').iCheck("check");
+						$('input[data-val="3 Way Calls Service Res"]').iCheck("check");
+						$('input[data-val="Call Minder with Call Forward Res"]').iCheck("check");
+						$('input[data-val="Call Minder-Charges-Standard SME 2 (with TPS)"]').iCheck("check");
+						$('input[data-val="Calling Numbers Presented - Minimum Charge"]').iCheck("check");
+						$('input[data-val="directory assistance"]').iCheck("check");
+						$('input[data-val="FaxAbility-Charges SME1"]').iCheck("check");
+						$('input[data-val="FaxAbility-Charges SME2"]').iCheck("check");
+						$('input[data-val="Smartphone Services-Call waiting SME2"]').iCheck("check");
+						$('input[data-val="S-Phone Call divert (call fwd No ans) SME2"]').iCheck("check");
+						$('input[data-val="S-Phone Call divert (call fwd Immed) SME2"]').iCheck("check");
+						$('input[data-val="S-Phone Call Restrict with Directory Access SM"]').iCheck("check");
+						$('input[data-val="Wire Maintenance"]').iCheck("check");
+						$('input[data-val="wire maintenance contract"]').iCheck("check");
+					});
+					$('#editCustomerOrderChorusAddonPriceModal_'+this.id).modal('show');	// click Edit PPPoE then performing Ajax action
+				});
+				// Submit to rest controller
+				$('a[data-name="editCustomerOrderChorusAddonPriceModalBtn_'+co[i].id+'"]').click(function(){
+					console.log($('input[data-name="call_restrict_with_no_directory_access_nat_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="call_restrict_with_directory_access_nat_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="caller_display_monthly_charge_per_line_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="call_waiting_nat_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="faxability_monthly_rental_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="smart_bundle_package_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="3_way_calls_service_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="call_minder_with_call_forward_res_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="call_minder_charges_standard_sme_2_with_tps_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="calling_numbers_presented_minimum_charge_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="directory_assistance_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="faxability_charges_sme1_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="faxability_charges_sme2_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="smartphone_services_call_waiting_sme2_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="s_phone_call_divert_call_fwd_no_ans_sme2_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="s_phone_call_divert_call_fwd_immed_sme2_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="s_phone_call_restrict_with_directory_access_sm_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="wire_maintenance_'+this.id+'"]:checked').attr('data-val')!=null);
+					console.log($('input[data-name="wire_maintenance_contract_'+this.id+'"]:checked').attr('data-val')!=null);
+//					$.post(ctx+'/broadband-user/crm/customer/order/ppppoe/edit', data, function(json){
+//						if(!$.jsonValidation(json, 'left')){
+//							order_pppoe_loginname.html(loginname_input_val);
+//							order_pppoe_password.html(password_input_val);
+//						}
+//					}, "json");
+				});
+				// Reset button when hidden CustomerChorusAddonPrice dialog
+				$('#editCustomerOrderChorusAddonPriceModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
+				
 
 				/*
 				 *	BEGIN customer order detail(s) area

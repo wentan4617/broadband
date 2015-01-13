@@ -75,6 +75,7 @@
 					AND ccr.invoice_id IS NULL
 					AND DATE_FORMAT(ccr.statement_date,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
 					AND ccr.amount_incl&gt;0
+					AND ccr.record_type='AC'
 				</when>
 				<when test="params.where == 'query_unmatched_records'">
 					'0'+ccr.clear_service_id NOT IN(
@@ -85,6 +86,7 @@
 					AND ccr.invoice_id IS NULL
 					AND DATE_FORMAT(ccr.statement_date,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
 					AND ccr.amount_incl&gt;0
+					AND ccr.record_type='AC'
 				</when>
 				<when test="params.where == 'query_last_call_records'">
 					<if test="params.last_month != null">ccr.statement_date >= #{params.last_month}</if>

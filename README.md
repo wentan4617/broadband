@@ -20,6 +20,14 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.9.5 2015-01-12
+
+* New Order下Business单子时，is_ddpay不是true，检查原因.(steven)
+* 在order界面添加一个按钮，弹出modal，可勾选指定的add-on，出账计算add-on时如果.(steven)
+* 添加一张tm_customer_order_chorus_addon,字段有：id, order_id, addon_name, addon_price.(steven)
+ 
+ 
+ 
 demand version 1.9.3 2015-01-07
 
 * Business出第一张invoice时next_invoice_create_date没变，检查原因.(steven)
@@ -37,7 +45,7 @@ demand version 1.9.2 2015-01-06
 * 列出所有用来算Commission的order，order的sales_id或user_id必须有一个非空，所需列: Customer Id, Order Id, Plan Price, Plan Type, Order Type, Order Term, Service Date, Receivables, Invoice Payable, Order Status, Hardware.(steven)
     过滤选项：Sales, Begin Date - End Date, Personal/Business, On Going/One Off
     可以导出成Excel并下载
-* *****根据Chorus Calling的PSTN匹配改成根据Chorus Rental的PSTN匹配.(steven)
+* [根据Chorus Calling的PSTN匹配改成根据Chorus Rental的PSTN匹配.](steven)
 * equipment状态加一个exchanged，在equipment列表界面可以勾选某个equipment点击change status to exchanged/faulty.(steven)
  
  

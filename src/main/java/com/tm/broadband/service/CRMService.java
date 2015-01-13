@@ -29,6 +29,7 @@ import com.tm.broadband.mapper.CustomerDDPayMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
@@ -62,6 +63,7 @@ import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
@@ -141,6 +143,7 @@ public class CRMService {
 	private CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper;
 	private CustomerOrderOnsiteMapper customerOrderOnsiteMapper;
 	private CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper;
+	private CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -184,7 +187,8 @@ public class CRMService {
 			CustomerDDPayMapper customerDDPayMapper,
 			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper,
 			CustomerOrderOnsiteMapper customerOrderOnsiteMapper,
-			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper){
+			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper,
+			CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -221,6 +225,7 @@ public class CRMService {
 		this.customerOrderProvisionChecklistMapper = customerOrderProvisionChecklistMapper;
 		this.customerOrderOnsiteMapper = customerOrderOnsiteMapper;
 		this.customerOrderOnsiteDetailMapper = customerOrderOnsiteDetailMapper;
+		this.customerOrderChorusAddonMapper = customerOrderChorusAddonMapper;
 	}
 	
 	
@@ -4764,6 +4769,50 @@ public class CRMService {
 	
 	/**
 	 * END Customer
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderChorusAddon
+	 */
+	
+
+	public void createCustomerOrderChorusAddon(CustomerOrderChorusAddon coca){
+		this.customerOrderChorusAddonMapper.insertCustomerOrderChorusAddon(coca);
+	}
+	
+	public CustomerOrderChorusAddon queryCustomerOrderChorusAddon(CustomerOrderChorusAddon coca) {
+		List<CustomerOrderChorusAddon> cocas = this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddon(coca);
+		return cocas!=null && cocas.size()>0 ? cocas.get(0) : null;
+	}
+	
+	public List<CustomerOrderChorusAddon> queryCustomerOrderChorusAddons(CustomerOrderChorusAddon coca) {
+		return this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddon(coca);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderChorusAddon> queryCustomerOrderChorusAddonsByPage(Page<CustomerOrderChorusAddon> page){
+		page.setTotalRecord(this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsSum(page));
+		page.setResults(this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderChorusAddonsSumByPage(Page<CustomerOrderChorusAddon> page){
+		return this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderChorusAddon(CustomerOrderChorusAddon coca){
+		this.customerOrderChorusAddonMapper.updateCustomerOrderChorusAddon(coca);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderChorusAddonById(int id){
+		this.customerOrderChorusAddonMapper.deleteCustomerOrderChorusAddonById(id);
+	}
+	
+	/**
+	 * END CustomerOrderChorusAddon
 	 */
 	
 	

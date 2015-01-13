@@ -981,7 +981,9 @@
 		
 		<!-- order details -->
 		<hr />
-		<h4 class="text-success">Order Detail Information</h4>
+		<h4 class="text-success">Order Detail Information&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="customize_chorus_addon_price_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Customize Chorus Addon Price</a>
+		</h4>
 		<hr />
 		<table class="table" style="font-size:12px;">
 			<thead>
@@ -3432,6 +3434,208 @@
 		</div>
 	</form>
 	<!-- /.modal -->
+
+	<!-- Insert CustomerOrderChorusAddon Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editCustomerOrderChorusAddonPriceModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCustomerOrderChorusAddonPriceModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editCustomerOrderChorusAddonPriceModalLabel">
+							<strong>Edit Customer Order Chorus Addon Price</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p>
+									Sure to save the changes?
+								</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_restrict_with_no_directory_access_nat_res_<.= customerOrder[i].id .>" data-val="Call restrict with no Directory Access nat Res" />
+							</div>
+							Call restrict with no Directory Access nat Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_restrict_with_directory_access_nat_res_<.= customerOrder[i].id .>" data-val="Call restrict with directory access nat Res" />
+							</div>
+							Call restrict with directory access nat Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="caller_display_monthly_charge_per_line_res_<.= customerOrder[i].id .>" data-val="Caller Display Monthly Charge per line Res" />
+							</div>
+							Caller Display Monthly Charge per line Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_waiting_nat_res_<.= customerOrder[i].id .>" data-val="Call waiting nat Res" />
+							</div>
+							Call waiting nat Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_monthly_rental_res_<.= customerOrder[i].id .>" data-val="Faxability Monthly Rental Res" />
+							</div>
+							Faxability Monthly Rental Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="smart_bundle_package_<.= customerOrder[i].id .>" data-val="Smart Bundle package" />
+							</div>
+							Smart Bundle package
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>" data-val="3 Way Calls Service Res" />
+							</div>
+							3 Way Calls Service Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_minder_with_call_forward_res_<.= customerOrder[i].id .>" data-val="Call Minder with Call Forward Res" />
+							</div>
+							Call Minder with Call Forward Res
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_minder_charges_standard_sme_2_with_tps_<.= customerOrder[i].id .>" data-val="Call Minder-Charges-Standard SME 2 (with TPS)" />
+							</div>
+							Call Minder-Charges-Standard SME 2 (with TPS)
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="calling_numbers_presented_minimum_charge_<.= customerOrder[i].id .>" data-val="Calling Numbers Presented - Minimum Charge" />
+							</div>
+							Calling Numbers Presented - Minimum Charge
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="directory_assistance_<.= customerOrder[i].id .>" data-val="directory assistance" />
+							</div>
+							directory assistance
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_charges_sme1_<.= customerOrder[i].id .>" data-val="FaxAbility-Charges SME1" />
+							</div>
+							FaxAbility-Charges SME1
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_charges_sme2_<.= customerOrder[i].id .>" data-val="FaxAbility-Charges SME2" />
+							</div>
+							FaxAbility-Charges SME2
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="smartphone_services_call_waiting_sme2_<.= customerOrder[i].id .>" data-val="Smartphone Services-Call waiting SME2" />
+							</div>
+							Smartphone Services-Call waiting SME2
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_divert_call_fwd_no_ans_sme2_<.= customerOrder[i].id .>" data-val="S-Phone Call divert (call fwd No ans) SME2" />
+							</div>
+							S-Phone Call divert (call fwd No ans) SME2
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_divert_call_fwd_immed_sme2_<.= customerOrder[i].id .>" data-val="S-Phone Call divert (call fwd Immed) SME2" />
+							</div>
+							S-Phone Call divert (call fwd Immed) SME2
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_restrict_with_directory_access_sm_<.= customerOrder[i].id .>" data-val="S-Phone Call Restrict with Directory Access SM" />
+							</div>
+							S-Phone Call Restrict with Directory Access SM
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="wire_maintenance_<.= customerOrder[i].id .>" data-val="Wire Maintenance" />
+							</div>
+							Wire Maintenance
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="text" class="form-control" data-name="" />
+							</div>
+							<div class="col-md-1">
+								<input type="checkbox" data-name="wire_maintenance_contract_<.= customerOrder[i].id .>" data-val="wire maintenance contract" />
+							</div>
+							wire maintenance contract
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editCustomerOrderChorusAddonPriceModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
 	
       </div>
     </div>

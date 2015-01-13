@@ -37,6 +37,7 @@ import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
@@ -3999,6 +4000,25 @@ public class CRMRestController {
 		this.billingService.queryCustomerBillingLogsByPage(cblPage);
 		map.put("cblPage", cblPage);
 		return map;
+	}
+
+
+	// BEGIN CustomerOrderChorusAddon
+	@RequestMapping(value = "/broadband-user/crm/customer/order/chorus-addon/get")
+	public JSONBean<CustomerOrderChorusAddon> toCustomerOrderChorusAddonGet(Model model,
+			CustomerOrderChorusAddon coca,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderChorusAddon> json = new JSONBean<CustomerOrderChorusAddon>();
+		
+		CustomerOrderChorusAddon cocaQuery = new CustomerOrderChorusAddon();
+		cocaQuery.getParams().put("order_id", coca.getOrder_id());
+		cocaQuery = this.crmService.queryCustomerOrderChorusAddon(cocaQuery);
+		
+		json.setModel(cocaQuery);
+		
+		return json;
+		
 	}
 	
 	

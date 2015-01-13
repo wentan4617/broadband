@@ -115,6 +115,7 @@
 	var customerId = '${customer.id}';
 	var ctx = '${ctx}';
 	var user_role = '${userSession.user_role}';
+	var user_name = '${userSession.user_name}';
 	var user_id = '${userSession.id}';
 	var customer_type = '${customer.customer_type}';
 	
