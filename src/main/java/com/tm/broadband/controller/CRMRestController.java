@@ -71,6 +71,7 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
@@ -4002,8 +4003,14 @@ public class CRMRestController {
 		return map;
 	}
 
-
-	// BEGIN CustomerOrderChorusAddon
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderChorusAddon
+	 * 
+	 */
+	
+	
 	@RequestMapping(value = "/broadband-user/crm/customer/order/chorus-addon/get")
 	public JSONBean<CustomerOrderChorusAddon> toCustomerOrderChorusAddonGet(Model model,
 			CustomerOrderChorusAddon coca,
@@ -4013,13 +4020,45 @@ public class CRMRestController {
 		
 		CustomerOrderChorusAddon cocaQuery = new CustomerOrderChorusAddon();
 		cocaQuery.getParams().put("order_id", coca.getOrder_id());
-		cocaQuery = this.crmService.queryCustomerOrderChorusAddon(cocaQuery);
+		List<CustomerOrderChorusAddon> cocasQuery = this.crmService.queryCustomerOrderChorusAddons(cocaQuery);
 		
-		json.setModel(cocaQuery);
+		json.setModels(cocasQuery);
 		
 		return json;
 		
 	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/chorus-addon/update", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderChorusAddonGet(Model model,
+			@RequestBody List<CustomerOrderChorusAddon> cocas) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(cocas!=null && cocas.size()>0 && cocas.get(0).getOrder_id()!=null){
+			this.crmService.removeCustomerOrderChorusAddonByOrderId(cocas.get(0).getOrder_id());
+		}
+		
+		for (CustomerOrderChorusAddon coca : cocas) {
+			Console.log(coca);
+			if(coca.getAddon_price()==null || "".equals(coca.getAddon_price()) || coca.getAddon_price()<=0){
+				json.getErrorMap().put("alert-error", "Selected Addons' Price Could Not Be Null Or Less Than Zero!");
+				return json;
+			}
+			coca.setAddon_price(Double.parseDouble(TMUtils.fillDecimalPeriod(coca.getAddon_price())));
+			this.crmService.createCustomerOrderChorusAddon(coca);
+		}
+		
+		return json;
+		
+	}
+
+	
+	/**
+	 * 
+	 * END CustomerOrderChorusAddon
+	 * 
+	 */
 	
 	
 	/**

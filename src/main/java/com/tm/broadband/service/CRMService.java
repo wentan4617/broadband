@@ -1322,11 +1322,13 @@ public class CRMService {
 				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 				CustomerInvoice ci = new CustomerInvoice();
 				
+				ci.setOrder_id(co.getId());
+				
 				if(pstn_numbers.size() > 0){
 					
 					for (String pstn_number : pstn_numbers) {
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 						
 						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 						
@@ -1980,13 +1982,15 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
+		
+		ci.setOrder_id(co.getId());
 
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 				
@@ -2693,13 +2697,14 @@ public class CRMService {
 
 		invoicePDF.setCo(co);
 
+		ci.setOrder_id(co.getId());
 
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, this.customerOrderChorusAddonMapper);
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
 				
@@ -3207,12 +3212,14 @@ public class CRMService {
 		invoicePDF.setCo(customerOrder);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
+		ci.setOrder_id(customerOrder.getId());
+		
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type());
 				
@@ -4809,6 +4816,11 @@ public class CRMService {
 	@Transactional
 	public void removeCustomerOrderChorusAddonById(int id){
 		this.customerOrderChorusAddonMapper.deleteCustomerOrderChorusAddonById(id);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderChorusAddonByOrderId(int order_id){
+		this.customerOrderChorusAddonMapper.deleteCustomerOrderChorusAddonByOrderId(order_id);
 	}
 	
 	/**

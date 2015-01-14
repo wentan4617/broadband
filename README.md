@@ -25,6 +25,9 @@ demand version 1.9.5 2015-01-12
 * New Order下Business单子时，is_ddpay不是true，检查原因.(steven)
 * 在order界面添加一个按钮，弹出modal，可勾选指定的add-on，出账计算add-on时如果.(steven)
 * 添加一张tm_customer_order_chorus_addon,字段有：id, order_id, addon_name, addon_price.(steven)
+* 新账单只能包含rental，但不更新rental的invoice_id，检查原因.(steven)
+* 检查所有rental及其订单，如若发现已被包含至invoice，但invoice_id没有成功更新至rental上的话，将其关联的invoice_id加上.(steven)
+* invoice的total balance显示为基于order的total invoice balance.(steven)
  
  
  

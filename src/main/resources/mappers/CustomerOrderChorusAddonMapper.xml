@@ -109,6 +109,9 @@
 	<delete id="deleteCustomerOrderChorusAddonById" parameterType="int">
 		DELETE FROM tm_customer_order_chorus_addon WHERE id = #{0}
 	</delete>
+	<delete id="deleteCustomerOrderChorusAddonByOrderId" parameterType="int">
+		DELETE FROM tm_customer_order_chorus_addon WHERE order_id = #{0}
+	</delete>
 
 	<!-- // END DELETE AREA -->
 

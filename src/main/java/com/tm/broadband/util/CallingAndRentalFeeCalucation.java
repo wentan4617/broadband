@@ -8,6 +8,7 @@ import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
+import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
 import com.tm.broadband.mapper.NZAreaCodeListMapper;
 import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VOSVoIPRateMapper;
@@ -16,6 +17,7 @@ import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
@@ -28,7 +30,9 @@ public class CallingAndRentalFeeCalucation {
 	public static Double ccrRentalOperation(CustomerInvoice ci
 			, Boolean isRegenerate, String pstn_number
 			, List<CustomerInvoiceDetail> cids, Double totalAmountPayable
-			, CustomerCallRecordMapper customerCallRecordMapper, CustomerInvoiceMapper ciMapper){
+			, CustomerCallRecordMapper customerCallRecordMapper
+			, CustomerInvoiceMapper ciMapper
+			, CustomerOrderChorusAddonMapper cocaMapper){
 		
 		Double totalAmountIncl = 0d;
 		
@@ -57,6 +61,20 @@ public class CallingAndRentalFeeCalucation {
 				cid.setInvoice_detail_desc(date_time);
 				cid.setInvoice_detail_price(TMUtils.bigMultiply(ccr.getAmount_incl(), 1.15d));
 				cid.setInvoice_detail_unit(1);
+				
+				if(ci.getOrder_id()!=null){
+					
+					CustomerOrderChorusAddon cocaQuery = new CustomerOrderChorusAddon();
+					cocaQuery.getParams().put("order_id", ci.getOrder_id());
+					List<CustomerOrderChorusAddon> cocasQuery = cocaMapper.selectCustomerOrderChorusAddon(cocaQuery);
+					if(cocasQuery!=null && cocasQuery.size()>0){
+						for(CustomerOrderChorusAddon coca : cocasQuery){
+							if(ccr.getBilling_description().equals(coca.getAddon_name())){
+								cid.setInvoice_detail_price(coca.getAddon_price());
+							}
+						}
+					}
+				}
 				
 				cids.add(cid);
 				

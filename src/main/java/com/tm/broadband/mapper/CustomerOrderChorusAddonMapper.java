@@ -38,6 +38,7 @@ public interface CustomerOrderChorusAddonMapper {
 	/* DELETE AREA */
 
 	void deleteCustomerOrderChorusAddonById(int id);
+	void deleteCustomerOrderChorusAddonByOrderId(int order_id);
 
 	/* // END DELETE AREA */
 
