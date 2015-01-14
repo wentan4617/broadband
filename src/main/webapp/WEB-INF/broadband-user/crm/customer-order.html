@@ -7,8 +7,14 @@
   <div class="panel panel-success">
     <div class="panel-heading" role="tab" id="heading_<.= customerOrder[i].id .>">
       <h4 class="panel-title">
-        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<.= customerOrder[i].id .>" aria-controls="collapse_<.= customerOrder[i].id .>" aria-expanded="<.= order_id_arg0==customerOrder[i].id ? 'true' : 'false' .>" class="<.= order_id_arg0==customerOrder[i].id ? '' : 'collapsed' .>">
-          Order Information: <.= customerOrder[i].id .> - <.= customerOrder[i].customer_type .> - <.= customerOrder[i].order_status .>
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<.= customerOrder[i].id .>" aria-controls="collapse_<.= customerOrder[i].id .>" aria-expanded="<.= order_id_arg0==customerOrder[i].id ? 'true' : 'false' .>" class="<.= order_id_arg0==customerOrder[i].id ? '' : 'collapsed' .>" style="display:block;">
+          Order Information: <strong><.= customerOrder[i].id .></strong> - <strong><.= customerOrder[i].customer_type .></strong> -
+          <. if(customerOrder[i].customer_type=='personal'){ .>
+          <strong><.= customerOrder[i].first_name .>&nbsp;<.= customerOrder[i].last_name .></strong>
+          <. } else { .>
+          <strong><.= customerOrder[i].org_name .></strong>
+          <. } .>
+          <strong class="pull-right"><.= customerOrder[i].order_status .></strong>
         </a>
       </h4>
     </div>

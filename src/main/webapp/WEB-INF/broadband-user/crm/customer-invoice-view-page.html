@@ -78,7 +78,6 @@
 					<. } .>
 				</h3>
 				<br/>
-				<div class="pull-right text-danger" style="font-size:24px;">Total Balance: $<.= Number(totalBalance).toFixed(2) .></div>
 			</th>
 		</tr>
 		<tr>
@@ -110,6 +109,19 @@
 			var is_duplicated_order_id = false;
 			var recorded_order_id;
 			
+			var totalBalance = 0;
+			
+			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
+				var invoice = invoicePage.results[i];
+				
+				if(orderIds[o]==invoice.order_id){
+				
+				
+					totalBalance += invoice.balance;
+					
+				}
+			}
+			
 			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
 				var invoice = invoicePage.results[i];
 				
@@ -121,7 +133,8 @@
 						.>
 						<tr class="bg-warning">
 							<td colspan="12">
-								<h3 class="text-danger" style="text-align:center;"><strong>Order#:&nbsp;<.= recorded_order_id .>&nbsp;&nbsp;Customer#:&nbsp;<.= invoice.customer_id .></strong></h3>
+								<h3 class="text-danger" style="text-align:center;"><strong>Order#:&nbsp;<.= recorded_order_id .>&nbsp;&nbsp;Customer#:&nbsp;<.= invoice.customer_id .></strong><strong class="pull-right">Total Balance: $<.= Number(totalBalance).toFixed(2) .></strong></h3>
+								
 							</td>
 						</tr>
 						<.
