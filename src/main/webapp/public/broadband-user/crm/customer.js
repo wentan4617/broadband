@@ -1284,14 +1284,14 @@
 					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Next Invoice Create Date!');
 					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Next Invoice Create Date?');
 				});
-				$('a[data-name="empty_broadband_asid_btn_'+co[i].id+'"]').click(function(){
-					$btn = $(this); $btn.button('loading');
-					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
-					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
-					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
-					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Broadband ASID!');
-					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Broadband ASID?');
-				});
+//				$('a[data-name="add_broadband_asid_btn_'+co[i].id+'"]').click(function(){
+//					$btn = $(this); $btn.button('loading');
+//					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').prop('id', this.id);
+//					$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+this.id+'"]').attr('data-type', $(this).attr('data-type'));
+//					$('#emptyServiceGivingNextInvoiceCreateDateModal_'+this.id).modal('show');
+//					$('strong[data-name="service_giving_next_invoice_create_date_title_'+this.id+'"]').html('Empty Broadband ASID!');
+//					$('p[data-name="service_giving_next_invoice_create_date_content_'+this.id+'"]').html('Sure to Empty Broadband ASID?');
+//				});
 				// Submit to rest controller
 				$('a[data-name="emptyServiceGivingNextInvoiceCreateModalBtn_'+co[i].id+'"]').click(function(){
 					var date_type = $(this).attr('data-type');
@@ -1310,12 +1310,12 @@
 								'order_id':this.id
 						};
 					}
-					if(date_type=='broadband_asid'){
-						url = ctx+'/broadband-user/crm/customer/order/broadband_asid/empty';
-						data = {
-								'order_id':this.id
-						};
-					}
+//					if(date_type=='broadband_asid'){
+//						url = ctx+'/broadband-user/crm/customer/order/broadband_asid/empty';
+//						data = {
+//								'order_id':this.id
+//						};
+//					}
 					$.post(url, data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
@@ -1380,6 +1380,31 @@
 				$('#editOrderBelongsToModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$.getCustomerOrder($(this).attr('data-id'));
 				});
+				
+
+				// Add Broadband ASID
+				// Get Broadband ASID Dialog
+				$('a[data-name="add_broadband_asid_btn_'+co[i].id+'"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="addBroadbandASIDModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('#addBroadbandASIDModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="addBroadbandASIDModalBtn_'+co[i].id+'"]').click(function(){
+					var broadband_asid = $('input[data-name="add_broadband_asid_input_'+this.id+'"]').val();
+					var data = {
+						'order_id':this.id,
+						'broadband_asid':broadband_asid
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/broadband_asid/create', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden Broadband ASID dialog
+				$('#addBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
 
 				//
 				// View order optional request
@@ -1687,28 +1712,79 @@
 				/*
 				 *	BEGIN customer order Broadband ASID area
 				 */
-				// Update order Broadband ASID request
-				// Get order optional request Dialog
-				$('a[data-name="'+co[i].id+'_brodband_asid_btn"]').click(function(){
+				
+				// Update order Broadband ASID
+				// Get order Broadband ASID Dialog
+				$('a[data-name="'+co[i].id+'_brodband_asid_update_btn"]').click(function(){
 					$btn = $(this); $btn.button('loading');
-					$('a[data-name="saveBroadbandASIDModalBtn_'+this.id+'"]').prop('id', this.id);
-					$('#saveBroadbandASIDModal_'+this.id).modal('show');
+					$('a[data-name="updateBroadbandASIDModalBtn_'+this.id+'"]').prop('id', this.id);
+					$('a[data-name="updateBroadbandASIDModalBtn_'+this.id+'"]').attr('data-asid-id', $(this).attr('data-asid-id'));
+					$('#updateBroadbandASIDModal_'+this.id).modal('show');
 				});
 				// Submit to rest controller
-				$('a[data-name="saveBroadbandASIDModalBtn_'+co[i].id+'"]').click(function(){
-					var broadbandASID = $('input[data-name="'+this.id+'_brodband_asid"]');
+				$('a[data-name="updateBroadbandASIDModalBtn_'+co[i].id+'"]').click(function(){
+					var asid_id = $(this).attr('data-asid-id');
+					var broadband_asid = $('input[data-name="'+this.id+'_'+asid_id+'_brodband_asid"]').val();
 					var data = {
-							'id':this.id
-							,'broadband_asid':broadbandASID.val()
+							'order_id':this.id
+							,'id':asid_id
+							,'broadband_asid':broadband_asid
 					};
 					$.post(ctx+'/broadband-user/crm/customer/order/broadband_asid/edit', data, function(json){
 						$.jsonValidation(json, 'left');
 					}, "json");
 				});
 				// Reset button when hidden Broadband ASID dialog
-				$('#saveBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+				$('#updateBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$.getCustomerOrder($(this).attr('data-id'));
 				});
+				
+
+				// Remove order Broadband ASID 
+				// Get order Broadband ASID Dialog
+				$('a[data-name="'+co[i].id+'_brodband_asid_remove_btn"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="removeBroadbandASIDModalBtn_'+this.id+'"]').attr('data-asid-id', $(this).attr('data-asid-id'));
+					$('#removeBroadbandASIDModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="removeBroadbandASIDModalBtn_'+co[i].id+'"]').click(function(){
+					var asid_id = $(this).attr('data-asid-id');
+					var data = {
+						'id':asid_id
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/broadband_asid/remove', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden Broadband ASID dialog
+				$('#removeBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
+
+				// Separately Store order Broadband ASID 
+				// Get order Broadband ASID Dialog
+				$('a[data-name="separately_store_broadband_asid_btn_'+co[i].id+'"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('a[data-name="separatelyStoreBroadbandASIDModalBtn_'+this.id+'"]').attr('data-asid-id', $(this).attr('data-asid-id'));
+					$('#separatelyStoreBroadbandASIDModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="separatelyStoreBroadbandASIDModalBtn_'+co[i].id+'"]').click(function(){
+					var asid_id = $(this).attr('data-asid-id');
+					var data = {
+						'id':asid_id
+					};
+					$.post(ctx+'/broadband-user/crm/customer/order/broadband_asid/separate-stored', data, function(json){
+						$.jsonValidation(json, 'left');
+					}, "json");
+				});
+				// Reset button when hidden Broadband ASID dialog
+				$('#separatelyStoreBroadbandASIDModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
 				/*
 				 *	END customer order Broadband ASID area
 				 */

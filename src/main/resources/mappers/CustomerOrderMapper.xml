@@ -308,7 +308,12 @@
 					<if test="params.mobile != null">and co.mobile LIKE CONCAT('%', '${params.mobile}', '%')</if>
 					<if test="params.email != null">and co.email LIKE CONCAT('%', '${params.email}', '%')</if>
 					<if test="params.address != null">and co.address LIKE CONCAT('%', '${params.address}', '%')</if>
-					<if test="params.broadband_asid != null">and co.broadband_asid LIKE CONCAT('%', '${params.broadband_asid}', '%')</if>
+					<if test="params.broadband_asid != null">
+						and co.id in(
+							select order_id from tm_customer_order_broadband_asid
+							where broadband_asid LIKE CONCAT('%', '${params.broadband_asid}', '%')
+						)
+					</if>
 					<if test="params.customer_type != null">and co.customer_type LIKE CONCAT('%', '${params.customer_type}', '%')</if>
 					<if test="params.user_id != null">
 						and (

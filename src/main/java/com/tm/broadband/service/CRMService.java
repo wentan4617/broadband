@@ -29,6 +29,7 @@ import com.tm.broadband.mapper.CustomerDDPayMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.CustomerOrderBroadbandASIDMapper;
 import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
@@ -63,6 +64,7 @@ import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderBroadbandASID;
 import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
@@ -144,6 +146,7 @@ public class CRMService {
 	private CustomerOrderOnsiteMapper customerOrderOnsiteMapper;
 	private CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper;
 	private CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper;
+	private CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -188,7 +191,8 @@ public class CRMService {
 			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper,
 			CustomerOrderOnsiteMapper customerOrderOnsiteMapper,
 			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper,
-			CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper){
+			CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper,
+			CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -226,6 +230,7 @@ public class CRMService {
 		this.customerOrderOnsiteMapper = customerOrderOnsiteMapper;
 		this.customerOrderOnsiteDetailMapper = customerOrderOnsiteDetailMapper;
 		this.customerOrderChorusAddonMapper = customerOrderChorusAddonMapper;
+		this.customerOrderBroadbandASIDMapper = customerOrderBroadbandASIDMapper;
 	}
 	
 	
@@ -4809,7 +4814,6 @@ public class CRMService {
 	/**
 	 * BEGIN CustomerOrderChorusAddon
 	 */
-	
 
 	public void createCustomerOrderChorusAddon(CustomerOrderChorusAddon coca){
 		this.customerOrderChorusAddonMapper.insertCustomerOrderChorusAddon(coca);
@@ -4853,7 +4857,56 @@ public class CRMService {
 	/**
 	 * END CustomerOrderChorusAddon
 	 */
+
 	
+	
+	/**
+	 * BEGIN CustomerOrderBroadbandASID
+	 */
+	
+
+	public void createCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid){
+		this.customerOrderBroadbandASIDMapper.insertCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	public CustomerOrderBroadbandASID queryCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid) {
+		List<CustomerOrderBroadbandASID> cobasids = this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASID(cobasid);
+		return cobasids!=null && cobasids.size()>0 ? cobasids.get(0) : null;
+	}
+	
+	public List<CustomerOrderBroadbandASID> queryCustomerOrderBroadbandASIDs(CustomerOrderBroadbandASID cobasid) {
+		return this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderBroadbandASID> queryCustomerOrderBroadbandASIDsByPage(Page<CustomerOrderBroadbandASID> page){
+		page.setTotalRecord(this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsSum(page));
+		page.setResults(this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderBroadbandASIDsSumByPage(Page<CustomerOrderBroadbandASID> page){
+		return this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid){
+		this.customerOrderBroadbandASIDMapper.updateCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderBroadbandASIDById(int id){
+		this.customerOrderBroadbandASIDMapper.deleteCustomerOrderBroadbandASIDById(id);
+	}
+	
+//	@Transactional
+//	public void removeCustomerOrderBroadbandASIDByOrderId(int order_id){
+//		this.customerOrderChorusAddonMapper.deleteCustomerOrderBroadbandASIDByOrderId(order_id);
+//	}
+	
+	/**
+	 * END CustomerOrderChorusAddon
+	 */
 	
 	
 }

@@ -961,29 +961,38 @@
 		<!-- Broadband ASID -->
 		<hr />
 		<h4 class="text-success">Broadband ASID Information&nbsp;
-		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_broadband_asid_btn_<.= customerOrder[i].id .>" data-type="broadband_asid" data-dismiss="modal">Empty Broadband ASID</a>
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="add_broadband_asid_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Add Broadband ASID</a>&nbsp;&nbsp;
+		<. if(user_role == 'system-developer'){ .>
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="separately_store_broadband_asid_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Separately Store Broadband ASID</a>
+		<. } .>
 		</h4>
 		<hr />
-		<div class="row">
-			<div class="col-md-6">
-				<div class="form-group">
-					<label class="control-label col-md-6">Broadband ASID</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_broadband_asid" class="form-control-static"><.= customerOrder[i].broadband_asid .></p>
+		<. var cobasids = customerOrder[i].cobasids; .>
+		<. for(var cobasidsIndex=0; cobasidsIndex<cobasids.length; cobasidsIndex++){ .>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label col-md-6">Broadband ASID</label>
+						<div class="col-md-6">
+							<p id="<.= customerOrder[i].id .>_broadband_asid" class="form-control-static"><.= cobasids[cobasidsIndex].broadband_asid .></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<div class="col-md-6">
+							<input value="<.= cobasids[cobasidsIndex].broadband_asid .>" data-name="<.= customerOrder[i].id .>_<.= cobasids[cobasidsIndex].id .>_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
+						</div>
+						<div class="col-md-6">
+							<a id="<.= customerOrder[i].id .>" data-asid-id="<.= cobasids[cobasidsIndex].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_brodband_asid_update_btn">Update ASID</a>
+							<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
+							<a id="<.= customerOrder[i].id .>" data-asid-id="<.= cobasids[cobasidsIndex].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_brodband_asid_remove_btn">Remove ASID</a>
+							<. } .>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="form-group">
-					<div class="col-md-6">
-						<input value="<.= customerOrder[i].broadband_asid .>" data-name="<.= customerOrder[i].id .>_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-longer pull-right" data-name="<.= customerOrder[i].id .>_brodband_asid_btn">Update Broadband ASID</a>
-					</div>
-				</div>
-			</div>
-		</div>
+		<. } .>
 		
 		<!-- order details -->
 		<hr />
@@ -1777,6 +1786,36 @@
 	</div>
 	<!-- /.modal -->
 
+	<!-- Add Broadband ASID Modal -->
+	<form class="form-horizontal">
+	<div class="modal fade" id="addBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="addBroadbandASIDModalLabel">
+						<strong>Add Broadband ASID</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-6">Broadband ASID</label>
+						<div class="col-md-4">
+							<input class="form-control" type="text" data-name="add_broadband_asid_input_<.= customerOrder[i].id .>" />
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="addBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	</form>
+
 	<!-- Edit Order Due Date Modal -->
 	<div class="modal fade" id="editOrderDueDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderDueDateModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -2003,22 +2042,72 @@
 	<!-- /.modal -->
 
 	<!-- Edit Broadband ASID Modal -->
-	<div class="modal fade" id="saveBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveBroadbandASIDModalLabel" aria-hidden="true">
+	<div class="modal fade" id="updateBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="updateBroadbandASIDModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="saveBroadbandASIDModalLabel">
-						<strong>Save Broadband ASID Information</strong>
+					<h4 class="modal-title" id="updateBroadbandASIDModalLabel">
+						<strong>Update Broadband ASID Information</strong>
 					</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-						Save Broadband ASID?
+						Update Broadband ASID?
 					</p>
 				</div>
 				<div class="modal-footer">
-					<a href="javascript:void(0);" class="btn btn-success" data-name="saveBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update Broadband ASID</a>
+					<a href="javascript:void(0);" class="btn btn-success" data-name="updateBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Remove Broadband ASID Modal -->
+	<div class="modal fade" id="removeBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="removeBroadbandASIDModalLabel">
+						<strong>Remove Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Remove Broadband ASID?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="removeBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Remove Broadband ASID Modal -->
+	<div class="modal fade" id="separatelyStoreBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="separatelyStoreBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="separatelyStoreBroadbandASIDModalLabel">
+						<strong>Separately Store Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Separately Store Broadband ASID?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="separatelyStoreBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->

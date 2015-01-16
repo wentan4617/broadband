@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderBroadbandASIDMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderBroadbandASIDColumns">
+		cobasid.`id`					as cobasid_id,
+		cobasid.`order_id`				as cobasid_order_id,
+		cobasid.`broadband_asid`		as cobasid_broadband_asid
+	</sql>
+
+	<resultMap type="CustomerOrderBroadbandASID" id="customerOrderBroadbandASIDResultMap">
+		<id property="id" column="cobasid_id" />
+		<result property="order_id" column="cobasid_order_id" />
+		<result property="broadband_asid" column="cobasid_broadband_asid" />
+	</resultMap>
+
+	<sql id="customerOrderBroadbandASIDWhere">
+		<where>
+			<if test="params.id != null">cobasid.id = #{params.id}</if>
+			<if test="params.order_id != null">and cobasid.order_id = #{params.order_id}</if>
+			<if test="params.broadband_asid != null">and cobasid.broadband_asid = #{params.broadband_asid}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderBroadbandASID" parameterType="CustomerOrderBroadbandASID" resultType="CustomerOrderBroadbandASID">
+		select * from tm_customer_order_broadband_asid as cobasid
+		<include refid="customerOrderBroadbandASIDWhere"/>
+	</select>
+
+	<!-- select customerOrderBroadbandASID page -->
+	<select id="selectCustomerOrderBroadbandASIDsByPage" parameterType="Page" resultMap="customerOrderBroadbandASIDResultMap">
+		select 
+			<include refid="customerOrderBroadbandASIDColumns"/>
+			from tm_customer_order_broadband_asid as cobasid
+			<include refid="customerOrderBroadbandASIDWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderBroadbandASID amount -->
+	<select id="selectCustomerOrderBroadbandASIDsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_broadband_asid as cobasid
+		<include refid="customerOrderBroadbandASIDWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderBroadbandASID" parameterType="CustomerOrderBroadbandASID" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_broadband_asid`(
+			`id`, `order_id`, `broadband_asid`
+		) VALUES (
+			#{id}, #{order_id}, #{broadband_asid}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderBroadbandASID -->
+	<update id="updateCustomerOrderBroadbandASID" parameterType="CustomerOrderBroadbandASID">
+		update tm_customer_order_broadband_asid
+		<set>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="broadband_asid != null">broadband_asid = #{broadband_asid}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderBroadbandASIDById" parameterType="int">
+		DELETE FROM tm_customer_order_broadband_asid WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

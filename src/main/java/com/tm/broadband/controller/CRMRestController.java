@@ -37,6 +37,7 @@ import com.tm.broadband.model.CustomerCredit;
 import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderBroadbandASID;
 import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
@@ -1556,29 +1557,6 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Update broadband asid
-	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderBroadbandASIDEdit(
-			Model model, CustomerOrder customerOrder) {
-
-		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-
-		if (!"".equals(customerOrder.getBroadband_asid().trim())) {
-			CustomerOrder co = new CustomerOrder();
-			co.getParams().put("id", customerOrder.getId());
-			co.setBroadband_asid(customerOrder.getBroadband_asid());
-			this.crmService.editCustomerOrder(co);
-			json.setModel(co);
-			json.getSuccessMap().put("alert-success",
-					"Broadband ASID had just been edited!");
-		} else {
-			json.getErrorMap().put("alert-error",
-					"Please input correct Broadband ASID!");
-		}
-
-		return json;
-	}
-
 	// Update customer info
 	@RequestMapping(value = "/broadband-user/crm/customer/edit", method = RequestMethod.GET)
 	public Map<String, Object> toCustomerEdit(Model model,
@@ -1594,6 +1572,12 @@ public class CRMRestController {
 			cooQuery.getParams().put("order_id", co.getId());
 			List<CustomerOrderOnsite> coos = this.crmService.queryCustomerOrderOnsites(cooQuery);
 			co.setCoos(coos);
+			
+			CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+			cobasidQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderBroadbandASID> cobasidsQuery = this.crmService.queryCustomerOrderBroadbandASIDs(cobasidQuery);
+			co.setCobasids(cobasidsQuery);
+			
 			for (CustomerOrderOnsite coo : coos) {
 				CustomerOrderOnsiteDetail coodQuery = new CustomerOrderOnsiteDetail();
 				coodQuery.getParams().put("onsite_id", coo.getId());
@@ -3728,7 +3712,6 @@ public class CRMRestController {
 	
 	
 	
-	
 	@RequestMapping("/broadband-user/crm/plans/loading")
 	public Map<String, Map<String, List<Plan>>> loadingPlans(HttpSession session) {
 		
@@ -4059,6 +4042,115 @@ public class CRMRestController {
 	 * END CustomerOrderChorusAddon
 	 * 
 	 */
+	
+	
+
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderBroadbandASID
+	 * 
+	 */
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doBroadbandASIDCreate(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+		cobasidQuery.getParams().put("broadband_asid", cobasid.getBroadband_asid());
+		cobasidQuery = this.crmService.queryCustomerOrderBroadbandASID(cobasidQuery);
+		
+		if(cobasidQuery!=null){
+			
+			json.getErrorMap().put("alert-error", "Duplicated Broadband ASID!");
+			
+			return json;
+		}
+		
+		this.crmService.createCustomerOrderBroadbandASID(cobasid);
+		
+		json.getSuccessMap().put("alert-success", "New Broadband ASID Added!");
+		
+		return json;
+		
+	}
+	
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doCustomerOrderBroadbandASIDUpdate(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+		cobasidQuery.getParams().put("broadband_asid", cobasid.getBroadband_asid());
+		cobasidQuery = this.crmService.queryCustomerOrderBroadbandASID(cobasidQuery);
+		
+		if(cobasidQuery!=null){
+			json.getErrorMap().put("alert-error", "Duplicated Broadband ASID!");
+			return json;
+		}
+		
+		CustomerOrderBroadbandASID cobasidUpdate = new CustomerOrderBroadbandASID();
+		cobasidUpdate.getParams().put("id", cobasid.getId());
+		cobasidUpdate.setBroadband_asid(cobasid.getBroadband_asid());
+		this.crmService.editCustomerOrderBroadbandASID(cobasidUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Updated!");
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/remove", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doCustomerOrderBroadbandASIDRemove(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		this.crmService.removeCustomerOrderBroadbandASIDById(cobasid.getId());
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Removed!");
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/separate-stored", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderBroadbandASIDSeparateStored(Model model) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		List<CustomerOrder> cosQuery = this.crmService.queryCustomerOrders(new CustomerOrder());
+		
+		for (CustomerOrder co : cosQuery) {
+			if(co.getBroadband_asid()!=null && !"".equals(co.getBroadband_asid().trim())){
+				CustomerOrderBroadbandASID cobasidCreate = new CustomerOrderBroadbandASID();
+				cobasidCreate.setOrder_id(co.getId());
+				cobasidCreate.setBroadband_asid(co.getBroadband_asid());
+				this.crmService.createCustomerOrderBroadbandASID(cobasidCreate);
+			}
+		}
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Separately Stored Successfully!");
+		
+		return json;
+		
+	}
+	
+	
+	/**
+	 * 
+	 * END CustomerOrderBroadbandASID
+	 * 
+	 */
+	
+	
 	
 	
 	/**

@@ -129,6 +129,9 @@ public class CustomerOrder implements Serializable {
 	private String order_due_str;
 	private String disconnected_date_str;
 	private Customer customer;
+	
+	private List<CustomerOrderBroadbandASID> cobasids;
+	
 	@Valid
 	private Plan plan;
 	
@@ -939,6 +942,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setCoos(List<CustomerOrderOnsite> coos) {
 		this.coos = coos;
+	}
+
+	public List<CustomerOrderBroadbandASID> getCobasids() {
+		return cobasids;
+	}
+
+	public void setCobasids(List<CustomerOrderBroadbandASID> cobasids) {
+		this.cobasids = cobasids;
 	}
 
 }

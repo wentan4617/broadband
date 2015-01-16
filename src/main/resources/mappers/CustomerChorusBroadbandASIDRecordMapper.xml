@@ -65,9 +65,7 @@
 				</when>
 				<when test="params.where == 'query_unmatched_records'">
 					ccbasidr.clear_service_id NOT IN(
-						SELECT broadband_asid FROM tm_customer_order
-						WHERE broadband_asid IS NOT NULL
-						AND broadband_asid != ''
+						select broadband_asid from tm_customer_order_broadband_asid
 					)
 					AND DATE_FORMAT(ccbasidr.statement_date,'%Y-%m')=DATE_FORMAT(#{params.last_month_date},'%Y-%m')
 					AND ccbasidr.amount_incl&gt;0
