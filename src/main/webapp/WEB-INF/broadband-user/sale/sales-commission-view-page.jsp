@@ -55,7 +55,7 @@
 	
 	function doPage(pageNo, customerType, yearMonth, sale_id) {
 	
-		$.get('${ctx}/broadband-user/billing/sales-commission/view/' + pageNo + '/' + customerType + '/' + yearMonth + '/' + sale_id, function(page){
+		$.get('${ctx}/broadband-user/sale/sales-commission/view/' + pageNo + '/' + customerType + '/' + yearMonth + '/' + sale_id, function(page){
 			page.ctx = '${ctx}';
 	   		var $div = $('#sales-commission-view-page');
 	   		$div.html(tmpl('sales_commission_view_page_tmpl', page));

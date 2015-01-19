@@ -5,7 +5,7 @@
 			<th style="text-align:center;">Order ID</th>
 			<th>Plans</th>
 			<th style="text-align:center;">Type</th>
-			<th style="text-align:center;">Contract</th>
+			<th style="text-align:center;">Term Period</th>
 			<th style="text-align:center;">Start Date</th>
 			<th style="text-align:right;">Receivables</th>
 			<th style="text-align:center;">Status</th>
@@ -27,7 +27,7 @@
 			</td>
 			<td><.= co.order_detail_plan_type .></td>
 			<td style="text-align:center;"><.= co.order_broadband_type .></td>
-			<td style="text-align:center;"><.= co.order_type .></td>
+			<td style="text-align:center;"><.= co.term_period .></td>
 			<td style="text-align:center;"><.= co.order_using_start_str .></td>
 			<td style="text-align:right;"><.= Number(co.order_total_charged).toFixed(2) .></td>
 			<td style="text-align:center;"><.= co.order_status .></td>

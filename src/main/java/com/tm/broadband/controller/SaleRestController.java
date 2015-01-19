@@ -120,7 +120,7 @@ public class SaleRestController {
 	/**
 	 * BEGIN Sales Commission View
 	 */
-	@RequestMapping("/broadband-user/billing/sales-commission/view/{pageNo}/{customerType}/{yearMonth}/{sale_id}")
+	@RequestMapping("/broadband-user/sale/sales-commission/view/{pageNo}/{customerType}/{yearMonth}/{sale_id}")
 	public Page<CustomerOrder> toSalesCommission(Model model
 			, @PathVariable("pageNo") int pageNo
 			, @PathVariable(value = "customerType") String customerType
@@ -140,7 +140,7 @@ public class SaleRestController {
 		}
 		
 		if(yearMonth!=null && !yearMonth.equals("0")){
-			page.getParams().put("order_create_date", yearMonth);
+			page.getParams().put("order_using_start", yearMonth);
 		}
 		page = this.crmService.queryCustomerOrdersByPage(page);
 

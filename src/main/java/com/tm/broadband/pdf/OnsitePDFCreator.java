@@ -116,7 +116,8 @@ public class OnsitePDFCreator extends ITextUtils {
 		
 		// set FIRST PAGE bottom texts
 		// Bottom
-		addText(writer, "Customer Signature ______________________", ITextFont.arial_bold_12, 40F, 46F);
+		addText(writer, "Customer Signature ____________________", ITextFont.arial_bold_10, 40F, 46F);
+		addText(writer, "Technician Signature ____________________", ITextFont.arial_bold_10, 264F, 46F);
 		addText(writer, "Print from www.cyberpark.co.nz", ITextFont.arial_normal_8, 190F, 26F);
 		addText(writer, "0800 2 CYBER (29237)", ITextFont.arial_normal_8, 360F, 26F);
     	// two-dimensional_code
@@ -497,7 +498,7 @@ public class OnsitePDFCreator extends ITextUtils {
         PdfPTable onsiteChecklistTable = newTable().columns(14).widthPercentage(98F).o();
     	
     	// BEGIN ONSITE CHECKLIST INFO PADDING TOP
-        addEmptyCol(onsiteChecklistTable, 24F, 14);
+        addEmptyCol(onsiteChecklistTable, 14F, 14);
     	// END ONSITE CHECKLIST INFO PADDING TOP
 
         addCol(onsiteChecklistTable, "Checklist").colspan(2).font(ITextFont.arial_coral_bold_11).paddingTo("b", 4f).borderColor(new BaseColor(240,128,128)).border("b", 1F).o();
@@ -507,24 +508,24 @@ public class OnsitePDFCreator extends ITextUtils {
         addEmptyCol(onsiteChecklistTable, 4F, 14);
         
         addCol(onsiteChecklistTable, "1、 Check Cable Connection").colspan(14).font(ITextFont.arial_bold_8).border(1F).paddingV(4F).o();
-        addCol(onsiteChecklistTable, "1. Check Jackpot, Filter, ADSL Connection").colspan(7).font(ITextFont.arial_normal_7).border(1F).paddingV(2F).o();
-        addCol(onsiteChecklistTable, "2. Check Phoneline Connection / VoIP Connection").colspan(7).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "1. Check Jackpot, Filter, ADSL Connection (   )").colspan(7).font(ITextFont.arial_normal_7).border(1F).paddingV(2F).o();
+        addCol(onsiteChecklistTable, "2. Check Phoneline Connection / VoIP Connection (   )").colspan(7).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
 
         addCol(onsiteChecklistTable, "2、 Check Router Configuration").colspan(14).font(ITextFont.arial_bold_8).border(1F).paddingV(4F).borderWidth("t", 0F).o();
-        addCol(onsiteChecklistTable, "1、 WAN").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "2、Wifi").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "3、 VoIP").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "4、 Remote Support").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "5、 Check Light").colspan(6).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "1、 WAN (   )").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "2、Wifi (   )").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "3、 VoIP (   )").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "4、 Remote Support (   )").colspan(2).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "5、 Check Light (   )").colspan(6).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
 
         addCol(onsiteChecklistTable, "3、 Check VoIP Number On VOS (Optional)").colspan(14).font(ITextFont.arial_bold_8).border(1F).paddingV(4F).borderWidth("t", 0F).o();
-        addCol(onsiteChecklistTable, "1、 Check Balance").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "2、 Check CallRate").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "3、 Check Advaned Setting").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
-        addCol(onsiteChecklistTable, "4、 Check Prefix").colspan(5).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "1、 Check Balance (   )").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "2、 Check CallRate (   )").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "3、 Check Advaned Setting (   )").colspan(3).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "4、 Check Prefix (   )").colspan(5).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
 
         addCol(onsiteChecklistTable, "4、 Check Test").colspan(14).font(ITextFont.arial_bold_8).border(1F).paddingV(4F).borderWidth("t", 0F).o();
-        addCol(onsiteChecklistTable, "1、 Test Phone / VoIP / Wifi / Wired Speed").colspan(14).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
+        addCol(onsiteChecklistTable, "1、 Test Phone / VoIP / Wifi / Wired Speed (   )").colspan(14).font(ITextFont.arial_normal_7).border(1F).paddingV(3F).o();
         
         return onsiteChecklistTable;
 	}

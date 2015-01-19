@@ -478,8 +478,8 @@
 							co.user_id=#{params.sale_id}
 						)
 					</if>
-					<if test="params.order_create_date != null">
-						and DATE_FORMAT(co.order_create_date,'%Y-%m')=#{params.order_create_date}
+					<if test="params.order_using_start != null">
+						and DATE_FORMAT(co.order_using_start,'%Y-%m')=#{params.order_using_start}
 					</if>
 				</when>
 				<otherwise>
