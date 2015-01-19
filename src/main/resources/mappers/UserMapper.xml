@@ -86,8 +86,31 @@
 	</select>
 	
 	<!-- select users whose id exist in order's sale_id -->
+	<select id="selectUsersWhoseIdExistInOrderInvoice" resultType="User">
+		select * from tm_user where id in(
+			select distinct sale_id from tm_customer_order
+			where id in(
+				select order_id from tm_customer_invoice
+			)
+			and order_status='using'
+			union
+			select distinct user_id from tm_customer_order
+			where id in(
+				select order_id from tm_customer_invoice
+			)
+			and order_status='using'
+		)
+	</select>
+	
+	<!-- select users whose id exist in order's sale_id -->
 	<select id="selectUsersWhoseIdExistInOrder" resultType="User">
-		select * from tm_user where id in(select distinct sale_id from tm_customer_order where sale_id is not null)
+		select * from tm_user where id in(
+			select distinct sale_id from tm_customer_order
+			where sale_id is not null
+			union
+			select distinct user_id from tm_customer_order
+			where user_id is not null
+		)
 	</select>
 	
 	<!-- // END SELECT AREA -->

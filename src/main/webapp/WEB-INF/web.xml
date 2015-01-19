@@ -245,6 +245,7 @@
 		<!-- Sales Module BEGIN -->
 		<url-pattern>/broadband-user/sale/online/ordering/view/*</url-pattern>
 		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
+		<url-pattern>/broadband-user/sale/sales-commission/view</url-pattern>
 		<!-- Sales Module END -->
 
 		<!-- Manual Manipulation Module BEGIN -->

@@ -107,6 +107,14 @@
 					cod.order_id = #{params.order_id}
 					and cod.detail_type like 'plan-%'
 				</when>
+				<when test="params.where == 'query_hardware_detail'">
+					cod.order_id = #{params.order_id}
+					and cod.detail_type LIKE CONCAT('%', 'hardware', '%')
+				</when>
+				<when test="params.where == 'query_plan_detail'">
+					cod.order_id = #{params.order_id}
+					and cod.detail_type LIKE CONCAT('%', 'plan', '%')
+				</when>
 				<otherwise>
 					<if test="params.id != null">cod.id = #{params.id}</if>
 					<if test="params.order_id != null">and cod.order_id = #{params.order_id}</if>

@@ -69,5 +69,9 @@ public class SaleService {
 	public List<User> queryUsersWhoseIdExistInOrder(){
 		return this.userMapper.selectUsersWhoseIdExistInOrder();
 	}
+	
+	public List<User> queryUsersWhoseIdExistInOrderInvoice(){
+		return this.userMapper.selectUsersWhoseIdExistInOrderInvoice();
+	}
 
 }

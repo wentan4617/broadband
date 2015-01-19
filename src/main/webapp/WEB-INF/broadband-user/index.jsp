@@ -411,19 +411,26 @@ hr {
 			<div class="panel panel-success">
 		  		<div class="panel-heading">
 		  			<h3 class="panel-title">
-		  				<strong class="text-success">${userSession.user_role == 'agent' ? 'Ordering' : 'Sales'}</strong>
+		  				<strong class="text-success">Sales</strong>
 		  			</h3>
 		  		</div>
 			  	<div class="panel-body">
-			  		<p>${userSession.user_role == 'agent' ? 'Agent' : 'Sale'} Online Ordering.</p>
+			  		<p>Sale Online Ordering.</p>
                     <ul class="list-unstyled">
                     	<li>
                     		<span class="glyphicon glyphicon-list" ></span> 
-                    		<a href='${ctx }/broadband-user/sale/online/ordering/view/1/${userSession.user_role == "sales" ? userSession.id : 0 }'>View Online Orders (PAD | PC)</a>
+                    		<a href='${ctx }/broadband-user/sale/online/ordering/view/1/0'>View Online Orders (PAD | PC)</a>
                     	</li>
                     	<li>
                     		<span class="glyphicon glyphicon-plus" ></span> 
                     		<a href="${ctx}/broadband-user/sale/plans">New Ordering Online (PAD | PC)</a>
+                    	</li>
+                    </ul>
+                    <hr/>
+                    <ul class="list-unstyled">
+                    	<li>
+                    		<span class="glyphicon glyphicon-list" ></span> 
+                    		<a href='${ctx }/broadband-user/sale/sales-commission/view'>View Sales Commission</a>
                     	</li>
                     </ul>
 			  	</div>

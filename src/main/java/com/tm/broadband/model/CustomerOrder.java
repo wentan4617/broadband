@@ -154,7 +154,14 @@ public class CustomerOrder implements Serializable {
 	private String _transition_provider_name;
 	private Boolean promotion;
 	private Integer hardware_id_selected;
-
+	
+	private String order_detail_plan_type;
+	private Double order_total_charged;
+	private Double order_hardware_charged;
+	private Double order_hardware_cost;
+	private Double order_total_discounted;
+	private String order_belongs_to;
+	
 	/*
 	 * END RELATED PROPERTIES
 	 */
@@ -950,6 +957,54 @@ public class CustomerOrder implements Serializable {
 
 	public void setCobasids(List<CustomerOrderBroadbandASID> cobasids) {
 		this.cobasids = cobasids;
+	}
+
+	public String getOrder_detail_plan_type() {
+		return order_detail_plan_type;
+	}
+
+	public void setOrder_detail_plan_type(String order_detail_plan_type) {
+		this.order_detail_plan_type = order_detail_plan_type;
+	}
+
+	public Double getOrder_total_charged() {
+		return order_total_charged;
+	}
+
+	public void setOrder_total_charged(Double order_total_charged) {
+		this.order_total_charged = order_total_charged;
+	}
+
+	public Double getOrder_hardware_charged() {
+		return order_hardware_charged;
+	}
+
+	public void setOrder_hardware_charged(Double order_hardware_charged) {
+		this.order_hardware_charged = order_hardware_charged;
+	}
+
+	public Double getOrder_hardware_cost() {
+		return order_hardware_cost;
+	}
+
+	public void setOrder_hardware_cost(Double order_hardware_cost) {
+		this.order_hardware_cost = order_hardware_cost;
+	}
+
+	public Double getOrder_total_discounted() {
+		return order_total_discounted;
+	}
+
+	public void setOrder_total_discounted(Double order_total_discounted) {
+		this.order_total_discounted = order_total_discounted;
+	}
+
+	public String getOrder_belongs_to() {
+		return order_belongs_to;
+	}
+
+	public void setOrder_belongs_to(String order_belongs_to) {
+		this.order_belongs_to = order_belongs_to;
 	}
 
 }

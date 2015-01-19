@@ -521,6 +521,11 @@
 												<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD | PC)
 											</label>
 										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="sale/sales-commission/view" data-type="checkbox_sales" /> View Sales Commission
+											</label>
+										</li>
 									</ul>
 								</div>
 								<div class="col-md-3" data-module="agent">

@@ -154,6 +154,20 @@ public class SimplePDFCell {
 	 * @param width
 	 * @return this
 	 */
+	public SimplePDFCell border(Float width){
+		this.getCell().setBorderWidthTop(width);
+		this.getCell().setBorderWidthRight(width);
+		this.getCell().setBorderWidthBottom(width);
+		this.getCell().setBorderWidthLeft(width);
+        return this;
+	}
+	
+	
+	/**
+	 * 
+	 * @param width
+	 * @return this
+	 */
 	public SimplePDFCell borderZoom(Float width){
 		this.getCell().setUseBorderPadding(true);
 		this.getCell().setBorderWidthTop(width);
