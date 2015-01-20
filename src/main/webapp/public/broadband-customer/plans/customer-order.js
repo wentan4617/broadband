@@ -54,7 +54,7 @@
 	var naked = false;
 	var has_voip = false;
 	var modem_name = '';
-	var isContract = false;
+	var isContract = true;
 	if (select_customer_type == 'personal') {
 		if (select_plan_group == 'plan-topup') {
 			isContract = false;
@@ -270,6 +270,9 @@
 		$('input[name="contract"]').iCheck({ checkboxClass: 'icheckbox_square-green', radioClass: 'iradio_square-green' });
 		$('input[name="contract"]').on('ifChecked', function(){
 			var value = this.value;
+			if(value=='open-term'){
+				value = '12months';
+			}
 			if (value == 'open-term') {
 				isContract = false;
 				contract_name = '';
@@ -306,6 +309,8 @@
 			}
 			
 		});
+		
+		isContract = true;
 		
 		var contract_oo = $('input[name="contract"][value="' + (isContract ? '12months' : isContract ? '24months' : 'open-term') + '"]');
 		contract_oo.iCheck('check');
@@ -571,9 +576,9 @@
 			, contract_name: contract_name
 			, plan_or_hardware_discount: plan_or_hardware_discount
 		};
-		if (prepay_months == 12) {
-			o.hardwares = [modem_selected];
-		}
+//		if (prepay_months == 12) {
+//			o.hardwares = [modem_selected];
+//		}
 		if (select_plan_type == 'VDSL' && sale_id == '20023' && prepay_months == 3) {
 			o.hardwares = [modem_selected];
 		}
