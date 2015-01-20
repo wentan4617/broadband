@@ -15,6 +15,28 @@
 			For Prepay Week
 		<.} else {.>
 			For Prepay Months
+			<. console.log(prepay_months); .>
+			
+			<. if(prepay_months!=1 && prepay_months!=''){ .>
+			<div class="btn-group btn-group">
+				<a href="javascript:void(0);" data-name="discount_type" data-val="hardware" class="btn btn-default active">
+					Hardware Discount
+				</a>
+				<a href="javascript:void(0);" data-name="discount_type" data-val="plan" class="btn btn-default ">
+					Plan Discount
+				</a>
+			</div>
+			<. } else { .>
+			<div class="btn-group btn-group" data-name="discount_type_div" style="display:none;">
+				<a href="javascript:void(0);" data-name="discount_type" data-val="hardware" class="btn btn-default active">
+					Hardware Discount
+				</a>
+				<a href="javascript:void(0);" data-name="discount_type" data-val="plan" class="btn btn-default ">
+					Plan Discount
+				</a>
+			</div>
+			<. } .>
+			
 		<.}.>
 			
 			
@@ -68,7 +90,7 @@
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
+							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months or free modem)</span></strong>
 						</label>
 						<span style="float:right;font-weight:bold;">
 							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
@@ -134,7 +156,7 @@
 					<li>
 						<label>
 							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
+							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months or free modem)</span></strong>
 						</label>
 						<span style="float:right;font-weight:bold;">
 							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 

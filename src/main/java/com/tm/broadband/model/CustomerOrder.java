@@ -113,6 +113,8 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	private String plan_or_hardware_discount;
+	
 	private String orderby;
 	
 	private String pstn;
@@ -1005,6 +1007,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setOrder_belongs_to(String order_belongs_to) {
 		this.order_belongs_to = order_belongs_to;
+	}
+
+	public String getPlan_or_hardware_discount() {
+		return plan_or_hardware_discount;
+	}
+
+	public void setPlan_or_hardware_discount(String plan_or_hardware_discount) {
+		this.plan_or_hardware_discount = plan_or_hardware_discount;
 	}
 
 }

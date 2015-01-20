@@ -20,6 +20,14 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.9.6 2015-01-20
+
+* order界面添加一个Send Order Confirmation，点击后通过order的email发送给客户，当客户点击邮件里的链接时，该order的is_confirmed变为true.(steven)
+* 在读取calling时不取900，在读取rental时读取900，价格为税后价*1.15.(steven)
+* 
+ 
+ 
+ 
 demand version 1.9.5 2015-01-12
 
 * [New Order下Business单子时，is_ddpay不是true，检查原因.](steven)
