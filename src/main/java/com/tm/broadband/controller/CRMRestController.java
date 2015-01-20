@@ -2872,6 +2872,7 @@ public class CRMRestController {
 			page.getParams().put("customer_type", coQuery.getCustomer_type());
 			page.getParams().put("broadband_asid", coQuery.getBroadband_asid());
 			page.getParams().put("user_id", coQuery.getUser_id());
+			page.getParams().put("holder_name", coQuery.getHolder_name());
 		}
 		this.crmService.queryCustomerOrdersByPage(page);
 		status.setComplete();
