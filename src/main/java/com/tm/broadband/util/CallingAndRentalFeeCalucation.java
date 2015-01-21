@@ -9,6 +9,7 @@ import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
+import com.tm.broadband.mapper.CustomerOrderNZCallingRatesSettingMapper;
 import com.tm.broadband.mapper.NZAreaCodeListMapper;
 import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VOSVoIPRateMapper;
@@ -19,6 +20,7 @@ import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
 import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
@@ -121,7 +123,9 @@ public class CallingAndRentalFeeCalucation {
 			, CallInternationalRateMapper callInternationalRateMapper
 			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper
 			, CustomerInvoiceMapper ciMapper
-			, String customerType){
+			, String customerType
+			, CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper
+			, Integer order_id){
 		
 		// Total calling record
 		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
@@ -185,11 +189,37 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("area_prefix", ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
 				break;
 			}
-			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
-			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 			
+			boolean isOnRate = false;
 			Double costPerMinute = 1d;
+			
+			// First, retrieve the rate from rate list.
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
+			isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+			
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "pstn");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
 			
 			// DURATION/SECONDS
 			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
@@ -301,15 +331,35 @@ public class CallingAndRentalFeeCalucation {
 						: fixMobileCountry);
 				break;
 			}
-			
+
+			// First, retrieve the rate from rate list.
 			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
 			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
-
 			Double costPerMinute = 1d;
-//			if(is0900){} if(isFax){}
-//			if(isMobile){ costPerMinute = 0.19d ; }
-//			if(isNational){} if(isBusinessLocal){}
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "pstn");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
 			
 			// duration = length / 60
 			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccrc.getLength(), 60d))));
@@ -408,7 +458,9 @@ public class CallingAndRentalFeeCalucation {
 			, VOSVoIPRateMapper vosVoIPRateMapper
 			, VOSVoIPCallRecordMapper vosVoIPCallRecordMapper
 			, CustomerInvoiceMapper ciMapper
-			, String customerType){
+			, String customerType
+			, CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper
+			, Integer order_id){
 
 		List<NZAreaCodeList> nzAreaCodeList = nzAreaCodeListMapper.selectNZAreaCodeList(new NZAreaCodeList());
 		
@@ -513,6 +565,30 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost());
 			ccr.setCallType(TMUtils.strCapital(callType));
 			ccr.setOot_id("voip");
+
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "voip");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
+			
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate && duration>0){

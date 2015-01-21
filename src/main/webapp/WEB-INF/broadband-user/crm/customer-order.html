@@ -997,7 +997,8 @@
 		<!-- order details -->
 		<hr />
 		<h4 class="text-success">Order Detail Information&nbsp;
-		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="customize_chorus_addon_price_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Customize Chorus Addon Price</a>
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="customize_chorus_addon_price_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Customize Chorus Addon Price</a>&nbsp;&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="set_nz_calling_rates_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Set NZ Calling Rates</a>
 		</h4>
 		<hr />
 		<table class="table" style="font-size:12px;">
@@ -3737,6 +3738,96 @@
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" data-name="editCustomerOrderChorusAddonPriceModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Insert CustomerOrderNZCallingRatesSetting Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editCustomerOrderNZCallingRatesSettingModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCustomerOrderNZCallingRatesSettingModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editCustomerOrderNZCallingRatesSettingModalLabel">
+							<strong>Edit Customer Order NZ Calling Rates Setting</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p>
+									Sure to save the changes?
+								</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" id="<.= customerOrder[i].id .>" data-name="calling_rates_checkall_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Local_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Local" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP Local Rate</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="National_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="National" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP National Rate</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Mobile_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Mobile" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP Mobile Rate</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Local_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Local" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN Local Rate</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="National_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="National" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN National Rate</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Mobile_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Mobile" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN Mobile Rate</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editCustomerOrderNZCallingRatesSettingModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->

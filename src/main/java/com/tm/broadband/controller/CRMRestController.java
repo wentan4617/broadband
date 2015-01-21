@@ -42,6 +42,7 @@ import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
 import com.tm.broadband.model.CustomerOrderOnsite;
 import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.model.CustomerOrderProvisionChecklist;
@@ -4019,18 +4020,28 @@ public class CRMRestController {
 		
 		JSONBean<String> json = new JSONBean<String>();
 		
-		if(cocas!=null && cocas.size()>0 && cocas.get(0).getOrder_id()!=null){
+		if(cocas!=null && cocas.size()>0 && cocas.get(0).getOrder_id()!=null && cocas.get(0).getAddon_name()!=null && cocas.get(0).getAddon_price()!=null){
+			
 			this.crmService.removeCustomerOrderChorusAddonByOrderId(cocas.get(0).getOrder_id());
-		}
-		
-		for (CustomerOrderChorusAddon coca : cocas) {
-			Console.log(coca);
-			if(coca.getAddon_price()==null || "".equals(coca.getAddon_price()) || coca.getAddon_price()<=0){
-				json.getErrorMap().put("alert-error", "Selected Addons' Price Could Not Be Null Or Less Than Zero!");
-				return json;
+			
+			for (CustomerOrderChorusAddon coca : cocas) {
+				Console.log(coca);
+				if(coca.getAddon_price()==null || "".equals(coca.getAddon_price()) || coca.getAddon_price()<=0){
+					json.getErrorMap().put("alert-error", "Selected Addon(s)' Price Could Not Be Null Or Less Than Zero!");
+					return json;
+				}
+				coca.setAddon_price(Double.parseDouble(TMUtils.fillDecimalPeriod(coca.getAddon_price())));
+				this.crmService.createCustomerOrderChorusAddon(coca);
 			}
-			coca.setAddon_price(Double.parseDouble(TMUtils.fillDecimalPeriod(coca.getAddon_price())));
-			this.crmService.createCustomerOrderChorusAddon(coca);
+			
+			json.getSuccessMap().put("alert-success", "Selected Addon(s)' Price Has Been Updated!");
+			
+		} else {
+
+			this.crmService.removeCustomerOrderChorusAddonByOrderId(cocas.get(0).getOrder_id());
+			
+			json.getSuccessMap().put("alert-success", "Remove All Addon(s) Price!");
+			
 		}
 		
 		return json;
@@ -4041,6 +4052,73 @@ public class CRMRestController {
 	/**
 	 * 
 	 * END CustomerOrderChorusAddon
+	 * 
+	 */
+
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderNZCallingRatesSetting
+	 * 
+	 */
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/calling-rates/get")
+	public JSONBean<CustomerOrderNZCallingRatesSetting> toCustomerOrderNZCallingRatesSettingGet(Model model,
+			CustomerOrderNZCallingRatesSetting conzcrs,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderNZCallingRatesSetting> json = new JSONBean<CustomerOrderNZCallingRatesSetting>();
+		
+		CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+		conzcrsQuery.getParams().put("order_id", conzcrs.getOrder_id());
+		List<CustomerOrderNZCallingRatesSetting> conzcrssQuery = this.crmService.queryCustomerOrderNZCallingRatesSettings(conzcrsQuery);
+		
+		json.setModels(conzcrssQuery);
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/calling-rates/update", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderNZCallingRatesSettingGet(Model model,
+			@RequestBody List<CustomerOrderNZCallingRatesSetting> conzcrss) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(conzcrss!=null && conzcrss.size()>0 && conzcrss.get(0).getOrder_id()!=null && conzcrss.get(0).getCall_type()!=null && conzcrss.get(0).getCall_rate()!=null){
+			this.crmService.removeCustomerOrderNZCallingRatesSettingByOrderId(conzcrss.get(0).getOrder_id());
+			
+			for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+				
+				if(conzcrs.getCall_rate()==null || "".equals(conzcrs.getCall_rate()) || conzcrs.getCall_rate()<=0){
+					json.getErrorMap().put("alert-error", "Selected Calling(s)' Rate Could Not Be Null Or Less/Equals Than Zero!");
+					return json;
+				}
+				conzcrs.setCall_rate(Double.parseDouble(TMUtils.fillDecimalPeriod(conzcrs.getCall_rate())));
+				this.crmService.createCustomerOrderNZCallingRatesSetting(conzcrs);
+				
+			}
+			
+			json.getSuccessMap().put("alert-success", "Selected Calling(s)' Rate Has Been Updated!");
+			
+		} else {
+
+			this.crmService.removeCustomerOrderNZCallingRatesSettingByOrderId(conzcrss.get(0).getOrder_id());
+			
+			json.getSuccessMap().put("alert-success", "Remove All Calling(s) Rate!");
+			
+		}
+		
+		return json;
+		
+	}
+
+	
+	/**
+	 * 
+	 * END CustomerOrderNZCallingRatesSetting
 	 * 
 	 */
 	

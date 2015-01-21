@@ -35,6 +35,7 @@ import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.CustomerOrderNZCallingRatesSettingMapper;
 import com.tm.broadband.mapper.CustomerOrderOnsiteDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderOnsiteMapper;
 import com.tm.broadband.mapper.CustomerOrderProvisionChecklistMapper;
@@ -69,6 +70,7 @@ import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
 import com.tm.broadband.model.CustomerOrderOnsite;
 import com.tm.broadband.model.CustomerOrderOnsiteDetail;
 import com.tm.broadband.model.CustomerOrderProvisionChecklist;
@@ -147,6 +149,7 @@ public class CRMService {
 	private CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper;
 	private CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper;
 	private CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper;
+	private CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -192,7 +195,8 @@ public class CRMService {
 			CustomerOrderOnsiteMapper customerOrderOnsiteMapper,
 			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper,
 			CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper,
-			CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper){
+			CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper,
+			CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -231,6 +235,7 @@ public class CRMService {
 		this.customerOrderOnsiteDetailMapper = customerOrderOnsiteDetailMapper;
 		this.customerOrderChorusAddonMapper = customerOrderChorusAddonMapper;
 		this.customerOrderBroadbandASIDMapper = customerOrderBroadbandASIDMapper;
+		this.customerOrderNZCallingRatesSettingMapper = customerOrderNZCallingRatesSettingMapper;
 	}
 	
 	
@@ -1339,7 +1344,7 @@ public class CRMService {
 						
 						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 						
 					}
 				}
@@ -1347,7 +1352,7 @@ public class CRMService {
 				if(voip_numbers.size() > 0){
 					
 					for (String voip_number : voip_numbers) {
-						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 						
 					}
 				}
@@ -2001,7 +2006,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2009,7 +2014,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2738,7 +2743,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, this.customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2747,7 +2752,7 @@ public class CRMService {
 			
 			for (String voip_number : voip_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -3253,7 +3258,7 @@ public class CRMService {
 				
 				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, customerOrder.getId());
 				
 			}
 		}
@@ -3261,7 +3266,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customerOrder.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customerOrder.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, customerOrder.getId());
 				
 			}
 		}
@@ -4877,6 +4882,54 @@ public class CRMService {
 	
 	/**
 	 * END CustomerOrderChorusAddon
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderNZCallingRatesSetting
+	 */
+
+	public void createCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs){
+		this.customerOrderNZCallingRatesSettingMapper.insertCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	public CustomerOrderNZCallingRatesSetting queryCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs) {
+		List<CustomerOrderNZCallingRatesSetting> conzcrss = this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrs);
+		return conzcrss!=null && conzcrss.size()>0 ? conzcrss.get(0) : null;
+	}
+	
+	public List<CustomerOrderNZCallingRatesSetting> queryCustomerOrderNZCallingRatesSettings(CustomerOrderNZCallingRatesSetting conzcrs) {
+		return this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderNZCallingRatesSetting> queryCustomerOrderNZCallingRatesSettingsByPage(Page<CustomerOrderNZCallingRatesSetting> page){
+		page.setTotalRecord(this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsSum(page));
+		page.setResults(this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderNZCallingRatesSettingsSumByPage(Page<CustomerOrderNZCallingRatesSetting> page){
+		return this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs){
+		this.customerOrderNZCallingRatesSettingMapper.updateCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderNZCallingRatesSettingById(int id){
+		this.customerOrderNZCallingRatesSettingMapper.deleteCustomerOrderNZCallingRatesSettingById(id);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderNZCallingRatesSettingByOrderId(int order_id){
+		this.customerOrderNZCallingRatesSettingMapper.deleteCustomerOrderNZCallingRatesSettingByOrderId(order_id);
+	}
+	
+	/**
+	 * END CustomerOrderNZCallingRatesSetting
 	 */
 
 	

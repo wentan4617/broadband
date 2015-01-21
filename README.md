@@ -21,7 +21,8 @@ Total Mobile Solution Internet Service Web Project
  
 demand version 1.9.7 2015-01-21
  
-* order界面添加一个Set NZ Calling Rates按钮，点击后弹出modal，可指定Local, National, Mobile的费率.(steven)
+* 计算calling时，如果有设置nz calling rates，则将设置的作为费率.(steven)
+* [order界面添加一个Set NZ Calling Rates按钮，点击后弹出modal，可指定Local, National, Mobile的费率.](steven)
  
  
  

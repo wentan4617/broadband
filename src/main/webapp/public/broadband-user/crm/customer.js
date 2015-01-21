@@ -1840,8 +1840,13 @@
 						};
 						chorus_addon_arr.push(data);
 					});
-					
-					console.log(chorus_addon_arr);
+					if($('input[data-type="chorus-addon_'+this.id+'"]:checked').size()==0){
+						console.log($('input[data-type="chorus-addon_'+this.id+'"]:checked').size());
+						var data = {
+							'order_id':order_id
+						};
+						chorus_addon_arr.push(data);
+					}
 
 					$.ajax({
 						type: 'post'
@@ -1857,6 +1862,76 @@
 				});
 				// Reset button when hidden CustomerChorusAddonPrice dialog
 				$('#editCustomerOrderChorusAddonPriceModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
+
+				// Update CustomerOrderNZCallingRatesSetting
+				// Get CustomerOrderNZCallingRatesSetting Dialog
+				$('a[data-name="set_nz_calling_rates_btn_'+co[i].id+'"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					var id = this.id;
+					$(':radio,:checkbox').iCheck({
+						checkboxClass : 'icheckbox_square-green',
+						radioClass : 'iradio_square-green'
+					});
+					$('input[data-name="calling_rates_checkall_'+id+'"]').on('ifChecked',function(){
+						$('input[data-type="calling_rates_'+id+'"]').iCheck('check');
+					});
+					$('input[data-name="calling_rates_checkall_'+id+'"]').on('ifUnchecked',function(){
+						$('input[data-type="calling_rates_'+id+'"]').iCheck('uncheck');
+					});
+					var data = {
+						'order_id':id
+					};
+					$.get(ctx+'/broadband-user/crm/customer/order/calling-rates/get', data, function(json){
+						var calling_rates = json.models;
+						if(calling_rates!=null){
+							for(var calling_ratesIndex=0; calling_ratesIndex<calling_rates.length; calling_ratesIndex++){
+								$('input[type="checkbox"][data-name="'+calling_rates[calling_ratesIndex].call_type+'_'+id+'"][data-phone-type="'+calling_rates[calling_ratesIndex].phone_type+'"]').iCheck("check");
+								$('input[type="text"][data-name="'+calling_rates[calling_ratesIndex].call_type+'_'+id+'_price"][data-phone-type="'+calling_rates[calling_ratesIndex].phone_type+'"]').val(calling_rates[calling_ratesIndex].call_rate);
+							}
+						}
+					});
+					$('#editCustomerOrderNZCallingRatesSettingModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="editCustomerOrderNZCallingRatesSettingModalBtn_'+co[i].id+'"]').click(function(){
+					var calling_rates_arr = new Array();
+					var order_id = this.id;
+					$('input[data-type="calling_rates_'+this.id+'"]:checked').each(function(){
+						var call_type = $(this).attr('data-val');
+						var phone_type = $(this).attr('data-phone-type');
+						var call_rate = $('input[data-name="'+$(this).attr('data-name')+'_price"][data-phone-type="'+phone_type+'"]').val();
+						var data = {
+							'call_type':call_type,
+							'call_rate':call_rate,
+							'order_id':order_id,
+							'phone_type':phone_type
+						};
+						calling_rates_arr.push(data);
+					});
+					if($('input[data-type="calling_rates_'+this.id+'"]:checked').size()==0){
+						var data = {
+								'order_id':order_id
+							};
+							calling_rates_arr.push(data);
+					}
+
+					$.ajax({
+						type: 'post'
+						, contentType:'application/json;charset=UTF-8'         
+				   		, url: ctx+'/broadband-user/crm/customer/order/calling-rates/update'
+					   	, data: JSON.stringify(calling_rates_arr)
+					   	, dataType: 'json'
+					   	, success: function(json){
+					   		$.jsonValidation(json, 'left')
+					   	}
+					});
+					
+				});
+				// Reset button when hidden CustomerOrderNZCallingRatesSetting dialog
+				$('#editCustomerOrderNZCallingRatesSettingModal_'+co[i].id).on('hidden.bs.modal', function (e) {
 					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
