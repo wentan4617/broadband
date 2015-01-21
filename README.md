@@ -21,7 +21,7 @@ Total Mobile Solution Internet Service Web Project
  
 demand version 1.9.7 2015-01-21
  
-* 计算calling时，如果有设置nz calling rates，则将设置的作为费率.(steven)
+* [计算calling时，如果有设置nz calling rates，则将设置的作为费率.](steven)
 * [order界面添加一个Set NZ Calling Rates按钮，点击后弹出modal，可指定Local, National, Mobile的费率.](steven)
  
  
@@ -29,7 +29,7 @@ demand version 1.9.7 2015-01-21
 demand version 1.9.6 2015-01-20
 
 * order界面添加一个Send Order Confirmation，点击后通过order的email发送给客户，当客户点击邮件里的链接时，该order的is_confirmed变为true.(steven)
-* 在读取calling时不取900，在读取rental时读取900，价格为税后价*1.15.(steven)
+* [在读取calling时不取900，在读取rental时读取900，价格为税后价*1.15.](steven)
 * [前台下单去掉open term.](steven)
  
  
