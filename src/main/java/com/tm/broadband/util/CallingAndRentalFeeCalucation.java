@@ -25,6 +25,7 @@ import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -43,6 +44,7 @@ public class CallingAndRentalFeeCalucation {
 		if(isRegenerate){
 			ccrQuery.getParams().put("where", "query_last_month_rental_records");
 			ccrQuery.getParams().put("invoice_id", ci.getId());
+			ccrQuery.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
 		} else {
 			ccrQuery.getParams().put("where", "query_unused_rental_records");
 			ccrQuery.getParams().put("invoice_id", null);
@@ -53,12 +55,16 @@ public class CallingAndRentalFeeCalucation {
 		if(ccrs!=null && ccrs.size()>0){
 			for (CustomerCallRecord ccr : ccrs) {
 				
+				System.out.println("---------------------------------------------------------");
+				Console.log(ccr);
+				System.out.println("---------------------------------------------------------");
+				
 				if(ccr.getAmount_incl()!=null && ccr.getAmount_incl()<=0){
 					continue;
 				}
 				
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-				cid.setInvoice_detail_name(ccr.getBilling_description()+(ccr.getLine_description()!=null && ccr.getLine_description().equals("PAYPHONE") ? " PAYPHONE" : ""));
+				cid.setInvoice_detail_name(ccr.getBilling_description()+(ccr.getLine_description()!=null && ccr.getLine_description().equals("PAYPHONE") ? " PAYPHONE" : "")+(ccr.getPhone_called()!=null ? " ("+ccr.getPhone_called()+")" : ""));
 				String date_time = ccr.getDate_from()!=null ? (TMUtils.dateFormatYYYYMMDD(ccr.getDate_from()) + " - " + TMUtils.dateFormatYYYYMMDD(ccr.getDate_to())) : TMUtils.dateFormatYYYYMMDD(ccr.getCharge_date_time());
 				cid.setInvoice_detail_desc(date_time);
 				cid.setInvoice_detail_price(TMUtils.bigMultiply(ccr.getAmount_incl(), 1.15d));
@@ -135,8 +141,6 @@ public class CallingAndRentalFeeCalucation {
 		Double totalCreditBack = 0d;
 		
 		String callType = "";
-		
-		System.out.println("---------------");
 		
 		// BEGIN Chorus Style Calling Record
 		CustomerCallRecord ccrTemp = new CustomerCallRecord();
