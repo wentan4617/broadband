@@ -19,6 +19,14 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.9.8 2015-01-23
+ 
+* [检查并修复700340订单的帐单，解决重复出现的chorus-addon.](steven)
+* [检查客户在线支付invoice后为何calling detail没有记录进去.](steven)
+ 
+ 
+ 
+ 
 demand version 1.9.7 2015-01-21
  
 * [计算calling时，如果有设置nz calling rates，则将设置的作为费率.](steven)
@@ -47,7 +55,7 @@ demand version 1.9.5 2015-01-12
  
 demand version 1.9.3 2015-01-07
 
-* Business出第一张invoice时next_invoice_create_date没变，检查原因.(steven)
+* [Business出第一张invoice时next_invoice_create_date没变，检查原因.](steven)
  
  
  

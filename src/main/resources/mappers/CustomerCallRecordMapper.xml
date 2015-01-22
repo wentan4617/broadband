@@ -154,8 +154,10 @@
 					) OR ccr.line_description IN(
 						'PAYPHONE'
 					))
-					AND ccr.clear_service_id = #{params.clear_service_id}
-					OR ccr.phone_called LIKE '900%'
+					AND (
+						ccr.clear_service_id = #{params.clear_service_id}
+						OR ccr.phone_called LIKE '900%'
+					)
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
 					</if>
@@ -189,11 +191,13 @@
 					) OR ccr.line_description IN(
 						'PAYPHONE'
 					))
-					AND ccr.clear_service_id = #{params.clear_service_id}
-					OR (
-						ccr.phone_called LIKE '900%'
-						AND
+					AND (
 						ccr.clear_service_id = #{params.clear_service_id}
+						OR (
+							ccr.phone_called LIKE '900%'
+							AND
+							ccr.clear_service_id = #{params.clear_service_id}
+						)
 					)
 					<if test="params.invoice_id != null">
 						AND ccr.invoice_id = #{params.invoice_id}
