@@ -32,6 +32,7 @@ public class TMUtils {
 	private final static SimpleDateFormat date2Format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	private final static SimpleDateFormat date3Format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 	private final static SimpleDateFormat date4Format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+	private final static SimpleDateFormat date5Format = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 	private final static DecimalFormat numberFormat = new DecimalFormat("0.00");
 	public final static DecimalFormat timeFormat = new DecimalFormat("00.00");
 	private final static String[] pwds = { "1", "5", "9", "8", "7", "6", "4", "3",
@@ -127,6 +128,16 @@ public class TMUtils {
 		if (dateStr != null && !"".equals(dateStr))
 			try {
 				return date4Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
+	public static Date parseDate5YYYYMMDDHHMM(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date5Format.parse(dateStr);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}

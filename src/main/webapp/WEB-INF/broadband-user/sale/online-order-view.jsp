@@ -108,7 +108,7 @@
 									<td>${order.signature }</td>
 									<td>
 								    	<c:forEach var="user" items="${salesUsers}">
-							    			<c:if test="${user.id==order.sale_id}">
+							    			<c:if test="${user.id==order.sale_id || user.id==order.user_id}">
 							    				${user.user_name }
 							    			</c:if>
 								    	</c:forEach>

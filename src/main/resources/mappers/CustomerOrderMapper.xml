@@ -351,7 +351,7 @@
 					<if test="params.sale_id != null">and co.sale_id = #{params.sale_id}</if>
 				</when>
 				<when test="params.where == 'query_sale_id_not_null'">
-					co.sale_id is not null
+					(co.sale_id is not null OR co.user_id is not null)
 					<if test="params.sale_id != null">and (co.sale_id = #{params.sale_id} || co.user_id = #{params.sale_id})</if>
 					<if test="params.signature != null">and co.signature = #{params.signature}</if>
 				</when>

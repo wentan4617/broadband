@@ -34,7 +34,13 @@ public class VOSVoIPCallRecordUtility {
 				if(header){ header=false; continue; }
 				String arr[] = line.split(",");
 				if(arr.length > callCostIndex){
-					if(arr[callCostIndex] != null && !"".equals(arr[callCostIndex].trim()) && Double.parseDouble(arr[callCostIndex])<=0){
+					// If cost or charge less equals than 0
+					if(((arr[callCostIndex] != null && !"".equals(arr[callCostIndex].trim()) && Double.parseDouble(arr[callCostIndex])<=0)
+					   && (arr[callFeeIndex] != null && !"".equals(arr[callFeeIndex].trim()) && Double.parseDouble(arr[callFeeIndex])<=0))){
+						continue;
+					}
+					// If is Local or Inner-Net
+					if(arr[callTypeIndex] != null && !"".equals(arr[callTypeIndex].trim()) && "Local".equals(arr[callTypeIndex]) || "Inner-Net".equals(arr[callTypeIndex])){
 						continue;
 					}
 				}
@@ -66,7 +72,18 @@ public class VOSVoIPCallRecordUtility {
 				if(arr.length > callStartIndex){
 					String callStartStr = arr[callStartIndex];
 					if(!"".equals(callStartStr.trim())){
-						vosVoIPCallRecord.setCall_start(TMUtils.parseDate4YYYYMMDDHHMM(callStartStr));
+						if(callStartStr.contains("/")){
+							// if is yyyy/MM/dd
+							if(callStartStr.indexOf("/")==4){
+								vosVoIPCallRecord.setCall_start(TMUtils.parseDate5YYYYMMDDHHMM(callStartStr));
+							}
+							// if is dd/MM/yyyy
+							if(callStartStr.indexOf("/")==1 || callStartStr.indexOf("/")==2){
+								vosVoIPCallRecord.setCall_start(TMUtils.parseDate4YYYYMMDDHHMM(callStartStr));
+							}
+						} else {
+							vosVoIPCallRecord.setCall_start(TMUtils.parseDate2YYYYMMDD(callStartStr));
+						}
 					}
 					
 					// Integer: Call Length

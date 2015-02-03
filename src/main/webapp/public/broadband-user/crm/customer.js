@@ -1011,6 +1011,27 @@
 					$.getCustomerOrder($(this).attr('data-id'));
 				});
 				
+				// Send Order Confirmation
+				// Get Send Order Confirmation Dialog
+				$('a[data-name="'+co[i].id+'_send_order_confirmation"]').click(function(){
+					$btn = $(this); $btn.button('loading');
+					$('#sendOrderConfirmationModal_'+this.id).modal('show');
+				});
+				// Submit to rest controller
+				$('a[data-name="sendOrderConfirmationModalBtn_'+co[i].id+'"]').click(function(){
+					var data = {
+						'order_id':this.id
+					};
+					console.log(data);
+					$.post(ctx+'/broadband-user/crm/customer/order/order-confirmation/send', data, function(json){
+						$.jsonValidation(json, 'right');
+					}, "json");
+				});
+				// Reset button when hidden Send Order Confirmation dialog
+				$('#sendOrderConfirmationModal_'+co[i].id).on('hidden.bs.modal', function (e) {
+					$.getCustomerOrder($(this).attr('data-id'));
+				});
+				
 				
 				// Regenerate most recent invoice
 				// Get regenerate most recent invoice Dialog

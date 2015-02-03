@@ -144,10 +144,10 @@
 
 	<insert id="insertVOSVoIPCallRecord" parameterType="VOSVoIPCallRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO `tm_vos_voip_call_record`(
-			`id`, `call_start`, `ori_number`, `dest_number`, `call_length`, 
+			`call_start`, `ori_number`, `dest_number`, `call_length`, 
 			`charge_length`, `call_fee`, `call_cost`, `call_type`, `area_prefix`, `invoice_id`
 		) VALUES (
-			#{id}, #{call_start}, #{ori_number}, #{dest_number}, #{call_length}, 
+			#{call_start}, #{ori_number}, #{dest_number}, #{call_length}, 
 			#{charge_length}, #{call_fee}, #{call_cost}, #{call_type}, #{area_prefix}, #{invoice_id}
 		)
 	</insert>
