@@ -176,7 +176,7 @@
 		<where>
 			<choose>
 				<when test="params.where == 'last_call_records'">
-					and ori_number = #{params.ori_number}
+					and ori_number LIKE CONCAT('%', '${params.ori_number}')
 					<if test="params.invoice_id != null">
 						AND invoice_id = #{params.invoice_id}
 					</if>

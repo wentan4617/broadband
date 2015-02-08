@@ -19,6 +19,11 @@ Total Mobile Solution Internet Service Web Project
  
  
  
+demand version 1.9.9 2015-02-28
+
+* [7号生成的invoice里，一个订单有多个VoIP的拨打记录有录入到invoice，但是invoice_id没有回绑，检查问题。](steven)
+ 
+ 
 demand version 1.9.8 2015-01-23
  
 * [检查并修复700340订单的帐单，解决重复出现的chorus-addon.](steven)

@@ -638,7 +638,7 @@ public class CallingAndRentalFeeCalucation {
 				}
 				vosVoIPCallRecordUpdate.setInvoice_id(ci.getId());
 				vosVoIPCallRecordUpdate.getParams().put("where", "last_call_records");
-				vosVoIPCallRecordUpdate.getParams().put("ori_number", TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
+				vosVoIPCallRecordUpdate.getParams().put("ori_number", TMUtils.retrieveNonAreaCodeVoIPNumber(voip_number));
 //				System.out.println("TMUtils.retrieveAreaCodeVoIPNumber(voip_number): "+TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
 //				System.out.println();
 				vosVoIPCallRecordUpdate.getParams().put("invoice_id", null);
