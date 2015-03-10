@@ -2845,6 +2845,33 @@ public class CRMRestController {
 		json.getSuccessMap().put("alert-success", "Order status to paid and generate a receipt succeccfully!");
 		return json;
 	}
+
+	// Send order confirmation
+	@RequestMapping(value = "/broadband-user/crm/customer/order/order-confirmation/send", method = RequestMethod.POST)
+	public JSONBean<String> doSendOrderConfirmation(Model model,
+			@RequestParam("order_id") Integer order_id,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		// call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
+		applicationEmail.setAddressee(coQuery.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		
+		json.getSuccessMap().put("alert-success", "Order Confirmation Has Been Sent!");
+		return json;
+	}
 	
 	@RequestMapping("/broadband-user/crm/customer/order/view/{pageNo}")
 	public Page<CustomerOrder> doCustomerView(@PathVariable("pageNo") int pageNo, CustomerOrder coQuery, SessionStatus status) {

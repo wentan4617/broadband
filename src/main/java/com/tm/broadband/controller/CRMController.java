@@ -867,11 +867,11 @@ public class CRMController {
 				
 				customerInvoice.setStatus("paid");
 				customerInvoice.setAmount_paid(customerInvoice.getAmount_paid() + customerTransaction.getAmount());
-				customerInvoice.setBalance(customerInvoice.getAmount_payable() - customerInvoice.getAmount_paid());
+				customerInvoice.setBalance(customerInvoice.getBalance() - customerInvoice.getAmount_paid());
 				customerInvoice.getParams().put("id", id);
 				this.crmService.editCustomerInvoice(customerInvoice);
 				
-				this.crmService.createInvoicePDFByInvoiceID(id, false);
+//				this.crmService.createInvoicePDFByInvoiceID(id, false);
 				
 				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
 				ApplicationEmail applicationEmail = new ApplicationEmail();

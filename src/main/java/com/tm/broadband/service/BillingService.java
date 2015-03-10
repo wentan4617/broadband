@@ -694,7 +694,7 @@ public class BillingService {
 						case "Call waiting nat Res": break;
 						case "Faxability Monthly Rental Res": break;
 						case "Smart Bundle package": break;
-						case "3 Way Calls Service Res": break;
+						case "3 Way Calls Service  Res": break;
 						case "Call Minder with Call Forward Res": break;
 						case "Call Minder-Charges-Standard SME 2 (with TPS)": break;
 						case "Calling Numbers Presented - Minimum Charge": break;

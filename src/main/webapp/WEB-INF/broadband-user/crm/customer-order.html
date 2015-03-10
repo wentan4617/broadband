@@ -50,7 +50,13 @@
 			<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-xs btn-primary xs-btn-width-long" data-name="<.= customerOrder[i].id .>_generate_order_receipt"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Generate Receipt Only</a>&nbsp;&nbsp;
 			<. } .>
 			<br/>
-		<. } if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
+		<. } .>
+		<. if(customerOrder[i].ordering_form_pdf_path!=null && customerOrder[i].ordering_form_pdf_path!=''){ .>
+			<br/>
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_send_order_confirmation">Send Order Confirmation</a>&nbsp;&nbsp;
+			<br/>
+		<. } .>
+		<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
 			<br/>
 			<strong>Termed Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
@@ -1588,6 +1594,33 @@
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="generateOrderReceiptModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate order receipt</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Send Order Confirmation Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="sendOrderConfirmationModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="sendOrderConfirmationModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="sendOrderConfirmationModalLabel">
+							<strong>Send Order Confirmation</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Sure to send the confirmation to customer's email?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="sendOrderConfirmationModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to Send</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -3546,7 +3579,7 @@
 						<div class="form-group">
 							<div class="col-md-12">
 								<p>
-									Sure to save the changes?
+									Personal Include GST, Business Plus GST. Sure to save the changes?
 								</p>
 							</div>
 						</div>
@@ -3554,6 +3587,10 @@
 							<div class="col-md-1">
 								<input type="checkbox" id="<.= customerOrder[i].id .>" data-name="chorus_addon_checkall_<.= customerOrder[i].id .>" />
 							</div>
+							<div class="col-md-2">
+								<p class="form-control-static"><strong>Price ( per addon )</strong></p>
+							</div>
+							<p class="form-control-static"><strong>Addon Name</strong></p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3562,7 +3599,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="call_restrict_with_no_directory_access_nat_res_<.= customerOrder[i].id .>_price" data-val="Call restrict with no Directory Access nat Res" />
 							</div>
-							<p class="form-control-static">Call restrict with no Directory Access nat Res</p>
+							<p class="form-control-static">Call restrict with no Directory Access nat Res ( <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3571,7 +3608,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="call_restrict_with_directory_access_nat_res_<.= customerOrder[i].id .>_price" data-val="Call restrict with directory access nat Res" />
 							</div>
-							<p class="form-control-static">Call restrict with directory access nat Res</p>
+							<p class="form-control-static">Call restrict with directory access nat Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3580,7 +3617,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="caller_display_monthly_charge_per_line_res_<.= customerOrder[i].id .>_price" data-val="Caller Display Monthly Charge per line Res" />
 							</div>
-							<p class="form-control-static">Caller Display Monthly Charge per line Res</p>
+							<p class="form-control-static">Caller Display Monthly Charge per line Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3589,7 +3626,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="call_waiting_nat_res_<.= customerOrder[i].id .>_price" data-val="Call waiting nat Res" />
 							</div>
-							<p class="form-control-static">Call waiting nat Res</p>
+							<p class="form-control-static">Call waiting nat Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3598,7 +3635,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="faxability_monthly_rental_res_<.= customerOrder[i].id .>_price" data-val="Faxability Monthly Rental Res" />
 							</div>
-							<p class="form-control-static">Faxability Monthly Rental Res</p>
+							<p class="form-control-static">Faxability Monthly Rental Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3607,16 +3644,16 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="smart_bundle_package_<.= customerOrder[i].id .>_price" data-val="Smart Bundle package" />
 							</div>
-							<p class="form-control-static">Smart Bundle package</p>
+							<p class="form-control-static">Smart Bundle package ( Approx <strong>NZ$10.86 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
 								<input type="checkbox" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="3 Way Calls Service Res" />
 							</div>
 							<div class="col-md-2">
-								<input type="text" class="form-control input-sm" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>_price" data-val="3 Way Calls Service Res" />
+								<input type="text" class="form-control input-sm" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>_price" data-val="3 Way Calls Service  Res" />
 							</div>
-							<p class="form-control-static">3 Way Calls Service Res</p>
+							<p class="form-control-static">3 Way Calls Service&nbsp;&nbsp;Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3625,7 +3662,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="call_minder_with_call_forward_res_<.= customerOrder[i].id .>_price" data-val="Call Minder with Call Forward Res" />
 							</div>
-							<p class="form-control-static">Call Minder with Call Forward Res</p>
+							<p class="form-control-static">Call Minder with Call Forward Res ( Approx <strong>NZ$7.53 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3634,7 +3671,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="call_minder_charges_standard_sme_2_with_tps_<.= customerOrder[i].id .>_price" data-val="Call Minder-Charges-Standard SME 2 (with TPS)" />
 							</div>
-							<p class="form-control-static">Call Minder-Charges-Standard SME 2 (with TPS)</p>
+							<p class="form-control-static">Call Minder-Charges-Standard SME 2 (with TPS) ( Approx <strong>NZ$7.53 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3643,7 +3680,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="calling_numbers_presented_<.= customerOrder[i].id .>_price" data-val="Calling Numbers Presented" />
 							</div>
-							<p class="form-control-static">Calling Numbers Presented</p>
+							<p class="form-control-static">Calling Numbers Presented ( Approx <strong>NZ$7.11 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3652,7 +3689,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="calling_numbers_presented_minimum_charge_<.= customerOrder[i].id .>_price" data-val="Calling Numbers Presented - Minimum Charge" />
 							</div>
-							<p class="form-control-static">Calling Numbers Presented - Minimum Charge</p>
+							<p class="form-control-static">Calling Numbers Presented - Minimum Charge ( Approx <strong>NZ$7.11 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3661,7 +3698,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="directory_assistance_<.= customerOrder[i].id .>_price" data-val="directory assistance" />
 							</div>
-							<p class="form-control-static">directory assistance</p>
+							<p class="form-control-static">directory assistance ( Approx <strong>NZ$3.2 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3670,7 +3707,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="faxability_charges_sme1_<.= customerOrder[i].id .>_price" data-val="FaxAbility-Charges SME1" />
 							</div>
-							<p class="form-control-static">FaxAbility-Charges SME1</p>
+							<p class="form-control-static">FaxAbility-Charges SME1 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3679,7 +3716,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="faxability_charges_sme2_<.= customerOrder[i].id .>_price" data-val="FaxAbility-Charges SME2" />
 							</div>
-							<p class="form-control-static">FaxAbility-Charges SME2</p>
+							<p class="form-control-static">FaxAbility-Charges SME2 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3688,7 +3725,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="smartphone_services_call_waiting_sme2_<.= customerOrder[i].id .>_price" data-val="Smartphone Services-Call waiting SME2" />
 							</div>
-							<p class="form-control-static">Smartphone Services-Call waiting SME2</p>
+							<p class="form-control-static">Smartphone Services-Call waiting SME2 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3697,7 +3734,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="s_phone_call_divert_call_fwd_no_ans_sme2_<.= customerOrder[i].id .>_price" data-val="S-Phone Call divert (call fwd No ans) SME2" />
 							</div>
-							<p class="form-control-static">S-Phone Call divert (call fwd No ans) SME2</p>
+							<p class="form-control-static">S-Phone Call divert (call fwd No ans) SME2 ( Approx <strong>NZ$3.31 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3706,7 +3743,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="s_phone_call_divert_call_fwd_immed_sme2_<.= customerOrder[i].id .>_price" data-val="S-Phone Call divert (call fwd Immed) SME2" />
 							</div>
-							<p class="form-control-static">S-Phone Call divert (call fwd Immed) SME2</p>
+							<p class="form-control-static">S-Phone Call divert (call fwd Immed) SME2 ( Approx <strong>NZ$3.31 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3715,7 +3752,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="s_phone_call_restrict_with_directory_access_sm_<.= customerOrder[i].id .>_price" data-val="S-Phone Call Restrict with Directory Access SM" />
 							</div>
-							<p class="form-control-static">S-Phone Call Restrict with Directory Access SM</p>
+							<p class="form-control-static">S-Phone Call Restrict with Directory Access SM ( Approx <strong>NZ$3.31 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3724,7 +3761,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="wire_maintenance_<.= customerOrder[i].id .>_price" data-val="Wire Maintenance" />
 							</div>
-							<p class="form-control-static">Wire Maintenance</p>
+							<p class="form-control-static">Wire Maintenance ( Approx <strong>NZ$4.95 * 1.15</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3733,7 +3770,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="wire_maintenance_contract_<.= customerOrder[i].id .>_price" data-val="wire maintenance contract" />
 							</div>
-							<p class="form-control-static">wire maintenance contract</p>
+							<p class="form-control-static">wire maintenance contract ( Approx <strong>NZ$4.95 * 1.15</strong> )</p>
 						</div>
 					</div>
 					<div class="modal-footer">
@@ -3762,7 +3799,7 @@
 						<div class="form-group">
 							<div class="col-md-12">
 								<p>
-									Sure to save the changes?
+									Personal Include GST, Business Plus GST. Sure to save the changes?
 								</p>
 							</div>
 						</div>
@@ -3770,6 +3807,10 @@
 							<div class="col-md-1">
 								<input type="checkbox" id="<.= customerOrder[i].id .>" data-name="calling_rates_checkall_<.= customerOrder[i].id .>" />
 							</div>
+							<div class="col-md-2">
+								<p class="form-control-static"><strong>Price ( per min )</strong></p>
+							</div>
+							<p class="form-control-static"><strong>Type</strong></p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3778,7 +3819,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
 							</div>
-							<p class="form-control-static">VoIP Local Rate</p>
+							<p class="form-control-static">VoIP Local Rate ( Personal/Business <strong>Free</strong> )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3787,7 +3828,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
 							</div>
-							<p class="form-control-static">VoIP National Rate</p>
+							<p class="form-control-static">VoIP National Rate ( Personal <strong>Free</strong>, Business <strong>NZ$0.04</strong> per min)</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3796,7 +3837,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
 							</div>
-							<p class="form-control-static">VoIP Mobile Rate</p>
+							<p class="form-control-static">VoIP Mobile Rate ( Personal/Business <strong>NZ$0.10</strong> per min )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3805,7 +3846,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
 							</div>
-							<p class="form-control-static">PSTN Local Rate</p>
+							<p class="form-control-static">PSTN Local Rate ( Personal <strong>Free</strong>, Business <strong>NZ$0.045</strong> per min )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3814,7 +3855,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
 							</div>
-							<p class="form-control-static">PSTN National Rate</p>
+							<p class="form-control-static">PSTN National Rate ( Personal/Business <strong>NZ$0.09</strong> per min )</p>
 						</div>
 						<div class="form-group">
 							<div class="col-md-1">
@@ -3823,7 +3864,7 @@
 							<div class="col-md-2">
 								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
 							</div>
-							<p class="form-control-static">PSTN Mobile Rate</p>
+							<p class="form-control-static">PSTN Mobile Rate ( Personal/Business <strong>NZ$0.28</strong> per min )</p>
 						</div>
 					</div>
 					<div class="modal-footer">

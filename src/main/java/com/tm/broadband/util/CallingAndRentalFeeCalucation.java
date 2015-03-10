@@ -500,7 +500,6 @@ public class CallingAndRentalFeeCalucation {
 		for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecordsQuery) {
 			
 			String area_prefix = String.valueOf(vosVoIPCallRecord.getArea_prefix());
-
 			
 			boolean isLocal = false;
 			
@@ -563,10 +562,10 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setPhone_called(vosVoIPCallRecord.getDest_number());
 			ccr.setDuration(duration);
 			
-			callType = isLocal ? "Local" : vosVoIPRates.get(0).getRate_type();
- 			ccr.setBilling_description(vosVoIPRates.get(0).getArea_name());
+			callType = isLocal ? "Local" : isOnRate ? vosVoIPRates.get(0).getRate_type() : vosVoIPCallRecord.getCall_type();
+ 			ccr.setBilling_description(isOnRate ? vosVoIPRates.get(0).getArea_name() : vosVoIPCallRecord.getCall_type());
 			ccr.setCallType(TMUtils.strCapital(callType));
-			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost());
+			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost()>0 ? vosVoIPCallRecord.getCall_cost() : vosVoIPCallRecord.getCall_fee());
 			ccr.setCallType(TMUtils.strCapital(callType));
 			ccr.setOot_id("voip");
 
