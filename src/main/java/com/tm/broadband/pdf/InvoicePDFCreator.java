@@ -517,7 +517,6 @@ public class InvoicePDFCreator extends ITextUtils {
 		
 		Integer colspan = 3;
         PdfPTable dueNotificationTable = newTable().columns(colspan).widthPercentage(98F).o();
-        addEmptyCol(dueNotificationTable, 24F, colspan);
         addCol(dueNotificationTable, "Overdue Penalty:").colspan(colspan).font(ITextFont.arial_bold_green_10).alignH("l").o();
         addCol(dueNotificationTable, "10% percent of your total amount every month.").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
         addCol(dueNotificationTable, "(Overdue: 30 days after your invoice due date, overdue payment must be paid in 90 days after due date.)").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
