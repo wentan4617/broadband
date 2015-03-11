@@ -2590,7 +2590,7 @@ public class CRMService {
 						
 						// If is old order than use old logic, service from 1th to last day of the month.
 						if((co.getOrder_serial()!=null && co.getOrder_serial().contains("old"))
-						  || co.getCustomer_type().equals("business")){
+						  || co.getCustomer_type().equals("business") || (co.getIs_ddpay()!=null && co.getIs_ddpay()==true)){
 							// Add first day as begin date and last day as end date
 							cal.set(Calendar.DAY_OF_MONTH, 1);
 							startFrom = cal.getTime();
