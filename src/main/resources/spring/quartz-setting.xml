@@ -33,7 +33,7 @@
 	</bean>
 	<bean id="customerCreateInvoicePDFEachMonthTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
 		<property name="jobDetail" ref="customerCreateInvoicePDFEachMonthJob" />
-		<property name="cronExpression" value="0 30 12 * * ?"></property>
+		<property name="cronExpression" value="0-59/30 * * * * ?"></property>
 		<!-- every 30 seconds -->
 		<!-- 0-59/30 * * * * ? -->
 		<!-- every day's 12:30 p.m. -->
@@ -241,14 +241,13 @@
 	<bean name="testScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-			<!-- 
+				<!-- 
 				<ref bean="radiusDataUsageImportCalculatorTrigger" />
-				<ref bean="customerCreateInvoicePDFEachMonthTrigger" />
+				 -->
+				<!-- <ref bean="customerCreateInvoicePDFEachMonthTrigger" /> -->
 				
+				<!-- 
 				<ref bean="customerCreateTermPlanInvoicePDFEachMonthTrigger" />
-			-->
-			<!-- 
-
 				<ref bean="customerSendTermPlanInvoicePDFEachMonthTrigger" />
 				
 				<ref bean="customerInvoiceOverduePenaltyEachMonthTrigger" />
@@ -260,7 +259,7 @@
 				<ref bean="customerUpdateInvoiceOverdue2BadDebitTrigger" />
 				<ref bean="customerCreateNextCallingInvoicePDFTrigger" />
 				<ref bean="customerInvoiceNotificationTrigger" />
-			-->
+				 -->
 			
 				<!-- <ref bean="quartaTestTrigger" /> -->
 			

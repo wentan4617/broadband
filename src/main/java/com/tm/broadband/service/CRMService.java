@@ -101,7 +101,7 @@ import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.CallingAndRentalFeeCalucation;
 import com.tm.broadband.util.MailRetriever;
-import com.tm.broadband.util.Post2Xero;
+//import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -1433,10 +1433,10 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
-			}
+//			if(resultMaps.size()>0){
+//				
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
+//			}
 			
 		}
 		
@@ -1635,9 +1635,9 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-			}
+//			if(resultMaps.size()>0){
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//			}
 			
 		}
 	}
@@ -2129,9 +2129,9 @@ public class CRMService {
         
         // call Service Method
 		List<Map<String, Object>> resultMaps = createNextInvoice(customerOrder);
-		if(resultMaps.size()>0){
-			Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-		}
+//		if(resultMaps.size()>0){
+//			Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//		}
 	}
 
 	@Transactional
@@ -2184,9 +2184,9 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-			}
+//			if(resultMaps.size()>0){
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//			}
 			
 		}
 	}
