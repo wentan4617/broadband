@@ -207,6 +207,22 @@ public class BillingController {
         return response;
     }
 	
+	// BEGIN Delayed Invoice View
+	@RequestMapping("/broadband-user/billing/invoice/view/invoice-delayed/{pageNo}")
+	public String toDelayedInvoice(Model model
+			, @PathVariable("pageNo") int pageNo) {
+
+		Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+		pageCos.setPageNo(pageNo);
+		pageCos.setPageSize(30);
+		pageCos.getParams().put("where", "by_invoice_delayed");
+		pageCos = this.crmService.queryCustomerOrdersByPage(pageCos);
+		model.addAttribute("pageCos", pageCos);
+		
+		return "broadband-user/billing/invoice-delayed-view";
+		
+	}
+	
 	// BEGIN InvoiceView
 	@RequestMapping("/broadband-user/billing/invoice/view/{customer_type}/{pageNo}/{status}/{yearOrMonth}")
 	public String toInvoice(Model model

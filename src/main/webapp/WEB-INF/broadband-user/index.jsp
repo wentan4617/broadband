@@ -345,6 +345,16 @@ hr {
 		                    		<span class="glyphicon glyphicon-list-alt" ></span> 
 		                    		<a href="${ctx }/broadband-user/billing/invoice/view/business/1/unpaid/all">View Invoice(Business)</a>
 		                    	</li>
+		                    </ul>
+							<hr/>
+							<ul class="list-unstyled">
+								<li>
+		                    		<span class="glyphicon glyphicon-list-alt" ></span> 
+		                    		<a href="${ctx }/broadband-user/billing/invoice/view/invoice-delayed/1">View Invoice Delayed</a>
+		                    	</li>
+							</ul>
+							<hr/>
+							<ul class="list-unstyled">
 								<li>
 		                    		<span class="glyphicon glyphicon-list-alt" ></span> 
 		                    		<a href="${ctx }/broadband-user/billing/ddccinvoice/view">View DD/CC Invoice</a>
