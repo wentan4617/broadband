@@ -112,7 +112,8 @@
 						'S-Phone Call divert (call fwd Immed) SME2',
 						'S-Phone Call Restrict with Directory Access SM',
 						'Wire Maintenance',
-						'wire maintenance contract'
+						'wire maintenance contract',
+						'Voice chat'
 					)
 					and (
 						ccr.line_description IS NULL
@@ -150,7 +151,8 @@
 						'S-Phone Call divert (call fwd Immed) SME2',
 						'S-Phone Call Restrict with Directory Access SM',
 						'Wire Maintenance',
-						'wire maintenance contract'
+						'wire maintenance contract',
+						'Voice chat'
 					) OR ccr.line_description IN(
 						'PAYPHONE'
 					))
@@ -187,7 +189,8 @@
 						'S-Phone Call divert (call fwd Immed) SME2',
 						'S-Phone Call Restrict with Directory Access SM',
 						'Wire Maintenance',
-						'wire maintenance contract'
+						'wire maintenance contract',
+						'Voice chat'
 					) OR ccr.line_description IN(
 						'PAYPHONE'
 					))
