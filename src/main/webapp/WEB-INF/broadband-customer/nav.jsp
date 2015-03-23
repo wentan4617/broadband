@@ -26,7 +26,7 @@
 		
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li>
+				<%-- <li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li> --%>
 				<li><a href="${ctx }/plans/broadband" rel="nofollow">Personal Plan</a></li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow">Business Plan</a></li>
 				<li>
