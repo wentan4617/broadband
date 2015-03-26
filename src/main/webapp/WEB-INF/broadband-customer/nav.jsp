@@ -13,13 +13,20 @@
 				<span class="icon-bar" ></span>
 			</button>
 			<a class="navbar-brand" href="${ctx }/home" rel="${nofollow}">
-				<span class="logo"></span> 
+				<c:choose>
+					<c:when test="${wsrSession.logo_path!=null && wsrSession.logo_path!=''}">
+						<span style="display:inline-block; height:46px; width:111px; background:url('${ctx}/${wsrSession.logo_path }') no-repeat; margin-top:-12px; background-size:contain;"></span>
+					</c:when>
+					<c:otherwise>
+						<span class="logo"></span>
+					</c:otherwise>
+				</c:choose>
 			</a>
 		</div>
 		
 		<div class="collapse navbar-collapse">
 			<ul class="nav navbar-nav">
-				<li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li>
+				<%-- <li><a href="${ctx }/plans/plan-topup/personal" rel="nofollow">Top Up Plan</a></li> --%>
 				<li><a href="${ctx }/plans/broadband" rel="nofollow">Personal Plan</a></li>
 				<li><a href="${ctx }/plans/plan-term/business" rel="nofollow">Business Plan</a></li>
 				<li>
@@ -34,7 +41,7 @@
 		             	<li><a href="${ctx }/term-and-conditions">Terms &amp; Conditions</a></li>
 		          	</ul>
 				</li>
-				<li><a href="${ctx }/about-us#contact" rel="nofollow"><span style="color: white">0800 229 237</span></a></li>
+				<li><a href="${ctx }/about-us#contact" rel="nofollow"><span style="color: white">${wedSession.company_hot_line_no!=null && wedSession.company_hot_line_no!='' ? wedSession.company_hot_line_no : '0800 229 237'}</span></a></li>
 				<li>
 					<a rel="nofollow" href="#" class="dropdown-toggle" data-toggle="dropdown" >Share <b class="caret"></b></a>
 					<ul class="dropdown-menu">

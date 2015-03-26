@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerBillingLogMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerBillingLogColumns">
+		cbl.`id`					as cbl_id,
+		cbl.`customer_id`			as cbl_customer_id,
+		cbl.`order_id`				as cbl_order_id,
+		cbl.`invoice_id`			as cbl_invoice_id,
+		cbl.`user_id`				as cbl_user_id,
+		cbl.`oper_type`				as cbl_oper_type,
+		cbl.`oper_name`				as cbl_oper_name,
+		cbl.`oper_date`				as cbl_oper_date
+	</sql>
+
+	<resultMap type="CustomerBillingLog" id="customerBillingLogResultMap">
+		<id property="id" column="cbl_id" />
+		<result property="customer_id" column="cbl_customer_id" />
+		<result property="order_id" column="cbl_order_id" />
+		<result property="invoice_id" column="cbl_invoice_id" />
+		<result property="user_id" column="cbl_user_id" />
+		<result property="oper_type" column="cbl_oper_type" />
+		<result property="oper_name" column="cbl_oper_name" />
+		<result property="oper_date" column="cbl_oper_date" />
+	</resultMap>
+
+	<sql id="customerBillingLogWhere">
+		<where>
+			<if test="params.id != null">cbl.id = #{params.id}</if>
+			<if test="params.customer_id != null">and cbl.customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and cbl.order_id = #{params.order_id}</if>
+			<if test="params.invoice_id != null">and cbl.invoice_id = #{params.invoice_id}</if>
+			<if test="params.user_id != null">and cbl.user_id = #{params.user_id}</if>
+			<if test="params.oper_type != null">and cbl.oper_type = #{params.oper_type}</if>
+			<if test="params.oper_name != null">and cbl.oper_name = #{params.oper_name}</if>
+			<if test="params.oper_date != null">and cbl.oper_date = #{params.oper_date}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerBillingLog" parameterType="CustomerBillingLog" resultType="CustomerBillingLog">
+		select * from tm_customer_billing_log as cbl
+		<include refid="customerBillingLogWhere"/>
+	</select>
+
+	<!-- select customerBillingLog page -->
+	<select id="selectCustomerBillingLogsByPage" parameterType="Page" resultMap="customerBillingLogResultMap">
+		select 
+			<include refid="customerBillingLogColumns"/>
+			from tm_customer_billing_log as cbl
+			<include refid="customerBillingLogWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerBillingLog amount -->
+	<select id="selectCustomerBillingLogsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_billing_log as cbl
+		<include refid="customerBillingLogWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerBillingLog" parameterType="CustomerBillingLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_billing_log`(
+			`id`, `customer_id`, `order_id`, `invoice_id`, `user_id`, 
+			`oper_type`, `oper_name`, `oper_date`
+		) VALUES (
+			#{id}, #{customer_id}, #{order_id}, #{invoice_id}, #{user_id}, 
+			#{oper_type}, #{oper_name}, #{oper_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerBillingLog -->
+	<update id="updateCustomerBillingLog" parameterType="CustomerBillingLog">
+		update tm_customer_billing_log
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="invoice_id != null">invoice_id = #{invoice_id},</if>
+			<if test="user_id != null">user_id = #{user_id},</if>
+			<if test="oper_type != null">oper_type = #{oper_type},</if>
+			<if test="oper_name != null">oper_name = #{oper_name},</if>
+			<if test="oper_date != null">oper_date = #{oper_date}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and order_id = #{params.order_id}</if>
+			<if test="params.invoice_id != null">and invoice_id = #{params.invoice_id}</if>
+			<if test="params.user_id != null">and user_id = #{params.user_id}</if>
+			<if test="params.oper_type != null">and oper_type = #{params.oper_type}</if>
+			<if test="params.oper_name != null">and oper_name = #{params.oper_name}</if>
+			<if test="params.oper_date != null">and oper_date = #{params.oper_date}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerBillingLogById" parameterType="int">
+		DELETE FROM tm_customer_billing_log WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

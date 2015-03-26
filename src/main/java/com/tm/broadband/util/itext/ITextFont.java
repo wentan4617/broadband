@@ -37,6 +37,10 @@ public class ITextFont {
 	public static final Font arial_bold_20 = new Font(createBaseFont("arialbd.ttf"), 20, Font.NORMAL);
 	public static final Font arial_bold_green_20 = new Font(createBaseFont("arialbd.ttf"), 20, Font.NORMAL, new BaseColor(92,184,92));
 	public static final Font lucida_sans_unicode_9 = new Font(createBaseFont("Lucida Sans Unicode.ttf"), 9, Font.NORMAL);
+
+	public static final Font arial_bold_italic_10 = new Font(createBaseFont("arialbd.ttf"), 10, Font.ITALIC);
+	public static final Font arial_coral_bold_11 = new Font(createBaseFont("arialbd.ttf"), 11, Font.NORMAL, new BaseColor(240,128,128));
+	public static final Font arial_coral_bold_18 = new Font(createBaseFont("arialbd.ttf"), 18, Font.NORMAL, new BaseColor(240,128,128));
 	
 	public static BaseFont createBaseFont(String fontFile){
 		try {

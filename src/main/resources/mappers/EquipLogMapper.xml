@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.EquipLogMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="equipLogColumns">
+		el.`id`						as el_id,
+		el.`equip_id`				as el_equip_id,
+		el.`oper_type`				as el_oper_type,
+		el.`log_date`				as el_log_date,
+		el.`log_desc`				as el_log_desc,
+		el.`user_id`				as el_user_id
+	</sql>
+
+	<resultMap type="EquipLog" id="equipLogResultMap">
+		<id property="id" column="el_id" />
+		<result property="equip_id" column="el_equip_id" />
+		<result property="oper_type" column="el_oper_type" />
+		<result property="log_date" column="el_log_date" />
+		<result property="log_desc" column="el_log_desc" />
+		<result property="user_id" column="el_user_id" />
+	</resultMap>
+
+	<sql id="equipLogWhere">
+		<where>
+			<if test="params.id != null">el.id = #{params.id}</if>
+			<if test="params.equip_id != null">and el.equip_id = #{params.equip_id}</if>
+			<if test="params.oper_type != null">and el.oper_type = #{params.oper_type}</if>
+			<if test="params.log_date != null">and el.log_date = #{params.log_date}</if>
+			<if test="params.log_desc != null">and el.log_desc = #{params.log_desc}</if>
+			<if test="params.user_id != null">and el.user_id = #{params.user_id}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectEquipLog" parameterType="EquipLog" resultType="EquipLog">
+		select * from tm_equip_log as el
+		<include refid="equipLogWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+	</select>
+
+	<!-- select equipLog page -->
+	<select id="selectEquipLogsByPage" parameterType="Page" resultMap="equipLogResultMap">
+		select 
+			<include refid="equipLogColumns"/>
+			from tm_equip_log as el
+			<include refid="equipLogWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select equipLog amount -->
+	<select id="selectEquipLogsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_equip_log as el
+		<include refid="equipLogWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertEquipLog" parameterType="EquipLog" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_equip_log`(
+			`id`, `equip_id`, `oper_type`, `log_date`, `log_desc`, `user_id`
+		) VALUES (
+			#{id}, #{equip_id}, #{oper_type}, #{log_date}, #{log_desc}, #{user_id}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update equipLog -->
+	<update id="updateEquipLog" parameterType="EquipLog">
+		update tm_equip_log
+		<set>
+			<if test="equip_id != null">equip_id = #{equip_id},</if>
+			<if test="oper_type != null">oper_type = #{oper_type},</if>
+			<if test="log_date != null">log_date = #{log_date},</if>
+			<if test="log_desc != null">log_desc = #{log_desc},</if>
+			<if test="user_id != null">user_id = #{user_id}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteEquipLogById" parameterType="int">
+		DELETE FROM tm_equip_log WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

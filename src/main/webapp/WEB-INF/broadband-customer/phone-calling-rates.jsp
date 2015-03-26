@@ -97,7 +97,7 @@
 									<tr>
 										<th>Country name</th>
 										<th>Area Prefix</th>
-										<th>Cents per min rate</th>
+										<th>Dollar per min rate</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -152,7 +152,7 @@
 									<tr>
 										<th>Country name</th>
 										<th>Area Prefix</th>
-										<th>Cents per min rate</th>
+										<th>Dollar per min rate</th>
 									</tr>
 								</thead>
 								<tbody>

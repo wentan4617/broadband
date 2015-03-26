@@ -43,6 +43,13 @@ public class CustomerInvoice implements Serializable {
 	private Integer original_order_id;
 	private Integer original_customer_id;
 	private String invoice_type;
+	private Double chorus_calling_credit;
+	private Double chorus_calling_charge;
+	private Double nca_calling_credit;
+	private Double nca_calling_charge;
+	private Double vos_calling_credit;
+	private Double vos_calling_charge;
+
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -51,6 +58,13 @@ public class CustomerInvoice implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private List<CustomerCredit> ccs;
+	private List<CustomerDDPay> dds;
+	
+	private String customer_name;
+	
+	private String order_status;
 	
 	private String suspend_date_str;
 	private String disconnected_date_str;
@@ -351,6 +365,86 @@ public class CustomerInvoice implements Serializable {
 
 	public void setCts(List<CustomerTransaction> cts) {
 		this.cts = cts;
+	}
+
+	public Double getChorus_calling_credit() {
+		return chorus_calling_credit;
+	}
+
+	public void setChorus_calling_credit(Double chorus_calling_credit) {
+		this.chorus_calling_credit = chorus_calling_credit;
+	}
+
+	public Double getChorus_calling_charge() {
+		return chorus_calling_charge;
+	}
+
+	public void setChorus_calling_charge(Double chorus_calling_charge) {
+		this.chorus_calling_charge = chorus_calling_charge;
+	}
+
+	public Double getNca_calling_credit() {
+		return nca_calling_credit;
+	}
+
+	public void setNca_calling_credit(Double nca_calling_credit) {
+		this.nca_calling_credit = nca_calling_credit;
+	}
+
+	public Double getNca_calling_charge() {
+		return nca_calling_charge;
+	}
+
+	public void setNca_calling_charge(Double nca_calling_charge) {
+		this.nca_calling_charge = nca_calling_charge;
+	}
+
+	public Double getVos_calling_credit() {
+		return vos_calling_credit;
+	}
+
+	public void setVos_calling_credit(Double vos_calling_credit) {
+		this.vos_calling_credit = vos_calling_credit;
+	}
+
+	public Double getVos_calling_charge() {
+		return vos_calling_charge;
+	}
+
+	public void setVos_calling_charge(Double vos_calling_charge) {
+		this.vos_calling_charge = vos_calling_charge;
+	}
+
+	public String getOrder_status() {
+		return order_status;
+	}
+
+	public void setOrder_status(String order_status) {
+		this.order_status = order_status;
+	}
+
+	public String getCustomer_name() {
+		return customer_name;
+	}
+
+	public void setCustomer_name(String customer_name) {
+		this.customer_name = customer_name;
+	}
+
+	public List<CustomerCredit> getCcs() {
+		return ccs;
+	}
+
+	public void setCcs(List<CustomerCredit> ccs) {
+		this.ccs = ccs;
+	}
+
+	public List<CustomerDDPay> getDds() {
+		return dds;
+	}
+
+	public void setDds(List<CustomerDDPay> dds) {
+		this.dds = dds;
 	}
 
 }

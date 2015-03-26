@@ -15,16 +15,290 @@ Total Mobile Solution Internet Service Web Project
  * planCreate (/plan/create)(post)
  * toPlanEdit (/plan/edit/{id})(get)
  * planEdit (/plan/edit)(post)
- * planRemove (/plan/remove/{id})(get)            
+ * planRemove (/plan/remove/{id})(get)
+ 
+ 
+ 
+demand version 1.9.9 2015-02-28
 
-没有录入order到CyberPark的pstn_number号码：73455586，96235066
+* [7号生成的invoice里，一个订单有多个VoIP的拨打记录有录入到invoice，但是invoice_id没有回绑，检查问题。](steven)
+ 
+ 
+demand version 1.9.8 2015-01-23
+ 
+* [检查并修复700340订单的帐单，解决重复出现的chorus-addon.](steven)
+* [检查客户在线支付invoice后为何calling detail没有记录进去.](steven)
+ 
+ 
+ 
+ 
+demand version 1.9.7 2015-01-21
+ 
+* [计算calling时，如果有设置nz calling rates，则将设置的作为费率.](steven)
+* [order界面添加一个Set NZ Calling Rates按钮，点击后弹出modal，可指定Local, National, Mobile的费率.](steven)
+ 
+ 
+ 
+demand version 1.9.6 2015-01-20
+
+* order界面添加一个Send Order Confirmation，点击后通过order的email发送给客户，当客户点击邮件里的链接时，该order的is_confirmed变为true.(steven)
+* [在读取calling时不取900，在读取rental时读取900，价格为税后价*1.15.](steven)
+* [前台下单去掉open term.](steven)
+ 
+ 
+ 
+demand version 1.9.5 2015-01-12
+
+* [New Order下Business单子时，is_ddpay不是true，检查原因.](steven)
+* [在order界面添加一个按钮，弹出modal，可勾选指定的add-on，出账计算add-on时如果该add-on有定制价格，则按定制的价格算.](steven)
+* [添加一张tm_customer_order_chorus_addon,字段有：id, order_id, addon_name, addon_price.](steven)
+* [新账单只能包含rental，但不更新rental的invoice_id，检查原因.](steven)
+* [检查所有rental及其订单，如若发现已被包含至invoice，但invoice_id没有成功更新至rental上的话，将其关联的invoice_id加上.](steven)
+* [invoice的total balance显示为基于order的total invoice balance.](steven)
+ 
+ 
+ 
+demand version 1.9.3 2015-01-07
+
+* [Business出第一张invoice时next_invoice_create_date没变，检查原因.](steven)
+ 
+ 
+ 
+demand version 1.9.2 2015-01-06
+
+* [Chorus add-on存入时加多几个description，将rental的费用改成总费用*1.15 = 最终应付金额.](steven)
+* [business上一个帐单的balance会累加至下一个帐单payable amount上.](steven)
+* [筛选列出的chorus addon，与之前的addon存在同一张表里.](steven)
+* 列出所有非monthly paid的order，及其plan单价，列出合同时间以及剩余服务月份.(steven)
+* 统计每个月所产生成本，根据statement date统计chorus成本，根据calling date统计callplus及vos成本.(steven)
+* [列出所有is_ddpay=true的所有order，In Service的，所有非paid的帐单，导出成Excel表，所需列:Customer Id, Order Id, Create Date, DD/CC detail, Balance.](steven)
+* 列出所有用来算Commission的order，order的sales_id或user_id必须有一个非空，所需列: Customer Id, Order Id, Plan Price, Plan Type, Order Type, Order Term, Service Date, Receivables, Invoice Payable, Order Status, Hardware.(steven)
+    过滤选项：Sales, Begin Date - End Date, Personal/Business, On Going/One Off
+    可以导出成Excel并下载
+* [根据Chorus Calling的PSTN匹配改成根据Chorus Rental的PSTN匹配.](steven)
+* equipment状态加一个exchanged，在equipment列表界面可以勾选某个equipment点击change status to exchanged/faulty.(steven)
+ 
+ 
+ 
+demand version 1.9.0 2014-12-23
+
+* [customer edit选项卡里添加一个Migrate Customer按钮，弹出层根据order id模糊匹配，匹配到则点亮隔壁Confirm, Migrate按钮，点击后将order的所有相关信息都关联至该customer下.](steven)
+* [将600313和600087并到有DDPay的customer下面，之后操作同上.](steven)
+* [检查Chart(Calling Statistic)界面，为何出现500.](steven)
+* [将600282和600283并到有account credit的customer下面，确保要丢弃的customer的有用信息都叠加至保留的customer信息里.](steven)
+
+ 
+ 
+demand version 1.8.5 2014-12-15
+ 
+* [在invoice的calling列表下添加一个Calling Area Statistic，列出各个calling的描述，分钟数，费用总和.](steven)
+* [无法查看流量，确认服务器是否被迁移，导致地址指向不正确，无法获取数据.](steven)
+
+
+ 
+demand version 1.8.5 2014-12-15
+
+* [invoice列表添加一列customer name，去掉一列invoice status.](steven)
+* [有order_id的地方都要加上customer_id.](steven)
+* [DD/CC 表加多一个order_id字段.](steven)
+* [将equipment里的order加上order的链接，需要customer_id.](steven)
+
+
+
+
+demand version 1.8.2 2014-12-10
+ 
+* [新增修改super-free-calling以及其他free-calling拨打分钟数的输入框.](steven)
+
+
+demand version 1.8.0 2014-12-09
+
+* [将TMUtil里日期缩写函数的日前面的0去掉.](steven)
+* [修复This Order Belongs To提交时的user_id以及sale_id同时存在的问题.](steven)
+* [修正700018,700255,700330,700331,700334，这几个订单的next_invoice_create_date.](steven)
+* [出第一个账单的is_ddpay订单日期是当月07号，排查问题并解决.](steven)
+* [增强SimpleMapperCreator类，在update里添加是否设置指定属性为NULL.](steven)
+* [将onsite_id变成200000开头.](steven)
+ 
+ 
+demand version 1.7.8 2014-12-08
+ 
+* 加一套邮件&短信模版，标题：ReceivePaymentNotice，内容：Dear ___, We have already received your payment, which is NZ$____. Thank you for the payment. Have a nice day!(steven)
+
+ 
+ 
+demand version 1.7.6 2014-12-05
+ 
+* [hardware添加界面加多一个hardware类型，以便添加硬件其附属品.](steven)
+* [在Equipment列表界面添加一个按钮组，点击以列出指定状态的设备.](steven)
+* [tm_customer_order_detail表增加detail_cost字段，记录detail成本.](steven)
+* [将Equipment列表的Order Detail Id列标题改成Order Id.](steven)
+ 
+ 
+demand version 1.7.6 2014-12-02
+ 
+* [由于服务器迁移，需要出order_id为700327的账单.](steven)
+
+ 
+demand version 1.7.5 2014-12-01
+ 
+* [新建tm_equip表，字段：id, equip_name, equip_type, equip_purpose, equip_sn, equip_status, order_detail_id.](steven)
+* [新建tm_equip_log表，字段：equip_id, oper_type, log_desc.](steven)
+
+ 
+demand version 1.7.2 2014-11-28
+ 
+* [将各个order分隔开，每一个order就是一个模版.](steven)
+
+ 
+demand version 1.7.1 2014-11-27
+ 
+* [invoice列表添加一列order_status，将order状态移植到invoice上.](steven)
+
+ 
+demand version 1.7.0 2014-11-26
+ 
+* [创建一张工单表tm_customer_order_onsite字段有：id, customer_id, order_id, customer_type, first_name, last_name, mobile, address, plan_name, data_flow, terms, onsite_type, onsite_date, onsite_type: delivery, faulty, installation, other](steven)
+* [创建一张工单细目表tm_customer_order_onsite_detail字段有：id, onsite_id, detail_name, detail_type, detail_unit](steven)
+* [invoice列表显示其对应order的状态.](steven)
+ 
+ 
+demand version 1.6.5 2014-11-24
+ 
+* [customer order界面，完善term perid修改功能.](steven)
+* [customer order界面的所有modal提交后刷新模版回传当前操作order的id，以确保该order的相关选项卡不恢复默认状态，防止其隐藏.](steven)
+ 
+ 
+ 
+demand version 1.6.0 2014-11-21
+
+* [customer order列表界面点击标题后可以根据相关字段升降序排列.](steven)
+* [新建一张表，tm_customer_order_provision_checklist，字段有：payment_form, has_pstn, has_fax, has_voip, pstn_count, fax_count, voip_count, has_alarm, has_emergency, has_cctv, has_eftpos, has_smart_bundle, has_call_restrict, has_call_waiting, has_faxability, has_call_display, has_wire_maintenance, has_static_ip, has_dial_wrap, smart_bundle_count, call_restrict_count, call_waiting_count, faxability_count, call_display_count, wire_maintenance_count, static_ip_count, dial_wrap_count, has_router_post, router_post_count, has_svcv_lan, has_service_given, has_pstn_nca, pstn_nca_count](steven)
+ 
+ 
+demand version 1.5.8 2014-11-20
+
+* [在创建user里，非system-developer权限的限制其开放system-developer权限，因为系统部署前准备工作都放在system-developer能看到的界面当中，运行后就无需再去操作部署前准备工作.](steven)
+* [出下一张DD或CCPay账单时调整continue关键词位置以解决next_invoice_create_date的准确值，并将该段代码放到detail_type为plan-term的逻辑里.](steven)
+* [自动出ddpay order的账单，加多一个判断，最大一个账单不是当月.](steven)
+
+
+ 
+demand version 1.5.6 2014-11-19
+ 
+* [在customer order界面添加一个按钮，Get PSTN Order's in Excel，所需字段：address, broadband_type, pstn_number，逻辑是迭代有pstn以及无pstn的order信息输出到Excel里.](steven)
+* [customer order列表界面优化查询条件，并新增org_name以及user_id查询.](steven)
+* [后台登陆后将用户ID显示到用户名右侧，方便根据自身user_id查询order.](steven)
+* [customer query界面添加org_name查询.](steven)
+ 
+demand version 1.5.5 2014-11-18
+
+* [将order的period做成可以修改的.](steven)
+* [将customer order信息界面的所有order包含在可伸展层内，默认伸展状态为false](steven)
+ 
+ 
+demand version 1.5.2 2014-11-17
+
+* [添加Add DDPay，类似Add Credit，列出有Credit Card或DDPay的客户，方便财务扣款. id, customer_id, account name, account number](steven)
+* [在出rental时加入：Calling Numbers Presented - Minimum Charge，在出chorus calling时将其去掉.](steven)
+
+demand version 1.5.0 2014-11-13
+
+* 将订单相关账单的balance累加并存至当前账单的PDF中.
+
+
+
+demand version 1.5.0 2014-11-13
+
+* [新建一张表tm_website_editable_details](steven)
+    字段：company_name, company_name_ltd, company_hot_line_no, company_hot_line_no_alphabet, company_address, company_email, website_year
+    值：
+    
+* [新建一张表tm_plan_introductions](steven)
+    字段：adsl_title, vdsl_title, ufb_title, adsl_content, vdsl_content, ufb_content,
+    
+* [新建一张表tm_website_static_resources](steven)
+    字段：logo_path, facebook_lg_path, googleplus_lg_path, twitter_lg_path, youtube_lg_path
+
+* [新建一张表tm_terms_conditions](steven)
+    字段：term_contracts, terms_conditions_business_retails, terms_conditions_business_wifi, terms_conditions_personal, terms_conditions_ufb
+
+* [将CompanyDetail的Terms & Conditions移到tm_terms_conditions表上](steven)
+
+* [新建一张表tm_pdf_resources](steven)
+    字段：common_company_lg_path, invoice_company_lg_path, company_lg_customer_service_bar_path, two_dimensional_code_path
+
+* [将客户登录后的提示改成：Welcome to ${tm_website_editable_details.company_name}](steven)
+
+
+demand version 1.5.0 2014-11-12
+
+* [将CyberPark系统的Logo等信息变成灵活可更改的：](steven)
+
+    前端要去掉的东西：
+    Voucher Checking界面
+    About界面的Company Overview、Telecommunication services and WiFi coverage start from US!
+    Wi-Fi Solution界面
+    E-Commerce界面
+    
+
+    网站：-
+    1. 前端(客户)：
+        头部Logo（approximately H:46px、W:111px）
+        首页大图片（approximately H:322px、W:1001px）
+        
+        Header:
+        Information：About ${company_name}
+        0800 229 237替换成${company_hot_line_no}
+        0800 229 237：
+        Contact Us下方：
+        ${company_name_ltd}
+        ${company_address}
+        Give us a call ${company_hot_line_no_alphabet}
+        send email to ${company_email}
+        
+        Footer：
+        左下角：About ${company_name}
+        右下角：${company_name_ltd}
+        右下角：${website_year}
+        
+        
+    2. 后端(管理)：
+        
+        
+    
+    PDF：-
+        
+
+
+
+demand version 1.4.6 2014-11-11
+
+* [tm_customer_invoice添加6个字段：chorus_calling_credit, chorus_calling_charge, nca_calling_credit, nca_calling_charge, vos_calling_credit, vos_calling_charge.](steven)
+* [在customer-info界面添加一个New Order按钮，将Kanny给的链接放进去.](steven)
+* [customer界面添加一个按钮，Eliminate Account Credit，点击后输入要减去的金额，提交后判断输入金额不能小于账户余额，最后保存最终金额.](steven)
+
+
+demand version 1.4.5 2014-11-10
+
+* [创建一张tm_customer_billing_log表，记录所有跟Billing有关的操作，字段有customer_id, order_id, invoice_id, user_id, oper_type, oper_name, oper_date.](steven)
+* [当点击Next Invoice Create或Regenerate Invoice时，记录操作者ID，操作时间，操作类型，操作名称.](steven)
+* 创建一张tm_customer_order_log表，记录所有跟Order有关的操作，字段有customer_id, order_id, user_id, oper_type, oper_name, oper_date.(steven)
+
+
+
+
+
+demand version 1.4.5 2014-11-09
+
+* [将显示日期缩写的日重新替换一下，除了11、12、13号加th外，其余的以1、2、3结尾的分别加上st、nd、rd.](steven)
+
 
 
 demand version 1.4.4 2014-11-06
 
 * [添加一个界面，列出所有类型为pstn的order_detail，并且分类为：Disconnected以及In Service，在order_detail上加四个字段：is_nca, to_nca_by_who, is_out_nca, out_nca_by_who.](steven)
 * [添加一个界面，列出所有In Service以及Disconnected的pstn类型的pstn_number，以供Provision去NCA查看是否存在相应的号码.](steven)
-
 
 
 demand version 1.4.4 2014-11-06
@@ -245,15 +519,15 @@ demand version 2.5.5 2014-09-12
 
 demand version 2.5.2 2014-09-11
 
-* 在Chorus账单里查找出不再服务内的pstn及asid.
-* customer 列表界面添加通过ASID查询的功能.
+* [在Chorus账单里查找出不再服务内的pstn及asid.](steven)
+* [customer 列表界面添加通过ASID查询的功能.](steven)
 
 
 demand version 2.5.2 2014-09-10
 
 * [customer界面加一个Tickets选项卡列出与该customer相关的Ticket，需要列出的字段：create_date, description，日期降序排列，点击日期跳转到${ctx}/broadband-user/crm/ticket/edit/${t.id}界面查看detail.](steven)
 * [重新生成ordering form时将计算出的订单应付金额更新到order里.](steven)
-* 后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.(steven)
+* [后台customer invoice界面make payment添加一个选项，AccountCredit，可以让财务直接在后台通过客户的账户余额销帐.](steven)
 * [Edit Company Detail界面查看为什么不能更新公司信息.](steven)
 
 

@@ -596,18 +596,21 @@ public class CustomerDPSController {
 			, HttpServletRequest req) {
 		
 		Customer customerSession = (Customer) session.getAttribute("customerSession");
-		List<CustomerInvoice> invoices = customerSession.getCustomerInvoices();
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("id", invoiceid);
 		
-		CustomerInvoice ci = null;
+		CustomerInvoice ci = this.crmService.queryCustomerInvoice(ciQuery);
 		
-		if (invoices != null && invoices.size() > 0) {
-    		for (CustomerInvoice invoice : invoices) {
-    			if (invoice.getId() == invoiceid) {
-    				ci = invoice;
-    				break;
-    			}
-    		}
-    	}
+//		List<CustomerInvoice> invoices = customerSession.getCustomerInvoices();
+//		
+//		if (invoices != null && invoices.size() > 0) {
+//    		for (CustomerInvoice invoice : invoices) {
+//    			if (invoice.getId() == invoiceid) {
+//    				ci = invoice;
+//    				break;
+//    			}
+//    		}
+//    	}
 		
 		String redirectUrl = "";
 		
@@ -649,47 +652,63 @@ public class CustomerDPSController {
 			
 			if (!result.equals(customer.getResult())) {
 				
-				CustomerTransaction customerTransaction = new CustomerTransaction();
-				customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
-				customerTransaction.setAuth_code(responseBean.getAuthCode());
-				customerTransaction.setCardholder_name(responseBean.getCardHolderName());
-				customerTransaction.setCard_name(responseBean.getCardName());
-				customerTransaction.setCard_number(responseBean.getCardNumber());
-				customerTransaction.setClient_info(responseBean.getClientInfo());
-				customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
-				customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
-				customerTransaction.setExpiry_date(responseBean.getDateExpiry());
-				customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
-				customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
-				customerTransaction.setResponse_text(responseBean.getResponseText());
-				customerTransaction.setSuccess(responseBean.getSuccess());
-				customerTransaction.setTxnMac(responseBean.getTxnMac());
-				customerTransaction.setTransaction_type(responseBean.getTxnType());
-				customerTransaction.setTransaction_sort("");
-				customerTransaction.setCustomer_id(customer.getId());
-				customerTransaction.setOrder_id(customer.getCustomerInvoice().getOrder_id());
-				customerTransaction.setInvoice_id(customer.getCustomerInvoice().getId());
-				customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+				CustomerTransaction ctQuery = new CustomerTransaction();
+				ctQuery.getParams().put("customer_id", customer.getId());
+				ctQuery.getParams().put("order_id", customer.getCustomerInvoice().getOrder_id());
+				ctQuery.getParams().put("invoice_id", customer.getCustomerInvoice().getId());
+				ctQuery.getParams().put("amount", Double.parseDouble(responseBean.getAmountSettlement()));
+				ctQuery.getParams().put("auth_code", responseBean.getAuthCode());
+				ctQuery.getParams().put("dps_txn_ref", responseBean.getDpsTxnRef());
+				ctQuery.getParams().put("merchant_reference", responseBean.getMerchantReference());
+				ctQuery.getParams().put("txnMac", responseBean.getTxnMac());
+				CustomerTransaction ct = this.crmService.queryCustomerTransaction(ctQuery);
 				
-				CustomerInvoice ciUpdate = new CustomerInvoice();
-				ciUpdate.setStatus("paid");
-				ciUpdate.setAmount_paid(customerTransaction.getAmount());
-				ciUpdate.setBalance(TMUtils.bigOperationTwoReminders(customer.getCustomerInvoice().getBalance(), ciUpdate.getAmount_paid(), "sub"));
-				ciUpdate.getParams().put("id", customer.getCustomerInvoice().getId());
+				if(ct==null){
+					
+					CustomerTransaction customerTransaction = new CustomerTransaction();
+					customerTransaction.setAmount(Double.parseDouble(responseBean.getAmountSettlement()));
+					customerTransaction.setAuth_code(responseBean.getAuthCode());
+					customerTransaction.setCardholder_name(responseBean.getCardHolderName());
+					customerTransaction.setCard_name(responseBean.getCardName());
+					customerTransaction.setCard_number(responseBean.getCardNumber());
+					customerTransaction.setClient_info(responseBean.getClientInfo());
+					customerTransaction.setCurrency_input(responseBean.getCurrencyInput());
+					customerTransaction.setAmount_settlement(Double.parseDouble(responseBean.getAmountSettlement()));
+					customerTransaction.setExpiry_date(responseBean.getDateExpiry());
+					customerTransaction.setDps_txn_ref(responseBean.getDpsTxnRef());
+					customerTransaction.setMerchant_reference(responseBean.getMerchantReference());
+					customerTransaction.setResponse_text(responseBean.getResponseText());
+					customerTransaction.setSuccess(responseBean.getSuccess());
+					customerTransaction.setTxnMac(responseBean.getTxnMac());
+					customerTransaction.setTransaction_type(responseBean.getTxnType());
+					customerTransaction.setTransaction_sort("");
+					customerTransaction.setCustomer_id(customer.getId());
+					customerTransaction.setOrder_id(customer.getCustomerInvoice().getOrder_id());
+					customerTransaction.setInvoice_id(customer.getCustomerInvoice().getId());
+					customerTransaction.setTransaction_date(new Date(System.currentTimeMillis()));
+					
+					CustomerInvoice ciUpdate = new CustomerInvoice();
+					ciUpdate.setStatus("paid");
+					ciUpdate.setAmount_paid(customerTransaction.getAmount());
+					ciUpdate.setBalance(TMUtils.bigOperationTwoReminders(customer.getCustomerInvoice().getBalance(), ciUpdate.getAmount_paid(), "sub"));
+					ciUpdate.getParams().put("id", customer.getCustomerInvoice().getId());
+					
+					this.crmService.customerBalance(ciUpdate, customerTransaction);
+					
+					Notification notification = this.crmService.queryNotificationBySort("payment", "email");
+					ApplicationEmail applicationEmail = new ApplicationEmail();
+					CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
+					MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
+					applicationEmail.setAddressee(customer.getCustomerOrder().getEmail()); System.out.println("customer.getCustomerOrder().getEmail(): " + customer.getCustomerOrder().getEmail());
+					applicationEmail.setSubject(notification.getTitle());
+					applicationEmail.setContent(notification.getContent());
+					this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+					notification = this.crmService.queryNotificationBySort("payment", "sms");
+					MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
+					this.smserService.sendSMSByAsynchronousMode(customer.getCustomerOrder().getMobile(), notification.getContent()); System.out.println("customer.getCustomerOrder().getMobile(): " + customer.getCustomerOrder().getMobile());
+					
+				}
 				
-				this.crmService.customerBalance(ciUpdate, customerTransaction);
-				
-				Notification notification = this.crmService.queryNotificationBySort("payment", "email");
-				ApplicationEmail applicationEmail = new ApplicationEmail();
-				CompanyDetail companyDetail = this.systemService.queryCompanyDetail();
-				MailRetriever.mailAtValueRetriever(notification, customer, customer.getCustomerOrder(), companyDetail);
-				applicationEmail.setAddressee(customer.getCustomerOrder().getEmail()); System.out.println("customer.getCustomerOrder().getEmail(): " + customer.getCustomerOrder().getEmail());
-				applicationEmail.setSubject(notification.getTitle());
-				applicationEmail.setContent(notification.getContent());
-				this.mailerService.sendMailByAsynchronousMode(applicationEmail);
-				notification = this.crmService.queryNotificationBySort("payment", "sms");
-				MailRetriever.mailAtValueRetriever(notification, customer, companyDetail);
-				this.smserService.sendSMSByAsynchronousMode(customer.getCustomerOrder().getMobile(), notification.getContent()); System.out.println("customer.getCustomerOrder().getMobile(): " + customer.getCustomerOrder().getMobile());
 			}
 			
 			attr.addFlashAttribute("success", "PAYMENT " + responseBean.getResponseText());

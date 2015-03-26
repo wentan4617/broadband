@@ -207,6 +207,22 @@ public class BillingController {
         return response;
     }
 	
+	// BEGIN Delayed Invoice View
+	@RequestMapping("/broadband-user/billing/invoice/view/invoice-delayed/{pageNo}")
+	public String toDelayedInvoice(Model model
+			, @PathVariable("pageNo") int pageNo) {
+
+		Page<CustomerOrder> pageCos = new Page<CustomerOrder>();
+		pageCos.setPageNo(pageNo);
+		pageCos.setPageSize(30);
+		pageCos.getParams().put("where", "by_invoice_delayed");
+		pageCos = this.crmService.queryCustomerOrdersByPage(pageCos);
+		model.addAttribute("pageCos", pageCos);
+		
+		return "broadband-user/billing/invoice-delayed-view";
+		
+	}
+	
 	// BEGIN InvoiceView
 	@RequestMapping("/broadband-user/billing/invoice/view/{customer_type}/{pageNo}/{status}/{yearOrMonth}")
 	public String toInvoice(Model model
@@ -254,26 +270,21 @@ public class BillingController {
 			if("unpaid".equals(status)){
 			pageCis.getParams().put("where", "non_pending");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("overdue".equals(status)){
 			pageCis.getParams().put("where", "non_pending");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("prepayment".equals(status)){
 			pageCis.getParams().put("prepayment", true);
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("bad_debit".equals(status)){
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("not_pay_off".equals(status)){
 			pageCis.getParams().put("where", "non_pending");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("pending".equals(status)) {
 			pageCis = new Page<CustomerInvoice>();
@@ -283,17 +294,28 @@ public class BillingController {
 			pageCis.getParams().put("status12", "not_pay_off");
 			pageCis.getParams().put("status13", "overdue");
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("void".equals(status)){
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 			
 		} else if("paid".equals(status)){
 			pageCis.getParams().put("non_prepayment", true);
 			pageCis = this.crmService.queryCustomerInvoicesByPage(pageCis);
-			model.addAttribute("pageCis", pageCis);
 		}
+		for (CustomerInvoice ci : pageCis.getResults()) {
+			CustomerOrder coQuery = new CustomerOrder();
+			coQuery.getParams().put("id", ci.getOrder_id());
+			coQuery = this.crmService.queryCustomerOrder(coQuery);
+			ci.setOrder_status(coQuery.getOrder_status());
+			
+			if("personal".equals(coQuery.getCustomer_type())){
+				ci.setCustomer_name(coQuery.getFirst_name()+" "+coQuery.getLast_name());
+			} else {
+				ci.setCustomer_name(coQuery.getOrg_name());
+			}
+			
+		}
+		model.addAttribute("pageCis", pageCis);
 		pageCis = null;
 		
 		model.addAttribute(
@@ -1473,5 +1495,18 @@ public class BillingController {
 		
 		return "broadband-user/billing/calling-chart";
 	}
+	
+	
+	/**
+	 * BEGIN DD/CC Invoice View
+	 */
+
+	@RequestMapping("/broadband-user/billing/ddccinvoice/view")
+	public String toCustomerInvoiceView(Model model) {
+		
+		return "broadband-user/billing/ddccinvoice-view-page";
+		
+	}
+	
 	
 }

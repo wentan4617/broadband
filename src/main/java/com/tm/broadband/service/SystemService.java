@@ -7,19 +7,28 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.tm.broadband.mapper.CompanyDetailMapper;
-import com.tm.broadband.mapper.CustomerMapper;
 import com.tm.broadband.mapper.InviteRatesMapper;
 import com.tm.broadband.mapper.ManualManipulationRecordMapper;
 import com.tm.broadband.mapper.NotificationMapper;
+import com.tm.broadband.mapper.PDFResourcesMapper;
+import com.tm.broadband.mapper.PlanIntroductionsMapper;
 import com.tm.broadband.mapper.SEOMapper;
+import com.tm.broadband.mapper.TermsConditionsMapper;
 import com.tm.broadband.mapper.UserMapper;
+import com.tm.broadband.mapper.WebsiteEditableDetailsMapper;
+import com.tm.broadband.mapper.WebsiteStaticResourcesMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.ManualManipulationRecord;
 import com.tm.broadband.model.Notification;
+import com.tm.broadband.model.PDFResources;
 import com.tm.broadband.model.Page;
+import com.tm.broadband.model.PlanIntroductions;
 import com.tm.broadband.model.SEO;
+import com.tm.broadband.model.TermsConditions;
 import com.tm.broadband.model.User;
+import com.tm.broadband.model.WebsiteEditableDetails;
+import com.tm.broadband.model.WebsiteStaticResources;
 
 /**
  * System service
@@ -33,26 +42,38 @@ public class SystemService {
 	private UserMapper userMapper;
 	private NotificationMapper notificationMapper;
 	private CompanyDetailMapper companyDetailMapper;
-	private CustomerMapper customerMapper;
 	private ManualManipulationRecordMapper manualManipulationRecordMapper;
 	private SEOMapper seoMapper;
 	private InviteRatesMapper inviteRatesMapper;
+	private WebsiteEditableDetailsMapper websiteEditableDetailsMapper;
+	private PlanIntroductionsMapper planIntroductionsMapper;
+	private WebsiteStaticResourcesMapper websiteStaticResourcesMapper;
+	private TermsConditionsMapper termsConditionsMapper;
+	private PDFResourcesMapper pdfResourcesMapper;
 
 	@Autowired
 	public SystemService(UserMapper userMapper,
 			NotificationMapper notificationMapper,
 			CompanyDetailMapper companyDetailMapper,
-			CustomerMapper customerMapper,
 			ManualManipulationRecordMapper manualManipulationRecordMapper,
 			SEOMapper seoMapper,
-			InviteRatesMapper inviteRatesMapper) {
+			InviteRatesMapper inviteRatesMapper,
+			WebsiteEditableDetailsMapper websiteEditableDetailsMapper,
+			PlanIntroductionsMapper planIntroductionsMapper,
+			WebsiteStaticResourcesMapper websiteStaticResourcesMapper,
+			TermsConditionsMapper termsConditionsMapper,
+			PDFResourcesMapper pdfResourcesMapper) {
 		this.userMapper = userMapper;
 		this.notificationMapper = notificationMapper;
 		this.companyDetailMapper = companyDetailMapper;
-		this.customerMapper = customerMapper;
 		this.manualManipulationRecordMapper = manualManipulationRecordMapper;
 		this.seoMapper = seoMapper;
 		this.inviteRatesMapper = inviteRatesMapper;
+		this.websiteEditableDetailsMapper = websiteEditableDetailsMapper;
+		this.planIntroductionsMapper = planIntroductionsMapper;
+		this.websiteStaticResourcesMapper = websiteStaticResourcesMapper;
+		this.termsConditionsMapper = termsConditionsMapper;
+		this.pdfResourcesMapper = pdfResourcesMapper;
 	}
 
 	public SystemService() {
@@ -275,5 +296,135 @@ public class SystemService {
 
 	/*
 	 * InviteRates Service End
+	 */
+	
+
+	/*
+	 * BEGIN WebsiteEditableDetails
+	 */
+	@Transactional
+	public void createWebsiteEditableDetails(WebsiteEditableDetails wed) {
+		this.websiteEditableDetailsMapper.insertWebsiteEditableDetails(wed);
+	}
+	
+	public WebsiteEditableDetails queryWebsiteEditableDetail(WebsiteEditableDetails wed){
+		List<WebsiteEditableDetails> weds = this.queryWebsiteEditableDetails(wed);
+		return weds!=null && weds.size()>0 ? weds.get(0) : null;
+	}
+
+	public List<WebsiteEditableDetails> queryWebsiteEditableDetails(WebsiteEditableDetails wed){
+		return this.websiteEditableDetailsMapper.selectWebsiteEditableDetails(wed);
+	}
+
+	@Transactional
+	public void editWebsiteEditableDetails(WebsiteEditableDetails wed) {
+		this.websiteEditableDetailsMapper.updateWebsiteEditableDetails(wed);
+	}
+	/*
+	 * END WebsiteEditableDetails
+	 */
+	
+	
+	/*
+	 * BEGIN PlanIntroductions
+	 */
+	@Transactional
+	public void createPlanIntroductions(PlanIntroductions pi) {
+		this.planIntroductionsMapper.insertPlanIntroductions(pi);
+	}
+	
+	public PlanIntroductions queryPlanIntroduction(PlanIntroductions pi){
+		List<PlanIntroductions> pis = this.queryPlanIntroductions(pi);
+		return pis!=null && pis.size()>0 ? pis.get(0) : null;
+	}
+
+	public List<PlanIntroductions> queryPlanIntroductions(PlanIntroductions pi){
+		return this.planIntroductionsMapper.selectPlanIntroductions(pi);
+	}
+
+	@Transactional
+	public void editPlanIntroductions(PlanIntroductions pi) {
+		this.planIntroductionsMapper.updatePlanIntroductions(pi);
+	}
+	/*
+	 * END PlanIntroductions
+	 */
+	
+	
+	/*
+	 * BEGIN WebsiteStaticResources
+	 */
+	@Transactional
+	public void createWebsiteStaticResources(WebsiteStaticResources wsr) {
+		this.websiteStaticResourcesMapper.insertWebsiteStaticResources(wsr);
+	}
+	
+	public WebsiteStaticResources queryWebsiteStaticResource(WebsiteStaticResources wsr){
+		List<WebsiteStaticResources> wsrs = this.queryWebsiteStaticResources(wsr);
+		return wsrs!=null && wsrs.size()>0 ? wsrs.get(0) : null;
+	}
+
+	public List<WebsiteStaticResources> queryWebsiteStaticResources(WebsiteStaticResources wsr){
+		return this.websiteStaticResourcesMapper.selectWebsiteStaticResources(wsr);
+	}
+
+	@Transactional
+	public void editWebsiteStaticResources(WebsiteStaticResources wsr) {
+		this.websiteStaticResourcesMapper.updateWebsiteStaticResources(wsr);
+	}
+	/*
+	 * END WebsiteStaticResources
+	 */
+	
+	
+	/*
+	 * BEGIN TermsConsitions
+	 */
+	@Transactional
+	public void createTermsConditions(TermsConditions tc) {
+		this.termsConditionsMapper.insertTermsConditions(tc);
+	}
+	
+	public TermsConditions queryTermsCondition(TermsConditions tc){
+		List<TermsConditions> tcs = this.queryTermsConditions(tc);
+		return tcs!=null && tcs.size()>0 ? tcs.get(0) : null;
+	}
+
+	public List<TermsConditions> queryTermsConditions(TermsConditions tc){
+		return this.termsConditionsMapper.selectTermsConditions(tc);
+	}
+
+	@Transactional
+	public void editTermsConditions(TermsConditions tc) {
+		this.termsConditionsMapper.updateTermsConditions(tc);
+	}
+	/*
+	 * END TermsConsitions
+	 */
+	
+	
+	/*
+	 * BEGIN PDFResources
+	 */
+	@Transactional
+	public void createPDFResource(PDFResources pdfr) {
+		this.pdfResourcesMapper.insertPDFResources(pdfr);
+	}
+	
+	public PDFResources queryPDFResource(PDFResources pdfr){
+		List<PDFResources> pdfrs = this.queryPDFResources(pdfr);
+		return pdfrs!=null && pdfrs.size()>0 ? pdfrs.get(0) : null;
+	}
+
+	public List<PDFResources> queryPDFResources(PDFResources pdfr){
+		return this.pdfResourcesMapper.selectPDFResources(pdfr);
+	}
+
+	@Transactional
+	public void editPDFResources(PDFResources pdfr) {
+		this.pdfResourcesMapper.updatePDFResources(pdfr);
+	}
+	/*
+	 * END PDFResources
 	 */
 }

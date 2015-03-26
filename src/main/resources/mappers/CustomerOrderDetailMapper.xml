@@ -20,6 +20,7 @@
 		, cod.`order_id` 						as cod_order_id
 		, cod.`detail_name` 					as cod_detail_name
 		, cod.`detail_desc` 					as cod_detail_desc
+		, cod.`detail_cost` 					as cod_detail_cost
 		, cod.`detail_price` 					as cod_detail_price
 		, cod.`detail_data_flow` 				as cod_detail_data_flow
 		, cod.`detail_plan_status` 				as cod_detail_plan_status
@@ -45,12 +46,14 @@
 		, cod.`voip_assign_date` 				as cod_voip_assign_date
 		, cod.`is_nca` 							as cod_is_nca
 		, cod.`to_nca_by_who` 					as cod_to_nca_by_who
+		, cod.`equip_id` 						as cod_equip_id
 	</sql>
 	<resultMap type="CustomerOrderDetail" id="customerOrderDetailResultMap">
 		<id property="id" column="cod_id" />
 		<result property="order_id" column="cod_order_id" />
 		<result property="detail_name" column="cod_detail_name" />
 		<result property="detail_desc" column="cod_detail_desc" />
+		<result property="detail_cost" column="cod_detail_cost" />
 		<result property="detail_price" column="cod_detail_price" />
 		<result property="detail_data_flow" column="cod_detail_data_flow" />
 		<result property="detail_plan_status" column="cod_detail_plan_status" />
@@ -76,6 +79,7 @@
 		<result property="voip_assign_date" column="cod_voip_assign_date" />
 		<result property="is_nca" column="cod_is_nca" />
 		<result property="to_nca_by_who" column="cod_to_nca_by_who" />
+		<result property="equip_id" column="cod_equip_id" />
 	</resultMap>
 	
 	
@@ -95,11 +99,28 @@
 					and cod.is_nca=true
 					</if>
 				</when>
+				<when test="params.where == 'query_pstn_number_order_details'">
+					cod.order_id = #{params.order_id}
+					and cod.pstn_number IS NOT NULL and cod.pstn_number!='' and cod.detail_type='pstn'
+				</when>
+				<when test="params.where == 'query_plan_type_order_details_by_order_id'">
+					cod.order_id = #{params.order_id}
+					and cod.detail_type like 'plan-%'
+				</when>
+				<when test="params.where == 'query_hardware_detail'">
+					cod.order_id = #{params.order_id}
+					and cod.detail_type LIKE CONCAT('%', 'hardware', '%')
+				</when>
+				<when test="params.where == 'query_plan_detail'">
+					cod.order_id = #{params.order_id}
+					and cod.detail_type LIKE CONCAT('%', 'plan', '%')
+				</when>
 				<otherwise>
 					<if test="params.id != null">cod.id = #{params.id}</if>
 					<if test="params.order_id != null">and cod.order_id = #{params.order_id}</if>
 					<if test="params.detail_name != null">and cod.detail_name = #{params.detail_name}</if>
 					<if test="params.detail_desc != null">and cod.detail_desc = #{params.detail_desc}</if>
+					<if test="params.detail_cost != null">and cod.detail_cost = #{params.detail_cost}</if>
 					<if test="params.detail_price != null">and cod.detail_price = #{params.detail_price}</if>
 					<if test="params.detail_unit != null">and cod.detail_unit = #{params.detail_unit}</if>
 					<if test="params.pstn_number != null">and cod.pstn_number = #{params.pstn_number}</if>
@@ -107,6 +128,7 @@
 					<if test="params.is_nca != null">and cod.is_nca = #{params.is_nca}</if>
 					<if test="params.to_nca_by_who != null">and cod.to_nca_by_who = #{params.to_nca_by_who}</if>
 					<if test="params.user_id != null">and cod.user_id = #{params.user_id}</if>
+					<if test="params.equip_id != null">and cod.equip_id = #{params.equip_id}</if>
 				</otherwise>
 			</choose>
 		</where>
@@ -141,19 +163,19 @@
 
 	<insert id="insertCustomerOrderDetail" parameterType="CustomerOrderDetail" >
 		INSERT INTO `tm_customer_order_detail`(
-			`order_id`, `detail_name`, `detail_desc`, `detail_price`, 
+			`order_id`, `detail_name`, `detail_desc`, `detail_cost`, `detail_price`, 
 			`detail_data_flow`, `detail_plan_status`, `detail_plan_type`, `detail_plan_sort`, 
 			`detail_plan_group`, `detail_plan_new_connection_fee`, `detail_term_period`, `detail_topup_data_flow`, 
 			`detail_topup_fee`, `detail_plan_memo`, `detail_unit`, `detail_calling_minute`, `detail_type`, `detail_expired`,
 			`detail_is_next_pay`, `is_post`, `hardware_comment`, `track_code`, `pstn_number`, `user_id`, `voip_password`,
-			`voip_assign_date`, `is_nca`, `to_nca_by_who`) 
+			`voip_assign_date`, `is_nca`, `to_nca_by_who`, `equip_id`) 
 		VALUES (
-			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_price}, 
+			#{order_id}, #{detail_name}, #{detail_desc}, #{detail_cost}, #{detail_price}, 
 			#{detail_data_flow}, #{detail_plan_status}, #{detail_plan_type}, #{detail_plan_sort}, 
 			#{detail_plan_group}, #{detail_plan_new_connection_fee}, #{detail_term_period}, #{detail_topup_data_flow},
 			#{detail_topup_fee}, #{detail_plan_memo}, #{detail_unit}, #{detail_calling_minute}, #{detail_type}, #{detail_expired},
 			#{detail_is_next_pay}, #{is_post}, #{hardware_comment}, #{track_code}, #{pstn_number}, #{user_id}, #{voip_password},
-			#{voip_assign_date}, #{is_nca}, #{to_nca_by_who})
+			#{voip_assign_date}, #{is_nca}, #{to_nca_by_who}, #{equip_id})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -163,9 +185,11 @@
 	<update id="updateCustomerOrderDetail" parameterType="CustomerOrderDetail">
 		UPDATE `tm_customer_order_detail` 
 		<set>
+			<if test="params.equip_id_null == true">equip_id=NULL,</if>
 			<if test="order_id != null">order_id=#{order_id},</if>
 			<if test="detail_name != null">detail_name=#{detail_name},</if>
 			<if test="detail_desc != null">detail_desc=#{detail_desc},</if>
+			<if test="detail_cost != null">detail_cost=#{detail_cost},</if>
 			<if test="detail_price != null">detail_price=#{detail_price},</if>
 			<if test="detail_data_flow != null">detail_data_flow=#{detail_data_flow},</if>
 			<if test="detail_plan_status != null">detail_plan_status=#{detail_plan_status},</if>
@@ -190,7 +214,8 @@
 			<if test="voip_password != null">voip_password=#{voip_password},</if>
 			<if test="voip_assign_date != null">voip_assign_date=#{voip_assign_date},</if>
 			<if test="is_nca != null">is_nca=#{is_nca},</if>
-			<if test="to_nca_by_who != null">to_nca_by_who=#{to_nca_by_who}</if>
+			<if test="to_nca_by_who != null">to_nca_by_who=#{to_nca_by_who},</if>
+			<if test="equip_id != null">equip_id=#{equip_id}</if>
 		</set>
 		<where>
 			<if test="params.id !=null">id=#{params.id}</if>

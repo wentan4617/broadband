@@ -18,12 +18,23 @@
 	
 	<sql id="customerCreditWhere">
 		<where>
-			<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
-			<if test="params.card_type != null">and card_type=#{params.card_type}</if>
-			<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
-			<if test="params.card_number != null">and card_number=#{params.card_number}</if>
-			<if test="params.security_code != null">and security_code=#{params.security_code}</if>
-			<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
+			<choose>
+				<when test="params.where == 'query_by_invoice_id'">
+					customer_id = (
+						select customer_id from tm_customer_invoice
+						where id=#{params.invoice_id}
+					)
+				</when>
+				<otherwise>
+					<if test="params.customer_id != null">customer_id=#{params.customer_id}</if>
+					<if test="params.card_type != null">and card_type=#{params.card_type}</if>
+					<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
+					<if test="params.card_number != null">and card_number=#{params.card_number}</if>
+					<if test="params.security_code != null">and security_code=#{params.security_code}</if>
+					<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
+					<if test="params.order_ids != null">and order_ids=#{params.order_ids}</if>
+				</otherwise>
+			</choose>
 		</where>
 	</sql>
 	
@@ -54,9 +65,11 @@
 	<!-- INSERT AREA -->
 	<insert id="insertCustomerCredit" parameterType="CustomerCredit">
 		INSERT INTO `tm_customer_credit`(
-			`customer_id`, `card_type`, `holder_name`, `card_number`, `security_code`, `expiry_date`) 
+			`customer_id`, `card_type`, `holder_name`, `card_number`, `security_code`, `expiry_date`,
+			`order_ids`) 
 		VALUES (
-			#{customer_id},#{card_type},#{holder_name},#{card_number},#{security_code},#{expiry_date})
+			#{customer_id},#{card_type},#{holder_name},#{card_number},#{security_code},#{expiry_date},
+			#{order_ids})
 	</insert>
 	
 	<!-- // END INSERT AREA -->
@@ -70,10 +83,18 @@
 				<if test="holder_name != null">holder_name=#{holder_name},</if>
 				<if test="card_number != null">card_number=#{card_number},</if>
 				<if test="security_code != null">security_code=#{security_code},</if>
-				<if test="expiry_date != null">expiry_date=#{expiry_date}</if>
+				<if test="expiry_date != null">expiry_date=#{expiry_date},</if>
+				<if test="order_ids != null">order_ids=#{order_ids}</if>
 			</set>
 			<where>
 				<if test="params.id != null">id=#{params.id}</if>
+				<if test="params.customer_id != null">and customer_id=#{params.customer_id}</if>
+				<if test="params.card_type != null">and card_type=#{params.card_type}</if>
+				<if test="params.holder_name != null">and holder_name=#{params.holder_name}</if>
+				<if test="params.card_number != null">and card_number=#{params.card_number}</if>
+				<if test="params.security_code != null">and security_code=#{params.security_code}</if>
+				<if test="params.expiry_date != null">and expiry_date=#{params.expiry_date}</if>
+				<if test="params.order_ids != null">and order_ids=#{params.order_ids}</if>
 			</where>
 	</update>
 	<!-- // END UPDATE AREA -->

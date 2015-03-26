@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.WebsiteStaticResourcesMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="websiteStaticResourcesColumns">
+		wsr.`logo_path`					as wsr_logo_path,
+		wsr.`facebook_lg_path`			as wsr_facebook_lg_path,
+		wsr.`googleplus_lg_path`		as wsr_googleplus_lg_path,
+		wsr.`twitter_lg_path`			as wsr_twitter_lg_path,
+		wsr.`youtube_lg_path`			as wsr_youtube_lg_path,
+		wsr.`two_dimensional_code_path`	as wsr_two_dimensional_code_path,
+		wsr.`facebook_url`				as wsr_facebook_url,
+		wsr.`googleplus_url`			as wsr_googleplus_url,
+		wsr.`twitter_url`				as wsr_twitter_url,
+		wsr.`youtube_url`				as wsr_youtube_url
+	</sql>
+
+	<resultMap type="WebsiteStaticResources" id="websiteStaticResourcesResultMap">
+		<result property="logo_path" column="wsr_logo_path" />
+		<result property="facebook_lg_path" column="wsr_facebook_lg_path" />
+		<result property="googleplus_lg_path" column="wsr_googleplus_lg_path" />
+		<result property="twitter_lg_path" column="wsr_twitter_lg_path" />
+		<result property="youtube_lg_path" column="wsr_youtube_lg_path" />
+		<result property="two_dimensional_code_path" column="wsr_two_dimensional_code_path" />
+		<result property="facebook_url" column="wsr_facebook_url" />
+		<result property="googleplus_url" column="wsr_googleplus_url" />
+		<result property="twitter_url" column="wsr_twitter_url" />
+		<result property="youtube_url" column="wsr_youtube_url" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectWebsiteStaticResources" parameterType="WebsiteStaticResources" resultType="WebsiteStaticResources">
+		select * from tm_website_static_resources as wsr
+	</select>
+
+	<!-- select websiteStaticResources page -->
+	<select id="selectWebsiteStaticResourcessByPage" parameterType="Page" resultMap="websiteStaticResourcesResultMap">
+		select 
+			<include refid="websiteStaticResourcesColumns"/>
+			from tm_website_static_resources as wsr
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select websiteStaticResources amount -->
+	<select id="selectWebsiteStaticResourcessSum" parameterType="Page" resultType="int">
+		select count(*) from tm_website_static_resources as wsr
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertWebsiteStaticResources" parameterType="WebsiteStaticResources">
+		INSERT INTO `tm_website_static_resources`(
+			`logo_path`, `facebook_lg_path`, `googleplus_lg_path`, `twitter_lg_path`, `youtube_lg_path`,
+			`two_dimensional_code_path`, `facebook_url`, `googleplus_url`, `twitter_url`, `youtube_url`
+		) VALUES (
+			#{logo_path}, #{facebook_lg_path}, #{googleplus_lg_path}, #{twitter_lg_path}, #{youtube_lg_path},
+			#{two_dimensional_code_path}, #{facebook_url}, #{googleplus_url}, #{twitter_url}, #{youtube_url}
+		)
+	</insert>
+	
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update websiteStaticResources -->
+	<update id="updateWebsiteStaticResources" parameterType="WebsiteStaticResources">
+		update tm_website_static_resources
+		<set>
+			<if test="logo_path != null">logo_path = #{logo_path},</if>
+			<if test="facebook_lg_path != null">facebook_lg_path = #{facebook_lg_path},</if>
+			<if test="googleplus_lg_path != null">googleplus_lg_path = #{googleplus_lg_path},</if>
+			<if test="twitter_lg_path != null">twitter_lg_path = #{twitter_lg_path},</if>
+			<if test="youtube_lg_path != null">youtube_lg_path = #{youtube_lg_path},</if>
+			<if test="two_dimensional_code_path != null">two_dimensional_code_path = #{two_dimensional_code_path},</if>
+			<if test="facebook_url != null">facebook_url = #{facebook_url},</if>
+			<if test="googleplus_url != null">googleplus_url = #{googleplus_url},</if>
+			<if test="twitter_url != null">twitter_url = #{twitter_url},</if>
+			<if test="youtube_url != null">youtube_url = #{youtube_url}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

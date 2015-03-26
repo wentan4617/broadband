@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.WebsiteEditableDetailsMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="websiteEditableDetailsColumns">
+		wed.`company_name`					as wed_company_name,
+		wed.`company_name_ltd`				as wed_company_name_ltd,
+		wed.`company_hot_line_no`			as wed_company_hot_line_no,
+		wed.`company_hot_line_no_alphabet`	as wed_company_hot_line_no_alphabet,
+		wed.`company_address`				as wed_company_address,
+		wed.`company_email`					as wed_company_email,
+		wed.`website_year`					as wed_website_year
+	</sql>
+
+	<resultMap type="WebsiteEditableDetails" id="websiteEditableDetailsResultMap">
+		<result property="company_name" column="wed_company_name" />
+		<result property="company_name_ltd" column="wed_company_name_ltd" />
+		<result property="company_hot_line_no" column="wed_company_hot_line_no" />
+		<result property="company_hot_line_no_alphabet" column="wed_company_hot_line_no_alphabet" />
+		<result property="company_address" column="wed_company_address" />
+		<result property="company_email" column="wed_company_email" />
+		<result property="website_year" column="wed_website_year" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectWebsiteEditableDetails" parameterType="WebsiteEditableDetails" resultType="WebsiteEditableDetails">
+		select * from tm_website_editable_details as wed
+	</select>
+
+	<!-- select websiteEditableDetails page -->
+	<select id="selectWebsiteEditableDetailssByPage" parameterType="Page" resultMap="websiteEditableDetailsResultMap">
+		select 
+			<include refid="websiteEditableDetailsColumns"/>
+			from tm_website_editable_details as wed
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select websiteEditableDetails amount -->
+	<select id="selectWebsiteEditableDetailssSum" parameterType="Page" resultType="int">
+		select count(*) from tm_website_editable_details as wed
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertWebsiteEditableDetails" parameterType="WebsiteEditableDetails">
+		INSERT INTO `tm_website_editable_details`(
+			`company_name`, `company_name_ltd`, `company_hot_line_no`, `company_hot_line_no_alphabet`, `company_address`, 
+			`company_email`, `website_year`
+		) VALUES (
+			#{company_name}, #{company_name_ltd}, #{company_hot_line_no}, #{company_hot_line_no_alphabet}, #{company_address}, 
+			#{company_email}, #{website_year}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update websiteEditableDetails -->
+	<update id="updateWebsiteEditableDetails" parameterType="WebsiteEditableDetails">
+		update tm_website_editable_details
+		<set>
+			<if test="company_name != null">company_name = #{company_name},</if>
+			<if test="company_name_ltd != null">company_name_ltd = #{company_name_ltd},</if>
+			<if test="company_hot_line_no != null">company_hot_line_no = #{company_hot_line_no},</if>
+			<if test="company_hot_line_no_alphabet != null">company_hot_line_no_alphabet = #{company_hot_line_no_alphabet},</if>
+			<if test="company_address != null">company_address = #{company_address},</if>
+			<if test="company_email != null">company_email = #{company_email},</if>
+			<if test="website_year != null">website_year = #{website_year}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

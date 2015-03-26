@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.EquipPatternMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="equipPatternColumns">
+		ep.`id`						as ep_id,
+		ep.`equip_name`				as ep_equip_name,
+		ep.`equip_type`				as ep_equip_type,
+		ep.`equip_purpose`			as ep_equip_purpose
+	</sql>
+
+	<resultMap type="EquipPattern" id="equipPatternResultMap">
+		<id property="id" column="ep_id" />
+		<result property="equip_name" column="ep_equip_name" />
+		<result property="equip_type" column="ep_equip_type" />
+		<result property="equip_purpose" column="ep_equip_purpose" />
+	</resultMap>
+
+	<sql id="equipPatternWhere">
+		<where>
+			<if test="params.id != null">ep.id = #{params.id}</if>
+			<if test="params.equip_name != null">and ep.equip_name = #{params.equip_name}</if>
+			<if test="params.equip_type != null">and ep.equip_type = #{params.equip_type}</if>
+			<if test="params.equip_purpose != null">and ep.equip_purpose = #{params.equip_purpose}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectEquipPattern" parameterType="EquipPattern" resultType="EquipPattern">
+		select * from tm_equip_pattern as ep
+		<include refid="equipPatternWhere"/>
+	</select>
+
+	<!-- select equipPattern page -->
+	<select id="selectEquipPatternsByPage" parameterType="Page" resultMap="equipPatternResultMap">
+		select 
+			<include refid="equipPatternColumns"/>
+			from tm_equip_pattern as ep
+			<include refid="equipPatternWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select equipPattern amount -->
+	<select id="selectEquipPatternsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_equip_pattern as ep
+		<include refid="equipPatternWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertEquipPattern" parameterType="EquipPattern" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_equip_pattern`(
+			`id`, `equip_name`, `equip_type`, `equip_purpose`
+		) VALUES (
+			#{id}, #{equip_name}, #{equip_type}, #{equip_purpose}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update equipPattern -->
+	<update id="updateEquipPattern" parameterType="EquipPattern">
+		update tm_equip_pattern
+		<set>
+			<if test="equip_name != null">equip_name = #{equip_name},</if>
+			<if test="equip_type != null">equip_type = #{equip_type},</if>
+			<if test="equip_purpose != null">equip_purpose = #{equip_purpose}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteEquipPatternById" parameterType="int">
+		DELETE FROM tm_equip_pattern WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

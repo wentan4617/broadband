@@ -39,7 +39,7 @@
 			<div class="col-md-6">
 				<h1 class="text-left" style="font-size:28px;">CyberPark Wi-Fi Solution</h1>
 				<p class="text-left hidden-xs"  style="font-size:14px;">
-				In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devises which can adopt internet wirelessly radio waves.
+				In today’s telecommunication world, WiFi is the word which you cannot ignore. WiFi generally defines as a “Wireless Local Area Network (WLAN)”. It provides a wireless internet service to the devices which can adopt internet wirelessly radio waves.
 				</p>
 				<p class="text-left hidden-xs"  style="font-size:14px;">
 				The most popular area include, home, work place, education areas, bar, restaurants, cafe shops, Motels and Hotels, public places, and some other luxury or entertainment places.
@@ -64,7 +64,7 @@
 					</h1>
 				</div>
 				<p>
-					There are more and more devises start to connect with WiFi radio waves, like Lap-top computers, smartphones, tablets, smart watch, security cameras, printer, video games, and so on. Because of these WiFi devises have been the common tools in people’s works and lives, WiFi has become one of people’s daily resources now.
+					There are more and more devices start to connect with WiFi radio waves, like Lap-top computers, smartphones, tablets, smart watch, security cameras, printer, video games, and so on. Because of these WiFi devices have been the common tools in people’s works and lives, WiFi has become one of people’s daily resources now.
 				</p>
 			</section>
 			
@@ -95,7 +95,7 @@
 					For residential customers, CyberPark provides your home based WiFi coverage routers which has 150Mbps Wireless Access point. It normally covers around 120m2 to 150m2 area. It supports wireless using in your daily live. 
 				</p>
 				<p>
-					For commercial customers, CyberPark provides the professional level broadband router plus the access point (hot spot) which can accept big volume usage. It normally can complicate 70-100 customers use WiFi services at the same time, and WiFi can connect with more than 120 devises. This solution is suit with the most of retails’, cafe shops’, restaurants’ and small to medium size supermarkets’ requirements. The coverage area is about 700m2 to 1000m2 ground floor. 
+					For commercial customers, CyberPark provides the professional level broadband router plus the access point (hot spot) which can accept big volume usage. It normally can complicate 70-100 customers use WiFi services at the same time, and WiFi can connect with more than 120 devices. This solution is suit with the most of retails’, cafe shops’, restaurants’ and small to medium size supermarkets’ requirements. The coverage area is about 700m2 to 1000m2 ground floor. 
 				</p>
 				<p>
 					Moreover, CyberPark WiFi coverage plans is not only a wireless Internet service provider, but also we can provide you a statistic date about your customers’ usages, vising period, and loyalty customers. 
@@ -112,11 +112,11 @@
 					</h1>
 				</div>
 				<p class="lead">
-					After you applied Cyber Park WiFi coverage plans, you will receive one broadband router and Wireless Devise which we call Access Point or Hot Spot.  
+					After you applied Cyber Park WiFi coverage plans, you will receive one broadband router and Wireless Device which we call Access Point or Hot Spot.  
 				</p>
 				<ul>
 					<li>Easy installation jobs include plug in and work. </li>
-					<li>Placing the Wireless Devise at a no barriers location in the business area. </li>
+					<li>Placing the Wireless Device at a no barriers location in the business area. </li>
 					<li>Using WiFi application is easy as well, customers just need open an Internet page, and they will define your business logo or webpages with application function. Put mobile number and achieve the verify code by messages. </li>
 					<li>Log-in and start.</li>
 					<li>We can help you to set up the WiFi application pages, Free Wifi usages volume or periods, and WiFi roaming which means your customers revisit to your business, they don’t need apply you WiFi again.</li>

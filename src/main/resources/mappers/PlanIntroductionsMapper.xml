@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.PlanIntroductionsMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="planIntroductionsColumns">
+		pi.`adsl_title`				as pi_adsl_title,
+		pi.`vdsl_title`				as pi_vdsl_title,
+		pi.`ufb_title`				as pi_ufb_title,
+		pi.`adsl_content`			as pi_adsl_content,
+		pi.`vdsl_content`			as pi_vdsl_content,
+		pi.`ufb_content`			as pi_ufb_content
+	</sql>
+
+	<resultMap type="PlanIntroductions" id="planIntroductionsResultMap">
+		<result property="adsl_title" column="pi_adsl_title" />
+		<result property="vdsl_title" column="pi_vdsl_title" />
+		<result property="ufb_title" column="pi_ufb_title" />
+		<result property="adsl_content" column="pi_adsl_content" />
+		<result property="vdsl_content" column="pi_vdsl_content" />
+		<result property="ufb_content" column="pi_ufb_content" />
+	</resultMap>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectPlanIntroductions" parameterType="PlanIntroductions" resultType="PlanIntroductions">
+		select * from tm_plan_introductions as pi
+	</select>
+
+	<!-- select planIntroductions page -->
+	<select id="selectPlanIntroductionssByPage" parameterType="Page" resultMap="planIntroductionsResultMap">
+		select 
+			<include refid="planIntroductionsColumns"/>
+			from tm_plan_introductions as pi
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select planIntroductions amount -->
+	<select id="selectPlanIntroductionssSum" parameterType="Page" resultType="int">
+		select count(*) from tm_plan_introductions as pi
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertPlanIntroductions" parameterType="PlanIntroductions">
+		INSERT INTO `tm_plan_introductions`(
+			`adsl_title`, `vdsl_title`, `ufb_title`, `adsl_content`, `vdsl_content`, 
+			`ufb_content`
+		) VALUES (
+			#{adsl_title}, #{vdsl_title}, #{ufb_title}, #{adsl_content}, #{vdsl_content}, 
+			#{ufb_content}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update planIntroductions -->
+	<update id="updatePlanIntroductions" parameterType="PlanIntroductions">
+		update tm_plan_introductions
+		<set>
+			<if test="adsl_title != null">adsl_title = #{adsl_title},</if>
+			<if test="vdsl_title != null">vdsl_title = #{vdsl_title},</if>
+			<if test="ufb_title != null">ufb_title = #{ufb_title},</if>
+			<if test="adsl_content != null">adsl_content = #{adsl_content},</if>
+			<if test="vdsl_content != null">vdsl_content = #{vdsl_content},</if>
+			<if test="ufb_content != null">ufb_content = #{ufb_content}</if>
+		</set>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

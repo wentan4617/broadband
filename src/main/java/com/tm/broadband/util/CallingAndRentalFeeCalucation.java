@@ -8,6 +8,8 @@ import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
+import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
+import com.tm.broadband.mapper.CustomerOrderNZCallingRatesSettingMapper;
 import com.tm.broadband.mapper.NZAreaCodeListMapper;
 import com.tm.broadband.mapper.VOSVoIPCallRecordMapper;
 import com.tm.broadband.mapper.VOSVoIPRateMapper;
@@ -16,11 +18,14 @@ import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
 import com.tm.broadband.model.NZAreaCodeList;
 import com.tm.broadband.model.VOSVoIPCallRecord;
 import com.tm.broadband.model.VOSVoIPRate;
 import com.tm.broadband.pdf.InvoicePDFCreator;
+import com.tm.broadband.util.test.Console;
 
 public class CallingAndRentalFeeCalucation {
 	
@@ -28,7 +33,9 @@ public class CallingAndRentalFeeCalucation {
 	public static Double ccrRentalOperation(CustomerInvoice ci
 			, Boolean isRegenerate, String pstn_number
 			, List<CustomerInvoiceDetail> cids, Double totalAmountPayable
-			, CustomerCallRecordMapper customerCallRecordMapper, CustomerInvoiceMapper ciMapper){
+			, CustomerCallRecordMapper customerCallRecordMapper
+			, CustomerInvoiceMapper ciMapper
+			, CustomerOrderChorusAddonMapper cocaMapper){
 		
 		Double totalAmountIncl = 0d;
 		
@@ -37,6 +44,7 @@ public class CallingAndRentalFeeCalucation {
 		if(isRegenerate){
 			ccrQuery.getParams().put("where", "query_last_month_rental_records");
 			ccrQuery.getParams().put("invoice_id", ci.getId());
+			ccrQuery.getParams().put("clear_service_id", TMUtils.formatPhoneNumber(pstn_number));
 		} else {
 			ccrQuery.getParams().put("where", "query_unused_rental_records");
 			ccrQuery.getParams().put("invoice_id", null);
@@ -47,15 +55,34 @@ public class CallingAndRentalFeeCalucation {
 		if(ccrs!=null && ccrs.size()>0){
 			for (CustomerCallRecord ccr : ccrs) {
 				
+				System.out.println("---------------------------------------------------------");
+				Console.log(ccr);
+				System.out.println("---------------------------------------------------------");
+				
 				if(ccr.getAmount_incl()!=null && ccr.getAmount_incl()<=0){
 					continue;
 				}
 				
 				CustomerInvoiceDetail cid = new CustomerInvoiceDetail();
-				cid.setInvoice_detail_name(ccr.getBilling_description());
-				cid.setInvoice_detail_desc(TMUtils.dateFormatYYYYMMDD(ccr.getDate_from())+" - "+TMUtils.dateFormatYYYYMMDD(ccr.getDate_to()));
-				cid.setInvoice_detail_price(TMUtils.getRentalChargeFee(ccr.getDate_from(), "Smart Bundle package".equals(ccr.getBilling_description()) ? 18d : 6d));
+				cid.setInvoice_detail_name(ccr.getBilling_description()+(ccr.getLine_description()!=null && ccr.getLine_description().equals("PAYPHONE") ? " PAYPHONE" : "")+(ccr.getPhone_called()!=null ? " ("+ccr.getPhone_called()+")" : ""));
+				String date_time = ccr.getDate_from()!=null ? (TMUtils.dateFormatYYYYMMDD(ccr.getDate_from()) + " - " + TMUtils.dateFormatYYYYMMDD(ccr.getDate_to())) : TMUtils.dateFormatYYYYMMDD(ccr.getCharge_date_time());
+				cid.setInvoice_detail_desc(date_time);
+				cid.setInvoice_detail_price(TMUtils.bigMultiply(ccr.getAmount_incl(), 1.15d));
 				cid.setInvoice_detail_unit(1);
+				
+				if(ci.getOrder_id()!=null){
+					
+					CustomerOrderChorusAddon cocaQuery = new CustomerOrderChorusAddon();
+					cocaQuery.getParams().put("order_id", ci.getOrder_id());
+					List<CustomerOrderChorusAddon> cocasQuery = cocaMapper.selectCustomerOrderChorusAddon(cocaQuery);
+					if(cocasQuery!=null && cocasQuery.size()>0){
+						for(CustomerOrderChorusAddon coca : cocasQuery){
+							if(ccr.getBilling_description().equals(coca.getAddon_name())){
+								cid.setInvoice_detail_price(coca.getAddon_price());
+							}
+						}
+					}
+				}
 				
 				cids.add(cid);
 				
@@ -102,7 +129,9 @@ public class CallingAndRentalFeeCalucation {
 			, CallInternationalRateMapper callInternationalRateMapper
 			, CustomerCallingRecordCallplusMapper customerCallingRecordCallplusMapper
 			, CustomerInvoiceMapper ciMapper
-			, String customerType){
+			, String customerType
+			, CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper
+			, Integer order_id){
 		
 		// Total calling record
 		List<CustomerCallRecord> ccrs = new ArrayList<CustomerCallRecord>();
@@ -155,7 +184,7 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("rate_type", "Local");
 				break;
 			case "N":	/* National */
-				callType = "Domestic";
+				callType = "National";
 				cir.getParams().put("area_prefix", "3");
 				cir.getParams().put("rate_type", "Domestic");
 				break;
@@ -164,16 +193,44 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("area_prefix", ccr.getPhone_called().substring(0, ccr.getPhone_called().indexOf("-")));
 				break;
 			}
-			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
-			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 			
+			boolean isOnRate = false;
 			Double costPerMinute = 1d;
+			
+			// First, retrieve the rate from rate list.
+			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
+			isOnRate = cirs!=null && cirs.size()>0 ? true : false;
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+			
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "pstn");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
 			
 			// DURATION/SECONDS
 			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccr.getDuration(), 60d))));
 			
 			ccr.setCallType(TMUtils.strCapital(callType));
+			ccr.setOot_id("pstn");
+			ccr.setDuration(duration);
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate && duration>0){
@@ -258,8 +315,8 @@ public class CallingAndRentalFeeCalucation {
 				cir.getParams().put("area_prefix", "0");
 				cir.getParams().put("rate_type", "Local");
 				break;
-			case "S":	/* Domestic */
-				callType = "Domestic";
+			case "S":	/* National */
+				callType = "National";
 				cir.getParams().put("area_prefix", "3");
 				cir.getParams().put("rate_type", "Domestic");
 				break;
@@ -272,18 +329,41 @@ public class CallingAndRentalFeeCalucation {
 						fixMobileCountry = country;
 					}
 				}
-				cir.getParams().put("area_name", "".equals(fixMobileCountry) ? ccrc.getDescription() : fixMobileCountry);
+				cir.getParams().put(
+						"area_name", "".equals(fixMobileCountry) ?
+						ccrc.getDescription().contains(".") ? ccrc.getDescription().split("\\.")[0] : ccrc.getDescription()
+						: fixMobileCountry);
 				break;
 			}
-			
+
+			// First, retrieve the rate from rate list.
 			List<CallInternationalRate> cirs = callInternationalRateMapper.selectCallInternationalRates(cir);
 			boolean isOnRate = cirs!=null && cirs.size()>0 ? true : false;
-
 			Double costPerMinute = 1d;
-//			if(is0900){} if(isFax){}
-//			if(isMobile){ costPerMinute = 0.19d ; }
-//			if(isNational){} if(isBusinessLocal){}
 			if(isOnRate){ costPerMinute = cirs.get(0).getRate_cost(); }
+
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "pstn");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
 			
 			// duration = length / 60
 			Double duration = Double.parseDouble(TMUtils.fillDecimalTime(String.valueOf(TMUtils.bigDivide((double)ccrc.getLength(), 60d))));
@@ -295,6 +375,8 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setBilling_description(ccrc.getDescription());
 			ccr.setCallType(TMUtils.strCapital(callType));
 			ccr.setAmount_incl(ccrc.getCharged_fee());
+			ccr.setDuration(duration);
+			ccr.setOot_id("pstn");
 
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate){
@@ -355,7 +437,7 @@ public class CallingAndRentalFeeCalucation {
 		
 		cids.add(cid);
 		
-		invoicePDF.getCrrsMap().put(pstn_number, ccrs);
+		invoicePDF.getCcrsMap().put(pstn_number, ccrs);
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		
@@ -366,55 +448,6 @@ public class CallingAndRentalFeeCalucation {
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
 	// END Chorus, Callplus OPERATION
-	
-	
-	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
-			,List<CallInternationalRate> cirs
-			,Double duration
-			,Double totalCreditBack
-			,Double costPerMinute
-			,String callType){
-
-		// BEGIN PresentCallingMinutes
-		if(pcms!=null && pcms.size()>0){
-			int index = 0;
-			for (CustomerOrderDetail pcm : pcms) {
-				String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
-				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
-				
-				// Specific callType
-				if(pcmDetailDesc.equals(callType.toUpperCase())){
-					
-					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-					index++;
-					
-				// Specific countries
-				} else {
-					
-					String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
-					
-					for (String country : fix_mobile_country) {
-						if(cirAreaName.contains(country)){
-							
-							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-							index++;
-							
-						} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
-								&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
-								&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
-							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
-							index++;
-						}
-					}
-//					fix_mobile_country.contains(cirAreaName.split(" MOBILE")[0])
-//					 ||fix_mobile_country.contains(cirAreaName.split(" MOBILE")
-				}
-				
-			}
-		}
-		// END PresentCallingMinutes
-		return totalCreditBack;
-	}
 	
 
 	// BEGIN VOS VoIP OPERATION
@@ -429,7 +462,9 @@ public class CallingAndRentalFeeCalucation {
 			, VOSVoIPRateMapper vosVoIPRateMapper
 			, VOSVoIPCallRecordMapper vosVoIPCallRecordMapper
 			, CustomerInvoiceMapper ciMapper
-			, String customerType){
+			, String customerType
+			, CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper
+			, Integer order_id){
 
 		List<NZAreaCodeList> nzAreaCodeList = nzAreaCodeListMapper.selectNZAreaCodeList(new NZAreaCodeList());
 		
@@ -465,7 +500,6 @@ public class CallingAndRentalFeeCalucation {
 		for (VOSVoIPCallRecord vosVoIPCallRecord : vosVoIPCallRecordsQuery) {
 			
 			String area_prefix = String.valueOf(vosVoIPCallRecord.getArea_prefix());
-
 			
 			boolean isLocal = false;
 			
@@ -500,14 +534,14 @@ public class CallingAndRentalFeeCalucation {
 			List<VOSVoIPRate> vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
 			
 			// If Area Code Doesn't Matched, Maybe The Code Isn't Existed On The Rates Table, So Left 3 Digit And Search Again
-			if(vosVoIPRates==null || vosVoIPRates.size()<=0){
+			if((vosVoIPRates==null || vosVoIPRates.size()<=0) && area_prefix.length()>=3){
 
 				vosVoIPRateQuery.getParams().put("area_prefix", area_prefix.substring(0, 3));
 				vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
 				
 			}
 			// If Area Code Doesn't Matched, Maybe The Code Isn't Existed On The Rates Table, So Left 2 Digit And Search Again
-			if(vosVoIPRates==null || vosVoIPRates.size()<=0){
+			if((vosVoIPRates==null || vosVoIPRates.size()<=0) && area_prefix.length()>=2){
 
 				vosVoIPRateQuery.getParams().put("area_prefix", area_prefix.substring(0, 2));
 				vosVoIPRates = vosVoIPRateMapper.selectVOSVoIPRate(vosVoIPRateQuery);
@@ -526,12 +560,38 @@ public class CallingAndRentalFeeCalucation {
 			ccr.setClear_service_id(vosVoIPCallRecord.getOri_number());
 			ccr.setCharge_date_time(vosVoIPCallRecord.getCall_start());
 			ccr.setPhone_called(vosVoIPCallRecord.getDest_number());
+			ccr.setDuration(duration);
 			
-			callType = isLocal ? "Local" : vosVoIPCallRecord.getCall_type();
-			ccr.setBilling_description(vosVoIPRates.get(0).getArea_name());
+			callType = isLocal ? "Local" : isOnRate ? vosVoIPRates.get(0).getRate_type() : vosVoIPCallRecord.getCall_type();
+ 			ccr.setBilling_description(isOnRate ? vosVoIPRates.get(0).getArea_name() : vosVoIPCallRecord.getCall_type());
 			ccr.setCallType(TMUtils.strCapital(callType));
-			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost());
+			ccr.setAmount_incl(vosVoIPCallRecord.getCall_cost()>0 ? vosVoIPCallRecord.getCall_cost() : vosVoIPCallRecord.getCall_fee());
 			ccr.setCallType(TMUtils.strCapital(callType));
+			ccr.setOot_id("voip");
+
+			// Second, if got customized rate, then use it
+			CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+			conzcrsQuery.getParams().put("order_id", order_id);
+			conzcrsQuery.getParams().put("phone_type", "voip");
+			List<CustomerOrderNZCallingRatesSetting> conzcrss = customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrsQuery);
+			
+			if(conzcrss!=null && conzcrss.size()>0){
+				
+				for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+					if(conzcrs.getCall_type()!=null && conzcrs.getCall_rate()!=null){
+						// If calling call type matched customized call type, then use it's rate
+						if(callType.equals(conzcrs.getCall_type())){
+							
+							costPerMinute = conzcrs.getCall_rate();
+							
+							isOnRate = true;
+							
+						}
+					}
+				}
+				
+			}
+			
 			
 			if(//(is0900 || isFax || isNational || isBusinessLocal) || 
 					isOnRate && duration>0){
@@ -569,12 +629,17 @@ public class CallingAndRentalFeeCalucation {
 		if(!isRegenerate){
 			if(ccrs!=null && ccrs.size()>0){
 				VOSVoIPCallRecord vosVoIPCallRecordUpdate = new VOSVoIPCallRecord();
+//				System.out.println("------------------------------------------------------------------------------");
+//				Console.log(ci);
+//				System.out.println("------------------------------------------------------------------------------");
 				if(ci.getId()==null){
 					ciMapper.insertCustomerInvoice(ci);
 				}
 				vosVoIPCallRecordUpdate.setInvoice_id(ci.getId());
 				vosVoIPCallRecordUpdate.getParams().put("where", "last_call_records");
-				vosVoIPCallRecordUpdate.getParams().put("ori_number", TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
+				vosVoIPCallRecordUpdate.getParams().put("ori_number", TMUtils.retrieveNonAreaCodeVoIPNumber(voip_number));
+//				System.out.println("TMUtils.retrieveAreaCodeVoIPNumber(voip_number): "+TMUtils.retrieveAreaCodeVoIPNumber(voip_number));
+//				System.out.println();
 				vosVoIPCallRecordUpdate.getParams().put("invoice_id", null);
 				vosVoIPCallRecordMapper.updateVOSVoIPCallRecord(vosVoIPCallRecordUpdate);
 				vosVoIPCallRecordUpdate = null;
@@ -590,7 +655,7 @@ public class CallingAndRentalFeeCalucation {
 		
 		cids.add(cid);
 		
-		invoicePDF.getCrrsMap().put(voip_number, ccrs);
+		invoicePDF.getCcrsMap().put(voip_number, ccrs);
 		
 		totalAmountIncl = TMUtils.bigSub(totalAmountIncl, totalCreditBack);
 		
@@ -599,6 +664,57 @@ public class CallingAndRentalFeeCalucation {
 		return TMUtils.bigAdd(totalPayableAmouont, totalAmountIncl);
 	}
 	// END VOS VoIP OPERATION
+	
+	
+	public static Double processPresentCallingMinutes(List<CustomerOrderDetail> pcms
+			,List<CallInternationalRate> cirs
+			,Double duration
+			,Double totalCreditBack
+			,Double costPerMinute
+			,String callType){
+
+		// BEGIN PresentCallingMinutes
+		if(pcms!=null && pcms.size()>0){
+			
+			int index = 0;
+			
+			for (CustomerOrderDetail pcm : pcms) {
+				String cirAreaName = cirs.get(0).getArea_name().toUpperCase();
+				String pcmDetailDesc = pcm.getDetail_desc().toUpperCase();
+				
+				// Specific callType
+				if(pcmDetailDesc.equals(callType.toUpperCase())){
+					
+					totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+					index++;
+					
+				// Specific countries
+				} else {
+					
+					String fix_mobile_country[] = "BANGLADESH,MALAYSIA,CAMBODIA,SINGAPORE,CANADA,SOUTH KOREA,CHINA,USA,HONG KONG,VIETNAM,INDIA".split(",");
+					
+					for (String country : fix_mobile_country) {
+						if(cirAreaName.contains(country)){
+							
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+							index++;
+							
+						} else if(pcmDetailDesc.contains(cirs.get(0).getArea_prefix()) 
+								&& pcmDetailDesc.contains(cirAreaName.split(" ")[0])
+								&& (!cirAreaName.contains("MOBILE") && !cirAreaName.contains("MOB"))){
+							totalCreditBack = getCallingTotalCreditBack(pcms, pcm, duration, totalCreditBack, costPerMinute, index);
+							index++;
+						}
+					}
+//					fix_mobile_country.contains(cirAreaName.split(" MOBILE")[0])
+//					 ||fix_mobile_country.contains(cirAreaName.split(" MOBILE")
+				}
+				
+			}
+		}
+		// END PresentCallingMinutes
+		return totalCreditBack;
+	}
 	
 	public static Double processPresentCallingMinutesVoIP(List<CustomerOrderDetail> pcms
 			,List<VOSVoIPRate> vosVoIPRates

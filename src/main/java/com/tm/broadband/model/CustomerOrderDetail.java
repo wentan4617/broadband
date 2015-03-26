@@ -19,6 +19,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Integer order_id;
 	private String detail_name;
 	private String detail_desc;
+	private Double detail_cost;
 	private Double detail_price;
 	private Long detail_data_flow;
 	private String detail_plan_status;
@@ -46,6 +47,7 @@ public class CustomerOrderDetail implements Serializable {
 	private Date voip_assign_date;
 	private Boolean is_nca;
 	private Integer to_nca_by_who;
+	private Integer equip_id;
 
 
 	/*
@@ -55,12 +57,23 @@ public class CustomerOrderDetail implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	
+	private String equip_status;
 
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private CustomerOrder customerOrder;
 	private String detail_expired_str;
 	private String voip_assign_date_str;
 	private Boolean monthly; 
+	private String address;
+	private Integer customer_id;
+	private String customer_name;
+	private String order_date_str;
+	private String service_date_str;
+	private String svlan;
+	private String cvlan;
+	private String customer_type;
+	private String asid;
 	
 	
 	/*
@@ -212,6 +225,14 @@ public class CustomerOrderDetail implements Serializable {
 		this.detail_desc = detail_desc;
 	}
 
+	public Double getDetail_cost() {
+		return detail_cost;
+	}
+
+	public void setDetail_cost(Double detail_cost) {
+		this.detail_cost = detail_cost;
+	}
+
 	public Double getDetail_price() {
 		return detail_price;
 	}
@@ -356,7 +377,93 @@ public class CustomerOrderDetail implements Serializable {
 	public void setTo_nca_by_who(Integer to_nca_by_who) {
 		this.to_nca_by_who = to_nca_by_who;
 	}
-	
-	
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public Integer getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(Integer customer_id) {
+		this.customer_id = customer_id;
+	}
+
+	public String getCustomer_name() {
+		return customer_name;
+	}
+
+	public void setCustomer_name(String customer_name) {
+		this.customer_name = customer_name;
+	}
+
+	public String getOrder_date_str() {
+		return order_date_str;
+	}
+
+	public void setOrder_date_str(String order_date_str) {
+		this.order_date_str = order_date_str;
+	}
+
+	public String getService_date_str() {
+		return service_date_str;
+	}
+
+	public void setService_date_str(String service_date_str) {
+		this.service_date_str = service_date_str;
+	}
+
+	public String getSvlan() {
+		return svlan;
+	}
+
+	public void setSvlan(String svlan) {
+		this.svlan = svlan;
+	}
+
+	public String getCvlan() {
+		return cvlan;
+	}
+
+	public void setCvlan(String cvlan) {
+		this.cvlan = cvlan;
+	}
+
+	public String getCustomer_type() {
+		return customer_type;
+	}
+
+	public void setCustomer_type(String customer_type) {
+		this.customer_type = customer_type;
+	}
+
+	public String getAsid() {
+		return asid;
+	}
+
+	public void setAsid(String asid) {
+		this.asid = asid;
+	}
+
+	public Integer getEquip_id() {
+		return equip_id;
+	}
+
+	public void setEquip_id(Integer equip_id) {
+		this.equip_id = equip_id;
+	}
+
+	public String getEquip_status() {
+		return equip_status;
+	}
+
+	public void setEquip_status(String equip_status) {
+		this.equip_status = equip_status;
+	}
 	
 }

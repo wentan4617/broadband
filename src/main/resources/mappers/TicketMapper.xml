@@ -199,6 +199,7 @@
 		</set>
 		<where>
 			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
 		</where>
 	</update>
 

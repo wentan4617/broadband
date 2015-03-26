@@ -14,10 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.tm.broadband.mapper.BillingFileUploadMapper;
 import com.tm.broadband.mapper.CallChargeRateMapper;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
+import com.tm.broadband.mapper.CustomerBillingLogMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerChorusBroadbandASIDRecordMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
+import com.tm.broadband.mapper.CustomerOrderLogMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeParameterMapper;
@@ -31,10 +33,12 @@ import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.BillingFileUpload;
 import com.tm.broadband.model.CallChargeRate;
 import com.tm.broadband.model.CallInternationalRate;
+import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCallRecord;
 import com.tm.broadband.model.CustomerCallingRecordCallplus;
 import com.tm.broadband.model.CustomerChorusBroadbandASIDRecord;
 import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerOrderLog;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
 import com.tm.broadband.model.EarlyTerminationChargeParameter;
@@ -80,6 +84,8 @@ public class BillingService {
 	private VOSVoIPCallRecordMapper vosVoIPCallRecordMapper;
 	private NZAreaCodeListMapper nzAreaCodeListMapper;
 	private CustomerChorusBroadbandASIDRecordMapper customerChorusBroadbandASIDRecordMapper;
+	private CustomerBillingLogMapper customerBillingLogMapper;
+	private CustomerOrderLogMapper customerOrderLogMapper;
 
 	@Autowired
 	public BillingService(BillingFileUploadMapper billingFileUploadMapper
@@ -98,7 +104,9 @@ public class BillingService {
 			CustomerTransactionMapper ctMapper,
 			VOSVoIPCallRecordMapper vosVoIPCallRecordMapper,
 			NZAreaCodeListMapper nzAreaCodeListMapper,
-			CustomerChorusBroadbandASIDRecordMapper customerChorusBroadbandASIDRecordMapper) {
+			CustomerChorusBroadbandASIDRecordMapper customerChorusBroadbandASIDRecordMapper,
+			CustomerBillingLogMapper customerBillingLogMapper,
+			CustomerOrderLogMapper customerOrderLogMapper) {
 		this.billingFileUploadMapper = billingFileUploadMapper;
 		this.customerCallRecordMapper = customerCallRecordMapper;
 		this.callChargeRateMapper = callChargeRateMapper;
@@ -116,9 +124,74 @@ public class BillingService {
 		this.vosVoIPCallRecordMapper = vosVoIPCallRecordMapper;
 		this.nzAreaCodeListMapper = nzAreaCodeListMapper;
 		this.customerChorusBroadbandASIDRecordMapper = customerChorusBroadbandASIDRecordMapper;
+		this.customerBillingLogMapper = customerBillingLogMapper;
+		this.customerOrderLogMapper = customerOrderLogMapper;
 	}
 	
 	public BillingService(){}
+
+	// BEGIN CustomerOrderLog
+	@Transactional
+	public Page<CustomerOrderLog> queryCustomerOrderLogsByPage(Page<CustomerOrderLog> page) {
+		page.setTotalRecord(this.customerOrderLogMapper.selectCustomerOrderLogsSum(page));
+		page.setResults(this.customerOrderLogMapper.selectCustomerOrderLogsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createCustomerOrderLog(CustomerOrderLog col) {
+		this.customerOrderLogMapper.insertCustomerOrderLog(col);
+	}
+	
+	@Transactional
+	public int queryCustomerOrderLogsSumByPage(Page<CustomerOrderLog> page) {
+		return this.customerOrderLogMapper.selectCustomerOrderLogsSum(page);
+	}
+
+	@Transactional
+	public void removeCustomerOrderLogById(int id) {
+		this.customerOrderLogMapper.deleteCustomerOrderLogById(id);
+	}
+
+	@Transactional
+	public void editCustomerOrderLog(CustomerOrderLog col) {
+		this.customerOrderLogMapper.updateCustomerOrderLog(col);
+	}
+	// END CustomerOrderLog
+
+	// BEGIN CustomerBillingLog
+	@Transactional
+	public Page<CustomerBillingLog> queryCustomerBillingLogsByPage(Page<CustomerBillingLog> page) {
+		page.setTotalRecord(this.customerBillingLogMapper.selectCustomerBillingLogsSum(page));
+		page.setResults(this.customerBillingLogMapper.selectCustomerBillingLogsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void createCustomerBillingLog(CustomerBillingLog cbl) {
+		this.customerBillingLogMapper.insertCustomerBillingLog(cbl);
+	}
+	
+	@Transactional
+	public int queryCustomerBillingLogsSumByPage(Page<CustomerBillingLog> page) {
+		return this.customerBillingLogMapper.selectCustomerBillingLogsSum(page);
+	}
+	
+	@Transactional
+	public List<CustomerBillingLog> queryCustomerBillingLogs(CustomerBillingLog cbl) {
+		return this.customerBillingLogMapper.selectCustomerBillingLog(cbl);
+	}
+
+	@Transactional
+	public void removeCustomerBillingLogById(int id) {
+		this.customerBillingLogMapper.deleteCustomerBillingLogById(id);
+	}
+
+	@Transactional
+	public void editCustomerBillingLog(CustomerBillingLog cbl) {
+		this.customerBillingLogMapper.updateCustomerBillingLog(cbl);
+	}
+	// END CustomerBillingLog
 
 	// BEGIN CustomerCallRecord
 	@Transactional
@@ -607,6 +680,8 @@ public class BillingService {
 			// Get All data from the CSV file
 			List<CustomerCallRecord> ccrs = CallingRecordUtility.ccrs(filePath);
 			
+			StringBuffer recordedRentalPSTN = new StringBuffer();
+			
 			// Iteratively insert into database
 			for (CustomerCallRecord ccr : ccrs) {
 				boolean isUsefull = false;
@@ -614,10 +689,24 @@ public class BillingService {
 					isUsefull = true;
 					switch (ccr.getBilling_description()) {
 						case "Call restrict with no Directory Access nat Res": break;
+						case "Call restrict with directory access nat Res": break;
 						case "Caller Display Monthly Charge per line Res": break;
 						case "Call waiting nat Res": break;
 						case "Faxability Monthly Rental Res": break;
 						case "Smart Bundle package": break;
+						case "3 Way Calls Service  Res": break;
+						case "Call Minder with Call Forward Res": break;
+						case "Call Minder-Charges-Standard SME 2 (with TPS)": break;
+						case "Calling Numbers Presented - Minimum Charge": break;
+						case "directory assistance": break;
+						case "FaxAbility-Charges SME1": break;
+						case "FaxAbility-Charges SME2": break;
+						case "Smartphone Services-Call waiting SME2": break;
+						case "S-Phone Call divert (call fwd No ans) SME2": break;
+						case "S-Phone Call divert (call fwd Immed) SME2": break;
+						case "S-Phone Call Restrict with Directory Access SM": break;
+						case "Wire Maintenance": break;
+						case "wire maintenance contract": break;
 						default: isUsefull = false;
 					}
 				}
@@ -629,11 +718,25 @@ public class BillingService {
 						default: isUsefull = false;
 					}
 				}
+				if((ccr.getRecord_type()!=null && "AC".equals(ccr.getRecord_type()))
+				&& (ccr.getClear_service_id()!=null && !ccr.getClear_service_id().trim().startsWith("1"))
+				&& (ccr.getAmount_incl()!=null && ccr.getAmount_incl()>0)
+				&& !isUsefull){
+					if(!recordedRentalPSTN.toString().contains(ccr.getClear_service_id())){
+						isUsefull = true;
+						if("".equals(recordedRentalPSTN.toString().trim())){
+							recordedRentalPSTN.append(ccr.getClear_service_id());
+						} else {
+							recordedRentalPSTN.append(", "+ccr.getClear_service_id());
+						}
+					}
+				}
 				if(isUsefull){
 					ccr.setUpload_date(new Date());
 					this.customerCallRecordMapper.insertCustomerCallRecord(ccr);
 				}
 			}
+			System.out.println("recordedRentalPSTN: "+recordedRentalPSTN);
 			
 		} else if("callplus".equals(billing_type)){
 			

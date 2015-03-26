@@ -40,16 +40,16 @@ public class CustomerOrder implements Serializable {
 	private String svlan;
 	private String cvlan;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_provider_name;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_holder_name;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_account_number;
 	@NotEmpty(groups = { TransitionCustomerOrderValidatedMark.class })
-	@Length(min = 1, max = 20, groups = { TransitionCustomerOrderValidatedMark.class })
+	@Length(min = 1, max = 100, groups = { TransitionCustomerOrderValidatedMark.class })
 	private String transition_porting_number;
 	private Integer hardware_post;
 	private Date order_due;
@@ -104,6 +104,7 @@ public class CustomerOrder implements Serializable {
 	private String phone;
 	private String email;
 	private String customer_type;
+	private Double checklist_progress;
 
 	/*
 	 * END TABLE MAPPING PROPERTIES
@@ -112,6 +113,9 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
+	private String plan_or_hardware_discount;
+	
+	private String orderby;
 	
 	private String pstn;
 	private String voip;
@@ -127,10 +131,15 @@ public class CustomerOrder implements Serializable {
 	private String order_due_str;
 	private String disconnected_date_str;
 	private Customer customer;
+	
+	private List<CustomerOrderBroadbandASID> cobasids;
+	
 	@Valid
 	private Plan plan;
 	
 	private String org_incoporate_date_str;
+	
+	private List<CustomerOrderOnsite> coos;
 
 	// one order may be get more details
 	private List<CustomerOrderDetail> customerOrderDetails = new ArrayList<CustomerOrderDetail>();
@@ -147,7 +156,14 @@ public class CustomerOrder implements Serializable {
 	private String _transition_provider_name;
 	private Boolean promotion;
 	private Integer hardware_id_selected;
-
+	
+	private String order_detail_plan_type;
+	private Double order_total_charged;
+	private Double order_hardware_charged;
+	private Double order_hardware_cost;
+	private Double order_total_discounted;
+	private String order_belongs_to;
+	
 	/*
 	 * END RELATED PROPERTIES
 	 */
@@ -911,6 +927,94 @@ public class CustomerOrder implements Serializable {
 
 	public void setInvoice_id(Integer invoice_id) {
 		this.invoice_id = invoice_id;
+	}
+
+	public Double getChecklist_progress() {
+		return checklist_progress;
+	}
+
+	public void setChecklist_progress(Double checklist_progress) {
+		this.checklist_progress = checklist_progress;
+	}
+
+	public String getOrderby() {
+		return orderby;
+	}
+
+	public void setOrderby(String orderby) {
+		this.orderby = orderby;
+	}
+
+	public List<CustomerOrderOnsite> getCoos() {
+		return coos;
+	}
+
+	public void setCoos(List<CustomerOrderOnsite> coos) {
+		this.coos = coos;
+	}
+
+	public List<CustomerOrderBroadbandASID> getCobasids() {
+		return cobasids;
+	}
+
+	public void setCobasids(List<CustomerOrderBroadbandASID> cobasids) {
+		this.cobasids = cobasids;
+	}
+
+	public String getOrder_detail_plan_type() {
+		return order_detail_plan_type;
+	}
+
+	public void setOrder_detail_plan_type(String order_detail_plan_type) {
+		this.order_detail_plan_type = order_detail_plan_type;
+	}
+
+	public Double getOrder_total_charged() {
+		return order_total_charged;
+	}
+
+	public void setOrder_total_charged(Double order_total_charged) {
+		this.order_total_charged = order_total_charged;
+	}
+
+	public Double getOrder_hardware_charged() {
+		return order_hardware_charged;
+	}
+
+	public void setOrder_hardware_charged(Double order_hardware_charged) {
+		this.order_hardware_charged = order_hardware_charged;
+	}
+
+	public Double getOrder_hardware_cost() {
+		return order_hardware_cost;
+	}
+
+	public void setOrder_hardware_cost(Double order_hardware_cost) {
+		this.order_hardware_cost = order_hardware_cost;
+	}
+
+	public Double getOrder_total_discounted() {
+		return order_total_discounted;
+	}
+
+	public void setOrder_total_discounted(Double order_total_discounted) {
+		this.order_total_discounted = order_total_discounted;
+	}
+
+	public String getOrder_belongs_to() {
+		return order_belongs_to;
+	}
+
+	public void setOrder_belongs_to(String order_belongs_to) {
+		this.order_belongs_to = order_belongs_to;
+	}
+
+	public String getPlan_or_hardware_discount() {
+		return plan_or_hardware_discount;
+	}
+
+	public void setPlan_or_hardware_discount(String plan_or_hardware_discount) {
+		this.plan_or_hardware_discount = plan_or_hardware_discount;
 	}
 
 }

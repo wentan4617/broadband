@@ -60,13 +60,16 @@
 									<form:option value="none">Clean</form:option>
 									<form:option value="sales">Sales</form:option>
 									<form:option value="agent">Agent</form:option>
+									<form:option value="warehouse-keeper">Warehouse Keeper</form:option>
 									<form:option value="plan-designer">Plan Designer</form:option>
 									<form:option value="crm-operator">CRM Operator</form:option>
 									<form:option value="accountant">Accountant</form:option>
 									<form:option value="provision-team">Provision Team</form:option>
 									<form:option value="chief-operator">Chief Operator</form:option>
 									<form:option value="administrator">Administrator</form:option>
-									<form:option value="system-developer">System Developer</form:option>
+									<c:if test="${userSession.user_role=='system-developer'}">
+										<form:option value="system-developer">System Developer</form:option>
+									</c:if>
 								</form:select>
 							</div>
 						</div>
@@ -236,6 +239,11 @@
 										</li>
 										<li>
 											<label>
+												<form:checkbox path="authArray" value="billing/ddccinvoice/view" data-type="checkbox_billing" /> View DD/CC Invoice
+											</label>
+										</li>
+										<li>
+											<label>
 												<form:checkbox path="authArray" value="billing/transaction/view" data-type="checkbox_billing" /> View Transaction
 											</label>
 										</li>
@@ -334,8 +342,13 @@
 									<hr/>
 									<ul class="list-unstyled">
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="provision/number-couldnot-find" data-type="checkbox_provision" /> View Provision Exceptions
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="provision/pstn-position-view" data-type="checkbox_provision" /> View PSTN Position
 											</label>
 										</li>
 									</ul>
@@ -349,17 +362,17 @@
 												<h3>Data</h3>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_data" /> All
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="data/operatre" data-type="checkbox_data" /> Data Operatre
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="data/customer/view" data-type="checkbox_data" /> Data Customer View
 											</label>
 										</li>
@@ -371,12 +384,12 @@
 												<h3>System</h3>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_system" /> All
 											</label>
 										</li>
 										<li>
-											<label> 
+											<label>
 												<form:checkbox path="authArray" value="system/user/view" data-type="checkbox_system" /> View User
 											</label>
 										</li>
@@ -406,6 +419,34 @@
 										<li>
 											<label> 
 												<form:checkbox path="authArray" value="system/notification/edit" data-type="checkbox_system" /> Edit Notification
+											</label>
+										</li>
+									</ul>
+									<hr/>
+									<ul class="list-unstyled">
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/website_editable_details" data-type="checkbox_system" /> Edit Website Editable Details
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/plan_introductions" data-type="checkbox_system" /> Edit Plan Introductions
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/website_static_resources" data-type="checkbox_system" /> Edit Website Static Resources
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/terms_conditions" data-type="checkbox_system" /> Edit Terms Conditions
+											</label>
+										</li>
+										<li>
+											<label> 
+												<form:checkbox path="authArray" value="system/pdf_resources" data-type="checkbox_system" /> Edit PDF Resources
 											</label>
 										</li>
 									</ul>
@@ -480,6 +521,11 @@
 												<form:checkbox path="authArray" value="sale/online/ordering/plans" data-type="checkbox_sales" /> Ordering Online (PAD | PC)
 											</label>
 										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="sale/sales-commission/view" data-type="checkbox_sales" /> View Sales Commission
+											</label>
+										</li>
 									</ul>
 								</div>
 								<div class="col-md-3" data-module="agent">
@@ -535,6 +581,28 @@
 										<li>
 											<label>
 												<form:checkbox path="authArray" value="manual-manipulation/vos-voip-call-rate/view" data-type="checkbox_manual_manipulation" /> View VoIP Calling Rate
+											</label>
+										</li>
+									</ul>
+								</div>
+								<div class="col-md-3" data-module="inventory">
+									<ul class="list-unstyled">
+										<li>
+											<h3>Inventory</h3>
+										</li>
+										<li>
+											<label> 
+												<input type="checkbox" data-name="checkbox_all" data-type="checkbox_inventory" /> All
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="inventory/equip/view" data-type="checkbox_inventory" /> View Equipment
+											</label>
+										</li>
+										<li>
+											<label>
+												<form:checkbox path="authArray" value="inventory/equip/log/view" data-type="checkbox_inventory" /> View Equipment Log
 											</label>
 										</li>
 									</ul>
@@ -599,6 +667,10 @@
 			
 			$('div[data-module="sales"]').find('input').iCheck("check");
 			$('div[data-module="agent"]').find('input').iCheck("check");
+			
+		} else if("warehouse-keeper"==permission){	// Warehouse Keeper
+			
+			$('div[data-module="inventory"]').find('input').iCheck("check");
 			
 		} else if("plan-designer"==permission){	// Plan Designer
 			

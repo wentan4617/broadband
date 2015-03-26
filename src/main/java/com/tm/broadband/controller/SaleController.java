@@ -21,14 +21,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -57,7 +54,6 @@ import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
-import com.tm.broadband.validator.mark.CustomerCreditValidatedMark;
 
 @Controller
 public class SaleController {
@@ -1124,6 +1120,18 @@ public class SaleController {
 		attr.addFlashAttribute("success", "Order Has Successfully Been Voided!");
 
 		return "redirect:/broadband-user/sale/online/ordering/view/1/" + sale_id;
+	}
+	
+	
+	/**
+	 * BEGIN Sales Commission View
+	 */
+
+	@RequestMapping("/broadband-user/sale/sales-commission/view")
+	public String toSalesCommissionView(Model model) {
+		
+		return "broadband-user/sale/sales-commission-view-page";
+		
 	}
 	
 	

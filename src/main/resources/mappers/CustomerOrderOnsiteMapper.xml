@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderOnsiteMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderOnsiteColumns">
+		coo.`id`						as coo_id,
+		coo.`customer_id`				as coo_customer_id,
+		coo.`order_id`					as coo_order_id,
+		coo.`title`						as coo_title,
+		coo.`first_name`				as coo_first_name,
+		coo.`last_name`					as coo_last_name,
+		coo.`mobile`					as coo_mobile,
+		coo.`email`						as coo_email,
+		coo.`address`					as coo_address,
+		coo.`plan_name`					as coo_plan_name,
+		coo.`data_flow`					as coo_data_flow,
+		coo.`plan_terms`				as coo_plan_terms,
+		coo.`onsite_type`				as coo_onsite_type,
+		coo.`onsite_status`				as coo_onsite_status,
+		coo.`onsite_date`				as coo_onsite_date,
+		coo.`onsite_charge`				as coo_onsite_charge,
+		coo.`customer_type`				as coo_customer_type,
+		coo.`onsite_description`		as coo_onsite_description,
+		coo.`pdf_path`					as coo_pdf_path
+	</sql>
+
+	<resultMap type="CustomerOrderOnsite" id="customerOrderOnsiteResultMap">
+		<id property="id" column="coo_id" />
+		<result property="customer_id" column="coo_customer_id" />
+		<result property="order_id" column="coo_order_id" />
+		<result property="title" column="coo_title" />
+		<result property="first_name" column="coo_first_name" />
+		<result property="last_name" column="coo_last_name" />
+		<result property="mobile" column="coo_mobile" />
+		<result property="email" column="coo_email" />
+		<result property="address" column="coo_address" />
+		<result property="plan_name" column="coo_plan_name" />
+		<result property="data_flow" column="coo_data_flow" />
+		<result property="plan_terms" column="coo_plan_terms" />
+		<result property="onsite_type" column="coo_onsite_type" />
+		<result property="onsite_status" column="coo_onsite_status" />
+		<result property="onsite_date" column="coo_onsite_date" />
+		<result property="onsite_charge" column="coo_onsite_charge" />
+		<result property="customer_type" column="coo_customer_type" />
+		<result property="onsite_description" column="coo_onsite_description" />
+		<result property="pdf_path" column="coo_pdf_path" />
+	</resultMap>
+
+	<sql id="customerOrderOnsiteWhere">
+		<where>
+			<if test="params.id != null">coo.id = #{params.id}</if>
+			<if test="params.customer_id != null">and coo.customer_id = #{params.customer_id}</if>
+			<if test="params.order_id != null">and coo.order_id = #{params.order_id}</if>
+			<if test="params.title != null">and coo.title = #{params.title}</if>
+			<if test="params.first_name != null">and coo.first_name = #{params.first_name}</if>
+			<if test="params.last_name != null">and coo.last_name = #{params.last_name}</if>
+			<if test="params.mobile != null">and coo.mobile = #{params.mobile}</if>
+			<if test="params.email != null">and coo.email = #{params.email}</if>
+			<if test="params.address != null">and coo.address = #{params.address}</if>
+			<if test="params.plan_name != null">and coo.plan_name = #{params.plan_name}</if>
+			<if test="params.data_flow != null">and coo.data_flow = #{params.data_flow}</if>
+			<if test="params.plan_terms != null">and coo.plan_terms = #{params.plan_terms}</if>
+			<if test="params.onsite_type != null">and coo.onsite_type = #{params.onsite_type}</if>
+			<if test="params.onsite_status != null">and coo.onsite_status = #{params.onsite_status}</if>
+			<if test="params.onsite_date != null">and coo.onsite_date = #{params.onsite_date}</if>
+			<if test="params.onsite_charge != null">and coo.onsite_charge = #{params.onsite_charge}</if>
+			<if test="params.customer_type != null">and coo.customer_type = #{params.customer_type}</if>
+			<if test="params.onsite_description != null">and coo.onsite_description = #{params.onsite_description}</if>
+			<if test="params.pdf_path != null">and coo.pdf_path = #{params.pdf_path}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderOnsite" parameterType="CustomerOrderOnsite" resultType="CustomerOrderOnsite">
+		select * from tm_customer_order_onsite as coo
+		<include refid="customerOrderOnsiteWhere"/>
+	</select>
+
+	<!-- select customerOrderOnsite page -->
+	<select id="selectCustomerOrderOnsitesByPage" parameterType="Page" resultMap="customerOrderOnsiteResultMap">
+		select 
+			<include refid="customerOrderOnsiteColumns"/>
+			from tm_customer_order_onsite as coo
+			<include refid="customerOrderOnsiteWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderOnsite amount -->
+	<select id="selectCustomerOrderOnsitesSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_onsite as coo
+		<include refid="customerOrderOnsiteWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderOnsite" parameterType="CustomerOrderOnsite" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_onsite`(
+			`customer_id`, `order_id`, `title`, `first_name`, `last_name`, 
+			`mobile`, `email`, `address`, `plan_name`, `data_flow`, `plan_terms`, 
+			`onsite_type`, `onsite_status`, `onsite_date`, `onsite_charge`, `customer_type`,
+			`org_name`, `org_type`, `org_trading_name`, `org_register_no`, `holder_name`,
+			`holder_job_title`, `holder_phone`, `holder_email`, `onsite_description`, `pdf_path`
+		) VALUES (
+			#{customer_id}, #{order_id}, #{title}, #{first_name}, #{last_name}, 
+			#{mobile}, #{email}, #{address}, #{plan_name}, #{data_flow}, #{plan_terms}, 
+			#{onsite_type}, #{onsite_status}, #{onsite_date}, #{onsite_charge}, #{customer_type},
+			#{org_name}, #{org_type}, #{org_trading_name}, #{org_register_no}, #{holder_name},
+			#{holder_job_title}, #{holder_phone}, #{holder_email}, #{onsite_description}, #{pdf_path}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderOnsite -->
+	<update id="updateCustomerOrderOnsite" parameterType="CustomerOrderOnsite">
+		update tm_customer_order_onsite
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="title != null">title = #{title},</if>
+			<if test="first_name != null">first_name = #{first_name},</if>
+			<if test="last_name != null">last_name = #{last_name},</if>
+			<if test="mobile != null">mobile = #{mobile},</if>
+			<if test="email != null">email = #{email},</if>
+			<if test="address != null">address = #{address},</if>
+			<if test="plan_name != null">plan_name = #{plan_name},</if>
+			<if test="data_flow != null">data_flow = #{data_flow},</if>
+			<if test="plan_terms != null">plan_terms = #{plan_terms},</if>
+			<if test="onsite_type != null">onsite_type = #{onsite_type},</if>
+			<if test="onsite_status != null">onsite_status = #{onsite_status},</if>
+			<if test="onsite_date != null">onsite_date = #{onsite_date},</if>
+			<if test="onsite_charge != null">onsite_charge = #{onsite_charge},</if>
+			<if test="customer_type != null">customer_type = #{customer_type},</if>
+			<if test="onsite_description != null">onsite_description = #{onsite_description},</if>
+			<if test="pdf_path != null">pdf_path = #{pdf_path}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderOnsiteById" parameterType="int">
+		DELETE FROM tm_customer_order_onsite WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

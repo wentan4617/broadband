@@ -12,20 +12,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerInvoice;
+import com.tm.broadband.model.CustomerOrder;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
+import com.tm.broadband.model.Page;
 import com.tm.broadband.model.Plan;
 import com.tm.broadband.model.User;
 import com.tm.broadband.service.CRMService;
 import com.tm.broadband.service.PlanService;
+import com.tm.broadband.service.SaleService;
+import com.tm.broadband.service.SystemService;
+import com.tm.broadband.util.TMUtils;
 import com.tm.broadband.validator.mark.CustomerOrganizationValidatedMark;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
@@ -36,11 +43,17 @@ public class SaleRestController {
 	
 	private CRMService crmService;
 	private PlanService planService;
+	private SystemService sysService;
+	private SaleService saleService;
 
 	@Autowired
-	public SaleRestController(CRMService crmService, PlanService planService) {
+	public SaleRestController(CRMService crmService, PlanService planService
+			, SystemService sysService
+			, SaleService saleService) {
 		this.crmService = crmService;
 		this.planService = planService;
+		this.sysService = sysService;
+		this.saleService = saleService;
 	}
 	
 	private JSONBean<Customer> returnJsonCustomer(Customer customer, BindingResult result) {
@@ -101,6 +114,101 @@ public class SaleRestController {
 		json.setUrl("/broadband-user/sale/online/ordering/order/");
 
 		return json;
+	}
+
+	
+	/**
+	 * BEGIN Sales Commission View
+	 */
+	@RequestMapping("/broadband-user/sale/sales-commission/view/{pageNo}/{customerType}/{yearMonth}/{sale_id}")
+	public Page<CustomerOrder> toSalesCommission(Model model
+			, @PathVariable("pageNo") int pageNo
+			, @PathVariable(value = "customerType") String customerType
+			, @PathVariable(value = "yearMonth") String yearMonth
+			, @PathVariable("sale_id") int sale_id) {
+
+		Page<CustomerOrder> page = new Page<CustomerOrder>();
+		page.setPageSize(30);
+		page.setPageNo(pageNo);
+		page.getParams().put("orderby", "ORDER BY order_create_date DESC");
+		page.getParams().put("where", "query_non_online_orders");
+		if(!"all".equals(customerType)){
+			page.getParams().put("customer_type", customerType);
+		}
+		if(sale_id!=0){
+			page.getParams().put("sale_id", sale_id);
+		}
+		
+		if(yearMonth!=null && !yearMonth.equals("0")){
+			page.getParams().put("order_using_start", yearMonth);
+		}
+		page = this.crmService.queryCustomerOrdersByPage(page);
+
+//		private String order_detail_plan_type;
+//		private Double order_total_charged;
+//		private Double order_hardware_charged;
+//		private Double order_hardware_cost;
+//		order_total_discounted
+		
+		for (CustomerOrder co : page.getResults()) {
+			
+			// Retrieved plans
+			CustomerOrderDetail codPlanQuery = new CustomerOrderDetail();
+			codPlanQuery.getParams().put("where", "query_plan_detail");
+			codPlanQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderDetail> codsPlanQuery = this.crmService.queryCustomerOrderDetails(codPlanQuery);
+			for (CustomerOrderDetail cod : codsPlanQuery) {
+				String plan_type = "$"+TMUtils.fillDecimalPeriod(cod.getDetail_price())+" "+cod.getDetail_plan_type()+(cod.getDetail_unit()>1 ? " prepay "+cod.getDetail_unit()+" months" : "");
+				co.setOrder_detail_plan_type(plan_type);
+			}
+			
+			// If business, retrieved all hardware fees & cost
+			if(co.getCustomer_type()!=null && "business".equals(co.getCustomer_type())){
+				CustomerOrderDetail codQuery = new CustomerOrderDetail();
+				codQuery.getParams().put("where", "query_hardware_detail");
+				codQuery.getParams().put("order_id", co.getId());
+				List<CustomerOrderDetail> codsQuery = this.crmService.queryCustomerOrderDetails(codQuery);
+				Double totalHardwareCharged = 0d;
+				for (CustomerOrderDetail cod : codsQuery) {
+					Double hardware_price = cod.getDetail_price()==null ? 0d : cod.getDetail_price();
+					totalHardwareCharged = TMUtils.bigAdd(totalHardwareCharged, hardware_price);
+				}
+				co.setOrder_hardware_charged(totalHardwareCharged);
+			}
+			
+			// Retrieved all paid amount
+			CustomerInvoice ciQuery = new CustomerInvoice();
+			ciQuery.getParams().put("order_id", co.getId());
+			List<CustomerInvoice> cisQuery = this.crmService.queryCustomerInvoices(ciQuery);
+			Double totalInvoicePaid = 0d;
+			for (CustomerInvoice ci : cisQuery) {
+				totalInvoicePaid = TMUtils.bigAdd(totalInvoicePaid, ci.getAmount_paid()==null ? 0d : ci.getAmount_paid());
+			}
+			co.setOrder_total_charged(totalInvoicePaid);
+			
+			// Retrieved all discounted amount
+			Double totalInvoiceDiscounted = 0d;
+			for (CustomerInvoice ci : cisQuery) {
+				Double payable = ci.getAmount_payable()==null ? 0d : ci.getAmount_payable();
+				Double final_payable = ci.getFinal_payable_amount()==null ? 0d : ci.getFinal_payable_amount();
+				totalInvoiceDiscounted = TMUtils.bigAdd(totalInvoiceDiscounted, TMUtils.bigSub(payable, final_payable));
+			}
+			co.setOrder_total_discounted(totalInvoiceDiscounted);
+			
+			// Retrieved all belongs to
+			User userQuery = new User();
+			if(co.getUser_id()!=null && !"".equals(co.getUser_id())){
+				userQuery = this.sysService.queryUserById(co.getUser_id());
+			} else if(co.getSale_id()!=null && !"".equals(co.getSale_id())) {
+				userQuery = this.sysService.queryUserById(co.getSale_id());
+			}
+			co.setOrder_belongs_to(userQuery!=null ? userQuery.getUser_name() : "");
+		}
+		
+		List<User> users = this.saleService.queryUsersWhoseIdExistInOrderInvoice();
+		page.getParams().put("users", users);
+		
+		return page;
 	}
 	
 	

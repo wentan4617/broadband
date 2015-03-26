@@ -32,14 +32,24 @@ import com.itextpdf.text.DocumentException;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCredit;
+import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderBroadbandASID;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
+import com.tm.broadband.model.CustomerOrderOnsite;
+import com.tm.broadband.model.CustomerOrderOnsiteDetail;
+import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
+import com.tm.broadband.model.Equip;
+import com.tm.broadband.model.EquipLog;
 import com.tm.broadband.model.Hardware;
 import com.tm.broadband.model.InviteRates;
 import com.tm.broadband.model.JSONBean;
@@ -53,14 +63,17 @@ import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
 import com.tm.broadband.pdf.ApplicationPDFCreator;
+import com.tm.broadband.pdf.OnsitePDFCreator;
 import com.tm.broadband.service.BillingService;
 import com.tm.broadband.service.CRMService;
+import com.tm.broadband.service.InventoryService;
 import com.tm.broadband.service.MailerService;
 import com.tm.broadband.service.PlanService;
 import com.tm.broadband.service.SmserService;
 import com.tm.broadband.service.SystemService;
 import com.tm.broadband.util.MailRetriever;
 import com.tm.broadband.util.TMUtils;
+import com.tm.broadband.util.test.Console;
 import com.tm.broadband.validator.mark.CustomerValidatedMark;
 import com.tm.broadband.validator.mark.PromotionCodeValidatedMark;
 import com.tm.broadband.validator.mark.TransitionCustomerOrderValidatedMark;
@@ -74,19 +87,22 @@ public class CRMRestController {
 	private SmserService smserService;
 	private BillingService billingService;
 	private PlanService planService;
+	private InventoryService inventoryService;
 
 	@Autowired
 	public CRMRestController(CRMService crmService,
 			MailerService mailerService, SystemService systemService,
 			SmserService smserService
 			,BillingService billingService
-			,PlanService planService) {
+			,PlanService planService
+			,InventoryService inventoryService) {
 		this.crmService = crmService;
 		this.mailerService = mailerService;
 		this.systemService = systemService;
 		this.smserService = smserService;
 		this.billingService = billingService;
 		this.planService =planService;
+		this.inventoryService = inventoryService;
 	}
 
 	@RequestMapping(value = "/broadband-user/crm/customer/sms/send")
@@ -206,6 +222,29 @@ public class CRMRestController {
 		return json;
 	}
 
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/create", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> customerDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		String errorMsg = "";
+		
+		if("".equals(cddpay.getAccount_number().trim())){
+			errorMsg = "Account Number Couldn't be Empty";
+		} else if("".equals(cddpay.getAccount_name().trim())){
+			errorMsg = "Account Name Couldn't be Empty";
+		}
+		if(!"".equals(errorMsg)){
+			json.getErrorMap().put("alert-error", errorMsg);
+		} else {
+			this.crmService.createCustomerDDPay(cddpay);
+		}
+		
+		
+		return json;
+	}
+
 	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/edit", method = RequestMethod.POST)
 	public JSONBean<CustomerCredit> editCreditCardCreate(Model model,
 			CustomerCredit cc) {
@@ -220,6 +259,20 @@ public class CRMRestController {
 		return json;
 	}
 
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> editDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		cddpay.getParams().put("id", cddpay.getId());
+		this.crmService.editCustomerDDPay(cddpay);
+		
+		json.getSuccessMap().put("alert-success", "Successfully Updated Specific DDPay Details!");
+		
+		return json;
+	}
+
 	@RequestMapping(value = "/broadband-user/crm/customer/credit-card/delete", method = RequestMethod.POST)
 	public JSONBean<CustomerCredit> deleteCreditCardCreate(Model model,
 			CustomerCredit cc) {
@@ -229,6 +282,19 @@ public class CRMRestController {
 		this.crmService.removeCustomerCreditCardById(cc.getId());
 		
 		json.getSuccessMap().put("alert-success", "Successfully Remove Specific Credit Card Details!");
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/ddpay/delete", method = RequestMethod.POST)
+	public JSONBean<CustomerDDPay> deleteDDPayCreate(Model model,
+			CustomerDDPay cddpay) {
+
+		JSONBean<CustomerDDPay> json = new JSONBean<CustomerDDPay>();
+		
+		this.crmService.removeCustomerDDPayById(cddpay.getId());
+		
+		json.getSuccessMap().put("alert-success", "Successfully Remove Specific DDPay Details!");
 		
 		return json;
 	}
@@ -617,6 +683,26 @@ public class CRMRestController {
 	}
 	// END Product Hardwares
 
+	// BEGIN Product Hardware Type
+	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/hardware_type")
+	public JSONBean<Hardware> doProductAccessory(Model model,
+			@RequestParam("hardware_type") String hardware_type,
+			HttpServletRequest req) {
+
+		JSONBean<Hardware> json = new JSONBean<Hardware>();
+		
+		Hardware hardwareQuery = new Hardware();
+		hardwareQuery.getParams().put("hardware_type", hardware_type);
+		
+		List<Hardware> hardwares = this.planService.queryHardwares(hardwareQuery);
+		
+		json.setModels(hardwares);		
+		
+		return json;
+		
+	}
+	// END Product Hardware Type
+
 	// BEGIN Add Product
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/product/create", method = RequestMethod.POST)
 	public JSONBean<String> doProductCreate(Model model,
@@ -669,9 +755,31 @@ public class CRMRestController {
 			codCreate.setOrder_id(order_id);
 			codCreate.setDetail_unit(product_unit);
 			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_cost(hardware.getHardware_cost()!=null ? hardware.getHardware_cost() : 0d);
 			codCreate.setDetail_price(hardware.getHardware_price());
 			codCreate.setDetail_desc(hardware.getHardware_desc());
 			codCreate.setDetail_type("hardware-router");
+			codCreate.setIs_post(0);
+			codCreate.setUser_id(user.getId());
+			
+			this.crmService.createCustomerOrderDetail(codCreate);
+			
+			msg = "New Hardware has added to related Order. Order#"+order_id;
+			
+		} else if("accessory|touch-pad".contains(product_type)){
+			
+			Hardware hardwareQuery = new Hardware();
+			hardwareQuery.getParams().put("id", product_id);
+			Hardware hardware = this.planService.queryHardwareById(product_id);
+			
+			CustomerOrderDetail codCreate = new CustomerOrderDetail();
+			codCreate.setOrder_id(order_id);
+			codCreate.setDetail_unit(product_unit);
+			codCreate.setDetail_name(hardware.getHardware_name());
+			codCreate.setDetail_cost(hardware.getHardware_cost()!=null ? hardware.getHardware_cost() : 0d);
+			codCreate.setDetail_price(hardware.getHardware_price());
+			codCreate.setDetail_desc(hardware.getHardware_desc());
+			codCreate.setDetail_type("hardware");
 			codCreate.setIs_post(0);
 			codCreate.setUser_id(user.getId());
 			
@@ -994,6 +1102,8 @@ public class CRMRestController {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder co = customerOrder;
+		co.getParams().put("user_id_null", true);
+		co.getParams().put("sale_id_null", true);
 		co.getParams().put("id", co.getId());
 
 		this.crmService.editCustomerOrder(co);
@@ -1448,29 +1558,6 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Update broadband asid
-	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
-	public JSONBean<CustomerOrder> doCustomerOrderBroadbandASIDEdit(
-			Model model, CustomerOrder customerOrder) {
-
-		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
-
-		if (!"".equals(customerOrder.getBroadband_asid().trim())) {
-			CustomerOrder co = new CustomerOrder();
-			co.getParams().put("id", customerOrder.getId());
-			co.setBroadband_asid(customerOrder.getBroadband_asid());
-			this.crmService.editCustomerOrder(co);
-			json.setModel(co);
-			json.getSuccessMap().put("alert-success",
-					"Broadband ASID had just been edited!");
-		} else {
-			json.getErrorMap().put("alert-error",
-					"Please input correct Broadband ASID!");
-		}
-
-		return json;
-	}
-
 	// Update customer info
 	@RequestMapping(value = "/broadband-user/crm/customer/edit", method = RequestMethod.GET)
 	public Map<String, Object> toCustomerEdit(Model model,
@@ -1478,6 +1565,28 @@ public class CRMRestController {
 			HttpServletRequest req) {
 
 		Customer customer = this.crmService.queryCustomerByIdWithCustomerOrder(id);
+		
+		//		Retrieving Order Onsite Details
+		
+		for (CustomerOrder co : customer.getCustomerOrders()) {
+			CustomerOrderOnsite cooQuery = new CustomerOrderOnsite();
+			cooQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderOnsite> coos = this.crmService.queryCustomerOrderOnsites(cooQuery);
+			co.setCoos(coos);
+			
+			CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+			cobasidQuery.getParams().put("order_id", co.getId());
+			List<CustomerOrderBroadbandASID> cobasidsQuery = this.crmService.queryCustomerOrderBroadbandASIDs(cobasidQuery);
+			co.setCobasids(cobasidsQuery);
+			
+			for (CustomerOrderOnsite coo : coos) {
+				CustomerOrderOnsiteDetail coodQuery = new CustomerOrderOnsiteDetail();
+				coodQuery.getParams().put("onsite_id", coo.getId());
+				List<CustomerOrderOnsiteDetail> coods = this.crmService.queryCustomerOrderOnsiteDetails(coodQuery);
+				coo.setCoods(coods);
+			}
+		}
+		
 		User user = new User();
 		List<User> users = this.systemService.queryUser(user);
 		user.getParams().put("user_role", "sales");
@@ -1486,6 +1595,9 @@ public class CRMRestController {
 		CustomerCredit ccQuery = new CustomerCredit();
 		ccQuery.getParams().put("customer_id", customer.getId());
 		List<CustomerCredit> ccs = this.crmService.queryCustomerCredits(ccQuery);
+		CustomerDDPay cddpayQuery = new CustomerDDPay();
+		cddpayQuery.getParams().put("customer_id", customer.getId());
+		List<CustomerDDPay> cddpays = this.crmService.queryCustomerDDPays(cddpayQuery);
 		
 		User userSession = (User) req.getSession().getAttribute("userSession");
 
@@ -1493,14 +1605,32 @@ public class CRMRestController {
 		if("system-developer".equals(userSession.getUser_role())
 		|| "accountant".equals(userSession.getUser_role())){
 			map.put("customerCredits", ccs);
+			map.put("customerDDPays", cddpays);
 		} else {
 			map.put("customerCredits", new ArrayList<CustomerCredit>());
+			map.put("customerDDPays", new ArrayList<CustomerDDPay>());
 		}
 		map.put("customer", customer);
 		map.put("users", users);
 		map.put("sales", sales);
 
 		return map;
+	}
+
+	// Get Deleted Detail Record Counts
+	@RequestMapping(value = "/broadband-user/crm/customer/order/deleted_detail_record_count", method = RequestMethod.POST)
+	public Map<String, Object> getDeletedDetailRecordCounts(Model model,
+			@RequestParam("order_id") Integer order_id) {
+		
+		Page<CustomerOrderDetailDeleteRecord> page = new Page<CustomerOrderDetailDeleteRecord>();
+		page.getParams().put("order_id", order_id);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("order_id", order_id);
+		map.put("sum", this.crmService.queryCustomerOrderDetailDeleteRecordsSumByPage(page));
+		
+		return map;
+		
 	}
 
 	// Update Phone
@@ -2167,11 +2297,11 @@ public class CRMRestController {
 			e.printStackTrace();
 		}
 		coQuery.setOrder_pdf_path(orderPDFPath);
+		coQuery.getParams().put("id", order_id);
 		this.crmService.editCustomerOrder(coQuery);
 		// END SET NECESSARY INFO AND GENERATE ORDER PDF
 		// Regenerate order application PDF is successful.
-		json.getSuccessMap().put("alert-success",
-				"Generate New Order Application Successfully!");
+		json.getSuccessMap().put("alert-success", "Generate New Order Application Successfully!");
 
 		return json;
 	}
@@ -2182,7 +2312,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2191,7 +2321,7 @@ public class CRMRestController {
 		boolean isRegenerateInvoice = "regenerate".equals(generateType);
 		
 		try {
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createTermPlanInvoiceByOrder(coQuery
 					, isRegenerateInvoice
 					, isRegenerateInvoice ? false : true);
@@ -2204,6 +2334,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== TERMED INVOICE SENT 2 XERO ==============================");
 //			}
+			
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-term-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Termed Invoice is successful");
 		} catch (ParseException e) {
@@ -2219,7 +2362,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2230,7 +2373,7 @@ public class CRMRestController {
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createInvoicePDFBoth(coQuery, notificationEmail,
 					notificationSMS,
 					isRegenerateInvoice ? false : true,
@@ -2244,6 +2387,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== NON-TERMED INVOICE SENT 2 XERO ==============================");
 //			}
+					
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-no-term-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate No Term Invoice is successful");
@@ -2260,7 +2416,7 @@ public class CRMRestController {
 			@RequestParam("order_id") int order_id,
 			@RequestParam("generateType") String generateType,
 			RedirectAttributes attr,
-			HttpServletRequest request) {
+			HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
 		CustomerOrder coQuery = new CustomerOrder();
@@ -2271,7 +2427,7 @@ public class CRMRestController {
 		try {
 			Notification notificationEmail = this.systemService.queryNotificationBySort("invoice", "email");
 			Notification notificationSMS = this.systemService.queryNotificationBySort("invoice", "sms");
-//			Map<String, Object> resultMap = 
+			Map<String, Object> resultMap = 
 					this.crmService.createTopupPlanInvoiceByOrder(coQuery
 					, new Notification(notificationEmail.getTitle(), notificationEmail.getContent())
 					, new Notification(notificationSMS.getTitle(), notificationSMS.getContent())
@@ -2286,6 +2442,19 @@ public class CRMRestController {
 //				Post2Xero.postSingleInvoice(request, c, coQuery, ci, "Broadband Monthly Payment");
 //				System.out.println("============================== TOPUP INVOICE SENT 2 XERO ==============================");
 //			}
+					
+			User userSession = (User) req.getSession().getAttribute("userSession");
+			CustomerInvoice ci = (CustomerInvoice) resultMap.get("customerInvoice");
+			
+			CustomerBillingLog cblCreate = new CustomerBillingLog();
+			cblCreate.setUser_id(userSession.getId());
+			cblCreate.setCustomer_id(ci.getCustomer_id());
+			cblCreate.setOrder_id(order_id);
+			cblCreate.setInvoice_id(ci.getId());
+			cblCreate.setOper_date(new Date());
+			cblCreate.setOper_name("Billing: Invoice "+ (isRegenerateInvoice ? "Regeneration" : "Generation"));
+			cblCreate.setOper_type(generateType+"-topup-invoice");
+			this.billingService.createCustomerBillingLog(cblCreate);
 			
 			json.getSuccessMap().put("alert-success", "Manually Generate Topup Invoice is successful");
 		} catch (Exception e) {
@@ -2473,22 +2642,6 @@ public class CRMRestController {
 		return json;
 	}
 
-	// Get Deleted Detail Record Counts
-	@RequestMapping(value = "/broadband-user/crm/customer/order/deleted_detail_record_count", method = RequestMethod.POST)
-	public Map<String, Object> getDeletedDetailRecordCounts(Model model,
-			@RequestParam("order_id") Integer order_id) {
-		
-		Page<CustomerOrderDetailDeleteRecord> page = new Page<CustomerOrderDetailDeleteRecord>();
-		page.getParams().put("order_id", order_id);
-		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("order_id", order_id);
-		map.put("sum", this.crmService.queryCustomerOrderDetailDeleteRecordsSumByPage(page));
-		
-		return map;
-		
-	}
-
 	// Edit detail plan
 	@RequestMapping(value = "/broadband-user/crm/customer/order/detail/plan/edit", method = RequestMethod.POST)
 	public JSONBean<String> doCustomerOrderDetailPlanEdit(Model model,
@@ -2511,6 +2664,10 @@ public class CRMRestController {
 			RedirectAttributes attr, HttpServletRequest req) {
 
 		JSONBean<String> json = new JSONBean<String>();
+		
+		if(cod.getDetail_type()!=null && ("present-calling-minutes".equals(cod.getDetail_type()) || "super-free-calling".equals(cod.getDetail_type()))){
+			cod.setDetail_name(cod.getDetail_calling_minute()+" minutes to national");
+		}
 		
 		cod.getParams().put("id", cod.getId());
 		this.crmService.editCustomerOrderDetail(cod);
@@ -2688,6 +2845,33 @@ public class CRMRestController {
 		json.getSuccessMap().put("alert-success", "Order status to paid and generate a receipt succeccfully!");
 		return json;
 	}
+
+	// Send order confirmation
+	@RequestMapping(value = "/broadband-user/crm/customer/order/order-confirmation/send", method = RequestMethod.POST)
+	public JSONBean<String> doSendOrderConfirmation(Model model,
+			@RequestParam("order_id") Integer order_id,
+			RedirectAttributes attr, HttpServletRequest req) {
+
+		JSONBean<String> json = new JSONBean<String>();
+		
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", order_id);
+		CustomerOrder co = this.crmService.queryCustomerOrder(coQuery);
+		
+		CompanyDetail companyDetail = this.crmService.queryCompanyDetail();
+		Notification notification = this.systemService.queryNotificationBySort("service-installation", "email");
+		ApplicationEmail applicationEmail = new ApplicationEmail();
+		// call mail at value retriever
+		MailRetriever.mailAtValueRetriever(notification, co, companyDetail);
+		applicationEmail.setAddressee(coQuery.getEmail());
+		applicationEmail.setSubject(notification.getTitle());
+		applicationEmail.setContent(notification.getContent());
+		this.mailerService.sendMailByAsynchronousMode(applicationEmail);
+		
+		
+		json.getSuccessMap().put("alert-success", "Order Confirmation Has Been Sent!");
+		return json;
+	}
 	
 	@RequestMapping("/broadband-user/crm/customer/order/view/{pageNo}")
 	public Page<CustomerOrder> doCustomerView(@PathVariable("pageNo") int pageNo, CustomerOrder coQuery, SessionStatus status) {
@@ -2696,12 +2880,17 @@ public class CRMRestController {
 		page.setPageNo(pageNo);
 		page.setPageSize(30);
 		page.getParams().put("where", "query_customer_by_field");
-		page.getParams().put("orderby", "order by order_create_date desc");
+		if(coQuery != null && coQuery.getOrderby()!=null && !"".equals(coQuery.getOrderby())){
+			page.getParams().put("orderby", "order by "+coQuery.getOrderby());
+		} else {
+			page.getParams().put("orderby", "order by order_create_date desc");
+		}
 		if (coQuery != null) {
 			page.getParams().put("order_id", coQuery.getId());
 			page.getParams().put("customer_id", coQuery.getCustomer_id());
 			page.getParams().put("first_name", coQuery.getFirst_name());
 			page.getParams().put("last_name", coQuery.getLast_name());
+			page.getParams().put("org_name", coQuery.getOrg_name());
 			page.getParams().put("mobile", coQuery.getMobile());
 			page.getParams().put("email", coQuery.getEmail());
 			page.getParams().put("address", coQuery.getAddress());
@@ -2710,8 +2899,9 @@ public class CRMRestController {
 			page.getParams().put("invoice_id", coQuery.getInvoice_id());
 			page.getParams().put("customer_type", coQuery.getCustomer_type());
 			page.getParams().put("broadband_asid", coQuery.getBroadband_asid());
+			page.getParams().put("user_id", coQuery.getUser_id());
+			page.getParams().put("holder_name", coQuery.getHolder_name());
 		}
-		System.out.println("coQuery.getMobile(): "+coQuery.getMobile());
 		this.crmService.queryCustomerOrdersByPage(page);
 		status.setComplete();
 		return page;
@@ -3175,11 +3365,295 @@ public class CRMRestController {
 		
 	}
 	// END Topup Account Credit By Voucher
+
+
+	// BEGIN CustomerOrderProvisionChecklist
+	@RequestMapping(value = "/broadband-user/crm/customer/order/provision-checklist/get")
+	public JSONBean<CustomerOrderProvisionChecklist> toOrderProvisionChecklistGet(Model model,
+			CustomerOrderProvisionChecklist copc,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderProvisionChecklist> json = new JSONBean<CustomerOrderProvisionChecklist>();
+		
+		CustomerOrderProvisionChecklist copcQuery = new CustomerOrderProvisionChecklist();
+		copcQuery.getParams().put("order_id", copc.getOrder_id());
+		copcQuery = this.crmService.queryCustomerOrderProvisionChecklist(copcQuery);
+		
+		json.setModel(copcQuery);
+		
+		return json;
+		
+	}
+	@RequestMapping(value = "/broadband-user/crm/customer/order/provision-checklist/update", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderProvisionChecklist> doOrderProvisionChecklistUpdate(Model model,
+			CustomerOrderProvisionChecklist copc,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderProvisionChecklist> json = new JSONBean<CustomerOrderProvisionChecklist>();
+		String msg = "";
+		
+		int totalCount = 20;
+		int finalCount = 1; /* Default selected Payment Form */
+		double finalPercentage = 0d;
+		/* Phone Line */
+		if(copc.getHas_pstn()!=null){ finalCount++; }
+		if(copc.getHas_fax()!=null){ finalCount++; }
+		if(copc.getHas_voip()!=null){ finalCount++; }
+		/* Existed Service */
+		if(copc.getHas_alarm()!=null){ finalCount++; }
+		if(copc.getHas_emergency()!=null){ finalCount++; }
+		if(copc.getHas_cctv()!=null){ finalCount++; }
+		if(copc.getHas_eftpos()!=null){ finalCount++; }
+		/* Line Functions */
+		if(copc.getHas_smart_bundle()!=null){ finalCount++; }
+		if(copc.getHas_call_restrict()!=null){ finalCount++; }
+		if(copc.getHas_call_waiting()!=null){ finalCount++; }
+		if(copc.getHas_faxability()!=null){ finalCount++; }
+		if(copc.getHas_call_display()!=null){ finalCount++; }
+		if(copc.getHas_wire_maintenance()!=null){ finalCount++; }
+		if(copc.getHas_static_ip()!=null){ finalCount++; }
+		if(copc.getHas_dial_wrap()!=null){ finalCount++; }
+		/* Post Hardware */
+		if(copc.getHas_router_post()!=null){ finalCount++; }
+		/* Order Status */
+		if(copc.getHas_svcv_lan()!=null){ finalCount++; }
+		if(copc.getHas_service_given()!=null){ finalCount++; }
+		/* PSTN To NCA */
+		if(copc.getHas_pstn_nca()!=null){ finalCount++; }
+		
+		finalPercentage = TMUtils.bigMultiply(TMUtils.bigDivide(finalCount, totalCount), 100);
+		CustomerOrder coUpdate = new CustomerOrder();
+		coUpdate.setChecklist_progress(finalPercentage);
+		coUpdate.getParams().put("id", copc.getOrder_id());
+		this.crmService.editCustomerOrder(coUpdate);
+		
+		CustomerOrderProvisionChecklist copcQuery = new CustomerOrderProvisionChecklist();
+		copcQuery.getParams().put("order_id", copc.getOrder_id());
+		copcQuery = this.crmService.queryCustomerOrderProvisionChecklist(copcQuery);
+		if(copcQuery!=null){
+			msg = "Successfully update order's provision checklist";
+			copc.getParams().put("id", copcQuery.getId());
+			this.crmService.editCustomerOrderProvisionChecklist(copc);
+		} else {
+			msg = "Successfully insert order's provision checklist";
+			this.crmService.createCustomerOrderProvisionChecklist(copc);
+		}
+		
+		json.getSuccessMap().put("alert-success", msg);
+		
+		return json;
+		
+	}
+	// END CustomerOrderProvisionChecklist
+
+	@RequestMapping(value = "/broadband-user/crm/customer/account-credit/eliminate", method = RequestMethod.POST)
+	public JSONBean<Customer> customerCreate(Model model,
+			@RequestParam("customer_id") Integer customer_id,
+			@RequestParam("eliminate_amount") Double eliminate_amount) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+		
+		Customer cQuery = new Customer();
+		cQuery.getParams().put("id", customer_id);
+		cQuery = this.crmService.queryCustomer(cQuery);
+		if(cQuery==null || cQuery.getBalance()==null || cQuery.getBalance()<=0 || cQuery.getBalance()<eliminate_amount){
+			json.getErrorMap().put("alert-error", "Account Credit is not enough for eliminate!");
+		} else {
+			Customer cUpdate = new Customer();
+			cUpdate.setBalance(TMUtils.bigSub(cQuery.getBalance(), eliminate_amount));
+			cUpdate.getParams().put("id", customer_id);
+			this.crmService.editCustomer(cUpdate);
+			json.getSuccessMap().put("alert-success", "Successfully eliminate specific amounts of account credit!");
+		}
+		
+		return json;
+	}
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/term-period/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrder> orderTermPeriodEdit(Model model,
+			@RequestParam("order_id") Integer order_id,
+			@RequestParam("term_period") String term_period) {
+		
+		JSONBean<CustomerOrder> json = new JSONBean<CustomerOrder>();
+		
+		if(term_period!=null && !"".equals(term_period.trim())){
+			Pattern pattern = Pattern.compile("[0-9]*");   
+			Matcher isNum = pattern.matcher(term_period);   
+			if(!isNum.matches()) {
+				json.getErrorMap().put("alert-error", "The Term Period You Have Entry Is Not A Number!");
+			} else {
+				CustomerOrder coUpdate = new CustomerOrder();
+				coUpdate.getParams().put("id", order_id);
+				coUpdate.setTerm_period(Integer.parseInt(term_period));
+				this.crmService.editCustomerOrder(coUpdate);
+				json.getSuccessMap().put("alert-success", "Successfully save the changes you've made for the Specific Order's Term Period");
+			}
+		} else {
+			json.getErrorMap().put("alert-error", "The Term Period You Have Entry Is Not A Number!");
+		}
+		
+		return json;
+	}
+
+	/**
+	 * 
+	 * BEGIN CustomerOrderOnsite
+	 * 
+	 */
 	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsiteCreate(Model model,
+			CustomerOrderOnsite coo) {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
 	
+		CustomerOrder coQuery = new CustomerOrder();
+		coQuery.getParams().put("id", coo.getOrder_id());
+		coQuery = this.crmService.queryCustomerOrder(coQuery);
+		CustomerOrderOnsite cooCreate = new CustomerOrderOnsite();
+		cooCreate.setOrder_id(coo.getOrder_id());
+		cooCreate.setCustomer_id(coQuery.getCustomer_id());
+		cooCreate.setOnsite_date(new Date());
+		cooCreate.setCustomer_type(coQuery.getCustomer_type());
+		cooCreate.setTitle(coQuery.getTitle());
+		cooCreate.setMobile(coQuery.getMobile());
+		cooCreate.setEmail(coQuery.getEmail());
+		cooCreate.setAddress(coQuery.getAddress());
+		cooCreate.setOnsite_type(coo.getOnsite_type());
+		cooCreate.setOnsite_status("processing");
+		cooCreate.setOnsite_description(coo.getOnsite_description());
+
+		if("personal".equals(coQuery.getCustomer_type())){
+			cooCreate.setFirst_name(coQuery.getFirst_name());
+			cooCreate.setLast_name(coQuery.getLast_name());
+		} else {
+			cooCreate.setOrg_name(coQuery.getOrg_name());
+			cooCreate.setOrg_trading_name(coQuery.getOrg_trading_name());
+			cooCreate.setOrg_type(coQuery.getOrg_type());
+			cooCreate.setOrg_register_no(coQuery.getOrg_register_no());
+			cooCreate.setHolder_job_title(coQuery.getHolder_job_title());
+			cooCreate.setHolder_name(coQuery.getHolder_name());
+			cooCreate.setHolder_email(coQuery.getEmail());
+			cooCreate.setHolder_phone(coQuery.getHolder_phone());
+		}
+		
+		this.crmService.createCustomerOrderOnsite(cooCreate);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List Has Been Updated!");
+		
+		return json;
+		
+	}
 	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/update", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsiteUpdate(Model model,
+			CustomerOrderOnsite coo) {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
 	
+		coo.getParams().put("id", coo.getId());
+		this.crmService.editCustomerOrderOnsite(coo);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List Has Been Updated!");
+		
+		return json;
+		
+	}
 	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite/pdf/generate", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsite> orderOnsitePDFGenerate(Model model,
+			CustomerOrderOnsite coo) throws DocumentException, IOException {
+		
+		JSONBean<CustomerOrderOnsite> json = new JSONBean<CustomerOrderOnsite>();
+	
+		CustomerOrderOnsite cooQuery = new CustomerOrderOnsite();
+		cooQuery.getParams().put("id", coo.getId());
+		cooQuery = this.crmService.queryCustomerOrderOnsite(cooQuery);
+		CustomerOrderOnsiteDetail coodQuery = new CustomerOrderOnsiteDetail();
+		coodQuery.getParams().put("onsite_id", coo.getId());
+		List<CustomerOrderOnsiteDetail> coodsQuery = this.crmService.queryCustomerOrderOnsiteDetails(coodQuery);
+		cooQuery.setCoods(coodsQuery);
+		OnsitePDFCreator oPDFCreate = new OnsitePDFCreator();
+		oPDFCreate.setCoo(cooQuery);
+		Map<String, Object> resultMap = oPDFCreate.create();
+		cooQuery.getParams().put("id", coo.getId());
+		cooQuery.setPdf_path( (String) resultMap.get("path"));
+		this.crmService.editCustomerOrderOnsite(cooQuery);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's PDF Has Been Generated/Regenerated!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite-detail/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsiteDetail> orderOnsiteDetailCreate(Model model,
+			CustomerOrderOnsiteDetail cood) {
+		
+		JSONBean<CustomerOrderOnsiteDetail> json = new JSONBean<CustomerOrderOnsiteDetail>();
+	
+		this.crmService.createCustomerOrderOnsiteDetail(cood);
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's Detail Has Been Added!");
+		
+		return json;
+		
+	}
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/onsite-detail/remove", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderOnsiteDetail> orderOnsiteDetailRemove(Model model,
+			CustomerOrderOnsiteDetail cood) {
+		
+		JSONBean<CustomerOrderOnsiteDetail> json = new JSONBean<CustomerOrderOnsiteDetail>();
+	
+		this.crmService.removeCustomerOrderOnsiteDetailById(cood.getId());
+		
+		json.getSuccessMap().put("alert-success", "Specific Dispatch List's Detail Has Been Removed!");
+		
+		return json;
+		
+	}
+
+	/**
+	 * 
+	 * END CustomerOrderOnsite
+	 * 
+	 */
+	
+
+	/**
+	 * 
+	 * BEGIN Customer
+	 * 
+	 */
+	@RequestMapping(value = "/broadband-user/crm/customer/migrate-customer/migrate", method = RequestMethod.POST)
+	public JSONBean<Customer> customerMigrate(Model model,
+			@RequestParam("customer_id") Integer customer_id,
+			@RequestParam("migrate_customer_id") Integer migrate_customer_id) {
+		
+		JSONBean<Customer> json = new JSONBean<Customer>();
+
+		if(migrate_customer_id==null || "".equals(migrate_customer_id)){
+
+			json.getErrorMap().put("alert-error", "Please Specify One Customer Id To Continue Migration!");
+			return json;
+		}
+		
+		boolean isMigrate = this.crmService.customerMigrate(customer_id, migrate_customer_id, this.billingService);
+		
+		if(isMigrate){
+			
+			json.getSuccessMap().put("alert-success", "Specific Customer Has Been Migrate To Current One!");
+			
+		} else {
+			
+			json.getErrorMap().put("alert-error", "Customer Not Found or Nothing Can Be Migrate!");
+			
+		}
+		
+		return json;
+		
+	}
 	
 	
 	
@@ -3503,4 +3977,390 @@ public class CRMRestController {
 		
 		return json;
 	}	
+	
+	@RequestMapping(value = "/broadband-user/crm/invoice/view/{pageNo}/{cblPageNo}/{customerId}")
+	public Map<String, Object> InvoicePage(Model model,
+			@PathVariable(value = "pageNo") int pageNo,
+			@PathVariable(value = "cblPageNo") int cblPageNo,
+			@PathVariable(value = "customerId") int customerId) {
+		
+		Page<CustomerInvoice> invoicePage = new Page<CustomerInvoice>();
+		invoicePage.setPageNo(pageNo);
+		invoicePage.setPageSize(20);
+		invoicePage.getParams().put("orderby", "order by order_id desc, create_date desc");
+		invoicePage.getParams().put("customer_id", customerId);
+		this.crmService.queryCustomerInvoicesByPage(invoicePage);
+		
+		CustomerInvoice ciQuery = new CustomerInvoice();
+		ciQuery.getParams().put("customer_id", customerId);
+		List<CustomerInvoice> cis = this.crmService.queryCustomerInvoices(ciQuery);
+		Double totalBalance = 0d;
+		for (CustomerInvoice ci : cis) {
+			totalBalance = TMUtils.bigAdd(totalBalance, ci.getBalance());
+		}
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("invoicePage", invoicePage);
+		map.put("transactionsList", this.crmService.queryCustomerTransactionsByCustomerId(customerId));
+		map.put("users", this.systemService.queryUser(new User()));
+		map.put("totalBalance", totalBalance);
+		
+		Page<CustomerBillingLog> cblPage = new Page<CustomerBillingLog>();
+		cblPage.setPageNo(cblPageNo);
+		cblPage.setPageSize(12);
+		cblPage.getParams().put("orderby", "order by oper_date desc");
+		cblPage.getParams().put("customer_id", customerId);
+		this.billingService.queryCustomerBillingLogsByPage(cblPage);
+		map.put("cblPage", cblPage);
+		return map;
+	}
+
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderChorusAddon
+	 * 
+	 */
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/chorus-addon/get")
+	public JSONBean<CustomerOrderChorusAddon> toCustomerOrderChorusAddonGet(Model model,
+			CustomerOrderChorusAddon coca,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderChorusAddon> json = new JSONBean<CustomerOrderChorusAddon>();
+		
+		CustomerOrderChorusAddon cocaQuery = new CustomerOrderChorusAddon();
+		cocaQuery.getParams().put("order_id", coca.getOrder_id());
+		List<CustomerOrderChorusAddon> cocasQuery = this.crmService.queryCustomerOrderChorusAddons(cocaQuery);
+		
+		json.setModels(cocasQuery);
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/chorus-addon/update", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderChorusAddonGet(Model model,
+			@RequestBody List<CustomerOrderChorusAddon> cocas) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(cocas!=null && cocas.size()>0 && cocas.get(0).getOrder_id()!=null && cocas.get(0).getAddon_name()!=null && cocas.get(0).getAddon_price()!=null){
+			
+			this.crmService.removeCustomerOrderChorusAddonByOrderId(cocas.get(0).getOrder_id());
+			
+			for (CustomerOrderChorusAddon coca : cocas) {
+				Console.log(coca);
+				if(coca.getAddon_price()==null || "".equals(coca.getAddon_price()) || coca.getAddon_price()<=0){
+					json.getErrorMap().put("alert-error", "Selected Addon(s)' Price Could Not Be Null Or Less Than Zero!");
+					return json;
+				}
+				coca.setAddon_price(Double.parseDouble(TMUtils.fillDecimalPeriod(coca.getAddon_price())));
+				this.crmService.createCustomerOrderChorusAddon(coca);
+			}
+			
+			json.getSuccessMap().put("alert-success", "Selected Addon(s)' Price Has Been Updated!");
+			
+		} else {
+
+			this.crmService.removeCustomerOrderChorusAddonByOrderId(cocas.get(0).getOrder_id());
+			
+			json.getSuccessMap().put("alert-success", "Remove All Addon(s) Price!");
+			
+		}
+		
+		return json;
+		
+	}
+
+	
+	/**
+	 * 
+	 * END CustomerOrderChorusAddon
+	 * 
+	 */
+
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderNZCallingRatesSetting
+	 * 
+	 */
+	
+	
+	@RequestMapping(value = "/broadband-user/crm/customer/order/calling-rates/get")
+	public JSONBean<CustomerOrderNZCallingRatesSetting> toCustomerOrderNZCallingRatesSettingGet(Model model,
+			CustomerOrderNZCallingRatesSetting conzcrs,
+			HttpServletRequest req) {
+		
+		JSONBean<CustomerOrderNZCallingRatesSetting> json = new JSONBean<CustomerOrderNZCallingRatesSetting>();
+		
+		CustomerOrderNZCallingRatesSetting conzcrsQuery = new CustomerOrderNZCallingRatesSetting();
+		conzcrsQuery.getParams().put("order_id", conzcrs.getOrder_id());
+		List<CustomerOrderNZCallingRatesSetting> conzcrssQuery = this.crmService.queryCustomerOrderNZCallingRatesSettings(conzcrsQuery);
+		
+		json.setModels(conzcrssQuery);
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/calling-rates/update", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderNZCallingRatesSettingGet(Model model,
+			@RequestBody List<CustomerOrderNZCallingRatesSetting> conzcrss) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		if(conzcrss!=null && conzcrss.size()>0 && conzcrss.get(0).getOrder_id()!=null && conzcrss.get(0).getCall_type()!=null && conzcrss.get(0).getCall_rate()!=null){
+			this.crmService.removeCustomerOrderNZCallingRatesSettingByOrderId(conzcrss.get(0).getOrder_id());
+			
+			for (CustomerOrderNZCallingRatesSetting conzcrs : conzcrss) {
+				
+				if(conzcrs.getCall_rate()==null || "".equals(conzcrs.getCall_rate()) || conzcrs.getCall_rate()<=0){
+					json.getErrorMap().put("alert-error", "Selected Calling(s)' Rate Could Not Be Null Or Less/Equals Than Zero!");
+					return json;
+				}
+				conzcrs.setCall_rate(Double.parseDouble(TMUtils.fillDecimalPeriod(conzcrs.getCall_rate())));
+				this.crmService.createCustomerOrderNZCallingRatesSetting(conzcrs);
+				
+			}
+			
+			json.getSuccessMap().put("alert-success", "Selected Calling(s)' Rate Has Been Updated!");
+			
+		} else {
+
+			this.crmService.removeCustomerOrderNZCallingRatesSettingByOrderId(conzcrss.get(0).getOrder_id());
+			
+			json.getSuccessMap().put("alert-success", "Remove All Calling(s) Rate!");
+			
+		}
+		
+		return json;
+		
+	}
+
+	
+	/**
+	 * 
+	 * END CustomerOrderNZCallingRatesSetting
+	 * 
+	 */
+	
+	
+
+	
+	/**
+	 * 
+	 * BEGIN CustomerOrderBroadbandASID
+	 * 
+	 */
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/create", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doBroadbandASIDCreate(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+		cobasidQuery.getParams().put("broadband_asid", cobasid.getBroadband_asid());
+		cobasidQuery = this.crmService.queryCustomerOrderBroadbandASID(cobasidQuery);
+		
+		if(cobasidQuery!=null){
+			
+			json.getErrorMap().put("alert-error", "Duplicated Broadband ASID!");
+			
+			return json;
+		}
+		
+		this.crmService.createCustomerOrderBroadbandASID(cobasid);
+		
+		json.getSuccessMap().put("alert-success", "New Broadband ASID Added!");
+		
+		return json;
+		
+	}
+	
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/edit", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doCustomerOrderBroadbandASIDUpdate(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		CustomerOrderBroadbandASID cobasidQuery = new CustomerOrderBroadbandASID();
+		cobasidQuery.getParams().put("broadband_asid", cobasid.getBroadband_asid());
+		cobasidQuery = this.crmService.queryCustomerOrderBroadbandASID(cobasidQuery);
+		
+		if(cobasidQuery!=null){
+			json.getErrorMap().put("alert-error", "Duplicated Broadband ASID!");
+			return json;
+		}
+		
+		CustomerOrderBroadbandASID cobasidUpdate = new CustomerOrderBroadbandASID();
+		cobasidUpdate.getParams().put("id", cobasid.getId());
+		cobasidUpdate.setBroadband_asid(cobasid.getBroadband_asid());
+		this.crmService.editCustomerOrderBroadbandASID(cobasidUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Updated!");
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/remove", method = RequestMethod.POST)
+	public JSONBean<CustomerOrderBroadbandASID> doCustomerOrderBroadbandASIDRemove(Model model,
+			CustomerOrderBroadbandASID cobasid) {
+		
+		JSONBean<CustomerOrderBroadbandASID> json = new JSONBean<CustomerOrderBroadbandASID>();
+		
+		this.crmService.removeCustomerOrderBroadbandASIDById(cobasid.getId());
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Removed!");
+		
+		return json;
+		
+	}
+
+
+	@RequestMapping(value = "/broadband-user/crm/customer/order/broadband_asid/separate-stored", method = RequestMethod.POST)
+	public JSONBean<String> doCustomerOrderBroadbandASIDSeparateStored(Model model) {
+		
+		JSONBean<String> json = new JSONBean<String>();
+		
+		List<CustomerOrder> cosQuery = this.crmService.queryCustomerOrders(new CustomerOrder());
+		
+		for (CustomerOrder co : cosQuery) {
+			if(co.getBroadband_asid()!=null && !"".equals(co.getBroadband_asid().trim())){
+				CustomerOrderBroadbandASID cobasidCreate = new CustomerOrderBroadbandASID();
+				cobasidCreate.setOrder_id(co.getId());
+				cobasidCreate.setBroadband_asid(co.getBroadband_asid());
+				this.crmService.createCustomerOrderBroadbandASID(cobasidCreate);
+			}
+		}
+		
+		json.getSuccessMap().put("alert-success", "Broadband ASID Separately Stored Successfully!");
+		
+		return json;
+		
+	}
+	
+	
+	/**
+	 * 
+	 * END CustomerOrderBroadbandASID
+	 * 
+	 */
+	
+	
+	
+	
+	/**
+	 * BEGIN Equip
+	 */
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/get", method=RequestMethod.GET)
+	public List<Equip> equipGet(Equip equip){
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("where", "query_without_dispatched");
+		equipQuery.getParams().put("equip_type", !"all".equals(equip.getEquip_type()) ? equip.getEquip_type() : null);
+		equipQuery.getParams().put("equip_purpose", !"all".equals(equip.getEquip_purpose()) ? equip.getEquip_purpose() : null);
+		equipQuery.getParams().put("equip_name_sn", !"all".equals(equip.getEquip_name_sn()) ? equip.getEquip_name_sn() : null);
+		equipQuery.getParams().put("equip_status", !"all".equals(equip.getEquip_status()) ? equip.getEquip_status() : null);
+		List<Equip> equips = this.inventoryService.queryEquips(equipQuery);
+		
+		return equips;
+	}
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/bind", method=RequestMethod.POST)
+	public JSONBean<CustomerOrderDetail> equipBind(CustomerOrderDetail cod,
+			HttpServletRequest req){
+		
+		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
+		
+		CustomerOrderDetail codQuery = new CustomerOrderDetail();
+		codQuery.getParams().put("id", cod.getId());
+		codQuery = this.crmService.queryCustomerOrderDetail(codQuery);
+		if(codQuery.getEquip_id()!=null){
+			json.getErrorMap().put("alert-error", "Please Unbind Order Detail's Binded Equipment First!");
+			return json;
+		}
+		
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.getParams().put("id", cod.getId());
+		codUpdate.setEquip_id(cod.getEquip_id());
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		Equip equipUpdate = new Equip();
+		equipUpdate.getParams().put("id", cod.getEquip_id());
+		equipUpdate.setEquip_status("dispatched");
+		equipUpdate.setOrder_detail_id(cod.getId());
+		this.inventoryService.editEquip(equipUpdate);
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("id", cod.getEquip_id());
+		equipQuery = this.inventoryService.queryEquip(equipQuery);
+		
+		EquipLog equipLogCreate = new EquipLog();
+		equipLogCreate.setEquip_id(cod.getEquip_id());
+		equipLogCreate.setLog_date(new Date());
+		equipLogCreate.setOper_type("DISPATCHED");
+		String preDispatch = "<strong>DISPATCHED=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Equipment Detail:</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"] - [order_id="+codQuery.getOrder_id()+"].";
+		equipLogCreate.setLog_desc(preDispatch);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		equipLogCreate.setUser_id(userSession.getId());
+		this.inventoryService.createEquipLog(equipLogCreate);
+		
+		json.getSuccessMap().put("alert-success", "Equipment Binded To Specified Order Detail!");
+		
+		return json;
+	}
+	
+	@RequestMapping(value="/broadband-user/inventory/equip/unbind", method=RequestMethod.POST)
+	public JSONBean<CustomerOrderDetail> equipUnbind(CustomerOrderDetail cod,
+			HttpServletRequest req){
+		
+		JSONBean<CustomerOrderDetail> json = new JSONBean<CustomerOrderDetail>();
+		
+		CustomerOrderDetail codUpdate = new CustomerOrderDetail();
+		codUpdate.getParams().put("id", cod.getId());
+		codUpdate.getParams().put("equip_id_null", true);
+		this.crmService.editCustomerOrderDetail(codUpdate);
+		
+		Equip equipQuery = new Equip();
+		equipQuery.getParams().put("id", cod.getEquip_id());
+		equipQuery = this.inventoryService.queryEquip(equipQuery);
+		
+		EquipLog equipLogCreate = new EquipLog();
+		equipLogCreate.setEquip_id(cod.getEquip_id());
+		equipLogCreate.setLog_date(new Date());
+		equipLogCreate.setOper_type("retrieved".equals(cod.getEquip_status()) ? "RETRIEVED" : "INACTIVE");
+		String preDispatch = "<strong>"+("retrieved".equals(cod.getEquip_status()) ? "RETRIEVED" : "INACTIVE")+"=></strong><br/><b>&nbsp;&nbsp;&nbsp;&nbsp;Pre "+("retrieved".equals(cod.getEquip_status()) ? "Retrieved" : "Inactive")+":</b> [name="+equipQuery.getEquip_name()+"] - [type="+equipQuery.getEquip_type()+"] - [purpose="+equipQuery.getEquip_purpose()+"] - [sn="+equipQuery.getEquip_sn()+"] - [status="+equipQuery.getEquip_status()+"] - [order_id="+cod.getOrder_id()+"].";
+		equipLogCreate.setLog_desc(preDispatch);
+		
+		User userSession = (User) req.getSession().getAttribute("userSession");
+		equipLogCreate.setUser_id(userSession.getId());
+		this.inventoryService.createEquipLog(equipLogCreate);
+		
+		Equip equipUpdate = new Equip();
+		equipUpdate.setEquip_status(cod.getEquip_status());
+		equipUpdate.getParams().put("id", cod.getEquip_id());
+		equipUpdate.getParams().put("order_detail_id", cod.getId());
+		equipUpdate.getParams().put("order_detail_id_null", true);
+		this.inventoryService.editEquip(equipUpdate);
+		
+		json.getSuccessMap().put("alert-success", "Equipment Unbinded From Specified Order Detail!");
+		
+		return json;
+	}
+	
+	/**
+	 * END Equip
+	 */
 }

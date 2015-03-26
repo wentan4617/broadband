@@ -50,13 +50,22 @@
 				<div class="col-md-6">
 					<p class="bg-warning text-center text-warning" style="font-weight:bold;margin-bottom: 0;">Original</p>
 					<p class="bg-warning text-center text-warning" style="font-size: 30px;font-weight:bold;">
-						$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
+						
+						<. if(plan_or_hardware_discount=='plan'){ .>
+							$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
+						<. } else { .>
+							$ <.=(price.plan_price * prepay_months) + (price.service_price) + (price.modem_price + price.save_modem_price).>
+						<. } .>
 					</p>
 				</div>
 				<div class="col-md-6">
 					<p class="bg-success text-center text-success" style="font-weight:bold;margin-bottom: 0;">Save</p>
 					<p class="bg-success text-center text-success" style="font-size: 30px;font-weight:bold;">
-						$ <.=price.discount_price + price.save_service_price + price.save_modem_price + price.promotion_price.>
+						<. if(plan_or_hardware_discount=='plan'){ .>
+							$ <.= price.discount_price + price.save_service_price .>
+						<. } else { .>
+							$ <.= price.save_modem_price + price.promotion_price.>
+						<. } .>
 					</p>
 				</div>
 			</div>
@@ -70,11 +79,16 @@
 				<.} else if (select_customer_type == 'personal') {.>
 				<span style="font-size: 54px;font-weight: bold;">
 				<.}.>
-					<.
+					<!-- <.
 					var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
 					var final_total = total - price.promotion_price;
 					.>
-					<.=final_total.>
+					<.=final_total.> -->
+					<. if(plan_or_hardware_discount=='plan'){ .>
+						<.=(price.plan_price * prepay_months) + (price.service_price - price.discount_price) + (price.modem_price + price.save_modem_price).>
+					<. } else { .>
+						<.=(price.plan_price * prepay_months) + (price.service_price) + (price.modem_price).>
+					<. } .>
 					<.if (select_customer_type == 'business') {.>
 					<span style="font-size: 12px;">+GST</span>
 					<.}.>

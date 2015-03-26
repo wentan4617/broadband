@@ -1,8 +1,6 @@
 package com.tm.broadband.service;
 
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -20,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.itextpdf.text.DocumentException;
-import com.rossjourdain.util.xero.XeroClient;
-import com.rossjourdain.util.xero.XeroClientProperties;
 import com.tm.broadband.email.ApplicationEmail;
 import com.tm.broadband.mapper.CallInternationalRateMapper;
 import com.tm.broadband.mapper.CompanyDetailMapper;
@@ -29,13 +25,20 @@ import com.tm.broadband.mapper.ContactUsMapper;
 import com.tm.broadband.mapper.CustomerCallRecordMapper;
 import com.tm.broadband.mapper.CustomerCallingRecordCallplusMapper;
 import com.tm.broadband.mapper.CustomerCreditMapper;
+import com.tm.broadband.mapper.CustomerDDPayMapper;
 import com.tm.broadband.mapper.CustomerInvoiceDetailMapper;
 import com.tm.broadband.mapper.CustomerInvoiceMapper;
 import com.tm.broadband.mapper.CustomerMapper;
+import com.tm.broadband.mapper.CustomerOrderBroadbandASIDMapper;
+import com.tm.broadband.mapper.CustomerOrderChorusAddonMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailDeleteRecordMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailMapper;
 import com.tm.broadband.mapper.CustomerOrderDetailRecoverableListMapper;
 import com.tm.broadband.mapper.CustomerOrderMapper;
+import com.tm.broadband.mapper.CustomerOrderNZCallingRatesSettingMapper;
+import com.tm.broadband.mapper.CustomerOrderOnsiteDetailMapper;
+import com.tm.broadband.mapper.CustomerOrderOnsiteMapper;
+import com.tm.broadband.mapper.CustomerOrderProvisionChecklistMapper;
 import com.tm.broadband.mapper.CustomerServiceRecordMapper;
 import com.tm.broadband.mapper.CustomerTransactionMapper;
 import com.tm.broadband.mapper.EarlyTerminationChargeMapper;
@@ -56,13 +59,21 @@ import com.tm.broadband.mapper.VoucherMapper;
 import com.tm.broadband.model.CompanyDetail;
 import com.tm.broadband.model.ContactUs;
 import com.tm.broadband.model.Customer;
+import com.tm.broadband.model.CustomerBillingLog;
 import com.tm.broadband.model.CustomerCredit;
+import com.tm.broadband.model.CustomerDDPay;
 import com.tm.broadband.model.CustomerInvoice;
 import com.tm.broadband.model.CustomerInvoiceDetail;
 import com.tm.broadband.model.CustomerOrder;
+import com.tm.broadband.model.CustomerOrderBroadbandASID;
+import com.tm.broadband.model.CustomerOrderChorusAddon;
 import com.tm.broadband.model.CustomerOrderDetail;
 import com.tm.broadband.model.CustomerOrderDetailDeleteRecord;
 import com.tm.broadband.model.CustomerOrderDetailRecoverableList;
+import com.tm.broadband.model.CustomerOrderNZCallingRatesSetting;
+import com.tm.broadband.model.CustomerOrderOnsite;
+import com.tm.broadband.model.CustomerOrderOnsiteDetail;
+import com.tm.broadband.model.CustomerOrderProvisionChecklist;
 import com.tm.broadband.model.CustomerServiceRecord;
 import com.tm.broadband.model.CustomerTransaction;
 import com.tm.broadband.model.EarlyTerminationCharge;
@@ -81,6 +92,7 @@ import com.tm.broadband.model.Ticket;
 import com.tm.broadband.model.TicketComment;
 import com.tm.broadband.model.User;
 import com.tm.broadband.model.Voucher;
+import com.tm.broadband.model.VoucherBannedList;
 import com.tm.broadband.pdf.EarlyTerminationChargePDFCreator;
 import com.tm.broadband.pdf.InvoicePDFCreator;
 import com.tm.broadband.pdf.OrderingPDFCreator;
@@ -89,7 +101,7 @@ import com.tm.broadband.pdf.TerminationRefundPDFCreator;
 import com.tm.broadband.util.Calculation4PlanTermInvoice;
 import com.tm.broadband.util.CallingAndRentalFeeCalucation;
 import com.tm.broadband.util.MailRetriever;
-import com.tm.broadband.util.Post2Xero;
+//import com.tm.broadband.util.Post2Xero;
 import com.tm.broadband.util.TMUtils;
 
 /**
@@ -131,6 +143,13 @@ public class CRMService {
 	private CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper;
 	private CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper;
 	private CustomerCreditMapper customerCreditMapper;
+	private CustomerDDPayMapper customerDDPayMapper;
+	private CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper;
+	private CustomerOrderOnsiteMapper customerOrderOnsiteMapper;
+	private CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper;
+	private CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper;
+	private CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper;
+	private CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper;
 	
 	// service
 	private MailerService mailerService;
@@ -170,7 +189,14 @@ public class CRMService {
 			NZAreaCodeListMapper nzAreaCodeListMapper,
 			CustomerOrderDetailDeleteRecordMapper customerOrderDetailDeleteRecordMapper,
 			CustomerOrderDetailRecoverableListMapper customerOrderDetailRecoverableListMapper,
-			CustomerCreditMapper customerCreditMapper){
+			CustomerCreditMapper customerCreditMapper,
+			CustomerDDPayMapper customerDDPayMapper,
+			CustomerOrderProvisionChecklistMapper customerOrderProvisionChecklistMapper,
+			CustomerOrderOnsiteMapper customerOrderOnsiteMapper,
+			CustomerOrderOnsiteDetailMapper customerOrderOnsiteDetailMapper,
+			CustomerOrderChorusAddonMapper customerOrderChorusAddonMapper,
+			CustomerOrderBroadbandASIDMapper customerOrderBroadbandASIDMapper,
+			CustomerOrderNZCallingRatesSettingMapper customerOrderNZCallingRatesSettingMapper){
 		this.customerMapper = customerMapper;
 		this.customerOrderMapper = customerOrderMapper;
 		this.customerOrderDetailMapper = customerOrderDetailMapper;
@@ -203,6 +229,13 @@ public class CRMService {
 		this.customerOrderDetailDeleteRecordMapper = customerOrderDetailDeleteRecordMapper;
 		this.customerOrderDetailRecoverableListMapper = customerOrderDetailRecoverableListMapper;
 		this.customerCreditMapper = customerCreditMapper;
+		this.customerDDPayMapper = customerDDPayMapper;
+		this.customerOrderProvisionChecklistMapper = customerOrderProvisionChecklistMapper;
+		this.customerOrderOnsiteMapper = customerOrderOnsiteMapper;
+		this.customerOrderOnsiteDetailMapper = customerOrderOnsiteDetailMapper;
+		this.customerOrderChorusAddonMapper = customerOrderChorusAddonMapper;
+		this.customerOrderBroadbandASIDMapper = customerOrderBroadbandASIDMapper;
+		this.customerOrderNZCallingRatesSettingMapper = customerOrderNZCallingRatesSettingMapper;
 	}
 	
 	
@@ -396,6 +429,10 @@ public class CRMService {
 			
 		customerOrder.setCustomer_id(customer.getId());
 		
+		if("business".equals(customerOrder.getCustomer_type())){
+			customerOrder.setIs_ddpay(true);
+		}
+		
 		System.out.println("customerOrder.getSale_id(): " + customerOrder.getSale_id());
 		this.customerOrderMapper.insertCustomerOrder(customerOrder);
 		
@@ -564,6 +601,17 @@ public class CRMService {
 		page.setTotalRecord(this.customerTransactionMapper.selectCustomerTransactionsSum(page));
 		page.setResults(this.customerTransactionMapper.selectCustomerTransactionsByPage(page));
 		return page;
+	}
+	
+	@Transactional
+	public CustomerTransaction queryCustomerTransaction(CustomerTransaction ct) {
+		List<CustomerTransaction> cts = queryCustomerTransactions(ct);
+		return cts!=null && cts.size()>0 ? cts.get(0) : null;
+	}
+	
+	@Transactional
+	public List<CustomerTransaction> queryCustomerTransactions(CustomerTransaction ct) {
+		return this.customerTransactionMapper.selectCustomerTransactions(ct);
 	}
 	
 	@Transactional
@@ -1019,16 +1067,6 @@ public class CRMService {
 			,Notification notificationEmail
 			,Notification notificationSMS) {
 
-        // Prepare the Xero Client
-        XeroClient xeroClient = null;
-        try {
-            XeroClientProperties clientProperties = new XeroClientProperties();
-            clientProperties.load(new FileInputStream("xeroApi.properties"));
-            xeroClient = new XeroClient(clientProperties);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
 		CustomerOrder coQuery = new CustomerOrder();
 		coQuery.getParams().put("id", customerOrder.getId());
 		coQuery = this.queryCustomerOrder(coQuery);
@@ -1044,17 +1082,6 @@ public class CRMService {
 		Notification notificationSMS = this.notificationMapper.selectNotificationBySort("invoice", "sms");
 		List<CustomerOrder> customerOrders = this.queryCustomerOrders(co);
 
-        // Prepare the Xero Client
-        XeroClient xeroClient = null;
-        try {
-            XeroClientProperties clientProperties = new XeroClientProperties();
-    		String propertyFile = TMUtils.createPath("broadband" + File.separator + "properties" + File.separator + "xeroApi.properties");
-            clientProperties.load(new FileInputStream(propertyFile));
-            xeroClient = new XeroClient(clientProperties);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-        
         List<Map<String, Object>> resultMaps = new ArrayList<Map<String, Object>>();
 
 		for (CustomerOrder customerOrder : customerOrders) {
@@ -1309,13 +1336,15 @@ public class CRMService {
 				InvoicePDFCreator invoicePDF = new InvoicePDFCreator();
 				CustomerInvoice ci = new CustomerInvoice();
 				
+				ci.setOrder_id(co.getId());
+				
 				if(pstn_numbers.size() > 0){
 					
 					for (String pstn_number : pstn_numbers) {
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, false, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 						
-						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, false, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 						
 					}
 				}
@@ -1323,7 +1352,7 @@ public class CRMService {
 				if(voip_numbers.size() > 0){
 					
 					for (String voip_number : voip_numbers) {
-						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+						totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, false, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 						
 					}
 				}
@@ -1404,10 +1433,10 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
-			}
+//			if(resultMaps.size()>0){
+//				
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Calling Charge");
+//			}
 			
 		}
 		
@@ -1606,9 +1635,9 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-			}
+//			if(resultMaps.size()>0){
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//			}
 			
 		}
 	}
@@ -1967,15 +1996,17 @@ public class CRMService {
 		// store company detail end
 		
 		invoicePDF.setCompanyDetail(companyDetail);
+		
+		ci.setOrder_id(co.getId());
 
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -1983,7 +2014,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2098,9 +2129,9 @@ public class CRMService {
         
         // call Service Method
 		List<Map<String, Object>> resultMaps = createNextInvoice(customerOrder);
-		if(resultMaps.size()>0){
-			Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-		}
+//		if(resultMaps.size()>0){
+//			Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//		}
 	}
 
 	@Transactional
@@ -2153,9 +2184,9 @@ public class CRMService {
 				
 			}
 			
-			if(resultMaps.size()>0){
-				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
-			}
+//			if(resultMaps.size()>0){
+//				Post2Xero.postMultiInvoices(resultMaps, "Monthly Broadband Charge");
+//			}
 			
 		}
 	}
@@ -2375,6 +2406,9 @@ public class CRMService {
 			
 //			System.out.println("isFirst: " + isFirst);
 			// If first invoice then add all order details into invoice details
+			System.out.println("----------------------------");
+			System.out.println("isFirst: "+isFirst);
+			System.out.println("----------------------------");
 			if(isFirst){
 				
 				if(cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type())){
@@ -2430,6 +2464,49 @@ public class CRMService {
 						}
 					}
 					
+					System.out.println("cod.getDetail_type(): "+cod.getDetail_type());
+					System.out.println("\"plan-term\".equals(cod.getDetail_type()): "+"plan-term".equals(cod.getDetail_type()));
+					System.out.println("!isRegenerateInvoice: "+!isRegenerateInvoice);
+					
+					if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && (co.getIs_ddpay()!=null && co.getIs_ddpay()==true)) {
+						
+						// if is next invoice then plus one month else plus unit month(s)
+						int nextInvoiceMonth = 1;
+						int nextInvoiceDay = -7;
+						Calendar calNextInvoiceDay = Calendar.getInstance();
+						
+						System.out.println("--------------------------------------");
+						System.out.println("calNextInvoiceDay: "+calNextInvoiceDay);
+						System.out.println("--------------------------------------");
+						calNextInvoiceDay.set(Calendar.DAY_OF_MONTH, 14);
+						
+						System.out.println("--------------------------------------");
+						System.out.println("calNextInvoiceDay: "+calNextInvoiceDay);
+						System.out.println("--------------------------------------");
+						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+						
+						System.out.println("--------------------------------------");
+						System.out.println("calNextInvoiceDay: "+calNextInvoiceDay);
+						System.out.println("--------------------------------------");
+						// update customer order's next invoice create day flag begin
+						co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+						// update customer order's next invoice create day flag end
+
+						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+						
+						System.out.println("--------------------------------------");
+						System.out.println("calNextInvoiceDay: "+calNextInvoiceDay);
+						System.out.println("--------------------------------------");
+						// update customer order's next invoice create day begin
+						co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+						// update customer order's next invoice create day end
+						
+						co.getParams().put("id", co.getId());
+						
+						this.customerOrderMapper.updateCustomerOrder(co);
+						
+					}
+					
 					continue;
 
 				// Else if discount and unexpired then do add discount
@@ -2464,39 +2541,37 @@ public class CRMService {
 					continue;
 				}
 				
-				if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice && co.getCustomer_type().equals("business")) {
-					
-					// if is next invoice then plus one month else plus unit month(s)
-					int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
-					int nextInvoiceDay = -7;
-					Calendar calNextInvoiceDay = Calendar.getInstance();
-					calNextInvoiceDay.setTime(isFirst 
-								? (co.getOrder_using_start() != null 
-								? co.getOrder_using_start() 
-								: new Date()) 
-						: co.getNext_invoice_create_date_flag());
-					calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-					// update customer order's next invoice create day flag begin
-					co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
-					// update customer order's next invoice create day flag end
-
-					calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-					// update customer order's next invoice create day begin
-					co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-					// update customer order's next invoice create day end
-					
-					co.getParams().put("id", co.getId());
-					
-					this.customerOrderMapper.updateCustomerOrder(co);
-					
-				}
-				
 			// Else not first invoice, add unexpired order detail(s) into invoice detail(s)
 			} else {
 				
 				// Add previous invoice's details into
 				ci.setLast_invoice_id(cpi.getId());
 				ci.setLastCustomerInvoice(cpi);
+				
+				Double pciPayable = 0d;
+				Double pciFinalPayable = 0d;
+				Double pciPaid = 0d;
+				Double pciBalance = 0d;
+				
+				CustomerInvoice pciQuery = new CustomerInvoice();
+				pciQuery.getParams().put("order_id", co.getId());
+				pciQuery.getParams().put("status_in_unpaid_overdue_not_pay_off", "true");
+				pciQuery.getParams().put("id_not_in", ci.getId());
+				List<CustomerInvoice> pcisQuery = this.queryCustomerInvoices(pciQuery);
+				for (CustomerInvoice pci : pcisQuery) {
+					System.out.println("Payable: "+pci.getAmount_payable()+", Final Payable: "+pci.getFinal_payable_amount()+", Paid: "+pci.getAmount_paid()+", Balance: "+pci.getBalance());
+					pciPayable = TMUtils.bigAdd(pciPayable, pci.getAmount_payable()!=null ? pci.getAmount_payable() : 0d);
+					pciFinalPayable = TMUtils.bigAdd(pciFinalPayable, pci.getFinal_payable_amount()!=null ? pci.getFinal_payable_amount() : 0d);
+					pciPaid = TMUtils.bigAdd(pciPaid, pci.getAmount_paid()!=null ? pci.getAmount_paid() : 0d);
+					pciBalance = TMUtils.bigAdd(pciBalance, pci.getBalance()!=null ? pci.getBalance() : 0d);
+				}
+				CustomerInvoice cpiStatistic = new CustomerInvoice();
+				invoicePDF.setLastCustomerInvoiceStatistic(cpiStatistic);
+				cpiStatistic.setAmount_payable(pciPayable);
+				cpiStatistic.setFinal_payable_amount(pciFinalPayable);
+				cpiStatistic.setAmount_paid(pciPaid);
+				cpiStatistic.setBalance(pciBalance);
+				
 
 				// If plan-term type, then add detail into invoice detail
 				if("plan-term".equals(cod.getDetail_type())){
@@ -2515,7 +2590,7 @@ public class CRMService {
 						
 						// If is old order than use old logic, service from 1th to last day of the month.
 						if((co.getOrder_serial()!=null && co.getOrder_serial().contains("old"))
-						  || co.getCustomer_type().equals("business")){
+						  || co.getCustomer_type().equals("business") || (co.getIs_ddpay()!=null && co.getIs_ddpay()==true)){
 							// Add first day as begin date and last day as end date
 							cal.set(Calendar.DAY_OF_MONTH, 1);
 							startFrom = cal.getTime();
@@ -2552,7 +2627,32 @@ public class CRMService {
 						cids.add(cid);
 					}
 					
-					continue;
+					// If is not regenerate invoice then update next invoice create data & flag
+//					if (!isRegenerateInvoice) {
+//						
+//						// if is next invoice then plus one month else plus unit month(s)
+//						int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
+//						int nextInvoiceDay = -7;
+//						Calendar calNextInvoiceDay = Calendar.getInstance();
+//						calNextInvoiceDay.setTime(isFirst 
+//									? (co.getOrder_using_start() != null 
+//										? co.getOrder_using_start() 
+//										: new Date()) 
+//									: co.getNext_invoice_create_date_flag());
+//						calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
+//						// update customer order's next invoice create day flag begin
+//						co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
+//						// update customer order's next invoice create day flag end
+//
+//						calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
+//						// update customer order's next invoice create day begin
+//						co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
+//						// update customer order's next invoice create day end
+//						
+//						co.getParams().put("id", co.getId());
+//						
+//						this.customerOrderMapper.updateCustomerOrder(co);
+//					}
 
 				// Else if discount and unexpired then do add discount
 				} else if(cod.getDetail_type()!=null && "discount".equals(cod.getDetail_type()) && cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()){
@@ -2565,8 +2665,6 @@ public class CRMService {
 					// totalCreditBack add ( discount price times discount unit )
 					totalCreditBack = TMUtils.bigAdd(totalCreditBack, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
-					
-					continue;
 
 				// Else if unexpired then add order detail(s) into invoice detail(s)
 				} else if(cod.getDetail_expired() != null && cod.getDetail_expired().getTime() >= System.currentTimeMillis()) {
@@ -2579,36 +2677,8 @@ public class CRMService {
 					// Payable amount plus ( detail price times detail unit )
 					totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, TMUtils.bigMultiply(cod.getDetail_price(), cod.getDetail_unit()));
 					cids.add(cid);
-					
-					continue;
 				}
 				
-			}
-			
-			if (cod.getDetail_type()!=null && "plan-term".equals(cod.getDetail_type()) && !isRegenerateInvoice) {
-				
-				// if is next invoice then plus one month else plus unit month(s)
-				int nextInvoiceMonth = !isFirst ? 1 : cod.getDetail_unit();
-				int nextInvoiceDay = -7;
-				Calendar calNextInvoiceDay = Calendar.getInstance();
-				calNextInvoiceDay.setTime(isFirst 
-							? (co.getOrder_using_start() != null 
-							? co.getOrder_using_start() 
-							: new Date()) 
-					: co.getNext_invoice_create_date_flag());
-				calNextInvoiceDay.add(Calendar.MONTH, nextInvoiceMonth);
-				// update customer order's next invoice create day flag begin
-				co.setNext_invoice_create_date_flag(calNextInvoiceDay.getTime());
-				// update customer order's next invoice create day flag end
-
-				calNextInvoiceDay.add(Calendar.DAY_OF_MONTH, nextInvoiceDay);
-				// update customer order's next invoice create day begin
-				co.setNext_invoice_create_date(calNextInvoiceDay.getTime());
-				// update customer order's next invoice create day end
-				
-				co.getParams().put("id", co.getId());
-				
-				this.customerOrderMapper.updateCustomerOrder(co);
 			}
 		}
 
@@ -2664,15 +2734,16 @@ public class CRMService {
 
 		invoicePDF.setCo(co);
 
+		ci.setOrder_id(co.getId());
 
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerateInvoice, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, this.customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerateInvoice, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2681,7 +2752,7 @@ public class CRMService {
 			
 			for (String voip_number : voip_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerateInvoice, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, co.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, co.getId());
 				
 			}
 		}
@@ -2691,15 +2762,22 @@ public class CRMService {
 		totalAmountPayable = isBusiness ? TMUtils.bigMultiply(totalAmountPayable, 1.15) : totalAmountPayable;
 		
 		// If previous balance greater than 0 and customer_type equals to business
-		if((cpi!=null && cpi.getBalance()>0) && "business".equals(co.getCustomer_type())){
-			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
-		}
+//		if((cpi!=null && cpi.getBalance()>0) && "business".equals(co.getCustomer_type())){
+//			totalAmountPayable = TMUtils.bigAdd(totalAmountPayable, cpi.getBalance());
+//		}
+		
+//		System.out.println("Pre ci: ");
+//		System.out.println("payable: "+ci.getAmount_payable()+", balance: "+ci.getBalance());
+//		System.out.println();
 		
 		// Set current invoice's payable amount
 		ci.setAmount_payable(totalAmountPayable);
 		ci.setFinal_payable_amount(TMUtils.bigSub(totalAmountPayable, totalCreditBack));
 		ci.setAmount_paid(ci.getAmount_paid() == null ? 0d : ci.getAmount_paid());
 		ci.setBalance(TMUtils.bigOperationTwoReminders(ci.getFinal_payable_amount(), ci.getAmount_paid(), "sub"));
+		
+//		System.out.println("Post ci: ");
+//		System.out.println("payable: "+ci.getAmount_payable()+", balance: "+ci.getBalance());
 		
 		// If balance greater than 0
 		if(ci.getBalance()>0){
@@ -3171,14 +3249,16 @@ public class CRMService {
 		invoicePDF.setCo(customerOrder);
 		invoicePDF.setCurrentCustomerInvoice(ci);
 		
+		ci.setOrder_id(customerOrder.getId());
+		
 		
 		if(pstn_numbers.size() > 0){
 			
 			for (String pstn_number : pstn_numbers) {
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper);
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrRentalOperation(ci, isRegenerate, pstn_number, cids, totalAmountPayable, customerCallRecordMapper, this.ciMapper, customerOrderChorusAddonMapper);
 				
-				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.ccrOperation(ci, isRegenerate, pcmsPSTN, pstn_number, cids, invoicePDF, totalAmountPayable, this.customerCallRecordMapper, this.callInternationalRateMapper, this.customerCallingRecordCallplusMapper, this.ciMapper, customerOrder.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, customerOrder.getId());
 				
 			}
 		}
@@ -3186,7 +3266,7 @@ public class CRMService {
 		if(voip_numbers.size() > 0){
 			
 			for (String voip_number : voip_numbers) {
-				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customerOrder.getCustomer_type());
+				totalAmountPayable = CallingAndRentalFeeCalucation.voipCallOperation(ci, isRegenerate, pcmsVoIP, voip_number, cids, invoicePDF, totalAmountPayable, nzAreaCodeListMapper, vosVoIPRateMapper, vosVoIPCallRecordMapper, ciMapper, customerOrder.getCustomer_type(), this.customerOrderNZCallingRatesSettingMapper, customerOrder.getId());
 				
 			}
 		}
@@ -3590,7 +3670,7 @@ public class CRMService {
 		totalAmountPayable = Double.parseDouble(TMUtils.fillDecimalPeriod(totalAmountPayable));
 		
 		// IF customer's account credit is less than final payable amount
-		if(c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
+		if(c.getBalance()==null || c.getBalance()<TMUtils.bigSub(totalAmountPayable, totalCreditBack)){
 			return null;
 		}
 		
@@ -3989,20 +4069,22 @@ public class CRMService {
 		if (discount_price > 0d) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
 			cod_discount.setMonthly(false);
-			if (customerOrder.getPrepay_months() == 3) {
-				cod_discount.setDetail_name("Prepay 3 Months Discount");
-				cod_discount.setDetail_desc("3% off the total price of 3 months plan. all-forms");
-			} else if (customerOrder.getPrepay_months() == 6) {
-				cod_discount.setDetail_name("Prepay 6 Months Discount");
-				cod_discount.setDetail_desc("7% off the total price of 6 months plan. all-forms");
-			} else if (customerOrder.getPrepay_months() == 12) {
-				cod_discount.setDetail_name("Prepay 12 Months Discount");
-				cod_discount.setDetail_desc("15% off the total price of 12 months plan. all-forms");
+			if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
+				if (customerOrder.getPrepay_months() == 3) {
+					cod_discount.setDetail_name("Prepay 3 Months Discount");
+					cod_discount.setDetail_desc("3% off the total price of 3 months plan. all-forms");
+				} else if (customerOrder.getPrepay_months() == 6) {
+					cod_discount.setDetail_name("Prepay 6 Months Discount");
+					cod_discount.setDetail_desc("7% off the total price of 6 months plan. all-forms");
+				} else if (customerOrder.getPrepay_months() == 12) {
+					cod_discount.setDetail_name("Prepay 12 Months Discount");
+					cod_discount.setDetail_desc("15% off the total price of 12 months plan. all-forms");
+				}
+				cod_discount.setDetail_price(new Double(discount_price.intValue()));
+				cod_discount.setDetail_type("discount");
+				cod_discount.setDetail_unit(1);
+				customerOrder.getCustomerOrderDetails().add(cod_discount);
 			}
-			cod_discount.setDetail_price(new Double(discount_price.intValue()));
-			cod_discount.setDetail_type("discount");
-			cod_discount.setDetail_unit(1);
-			customerOrder.getCustomerOrderDetails().add(cod_discount);
 		}
 		
 		System.out.println("discount_price: " + discount_price.intValue());
@@ -4157,23 +4239,42 @@ public class CRMService {
 								}
 							}
 						} else if (customerOrder.getPrepay_months() == 12) {
-							modem_price = 0d;
-							cod_hd.setDetail_price(modem_price);
+
+							if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
+								modem_price = chd.getHardware_price();
+								cod_hd.setDetail_price(modem_price);
+							} else {
+								modem_price = 0d;
+								cod_hd.setDetail_price(modem_price);
+							}
 						}
 					} else if ("open term".equals(customerOrder.getContract())) {
-						if (customerOrder.getPrepay_months() == 1) {
+						
+						System.out.println("--------------------------");
+						System.out.println(customerOrder.getPlan_or_hardware_discount());
+						System.out.println("--------------------------");
+
+						if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
 							modem_price = chd.getHardware_price();
 							cod_hd.setDetail_price(modem_price);
-						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-							Double temp = (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
-							modem_price = chd.getHardware_price() - temp.intValue();
-							cod_hd.setDetail_price(new Double(modem_price.intValue()));
-						} else if (customerOrder.getPrepay_months() == 12) {
-							modem_price = 0d;
-							cod_hd.setDetail_price(0d);
+						} else {
+							
+							if (customerOrder.getPrepay_months() == 1) {
+								modem_price = chd.getHardware_price();
+								cod_hd.setDetail_price(modem_price);
+							} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+								Double temp = (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
+								modem_price = chd.getHardware_price() - temp.intValue();
+								cod_hd.setDetail_price(new Double(modem_price.intValue()));
+							} else if (customerOrder.getPrepay_months() == 12) {
+								modem_price = 0d;
+								cod_hd.setDetail_price(0d);
+							}
 						}
-					} else if ("24 months contract".equals(customerOrder.getContract())) {
 						
+					} else if ("24 months contract".equals(customerOrder.getContract())) {
+						modem_price = 0d;
+						cod_hd.setDetail_price(modem_price);
 					}
 					
 					cod_hd.setDetail_unit(1);
@@ -4258,6 +4359,12 @@ public class CRMService {
 				customerOrder.setInviter_rate(customer.getIr().getInviter_customer_rate());
 				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());
 			} else if (customer.getIr().isIs_user()) {
+				User userQuery = this.userMapper.selectUserById(Integer.parseInt(customer.getIr().getPromotion_code()));
+				if("sales".equals(userQuery.getUser_role()) && "agent".equals(userQuery.getUser_role())){
+					customerOrder.setSale_id(userQuery.getId());
+				} else {
+					customerOrder.setUser_id(userQuery.getId());
+				}
 				customerOrder.setInviter_user_id(Integer.parseInt(customer.getIr().getPromotion_code()));
 				customerOrder.setInviter_rate(customer.getIr().getInviter_user_rate());
 				customerOrder.setInvitee_rate(customer.getIr().getInvitee_rate());
@@ -4287,7 +4394,7 @@ public class CRMService {
 		// monthly or one-off detail
 		
 		for (CustomerOrderDetail cod: customerOrder.getCustomerOrderDetails()) {
-			if (cod.getMonthly()) {
+			if (cod.getMonthly()!=null && cod.getMonthly()) {
 				customerOrder.getMonthly_cods().add(cod);
 			} else {
 				customerOrder.getOneoff_cods().add(cod);
@@ -4427,6 +4534,453 @@ public class CRMService {
 	 * END CustomerCredit
 	 */
 	
+	
+	/**
+	 * BEGIN CustomerDDPay
+	 */
+	
+	public List<CustomerDDPay> queryCustomerDDPays(CustomerDDPay cddpay){
+		return this.customerDDPayMapper.selectCustomerDDPay(cddpay);
+	}
+	
+	public CustomerDDPay queryCustomerDDPay(CustomerDDPay cddpay){
+		List<CustomerDDPay> cddpays = this.queryCustomerDDPays(cddpay);
+		return cddpays!=null && cddpays.size()>0 ? cddpays.get(0) : null;
+	}
+	
+	public Page<CustomerDDPay> queryCustomerDDPaysByPage(Page<CustomerDDPay> page){
+		page.setTotalRecord(this.customerDDPayMapper.selectCustomerDDPaysSum(page));
+		page.setResults(this.customerDDPayMapper.selectCustomerDDPaysByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerDDPay(CustomerDDPay cddpay){
+		this.customerDDPayMapper.updateCustomerDDPay(cddpay);
+	}
+
+	@Transactional
+	public void removeCustomerDDPayById(int id){
+		this.customerDDPayMapper.deleteCustomerDDPayById(id);
+	}
+
+	@Transactional
+	public void createCustomerDDPay(CustomerDDPay cddpay){
+		this.customerDDPayMapper.insertCustomerDDPay(cddpay);
+	}
+	
+	/**
+	 * END CustomerDDPay
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderProvisionChecklist
+	 */
+	
+	public List<CustomerOrderProvisionChecklist> queryCustomerOrderProvisionChecklists(CustomerOrderProvisionChecklist copc){
+		return this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklist(copc);
+	}
+	
+	public CustomerOrderProvisionChecklist queryCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		List<CustomerOrderProvisionChecklist> copcs = this.queryCustomerOrderProvisionChecklists(copc);
+		return copcs!=null && copcs.size()>0 ? copcs.get(0) : null;
+	}
+	
+	public Page<CustomerOrderProvisionChecklist> queryCustomerOrderProvisionChecklistsByPage(Page<CustomerOrderProvisionChecklist> page){
+		page.setTotalRecord(this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklistsSum(page));
+		page.setResults(this.customerOrderProvisionChecklistMapper.selectCustomerOrderProvisionChecklistsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		this.customerOrderProvisionChecklistMapper.updateCustomerOrderProvisionChecklist(copc);
+	}
+
+	@Transactional
+	public void removeCustomerOrderProvisionChecklistById(int id){
+		this.customerOrderProvisionChecklistMapper.deleteCustomerOrderProvisionChecklistById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderProvisionChecklist(CustomerOrderProvisionChecklist copc){
+		this.customerOrderProvisionChecklistMapper.insertCustomerOrderProvisionChecklist(copc);
+	}
+	
+	/**
+	 * END CustomerOrderProvisionChecklist
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderOnsite
+	 */
+	
+	public List<CustomerOrderOnsite> queryCustomerOrderOnsites(CustomerOrderOnsite coo){
+		return this.customerOrderOnsiteMapper.selectCustomerOrderOnsite(coo);
+	}
+	
+	public CustomerOrderOnsite queryCustomerOrderOnsite(CustomerOrderOnsite coo){
+		List<CustomerOrderOnsite> coos = this.queryCustomerOrderOnsites(coo);
+		return coos!=null && coos.size()>0 ? coos.get(0) : null;
+	}
+	
+	public Page<CustomerOrderOnsite> queryCustomerOrderOnsitesByPage(Page<CustomerOrderOnsite> page){
+		page.setTotalRecord(this.customerOrderOnsiteMapper.selectCustomerOrderOnsitesSum(page));
+		page.setResults(this.customerOrderOnsiteMapper.selectCustomerOrderOnsitesByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderOnsite(CustomerOrderOnsite coo){
+		this.customerOrderOnsiteMapper.updateCustomerOrderOnsite(coo);
+	}
+
+	@Transactional
+	public void removeCustomerOrderOnsiteById(int id){
+		this.customerOrderOnsiteMapper.deleteCustomerOrderOnsiteById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderOnsite(CustomerOrderOnsite coo){
+		this.customerOrderOnsiteMapper.insertCustomerOrderOnsite(coo);
+	}
+	
+	/**
+	 * END CustomerOrderOnsite
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderOnsiteDetail
+	 */
+	
+	public List<CustomerOrderOnsiteDetail> queryCustomerOrderOnsiteDetails(CustomerOrderOnsiteDetail cood){
+		return this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetail(cood);
+	}
+	
+	public CustomerOrderOnsiteDetail queryCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		List<CustomerOrderOnsiteDetail> coods = this.queryCustomerOrderOnsiteDetails(cood);
+		return coods!=null && coods.size()>0 ? coods.get(0) : null;
+	}
+	
+	public Page<CustomerOrderOnsiteDetail> queryCustomerOrderOnsiteDetailsByPage(Page<CustomerOrderOnsiteDetail> page){
+		page.setTotalRecord(this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetailsSum(page));
+		page.setResults(this.customerOrderOnsiteDetailMapper.selectCustomerOrderOnsiteDetailsByPage(page));
+		return page;
+	}
+
+	@Transactional
+	public void editCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		this.customerOrderOnsiteDetailMapper.updateCustomerOrderOnsiteDetail(cood);
+	}
+
+	@Transactional
+	public void removeCustomerOrderOnsiteDetailById(int id){
+		this.customerOrderOnsiteDetailMapper.deleteCustomerOrderOnsiteDetailById(id);
+	}
+
+	@Transactional
+	public void createCustomerOrderOnsiteDetail(CustomerOrderOnsiteDetail cood){
+		this.customerOrderOnsiteDetailMapper.insertCustomerOrderOnsiteDetail(cood);
+	}
+	
+	/**
+	 * END CustomerOrderOnsiteDetail
+	 */
+	
+	
+	/**
+	 * BEGIN Customer
+	 */
+	
+	@Transactional
+	public boolean customerMigrate(Integer customer_id,
+			Integer migrate_customer_id,
+			BillingService billingService){
+		
+		boolean isMigrate = false;
+		
+		Customer cMigrateQuery = new Customer();
+		Customer cTargetQuery = new Customer();
+		Customer cUpdate = new Customer();
+		CustomerBillingLog cblUpdate =new CustomerBillingLog();
+		CustomerCredit ccUpdate = new CustomerCredit();
+		CustomerDDPay cddpayUpdate = new CustomerDDPay();
+		CustomerInvoice ciUpdate = new CustomerInvoice();
+		CustomerOrder coUpdate = new CustomerOrder();
+		CustomerOrderOnsite cooUpdate = new CustomerOrderOnsite();
+		CustomerServiceRecord csrUpdate = new CustomerServiceRecord();
+		CustomerTransaction ctUpdate = new CustomerTransaction();
+		EarlyTerminationCharge etcUpdate = new EarlyTerminationCharge();
+		Ticket tUpdate = new Ticket();
+		Voucher vUpdate = new Voucher();
+		VoucherBannedList vblUpdate = new VoucherBannedList();
+		TerminationRefund trUpdate = new TerminationRefund();
+		
+		cblUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerBillingLog> cbls = billingService.queryCustomerBillingLogs(cblUpdate);
+		if(cbls!=null && cbls.size()>0){
+			cblUpdate.setCustomer_id(customer_id);
+			billingService.editCustomerBillingLog(cblUpdate);
+			isMigrate = true;
+		}
+		ccUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerCredit> ccs = this.queryCustomerCredits(ccUpdate);
+		if(ccs!=null && ccs.size()>0){
+			ccUpdate.setCustomer_id(customer_id);
+			this.editCustomerCredit(ccUpdate);
+			isMigrate = true;
+		}
+		cddpayUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerDDPay> cddpays = this.queryCustomerDDPays(cddpayUpdate);
+		if(cddpays!=null && cddpays.size()>0){
+			cddpayUpdate.setCustomer_id(customer_id);
+			this.editCustomerDDPay(cddpayUpdate);
+			isMigrate = true;
+		}
+		ciUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerInvoice> cis = this.queryCustomerInvoices(ciUpdate);
+		if(cis!=null && cis.size()>0){
+			ciUpdate.setCustomer_id(customer_id);
+			this.editCustomerInvoice(ciUpdate);
+			isMigrate = true;
+		}
+		coUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerOrder> cos = this.queryCustomerOrders(coUpdate);
+		if(cos!=null && cos.size()>0){
+			coUpdate.setCustomer_id(customer_id);
+			this.editCustomerOrder(coUpdate);
+			isMigrate = true;
+		}
+		cooUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerOrderOnsite> coos = this.queryCustomerOrderOnsites(cooUpdate);
+		if(coos!=null && coos.size()>0){
+			cooUpdate.setCustomer_id(customer_id);
+			this.editCustomerOrderOnsite(cooUpdate);
+			isMigrate = true;
+		}
+		csrUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerServiceRecord> csrs = this.queryCustomerServiceRecord(csrUpdate);
+		if(csrs!=null && csrs.size()>0){
+			csrUpdate.setCustomer_id(customer_id);
+			this.editCustomerServiceRecord(csrUpdate);
+			isMigrate = true;
+		}
+		ctUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<CustomerTransaction> cts = this.queryCustomerTransactions(ctUpdate);
+		if(cts!=null && cts.size()>0){
+			ctUpdate.setCustomer_id(customer_id);
+			this.editCustomerTransaction(ctUpdate);
+			isMigrate = true;
+		}
+		etcUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<EarlyTerminationCharge> etcs = billingService.queryEarlyTerminationCharge(etcUpdate);
+		if(etcs!=null && etcs.size()>0){
+			etcUpdate.setCustomer_id(customer_id);
+			billingService.editEarlyTerminationCharge(etcUpdate);
+			isMigrate = true;
+		}
+		tUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<Ticket> ts = this.queryTicket(tUpdate);
+		if(ts!=null && ts.size()>0){
+			tUpdate.setCustomer_id(customer_id);
+			this.editTicket(tUpdate);
+			isMigrate = true;
+		}
+		vUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<Voucher> vs = billingService.queryVouchers(vUpdate);
+		if(vs!=null && vs.size()>0){
+			vUpdate.setCustomer_id(customer_id);
+			billingService.editVoucher(vUpdate);
+			isMigrate = true;
+		}
+		vblUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<VoucherBannedList> vbls = billingService.queryVoucherBannedList(vblUpdate);
+		if(vbls!=null && vbls.size()>0){
+			vblUpdate.setCustomer_id(customer_id);
+			billingService.editVoucherBannedList(vblUpdate);
+			isMigrate = true;
+		}
+		trUpdate.getParams().put("customer_id", migrate_customer_id);
+		List<TerminationRefund> trs = billingService.queryTerminationRefund(trUpdate);
+		if(trs!=null && trs.size()>0){
+			trUpdate.setCustomer_id(customer_id);
+			billingService.editTerminationRefund(trUpdate);
+			isMigrate = true;
+		}
+		
+		if(isMigrate){
+
+			cMigrateQuery.getParams().put("id", migrate_customer_id);
+			cMigrateQuery = this.queryCustomer(cMigrateQuery);
+			cTargetQuery.getParams().put("id", customer_id);
+			cTargetQuery = this.queryCustomer(cTargetQuery);
+			
+			cUpdate.getParams().put("id", customer_id);
+			cUpdate.setBalance(TMUtils.bigAdd(cTargetQuery.getBalance()==null ? 0d : cTargetQuery.getBalance(), cMigrateQuery.getBalance()==null ? 0d : cMigrateQuery.getBalance()));
+			this.editCustomer(cUpdate);
+			
+			cMigrateQuery.getParams().put("id", migrate_customer_id);
+			cMigrateQuery.setBalance(0d);
+			this.editCustomer(cMigrateQuery);
+			
+		}
+		
+		return isMigrate;
+		
+	}
+	
+	/**
+	 * END Customer
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderChorusAddon
+	 */
+
+	public void createCustomerOrderChorusAddon(CustomerOrderChorusAddon coca){
+		this.customerOrderChorusAddonMapper.insertCustomerOrderChorusAddon(coca);
+	}
+	
+	public CustomerOrderChorusAddon queryCustomerOrderChorusAddon(CustomerOrderChorusAddon coca) {
+		List<CustomerOrderChorusAddon> cocas = this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddon(coca);
+		return cocas!=null && cocas.size()>0 ? cocas.get(0) : null;
+	}
+	
+	public List<CustomerOrderChorusAddon> queryCustomerOrderChorusAddons(CustomerOrderChorusAddon coca) {
+		return this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddon(coca);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderChorusAddon> queryCustomerOrderChorusAddonsByPage(Page<CustomerOrderChorusAddon> page){
+		page.setTotalRecord(this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsSum(page));
+		page.setResults(this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderChorusAddonsSumByPage(Page<CustomerOrderChorusAddon> page){
+		return this.customerOrderChorusAddonMapper.selectCustomerOrderChorusAddonsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderChorusAddon(CustomerOrderChorusAddon coca){
+		this.customerOrderChorusAddonMapper.updateCustomerOrderChorusAddon(coca);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderChorusAddonById(int id){
+		this.customerOrderChorusAddonMapper.deleteCustomerOrderChorusAddonById(id);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderChorusAddonByOrderId(int order_id){
+		this.customerOrderChorusAddonMapper.deleteCustomerOrderChorusAddonByOrderId(order_id);
+	}
+	
+	/**
+	 * END CustomerOrderChorusAddon
+	 */
+	
+	
+	/**
+	 * BEGIN CustomerOrderNZCallingRatesSetting
+	 */
+
+	public void createCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs){
+		this.customerOrderNZCallingRatesSettingMapper.insertCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	public CustomerOrderNZCallingRatesSetting queryCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs) {
+		List<CustomerOrderNZCallingRatesSetting> conzcrss = this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrs);
+		return conzcrss!=null && conzcrss.size()>0 ? conzcrss.get(0) : null;
+	}
+	
+	public List<CustomerOrderNZCallingRatesSetting> queryCustomerOrderNZCallingRatesSettings(CustomerOrderNZCallingRatesSetting conzcrs) {
+		return this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderNZCallingRatesSetting> queryCustomerOrderNZCallingRatesSettingsByPage(Page<CustomerOrderNZCallingRatesSetting> page){
+		page.setTotalRecord(this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsSum(page));
+		page.setResults(this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderNZCallingRatesSettingsSumByPage(Page<CustomerOrderNZCallingRatesSetting> page){
+		return this.customerOrderNZCallingRatesSettingMapper.selectCustomerOrderNZCallingRatesSettingsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderNZCallingRatesSetting(CustomerOrderNZCallingRatesSetting conzcrs){
+		this.customerOrderNZCallingRatesSettingMapper.updateCustomerOrderNZCallingRatesSetting(conzcrs);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderNZCallingRatesSettingById(int id){
+		this.customerOrderNZCallingRatesSettingMapper.deleteCustomerOrderNZCallingRatesSettingById(id);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderNZCallingRatesSettingByOrderId(int order_id){
+		this.customerOrderNZCallingRatesSettingMapper.deleteCustomerOrderNZCallingRatesSettingByOrderId(order_id);
+	}
+	
+	/**
+	 * END CustomerOrderNZCallingRatesSetting
+	 */
+
+	
+	
+	/**
+	 * BEGIN CustomerOrderBroadbandASID
+	 */
+	
+
+	public void createCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid){
+		this.customerOrderBroadbandASIDMapper.insertCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	public CustomerOrderBroadbandASID queryCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid) {
+		List<CustomerOrderBroadbandASID> cobasids = this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASID(cobasid);
+		return cobasids!=null && cobasids.size()>0 ? cobasids.get(0) : null;
+	}
+	
+	public List<CustomerOrderBroadbandASID> queryCustomerOrderBroadbandASIDs(CustomerOrderBroadbandASID cobasid) {
+		return this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	@Transactional
+	public Page<CustomerOrderBroadbandASID> queryCustomerOrderBroadbandASIDsByPage(Page<CustomerOrderBroadbandASID> page){
+		page.setTotalRecord(this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsSum(page));
+		page.setResults(this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsByPage(page));
+		return page;
+	}
+	
+	public int queryCustomerOrderBroadbandASIDsSumByPage(Page<CustomerOrderBroadbandASID> page){
+		return this.customerOrderBroadbandASIDMapper.selectCustomerOrderBroadbandASIDsSum(page);
+	}
+	
+	@Transactional
+	public void editCustomerOrderBroadbandASID(CustomerOrderBroadbandASID cobasid){
+		this.customerOrderBroadbandASIDMapper.updateCustomerOrderBroadbandASID(cobasid);
+	}
+	
+	@Transactional
+	public void removeCustomerOrderBroadbandASIDById(int id){
+		this.customerOrderBroadbandASIDMapper.deleteCustomerOrderBroadbandASIDById(id);
+	}
+	
+//	@Transactional
+//	public void removeCustomerOrderBroadbandASIDByOrderId(int order_id){
+//		this.customerOrderChorusAddonMapper.deleteCustomerOrderBroadbandASIDByOrderId(order_id);
+//	}
+	
+	/**
+	 * END CustomerOrderChorusAddon
+	 */
 	
 	
 }

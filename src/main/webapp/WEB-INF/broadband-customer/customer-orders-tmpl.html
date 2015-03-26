@@ -195,6 +195,9 @@
 								<tr>
 									<td>
 										<.=detail.detail_name.>
+									<.if (detail.detail_type == 'pstn' || detail.detail_type == 'voip'){.>
+									(<strong><.= detail.pstn_number .></strong>)
+									<.}.>
 									<.if (detail.detail_plan_type == 'ADSL' || detail.detail_plan_type == 'VDSL' || detail.detail_plan_type == 'UFB') {.>
 										<input type="hidden" id="planname<.=order.id.>" value="<.=detail.detail_name.>"/>
 										<input type="hidden" id="plandataflow<.=order.id.>" value="<.=detail.detail_data_flow.>"/>

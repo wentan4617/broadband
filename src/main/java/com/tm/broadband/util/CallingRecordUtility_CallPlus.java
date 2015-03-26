@@ -76,7 +76,7 @@ public class CallingRecordUtility_CallPlus {
 						
 						// Integer: Length
 						if(arr.length > lengthIndex){
-							ccr.setLength(Integer.parseInt(arr[lengthIndex]));
+							ccr.setLength(Double.parseDouble(arr[lengthIndex]));
 
 							// Double: ChargedFee
 							if(arr.length > chargedFeeIndex){

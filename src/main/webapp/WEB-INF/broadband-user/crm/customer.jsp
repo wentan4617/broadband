@@ -10,6 +10,42 @@
 .panel-default {
 	border-top-color:transparent;
 }
+#order_detail .form-group {
+	margin-bottom:4px;
+}
+
+.align-right {
+	text-align:right;
+}
+
+.xs-btn-width-small {
+	width:120px;
+}
+
+.xs-btn-width {
+	width:150px;
+}
+
+.xs-btn-width-long {
+	width:180px;
+}
+
+.xs-btn-width-longer {
+	width:220px;
+}
+
+.xs-btn-width-longest {
+	width:250px;
+}
+
+.strong {
+	font-weight:bold;
+}
+
+.input-xs{
+	height:33px;
+}
+
 </style>
 
 
@@ -36,6 +72,7 @@
 				<div class="panel-body tab-pane fade" id="customer_service_record_detail"></div>
 				<div class="panel-body tab-pane fade" id="customer_ticket_record_detail"></div>
 			</div>
+			
 		</div>
 	</div>
 </div>
@@ -67,10 +104,6 @@
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-datepicker.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/bootstrap-select.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/icheck.min.js"></script>
-<script type="text/javascript" src="${ctx}/public/bootstrap3/js/jTmpl.js"></script>
 <script>
 
 	// BEGIN PROPERTY
@@ -82,6 +115,7 @@
 	var customerId = '${customer.id}';
 	var ctx = '${ctx}';
 	var user_role = '${userSession.user_role}';
+	var user_name = '${userSession.user_name}';
 	var user_id = '${userSession.id}';
 	var customer_type = '${customer.customer_type}';
 	

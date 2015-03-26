@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderChorusAddonMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderChorusAddonColumns">
+		coca.`id`						as coca_id,
+		coca.`order_id`					as coca_order_id,
+		coca.`addon_name`				as coca_addon_name,
+		coca.`addon_price`				as coca_addon_price
+	</sql>
+
+	<resultMap type="CustomerOrderChorusAddon" id="customerOrderChorusAddonResultMap">
+		<id property="id" column="coca_id" />
+		<result property="order_id" column="coca_order_id" />
+		<result property="addon_name" column="coca_addon_name" />
+		<result property="addon_price" column="coca_addon_price" />
+	</resultMap>
+
+	<sql id="customerOrderChorusAddonWhere">
+		<where>
+			<if test="params.id != null">coca.id = #{params.id}</if>
+			<if test="params.order_id != null">and coca.order_id = #{params.order_id}</if>
+			<if test="params.addon_name != null">and coca.addon_name = #{params.addon_name}</if>
+			<if test="params.addon_price != null">and coca.addon_price = #{params.addon_price}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderChorusAddon" parameterType="CustomerOrderChorusAddon" resultType="CustomerOrderChorusAddon">
+		select * from tm_customer_order_chorus_addon as coca
+		<include refid="customerOrderChorusAddonWhere"/>
+	</select>
+
+	<!-- select customerOrderChorusAddon page -->
+	<select id="selectCustomerOrderChorusAddonsByPage" parameterType="Page" resultMap="customerOrderChorusAddonResultMap">
+		select 
+			<include refid="customerOrderChorusAddonColumns"/>
+			from tm_customer_order_chorus_addon as coca
+			<include refid="customerOrderChorusAddonWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderChorusAddon amount -->
+	<select id="selectCustomerOrderChorusAddonsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_chorus_addon as coca
+		<include refid="customerOrderChorusAddonWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderChorusAddon" parameterType="CustomerOrderChorusAddon" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_chorus_addon`(
+			`id`, `order_id`, `addon_name`, `addon_price`
+		) VALUES (
+			#{id}, #{order_id}, #{addon_name}, #{addon_price}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderChorusAddon -->
+	<update id="updateCustomerOrderChorusAddon" parameterType="CustomerOrderChorusAddon">
+		update tm_customer_order_chorus_addon
+		<set>
+			<if test="order_id_null == true">order_id = NULL,</if>
+			<if test="addon_name_null == true">addon_name = NULL,</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="addon_name != null">addon_name = #{addon_name},</if>
+			<if test="addon_price != null">addon_price = #{addon_price}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderChorusAddonById" parameterType="int">
+		DELETE FROM tm_customer_order_chorus_addon WHERE id = #{0}
+	</delete>
+	<delete id="deleteCustomerOrderChorusAddonByOrderId" parameterType="int">
+		DELETE FROM tm_customer_order_chorus_addon WHERE order_id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

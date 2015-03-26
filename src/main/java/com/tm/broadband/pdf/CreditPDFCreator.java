@@ -28,6 +28,8 @@ public class CreditPDFCreator extends ITextUtils {
 	private CustomerCredit cc;
 	private CustomerOrder co;
 	
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
+	
 	private BaseColor titleBGColor = new BaseColor(237,237,237);
 	private BaseColor titleBorderColor = new BaseColor(200,200,200);
 	private BaseColor tableBorderColor = new BaseColor(159,159,159);
@@ -45,7 +47,7 @@ public class CreditPDFCreator extends ITextUtils {
 		
         Document document = new Document(PageSize.A4);
 		String outputFile = TMUtils.createPath("broadband" + File.separator
-				+ "customers" + File.separator + this.cc.getCustomer().getId()
+				+ "customers" + File.separator + this.co.getCustomer_id()
 				+ File.separator + "credit_" + this.co.getId()
 				+ ".pdf");
         
@@ -55,7 +57,12 @@ public class CreditPDFCreator extends ITextUtils {
         document.open();
         
     	// company_logo
-    	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 140F, 64F, 418F, 748F);
+        File companyLogoFile = new File(pdf_resources_path + "common_company_logo.png");
+		if(companyLogoFile.exists()){
+	    	addImage(writer, pdf_resources_path + "common_company_logo.png", 140F, 64F, 418F, 748F);
+        } else {
+        	addImage(writer, "pdf"+File.separator+"img"+File.separator+"company_logo.png", 140F, 64F, 418F, 748F);
+        }
         
     	// PDF TITLE TABLE
     	document.add(createCreditPDFTitleTable());

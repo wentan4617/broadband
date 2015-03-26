@@ -1,0 +1,59 @@
+<. if (results.length > 0) {.>
+<table class="table" style="font-size: 12px;">
+	<thead>
+		<tr>
+			<th style="text-align:center;">Order ID</th>
+			<th>Plans</th>
+			<th style="text-align:center;">Type</th>
+			<th style="text-align:center;">Term Period</th>
+			<th style="text-align:center;">Start Date</th>
+			<th style="text-align:right;">Receivables</th>
+			<th style="text-align:center;">Status</th>
+			<th style="text-align:right;">Hardware Charged</th>
+			<th style="text-align:right;">Hardware Cost</th>
+			<th style="text-align:right;">Discounted</th>
+			<th>Belongs To</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for(var i = 0; i < results.length; i++) {
+		var co = results[i];
+	.>
+		<tr class="danger">
+			<td>
+				<a target="_blank" href="<.=ctx.>/broadband-user/crm/customer/edit/<.= co.customer_id .>">
+				<.= co.id .>
+				</a>
+			</td>
+			<td><.= co.order_detail_plan_type .></td>
+			<td style="text-align:center;"><.= co.order_broadband_type .></td>
+			<td style="text-align:center;"><.= co.term_period .></td>
+			<td style="text-align:center;"><.= co.order_using_start_str .></td>
+			<td style="text-align:right;"><.= Number(co.order_total_charged).toFixed(2) .></td>
+			<td style="text-align:center;"><.= co.order_status .></td>
+			<td style="text-align:right;"><.= Number(co.order_hardware_charged).toFixed(2) .></td>
+			<td style="text-align:right;"><.= Number(co.order_hardware_cost).toFixed(2) .></td>
+			<td style="text-align:right;"><.= Number(co.order_total_discounted).toFixed(2) .></td>
+			<td><.= co.order_belongs_to .></td>
+		</tr>
+	<.}.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+					<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderProvisionChecklistMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderProvisionChecklistColumns">
+		copc.`id`						as copc_id,
+		copc.`order_id`					as copc_order_id,
+		copc.`payment_form`				as copc_payment_form,
+		copc.`has_pstn`					as copc_has_pstn,
+		copc.`has_fax`					as copc_has_fax,
+		copc.`has_voip`					as copc_has_voip,
+		copc.`pstn_count`				as copc_pstn_count,
+		copc.`fax_count`				as copc_fax_count,
+		copc.`voip_count`				as copc_voip_count,
+		copc.`has_alarm`				as copc_has_alarm,
+		copc.`has_emergency`			as copc_has_emergency,
+		copc.`has_cctv`					as copc_has_cctv,
+		copc.`has_eftpos`				as copc_has_eftpos,
+		copc.`has_smart_bundle`			as copc_has_smart_bundle,
+		copc.`has_call_restrict`		as copc_has_call_restrict,
+		copc.`has_call_waiting`			as copc_has_call_waiting,
+		copc.`has_faxability`			as copc_has_faxability,
+		copc.`has_call_display`			as copc_has_call_display,
+		copc.`has_wire_maintenance`		as copc_has_wire_maintenance,
+		copc.`has_static_ip`			as copc_has_static_ip,
+		copc.`has_dial_wrap`			as copc_has_dial_wrap,
+		copc.`smart_bundle_count`		as copc_smart_bundle_count,
+		copc.`call_restrict_count`		as copc_call_restrict_count,
+		copc.`call_waiting_count`		as copc_call_waiting_count,
+		copc.`faxability_count`			as copc_faxability_count,
+		copc.`call_display_count`		as copc_call_display_count,
+		copc.`wire_maintenance_count`	as copc_wire_maintenance_count,
+		copc.`static_ip_count`			as copc_static_ip_count,
+		copc.`dial_wrap_count`			as copc_dial_wrap_count,
+		copc.`has_router_post`			as copc_has_router_post,
+		copc.`router_post_count`		as copc_router_post_count,
+		copc.`has_svcv_lan`				as copc_has_svcv_lan,
+		copc.`has_service_given`		as copc_has_service_given,
+		copc.`has_pstn_nca`				as copc_has_pstn_nca,
+		copc.`pstn_nca_count`			as copc_pstn_nca_count
+	</sql>
+
+	<resultMap type="CustomerOrderProvisionChecklist" id="customerOrderProvisionChecklistResultMap">
+		<id property="id" column="copc_id" />
+		<result property="order_id" column="copc_order_id" />
+		<result property="payment_form" column="copc_payment_form" />
+		<result property="has_pstn" column="copc_has_pstn" />
+		<result property="has_fax" column="copc_has_fax" />
+		<result property="has_voip" column="copc_has_voip" />
+		<result property="pstn_count" column="copc_pstn_count" />
+		<result property="fax_count" column="copc_fax_count" />
+		<result property="voip_count" column="copc_voip_count" />
+		<result property="has_alarm" column="copc_has_alarm" />
+		<result property="has_emergency" column="copc_has_emergency" />
+		<result property="has_cctv" column="copc_has_cctv" />
+		<result property="has_eftpos" column="copc_has_eftpos" />
+		<result property="has_smart_bundle" column="copc_has_smart_bundle" />
+		<result property="has_call_restrict" column="copc_has_call_restrict" />
+		<result property="has_call_waiting" column="copc_has_call_waiting" />
+		<result property="has_faxability" column="copc_has_faxability" />
+		<result property="has_call_display" column="copc_has_call_display" />
+		<result property="has_wire_maintenance" column="copc_has_wire_maintenance" />
+		<result property="has_static_ip" column="copc_has_static_ip" />
+		<result property="has_dial_wrap" column="copc_has_dial_wrap" />
+		<result property="smart_bundle_count" column="copc_smart_bundle_count" />
+		<result property="call_restrict_count" column="copc_call_restrict_count" />
+		<result property="call_waiting_count" column="copc_call_waiting_count" />
+		<result property="faxability_count" column="copc_faxability_count" />
+		<result property="call_display_count" column="copc_call_display_count" />
+		<result property="wire_maintenance_count" column="copc_wire_maintenance_count" />
+		<result property="static_ip_count" column="copc_static_ip_count" />
+		<result property="dial_wrap_count" column="copc_dial_wrap_count" />
+		<result property="has_router_post" column="copc_has_router_post" />
+		<result property="router_post_count" column="copc_router_post_count" />
+		<result property="has_svcv_lan" column="copc_has_svcv_lan" />
+		<result property="has_service_given" column="copc_has_service_given" />
+		<result property="has_pstn_nca" column="copc_has_pstn_nca" />
+		<result property="pstn_nca_count" column="copc_pstn_nca_count" />
+	</resultMap>
+
+	<sql id="customerOrderProvisionChecklistWhere">
+		<where>
+			<if test="params.id != null">copc.id = #{params.id}</if>
+			<if test="params.order_id != null">and copc.order_id = #{params.order_id}</if>
+			<if test="params.payment_form != null">and copc.payment_form = #{params.payment_form}</if>
+			<if test="params.has_pstn != null">and copc.has_pstn = #{params.has_pstn}</if>
+			<if test="params.has_fax != null">and copc.has_fax = #{params.has_fax}</if>
+			<if test="params.has_voip != null">and copc.has_voip = #{params.has_voip}</if>
+			<if test="params.pstn_count != null">and copc.pstn_count = #{params.pstn_count}</if>
+			<if test="params.fax_count != null">and copc.fax_count = #{params.fax_count}</if>
+			<if test="params.voip_count != null">and copc.voip_count = #{params.voip_count}</if>
+			<if test="params.has_alarm != null">and copc.has_alarm = #{params.has_alarm}</if>
+			<if test="params.has_emergency != null">and copc.has_emergency = #{params.has_emergency}</if>
+			<if test="params.has_cctv != null">and copc.has_cctv = #{params.has_cctv}</if>
+			<if test="params.has_eftpos != null">and copc.has_eftpos = #{params.has_eftpos}</if>
+			<if test="params.has_smart_bundle != null">and copc.has_smart_bundle = #{params.has_smart_bundle}</if>
+			<if test="params.has_call_restrict != null">and copc.has_call_restrict = #{params.has_call_restrict}</if>
+			<if test="params.has_call_waiting != null">and copc.has_call_waiting = #{params.has_call_waiting}</if>
+			<if test="params.has_faxability != null">and copc.has_faxability = #{params.has_faxability}</if>
+			<if test="params.has_call_display != null">and copc.has_call_display = #{params.has_call_display}</if>
+			<if test="params.has_wire_maintenance != null">and copc.has_wire_maintenance = #{params.has_wire_maintenance}</if>
+			<if test="params.has_static_ip != null">and copc.has_static_ip = #{params.has_static_ip}</if>
+			<if test="params.has_dial_wrap != null">and copc.has_dial_wrap = #{params.has_dial_wrap}</if>
+			<if test="params.smart_bundle_count != null">and copc.smart_bundle_count = #{params.smart_bundle_count}</if>
+			<if test="params.call_restrict_count != null">and copc.call_restrict_count = #{params.call_restrict_count}</if>
+			<if test="params.call_waiting_count != null">and copc.call_waiting_count = #{params.call_waiting_count}</if>
+			<if test="params.faxability_count != null">and copc.faxability_count = #{params.faxability_count}</if>
+			<if test="params.call_display_count != null">and copc.call_display_count = #{params.call_display_count}</if>
+			<if test="params.wire_maintenance_count != null">and copc.wire_maintenance_count = #{params.wire_maintenance_count}</if>
+			<if test="params.static_ip_count != null">and copc.static_ip_count = #{params.static_ip_count}</if>
+			<if test="params.dial_wrap_count != null">and copc.dial_wrap_count = #{params.dial_wrap_count}</if>
+			<if test="params.has_router_post != null">and copc.has_router_post = #{params.has_router_post}</if>
+			<if test="params.router_post_count != null">and copc.router_post_count = #{params.router_post_count}</if>
+			<if test="params.has_svcv_lan != null">and copc.has_svcv_lan = #{params.has_svcv_lan}</if>
+			<if test="params.has_service_given != null">and copc.has_service_given = #{params.has_service_given}</if>
+			<if test="params.has_pstn_nca != null">and copc.has_pstn_nca = #{params.has_pstn_nca}</if>
+			<if test="params.pstn_nca_count != null">and copc.pstn_nca_count = #{params.pstn_nca_count}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderProvisionChecklist" parameterType="CustomerOrderProvisionChecklist" resultType="CustomerOrderProvisionChecklist">
+		select * from tm_customer_order_provision_checklist as copc
+		<include refid="customerOrderProvisionChecklistWhere"/>
+	</select>
+
+	<!-- select customerOrderProvisionChecklist page -->
+	<select id="selectCustomerOrderProvisionChecklistsByPage" parameterType="Page" resultMap="customerOrderProvisionChecklistResultMap">
+		select 
+			<include refid="customerOrderProvisionChecklistColumns"/>
+			from tm_customer_order_provision_checklist as copc
+			<include refid="customerOrderProvisionChecklistWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderProvisionChecklist amount -->
+	<select id="selectCustomerOrderProvisionChecklistsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_provision_checklist as copc
+		<include refid="customerOrderProvisionChecklistWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderProvisionChecklist" parameterType="CustomerOrderProvisionChecklist" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_provision_checklist`(
+			`order_id`, `payment_form`, `has_pstn`, `has_fax`, 
+			`has_voip`, `pstn_count`, `fax_count`, `voip_count`, `has_alarm`, 
+			`has_emergency`, `has_cctv`, `has_eftpos`, `has_smart_bundle`, `has_call_restrict`, 
+			`has_call_waiting`, `has_faxability`, `has_call_display`, `has_wire_maintenance`, `has_static_ip`, 
+			`has_dial_wrap`, `smart_bundle_count`, `call_restrict_count`, `call_waiting_count`, `faxability_count`, 
+			`call_display_count`, `wire_maintenance_count`, `static_ip_count`, `dial_wrap_count`, `has_router_post`, `router_post_count`, 
+			`has_svcv_lan`, `has_service_given`, `has_pstn_nca`, `pstn_nca_count`
+		) VALUES (
+			#{order_id}, #{payment_form}, #{has_pstn}, #{has_fax}, 
+			#{has_voip}, #{pstn_count}, #{fax_count}, #{voip_count}, #{has_alarm}, 
+			#{has_emergency}, #{has_cctv}, #{has_eftpos}, #{has_smart_bundle}, #{has_call_restrict}, 
+			#{has_call_waiting}, #{has_faxability}, #{has_call_display}, #{has_wire_maintenance}, #{has_static_ip}, 
+			#{has_dial_wrap}, #{smart_bundle_count}, #{call_restrict_count}, #{call_waiting_count}, #{faxability_count}, 
+			#{call_display_count}, #{wire_maintenance_count}, #{static_ip_count}, #{dial_wrap_count}, #{has_router_post}, #{router_post_count}, 
+			#{has_svcv_lan}, #{has_service_given}, #{has_pstn_nca}, #{pstn_nca_count}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderProvisionChecklist -->
+	<update id="updateCustomerOrderProvisionChecklist" parameterType="CustomerOrderProvisionChecklist">
+		update tm_customer_order_provision_checklist
+		<set>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="payment_form != null">payment_form = #{payment_form},</if>
+			<if test="has_pstn != null">has_pstn = #{has_pstn},</if>
+			<if test="has_fax != null">has_fax = #{has_fax},</if>
+			<if test="has_voip != null">has_voip = #{has_voip},</if>
+			<if test="pstn_count != null">pstn_count = #{pstn_count},</if>
+			<if test="fax_count != null">fax_count = #{fax_count},</if>
+			<if test="voip_count != null">voip_count = #{voip_count},</if>
+			<if test="has_alarm != null">has_alarm = #{has_alarm},</if>
+			<if test="has_emergency != null">has_emergency = #{has_emergency},</if>
+			<if test="has_cctv != null">has_cctv = #{has_cctv},</if>
+			<if test="has_eftpos != null">has_eftpos = #{has_eftpos},</if>
+			<if test="has_smart_bundle != null">has_smart_bundle = #{has_smart_bundle},</if>
+			<if test="has_call_restrict != null">has_call_restrict = #{has_call_restrict},</if>
+			<if test="has_call_waiting != null">has_call_waiting = #{has_call_waiting},</if>
+			<if test="has_faxability != null">has_faxability = #{has_faxability},</if>
+			<if test="has_call_display != null">has_call_display = #{has_call_display},</if>
+			<if test="has_wire_maintenance != null">has_wire_maintenance = #{has_wire_maintenance},</if>
+			<if test="has_static_ip != null">has_static_ip = #{has_static_ip},</if>
+			<if test="has_dial_wrap != null">has_dial_wrap = #{has_dial_wrap},</if>
+			<if test="smart_bundle_count != null">smart_bundle_count = #{smart_bundle_count},</if>
+			<if test="call_restrict_count != null">call_restrict_count = #{call_restrict_count},</if>
+			<if test="call_waiting_count != null">call_waiting_count = #{call_waiting_count},</if>
+			<if test="faxability_count != null">faxability_count = #{faxability_count},</if>
+			<if test="call_display_count != null">call_display_count = #{call_display_count},</if>
+			<if test="wire_maintenance_count != null">wire_maintenance_count = #{wire_maintenance_count},</if>
+			<if test="static_ip_count != null">static_ip_count = #{static_ip_count},</if>
+			<if test="dial_wrap_count != null">dial_wrap_count = #{dial_wrap_count},</if>
+			<if test="has_router_post != null">has_router_post = #{has_router_post},</if>
+			<if test="router_post_count != null">router_post_count = #{router_post_count},</if>
+			<if test="has_svcv_lan != null">has_svcv_lan = #{has_svcv_lan},</if>
+			<if test="has_service_given != null">has_service_given = #{has_service_given},</if>
+			<if test="has_pstn_nca != null">has_pstn_nca = #{has_pstn_nca},</if>
+			<if test="pstn_nca_count != null">pstn_nca_count = #{pstn_nca_count}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.order_id != null">and order_id = #{params.order_id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderProvisionChecklistById" parameterType="int">
+		DELETE FROM tm_customer_order_provision_checklist WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

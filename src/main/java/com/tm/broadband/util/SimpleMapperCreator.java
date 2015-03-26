@@ -171,6 +171,11 @@ public class SimpleMapperCreator {
 			context.append("\t\t<set>\n");
 			for (int i = 1; i < this.getAttributes().length; i++) {
 				if(i<this.getAttributes().length-1){
+					context.append("\t\t\t<if test=\""+this.getAttributes()[i]+"_null == true\">"+this.getAttributes()[i]+" = NULL,</if>\n");
+				}
+			}
+			for (int i = 1; i < this.getAttributes().length; i++) {
+				if(i<this.getAttributes().length-1){
 					context.append("\t\t\t<if test=\""+this.getAttributes()[i]+" != null\">"+this.getAttributes()[i]+" = #{"+this.getAttributes()[i]+"},</if>\n");
 				} else {
 					context.append("\t\t\t<if test=\""+this.getAttributes()[i]+" != null\">"+this.getAttributes()[i]+" = #{"+this.getAttributes()[i]+"}</if>\n");

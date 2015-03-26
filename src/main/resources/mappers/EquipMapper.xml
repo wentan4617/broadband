@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.EquipMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="equipColumns">
+		e.`id`						as e_id,
+		e.`equip_name`				as e_equip_name,
+		e.`equip_type`				as e_equip_type,
+		e.`equip_purpose`			as e_equip_purpose,
+		e.`equip_sn`				as e_equip_sn,
+		e.`equip_status`			as e_equip_status,
+		e.`order_detail_id`			as e_order_detail_id,
+		e.`warehousing_date`		as e_warehousing_date
+	</sql>
+
+	<resultMap type="Equip" id="equipResultMap">
+		<id property="id" column="e_id" />
+		<result property="equip_name" column="e_equip_name" />
+		<result property="equip_type" column="e_equip_type" />
+		<result property="equip_purpose" column="e_equip_purpose" />
+		<result property="equip_sn" column="e_equip_sn" />
+		<result property="equip_status" column="e_equip_status" />
+		<result property="order_detail_id" column="e_order_detail_id" />
+		<result property="warehousing_date" column="e_warehousing_date" />
+	</resultMap>
+
+	<sql id="equipWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_without_dispatched'">
+					<if test="params.equip_type != null">and e.equip_type = #{params.equip_type}</if>
+					<if test="params.equip_purpose != null">and e.equip_purpose = #{params.equip_purpose}</if>
+					<if test="params.equip_name_sn != null">
+						and (
+							e.equip_name LIKE CONCAT('%', '${params.equip_name_sn}', '%')
+							or
+							e.equip_sn LIKE CONCAT('%', '${params.equip_name_sn}', '%')
+						)
+					</if>
+					<if test="params.equip_status != null">and e.equip_status = #{params.equip_status}</if>
+					and e.equip_status != 'dispatched'
+				</when>
+				<otherwise>
+					<if test="params.id != null">e.id = #{params.id}</if>
+					<if test="params.equip_name != null">and e.equip_name = #{params.equip_name}</if>
+					<if test="params.equip_type != null">and e.equip_type = #{params.equip_type}</if>
+					<if test="params.equip_purpose != null">and e.equip_purpose = #{params.equip_purpose}</if>
+					<if test="params.equip_sn != null">and e.equip_sn = #{params.equip_sn}</if>
+					<if test="params.equip_status != null">and e.equip_status = #{params.equip_status}</if>
+					<if test="params.order_detail_id != null">and e.order_detail_id = #{params.order_detail_id}</if>
+					<if test="params.warehousing_date != null">and e.warehousing_date = #{params.warehousing_date}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectEquip" parameterType="Equip" resultType="Equip">
+		select * from tm_equip as e
+		<include refid="equipWhere"/>
+	</select>
+
+	<!-- select equip page -->
+	<select id="selectEquipsByPage" parameterType="Page" resultMap="equipResultMap">
+		select 
+			<include refid="equipColumns"/>
+			from tm_equip as e
+			<include refid="equipWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select equip amount -->
+	<select id="selectEquipsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_equip as e
+		<include refid="equipWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertEquip" parameterType="Equip" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_equip`(
+			`id`, `equip_name`, `equip_type`, `equip_purpose`, `equip_sn`, `equip_status`, 
+			`order_detail_id`, `warehousing_date`
+		) VALUES (
+			#{id}, #{equip_name}, #{equip_type}, #{equip_purpose}, #{equip_sn}, #{equip_status}, 
+			#{order_detail_id}, #{warehousing_date}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update equip -->
+	<update id="updateEquip" parameterType="Equip">
+		update tm_equip
+		<set>
+			<if test="equip_name != null">equip_name = #{equip_name},</if>
+			<if test="equip_type != null">equip_type = #{equip_type},</if>
+			<if test="equip_purpose != null">equip_purpose = #{equip_purpose},</if>
+			<if test="equip_sn != null">equip_sn = #{equip_sn},</if>
+			<if test="equip_status != null">equip_status = #{equip_status},</if>
+			<if test="order_detail_id != null">order_detail_id = #{order_detail_id},</if>
+			<if test="warehousing_date != null">warehousing_date = #{warehousing_date},</if>
+			<if test="params.order_detail_id_null == true">order_detail_id = NULL</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteEquipById" parameterType="int">
+		DELETE FROM tm_equip WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

@@ -60,14 +60,13 @@
 }
 
 </style>
-<div>
+
 <table class="table">
 	<thead>
 		<tr>
 			<th colspan="12">
 				<!-- In the external page, assign orderIds as obj's attribute -->
 				<h3 class="text-success" style="margin: 2px;">
-					<strong>Order Serial:&nbsp;<small><.=orderIds[o].></small></strong>
 					<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 					<select class="selectpicker" data-name="unbind_invoice_selecter">
 					    <option value="0">------------Operation------------</option>
@@ -79,7 +78,6 @@
 					<. } .>
 				</h3>
 				<br/>
-				<div class="pull-right text-danger" style="font-size:24px;">Total Balance: $<.= Number(totalBalance).toFixed(2) .></div>
 			</th>
 		</tr>
 		<tr>
@@ -107,16 +105,45 @@
 <. for (var o = 0, len = orderIds.length; o < len; o++){ .>
 	<tbody>
 		<.
+				
+			var is_duplicated_order_id = false;
+			var recorded_order_id;
+			
+			var totalBalance = 0;
+			
 			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
 				var invoice = invoicePage.results[i];
 				
 				if(orderIds[o]==invoice.order_id){
 				
+				
+					totalBalance += invoice.balance;
+					
+				}
+			}
+			
+			for (var i = 0, invoiceLen = invoicePage.results.length; i < invoiceLen; i++) {
+				var invoice = invoicePage.results[i];
+				
+				if(orderIds[o]==invoice.order_id){
+				
+					if(!is_duplicated_order_id && recorded_order_id!=invoice.order_id){
+						is_duplicated_order_id = true;
+						recorded_order_id = invoice.order_id;
+						.>
+						<tr class="bg-warning">
+							<td colspan="12">
+								<h3 class="text-danger" style="text-align:center;"><strong>Order#:&nbsp;<.= recorded_order_id .>&nbsp;&nbsp;Customer#:&nbsp;<.= invoice.customer_id .></strong><strong class="pull-right">Total Balance: $<.= Number(totalBalance).toFixed(2) .></strong></h3>
+								
+							</td>
+						</tr>
+						<.
+					}
+				
 					for (var t = transactionsList.length-1; t >= 0; t--) {
 						var tx = transactionsList[t];
 						
 						if(tx.invoice_id==invoice.id){
-							var txAmount_paid = new Number(tx.amount);
 		.>
 							<tr>
 								<td>&nbsp;</td>
@@ -125,7 +152,7 @@
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
-								<td><strong>-<.= txAmount_paid.toFixed(2) .></strong></td>
+								<td><strong>-<.= Number(tx.amount).toFixed(2) .></strong></td>
 								<td>&nbsp;</td>
 								<td style="text-align:center;"><strong><.= tx.card_name .></strong></td>
 								<. if(tx.executor == null){ .>
@@ -172,22 +199,18 @@
 						<td><strong style="color:red;"><.= invoice.due_date_str .></strong></td>
 		<.
 					}
-					var invoiceAmount_payable = new Number(invoice.amount_payable);
-					var invoiceCredit_back = new Number(invoice.amount_payable - invoice.final_payable_amount);
-					var invoiceAmount_paid = new Number(invoice.amount_paid);
-					var invoiceBalance = new Number(invoice.balance);
 		.>
-					<td><strong><.= invoiceAmount_payable.toFixed(2) .></strong></td>
-					<td><strong>-<.= invoiceCredit_back.toFixed(2) .></strong></td>
+					<td><strong><.= Number(invoice.amount_payable).toFixed(2) .></strong></td>
+					<td><strong>-<.= Number(invoice.amount_payable - invoice.final_payable_amount).toFixed(2) .></strong></td>
 					<td>
-						<strong>-<.= invoiceAmount_paid.toFixed(2) .></strong>
+						<strong>-<.= Number(invoice.amount_paid).toFixed(2) .></strong>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
-						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= invoiceAmount_paid.toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
+						<a id="<.= invoice.id .>" class="btn btn-warning btn-xs" data-val="<.= Number(invoice.amount_paid).toFixed(2) .>" data-name="<.= invoice.id .>_edit_paid_amount">
 						  	<span class="glyphicon glyphicon-pencil"></span> 
 						</a>
 						<. } .>
 					</td>
-					<td><strong><.= invoiceBalance.toFixed(2) .></strong></td>
+					<td><strong><.= Number(invoice.balance).toFixed(2) .></strong></td>
 					<td>
 						<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
 						<. var invoice_status_arr = ['unpaid','not_pay_off','paid','overdue','void','bad-debit']; .>
@@ -324,7 +347,7 @@
 						}
 					}
 		.>
-				<. if(user_role=='administrator' || user_role=='system-developer' || user_role=='accountant'){ .>
+				<. if(user_role=='system-developer' || user_role=='accountant'){ .>
 					<td style="text-align:center;">
 						<a id="<.= invoice.id .>" data-name="remove_invoice_btn_<.= invoice.id .>" class="btn btn-danger btn-xs" href="javascript:void(0);">
 							<span class="glyphicon glyphicon-trash"></span>
@@ -376,7 +399,7 @@
 						<div class="form-group" style="display:none;" data-name="cash_defray_amount_input_<.= invoice.id .>">
 							<label for="defray_amount" class="control-label col-md-6">Defray Amount:</label>
 							<div class="col-md-6">
-								<input name="defray_amount_<.= invoice.id .>" value="<.= invoiceBalance.toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
+								<input name="defray_amount_<.= invoice.id .>" value="<.= Number(invoice.balance).toFixed(2) .>" class="form-control input-sm" type="text" placeholder="Defray Amount"/>
 							</div>
 						</div>
 						<div class="form-group" style="display:none;" data-name="vouchar_pin_number_input_<.= invoice.id .>">
@@ -470,7 +493,7 @@
 									<div class="form-group">
 										<label class="control-label col-md-6" style="text-align:right;">Paid Amount</label>
 										<div class="col-md-4">
-											<input class="form-control" data-name="invoice_paid_amount_input_<.= invoice.id .>" value="<.= invoiceAmount_paid.toFixed(2) .>"/>
+											<input class="form-control" data-name="invoice_paid_amount_input_<.= invoice.id .>" value="<.= Number(invoice.amount_paid).toFixed(2) .>"/>
 										</div>
 									</div>
 								</div>
@@ -495,13 +518,13 @@
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="11">
+			<td colspan="12">
 				<ul class="pagination">
 	<.
 					for (var i = 1, len = invoicePage.totalPage; i <= len; i++) {
 	.>
 						<li class="<.= invoicePage.pageNo == i ? 'active' : '' .>">
-							<a href="javascript:void(0);" data-pageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+							<a href="javascript:void(0);" data-pageNo="<.=i.>" data-cblPageNo="<.=cblPage.pageNo.>" style="cursor:pointer;"><.=i.></a>
 						</li>
 	<.
 					}
@@ -514,6 +537,72 @@
 	<div class="alert alert-warning">No records have been found.</div>
 <. } .>
 
+<div>
+<table class="table">
+	<thead>
+		<tr>
+			<th colspan="12">
+				<h3 class="text-success" style="margin: 2px;">
+					<strong>Operation Records:&nbsp;</strong>
+				</h3>
+				<br/>
+			</th>
+		</tr>
+		<tr>
+			<th><input type="checkbox" id="checkbox_cbls_top" /></th>
+			<th>Invoice #</th>
+			<th>Operate Type</th>
+			<th>Operate Name</th>
+			<th>Operate Date</th>
+			<th>Executor</th>
+		</tr>
+	</thead>
+<. if (cblPage.results != null && cblPage.results.length > 0) { .>
+	<tbody>
+		<.
+			for (var i = 0, cblLen = cblPage.results.length; i < cblLen; i++) {
+				var cbl = cblPage.results[i];
+		.>
+		<tr>
+			<td><input type="checkbox" id="checkbox_cbl_top" /></td>
+			<td><.= cbl.invoice_id .></td>
+			<td><.= cbl.oper_type .></td>
+			<td><.= cbl.oper_name .></td>
+			<td><.= cbl.oper_date_str .></td>
+			<td>
+				<.
+					for(var u=0; u<users.length; u++){
+				   		if(users[u].id == cbl.user_id){
+				.>
+					<.= users[u].user_name .> -<br/><.= users[u].user_role .>
+				<.
+				   		}
+					}
+				.>
+			</td>
+		</tr>
+		<. } .>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="11">
+				<ul class="pagination">
+	<.
+					for (var i = 1, len = cblPage.totalPage; i <= len; i++) {
+	.>
+						<li class="<.= cblPage.pageNo == i ? 'active' : '' .>">
+							<a href="javascript:void(0);" data-pageNo="<.=invoicePage.pageNo.>" data-cblPageNo="<.=i.>" style="cursor:pointer;"><.=i.></a>
+						</li>
+	<.
+					}
+	.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+<. } .>
+</table>
+</div>
 		<!-- Unbind invoice Modal -->
 		<div class="modal fade" id="unbindInvoiceModal" tabindex="-1" role="dialog" aria-labelledby="unbindInvoiceModalLabel" aria-hidden="true">
 			<div class="modal-dialog">

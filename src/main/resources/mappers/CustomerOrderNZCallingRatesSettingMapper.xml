@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerOrderNZCallingRatesSettingMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerOrderNZCallingRatesSettingColumns">
+		conzcrs.`id`					as conzcrs_id,
+		conzcrs.`order_id`				as conzcrs_order_id,
+		conzcrs.`call_type`				as conzcrs_call_type,
+		conzcrs.`call_rate`				as conzcrs_call_rate,
+		conzcrs.`phone_type`			as conzcrs_phone_type
+	</sql>
+
+	<resultMap type="CustomerOrderNZCallingRatesSetting" id="customerOrderNZCallingRatesSettingResultMap">
+		<id property="id" column="conzcrs_id" />
+		<result property="order_id" column="conzcrs_order_id" />
+		<result property="call_type" column="conzcrs_call_type" />
+		<result property="call_rate" column="conzcrs_call_rate" />
+		<result property="phone_type" column="conzcrs_phone_type" />
+	</resultMap>
+
+	<sql id="customerOrderNZCallingRatesSettingWhere">
+		<where>
+			<if test="params.id != null">conzcrs.id = #{params.id}</if>
+			<if test="params.order_id != null">and conzcrs.order_id = #{params.order_id}</if>
+			<if test="params.call_type != null">and conzcrs.call_type = #{params.call_type}</if>
+			<if test="params.call_rate != null">and conzcrs.call_rate = #{params.call_rate}</if>
+			<if test="params.phone_type != null">and conzcrs.phone_type = #{params.phone_type}</if>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerOrderNZCallingRatesSetting" parameterType="CustomerOrderNZCallingRatesSetting" resultType="CustomerOrderNZCallingRatesSetting">
+		select * from tm_customer_order_nz_calling_rates_setting as conzcrs
+		<include refid="customerOrderNZCallingRatesSettingWhere"/>
+	</select>
+
+	<!-- select customerOrderNZCallingRatesSetting page -->
+	<select id="selectCustomerOrderNZCallingRatesSettingsByPage" parameterType="Page" resultMap="customerOrderNZCallingRatesSettingResultMap">
+		select 
+			<include refid="customerOrderNZCallingRatesSettingColumns"/>
+			from tm_customer_order_nz_calling_rates_setting as conzcrs
+			<include refid="customerOrderNZCallingRatesSettingWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerOrderNZCallingRatesSetting amount -->
+	<select id="selectCustomerOrderNZCallingRatesSettingsSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_order_nz_calling_rates_setting as conzcrs
+		<include refid="customerOrderNZCallingRatesSettingWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerOrderNZCallingRatesSetting" parameterType="CustomerOrderNZCallingRatesSetting" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_order_nz_calling_rates_setting`(
+			`id`, `order_id`, `call_type`, `call_rate`, `phone_type`
+		) VALUES (
+			#{id}, #{order_id}, #{call_type}, #{call_rate}, #{phone_type}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerOrderNZCallingRatesSetting -->
+	<update id="updateCustomerOrderNZCallingRatesSetting" parameterType="CustomerOrderNZCallingRatesSetting">
+		update tm_customer_order_nz_calling_rates_setting
+		<set>
+			<if test="order_id_null == true">order_id = NULL,</if>
+			<if test="call_type_null == true">call_type = NULL,</if>
+			<if test="order_id != null">order_id = #{order_id},</if>
+			<if test="call_type != null">call_type = #{call_type},</if>
+			<if test="call_rate != null">call_rate = #{call_rate},</if>
+			<if test="phone_type != null">phone_type = #{phone_type}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerOrderNZCallingRatesSettingById" parameterType="int">
+		DELETE FROM tm_customer_order_nz_calling_rates_setting WHERE id = #{0}
+	</delete>
+
+	<delete id="deleteCustomerOrderNZCallingRatesSettingByOrderId" parameterType="int">
+		DELETE FROM tm_customer_order_nz_calling_rates_setting WHERE order_id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

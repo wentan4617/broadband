@@ -35,6 +35,7 @@ public interface UserMapper {
 	List<User> selectUser(User user);
 	
 	List<User> selectUsersWhoseIdExistInOrder();
+	List<User> selectUsersWhoseIdExistInOrderInvoice();
 	
 	/* // END SELECT AREA */
 	/* =================================================================================== */

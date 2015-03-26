@@ -1,13 +1,7 @@
 package com.tm.broadband.util.test;
 
 import java.text.ParseException;
-import java.util.Calendar;
-import java.util.List;
 
-import com.tm.broadband.model.CustomerCallRecord;
-import com.tm.broadband.model.CustomerChorusBroadbandASIDRecord;
-import com.tm.broadband.util.CallingRecordUtility;
-import com.tm.broadband.util.SimpleMapperCreator;
 import com.tm.broadband.util.TMUtils;
 
 
@@ -168,12 +162,6 @@ public class StevenTest {
 //		System.out.println("asdasdsd$".contains("$"));
 		
 		
-
-//		SimpleMapperCreator smc = new SimpleMapperCreator();
-//		smc.setAuthor("CyberPark");
-//		smc.setModel("CustomerChorusBroadbandASIDRecord");
-//		smc.setTable("tm_customer_chorus_broadband_asid_record");
-//		smc.initial();
 		
 		
 		
@@ -231,6 +219,54 @@ public class StevenTest {
 //			}
 //		}
 		
+//		Calendar cal = Calendar.getInstance();
+//		cal.set(Calendar.DATE, 1);
+//		int count = 10;
+//		System.out.println();
+//		for (int i=0; i<cal.getMaximum(Calendar.DATE)-1; i++) {
+//			
+//			if(count==0){
+//				System.out.println();
+//				System.out.println();
+//				count = 10;
+//			}
+//			
+//			System.out.print(TMUtils.retrieveMonthAbbrWithDate(cal.getTime())+"\t");
+//			cal.add(Calendar.DATE, 1);
+//			
+//			count--;
+//		}
+		
+//		Workbook wb = new HSSFWorkbook();
+//		
+//		Sheet sheet = wb.createSheet(WorkbookUtil.createSafeSheetName("&*(^^%&$#@#@!$@%@%$"));
+//		
+//		Cell cell = sheet.createRow(0).createCell(3);
+//		cell.setCellValue("Hi there");
+//		
+//		try {
+//			FileOutputStream output = new FileOutputStream("Test.xls");
+//			wb.write(output);
+//			output.close();
+//			
+//		} catch (FileNotFoundException e) {
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
+//		System.out.println("0000013012312312378".replaceFirst("^0*", ""));
+		
+		
+//		// Determine Whether Array Contains Specified Value
+//		String[] stringArray = { "a$^cf", "b", "c", "d", "e" };
+//		boolean b = Arrays.asList(stringArray).contains("a$^cf");
+//		System.out.println(b);
+//		// true
+		
+//		System.out.println(TMUtils.parseDate4YYYYMMDDHHMM("2014/12/2 23:34"));
+		
+//		System.out.println(!"161165771".startsWith("1"));
 		
 		
 	}

@@ -163,6 +163,7 @@
 		<url-pattern>/broadband-user/system/*</url-pattern>
 		<url-pattern>/broadband-user/sale/*</url-pattern>
 		<url-pattern>/broadband-user/manual-manipulation/*</url-pattern>
+		<url-pattern>/broadband-user/inventory/*</url-pattern>
 	</filter-mapping>
 
 	<!-- user auth filter -->
@@ -206,6 +207,7 @@
 		<url-pattern>/broadband-user/billing/early-termination-charge/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/termination-refund/view/*</url-pattern>
 		<url-pattern>/broadband-user/billing/chart/calling-statistic/*</url-pattern>
+		<url-pattern>/broadband-user/billing/ddccinvoice/view</url-pattern>
 		<!-- Billing Module END -->
 
 		<!-- Provision Module BEGIN -->
@@ -233,11 +235,17 @@
 		<url-pattern>/broadband-user/system/seo/edit</url-pattern>
 		<url-pattern>/broadband-user/system/chart/customer-register/*</url-pattern>
 		<url-pattern>/broadband-user/system/ir/edit</url-pattern>
+		<url-pattern>/broadband-user/system/website_editable_details</url-pattern>
+		<url-pattern>/broadband-user/system/plan_introductions</url-pattern>
+		<url-pattern>/broadband-user/system/website_static_resources</url-pattern>
+		<url-pattern>/broadband-user/system/terms_conditions</url-pattern>
+		<url-pattern>/broadband-user/system/pdf_resources</url-pattern>
 		<!-- System Module END -->
 
 		<!-- Sales Module BEGIN -->
 		<url-pattern>/broadband-user/sale/online/ordering/view/*</url-pattern>
 		<url-pattern>/broadband-user/sale/online/ordering/plans</url-pattern>
+		<url-pattern>/broadband-user/sale/sales-commission/view</url-pattern>
 		<!-- Sales Module END -->
 
 		<!-- Manual Manipulation Module BEGIN -->
@@ -251,6 +259,11 @@
 		<url-pattern>/broadband-user/agent/billing/invoice/view/*</url-pattern>
 		<url-pattern>/broadband-user/agent/billing/chart/commission-statistic/*</url-pattern>
 		<!-- Agent Module END -->
+
+		<!-- Inventory Module BEGIN -->
+		<url-pattern>/broadband-user/inventory/equip/view</url-pattern>
+		<url-pattern>/broadband-user/inventory/equip/log/view</url-pattern>
+		<!-- Inventory Module END -->
 
 	</filter-mapping>
 	

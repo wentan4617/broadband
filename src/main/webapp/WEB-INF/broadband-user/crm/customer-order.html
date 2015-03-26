@@ -1,52 +1,35 @@
-<style>
-#order_detail .form-group {
-	margin-bottom:4px;
-}
-
-.align-right {
-	text-align:right;
-}
-
-.xs-btn-width-small {
-	width:120px;
-}
-
-.xs-btn-width {
-	width:150px;
-}
-
-.xs-btn-width-long {
-	width:180px;
-}
-
-.xs-btn-width-longer {
-	width:220px;
-}
-
-.strong {
-	font-weight:bold;
-}
-
-.input-xs{
-	height:33px;
-}
-
-</style>
-
+<div class="panel-group" role="tablist" aria-multiselectable="false">
 <!-- orders -->
 <.  var customerOrder = customer.customerOrders;
 	for(var i=0; i < customerOrder.length; i++){
 	var order_total_price = new Number(customerOrder[i].order_total_price); .>
+	
+  <div class="panel panel-success">
+    <div class="panel-heading" role="tab" id="heading_<.= customerOrder[i].id .>">
+      <h4 class="panel-title">
+        <a data-toggle="collapse" data-parent="#accordion" href="#collapse_<.= customerOrder[i].id .>" aria-controls="collapse_<.= customerOrder[i].id .>" aria-expanded="<.= order_id_arg0==customerOrder[i].id ? 'true' : 'false' .>" class="<.= order_id_arg0==customerOrder[i].id ? '' : 'collapsed' .>" style="display:block;">
+          Order Information: <strong><.= customerOrder[i].id .></strong> - <strong><.= customerOrder[i].customer_type .></strong> -
+          <. if(customerOrder[i].customer_type=='personal'){ .>
+          <strong><.= customerOrder[i].first_name .>&nbsp;<.= customerOrder[i].last_name .></strong>
+          <. } else { .>
+          <strong><.= customerOrder[i].org_name .></strong>
+          <. } .>
+          <strong class="pull-right"><.= customerOrder[i].order_status .></strong>
+        </a>
+      </h4>
+    </div>
+    <div id="collapse_<.= customerOrder[i].id .>" class="<.= order_id_arg0==customerOrder[i].id ? 'panel-collapse collaps collapse in' : 'panel-collapse collaps collapse' .>" role="tabpanel" aria-labelledby="heading_<.= customerOrder[i].id .>" aria-expanded="<.= order_id_arg0==customerOrder[i].id ? 'true' : 'false' .>" style="<.= order_id_arg0==customerOrder[i].id ? 'height:100%' : 'height:0%' .>;">
+      <div class="panel-body">
+      <a href="javascript:void(0);" data-order-id="<.= customerOrder[i].id .>" id="edit_order_provision_checklist_<.= customerOrder[i].id .>" class="btn btn-info btn-xs" style="color:white;">Provision Checklist</a><br/>
 	<form class="form-horizontal" action="<.= ctx .>/broadband-user/crm/customer/order/previous_provider_invoice/pdf/upload" enctype="multipart/form-data" method="post">
 		<input type="hidden" name="order_id" value="<.= customerOrder[i].id .>"/>
 		<input type="hidden" name="customer_id" value="<.= customer.id .>"/>
 
-		<h4 class="text-success">Order Information</h4>
 			<br/>
 			<. var regenerateOrderingStatus = 'pending,pending-warning,paid,ordering-pending,ordering-paid';
 				/*if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') || (customerOrder[i].order_using_start==null && (!(regenerateOrderingStatus.indexOf(customerOrder[i].order_status)<0)))) {*/
 			.>
-			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-save"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
+			<a href="javascript:void(0);" data-name="<.= customerOrder[i].id .>_regenerate_ordering_form" data-type="regenerate-ordering-form" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer"><span class="glyphicon glyphicon-floppy-cycle"></span>&nbsp;&nbsp;Regenerate Ordering Form</a>&nbsp;&nbsp;
 			<.
 				/*}*/
 			.>
@@ -67,7 +50,13 @@
 			<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-xs btn-primary xs-btn-width-long" data-name="<.= customerOrder[i].id .>_generate_order_receipt"><span class="glyphicon glyphicon-ok"></span>&nbsp;&nbsp;Generate Receipt Only</a>&nbsp;&nbsp;
 			<. } .>
 			<br/>
-		<. } if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
+		<. } .>
+		<. if(customerOrder[i].ordering_form_pdf_path!=null && customerOrder[i].ordering_form_pdf_path!=''){ .>
+			<br/>
+			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_send_order_confirmation">Send Order Confirmation</a>&nbsp;&nbsp;
+			<br/>
+		<. } .>
+		<. if((user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant') && customerOrder[i].order_type == 'order-term'){ .>
 			<br/>
 			<strong>Termed Order's Operations:</strong><br/><br/>
 			<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-xs btn-primary xs-btn-width-longer" data-name="<.= customerOrder[i].id .>_regenerate_invoice" data-type="regenerate">Regenerate most recent invoice</a>&nbsp;&nbsp;
@@ -293,8 +282,12 @@
 					<.= customerOrder[i].term_period .>
 				</p>
 			</div>
-			<label class="control-label col-md-3">&nbsp;</label>
-			<div class="col-md-3">&nbsp;</div>
+			<div class="col-md-3">
+				<input type="text" data-name="term_period_<.= customerOrder[i].id .>" value="<.= customerOrder[i].term_period .>" class="form-control input-xs" placeholder="Term Period" />
+			</div>
+			<div class="col-md-3">
+				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_edit_term_period_btn" >Upload Term Period</a>
+			</div>
 		</div>
 		<!-- END Term Period -->
 		<!-- BEGIN Transition Provider Name -->
@@ -368,7 +361,7 @@
 			<label class="control-label col-md-3">Download Application Form</label>
 			<div class="col-md-3">
 			<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
-				<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
+				<p class="form-control-static"><a href="javascript:void(0);" data-name="generateApplicationUrl_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" data-url="<.= ctx .>/broadband-user/crm/customer/order/application_form/regenerate/<.= customerOrder[i].id .>" class="glyphicon glyphicon-refresh" style="font-size:20px;" data-toggle="tooltip" data-placement="bottom" data-original-title="Overwrite/Generate current application form's PDF"></a>
 			<. } .>
 			<. if(customerOrder[i].order_pdf_path == null || customerOrder[i].order_pdf_path.trim() == ''){ .>
 					&nbsp;No Application Form PDF
@@ -451,18 +444,25 @@
 				</p>
 			</div>
 			<div class="col-md-3">
+				<. if(user_role == 'system-developer'){ .>
 				<select data-name="<.= customerOrder[i].id .>_order_belongs_to_selector" data-val="<.= customerOrder[i].sale_id .>" class="form-control input-xs">
-				<. for(var s=0; s<sales.length; s++){
-						if(sales[s].id == customerOrder[i].sale_id){ .>
-					<option value="<.= sales[s].id .>" selected="selected"><.= sales[s].user_name .></option>
+				<. if(customerOrder[i].sale_id==null || customerOrder[i].sale_id==''){ .>
+				<option value=""></option>
+				<. } .>
+				<. for(var u=0; u<users.length; u++){
+						if(users[u].id == customerOrder[i].sale_id){ .>
+					<option value="<.= users[u].id .>" selected="selected"><.= users[u].user_name .></option>
 				<. 		} else { .>
-					<option value="<.= sales[s].id .>"><.= sales[s].user_name .></option>
+					<option value="<.= users[u].id .>"><.= users[u].user_name .></option>
 				<. 		}
 					} .>
 				</select>
+				<. } .>
 			</div>
 			<div class="col-md-3">
+				<. if(user_role == 'system-developer'){ .>
 				<a id="<.= customerOrder[i].id .>" class="btn btn-xs btn-success pull-right xs-btn-width-long" data-name="<.= customerOrder[i].id .>_order_belongs_to_edit" >Update Submitted By</a>
+				<. } .>
 			</div>
 		</div>
 		<!-- END This Order Belongs To -->
@@ -486,7 +486,7 @@
 		<!-- END Optional Request -->
 		<!-- BEGIN Is DDPay -->
 		<div class="form-group">
-			<label class="control-label col-md-3">Is DDPay</label>
+			<label class="control-label col-md-3">Is DD / CC Pay</label>
 			<div class="col-md-3">
 				<.
 					if(customerOrder[i].is_ddpay == null || customerOrder[i].is_ddpay == false){
@@ -967,33 +967,45 @@
 		<!-- Broadband ASID -->
 		<hr />
 		<h4 class="text-success">Broadband ASID Information&nbsp;
-		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-danger btn-xs" data-name="empty_broadband_asid_btn_<.= customerOrder[i].id .>" data-type="broadband_asid" data-dismiss="modal">Empty Broadband ASID</a>
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="add_broadband_asid_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Add Broadband ASID</a>&nbsp;&nbsp;
+		<. if(user_role == 'system-developer'){ .>
+		<!-- <a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="separately_store_broadband_asid_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Separately Store Broadband ASID</a> -->
+		<. } .>
 		</h4>
 		<hr />
-		<div class="row">
-			<div class="col-md-6">
-				<div class="form-group">
-					<label class="control-label col-md-6">Broadband ASID</label>
-					<div class="col-md-6">
-						<p id="<.= customerOrder[i].id .>_broadband_asid" class="form-control-static"><.= customerOrder[i].broadband_asid .></p>
+		<. var cobasids = customerOrder[i].cobasids; .>
+		<. for(var cobasidsIndex=0; cobasidsIndex<cobasids.length; cobasidsIndex++){ .>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="form-group">
+						<label class="control-label col-md-6">Broadband ASID</label>
+						<div class="col-md-6">
+							<p id="<.= customerOrder[i].id .>_broadband_asid" class="form-control-static"><.= cobasids[cobasidsIndex].broadband_asid .></p>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<div class="col-md-6">
+							<input value="<.= cobasids[cobasidsIndex].broadband_asid .>" data-name="<.= customerOrder[i].id .>_<.= cobasids[cobasidsIndex].id .>_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
+						</div>
+						<div class="col-md-6">
+							<a id="<.= customerOrder[i].id .>" data-asid-id="<.= cobasids[cobasidsIndex].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_brodband_asid_update_btn">Update ASID</a>
+							<. if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){ .>
+							<a id="<.= customerOrder[i].id .>" data-asid-id="<.= cobasids[cobasidsIndex].id .>" class="btn btn-success btn-xs" data-name="<.= customerOrder[i].id .>_brodband_asid_remove_btn">Remove ASID</a>
+							<. } .>
+						</div>
 					</div>
 				</div>
 			</div>
-			<div class="col-md-6">
-				<div class="form-group">
-					<div class="col-md-6">
-						<input value="<.= customerOrder[i].broadband_asid .>" data-name="<.= customerOrder[i].id .>_brodband_asid" class="form-control input-sm" data-placement="bottom" placeholder="Broadband ASID" style="height:26px; padding:0 10px;" data-error-field/>
-					</div>
-					<div class="col-md-6">
-						<a id="<.= customerOrder[i].id .>" class="btn btn-success btn-xs btn-block xs-btn-width-longer pull-right" data-name="<.= customerOrder[i].id .>_brodband_asid_btn">Update Broadband ASID</a>
-					</div>
-				</div>
-			</div>
-		</div>
+		<. } .>
 		
 		<!-- order details -->
 		<hr />
-		<h4 class="text-success">Order Detail Information</h4>
+		<h4 class="text-success">Order Detail Information&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="customize_chorus_addon_price_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Customize Chorus Addon Price</a>&nbsp;&nbsp;
+		<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-warning btn-xs" data-name="set_nz_calling_rates_btn_<.= customerOrder[i].id .>" data-dismiss="modal">Set NZ Calling Rates</a>
+		</h4>
 		<hr />
 		<table class="table" style="font-size:12px;">
 			<thead>
@@ -1023,9 +1035,16 @@
 											 customerOrderDetail[d].detail_type=='present-calling-minutes' ? 'alert alert-info' :
 											  customerOrderDetail[d].detail_type=='static-ip' ? 'alert alert-info' :
 											   customerOrderDetail[d].detail_type=='early-termination-debit' ? 'alert alert-danger' :
-											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' : '' .>">
+											    customerOrderDetail[d].detail_type=='termination-credit' ? 'alert alert-warning' :
+											    customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!='' ? 'alert alert-success' : '' .>">
 								<td data-name="<.= customerOrderDetail[d].id .>_detail_name" data-val="<.= customerOrderDetail[d].detail_name .>" >
+				<. if(customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!=''){ .>
+					<a target="_blank" href="<.= ctx .>/broadband-user/inventory/equip/edit/<.= customerOrderDetail[d].equip_id .>" style="text-decoration:underline;">
 									<.= customerOrderDetail[d].detail_name .>
+					</a>
+				<. } else { .>
+									<.= customerOrderDetail[d].detail_name .>
+				<. } .>
 				<.		if(customerOrderDetail[d].detail_type == 'pstn' || customerOrderDetail[d].detail_type == 'voip' || customerOrderDetail[d].detail_type == 'fax'){		.>
 							<br/>
 					(			
@@ -1064,7 +1083,7 @@
 							<.
 								if(customerOrderDetail[d].detail_type.indexOf('plan-') > -1){
 							.>
-									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="<.= customerOrderDetail[d].id .>_order_detail_unit" data-name="plan-detail_<.= customerOrder[i].id .>" data-plan-name="<.= customerOrderDetail[d].detail_name .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>"><.= customerOrderDetail[d].detail_unit .></td>
+									<td class="align-right" id="<.= customerOrder[i].id .>_order_detail_unit" data-name="<.= customerOrderDetail[d].id .>_order_detail_unit" data-name="plan-detail_<.= customerOrder[i].id .>" data-plan-name="<.= customerOrderDetail[d].detail_name .>" data-price="<.= detailPrice.toFixed(2) .>" data-val="<.= customerOrderDetail[d].detail_unit .>" data-term-period="<.= customerOrderDetail[d].detail_term_period .>"><.= customerOrderDetail[d].detail_unit .></td>
 							<.
 								} else {
 							.>
@@ -1090,7 +1109,7 @@
 										|| customerOrderDetail[d].detail_type=='plan-topup'
 									){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-id="<.= customerOrderDetail[d].id .>" data-name="<.= customerOrder[i].id .>_edit_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-toggle="tooltip" data-placement="right" data-original-title="Edit <.= customerOrderDetail[d].detail_type .> detail">
 									  	<span class="glyphicon glyphicon-edit"></span> 
 									</a>
 								<.
@@ -1109,7 +1128,7 @@
 									&& customerOrderDetail[d].detail_type!='fax'
 									&& customerOrderDetail[d].detail_type.indexOf('plan-') == -1){
 								.>
-									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_common_detail" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <.= customerOrderDetail[d].detail_type .>">
+									<a id="<.= customerOrder[i].id .>" class="btn btn-danger btn-xs" data-name="<.= customerOrder[i].id .>_edit_common_detail" data-type="<.= customerOrderDetail[d].detail_type .>" data-detail-calling-minute="<.= customerOrderDetail[d].detail_calling_minute .>" data-detail-name="<.= customerOrderDetail[d].detail_name .>" data-detail-price="<.= customerOrderDetail[d].detail_price .>" data-id="<.= customerOrderDetail[d].id .>" data-toggle="tooltip" data-placement="bottom" data-original-title="Edit <.= customerOrderDetail[d].detail_type .>">
 									  	<span class="glyphicon glyphicon-pencil"></span> 
 									</a>
 								<.
@@ -1141,6 +1160,20 @@
 									  	<span class="glyphicon glyphicon-edit"></span>
 									</a>
 								<.
+									}
+									if(customerOrderDetail[d].detail_type=='hardware' || customerOrderDetail[d].detail_type=='hardware-router'){
+								.>
+									<a id="<.= customerOrder[i].id .>" data-detail-id="<.= customerOrderDetail[d].id .>" data-name="attach_equip_2_hardware_<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Attach Equipment to Hardware">
+									  	<span class="glyphicon glyphicon-th-large"></span>
+									</a>
+								<.
+										if(customerOrderDetail[d].equip_id!=null && customerOrderDetail[d].equip_id!=''){
+								.>
+										<a id="<.= customerOrder[i].id .>" data-detail-id="<.= customerOrderDetail[d].id .>" data-equip-id="<.= customerOrderDetail[d].equip_id .>" data-name="detach_equip_from_hardware_<.= customerOrder[i].id .>" class="btn btn-success btn-xs" data-toggle="tooltip" data-placement="bottom" data-original-title="Detach Equipment from Hardware">
+										  	<span class="glyphicon glyphicon-fullscreen"></span>
+										</a>
+								<.
+										}
 									}
 									/*if(user_role == 'system-developer' || user_role == 'administrator' || user_role == 'accountant'){*/
 								.>
@@ -1183,7 +1216,323 @@
 			</tfoot>
 		</table>
 		
+		<!-- BEGIN DISPATCH LIST -->
+		<hr />
+		<h4 class="text-success">Dispatch List (Onsite)
+		<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-name="add_dispatch_list_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning xs-btn-width-long"><span class="glyphicon glyphicon-file"></span>&nbsp;&nbsp;New Dispatch List</a>&nbsp;&nbsp;
+		</h4>
+		<hr />
+		<table class="table" style="font-size:12px;">
+			<thead>
+				
+				<tr>
+					<th>Create Date</th>
+					<th>Type</th>
+					<th>Status</th>
+					<th>Charge</th>
+					<th colspan="2">Operations</th>
+				</tr>
+				<. var coos = customerOrder[i].coos; .>
+				
+				<. for(var cooIndex = 0; cooIndex < coos.length; cooIndex++){ .>
+				<. var onsite_status = coos[cooIndex].onsite_status; .>
+				<tr class="<.= onsite_status=='processing' ? 'danger' : 'success' .>">
+					<td><.= coos[cooIndex].onsite_date_str .></td>
+					<td>
+						<select id="<.= customerOrder[i].id .>" data-name="onsite_type_selector" data-onsite-id="<.= coos[cooIndex].id .>" class="form-control input-xs">
+							<. var types = ['delivery','faulty','installation','other']; .>
+							<. if(coos[cooIndex].onsite_type==null || coos[cooIndex].onsite_type==''){ .>
+							<option value=""></option>
+							<. } .>
+							<. for(var typesIndex=0; typesIndex<types.length; typesIndex++){ .>
+								<. if(coos[cooIndex].onsite_type==types[typesIndex]){ .>
+							<option value="<.= types[typesIndex] .>" selected="selected"><.= types[typesIndex] .></option>
+								<. } else { .>
+							<option value="<.= types[typesIndex] .>"><.= types[typesIndex] .></option>
+								<. } .>
+							<. } .>
+						</select>
+					</td>
+					<td><.= coos[cooIndex].onsite_status .></td>
+					<td><.= Number(coos[cooIndex].onsite_charge).toFixed(2) .></td>
+					<td colspan="2">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="add_onsite_detail_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="New Onsite Detail"><span class="glyphicon glyphicon-th-large"></span></a>&nbsp;&nbsp;
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="edit_dispatch_list_<.= customerOrder[i].id .>" data-description="<.= coos[cooIndex].onsite_description .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="View Description"><span class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="generate_dispatch_list_pdf_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Generate/Regenerate PDF"><span class="glyphicon glyphicon-refresh"></span></a>&nbsp;&nbsp;
+						<. var pdf_path = coos[cooIndex].pdf_path; .>
+						<. if(pdf_path!=null && pdf_path!='' ){ .>
+						<a target="_blank" href="<.= ctx .>/broadband-user/crm/customer/order/onsite/pdf/download/<.= coos[cooIndex].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Download PDF Format"><span class="glyphicon glyphicon-save"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. var onsite_status = coos[cooIndex].onsite_status; .>
+						<. if(onsite_status=='processing' ){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>" data-ststus="close" class="btn btn-xs btn-success" data-toggle="tooltip" data-placement="bottom" data-original-title="Close Dispatch List"><span class="glyphicon glyphicon-off"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. if(onsite_status=='close' && user_role=='system-developer' ){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>" data-ststus="processing" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Processing Dispatch List"><span class="glyphicon glyphicon-retweet"></span></a>&nbsp;&nbsp;
+						<. } .>
+						<. if(coos[cooIndex].coods.length>0){ .>
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-name="expand_onsite_detail_tr_<.= customerOrder[i].id .>" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="<.= coos[cooIndex].coods.length .> Onsite Detail(s)"><span class="glyphicon glyphicon-th-list"></span>&nbsp;<span class="badge primary"><.= coos[cooIndex].coods.length .></span></a>&nbsp;&nbsp;
+						<. } .>
+					</td>
+				</tr>
+				<. var coods = coos[cooIndex].coods; .>
+					<. if(coods.length>0){ .>
+						<tr data-tr="onsite_detail_tr" data-tr-id="onsite_detail_tr_<.= coos[cooIndex].id .>" style="display:<.= onsite_id_arg1==coos[cooIndex].id ? 'table-row' : 'none' .>;">
+							<th colspan="2">Name</th>
+							<th>Type</th>
+							<th>Unit</th>
+							<th>Price</th>
+							<th>Operations</th>
+						</tr>
+						<. for(var coodIndex=0; coodIndex<coods.length; coodIndex++){ .>
+							<tr data-tr="onsite_detail_tr" data-tr-id="onsite_detail_tr_<.= coos[cooIndex].id .>" style="display:<.= onsite_id_arg1==coos[cooIndex].id ? 'table-row' : 'none' .>;">
+								<td colspan="2"><.= coods[coodIndex].name .></td>
+								<td><.= coods[coodIndex].type .></td>
+								<td><.= coods[coodIndex].unit .></td>
+								<td><.= Number(coods[coodIndex].price).toFixed(2) .></td>
+								<td>
+									<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" data-onsite-id="<.= coos[cooIndex].id .>" data-onsite-detail-id="<.= coods[coodIndex].id .>" data-name="remove_detail_from_dispatch_list_<.= customerOrder[i].id .>" data-ststus="processing" class="btn btn-xs btn-warning" data-toggle="tooltip" data-placement="bottom" data-original-title="Remove this detail from Dispatch List"><span class="glyphicon glyphicon-trash"></span></a>&nbsp;&nbsp;
+								</td>
+							</tr>
+						<. } .>
+					<. } .>
+				<. } .>
+			</thead>
+		</table>
+		
 	</form>
+
+	<!-- Add Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="addDispatchListModalLabel">
+							<strong>New Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Type</label>
+							<div class="col-md-8">
+								<select class="form-control input-xs" data-name="onsite_type_<.= customerOrder[i].id .>">
+									<option value="delivery">Delivery</option>
+									<option value="faulty">Faulty</option>
+									<option value="installation">Installation</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Description</label>
+							<div class="col-md-8">
+								<textarea class="form-control" data-name="onsite_description_<.= customerOrder[i].id .>" rows="6"></textarea>
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="addDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Edit Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editDispatchListModalLabel">
+							<strong>Edit Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Onsite Description</label>
+							<div class="col-md-8">
+								<textarea class="form-control" data-name="edit_onsite_description_<.= customerOrder[i].id .>" rows="6"></textarea>
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-primary" data-name="editDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Close/Processing Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="closeDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="closeDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="closeDispatchListModalLabel">
+							<strong>Close Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static" data-name="close_processing_dispatch_list_<.= customerOrder[i].id .>"></p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="closeDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Close</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Generate/Regenerate Dispatch List PDF Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="generateDispatchListPDFModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="generateDispatchListPDFModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="generateDispatchListPDFModalLabel">
+							<strong>Generate/Regenerate Dispatch List PDF</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Generate/Regenerate this Dispatch List's PDF?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="generateDispatchListPDFModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Generate</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Edit Dispatch List Type Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editDispatchListTypeModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDispatchListTypeModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editDispatchListTypeModalLabel">
+							<strong>Edit Dispatch List Type</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Edit Dispatch List Type?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="editDispatchListTypeModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Add Onsite Detail Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="addOnsiteDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addOnsiteDetailModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="addOnsiteDetailModalLabel">
+							<strong>Add Onsite Detail</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-4">Name</label>
+							<div class="col-md-6">
+								<input class="form-control" data-name="onsite_detail_name_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Type</label>
+							<div class="col-md-3">
+								<select class="form-control" data-name="onsite_detail_type_<.= customerOrder[i].id .>">
+									<option value="faulty">faulty</option>
+									<option value="delivery">delivery</option>
+									<option value="hardware">hardware</option>
+									<option value="installation">installation</option>
+									<option value="other">other</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Unit</label>
+							<div class="col-md-2">
+								<input class="form-control" data-name="onsite_detail_unit_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4">Price</label>
+							<div class="col-md-3">
+								<input class="form-control" data-name="onsite_detail_price_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="addOnsiteDetailModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Add</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Remove Detail From Dispatch List Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="removeDetailFromDispatchListModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeDetailFromDispatchListModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="removeDetailFromDispatchListModalLabel">
+							<strong>Remove Detail From Dispatch List</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p class="form-control-static">Sure to Remove Detail From Dispatch List?</p>
+						<br/>
+					</div>
+					<div class="modal-footer">
+						<a href="javascript:void(0);" id="<.= customerOrder[i].id .>" class="btn btn-success" data-name="removeDetailFromDispatchListModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
 
 	<!-- Pay Off Order Modal -->
 	<form class="form-horizontal">
@@ -1245,6 +1594,33 @@
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="generateOrderReceiptModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to generate order receipt</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Send Order Confirmation Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="sendOrderConfirmationModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="sendOrderConfirmationModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="sendOrderConfirmationModalLabel">
+							<strong>Send Order Confirmation</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Sure to send the confirmation to customer's email?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="sendOrderConfirmationModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to Send</a>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -1443,6 +1819,36 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
+
+	<!-- Add Broadband ASID Modal -->
+	<form class="form-horizontal">
+	<div class="modal fade" id="addBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="addBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title text-danger" id="addBroadbandASIDModalLabel">
+						<strong>Add Broadband ASID</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label class="control-label col-md-6">Broadband ASID</label>
+						<div class="col-md-4">
+							<input class="form-control" type="text" data-name="add_broadband_asid_input_<.= customerOrder[i].id .>" />
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-name="addBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+	</form>
 
 	<!-- Edit Order Due Date Modal -->
 	<div class="modal fade" id="editOrderDueDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderDueDateModalLabel" aria-hidden="true">
@@ -1670,22 +2076,72 @@
 	<!-- /.modal -->
 
 	<!-- Edit Broadband ASID Modal -->
-	<div class="modal fade" id="saveBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="saveBroadbandASIDModalLabel" aria-hidden="true">
+	<div class="modal fade" id="updateBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="updateBroadbandASIDModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title" id="saveBroadbandASIDModalLabel">
-						<strong>Save Broadband ASID Information</strong>
+					<h4 class="modal-title" id="updateBroadbandASIDModalLabel">
+						<strong>Update Broadband ASID Information</strong>
 					</h4>
 				</div>
 				<div class="modal-body">
 					<p>
-						Save Broadband ASID?
+						Update Broadband ASID?
 					</p>
 				</div>
 				<div class="modal-footer">
-					<a href="javascript:void(0);" class="btn btn-success" data-name="saveBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to update Broadband ASID</a>
+					<a href="javascript:void(0);" class="btn btn-success" data-name="updateBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Remove Broadband ASID Modal -->
+	<div class="modal fade" id="removeBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="removeBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="removeBroadbandASIDModalLabel">
+						<strong>Remove Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Remove Broadband ASID?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="removeBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+	<!-- Remove Broadband ASID Modal -->
+	<div class="modal fade" id="separatelyStoreBroadbandASIDModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="separatelyStoreBroadbandASIDModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="separatelyStoreBroadbandASIDModalLabel">
+						<strong>Separately Store Broadband ASID Information</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Separately Store Broadband ASID?
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a href="javascript:void(0);" class="btn btn-success" data-name="separatelyStoreBroadbandASIDModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
 				</div>
 			</div>
 			<!-- /.modal-content -->
@@ -1775,6 +2231,12 @@
 								<input data-name="update_detail_price_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Detail Price" />
 							</div>
 						</div>
+						<div class="form-group" data-name="calling_minutes_div_<.= customerOrder[i].id .>" style="display:none;">
+							<label class="control-label col-md-4">Calling Minutes</label>
+							<div class="col-md-6">
+								<input data-name="update_calling_minute_<.= customerOrder[i].id .>" class="form-control input-sm" placeholder="Calling Minutes" />
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<a data-name="editCommonDetailModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Edit</a>
@@ -1786,7 +2248,7 @@
 
 	<!-- Recombine Super Calling Minutes Modal -->
 	<form class="form-horizontal">
-		<div class="modal fade" id="recombineSuperCallingMinutesModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="recombineSuperCallingMinutesModalLabel" aria-hidden="true">
+		<div class="modal fade" id="recombineSuperCallingMinutesModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="recombineSuperCallingMinutesModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -1833,7 +2295,7 @@
 	<!-- /.modal -->
 
 	<!-- Change Detail Expired Date Modal -->
-	<div class="modal fade" id="changeDetailExpiredDateModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="changeDetailExpiredDateModalLabel" aria-hidden="true">
+	<div class="modal fade" id="changeDetailExpiredDateModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="changeDetailExpiredDateModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -2338,6 +2800,8 @@
 									<option value="hardware-adsl">Hardware ADSL</option>
 									<option value="hardware-vdsl">Hardware VDSL</option>
 									<option value="hardware-ufb">Hardware UFB</option>
+									<option value="accessory">Accessory</option>
+									<option value="touch-pad">Touch Pad</option>
 									<!-- <option value="custom-detail">Custom Detail</option> -->
 								</select>
 							</div>
@@ -2428,7 +2892,7 @@
 	<!-- /.modal -->
 
 	<!-- View Deleted Order Details Modal -->
-	<div class="modal fade" id="viewDeletedOrderDetailsModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="viewDeletedOrderDetailsModalLabel" aria-hidden="true">
+	<div class="modal fade" id="viewDeletedOrderDetailsModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="viewDeletedOrderDetailsModalLabel" aria-hidden="true">
 		<div class="modal-dialog" style="width:1200px;">
 			<div class="modal-content">
 				<div class="modal-body">
@@ -2484,9 +2948,144 @@
 		<!-- /.modal -->
 	</form>
 
+	<!-- Edit Order Term Period Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editOrderTermPeriodModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderTermPeriodModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editOrderTermPeriodModalLabel">
+							<strong>Edit Order Term Period</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<p>
+							Sure to save the changes?
+						</p>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editOrderTermPeriodModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Attach Equip 2 Hardware Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="attachEquip2HardwareModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="attachEquip2HardwareModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="attachEquip2HardwareModalLabel">
+							<strong>Attach Equip to Hardware</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Detail</label>
+							<div class="col-md-10">
+								<select class="form-control" data-name="equip_details_<.= customerOrder[i].id .>">
+								</select>
+							</div>
+						</div>
+						<h3 class="text-success">Get Equipment(s) By:</h3>
+						<hr/>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Type</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_type_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="router">Router</option>
+									<option value="modem">Modem</option>
+									<option value="touch-pad">Touch Pad</option>
+									<option value="phone">Phone</option>
+									<option value="accessory">Accessory</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Purpose</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_purpose_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="sale-item">Sale Item</option>
+									<option value="gift">Gift</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Equipment Status</label>
+							<div class="col-md-2">
+								<select class="form-control" data-name="equip_status_<.= customerOrder[i].id .>">
+									<option value="all">All</option>
+									<option value="inactive">Inactive</option>
+									<option value="retrieved">Retrieved</option>
+								</select>
+							</div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-2">Name/SN</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" id="<.= customerOrder[i].id .>" data-name="equip_name_sn_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-2 col-md-offset-2">
+								<a id="<.= customerOrder[i].id .>" data-name="get_attachable_equips_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success">Get From Inventory</a>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="attachEquip2HardwareModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Detach Equip from Hardware Modal -->
+	<div class="modal fade" id="detachEquipFromHardwareModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="detachEquipFromHardwareModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="detachEquipFromHardwareModalLabel">
+						<strong>Detach Equip from Hardware</strong>
+					</h4>
+				</div>
+				<div class="modal-body">
+					<h3>Click Retrieved for</h3>
+					<p>
+						If the equipment was retrieved from the customer.
+					</p>
+					<h3>Click Inactive for</h3>
+					<p>
+						If the equipment was miss attached, this is likewise an undo button.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<a id="<.= customerOrder[i].id .>" data-name="detachEquipFromHardwareModalBtn_<.= customerOrder[i].id .>" data-status="retrieved" href="javascript:void(0);" class="btn btn-xs btn-success col-md-offset-2" data-dismiss="modal">Retrieved</a>
+					<a id="<.= customerOrder[i].id .>" data-name="detachEquipFromHardwareModalBtn_<.= customerOrder[i].id .>" data-status="inactive" href="javascript:void(0);" class="btn btn-xs btn-success col-md-offset-4" data-dismiss="modal">Inactive</a>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
 	<!-- Edit detail Modal -->
 	<form class="form-horizontal">
-		<div class="modal fade" id="editDetailModal_<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDetailModalLabel" aria-hidden="true">
+		<div class="modal fade" id="editDetailModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editDetailModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -2538,6 +3137,12 @@
 								<input class="form-control input-sm" type="text" data-name="detail_plan_unit_<.= customerOrder[i].id .>" />
 							</div>
 						</div>
+						<div class="form-group">
+							<label class="control-label col-md-3">Term Period</label>
+							<div class="col-md-2">
+								<input class="form-control input-sm" type="text" data-name="detail_term_period_<.= customerOrder[i].id .>" />
+							</div>
+						</div>
 					</div>
 					<div class="modal-footer">
 						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="editDetailModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm to edit detail</a>
@@ -2549,6 +3154,735 @@
 		</div>
 	</form>
 	<!-- /.modal -->
+	
+
+	<!-- Edit customer order provision checklist Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editOrderProvisionChecklistModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editOrderProvisionChecklistModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title text-danger" id="editOrderProvisionChecklistModalLabel">
+							<strong>Edit Order Provision Checklist</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+					
+						<div class="form-group">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Payment Form</h3></div>
+						</div>
+						<div class="form-group">
+							<label class="control-label col-md-4" style="padding-top:0;">Payment Form</label>
+							<div class="col-md-4">
+								<select class="form-control input-sm" data-name="payment_form_<.= customerOrder[i].id .>">
+									<option value="none">None</option>
+									<option value="ddpay">DDPay</option>
+									<option value="ccpay">CCPay</option>
+									<option value="cash">Cash</option>
+									<option value="bank-deposit">Bank Deposit</option>
+									<option value="a2a">A2A</option>
+									<option value="other">Other</option>
+								</select>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Phone Line</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_phone_line" data-type="phone-line-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_phone_line" data-type="phone-line-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_pstn_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has PSTN</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="pstn_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="pstn_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_fax_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Fax</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_fax_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_fax_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="fax_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="fax_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_voip_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has VoIP</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_voip_<.= customerOrder[i].id .>" data-type="phone-line-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_voip_<.= customerOrder[i].id .>" data-type="phone-line-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="voip_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="voip_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Existed Service</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_existed_services" data-type="existed-service-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_existed_services" data-type="existed-service-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_alarm_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Alarm</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_alarm_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_alarm_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_emergency_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Emergency</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_emergency_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_emergency_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_cctv_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has CCTV</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_cctv_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_cctv_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_eftpos_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has EFTPOS</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_eftpos_<.= customerOrder[i].id .>" data-type="existed-service-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_eftpos_<.= customerOrder[i].id .>" data-type="existed-service-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Line Functions</h3></div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_line_function" data-type="line-functions-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_line_function" data-type="line-functions-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_smart_bundle_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Smart Bundle</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_smart_bundle_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_smart_bundle_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="smart_bundle_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="smart_bundle_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_restrict_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Restrict</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_restrict_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_restrict_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_restrict_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_restrict_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_waiting_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Waiting</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_waiting_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_waiting_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_waiting_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_waiting_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_faxability_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Faxability</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_faxability_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_faxability_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="faxability_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="faxability_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_call_display_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Call Display</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_display_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_call_display_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="call_display_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="call_display_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_wire_maintenance_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Wire Maintenance</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_wire_maintenance_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_wire_maintenance_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="wire_maintenance_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="wire_maintenance_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_static_ip_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Static IP</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_static_ip_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_static_ip_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="static_ip_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="static_ip_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						<div class="form-group" data-name="has_dial_wrap_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Dial Wrap</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_dial_wrap_<.= customerOrder[i].id .>" data-type="line-functions-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_dial_wrap_<.= customerOrder[i].id .>" data-type="line-functions-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="dial_wrap_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="dial_wrap_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Post Hardware</h3></div>
+						</div>
+						<div class="form-group" data-name="has_router_post_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Router Post</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_router_post_<.= customerOrder[i].id .>" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_router_post_<.= customerOrder[i].id .>" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="router_post_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="router_post_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-4">
+								<h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">Order Status</h3>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_order_status" data-type="order-status-true" value="true" />&nbsp;All Y</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="checkall_box_order_status" data-type="order-status-false" value="false" />&nbsp;All N</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_svcv_lan_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has SV/CVLan</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_svcv_lan_<.= customerOrder[i].id .>" data-type="order-status-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_svcv_lan_<.= customerOrder[i].id .>" data-type="order-status-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						<div class="form-group" data-name="has_service_given_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has Service Given</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_service_given_<.= customerOrder[i].id .>" data-type="order-status-true" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_service_given_<.= customerOrder[i].id .>" data-type="order-status-false" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<div class="col-md-12"><h3 class="text-success" style="margin-top:0px; margin-bottom:0px;">PSTN To NCA</h3></div>
+						</div>
+						<div class="form-group" data-name="has_pstn_nca_<.= customerOrder[i].id .>">
+							<label class="control-label col-md-4" style="padding-top:0;">Has PSTN NCA</label>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_nca_<.= customerOrder[i].id .>" value="true" />&nbsp;Yes</label>
+								</p>
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static" style="padding-top:0;">
+									<label style="cursor:pointer;"><input type="radio" name="has_pstn_nca_<.= customerOrder[i].id .>" value="false" />&nbsp;No</label>
+								</p>
+							</div>
+							<label for="pstn_nca_count_<.= customerOrder[i].id .>" class="control-label col-md-1" style="padding-top:0;">Qty</label>
+							<div class="col-md-2">
+								<input type="text" class="form-control" name="pstn_nca_count_<.= customerOrder[i].id .>" style="height:26px; padding:0 10px;" />
+							</div>
+						</div>
+						
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-primary" data-name="editOrderProvisionChecklistModalBtn_<.= customerOrder[i].id .>" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</form>
+	<!-- /.modal -->
+
+	<!-- Insert CustomerOrderChorusAddon Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editCustomerOrderChorusAddonPriceModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCustomerOrderChorusAddonPriceModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editCustomerOrderChorusAddonPriceModalLabel">
+							<strong>Edit Customer Order Chorus Addon Price</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p>
+									Personal Include GST, Business Plus GST. Sure to save the changes?
+								</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" id="<.= customerOrder[i].id .>" data-name="chorus_addon_checkall_<.= customerOrder[i].id .>" />
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static"><strong>Price ( per addon )</strong></p>
+							</div>
+							<p class="form-control-static"><strong>Addon Name</strong></p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_restrict_with_no_directory_access_nat_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Call restrict with no Directory Access nat Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="call_restrict_with_no_directory_access_nat_res_<.= customerOrder[i].id .>_price" data-val="Call restrict with no Directory Access nat Res" />
+							</div>
+							<p class="form-control-static">Call restrict with no Directory Access nat Res ( <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_restrict_with_directory_access_nat_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Call restrict with directory access nat Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="call_restrict_with_directory_access_nat_res_<.= customerOrder[i].id .>_price" data-val="Call restrict with directory access nat Res" />
+							</div>
+							<p class="form-control-static">Call restrict with directory access nat Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="caller_display_monthly_charge_per_line_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Caller Display Monthly Charge per line Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="caller_display_monthly_charge_per_line_res_<.= customerOrder[i].id .>_price" data-val="Caller Display Monthly Charge per line Res" />
+							</div>
+							<p class="form-control-static">Caller Display Monthly Charge per line Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_waiting_nat_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Call waiting nat Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="call_waiting_nat_res_<.= customerOrder[i].id .>_price" data-val="Call waiting nat Res" />
+							</div>
+							<p class="form-control-static">Call waiting nat Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_monthly_rental_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Faxability Monthly Rental Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="faxability_monthly_rental_res_<.= customerOrder[i].id .>_price" data-val="Faxability Monthly Rental Res" />
+							</div>
+							<p class="form-control-static">Faxability Monthly Rental Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="smart_bundle_package_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Smart Bundle package" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="smart_bundle_package_<.= customerOrder[i].id .>_price" data-val="Smart Bundle package" />
+							</div>
+							<p class="form-control-static">Smart Bundle package ( Approx <strong>NZ$10.86 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="3 Way Calls Service Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="3_way_calls_service_res_<.= customerOrder[i].id .>_price" data-val="3 Way Calls Service  Res" />
+							</div>
+							<p class="form-control-static">3 Way Calls Service&nbsp;&nbsp;Res ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_minder_with_call_forward_res_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Call Minder with Call Forward Res" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="call_minder_with_call_forward_res_<.= customerOrder[i].id .>_price" data-val="Call Minder with Call Forward Res" />
+							</div>
+							<p class="form-control-static">Call Minder with Call Forward Res ( Approx <strong>NZ$7.53 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="call_minder_charges_standard_sme_2_with_tps_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Call Minder-Charges-Standard SME 2 (with TPS)" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="call_minder_charges_standard_sme_2_with_tps_<.= customerOrder[i].id .>_price" data-val="Call Minder-Charges-Standard SME 2 (with TPS)" />
+							</div>
+							<p class="form-control-static">Call Minder-Charges-Standard SME 2 (with TPS) ( Approx <strong>NZ$7.53 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="calling_numbers_presented_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Calling Numbers Presented" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="calling_numbers_presented_<.= customerOrder[i].id .>_price" data-val="Calling Numbers Presented" />
+							</div>
+							<p class="form-control-static">Calling Numbers Presented ( Approx <strong>NZ$7.11 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="calling_numbers_presented_minimum_charge_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Calling Numbers Presented - Minimum Charge" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="calling_numbers_presented_minimum_charge_<.= customerOrder[i].id .>_price" data-val="Calling Numbers Presented - Minimum Charge" />
+							</div>
+							<p class="form-control-static">Calling Numbers Presented - Minimum Charge ( Approx <strong>NZ$7.11 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="directory_assistance_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="directory assistance" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="directory_assistance_<.= customerOrder[i].id .>_price" data-val="directory assistance" />
+							</div>
+							<p class="form-control-static">directory assistance ( Approx <strong>NZ$3.2 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_charges_sme1_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="FaxAbility-Charges SME1" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="faxability_charges_sme1_<.= customerOrder[i].id .>_price" data-val="FaxAbility-Charges SME1" />
+							</div>
+							<p class="form-control-static">FaxAbility-Charges SME1 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="faxability_charges_sme2_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="FaxAbility-Charges SME2" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="faxability_charges_sme2_<.= customerOrder[i].id .>_price" data-val="FaxAbility-Charges SME2" />
+							</div>
+							<p class="form-control-static">FaxAbility-Charges SME2 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="smartphone_services_call_waiting_sme2_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Smartphone Services-Call waiting SME2" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="smartphone_services_call_waiting_sme2_<.= customerOrder[i].id .>_price" data-val="Smartphone Services-Call waiting SME2" />
+							</div>
+							<p class="form-control-static">Smartphone Services-Call waiting SME2 ( Approx <strong>NZ$3.31 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_divert_call_fwd_no_ans_sme2_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="S-Phone Call divert (call fwd No ans) SME2" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="s_phone_call_divert_call_fwd_no_ans_sme2_<.= customerOrder[i].id .>_price" data-val="S-Phone Call divert (call fwd No ans) SME2" />
+							</div>
+							<p class="form-control-static">S-Phone Call divert (call fwd No ans) SME2 ( Approx <strong>NZ$3.31 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_divert_call_fwd_immed_sme2_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="S-Phone Call divert (call fwd Immed) SME2" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="s_phone_call_divert_call_fwd_immed_sme2_<.= customerOrder[i].id .>_price" data-val="S-Phone Call divert (call fwd Immed) SME2" />
+							</div>
+							<p class="form-control-static">S-Phone Call divert (call fwd Immed) SME2 ( Approx <strong>NZ$3.31 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="s_phone_call_restrict_with_directory_access_sm_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="S-Phone Call Restrict with Directory Access SM" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="s_phone_call_restrict_with_directory_access_sm_<.= customerOrder[i].id .>_price" data-val="S-Phone Call Restrict with Directory Access SM" />
+							</div>
+							<p class="form-control-static">S-Phone Call Restrict with Directory Access SM ( Approx <strong>NZ$3.31 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="wire_maintenance_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="Wire Maintenance" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="wire_maintenance_<.= customerOrder[i].id .>_price" data-val="Wire Maintenance" />
+							</div>
+							<p class="form-control-static">Wire Maintenance ( Approx <strong>NZ$4.95 * 1.15</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="wire_maintenance_contract_<.= customerOrder[i].id .>" data-type="chorus-addon_<.= customerOrder[i].id .>" data-val="wire maintenance contract" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="wire_maintenance_contract_<.= customerOrder[i].id .>_price" data-val="wire maintenance contract" />
+							</div>
+							<p class="form-control-static">wire maintenance contract ( Approx <strong>NZ$4.95 * 1.15</strong> )</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editCustomerOrderChorusAddonPriceModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+
+	<!-- Insert CustomerOrderNZCallingRatesSetting Modal -->
+	<form class="form-horizontal">
+		<div class="modal fade" id="editCustomerOrderNZCallingRatesSettingModal_<.= customerOrder[i].id .>" data-id="<.= customerOrder[i].id .>" tabindex="-1" role="dialog" aria-labelledby="editCustomerOrderNZCallingRatesSettingModalLabel" aria-hidden="true">
+			<div class="modal-dialog" style="width:1000px;">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="modal-title" id="editCustomerOrderNZCallingRatesSettingModalLabel">
+							<strong>Edit Customer Order NZ Calling Rates Setting</strong>
+						</h4>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<div class="col-md-12">
+								<p>
+									Personal Include GST, Business Plus GST. Sure to save the changes?
+								</p>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" id="<.= customerOrder[i].id .>" data-name="calling_rates_checkall_<.= customerOrder[i].id .>" />
+							</div>
+							<div class="col-md-2">
+								<p class="form-control-static"><strong>Price ( per min )</strong></p>
+							</div>
+							<p class="form-control-static"><strong>Type</strong></p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Local_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Local" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP Local Rate ( Personal/Business <strong>Free</strong> )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="National_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="National" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP National Rate ( Personal <strong>Free</strong>, Business <strong>NZ$0.04</strong> per min)</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Mobile_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Mobile" data-phone-type="voip" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="voip" />
+							</div>
+							<p class="form-control-static">VoIP Mobile Rate ( Personal/Business <strong>NZ$0.10</strong> per min )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Local_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Local" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Local_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN Local Rate ( Personal <strong>Free</strong>, Business <strong>NZ$0.045</strong> per min )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="National_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="National" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="National_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN National Rate ( Personal/Business <strong>NZ$0.09</strong> per min )</p>
+						</div>
+						<div class="form-group">
+							<div class="col-md-1">
+								<input type="checkbox" data-name="Mobile_<.= customerOrder[i].id .>" data-type="calling_rates_<.= customerOrder[i].id .>" data-val="Mobile" data-phone-type="pstn" />
+							</div>
+							<div class="col-md-2">
+								<input type="text" class="form-control input-sm" data-name="Mobile_<.= customerOrder[i].id .>_price" data-phone-type="pstn" />
+							</div>
+							<p class="form-control-static">PSTN Mobile Rate ( Personal/Business <strong>NZ$0.28</strong> per min )</p>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<a id="<.= customerOrder[i].id .>" data-name="editCustomerOrderNZCallingRatesSettingModalBtn_<.= customerOrder[i].id .>" href="javascript:void(0);" class="btn btn-success" data-dismiss="modal">Confirm</a>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- /.modal -->
+	</form>
+	
+      </div>
+    </div>
+  </div>
+
 <.
 	}
 .>
+</div>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- DEFINITION AREA --><!-- // DEFINITION AREA -->
+<!-- =================================================================================== -->
+<!-- SELECT AREA --><!-- // END SELECT AREA -->
+<!-- =================================================================================== -->
+<!-- INSERT AREA --><!-- // END INSERT AREA -->
+<!-- =================================================================================== -->
+<!-- UPDATE AREA --><!-- // END UPDATE AREA -->
+<!-- =================================================================================== -->
+<!-- DELETE AREA --><!-- // END DELETE AREA -->
+
+<mapper namespace="com.tm.broadband.mapper.CustomerDDPayMapper">
+
+	<!-- DEFINITION AREA -->
+
+	<sql id="customerDDPayColumns">
+		cddp.`id`					as cddp_id,
+		cddp.`customer_id`			as cddp_customer_id,
+		cddp.`account_name`			as cddp_account_name,
+		cddp.`account_number`		as cddp_account_number,
+		cddp.`order_ids`			as cddp_order_ids
+	</sql>
+
+	<resultMap type="CustomerDDPay" id="customerDDPayResultMap">
+		<id property="id" column="cddp_id" />
+		<result property="customer_id" column="cddp_customer_id" />
+		<result property="account_name" column="cddp_account_name" />
+		<result property="account_number" column="cddp_account_number" />
+		<result property="order_ids" column="cddp_order_ids" />
+	</resultMap>
+
+	<sql id="customerDDPayWhere">
+		<where>
+			<choose>
+				<when test="params.where == 'query_by_invoice_id'">
+					customer_id = (
+						select customer_id from tm_customer_invoice
+						where id=#{params.invoice_id}
+					)
+				</when>
+				<otherwise>
+					<if test="params.id != null">cddp.id = #{params.id}</if>
+					<if test="params.customer_id != null">and cddp.customer_id = #{params.customer_id}</if>
+					<if test="params.account_name != null">and cddp.account_name = #{params.account_name}</if>
+					<if test="params.account_number != null">and cddp.account_number = #{params.account_number}</if>
+					<if test="params.order_ids != null">and cddp.order_ids = #{params.order_ids}</if>
+				</otherwise>
+			</choose>
+		</where>
+	</sql>
+
+	<!-- // DEFINITION AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- SELECT AREA -->
+
+	<select id="selectCustomerDDPay" parameterType="CustomerDDPay" resultType="CustomerDDPay">
+		select * from tm_customer_ddpay as cddp
+		<include refid="customerDDPayWhere"/>
+	</select>
+
+	<!-- select customerDDPay page -->
+	<select id="selectCustomerDDPaysByPage" parameterType="Page" resultMap="customerDDPayResultMap">
+		select 
+			<include refid="customerDDPayColumns"/>
+			from tm_customer_ddpay as cddp
+			<include refid="customerDDPayWhere"/>
+			<if test="params.orderby != null">${params.orderby}</if>
+			limit #{pageOffset}, #{pageSize}
+	</select>
+
+	<!-- select customerDDPay amount -->
+	<select id="selectCustomerDDPaysSum" parameterType="Page" resultType="int">
+		select count(*) from tm_customer_ddpay as cddp
+		<include refid="customerDDPayWhere"/>
+	</select>
+
+	<!-- // END SELECT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- INSERT AREA -->
+
+	<insert id="insertCustomerDDPay" parameterType="CustomerDDPay" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `tm_customer_ddpay`(
+			`customer_id`, `account_name`, `account_number`, `order_ids`
+		) VALUES (
+			#{customer_id}, #{account_name}, #{account_number}, #{order_ids}
+		)
+	</insert>
+
+	<!-- // END INSERT AREA -->
+
+	<!-- =================================================================================== -->
+
+	<!-- UPDATE AREA -->
+
+	<!-- update customerDDPay -->
+	<update id="updateCustomerDDPay" parameterType="CustomerDDPay">
+		update tm_customer_ddpay
+		<set>
+			<if test="customer_id != null">customer_id = #{customer_id},</if>
+			<if test="account_name != null">account_name = #{account_name},</if>
+			<if test="account_number != null">account_number = #{account_number},</if>
+			<if test="order_ids != null">order_ids = #{order_ids}</if>
+		</set>
+		<where>
+			<if test="params.id != null">id = #{params.id}</if>
+			<if test="params.customer_id != null">and customer_id = #{params.customer_id}</if>
+			<if test="params.account_name != null">and account_name = #{params.account_name}</if>
+			<if test="params.account_number != null">and account_number = #{params.account_number}</if>
+			<if test="params.order_ids != null">and order_ids = #{params.order_ids}</if>
+		</where>
+	</update>
+
+	<!-- // END UPDATE AREA -->
+
+	<!-- =================================================================================== -->
+	<!-- DELETE AREA -->
+
+	<delete id="deleteCustomerDDPayById" parameterType="int">
+		DELETE FROM tm_customer_ddpay WHERE id = #{0}
+	</delete>
+
+	<!-- // END DELETE AREA -->
+
+</mapper>

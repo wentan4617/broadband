@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,11 +41,13 @@ public class InvoicePDFCreator extends ITextUtils {
 	private CustomerOrder co;
 	private CustomerInvoice currentCustomerInvoice;
     private CustomerInvoice lastCustomerInvoice;
+    private CustomerInvoice lastCustomerInvoiceStatistic;
 
 	private BaseColor titleBGColor = new BaseColor(92,184,92);
 	private BaseColor totleChequeAmountBGColor = new BaseColor(110,110,110);
 	
 	private Integer globalBorderWidth = 0;
+	private String pdf_resources_path = TMUtils.createPath("broadband" + File.separator + "pdf_resources" + File.separator);
 	
 	// BALANCE
 	private Double totalBalance = 0d;
@@ -62,7 +65,9 @@ public class InvoicePDFCreator extends ITextUtils {
 	
     boolean isBusiness = false;
     
-    private Map<String, List<CustomerCallRecord>> crrsMap = new LinkedHashMap<String, List<CustomerCallRecord>>();
+    private Map<String, List<CustomerCallRecord>> ccrsMap = new LinkedHashMap<String, List<CustomerCallRecord>>();
+    private List<CustomerCallRecord> ccrPSTNStatistics = new ArrayList<CustomerCallRecord>();
+    private List<CustomerCallRecord> ccrVoIPStatistics = new ArrayList<CustomerCallRecord>();
     private boolean isFirstPstn = true;
 	
 	public InvoicePDFCreator(){}
@@ -132,6 +137,7 @@ public class InvoicePDFCreator extends ITextUtils {
         
 
         totalBalance = TMUtils.bigSub(totalFinalPayableAmount, this.getCurrentCustomerInvoice().getAmount_paid());
+        totalBalance = TMUtils.bigAdd(totalBalance, this.getLastCustomerInvoiceStatistic()!=null && this.getLastCustomerInvoiceStatistic().getBalance()!=null ? this.getLastCustomerInvoiceStatistic().getBalance() : 0d);
 
         if(totalBalance > 0){
         	// personal plan include GST
@@ -161,7 +167,13 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // CARTOON
-		Image cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"company_logo.png");
+		Image cartoon = null;
+        File companyLogoFile = new File(pdf_resources_path + "common_company_logo.png");
+		if(companyLogoFile.exists()){
+			cartoon = Image.getInstance(pdf_resources_path + "common_company_logo.png");
+        } else {
+    		cartoon = Image.getInstance("pdf"+File.separator+"img"+File.separator+"company_logo.png");
+        }
 		cartoon.scaleAbsolute(100f, 46f);
 		cartoon.setAbsolutePosition(30, 170);
 		writer.getDirectContent().addImage(cartoon);
@@ -172,7 +184,6 @@ public class InvoicePDFCreator extends ITextUtils {
 	        img.setWidthPercentage(100);
 	        addCol(paymentSlipTable, " ").colspan(5).image(img).o();
 	        
-	
 	        // WHITE TITLE
 	        addEmptyRow(paymentSlipTable, 4);
 	        
@@ -283,17 +294,22 @@ public class InvoicePDFCreator extends ITextUtils {
          */
         
         // BEGIN CALLING RECORD
-        if(crrsMap.size() > 0){
+        if(ccrsMap.size() > 0){
      		// start new page
             document.newPage();
             // SECOND PAGE'S HEADER
     		pageHeader(writer);
             // ADD TABLE 2 DOCUMENT
-    		for (String k : crrsMap.keySet()) {
-              document.add(createCallRecordDetails(k, crrsMap.get(k)));
+    		for (String k : ccrsMap.keySet()) {
+              document.add(createCallRecordDetails(k, ccrsMap.get(k)));
 			}
         }
         // END CALLING RECORD
+        
+
+        // BEGIN CALLING STATISTIC
+    	document.add(callingStatistic());
+        // END CALLING STATISTIC
         
         /*
          *
@@ -450,7 +466,7 @@ public class InvoicePDFCreator extends ITextUtils {
 		
         PdfPTable invoiceSummaryTable = newTable().columns(colspan).widthPercentage(98F).o();
         
-        addTitleBar(invoiceSummaryTable, "This Invoice Summary", ITextFont.arial_bold_white_10, titleBGColor, titleBGColor, colspan, 4F);
+        addTitleBar(invoiceSummaryTable, "Total Invoice Summary", ITextFont.arial_bold_white_10, titleBGColor, titleBGColor, colspan, 4F);
 
         // INVOICE SUMMARY FIRST ROW
         addCol(invoiceSummaryTable, "Net charges").colspan(6).font(ITextFont.arial_normal_8).paddingTo("t", 10F).indent(10F).o();
@@ -469,29 +485,27 @@ public class InvoicePDFCreator extends ITextUtils {
         addEmptyCol(invoiceSummaryTable, 30F, colspan);
         
         // INVOICE SUMMARY SEPARATOR ROW
-    	addCol(invoiceSummaryTable, "Previous").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Previous Balance").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Current").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Current Balance").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Paid").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "").o();
-    	addCol(invoiceSummaryTable, "Credit    ↓").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "Current\n Paid").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, " ").colspan(2).o();
     	addCol(invoiceSummaryTable, " ").border("b", 1F).o();
         addEmptyCol(invoiceSummaryTable, 2F, colspan);
 
         // INVOICE SUMMARY INVOICE TOTAL DUE ROW
         boolean isFirst = this.getLastCustomerInvoice()==null;
 		currentFinalPayable = totalCreditBack > this.getCurrentCustomerInvoice().getAmount_payable() ? 0 : totalBalance;
-		previousBalance = this.getLastCustomerInvoice()!=null && this.getLastCustomerInvoice().getBalance()>0 ? this.getLastCustomerInvoice().getBalance() : 0;
 		
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(previousBalance))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getLastCustomerInvoiceStatistic()!=null && this.getLastCustomerInvoiceStatistic().getBalance()!=null ? this.getLastCustomerInvoiceStatistic().getBalance() : 0d))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "+").alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalPayableAmount))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigSub(this.totalPayableAmount, this.totalCreditBack)))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
     	addCol(invoiceSummaryTable, "-").alignH("r").o();
     	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.getCurrentCustomerInvoice().getAmount_paid()))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "-").alignH("r").o();
-    	addCol(invoiceSummaryTable, TMUtils.fillDecimalPeriod(String.valueOf(this.totalCreditBack))+"  =").colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
-    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(String.valueOf(TMUtils.bigAdd(previousBalance, currentFinalPayable)))).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
+    	addCol(invoiceSummaryTable, "=").alignH("r").o();
+    	addCol(invoiceSummaryTable, " ").o();
+    	addCol(invoiceSummaryTable, "$ " + TMUtils.fillDecimalPeriod(currentFinalPayable)).colspan(1).font(ITextFont.arial_bold_10).alignH("r").o();
 
         addEmptyCol(invoiceSummaryTable, 4F, colspan);
     	addCol(invoiceSummaryTable, isFirst || TMUtils.bigAdd(previousBalance, currentFinalPayable) <= 0 ? "" : "Due On: "+TMUtils.retrieveMonthAbbrWithDate(this.getCurrentCustomerInvoice().getDue_date())).colspan(8).indent(10F).font(ITextFont.arial_normal_8).alignH("r").o();
@@ -503,7 +517,6 @@ public class InvoicePDFCreator extends ITextUtils {
 		
 		Integer colspan = 3;
         PdfPTable dueNotificationTable = newTable().columns(colspan).widthPercentage(98F).o();
-        addEmptyCol(dueNotificationTable, 24F, colspan);
         addCol(dueNotificationTable, "Overdue Penalty:").colspan(colspan).font(ITextFont.arial_bold_green_10).alignH("l").o();
         addCol(dueNotificationTable, "10% percent of your total amount every month.").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
         addCol(dueNotificationTable, "(Overdue: 30 days after your invoice due date, overdue payment must be paid in 90 days after due date.)").colspan(colspan).font(ITextFont.arial_normal_green_8).indent(20F).alignH("l").o();
@@ -746,9 +759,113 @@ public class InvoicePDFCreator extends ITextUtils {
             addCol(callRecordDetailsTable, ccr.getPhone_called()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
             addCol(callRecordDetailsTable, ccr.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
             addCol(callRecordDetailsTable, ccr.getCallType()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("c").o();
-            addCol(callRecordDetailsTable, String.valueOf(ccr.getFormated_duration())).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
+            addCol(callRecordDetailsTable, ccr.getFormated_duration()).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
             addCol(callRecordDetailsTable, TMUtils.fillDecimalPeriod(String.valueOf(ccr.getAmount_incl()))).colspan(2).font(ITextFont.arial_normal_8).paddingTo("b", 4F).alignH("r").o();
             totalCallFee += ccr.getAmount_incl();
+            
+            boolean isFirstPSTN = true;
+            
+            if("pstn".equals(ccr.getOot_id())){
+
+            	// If the loop held calling description match the loop retrieved calling detail then add duration & amount into the retrieved calling detail
+            	for (CustomerCallRecord ccrStatistic : ccrPSTNStatistics) {
+            		if(ccrStatistic.getBilling_description().equals(ccr.getBilling_description())){
+            			
+                    	Double duration = ccr.getDuration();
+        				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+        				if(TMUtils.isReminder(String.valueOf(duration))){
+        					String durationStr = String.valueOf(duration);
+        					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+        				}
+            			
+            			ccrStatistic.setDuration(TMUtils.bigAdd(ccrStatistic.getDuration()==null ? 0 : ccrStatistic.getDuration(), duration));
+            			ccrStatistic.setAmount_incl(TMUtils.bigAdd(ccrStatistic.getAmount_incl()==null ? 0 : ccrStatistic.getAmount_incl(), ccr.getAmount_incl()));
+            		}
+				}
+            	
+            	boolean isCount = true;
+
+            	// If haven't found duplicated calling description then need to be add into the PSTN statistic list
+            	for (CustomerCallRecord ccrStatistic : ccrPSTNStatistics) {
+            		if(ccrStatistic.getBilling_description().equals(ccr.getBilling_description())){
+            			
+            			isCount = false;
+            			
+            		}
+				}
+            	
+            	if(isCount){
+            		
+            		if(isFirstPSTN){
+            			
+                    	Double duration = ccr.getDuration();
+        				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+        				if(TMUtils.isReminder(String.valueOf(duration))){
+        					String durationStr = String.valueOf(duration);
+        					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+        				}
+            			
+        				ccr.setDuration(duration);
+        				isFirstPSTN = false;
+            		}
+            		
+            		ccrPSTNStatistics.add(ccr);
+            		
+            	}
+            	
+            }
+            
+            boolean isFirstVoIP = true;
+            
+            if("voip".equals(ccr.getOot_id())){
+
+            	// If the loop held calling description match the loop retrieved calling detail then add duration & amount into the retrieved calling detail
+            	for (CustomerCallRecord ccrStatistic : ccrVoIPStatistics) {
+            		if(ccrStatistic.getBilling_description().equals(ccr.getBilling_description())){
+            			
+                    	Double duration = ccr.getDuration();
+        				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+        				if(TMUtils.isReminder(String.valueOf(duration))){
+        					String durationStr = String.valueOf(duration);
+        					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+        				}
+            			
+            			ccrStatistic.setDuration(TMUtils.bigAdd(ccrStatistic.getDuration()==null ? 0 : ccrStatistic.getDuration(), duration));
+            			ccrStatistic.setAmount_incl(TMUtils.bigAdd(ccrStatistic.getAmount_incl()==null ? 0 : ccrStatistic.getAmount_incl(), ccr.getAmount_incl()));
+            		}
+				}
+            	
+            	boolean isCount = true;
+            	
+            	// If haven't found duplicated calling description then need to be add into the VoIP statistic list
+            	for (CustomerCallRecord ccrStatistic : ccrVoIPStatistics) {
+            		if(ccrStatistic.getBilling_description().equals(ccr.getBilling_description())){
+            			
+            			isCount = false;
+            			
+            		}
+				}
+            	
+            	if(isCount){
+            		
+            		if(isFirstVoIP){
+            			
+                    	Double duration = ccr.getDuration();
+        				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+        				if(TMUtils.isReminder(String.valueOf(duration))){
+        					String durationStr = String.valueOf(duration);
+        					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+        				}
+            			
+            			ccr.setDuration(duration);
+            			isFirstVoIP = false;
+            		}
+                	
+                	ccrVoIPStatistics.add(ccr);
+            		
+            	}
+            	
+            }
 		}
         
         totalCallFee = isBusiness ? TMUtils.bigMultiply(totalCallFee, 1.15) : totalCallFee;
@@ -798,12 +915,85 @@ public class InvoicePDFCreator extends ITextUtils {
         return callRecordDetailsTable;
 	}
 	
+	public PdfPTable callingStatistic(){
+		
+        PdfPTable callStatisticTable = newTable().columns(12).widthPercentage(98F).o();
+
+        addEmptyCol(callStatisticTable, 12);
+
+        if(this.getCcrPSTNStatistics().size() > 0){
+        	
+            addCol(callStatisticTable, "PSTN Calling Statistics").colspan(7).borderWidth("b", 1f).font(ITextFont.arial_bold_10).o();
+            addEmptyCol(callStatisticTable, 5);
+            addCol(callStatisticTable, "Description").colspan(3).font(ITextFont.arial_bold_10).o();
+            addCol(callStatisticTable, "Duration").colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+            addCol(callStatisticTable, "Total Price").colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+            addCol(callStatisticTable, " ").colspan(5).o();
+
+            for (CustomerCallRecord customerCallRecord : this.getCcrPSTNStatistics()) {
+            	
+//            	Double duration = customerCallRecord.getDuration();
+//				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+//				if(TMUtils.isReminder(String.valueOf(duration))){
+//					String durationStr = String.valueOf(duration);
+//					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+//				}
+
+                addCol(callStatisticTable, customerCallRecord.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).o();
+                addCol(callStatisticTable, customerCallRecord.getDuration()<=0 ? "" : TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(customerCallRecord.getDuration()))).replace(".", ":")).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+                addCol(callStatisticTable, String.valueOf(isBusiness ? TMUtils.bigMultiply(customerCallRecord.getAmount_incl(), 1.15) : customerCallRecord.getAmount_incl())).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+                addCol(callStatisticTable, " ").colspan(5).o();
+    		}
+            
+            addEmptyCol(callStatisticTable, 12);
+            
+        }
+
+        if(this.getCcrVoIPStatistics().size() > 0){
+        	
+            addCol(callStatisticTable, "VoIP Calling Statistics").colspan(7).borderWidth("b", 1f).font(ITextFont.arial_bold_10).o();
+            addEmptyCol(callStatisticTable, 5);
+            addCol(callStatisticTable, "Description").colspan(3).font(ITextFont.arial_bold_10).o();
+            addCol(callStatisticTable, "Duration").colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+            addCol(callStatisticTable, "Total Price").colspan(2).font(ITextFont.arial_bold_10).alignH("r").o();
+            addCol(callStatisticTable, " ").colspan(5).o();
+
+            for (CustomerCallRecord customerCallRecord : this.getCcrVoIPStatistics()) {
+            	
+//            	Double duration = customerCallRecord.getDuration();
+//				// If have reminder, then cut reminder and plus 1 minute, for example: 5.19 change to 6
+//				if(TMUtils.isReminder(String.valueOf(duration))){
+//					String durationStr = String.valueOf(duration);
+//					duration =  Double.parseDouble(durationStr.substring(0, durationStr.indexOf(".")))+1d;
+//				}
+
+                addCol(callStatisticTable, customerCallRecord.getBilling_description()).colspan(3).font(ITextFont.arial_normal_8).o();
+                addCol(callStatisticTable, customerCallRecord.getDuration()<=0 ? "" : TMUtils.timeFormat.format(Double.parseDouble(String.valueOf(customerCallRecord.getDuration()))).replace(".", ":")).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+                addCol(callStatisticTable, String.valueOf(isBusiness ? TMUtils.bigMultiply(customerCallRecord.getAmount_incl(), 1.15) : customerCallRecord.getAmount_incl())).colspan(2).font(ITextFont.arial_normal_8).alignH("r").o();
+                addCol(callStatisticTable, " ").colspan(5).o();
+    		}
+            
+            addEmptyCol(callStatisticTable, 12);
+        	
+        }
+        
+        return callStatisticTable;
+        
+	}
+	
+	
 	private void pageHeader(PdfWriter writer) throws MalformedURLException, IOException, DocumentException{
 		Integer colspan = 15;
 		PdfPTable headerTable = newTable().columns(colspan).totalWidth(510F).o();
 		
         // logo & start
-		Image logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+		Image logo = null;
+        File invoiceLogoFile = new File(pdf_resources_path + "invoice_company_logo.png");
+		if(invoiceLogoFile.exists()){
+			logo = Image.getInstance(pdf_resources_path + "invoice_company_logo.png");
+        } else {
+    		logo = Image.getInstance("pdf"+File.separator+"img"+File.separator+"logo_top_final.png");
+        }
 		logo.scaleAbsolute(146f, 45f);
 		logo.setAbsolutePosition(44, 760);
 		writer.getDirectContent().addImage(logo);
@@ -876,12 +1066,12 @@ public class InvoicePDFCreator extends ITextUtils {
 		this.lastCustomerInvoice = lastCustomerInvoice;
 	}
 
-	public Map<String, List<CustomerCallRecord>> getCrrsMap() {
-		return crrsMap;
+	public Map<String, List<CustomerCallRecord>> getCcrsMap() {
+		return ccrsMap;
 	}
 
-	public void setCrrsMap(Map<String, List<CustomerCallRecord>> crrsMap) {
-		this.crrsMap = crrsMap;
+	public void setCcrsMap(Map<String, List<CustomerCallRecord>> ccrsMap) {
+		this.ccrsMap = ccrsMap;
 	}
 
 	public CustomerOrder getCo() {
@@ -890,6 +1080,31 @@ public class InvoicePDFCreator extends ITextUtils {
 
 	public void setCo(CustomerOrder co) {
 		this.co = co;
+	}
+
+	public List<CustomerCallRecord> getCcrPSTNStatistics() {
+		return ccrPSTNStatistics;
+	}
+
+	public void setCcrPSTNStatistics(List<CustomerCallRecord> ccrPSTNStatistics) {
+		this.ccrPSTNStatistics = ccrPSTNStatistics;
+	}
+
+	public List<CustomerCallRecord> getCcrVoIPStatistics() {
+		return ccrVoIPStatistics;
+	}
+
+	public void setCcrVoIPStatistics(List<CustomerCallRecord> ccrVoIPStatistics) {
+		this.ccrVoIPStatistics = ccrVoIPStatistics;
+	}
+
+	public CustomerInvoice getLastCustomerInvoiceStatistic() {
+		return lastCustomerInvoiceStatistic;
+	}
+
+	public void setLastCustomerInvoiceStatistic(
+			CustomerInvoice lastCustomerInvoiceStatistic) {
+		this.lastCustomerInvoiceStatistic = lastCustomerInvoiceStatistic;
 	}
 
 	

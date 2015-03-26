@@ -1,0 +1,77 @@
+<. if (results.length > 0) {.>
+<table class="table" style="font-size: 12px;">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Type</th>
+			<th>Purpose</th>
+			<th>Operation</th>
+		</tr>
+	</thead>
+	<tbody>
+	<. for(var i = 0; i < results.length; i++) {
+		var equipPattern = results[i];
+	.>
+		<tr>
+			<td>
+				<a href="<.= ctx .>/broadband-user/inventory/equip/pattern/edit/<.= equipPattern.id .>">
+				<.= equipPattern.equip_name .>
+				</a>
+			</td>
+			<td><.= equipPattern.equip_type .></td>
+			<td><.= equipPattern.equip_purpose .></td>
+			<td>
+				<. if(user_role=='system-developer' || user_role=='administrator' || user_role=='accountant'){ .>
+				<a href="javascript:void(0);" id="<.= equipPattern.id .>" data-name="remove_equip_pattern_btn" class="btn btn-xs btn-danger"><span class="glyphicon glyphicon-trash"></span></a>
+				<. } .>
+			</td>
+		</tr>
+	<.}.>
+	</tbody>
+	<tfoot>
+		<tr>
+			<td colspan="20">
+				<ul class="pagination">
+					<. for (var i = 1; i <= totalPage; i++) { .>
+					<li class="<.=pageNo == i ? 'active' : ''.>">
+						<a href="javascript:void(0);" data-pageNo="<.=i.>"><.=i.></a>
+					</li>
+					<. }.>
+				</ul>
+			</td>
+		</tr>
+	</tfoot>
+</table>
+
+<!-- Remove Equip Pattern Modal -->
+<form class="form-horizontal">
+<div class="modal fade" id="removeEquipmentPatternModal" tabindex="-1" role="dialog" aria-labelledby="removeEquipmentPatternModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="removeEquipmentPatternModalLabel">
+					<strong>Remove Specific Equipment Pattern Detail</strong>
+				</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<p class="form-control-static">Sure To Remove This Equipment pattern Detail?</p>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<a data-name="removeEquipmentPatternModalBtn" class="btn btn-success" data-dismiss="modal">Confirm</a>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+</form>
+<!-- /.modal -->
+
+<.} else {.>
+<div class="panel-body">
+	<div class="alert alert-warning">No records have been found.</div>
+</div>
+<.}.>

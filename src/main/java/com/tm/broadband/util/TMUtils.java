@@ -31,6 +31,8 @@ public class TMUtils {
 	private final static SimpleDateFormat date1Format = new SimpleDateFormat("dd/MM/yyyy");
 	private final static SimpleDateFormat date2Format = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 	private final static SimpleDateFormat date3Format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+	private final static SimpleDateFormat date4Format = new SimpleDateFormat("dd/MM/yyyy hh:mm");
+	private final static SimpleDateFormat date5Format = new SimpleDateFormat("yyyy/MM/dd hh:mm");
 	private final static DecimalFormat numberFormat = new DecimalFormat("0.00");
 	public final static DecimalFormat timeFormat = new DecimalFormat("00.00");
 	private final static String[] pwds = { "1", "5", "9", "8", "7", "6", "4", "3",
@@ -116,6 +118,26 @@ public class TMUtils {
 		if (dateStr != null && !"".equals(dateStr))
 			try {
 				return date2Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
+	public static Date parseDate4YYYYMMDDHHMM(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date4Format.parse(dateStr);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		return null;
+	}
+	
+	public static Date parseDate5YYYYMMDDHHMM(String dateStr) {
+		if (dateStr != null && !"".equals(dateStr))
+			try {
+				return date5Format.parse(dateStr);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
@@ -431,14 +453,18 @@ public class TMUtils {
 
 		phone_number = TMUtils.formatPhoneNumber(phone_number);
 		
+		System.out.println();
+		System.out.println("phone_number: "+phone_number);
+		System.out.println();
+		
 		return phone_number;
 		
 	}
 
 	// Retrieve After Calculated VoIP charge minute(s)
-	public static int retrieveVoIPChargePerThreeMinutes(int duration){
+	public static double retrieveVoIPChargePerThreeMinutes(double duration){
 		
-		int durationFinal = 0;
+		double durationFinal = 0d;
 		
 		if(duration <= 60){
 			
@@ -482,10 +508,25 @@ public class TMUtils {
 			return "";
 		}
 		String dateArr[] = dateFormatYYYYMMDD(date).split("-");
-		String day = dateArr[2];
+		String day = dateArr[2].replaceFirst("^0*", "");
 		StringBuffer finalDateStrBuff = new StringBuffer();
-		if(Integer.parseInt(day) < 10){
-			finalDateStrBuff.append(day.charAt(1)+(day.charAt(1)=='1' ? "st " : "th "));
+		String specialDays = "11,12,13";
+		if(!specialDays.contains(day)){
+			int specialDay = Integer.parseInt(day);
+			switch (specialDay%10) {
+			case 1:
+				finalDateStrBuff.append(day+"st ");
+				break;
+			case 2:
+				finalDateStrBuff.append(day+"nd ");
+				break;
+			case 3:
+				finalDateStrBuff.append(day+"rd ");
+				break;
+			default:
+				finalDateStrBuff.append(day+"th ");
+				break;
+			}
 		} else {
 			finalDateStrBuff.append(day+"th ");
 		}
@@ -643,6 +684,12 @@ public class TMUtils {
 	}
 	// DIVISION: Double / Integer
 	public static Double bigDivide(Double divisor1, Integer divisor2){
+		BigDecimal bigDivisor1 = new BigDecimal(divisor1);
+		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
+		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
+	}
+	// DIVISION: Integer / Integer
+	public static Double bigDivide(Integer divisor1, Integer divisor2){
 		BigDecimal bigDivisor1 = new BigDecimal(divisor1);
 		BigDecimal bigDivisor2 = new BigDecimal(divisor2);
 		return Double.parseDouble(fillDecimalPeriod(bigDivisor1.divide(bigDivisor2, 5, BigDecimal.ROUND_DOWN).doubleValue()));
