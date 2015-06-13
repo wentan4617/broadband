@@ -5,7 +5,7 @@
 			Open Term
 		<.} else {.>
 			<.if (select_customer_type == 'personal') {.>
-			Open Term Or Contract 12/24 Months
+			Contract 12 or 24 Months
 			<.} else if (select_customer_type == 'business') {.>
 			Contract 12 Months
 			<.}.>
@@ -19,7 +19,7 @@
 			
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="open-term" />&nbsp; 
+					<input type="radio" name="contract" value="open term" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
 						Open Term 
 					</span>
@@ -31,7 +31,7 @@
 				
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="open-term" />&nbsp; 
+					<input type="radio" name="contract" value="open term" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
 						Open Term 
 					</span>
@@ -42,30 +42,22 @@
 				
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<input type="radio" name="contract" value="12 months contract" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
 				</label>
 			</li>
 			
 				<.} else {.>
-			
-			<!-- <li style="padding: 10px 20px;">
-				<label>
-					<input type="radio" name="contract" value="open-term" />&nbsp; 
-					<span class="text-success" style="font-weight:bold;font-size:18px;"> 
-						Open Term 
-					</span>
-				</label>
-			</li> -->
+
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<input type="radio" name="contract" value="12 months contract" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
 				</label>
 			</li>
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="24months" />&nbsp; 
+					<input type="radio" name="contract" value="24 months contract" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 24 Months </span>
 				</label>
 			</li>
@@ -76,13 +68,13 @@
 		<.} else if (select_customer_type == 'business') {.>
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="12months" />&nbsp; 
+					<input type="radio" name="contract" value="12 months contract" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 12 Months </span>
 				</label>
 			</li>
 			<li style="padding: 10px 20px;">
 				<label>
-					<input type="radio" name="contract" value="24months" />&nbsp; 
+					<input type="radio" name="contract" value="24 months contract" />&nbsp; 
 					<span class="text-success" style="font-weight:bold;font-size:18px;"> Contract 24 Months </span>
 				</label>
 			</li>

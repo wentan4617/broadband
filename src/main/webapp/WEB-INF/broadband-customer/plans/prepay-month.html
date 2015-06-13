@@ -6,7 +6,6 @@
 		<.} else {.>
 			Prepay Months
 		<.}.>
-			
 		</h4>
 	</div>
 	<div class="panel-body">
@@ -14,265 +13,29 @@
 		<.if (select_plan_group == 'plan-topup') {.>
 			For Prepay Week
 		<.} else {.>
-			For Prepay Months
-			<. console.log(prepay_months); .>
-			
-			<. if(prepay_months!=1 && prepay_months!=''){ .>
-			<div class="btn-group btn-group">
-				<a href="javascript:void(0);" data-name="discount_type" data-val="hardware" class="btn btn-default active">
-					Hardware Discount
-				</a>
-				<a href="javascript:void(0);" data-name="discount_type" data-val="plan" class="btn btn-default ">
-					Plan Discount
-				</a>
-			</div>
-			<. } else { .>
-			<div class="btn-group btn-group" data-name="discount_type_div" style="display:none;">
-				<a href="javascript:void(0);" data-name="discount_type" data-val="hardware" class="btn btn-default active">
-					Hardware Discount
-				</a>
-				<a href="javascript:void(0);" data-name="discount_type" data-val="plan" class="btn btn-default ">
-					Plan Discount
-				</a>
-			</div>
-			<. } .>
-			
+			For Prepay Months 			
 		<.}.>
-			
-			
 		</h4>
-		<hr />
-		<div class="row">
-			<div class="col-md-12">
-				<ul class="list-unstyled topup-list">
-				
-				<.if (select_customer_type == 'personal') {.>
-				
-					<.if (select_plan_type == 'ADSL') { .>
-					
-						<.if (select_plan_group == 'plan-topup') {.>
-					
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="1"/> 
-							&nbsp;<strong>Prepay 1 week</strong>
-						</label>
-					</li>
-						
-						<.} else {.>
-					
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="1"/> 
-							&nbsp;<strong>Prepay 1 month (No discount)</strong>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 3 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 3 - parseInt(price.plan_price * 3 * 0.03).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 3 * 0.03).></span>
-						</span>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 6 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 6 - parseInt(price.plan_price * 6 * 0.07).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 6 * 0.07).></span>
-						</span>
-					</li>	
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months or free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
-						</span>
-					</li>
-						
-						<.}.>
-					
-					<.} else if (select_plan_type == 'VDSL') {
-						if (sale_id == '10023') {.>
-						
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(free iPad Mini, free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12.></span>
-						</span>
-					</li>
-					
-						<.} else if (sale_id == '20023') {.>
-						
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(1 TB Portable Hard Drive, 100mins/mth International calling for 40 countries)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 3.></span>
-						</span>
-					</li>	
-					
-						<.} else { .>
-						
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="1"/> 
-							&nbsp;<strong>Prepay 1 month (No discount)</strong>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 3 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 3 - parseInt(price.plan_price * 3 * 0.03).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 3 * 0.03).></span>
-						</span>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 6 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 6 - parseInt(price.plan_price * 6 * 0.07).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 6 * 0.07).></span>
-						</span>
-					</li>		
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months or free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
-						</span>
-					</li>
-					
-						<.}
-					.>
-					
-					<.} else if (select_plan_type == 'UFB') {.>
-						<.if (isContract) {.>
-						
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="1"/> 
-							&nbsp;<strong>Prepay 1 month (No discount)</strong>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 3 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 3 - parseInt(price.plan_price * 3 * 0.03).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 3 * 0.03).></span>
-						</span>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 6 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 6 - parseInt(price.plan_price * 6 * 0.07).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 6 * 0.07).></span>
-						</span>
-					</li>	
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
-						</span>
-					</li>	
-					
-						<.} else {.>
-						
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
-						</span>
-					</li>	
-					
-						<.}.>
-					
-					<.}.>
-					
-				<.} else if (select_customer_type == 'business') {.>
-					
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="1"/> 
-							&nbsp;<strong>DD Form Pay Monthly (No discount)</strong>
-							<a href="<.=ctx.>/download/<.=select_plan_type.>">
-								<span class="glyphicon glyphicon-file"></span>(Application Form)
-							</a>
-							<a href="<.=ctx.>/download/ddform">
-								<span class="glyphicon glyphicon-file"></span>(DD Form)
-							</a>
-						</label>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="3" />
-							&nbsp;<strong>Prepay 3 months <span class="text-danger">(3% off the total price of 3 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 3 - parseInt(price.plan_price * 3 * 0.03).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 3 * 0.03).></span>
-						</span>
-					</li>
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="6" />
-							&nbsp;<strong>Prepay 6 months <span class="text-danger">(7% off the total price of 6 months plan)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 6 - parseInt(price.plan_price * 6 * 0.07).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 6 * 0.07).></span>
-						</span>
-					</li>	
-					<li>
-						<label>
-							<input type="radio" name="prepaymonths" value="12" />
-							&nbsp;<strong>Prepay 12 months <span class="text-danger">(15% off the total price of 12 months with free modem)</span></strong>
-						</label>
-						<span style="float:right;font-weight:bold;">
-							<span class="text-danger">$<.=price.plan_price * 12 - parseInt(price.plan_price * 12 * 0.15).></span>, 
-							<span class="text-success">save $<.=parseInt(price.plan_price * 12 * 0.15).></span>
-						</span>
-					</li>
-					
-				<.}.>
-					
-				</ul>
-			</div>
+
+
+		<div id="discount_type_container">
+			<hr />
+			<ul class="list-inline" style="margin-bottom:0;">
+				<li style="padding: 10px 20px;">
+					<label>
+						<input type="radio" name="discount_type" value="plan_discount" />&nbsp; 
+						<span class="text-success" style="font-weight:bold;font-size:18px;">Plan Discount</span>
+					</label>
+				</li>
+				<li style="padding: 10px 20px;">
+					<label>
+						<input type="radio" name="discount_type" value="hardware_discount" />&nbsp; 
+						<span class="text-success" style="font-weight:bold;font-size:18px;">Hardware Discount</span>
+					</label>
+				</li>
+			</ul>
 		</div>
+
+		<div id="prepay-month-sub-content"></div>
 	</div>
 </div>

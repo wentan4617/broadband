@@ -4053,15 +4053,28 @@ public class CRMService {
 			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
 				discount_price = 0d;
 			} else {
-				discount_price = plan.getPlan_price() * 3 * 0.03;
+				if ("plan_discount".equals(customerOrder.getDiscount_type())) {
+					discount_price = plan.getPlan_price() * 3 * 0.03;
+				} else if ("hardware_discount".equals(customerOrder.getDiscount_type())) {
+					discount_price = 0d;
+				}
 			}
 		} else if (customerOrder.getPrepay_months() == 6) {
-			discount_price = plan.getPlan_price() * 6 * 0.07;
+			if ("plan_discount".equals(customerOrder.getDiscount_type())) {
+				discount_price = plan.getPlan_price() * 6 * 0.05;
+			} else if ("hardware_discount".equals(customerOrder.getDiscount_type())) {
+				discount_price = 0d;
+			}
+			
 		} else if (customerOrder.getPrepay_months() == 12) {
 			if ("VDSL".equals(customer.getSelect_plan_type()) && customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 10023) {
 				discount_price = 0d;
 			} else {
-				discount_price = plan.getPlan_price() * 12 * 0.15;
+				if ("plan_discount".equals(customerOrder.getDiscount_type())) {
+					discount_price = plan.getPlan_price() * 12 * 0.10;
+				} else if ("hardware_discount".equals(customerOrder.getDiscount_type())) {
+					discount_price = 0d;
+				}
 			}
 		}
 		customerOrder.setDiscount_price(discount_price.intValue());
@@ -4069,16 +4082,16 @@ public class CRMService {
 		if (discount_price > 0d) {
 			CustomerOrderDetail cod_discount = new CustomerOrderDetail();
 			cod_discount.setMonthly(false);
-			if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
+			if ("plan_discount".equals(customerOrder.getDiscount_type())) {
 				if (customerOrder.getPrepay_months() == 3) {
 					cod_discount.setDetail_name("Prepay 3 Months Discount");
 					cod_discount.setDetail_desc("3% off the total price of 3 months plan. all-forms");
 				} else if (customerOrder.getPrepay_months() == 6) {
 					cod_discount.setDetail_name("Prepay 6 Months Discount");
-					cod_discount.setDetail_desc("7% off the total price of 6 months plan. all-forms");
+					cod_discount.setDetail_desc("5% off the total price of 6 months plan. all-forms");
 				} else if (customerOrder.getPrepay_months() == 12) {
 					cod_discount.setDetail_name("Prepay 12 Months Discount");
-					cod_discount.setDetail_desc("15% off the total price of 12 months plan. all-forms");
+					cod_discount.setDetail_desc("10% off the total price of 12 months plan. all-forms");
 				}
 				cod_discount.setDetail_price(new Double(discount_price.intValue()));
 				cod_discount.setDetail_type("discount");
@@ -4110,39 +4123,49 @@ public class CRMService {
 			cod_conn.setMonthly(false);
 			cod_conn.setDetail_name("Broadband New Connection");
 			
-			if ("personal".equals(customerOrder.getCustomer_type())) {
-				
-				if ("12 months contract".equals(customerOrder.getContract())) {
-					 if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-						 if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+			if (customerOrder.getIsOpenFeePromotion()) {
+				if ("personal".equals(customerOrder.getCustomer_type())) {
+					
+					if ("12 months contract".equals(customerOrder.getContract()) || "24 months contract".equals(customerOrder.getContract())) {
+						 if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+							 if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023) {
+								 service_price = 0d;
+								 cod_conn.setDetail_price(service_price);
+							 } else {
+								 if (customerOrder.getPrepay_months() == 1) {
+									 service_price = plan.getPlan_new_connection_fee();
+									 cod_conn.setDetail_price(service_price);
+								 } else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+									 Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+									 service_price = plan.getPlan_new_connection_fee() - temp.intValue();
+									 cod_conn.setDetail_price(new Double(service_price.intValue()));
+								 }
+							 }
+						 } else if (customerOrder.getPrepay_months() == 12){
 							 service_price = 0d;
 							 cod_conn.setDetail_price(service_price);
-						 } else {
-							 service_price = 49d;
-							 cod_conn.setDetail_price(service_price);
 						 }
-					 } else if (customerOrder.getPrepay_months() == 12){
-						 service_price = 0d;
-						 cod_conn.setDetail_price(service_price);
-					 }
-				} else if ("open term".equals(customerOrder.getContract())) {
-					if (customerOrder.getPrepay_months() == 1) {
-						service_price = plan.getPlan_new_connection_fee();
-						cod_conn.setDetail_price(service_price);
-					} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-						Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
-						service_price = plan.getPlan_new_connection_fee() - temp.intValue();
-						cod_conn.setDetail_price(new Double(service_price.intValue()));
-					} else if (customerOrder.getPrepay_months() == 12) {
-						service_price = 0d;
-						cod_conn.setDetail_price(0d);
+					} else if ("open term".equals(customerOrder.getContract())) {
+						if (customerOrder.getPrepay_months() == 1) {
+							service_price = plan.getPlan_new_connection_fee();
+							cod_conn.setDetail_price(service_price);
+						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+							Double temp = (plan.getPlan_new_connection_fee()/12) * customerOrder.getPrepay_months();
+							service_price = plan.getPlan_new_connection_fee() - temp.intValue();
+							cod_conn.setDetail_price(new Double(service_price.intValue()));
+						} else if (customerOrder.getPrepay_months() == 12) {
+							service_price = 0d;
+							cod_conn.setDetail_price(0d);
+						}
 					}
+				} else if ("business".equals(customerOrder.getCustomer_type())) {
+					service_price = 0d;
+					cod_conn.setDetail_price(0d);
 				}
-			} else if ("business".equals(customerOrder.getCustomer_type())) {
-				service_price = 0d;
-				cod_conn.setDetail_price(0d);
+			} else {
+				 service_price = plan.getPlan_new_connection_fee();
+				 cod_conn.setDetail_price(service_price);
 			}
-			
 			
 			cod_conn.setDetail_type("new-connection");
 			cod_conn.setDetail_unit(1);
@@ -4213,7 +4236,7 @@ public class CRMService {
 		// add modem
 		
 		if (customerOrder.getHardwares() != null && customerOrder.getHardwares().size() > 0) {
-			
+			int index = 0;
 			for (Hardware chd: customerOrder.getHardwares()) {
 				
 				if (chd != null) {
@@ -4223,59 +4246,61 @@ public class CRMService {
 					cod_hd.setDetail_name(chd.getHardware_name());
 					cod_hd.setDetail_price(chd.getHardware_price());
 					
-					if ("12 months contract".equals(customerOrder.getContract())) {
-						if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-							if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023 && "VDSL".equals(customer.getSelect_plan_type())) {
-								modem_price = 0d;
-								cod_hd.setDetail_price(modem_price);
-							} else {
-								if (chd.getId().intValue() == 3 || chd.getId().intValue() == 1) {
+					if ("12 months contract".equals(customerOrder.getContract()) || "24 months contract".equals(customerOrder.getContract())) {
+						
+						if ("ADSL".equals(customer.getSelect_plan_type()) && chd.getId() == 1) {
+							modem_price = 0d;
+							cod_hd.setDetail_price(modem_price);
+						} else if (("VDSL".equals(customer.getSelect_plan_type()) || "UFB".equals(customer.getSelect_plan_type())) && "24 months contract".equals(customerOrder.getContract()) ) {
+							modem_price = 0d;
+							cod_hd.setDetail_price(modem_price);
+						} else {
+							if (customerOrder.getPrepay_months() == 1 || customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+								if (customerOrder.getSale_id() != null && customerOrder.getSale_id().intValue() == 20023 && "VDSL".equals(customer.getSelect_plan_type())) {
 									modem_price = 0d;
 									cod_hd.setDetail_price(modem_price);
 								} else {
-									Double temp = chd.getHardware_price()/2;
-									modem_price = chd.getHardware_price() - temp.intValue();
-									cod_hd.setDetail_price(new Double(modem_price.intValue()));
+									if (customerOrder.getPrepay_months() == 1) {
+										modem_price = chd.getHardware_price();
+										cod_hd.setDetail_price(modem_price);
+									} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+										if ("plan_discount".equals(customerOrder.getDiscount_type())) {
+											modem_price = chd.getHardware_price();
+											cod_hd.setDetail_price(modem_price);
+										} else if ("hardware_discount".equals(customerOrder.getDiscount_type())) {
+											Double temp = (chd.getHardware_price() / 12) * customerOrder.getPrepay_months();
+											modem_price = chd.getHardware_price() - temp.intValue();
+											cod_hd.setDetail_price(new Double(modem_price.intValue()));
+										}
+									}
+								}
+							} else if (customerOrder.getPrepay_months() == 12) {
+
+								if ("plan_discount".equals(customerOrder.getDiscount_type())) {
+									modem_price = chd.getHardware_price();
+									cod_hd.setDetail_price(modem_price);
+								} else if ("hardware_discount".equals(customerOrder.getDiscount_type())) {
+									modem_price = 0d;
+									cod_hd.setDetail_price(modem_price);
 								}
 							}
-						} else if (customerOrder.getPrepay_months() == 12) {
-
-							if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
-								modem_price = chd.getHardware_price();
-								cod_hd.setDetail_price(modem_price);
-							} else {
-								modem_price = 0d;
-								cod_hd.setDetail_price(modem_price);
-							}
 						}
+						
 					} else if ("open term".equals(customerOrder.getContract())) {
 						
-						System.out.println("--------------------------");
-						System.out.println(customerOrder.getPlan_or_hardware_discount());
-						System.out.println("--------------------------");
-
-						if("plan".equals(customerOrder.getPlan_or_hardware_discount())){
+						if (customerOrder.getPrepay_months() == 1) {
 							modem_price = chd.getHardware_price();
 							cod_hd.setDetail_price(modem_price);
-						} else {
-							
-							if (customerOrder.getPrepay_months() == 1) {
-								modem_price = chd.getHardware_price();
-								cod_hd.setDetail_price(modem_price);
-							} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
-								Double temp = (chd.getHardware_price()/12) * customerOrder.getPrepay_months();
-								modem_price = chd.getHardware_price() - temp.intValue();
-								cod_hd.setDetail_price(new Double(modem_price.intValue()));
-							} else if (customerOrder.getPrepay_months() == 12) {
-								modem_price = 0d;
-								cod_hd.setDetail_price(0d);
-							}
+						} else if (customerOrder.getPrepay_months() == 3 || customerOrder.getPrepay_months() == 6) {
+							Double temp = (chd.getHardware_price() / 12) * customerOrder.getPrepay_months();
+							modem_price = chd.getHardware_price() - temp.intValue();
+							cod_hd.setDetail_price(new Double(modem_price.intValue()));
+						} else if (customerOrder.getPrepay_months() == 12) {
+							modem_price = 0d;
+							cod_hd.setDetail_price(0d);
 						}
 						
-					} else if ("24 months contract".equals(customerOrder.getContract())) {
-						modem_price = 0d;
-						cod_hd.setDetail_price(modem_price);
-					}
+					} 
 					
 					cod_hd.setDetail_unit(1);
 					cod_hd.setIs_post(0);
@@ -4286,6 +4311,7 @@ public class CRMService {
 				}
 			
 			}
+			index++;
 		}
 		
 		// add-ons
@@ -4393,8 +4419,8 @@ public class CRMService {
 		
 		// monthly or one-off detail
 		
-		for (CustomerOrderDetail cod: customerOrder.getCustomerOrderDetails()) {
-			if (cod.getMonthly()!=null && cod.getMonthly()) {
+		for (CustomerOrderDetail cod : customerOrder.getCustomerOrderDetails()) {
+			if (cod.getMonthly() != null && cod.getMonthly()) {
 				customerOrder.getMonthly_cods().add(cod);
 			} else {
 				customerOrder.getOneoff_cods().add(cod);

@@ -38,9 +38,7 @@
 			<. if (modem_name != '') {.>
 			<p class="text-success" style="margin:0;">+ <.=modem_name.></p>
 			<.}.>
-			<. if (isContract) {.>
-			<p class="text-success" style="margin:0;">+ <.=contract_name.></p>
-			<.}.>
+			<p class="text-success" style="margin:0;">+ <.=contract.></p>
 			<p class="text-success" style="margin:0;">+ <.=order_broadband_type.></p>
 			<. if (discount_desc != '') {.>
 			<p class="text-success" style="margin:0;">+ <.=discount_desc.></p>
@@ -50,22 +48,13 @@
 				<div class="col-md-6">
 					<p class="bg-warning text-center text-warning" style="font-weight:bold;margin-bottom: 0;">Original</p>
 					<p class="bg-warning text-center text-warning" style="font-size: 30px;font-weight:bold;">
-						
-						<. if(plan_or_hardware_discount=='plan'){ .>
-							$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
-						<. } else { .>
-							$ <.=(price.plan_price * prepay_months) + (price.service_price) + (price.modem_price + price.save_modem_price).>
-						<. } .>
+						$ <.=(price.plan_price * prepay_months) + (price.service_price + price.save_service_price) + (price.modem_price + price.save_modem_price).>
 					</p>
 				</div>
 				<div class="col-md-6">
 					<p class="bg-success text-center text-success" style="font-weight:bold;margin-bottom: 0;">Save</p>
 					<p class="bg-success text-center text-success" style="font-size: 30px;font-weight:bold;">
-						<. if(plan_or_hardware_discount=='plan'){ .>
-							$ <.= price.discount_price + price.save_service_price .>
-						<. } else { .>
-							$ <.= price.save_modem_price + price.promotion_price.>
-						<. } .>
+						$ <.=price.discount_price + price.save_service_price + price.save_modem_price + price.promotion_price.>
 					</p>
 				</div>
 			</div>
@@ -79,16 +68,11 @@
 				<.} else if (select_customer_type == 'personal') {.>
 				<span style="font-size: 54px;font-weight: bold;">
 				<.}.>
-					<!-- <.
+					<.
 					var total = price.plan_price * prepay_months - price.discount_price + price.service_price + price.modem_price;
 					var final_total = total - price.promotion_price;
 					.>
-					<.=final_total.> -->
-					<. if(plan_or_hardware_discount=='plan'){ .>
-						<.=(price.plan_price * prepay_months) + (price.service_price - price.discount_price) + (price.modem_price + price.save_modem_price).>
-					<. } else { .>
-						<.=(price.plan_price * prepay_months) + (price.service_price) + (price.modem_price).>
-					<. } .>
+					<.=final_total.>
 					<.if (select_customer_type == 'business') {.>
 					<span style="font-size: 12px;">+GST</span>
 					<.}.>
@@ -105,7 +89,5 @@
 				<a href="<.=ctx.>/voip-calling-rates" target="_blank">VoIP Standard Rates</a>
 			</li>
 		</ul>
-		
-		
 	</div>
 </div>

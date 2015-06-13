@@ -50,7 +50,10 @@
 			            </li>
 			            <li class="follow-us-on">
 							<a href="https://twitter.com/share" class="twitter-share-button" data-url="https://twitter.com/CyberparkNZ" data-text="CyberPark provides broadband, phone, and other internet services to savvy New Zealand homes and businesses. CyberPark Provides All-In-One ISP Solutions Suit for Business And Personal Customers.">Tweet</a>
+							<!--  
 							<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+							-->
+							
 			            </li>
 			            <li class="follow-us-on">
 			            	<a class="g-follow" data-annotation="bubble" data-height="20" data-href="https://plus.google.com/113358993092406471657" data-rel="publisher"></a>
@@ -86,13 +89,13 @@
 </div>
 <div id="fb-root"></div>
 
-<script>(function(d, s, id) {
+<!-- <script>(function(d, s, id) {
   var js, fjs = d.getElementsByTagName(s)[0];
   if (d.getElementById(id)) return;
   js = d.createElement(s); js.id = id;
   js.src = "//connect.facebook.net/zh_CN/sdk.js#xfbml=1&version=v2.0";
   fjs.parentNode.insertBefore(js, fjs);
-}(document, 'script', 'facebook-jssdk'));</script>
+}(document, 'script', 'facebook-jssdk'));</script> -->
 
 <script type="text/javascript">
 window.___gcfg = {lang: 'en-GB'};

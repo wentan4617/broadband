@@ -78,7 +78,7 @@ public class CustomerOrder implements Serializable {
 	private Integer inviter_user_id;
 	private Double inviter_rate;
 	private Double invitee_rate;
-	
+
 	private String title;
 	private String first_name;
 	private String last_name;
@@ -95,7 +95,7 @@ public class CustomerOrder implements Serializable {
 	private String holder_job_title;
 	private String holder_phone;
 	private String holder_email;
-	
+
 	private String xero_invoice_status;
 	private Boolean is_send_xero_invoice;
 
@@ -113,14 +113,13 @@ public class CustomerOrder implements Serializable {
 	/*
 	 * RELATED PROPERTIES
 	 */
-	private String plan_or_hardware_discount;
-	
+
 	private String orderby;
-	
+
 	private String pstn;
 	private String voip;
 	private Integer invoice_id;
-	
+
 	private Map<String, Object> params = new HashMap<String, Object>();
 	private String order_create_date_str;
 	private String order_create_date_yyyymmddhhmmss;
@@ -131,14 +130,14 @@ public class CustomerOrder implements Serializable {
 	private String order_due_str;
 	private String disconnected_date_str;
 	private Customer customer;
-	
+
 	private List<CustomerOrderBroadbandASID> cobasids;
-	
+
 	@Valid
 	private Plan plan;
-	
+
 	private String org_incoporate_date_str;
-	
+
 	private List<CustomerOrderOnsite> coos;
 
 	// one order may be get more details
@@ -150,26 +149,37 @@ public class CustomerOrder implements Serializable {
 	private ProvisionLog tempProvsionLog;
 	private List<Hardware> hardwares = new ArrayList<Hardware>();
 	private NetworkUsage usage = new NetworkUsage();
-	
+
 	private Integer prepay_months;
+	private String discount_type;
+	private String plan_or_hardware_discount;
 	private Integer discount_price;
 	private String _transition_provider_name;
 	private Boolean promotion;
 	private Integer hardware_id_selected;
-	
+
 	private String order_detail_plan_type;
 	private Double order_total_charged;
 	private Double order_hardware_charged;
 	private Double order_hardware_cost;
 	private Double order_total_discounted;
 	private String order_belongs_to;
-	
+	private Boolean isOpenFeePromotion;
+
 	/*
 	 * END RELATED PROPERTIES
 	 */
 
 	public String get_transition_provider_name() {
 		return _transition_provider_name;
+	}
+
+	public Boolean getIsOpenFeePromotion() {
+		return isOpenFeePromotion;
+	}
+
+	public void setIsOpenFeePromotion(Boolean isOpenFeePromotion) {
+		this.isOpenFeePromotion = isOpenFeePromotion;
 	}
 
 	public void set_transition_provider_name(String _transition_provider_name) {
@@ -216,7 +226,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public void setOrder_create_date(Date order_create_date) {
-		this.setOrder_create_date_str(TMUtils.dateFormatYYYYMMDDHHMMSS(order_create_date));
+		this.setOrder_create_date_str(TMUtils
+				.dateFormatYYYYMMDDHHMMSS(order_create_date));
 		this.order_create_date = order_create_date;
 	}
 
@@ -286,7 +297,8 @@ public class CustomerOrder implements Serializable {
 
 	public String getOrder_using_start_str() {
 		if (this.getOrder_using_start() != null) {
-			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this.getOrder_using_start()));
+			this.setOrder_using_start_str(TMUtils.dateFormatYYYYMMDD(this
+					.getOrder_using_start()));
 		}
 		return order_using_start_str;
 	}
@@ -299,7 +311,8 @@ public class CustomerOrder implements Serializable {
 		return customerOrderDetails;
 	}
 
-	public void setCustomerOrderDetails(List<CustomerOrderDetail> customerOrderDetails) {
+	public void setCustomerOrderDetails(
+			List<CustomerOrderDetail> customerOrderDetails) {
 		this.customerOrderDetails = customerOrderDetails;
 	}
 
@@ -316,11 +329,13 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getNext_invoice_create_date_str() {
-		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this.getNext_invoice_create_date()));
+		this.setNext_invoice_create_date_str(TMUtils.dateFormatYYYYMMDD(this
+				.getNext_invoice_create_date()));
 		return next_invoice_create_date_str;
 	}
 
-	public void setNext_invoice_create_date_str(String next_invoice_create_date_str) {
+	public void setNext_invoice_create_date_str(
+			String next_invoice_create_date_str) {
 		this.next_invoice_create_date_str = next_invoice_create_date_str;
 	}
 
@@ -576,7 +591,8 @@ public class CustomerOrder implements Serializable {
 		return next_invoice_create_date_flag;
 	}
 
-	public void setNext_invoice_create_date_flag(Date next_invoice_create_date_flag) {
+	public void setNext_invoice_create_date_flag(
+			Date next_invoice_create_date_flag) {
 		this.next_invoice_create_date_flag = next_invoice_create_date_flag;
 	}
 
@@ -614,7 +630,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getDisconnected_date_str() {
-		this.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(this.getDisconnected_date()));
+		this.setDisconnected_date_str(TMUtils.dateFormatYYYYMMDD(this
+				.getDisconnected_date()));
 		return disconnected_date_str;
 	}
 
@@ -725,7 +742,7 @@ public class CustomerOrder implements Serializable {
 	public void setOneoff_cods(List<CustomerOrderDetail> oneoff_cods) {
 		this.oneoff_cods = oneoff_cods;
 	}
-	
+
 	public String getAddress() {
 		return address;
 	}
@@ -759,7 +776,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public String getOrder_create_date_yyyymmddhhmmss() {
-		order_create_date_yyyymmddhhmmss = TMUtils.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
+		order_create_date_yyyymmddhhmmss = TMUtils
+				.dateFormatYYYYMMDDHHMMSS(this.getOrder_create_date());
 		return order_create_date_yyyymmddhhmmss;
 	}
 
@@ -821,7 +839,8 @@ public class CustomerOrder implements Serializable {
 	}
 
 	public void setOrg_incoporate_date(Date org_incoporate_date) {
-		this.setOrg_incoporate_date_str(TMUtils.dateFormatYYYYMMDD(org_incoporate_date));
+		this.setOrg_incoporate_date_str(TMUtils
+				.dateFormatYYYYMMDD(org_incoporate_date));
 		this.org_incoporate_date = org_incoporate_date;
 	}
 
@@ -1015,6 +1034,14 @@ public class CustomerOrder implements Serializable {
 
 	public void setPlan_or_hardware_discount(String plan_or_hardware_discount) {
 		this.plan_or_hardware_discount = plan_or_hardware_discount;
+	}
+
+	public String getDiscount_type() {
+		return discount_type;
+	}
+
+	public void setDiscount_type(String discount_type) {
+		this.discount_type = discount_type;
 	}
 
 }

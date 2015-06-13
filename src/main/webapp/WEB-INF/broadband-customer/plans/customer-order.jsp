@@ -69,8 +69,13 @@ data-contract="${customerReg.customerOrder.contract }">
 </script>
 
 <script type="text/html" id="prepay_month_tmpl"
-data-prepay_months="${customerReg.customerOrder.prepay_months }">
+data-prepay_months="${customerReg.customerOrder.prepay_months }"
+data-discount_type="${customerReg.customerOrder.discount_type }">
 <jsp:include page="prepay-month.html" />
+</script>
+
+<script type="text/html" id="prepay_month_sub_tmpl">
+<jsp:include page="prepay-month-sub.html" />
 </script>
 
 <script type="text/html" id="select_modem_tmpl"
@@ -114,5 +119,5 @@ data-holder_email="${customerReg.customerOrder.holder_email }">
 
 <jsp:include page="../footer.jsp" />
 <jsp:include page="../script.jsp" />
-<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=20141131315"></script>
+<script type="text/javascript" src="${ctx}/public/broadband-customer/plans/customer-order.js?ver=201504071046"></script>
 <jsp:include page="../footer-end.jsp" />

@@ -37,61 +37,76 @@
 								NO, Get a new broadband connection on an existing (but inactive) Phone Jack 
 								
 							<.if (plan.plan_new_connection_fee > 0) {.>
-								<.if (select_customer_type == 'personal') {.>
-									<.if (isContract) {.>
-										<.if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {.>
+								<.if (isOpenFeePromotion) {.>
+									<.if (select_customer_type == 'personal') {.>
+										<.if (contract == '12 months contract' || contract == '24 months contract') {.>
+											<.if (prepay_months == 1 || prepay_months == 3 || prepay_months == 6) {.>
+											
+												<.if (sale_id == '20023') {.>
+												
+									is free 
+									(<span class="text-danger">$0</span>, 
+									<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
+									
+												<.} else {.>
+												
+													<.if (prepay_months == 1) {.>
+											
+									costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
 										
-											<.if (sale_id == '20023') {.>
+													<.} else if (prepay_months == 3 || prepay_months == 6) {.>
 											
-								is free 
-								(<span class="text-danger">$0</span>, 
-								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
-								
+									costs 
+									<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee / 12) * prepay_months).></span>, 
+									<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee / 12) * prepay_months).></span>
+											
+													<.} .>
+									
+												<.}.>
+												
 											<.} else {.>
-											
-								costs 
-								<span class="text-danger">$49</span>, 
-								<span class="text-success">save $<.=parseInt(plan.plan_new_connection_fee - 49).></span>
-								
+										
+									is free 
+									(<span class="text-danger">$0</span>, 
+									<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
+										
 											<.}.>
 											
-										<.} else {.>
-									
-								is free 
-								(<span class="text-danger">$0</span>, 
-								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
-									
+										<.} else if (contract == 'open term') {.>
+										
+											<.if (prepay_months == 1) {.>
+											
+									costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+										
+											<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+											
+									costs 
+									<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee / 12) * prepay_months).></span>, 
+									<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee / 12) * prepay_months).></span>
+											
+											<.} else if (prepay_months == 12) {.>
+											
+									is free 
+									(<span class="text-danger">$0</span>, 
+									<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
+										
+											<.}.>
+											
 										<.}.>
 										
-									<.} else {.>
+									<.} else if (select_customer_type == 'business') {.>
 									
-										<.if (prepay_months == 1) {.>
-										
-								costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
-									
-										<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-										
-								costs 
-								<span class="text-danger">$<.=plan.plan_new_connection_fee - parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>, 
-								<span class="text-success">save $<.=parseInt((plan.plan_new_connection_fee/12)*prepay_months).></span>
-										
-										<.} else if (prepay_months == 12) {.>
-										
-								is free 
-								(<span class="text-danger">$0</span>, 
-								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)
-									
-										<.}.>
-										
-									<.}.>
-									
-								<.} else if (select_customer_type == 'business') {.>
+									is free 
+									(<span class="text-danger">$0</span>, 
+									<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)	
 								
-								is free 
-								(<span class="text-danger">$0</span>, 
-								<span class="text-success">save $<.=plan.plan_new_connection_fee.></span>)	
-							
+									<.}.>
+								<.} else {.>
+
+								costs <span class="text-danger">$<.=parseInt(plan.plan_new_connection_fee).></span>
+								
 								<.}.>
+								
 								
 							<.} else {.>
 							

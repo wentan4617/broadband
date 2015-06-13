@@ -16,53 +16,62 @@
 				<ul class="list-inline topup-list"><!-- list-unstyled topup-list -->
 					<li>
 						<label>
-							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="open-term" style="float:left;"/> 
+							<input data-id="<.=hardware.id.>" type="radio" name="modem" value="withmodem" style="float:left;"/> 
 							&nbsp;<span class="text-success" style="font-size:18px;"><.=hardware.hardware_name.></span>
 						</label>
 						<span style="float:right;font-size:18px;font-weight:bold;">
-						<.if (isContract) {.>
-							<.if (prepay_months == 1) {.>
-							
-							<span class="text-danger">$<.=parseInt(hardware.hardware_price).></span>
-							
-							<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-							
-								<. if(plan_or_hardware_discount=='plan'){ .>
-							<span class="text-danger">$<.=hardware.hardware_price.></span>
-								<. } else { .>
-							<span class="text-danger">$<.=hardware.hardware_price - parseInt((hardware.hardware_price/12)*prepay_months).></span>, 
-							<span class="text-success">save $<.=parseInt((hardware.hardware_price/12)*prepay_months).></span>
-								<. } .>
+
+						<.if (contract == '12 months contract' || contract == '24 months contract') {.>
+
+							<.if (select_plan_type == 'ADSL' && hardware.id == 1) {.>
+
+								<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>	
+
+							<.} else if ((select_plan_type == 'VDSL' || select_plan_type == 'UFB') && contract == '24 months contract') {.>
 								
-							<.} else if (prepay_months == 12){.>
-							
-								<. if(plan_or_hardware_discount=='plan'){ .>
-							<span class="text-danger">$<.=hardware.hardware_price.></span>
-								<. } else { .>
-							<span class="text-danger">$<.=parseInt(0).></span>, 
-							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>	
-								<. } .>
+								<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>	
 								
+							<.} else {.>
+
+								<.if (prepay_months == 1) {.>
+
+								<span class="text-danger">$<.=parseInt(hardware.hardware_price).></span>
+
+								<.} else if (prepay_months == 3 || prepay_months == 6) {.>
+
+									<.if (discount_type == 'plan_discount') {.>
+
+								<span class="text-danger">$<.=hardware.hardware_price.></span>
+
+									<.} else if (discount_type == 'hardware_discount') {.>
+
+								<span class="text-danger">$<.=hardware.hardware_price - parseInt((hardware.hardware_price / 12) * prepay_months).></span>, 
+								<span class="text-success">save $<.=parseInt((hardware.hardware_price / 12) * prepay_months).></span>
+									
+									<.}.>
+									
+								<.} else if (prepay_months == 12) {.>
+								
+									<.if (discount_type == 'plan_discount') {.>
+
+								<span class="text-danger">$<.=hardware.hardware_price.></span>
+
+									<.} else if (discount_type == 'hardware_discount') {.>
+
+								<span class="text-danger">$0</span>, 
+								<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>	
+
+									<.}.>
+									
+								<.}.>
+
 							<.}.>
-						<.} else {.>
-							<.if (prepay_months == 1) {.>
-							<span class="text-danger">$<.=hardware.hardware_price.></span>
-							<.} else if (prepay_months == 3 || prepay_months == 6) {.>
-								<. if(plan_or_hardware_discount=='plan'){ .>
-							<span class="text-danger">$<.=hardware.hardware_price.></span>
-								<. } else { .>
-							<span class="text-danger">$<.=hardware.hardware_price - parseInt((hardware.hardware_price/12)*prepay_months).></span>, 
-							<span class="text-success">save $<.=parseInt((hardware.hardware_price/12)*prepay_months).></span>
-								<. } .>
-							<.} else if (prepay_months == 12) {.>
-								<. if(plan_or_hardware_discount=='plan'){ .>
-							<span class="text-danger">$<.=hardware.hardware_price.></span>
-								<. } else { .>
-							<span class="text-danger">$<.=parseInt(0).></span>, 
-							<span class="text-success">save $<.=parseInt(hardware.hardware_price).></span>	
-								<. } .>
-							<.}.>
+						<.} else if (contract == 'open term') {.>
+
 						<.}.>
+
 						</span>
 					</li>
 					

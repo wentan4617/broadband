@@ -27,12 +27,12 @@
 				</a>
 				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">Ultra-Fast Fibre</p>
 			</div>
-			<div class="col-md-2 col-xs-3">
+			<%-- <div class="col-md-2 col-xs-3">
 				<a href="${ctx }/plans/plan-topup/personal">
 					<img class="img-responsive" src="${ctx }/public/bootstrap3/images/topup-icon.png" style="padding: 0 0 10px;" alt="Short Term Broadband" title="Short Term Broadband">
 				</a>
 				<p class="text-center hidden-xs" style="color:white;font-weight: bold; font-size: 18px;">Top-Up Plans</p>
-			</div>
+			</div> --%>
 		</div>
 		<div class="row" style="margin-bottom:20px;">
 			
@@ -109,7 +109,7 @@
 			<a href="${ctx }/plans/ultra-fast-fibre" class="btn btn-lg btn-outline-inverse pull-right" style="margin:14px;">View More</a>
 		</div>
 	</div>
-	<div class="row btn-success" style="margin-bottom:10px;">
+	<%-- <div class="row btn-success" style="margin-bottom:10px;">
 		<div class="col-md-6">
 			<p style="padding:20px 20px 0;"></p>
 			<img class="img-responsive" src="${ctx }/public/bootstrap3/images/topup-p.png" alt="New Seasion New Fashion" title="New Seasion New Fashion">
@@ -121,6 +121,6 @@
 			</p>
 			<a href="${ctx }/plans/plan-topup/personal" class="btn btn-lg btn-outline-inverse pull-right" style="margin:14px;">View More</a>
 		</div>
-	</div>
+	</div> --%>
 	
 </div>

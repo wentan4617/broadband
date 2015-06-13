@@ -1,15 +1,20 @@
 <. if (results.length > 0) {.>
-<table class="table" style="font-size: 12px;">
+<style type="text/css">
+#customer-table td {
+	overflow: hidden;
+}
+</style>
+<table id="customer-table" class="table" style="font-size: 12px;">
 	<thead>
 		<tr>
-			<th>ID&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="DESC">¡ý¡ý</a></th>
-			<th>Name&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="DESC">¡ý¡ý</a></th>
-			<th>Type&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="DESC">¡ý¡ý</a></th>
-			<th>Address&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="DESC">¡ý¡ý</a></th>
-			<th>Email&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="DESC">¡ý¡ý</a></th>
-			<th>Mobile&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="DESC">¡ý¡ý</a></th>
-			<th>Date&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="DESC">¡ý¡ý</a></th>
-			<th>Progress&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="ASC">¡ü¡ü</a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="DESC">¡ý¡ý</a></th>
+			<th width="5%">ID&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="id" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="12.8%">Name&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="first_name" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="5%">Type&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="customer_type" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="12.8%">Address&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="address" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="12.8%">Email&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="email" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="8%">Mobile&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="mobile" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="12.8%">Date&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="order_create_date" data-order="DESC"><span class="caret"></span></a></th>
+			<th width="5%">Progress&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="ASC" class="dropup"><span class="caret"></span></a>&nbsp;<a href="javascript:void(0);" data-name="orderby" data-val="checklist_progress" data-order="DESC"><span class="caret"></span></a></th>
 		</tr>
 	</thead>
 	<tbody>
