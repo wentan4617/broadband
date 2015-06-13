@@ -1,2 +1,6 @@
-/target
-/bin/
+# project
+.settings
+target
+.classpath
+.project
+.springBeans
