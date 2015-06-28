@@ -39,7 +39,7 @@
 			            <li><a href="${ctx }/hospitality-integrated-solution" >Hospitality Integrated Solution</a></li>
 			            <li><a href="${ctx }/pbx-solution" >PBX Solution</a></li>
 			            <li><a href="${ctx }/wifi-solution" >Wi-Fi Solution</a></li>
-			            <li><a href="${ctx }/e-commerce" >E-Commerce</a></li>
+			            <%-- <li><a href="${ctx }/e-commerce" >E-Commerce</a></li> --%>
 		             	<li><a href="${ctx }/term-and-conditions">Terms &amp; Conditions</a></li>
 		          	</ul>
 				</li>
