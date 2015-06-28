@@ -34,8 +34,9 @@
 					<ul class="dropdown-menu">
 			            <li><a href="${ctx }/about-us">About CyberPark</a></li>
 		             	<%-- <li><a href="${ctx }/voucher">Voucher Checking</a></li> --%>
-			            <li><a href="${ctx }/phone-calling-rates">Phone Calling Rates</a></li>
+			            <li><a href="${ctx }/phone-calling-rates">PSTN Calling Rates</a></li>
 			            <li><a href="${ctx }/voip-calling-rates">VoIP Calling Rates</a></li>
+			            <li><a href="${ctx }/hospitality-integrated-solution" >Hospitality Integrated Solution</a></li>
 			            <li><a href="${ctx }/pbx-solution" >PBX Solution</a></li>
 			            <li><a href="${ctx }/wifi-solution" >Wi-Fi Solution</a></li>
 			            <li><a href="${ctx }/e-commerce" >E-Commerce</a></li>

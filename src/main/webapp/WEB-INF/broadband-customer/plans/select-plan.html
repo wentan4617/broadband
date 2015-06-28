@@ -13,7 +13,7 @@
 		<.if (select_plan_type == 'ADSL') {.>
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
-				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">VoIP Included</span></a>
 			</li>
 			<li>
 				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
@@ -24,7 +24,7 @@
 			if (sale_id != '10023' && sale_id != '20023') {.>
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
-				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">VoIP Included</span></a>
 			</li>
 			<li>
 				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
@@ -35,7 +35,7 @@
 		} else if (select_plan_type == 'UFB') {.>
 		<ul class="nav nav-tabs" id="plans">
 			<li class="active">
-				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">Homeline Included</span></a>
+				<a href="#homeline" data-toggle="tab" style="padding: 6px;"><span class="phone"></span> <span style="font-size:24px" class="hidden-xs">VoIP Included</span></a>
 			</li>
 			<li>
 				<a href="#naked" data-toggle="tab" style="padding: 6px;"><span class="without_phone"></span> <span style="font-size:24px" class="hidden-xs">Naked Broadband</span></a>
@@ -62,9 +62,9 @@
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
 								<. if (select_plan_type == 'VDSL' && sale_id == '10023'){.>
-									<.=plan.plan_price * 12.> / year
+									$ <.=plan.plan_price * 12.> / year
 								<.} else {.>
-									<.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
+									$ <.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
 								<.}.>
 								
 							</p>
@@ -99,7 +99,7 @@
 								<.=plan.data_flow < 0 ? 'Unlimited' : plan.data_flow + ' GB'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
-								<.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
+								$ <.=plan.plan_price.> / <.=select_plan_group=='plan-topup'?'week':'month'.>
 							</p>
 							<p class="text-center" style="font-weight:bold;font-size: 25px;">
 								<span data-icon style="border: 1px solid; padding: 6px 8px; border-radius: 24px; background-color: #fff;">

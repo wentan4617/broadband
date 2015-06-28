@@ -99,7 +99,7 @@
 		
 			<!-- Nav tabs -->
 			<ul class="nav nav-tabs nav-justified">
-				<li class="active"><a href="#homeline" data-toggle="tab"><strong style="font-size:24px;"><span class="phone"></span> Homeline Included</strong></a></li>
+				<li class="active"><a href="#homeline" data-toggle="tab"><strong style="font-size:24px;"><span class="phone"></span> VoIP Included</strong></a></li>
 				<li><a href="#naked" data-toggle="tab"><strong style="font-size:24px;"><span class="without_phone"></span> Naked Broadband</strong></a></li>
 			</ul>
 
@@ -134,8 +134,8 @@
 								</p>
 								<p class="text-center" style="font-weight:bold;font-size: 24px;">
 									<c:choose>
-										<c:when test="${type_search=='ADSL' }">(Homeline Included)</c:when>
-										<c:when test="${type_search=='VDSL' }">(Homeline Included)</c:when>
+										<c:when test="${type_search=='ADSL' }">(VoIP Included)</c:when>
+										<c:when test="${type_search=='VDSL' }">(VoIP Included)</c:when>
 										<c:when test="${type_search=='UFB' }">(VoIP Homeline)</c:when>
 									</c:choose>
 									
@@ -185,7 +185,7 @@
 									</c:choose>
 								</p>
 								<p class="text-center" style="font-weight:bold;font-size: 25px;">
-									(Without Homeline)
+									(Without VoIP)
 								</p>
 								<p class="text-center" style="font-weight:bold;">
 									<span style="font-size:30px;">$</span>

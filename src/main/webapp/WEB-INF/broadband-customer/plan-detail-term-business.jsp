@@ -58,17 +58,13 @@
 						<span class="label label-primary">
 							ADSL + Business Phone Line&nbsp;
 							(FAST&nbsp;
-								<span class="glyphicon glyphicon-flash"></span>
-								<span class="glyphicon glyphicon-flash"></span>
 								<span class="glyphicon glyphicon-flash"></span>)
 						</span>
 					</c:when>
 					<c:when test="${type=='VDSL' }">
 						<span class="label label-info">
 							VDSL + Business Phone Line&nbsp;
-							(FAST&nbsp;
-								<span class="glyphicon glyphicon-flash"></span>
-								<span class="glyphicon glyphicon-flash"></span>
+							(FASTER&nbsp;
 								<span class="glyphicon glyphicon-flash"></span>
 								<span class="glyphicon glyphicon-flash"></span>)
 						</span>
@@ -76,9 +72,7 @@
 					<c:when test="${type=='UFB' }">
 						<span class="label label-danger">
 							UFB + Business Phone Line&nbsp;
-							(FAST&nbsp;
-								<span class="glyphicon glyphicon-flash"></span>
-								<span class="glyphicon glyphicon-flash"></span>
+							(ULTRA FAST&nbsp;
 								<span class="glyphicon glyphicon-flash"></span>
 								<span class="glyphicon glyphicon-flash"></span>
 								<span class="glyphicon glyphicon-flash"></span>)

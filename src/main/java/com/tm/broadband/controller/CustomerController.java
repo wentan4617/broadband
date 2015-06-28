@@ -371,6 +371,11 @@ public class CustomerController {
 		return "broadband-customer/voip-calling-rates";
 	}
 	
+	@RequestMapping(value = "/hospitality-integrated-solution")
+	public String toHIS(Model model) {
+		return "broadband-customer/hospitality-integrated-solution";
+	}
+	
 	@RequestMapping(value = "/pbx-solution")
 	public String toPBX(Model model) {
 		return "broadband-customer/pbx-solution";
